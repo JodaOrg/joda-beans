@@ -29,7 +29,7 @@
 -->
       <item name="Mailing lists" href="/mail-lists.html"/>
       <item name="Tasks" href="/tasks.html"/>
-      <item name="CVS" href="http://joda.cvs.sourceforge.net/joda/JodaBeans/"/>
+      <item name="Subversion" href="http://svn.sourceforge.net/viewcvs.cgi/joda-beans/trunk/JodaBeans/"/>
       <item name="Javadoc (Development)" href="/apidocs/index.html"/>
     </menu>
     
