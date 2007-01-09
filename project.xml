@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You are strongly recommended to use ant for compiling and building -->
+<!-- We only use and test maven for website construction -->
+
+<project>
+  <pomVersion>3</pomVersion>
+  <groupId>joda-beans</groupId>
+  <artifactId>joda-beans</artifactId>
+  <name>Joda beans</name>
+  <currentVersion>0.1</currentVersion>
+  <organization>
+    <name>Joda.org</name>
+    <url>http://www.joda.org</url>
+    <logo>/images/joda.png</logo>
+  </organization>
+  <inceptionYear>2007</inceptionYear>
+  <package>org.joda.beans</package>
+
+  <description>
+    Better JavaBeans.
+  </description>
+  <shortDescription>Joda beans</shortDescription>
+  <url>http://joda-beans.sourceforge.net</url>
+  
+  <issueTrackingUrl>http://sourceforge.net/tracker/?group_id=186518&amp;atid=917605&amp;func=browse</issueTrackingUrl>
+  
+  <siteAddress>shell.sourceforge.net</siteAddress>
+  <siteDirectory>/home/groups/j/jo/joda-beans/htdocs/</siteDirectory>
+  <distributionDirectory>home/groups/j/jo/joda-beans/htdocs/repository</distributionDirectory>
+  
+  <repository>
+    <connection>scm:svn:https://joda-beans.svn.sourceforge.net/svnroot/joda-beans/trunk/JodaBeans/</connection>
+    <url>http://svn.sourceforge.net/viewcvs.cgi/joda-beans/trunk/JodaBeans/</url>
+  </repository>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <versions>
+  </versions>
+  
+  <mailingLists>
+    <mailingList>
+      <name>Joda Interest list</name>
+      <subscribe>http://sourceforge.net/mail/?group_id=47291</subscribe>
+      <unsubscribe>http://sourceforge.net/mail/?group_id=47291</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=8530</archive>
+    </mailingList>
+  </mailingLists>
+
+  <developers>
+    <developer>
+      <name>Stephen Colebourne</name>
+      <id>scolebourne</id>
+      <email>scolebourne@joda.org</email>
+      <organization>SITA ATS Ltd</organization>
+      <roles>
+        <role>Project Lead</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <contributors>
+  </contributors>
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>org/joda/beans/**/TestAll.java</include>
+      </includes>
+    </unitTest>
+    <resources>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>NOTICE.txt</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+  <reports>
+     <report>maven-changelog-plugin</report>
+     <report>maven-changes-plugin</report>
+     <report>maven-checkstyle-plugin</report>
+     <!-- <report>maven-findbugs-plugin</report> -->
+     <!-- <report>maven-jdiff-plugin</report> -->
+     <!-- <report>maven-clover-plugin</report> -->
+     <!-- <report>maven-jcoverage-plugin</report> -->
+     <!-- <report>maven-cobertura-plugin</report> -->
+     <report>maven-developer-activity-plugin</report>
+     <report>maven-file-activity-plugin</report>
+     <report>maven-javadoc-plugin</report>
+     <report>maven-junit-report-plugin</report>
+     <report>maven-jxr-plugin</report>
+     <report>maven-license-plugin</report>
+     <!--report>maven-linkcheck-plugin</report-->
+     <!--report>maven-statcvs-plugin</report-->
+     <!--report>maven-tasklist-plugin</report-->
+  </reports>
+
+</project>
