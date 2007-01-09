@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Joda Beans">
+
+  <title>Joda Beans</title>
+  <organizationLogo href="">Joda.org</organizationLogo>
+
+  <body>
+    <menu name="Joda Beans">
+      <item name="Overview" href="/index.html"/>
+<!--
+      <item name="Quick start guide" href="/quickstart.html"/>
+      <item name="Users guide" href="/userguide.html"/>
+      <item name="FAQ" href="/faq.html"/>
+      <item name="Related projects" href="/related.html"/>
+      <item name="Javadoc (Release)" href="/api-release/index.html"/>
+-->
+      <item name="License" href="/license.html"/>
+<!--
+      <item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=186518"/>
+-->
+    </menu>
+    
+    <menu name="Development">
+      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"/>
+<!--
+      <item name="Test results" href="/junit-report.html"/>
+      <item name="Test coverage" href="/cobertura/index.html"/>
+-->
+      <item name="Mailing lists" href="/mail-lists.html"/>
+      <item name="Tasks" href="/tasks.html"/>
+      <item name="CVS" href="http://joda.cvs.sourceforge.net/joda/JodaBeans/"/>
+      <item name="Javadoc (Development)" href="/apidocs/index.html"/>
+    </menu>
+    
+    <menu name="Joda">
+      <item name="Joda home" href="http://joda.sourceforge.net"/>
+      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
+      <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
+    </menu>
+    
+    <footer>
+      <a href="http://sourceforge.net">
+        <img src="http://sourceforge.net/sflogo.php?group_id=186518&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" />
+      </a>
+    </footer>
+  </body>
+</project>
