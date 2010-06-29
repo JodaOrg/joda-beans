@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package org.joda.beans;
 import java.util.Map;
 
 /**
- * A property is a field on a bean that can typically be called via get/set.
+ * A meta-property using a {@code Map} for storage.
+ * <p>
+ * This meta-property uses a {@code Map} instead of a JavaBean to store the property.
  * 
  * @author Stephen Colebourne
  */
@@ -48,7 +50,7 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
      * @return the bound property
      */
     public Property<Map<String, T>, T> createProperty(Map<String, T> bean) {
-        return new SimpleProperty<Map<String, T>, T>(bean, this);
+        return StandardProperty.of(bean, this);
     }
 
     /**
@@ -56,7 +58,7 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
      * 
      * @return the name of the property
      */
-    public String getName() {
+    public String name() {
         return key;
     }
 
@@ -65,7 +67,7 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
      * 
      * @return the type of the property
      */
-    public Class<T> getType() {
+    public Class<T> propertyClass() {
         // isn't erasure horrible
         return null;
     }
@@ -75,7 +77,8 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
      * 
      * @return the type of the bean
      */
-    public Class<Map<String, T>> getBeanType() {
+    @SuppressWarnings("unchecked")
+    public Class<Map<String, T>> beanClass() {
         // if you think erasure is great, try fixing this
         return (Class<Map<String, T>>) (Class) Map.class;
     }
@@ -85,7 +88,7 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
      * 
      * @return the property read-write type
      */
-    public ReadWriteProperty getReadWrite() {
+    public ReadWriteProperty readWrite() {
         return ReadWriteProperty.READ_WRITE;
     }
 
@@ -126,7 +129,7 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
      */
     @Override
     public String toString() {
-        return "MetaProperty:" + getName();
+        return "MetaProperty:" + name();
     }
 
 }

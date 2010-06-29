@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,32 +16,36 @@
 package org.joda.beans;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
- * Represents a property that is linked to a specific bean.
+ * A bean consisting of a set of properties.
  * <p>
- * Normally, this will be implemented by wrapping a get/set method pair.
- * However, it can also be implemented in other ways, such as accessing
- * a map.
+ * For a JavaBean, this will ultimately wrap a get/set methods of the bean.
+ * Alternate implementations might store the properties in another data structure
+ * such as a map.
  * 
+ * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
 public interface Bean<B> {
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the bean which this Bean interface defines.
-     * Where possible, it is advisable to make the actual bean implement
-     * this interface, and make this method return <code>this</code>.
+     * Gets the bean which this interface defines.
+     * <p>
+     * The bean returned is the actual bean instance.
+     * Where possible, the actual bean should implement this interface, thus
+     * this method would return {@code this}.
      * 
-     * @return the bean itself
+     * @return the bean itself, never null
      */
     B bean();
 
     /**
-     * Gets the meta bean which defines the static non-instance data for this bean.
+     * Gets the meta-bean representing the parts of the bean that are
+     * common across all instances, such as the set of meta-properties.
      * 
-     * @return the meta bean
+     * @return the meta-bean, never null
      */
     MetaBean<B> metaBean();
 
@@ -49,15 +53,16 @@ public interface Bean<B> {
     /**
      * Gets the map of properties, keyed by property name.
      * 
-     * @return the list of meta property objects, never null
+     * @return the unmodifiable map of property objects, never null
      */
     Map<String, Property<B, ?>> propertyMap();
 
     /**
      * Gets a property by name.
      * 
-     * @param propertyName  the property name to retrieve
-     * @return the meta property, null if not found
+     * @param propertyName  the property name to retrieve, null throws NoSuchElementException
+     * @return the property, never null
+     * @throws NoSuchElementException if the property name is invalid
      */
     Property<B, ?> property(String propertyName);
 

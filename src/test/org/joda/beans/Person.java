@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,32 +15,32 @@
  */
 package org.joda.beans;
 
-import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Represents a property that is linked to a specific bean.
- * <p>
- * Normally, this will be implemented by wrapping a get/set method pair.
- * However, it can also be implemented in other ways, such as accessing
- * a map.
+ * Mock person JavaBean, used for testing.
  * 
  * @author Stephen Colebourne
  */
 public class Person implements Bean<Person> {
 
-    /** The forename meta property. */
-    private static final MetaProperty<Person, String> FORENAME =
-        new DescriptorMetaProperty<Person, String>(Person.class, "forename");
+    /** The forename meta-property. */
+    public static final MetaProperty<Person, String> FORENAME = StandardMetaProperty.of(Person.class, "forename");
     /** The forename. */
     private String forename;
 
-    /** The surname meta property. */
-    private static final MetaProperty<Person, String> SURNAME =
-        new DescriptorMetaProperty<Person, String>(Person.class, "surname");
+    /** The surname meta-property. */
+    public static final MetaProperty<Person, String> SURNAME = StandardMetaProperty.of(Person.class, "surname");
     /** The surname. */
     private String surname;
+
+    /** The number of cars meta-property. */
+    public static final MetaProperty<Person, Integer> NUMBER_OF_CARS = StandardMetaProperty.of(Person.class, "numberOfCars");
+    /** The surname. */
+    private int numberOfCars;
+
+    /** The meta-bean. */
+    public static final MetaBean<Person> META = StandardMetaBean.of(Person.class);
 
     //-----------------------------------------------------------------------
     /**
@@ -60,15 +60,8 @@ public class Person implements Bean<Person> {
     /**
      * @return the forename property
      */
-    public Property<Person, String> propertyForename() {
-        return metaPropertyForename().createProperty(this);
-    }
-
-    /**
-     * @return the forename meta property
-     */
-    public static MetaProperty<Person, String> metaPropertyForename() {
-        return FORENAME;
+    public Property<Person, String> forename() {
+        return FORENAME.createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -89,15 +82,30 @@ public class Person implements Bean<Person> {
     /**
      * @return the surname property
      */
-    public Property<Person, String> propertySurname() {
-        return metaPropertySurname().createProperty(this);
+    public Property<Person, String> surname() {
+        return SURNAME.createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * @return the number of cars
+     */
+    public int getNumberOfCars() {
+        return numberOfCars;
     }
 
     /**
-     * @return the forename meta property
+     * @param numberOfCars  the number of cars to set
      */
-    public static MetaProperty<Person, String> metaPropertySurname() {
-        return SURNAME;
+    public void setNumberOfCars(int numberOfCars) {
+        this.numberOfCars = numberOfCars;
+    }
+
+    /**
+     * @return the number of cars property
+     */
+    public Property<Person, Integer> numberOfCars() {
+        return NUMBER_OF_CARS.createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -110,43 +118,11 @@ public class Person implements Bean<Person> {
     }
 
     public Property<Person, ?> property(String propertyName) {
-        return propertyMap().get(propertyName);
+        return metaBean().metaProperty(propertyName).createProperty(this);
     }
 
     public Map<String, Property<Person, ?>> propertyMap() {
-        // need a specialist map implementation here
-        Map<String, Property<Person, ?>> map = new HashMap<String, Property<Person,?>>();
-        map.put("forename", propertyForename());
-        map.put("surname", propertySurname());
-        return map;
+        return metaBean().createPropertyMap(this);
     }
-
-    public static final MetaBean<Person> META = new MetaBean<Person>() {
-
-        public Bean<Person> createBean() {
-            return new Person();
-        }
-
-        public String getName() {
-            return Person.class.getName();
-        }
-
-        public Class<Person> getType() {
-            return Person.class;
-        }
-
-        public MetaProperty<Person, ?> metaProperty(String propertyName) {
-            return metaPropertyMap().get(propertyName);
-        }
-
-        public Map<String, MetaProperty<Person, ?>> metaPropertyMap() {
-            // need a specialist map implementation here
-            Map<String, MetaProperty<Person, ?>> map = new HashMap<String, MetaProperty<Person,?>>();
-            map.put("forename", metaPropertyForename());
-            map.put("surname", metaPropertySurname());
-            return map;
-        }
-        
-    };
 
 }

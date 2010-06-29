@@ -1,0 +1,132 @@
+/*
+ *  Copyright 2001-2010 Stephen Colebourne
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.joda.beans;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+/**
+ * A standard meta-bean implementation.
+ * <p>
+ * This is the standard implementation of a meta-bean.
+ * It requires that the bean implements {@code Bean} and has a no-arguments constructor.
+ * 
+ * @param <B>  the type of the bean
+ * @author Stephen Colebourne
+ */
+public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
+
+    /** The bean class. */
+    private final Class<B> beanClass;
+    /** The meta-property instances of the bean. */
+    private final Map<String, MetaProperty<B, ?>> metaPropertyMap;
+
+    /**
+     * Factory to create a meta-bean avoiding duplicate generics.
+     * 
+     * @param beanClass  the bean class, not null
+     */
+    public static <B extends Bean<B>> StandardMetaBean<B> of(Class<B> beanClass) {
+        return new StandardMetaBean<B>(beanClass);
+    }
+
+    /**
+     * Creates a property binding the bean to the meta-property.
+     * 
+     * @param beanClass  the bean class, not null
+     */
+    @SuppressWarnings("unchecked")
+    private StandardMetaBean(Class<B> beanClass) {
+        Beans.checkNotNull(beanClass, "Class must not be null");
+        this.beanClass = beanClass;
+        Map<String, MetaProperty<B,?>> map = new HashMap<String, MetaProperty<B,?>>();
+        Field[] fields = beanClass.getFields();
+        for (Field field : fields) {
+            if (MetaProperty.class.isAssignableFrom(field.getType()) &&
+                    Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
+                MetaProperty<B, ?> mp;
+                try {
+                    mp = (MetaProperty<B, ?>) field.get(null);
+                } catch (IllegalArgumentException ex) {
+                    throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
+                } catch (IllegalAccessException ex) {
+                    throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
+                }
+                map.put(mp.name(), mp);
+            }
+        }
+        
+        this.metaPropertyMap = map;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public Bean<B> createBean() {
+        try {
+            return beanClass.newInstance();
+        } catch (InstantiationException ex) {
+            throw new UnsupportedOperationException("Bean cannot be created: " + name(), ex);
+        } catch (IllegalAccessException ex) {
+            throw new UnsupportedOperationException("Bean cannot be created: " + name(), ex);
+        }
+    }
+
+    @Override
+    public Map<String, Property<B, ?>> createPropertyMap(B bean) {
+        return StandardPropertyMap.of(bean);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String name() {
+        return beanClass.getName();
+    }
+
+    @Override
+    public Class<B> beanClass() {
+        return beanClass;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public MetaProperty<B, ?> metaProperty(String propertyName) {
+        MetaProperty<B, ?> metaProperty = metaPropertyMap.get(propertyName);
+        if (metaProperty == null) {
+            throw new NoSuchElementException("Property not found: " + propertyName);
+        }
+        return metaProperty;
+    }
+
+    @Override
+    public Map<String, MetaProperty<B, ?>> metaPropertyMap() {
+        return metaPropertyMap;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a string that summarizes the property.
+     * 
+     * @return a summary string, never null
+     */
+    @Override
+    public String toString() {
+        return "MetaBean:" + name();
+    }
+
+}

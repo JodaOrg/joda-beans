@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,75 +16,78 @@
 package org.joda.beans;
 
 /**
- * Represents those aspects of a property which are not specific to a
- * particular bean, such as the property type and name.
+ * A meta-property, defining those aspects of a property which are not specific
+ * to a particular bean, such as the property type and name.
  * 
+ * @param <B>  the type of the bean
+ * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public interface MetaProperty<B, T> {
+public interface MetaProperty<B, P> {
+
+    /**
+     * Creates a property that binds this meta-property to a specific bean.
+     * 
+     * @param bean  the bean to create the property for, not null
+     * @return the property, never null
+     */
+    Property<B, P> createProperty(B bean);
 
     //-----------------------------------------------------------------------
-    /**
-     * Creates a property that binds this meta property to a specific bean.
-     * 
-     * @param bean  the bean to create the bound property for, not null
-     * @return the bound property
-     */
-    Property<B, T> createProperty(B bean);
-
     /**
      * Gets the property name.
-     * The JavaBean style methods getFoo() and setFoo() will lead 
-     * to a property name of 'foo' and so on.
+     * <p>
+     * The JavaBean style methods getFoo() and setFoo() will lead to a property
+     * name of 'foo' and so on.
      * 
-     * @return the name of the property
+     * @return the name of the property, never null
      */
-    String getName();
+    String name();
 
     /**
-     * Get the type of the property represented as a Class.
+     * Get the type of the property represented as a {@code Class}.
      * 
-     * @return the type of the property
+     * @return the type of the property, never null
      */
-    Class<T> getType();
+    Class<P> propertyClass();
 
     /**
-     * Get the type of the property represented as a Class.
+     * Get the type of the bean represented as a {@code Class}.
      * 
-     * @return the type of the property
+     * @return the type of the bean, never null
      */
-    Class<B> getBeanType();
+    Class<B> beanClass();
 
     /**
-     * Gets whether the property is read-write, read-only or write-only.
+     * Gets whether the property is read-only, read-write or write-only.
      * 
-     * @return the property read-write type
+     * @return the property read-write type, never null
      */
-    ReadWriteProperty getReadWrite();
+    ReadWriteProperty readWrite();
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the bound property for the provided bean.
+     * Gets the value of the bound property for the specified bean.
      * <p>
-     * This is the equivalent to calling <code>getFoo()</code> on the bean itself.
-     * However some implementations of this interface may not require an actual get method.
+     * For a standard JavaBean, this is equivalent to calling <code>getFoo()</code> on the bean.
+     * Alternate implementations may perform any logic to obtain the value.
      * 
      * @param bean  the bean to query, not null
-     * @return the value of the property on the bound bean
+     * @return the value of the property on the specified bean, may be null
      * @throws UnsupportedOperationException if the property is write-only
      */
-    T get(B bean);
+    P get(B bean);
 
     /**
-     * Sets the value of the bound property on the provided bean.
+     * Sets the value of the bound property on the specified bean.
      * <p>
-     * This is the equivalent to calling <code>setFoo()</code> on the bean itself.
-     * However some implementations of this interface may not require an actual set method.
+     * For a standard JavaBean, this is equivalent to calling <code>setFoo()</code> on the bean.
+     * Alternate implementations may perform any logic to change the value.
      * 
      * @param bean  the bean to update, not null
-     * @param value  the value to set into the property on the bound bean
+     * @param value  the value to set into the property on the specified bean, may be null
      * @throws UnsupportedOperationException if the property is read-only
      */
-    void set(B bean, T value);
+    void set(B bean, P value);
 
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,51 +16,61 @@
 package org.joda.beans;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
- * Represents those aspects of a bean which are not specific to a
- * specific instance. In other words, it performs the same role that Class
- * does for Object.
+ * A meta-bean, defining those aspects of a bean which are not specific
+ * to a particular instance, such as the type and set of meta-properties.
  * 
+ * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
 public interface MetaBean<B> {
 
-    //-----------------------------------------------------------------------
     /**
      * Creates a new instance of the bean represented by this meta bean.
      * 
-     * @return the created bean
+     * @return the created bean, never null
      */
     Bean<B> createBean();
 
     /**
-     * Get the type of the bean that will be created represented as a Class.
+     * Creates a map of properties for the specified bean.
      * 
-     * @return the type of the bean
+     * @param bean  the bean to create the map for, not null
+     * @return the created property map, never null
      */
-    Class<B> getType();
+    Map<String, Property<B, ?>> createPropertyMap(B bean);
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the bean name, which is normally the fully qualified class name of the bean.
      * 
-     * @return the name of the bean
+     * @return the name of the bean, never null
      */
-    String getName();
+    String name();
+
+    /**
+     * Get the type of the bean represented as a {@code Class}.
+     * 
+     * @return the type of the bean, never null
+     */
+    Class<B> beanClass();
 
     //-----------------------------------------------------------------------
     /**
      * Gets the map of meta properties, keyed by property name.
      * 
-     * @return the map of meta property objects, never null
+     * @return the unmodifiable map of meta property objects, never null
      */
     Map<String, MetaProperty<B, ?>> metaPropertyMap();
 
     /**
      * Gets a meta property by name.
      * 
-     * @param propertyName  the property name to retrieve
-     * @return the meta property, null if not found
+     * @param propertyName  the property name to retrieve, null throws NoSuchElementException
+     * @return the meta property, never null
+     * @throws NoSuchElementException if the property name is invalid
      */
     MetaProperty<B, ?> metaProperty(String propertyName);
 

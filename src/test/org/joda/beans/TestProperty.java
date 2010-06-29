@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,11 +16,7 @@
 package org.joda.beans;
 
 /**
- * Represents a property that is linked to a specific bean.
- * <p>
- * Normally, this will be implemented by wrapping a get/set method pair.
- * However, it can also be implemented in other ways, such as accessing
- * a map.
+ * Test property using Person.
  * 
  * @author Stephen Colebourne
  */
@@ -32,17 +28,19 @@ public class TestProperty {
         // set surname using normal method
         p.setSurname("Colebourne");
         // query using property method
-        System.out.println(p.propertySurname().get());
+        System.out.println(p.surname().get());
         // set/get forename using property method
-        p.propertyForename().set("Stephen");
-        System.out.println(p.propertyForename().get());
+        p.forename().set("Stephen");
+        System.out.println(p.forename().get());
+        // set cars
+        p.numberOfCars().set(2);
         // access all the properties
-        System.out.println(p.propertyMap());
-        System.out.println(p.metaBean().metaPropertyMap());
+        System.out.println(p.propertyMap().values());
+        System.out.println(p.metaBean().metaPropertyMap().values());
         // perform validation
         boolean valid =
-            validateNotEmpty(p.propertySurname()) &&
-            validateNotEmpty(p.propertyForename());
+            validateNotEmpty(p.surname()) &&
+            validateNotEmpty(p.forename());
         System.out.println(valid ? "Valid" : "Not valid");
     }
 

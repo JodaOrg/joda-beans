@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2007 Stephen Colebourne
+ *  Copyright 2001-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,50 +16,55 @@
 package org.joda.beans;
 
 /**
- * Represents a property that is linked to a specific bean.
+ * A property that is linked to a specific bean.
  * <p>
- * Normally, this will be implemented by wrapping a get/set method pair.
- * However, it can also be implemented in other ways, such as accessing
- * a map.
+ * For a JavaBean, this will ultimately wrap a get/set method pair.
+ * Alternate implementations may perform any logic to obtain the value.
  * 
+ * @param <B>  the type of the bean
+ * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public interface Property<B, T> {
+public interface Property<B, P> {
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the bean which owns this bound property.
+     * Gets the bean which owns this property.
+     * <p>
+     * Each property is fully owned by a single bean.
      * 
-     * @return the bean
+     * @return the bean, never null
      */
     B bean();
 
     /**
-     * Gets the property itself.
+     * Gets the meta-property representing the parts of the property that are
+     * common across all instances, such as the name.
      * 
-     * @return the name of the property
+     * @return the meta-property, never null
      */
-    MetaProperty<B, T> metaProperty();
+    MetaProperty<B, P> metaProperty();
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the bound property.
+     * Gets the value of the property for the associated bean.
      * <p>
-     * This is the equivalent to calling <code>getFoo()</code> on the bean itself.
+     * For a JavaBean, this is the equivalent to calling <code>getFoo()</code> on the bean itself.
+     * Alternate implementations may perform any logic to obtain the value.
      * 
      * @return the value of the property on the bound bean
      * @throws UnsupportedOperationException if the property is write-only
      */
-    T get();
+    P get();
 
     /**
-     * Sets the value of the bound property.
+     * Sets the value of the property on the associated bean.
      * <p>
-     * This is the equivalent to calling <code>setFoo()</code> on the bean itself.
+     * For a standard JavaBean, this is equivalent to calling <code>setFoo()</code> on the bean.
+     * Alternate implementations may perform any logic to change the value.
      * 
-     * @param value  the value to set into the property on the bound bean
+     * @param value  the value to set into the property on the bean
      * @throws UnsupportedOperationException if the property is read-only
      */
-    void set(T value);
+    void set(P value);
 
 }
