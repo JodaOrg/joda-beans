@@ -1,0 +1,15 @@
+
+Joda-Beans
+================================================
+Joda-Beans is a library that provides full bean and property support for the JDK.
+
+This is release 0.2 of Joda-Beans (Alpha).
+
+The release depends on Java SE 6.
+
+
+Feedback
+--------
+All feedback is welcomed at joda-money-interest@lists.sourceforge.net.
+
+The Joda team
