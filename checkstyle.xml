@@ -8,8 +8,18 @@
 <module name="Checker">
   <property name="localeLanguage" value="en"/>
   <!--module name="PackageHtml"/-->
+  <module name="FileTabCharacter"/>
+  <module name="RegexpSingleline">
+    <property name="format" value="System\.out\.println"/>
+  </module>
+  <module name="RegexpSingleline">
+    <property name="format" value="System\.err\.println"/>
+  </module>
+  
   <module name="TreeWalker">
-    <module name="MemberName"/>
+    <module name="MemberName">
+      <property name="format" value="^i[A-Z][a-zA-Z0-9]*$"/>
+    </module>
     <module name="LocalVariableName">
       <property name="format" value="^ex[0-9]*$"/>
       <property name="tokens" value="PARAMETER_DEF"/>
@@ -18,11 +28,11 @@
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
     
-    <module name="TabCharacter"/>
     <module name="NeedBraces"/>
     <!--module name="TypecastParenPad"/-->
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround"/>
+    <module name="GenericWhitespace"/>
     <module name="ModifierOrder"/>
     <module name="RedundantModifier"/>
     
@@ -49,12 +59,6 @@
     <!--module name="SuperClone"/-->
     <!--module name="ExplicitInitialization"/-->
               
-    <module name="GenericIllegalRegexp">
-      <property name="format" value="System\.out\.println"/>
-    </module>
-    <module name="GenericIllegalRegexp">
-      <property name="format" value="System\.err\.println"/>
-    </module>
     <module name="TodoComment"/>
     <module name="UpperEll"/>
     <module name="ArrayTypeStyle"/>
@@ -64,7 +68,7 @@
       <property name="allowUnchecked" value="true"/>
     </module>
     <module name="LineLength">
-      <property name="max" value="120"/>
+      <property name="max" value="140"/>
     </module>
     <module name="JavadocVariable">
       <property name="excludeScope" value="private"/>
