@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Joda-Beans">
+  <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
+  <bannerLeft>
+    <name>Joda.org</name>
+    <src>http://joda-beans.sourceforge.net/images/joda.png</src>
+    <href>http://joda.sourceforge.net/</href>
+  </bannerLeft>
+  <bannerRight>
+    <name>Joda Beans</name>
+    <!--src>http://joda-beans.sourceforge.net/images/jodabeans.png</src-->
+    <href>http://joda-beans.sourceforge.net/</href>
+  </bannerRight>
+
+  <body>
+    <menu name="Joda Beans">
+      <item name="Overview" href="index.html"/>
+      <!--item name="User guide" href="userguide.html"/-->
+      <!--item name="FAQ" href="faq.html"/-->
+      <item name="Javadoc" href="apidocs/index.html"/>
+      <item name="License" href="licensecover.html"/>
+      <item name="Release notes" href="changes-report.html"/>
+      <item name="Download" href="http://sourceforge.net/projects/joda-beans/files/joda-beans/0.6/"/>
+    </menu>
+
+    <menu name="Development">
+      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"/>
+      <item name="Test results" href="surefire-report.html"/>
+      <!--item name="Test coverage" href="/cobertura/index.html"/-->
+      <item name="Mailing lists" href="mail-lists.html"/>
+      <item name="Tasks" href="tasks.html"/>
+      <item name="Subversion" href="http://joda-beans.svn.sourceforge.net/viewvc/joda-beans/JodaBeans/trunk/"/>
+      <item name="Javadoc (Latest)" href="apidocs/index.html"/>
+    </menu>
+
+    <menu name="Joda">
+      <item name="Joda home" href="http://joda.sourceforge.net"/>
+      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
+      <item name="Money" href="http://joda-money.sourceforge.net/index.html"/>
+      <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
+    </menu>
+
+    <menu ref="reports"/>
+  </body>
+
+  <poweredBy>
+    <logo name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"
+        img="http://sflogo.sourceforge.net/sflogo.php?group_id=186518&amp;type=13" width="125" height="37" />
+  </poweredBy>
+</project>
