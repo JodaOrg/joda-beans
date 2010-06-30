@@ -292,7 +292,7 @@
     <site>
       <id>sf-web-joda-beans</id>
       <name>Sourceforge Site</name>
-      <url>scp://shell.sourceforge.net/home/groups/j/jo/joda-beans/htdocs</url>
+      <url>scpexe://shell.sourceforge.net/home/groups/j/jo/joda-beans/htdocs</url>
     </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
