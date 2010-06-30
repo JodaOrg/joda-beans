@@ -39,8 +39,8 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
     /**
      * Factory to create a property avoiding duplicate generics.
      * 
-     * @param beanType  the bean type
-     * @param propertyName  the property name
+     * @param bean  the bean that the property is bound to, not null
+     * @param metaProperty  the meta property, not null
      */
     public static <B, P> StandardProperty<B, P> of(B bean, MetaProperty<B, P> metaProperty) {
         return new StandardProperty<B, P>(bean, metaProperty);
