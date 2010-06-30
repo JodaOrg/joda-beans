@@ -3,12 +3,12 @@
   <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
   <bannerLeft>
     <name>Joda.org</name>
-    <src>http://joda-beans.sourceforge.net/images/joda.png</src>
+    <src>images/joda.png</src>
     <href>http://joda.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
-    <name>Joda Beans</name>
-    <!--src>http://joda-beans.sourceforge.net/images/jodabeans.png</src-->
+    <name>Joda-Beans</name>
+    <!--src>images/jodabeans.png</src-->
     <href>http://joda-beans.sourceforge.net/</href>
   </bannerRight>
 
@@ -20,13 +20,13 @@
       <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="licensecover.html"/>
       <item name="Release notes" href="changes-report.html"/>
-      <item name="Download" href="http://sourceforge.net/projects/joda-beans/files/joda-beans/0.6/"/>
+      <!--item name="Download" href="http://sourceforge.net/projects/joda-beans/files/joda-beans/0.2/"/-->
     </menu>
 
     <menu name="Development">
       <item name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"/>
       <item name="Test results" href="surefire-report.html"/>
-      <!--item name="Test coverage" href="/cobertura/index.html"/-->
+      <item name="Forum" href="https://sourceforge.net/projects/joda-beans/forums/forum/652493"/>
       <item name="Mailing lists" href="mail-lists.html"/>
       <item name="Tasks" href="tasks.html"/>
       <item name="Subversion" href="http://joda-beans.svn.sourceforge.net/viewvc/joda-beans/JodaBeans/trunk/"/>

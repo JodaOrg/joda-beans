@@ -53,6 +53,14 @@ p, ul {
   background-color: #eef;
   border-bottom: 1px solid #aaa;
 }
+/* Missing logo */
+#bannerRight {
+  background-color: white;
+  color: black;
+  margin:8px;
+  padding:2px;
+  border: 1px solid #999;
+}
 #bannerLeft img, #bannerRight img {
   margin:8px;
   border: 1px solid #999;
