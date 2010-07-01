@@ -87,6 +87,11 @@ public class MapBean extends HashMap<String, Object> implements Bean<MapBean>, M
     }
 
     @Override
+    public int metaPropertyCount() {
+        return size();
+    }
+
+    @Override
     public boolean metaPropertyExists(String name) {
         return containsKey(name);
     }

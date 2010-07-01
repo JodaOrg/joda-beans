@@ -59,6 +59,13 @@ public interface MetaBean<B> {
 
     //-----------------------------------------------------------------------
     /**
+     * Counts the number of properties.
+     * 
+     * @return the number of properties
+     */
+    int metaPropertyCount();
+
+    /**
      * Checks if a property exists.
      * 
      * @param propertyName  the property name to check, null returns false

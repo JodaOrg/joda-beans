@@ -69,6 +69,8 @@ public class TestPerson {
         
         assertEquals(test.name(), Person.class.getName());
         
+        assertEquals(test.metaPropertyCount(), 3);
+        
         assertEquals(test.metaPropertyExists(FORENAME), true);
         assertEquals(test.metaPropertyExists(SURNAME), true);
         assertEquals(test.metaPropertyExists(NUMBER_OF_CARS), true);

@@ -121,6 +121,11 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
 
     //-----------------------------------------------------------------------
     @Override
+    public int metaPropertyCount() {
+        return metaPropertyMap.size();
+    }
+
+    @Override
     public boolean metaPropertyExists(String propertyName) {
         return metaPropertyMap.containsKey(propertyName);
     }

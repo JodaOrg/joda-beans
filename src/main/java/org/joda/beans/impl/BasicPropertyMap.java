@@ -66,7 +66,7 @@ public final class BasicPropertyMap<B>
     //-----------------------------------------------------------------------
     @Override
     public int size() {
-        return bean.metaBean().metaPropertyMap().size();
+        return bean.metaBean().metaPropertyCount();
     }
 
     @Override
@@ -90,7 +90,7 @@ public final class BasicPropertyMap<B>
             // TODO: possibly override contains()
             @Override
             public int size() {
-                return bean.metaBean().metaPropertyMap().size();
+                return bean.metaBean().metaPropertyCount();
             }
             @Override
             public Iterator<Entry<String, Property<B, Object>>> iterator() {
