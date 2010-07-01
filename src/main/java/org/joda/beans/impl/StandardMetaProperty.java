@@ -51,11 +51,11 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     /**
      * Factory to create a meta-property avoiding duplicate generics.
      * 
-     * @param beanType  the bean type
-     * @param propertyName  the property name
+     * @param beanClass  the bean class, not null
+     * @param propertyName  the property name, not null
      */
-    public static <B, P> StandardMetaProperty<B, P> of(Class<B> beanType, String propertyName) {
-        return new StandardMetaProperty<B, P>(beanType, propertyName);
+    public static <B, P> StandardMetaProperty<B, P> of(Class<B> beanClass, String propertyName) {
+        return new StandardMetaProperty<B, P>(beanClass, propertyName);
     }
 
     /**
