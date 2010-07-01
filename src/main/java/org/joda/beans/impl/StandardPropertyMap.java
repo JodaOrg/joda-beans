@@ -52,7 +52,7 @@ public final class StandardPropertyMap<B>
     }
 
     /**
-     * Creates a property binding the bean to the meta-property.
+     * Creates a property map.
      * 
      * @param bean  the bean that the property is bound to, not null
      */
@@ -93,7 +93,11 @@ public final class StandardPropertyMap<B>
             }
             @Override
             public boolean contains(Object obj) {
-                return obj instanceof String ? bean.metaBean().metaPropertyExists(obj.toString()) : false;
+                if (obj instanceof Entry<?, ?>) {
+                    Entry<?, ?> entry = (Entry<?, ?>) obj;
+                    return entry.getKey() instanceof String && bean.metaBean().metaPropertyExists(obj.toString());
+                }
+                return false;
             }
             @Override
             public Iterator<Entry<String, Property<B, Object>>> iterator() {
