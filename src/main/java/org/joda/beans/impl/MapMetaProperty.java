@@ -17,6 +17,7 @@ package org.joda.beans.impl;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
@@ -48,7 +49,7 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<Map<String, T>, T> createProperty(Map<String, T> bean) {
+    public Property<Map<String, T>, T> createProperty(Bean<Map<String, T>> bean) {
         return StandardProperty.of(bean, this);
     }
 
@@ -77,17 +78,17 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
 
     //-----------------------------------------------------------------------
     @Override
-    public T get(Map<String, T> bean) {
-        return bean.get(key);
+    public T get(Bean<Map<String, T>> bean) {
+        return bean.beanData().get(key);
     }
 
     @Override
-    public void set(Map<String, T> bean, T value) {
-        bean.put(key, value);
+    public void set(Bean<Map<String, T>> bean, T value) {
+        bean.beanData().put(key, value);
     }
 
     @Override
-    public T put(Map<String,T> bean, T value) {
+    public T put(Bean<Map<String, T>> bean, T value) {
         T old = get(bean);
         set(bean, value);
         return old;

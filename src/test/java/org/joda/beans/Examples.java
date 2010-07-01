@@ -24,7 +24,7 @@ public class Examples {
 
     public static void main(String[] args) {
         // create the bean the hard way - could just do new Person() instead
-        Person p = Person.META.createBean().bean();
+        Person p = Person.META.createBean().beanData();
         // set surname using normal method
         p.setSurname("Colebourne");
         // query using property method

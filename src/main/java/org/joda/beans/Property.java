@@ -34,7 +34,7 @@ public interface Property<B, P> {
      * 
      * @return the bean, never null
      */
-    B bean();
+    Bean<B> bean();
 
     /**
      * Gets the meta-property representing the parts of the property that are

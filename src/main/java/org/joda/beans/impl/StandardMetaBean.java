@@ -35,7 +35,7 @@ import org.joda.beans.PropertyMap;
  * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
+public final class StandardMetaBean<B> implements MetaBean<B> {
 
     /** The bean class. */
     private final Class<B> beanClass;
@@ -75,6 +75,9 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
                 } catch (IllegalAccessException ex) {
                     throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
                 }
+                if (mp == null) {
+                    throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName() + ": Value must not be null");
+                }
                 map.put(mp.name(), mp);
             }
         }
@@ -84,9 +87,14 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
 
     //-----------------------------------------------------------------------
     @Override
+    @SuppressWarnings("unchecked")
     public Bean<B> createBean() {
         try {
-            return beanClass.newInstance();
+            Object obj = beanClass.newInstance();
+            if (obj instanceof Bean<?>) {
+                return (Bean<B>) obj;
+            }
+            throw new UnsupportedOperationException("TODO: Write WrappingBean impl");
         } catch (InstantiationException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + name(), ex);
         } catch (IllegalAccessException ex) {
@@ -95,7 +103,7 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
     }
 
     @Override
-    public PropertyMap<B> createPropertyMap(B bean) {
+    public PropertyMap<B> createPropertyMap(Bean<B> bean) {
         return StandardPropertyMap.of(bean);
     }
 
@@ -146,7 +154,7 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
     }
 
     /**
-     * Returns a string that summarizes the property.
+     * Returns a string that summarises the meta-bean.
      * 
      * @return a summary string, never null
      */

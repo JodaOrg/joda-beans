@@ -30,15 +30,16 @@ import java.util.NoSuchElementException;
 public interface Bean<B> {
 
     /**
-     * Gets the bean which this interface defines.
+     * Gets the data store for this bean.
      * <p>
-     * The bean returned is the actual bean instance.
-     * Where possible, the actual bean should implement this interface, thus
-     * this method would return {@code this}.
+     * There are multiple ways that this bean can be implemented.
+     * The simplest is to make a regular JavaBean implement this interface, in which
+     * case this method would return {@code this}.
+     * More complicated approaches use different data stores.
      * 
      * @return the bean itself, never null
      */
-    B bean();
+    B beanData();
 
     /**
      * Gets the meta-bean representing the parts of the bean that are

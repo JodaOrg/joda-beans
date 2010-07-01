@@ -17,6 +17,7 @@ package org.joda.beans.impl;
 
 import java.util.Map.Entry;
 
+import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 
@@ -35,7 +36,7 @@ import org.joda.beans.Property;
 public final class StandardProperty<B, P> implements Property<B, P>, Entry<String, Property<B, P>> {
 
     /** The bean that the property is bound to. */
-    private final B bean;
+    private final Bean<B> bean;
     /** The meta-property that the property is bound to. */
     private final MetaProperty<B, P> metaProperty;
 
@@ -45,7 +46,7 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
      */
-    public static <B, P> StandardProperty<B, P> of(B bean, MetaProperty<B, P> metaProperty) {
+    public static <B, P> StandardProperty<B, P> of(Bean<B> bean, MetaProperty<B, P> metaProperty) {
         return new StandardProperty<B, P>(bean, metaProperty);
     }
 
@@ -55,7 +56,7 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
      */
-    private StandardProperty(B bean, MetaProperty<B, P> metaProperty) {
+    private StandardProperty(Bean<B> bean, MetaProperty<B, P> metaProperty) {
         if (bean == null) {
             throw new NullPointerException("Bean must not be null");
         }
@@ -68,7 +69,7 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
 
     //-----------------------------------------------------------------------
     @Override
-    public B bean() {
+    public Bean<B> bean() {
         return bean;
     }
 

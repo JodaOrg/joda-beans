@@ -36,7 +36,7 @@ public class TestPerson {
     public void test_bean() {
         Bean<Person> test = Person.META.createBean();
         
-        assertEquals(test.bean() instanceof Person, true);
+        assertEquals(test.beanData() instanceof Person, true);
         
         assertEquals(test.metaBean(), Person.META);
         

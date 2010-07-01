@@ -76,7 +76,7 @@ public final class StandardPropertyMap<B>
 
     @Override
     public Property<B, Object> get(Object obj) {
-        return containsKey(obj) ? bean.metaBean().metaProperty(obj.toString()).createProperty(bean.bean()) : null;
+        return containsKey(obj) ? bean.metaBean().metaProperty(obj.toString()).createProperty(bean) : null;
     }
 
     @Override
@@ -107,7 +107,7 @@ public final class StandardPropertyMap<B>
                     @SuppressWarnings("unchecked")
                     public Entry<String, Property<B, Object>> next() {
                         MetaProperty<B, Object> meta = it.next();
-                        return (Entry) StandardProperty.of(bean.bean(), meta);
+                        return (Entry) StandardProperty.of(bean, meta);
                     }
                     @Override
                     public void remove() {
@@ -125,7 +125,7 @@ public final class StandardPropertyMap<B>
         Map<String, MetaProperty<B, Object>> propertyMap = bean.metaBean().metaPropertyMap();
         Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
         for (Entry<String, MetaProperty<B, Object>> entry : propertyMap.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().get(bean.bean()));
+            map.put(entry.getKey(), entry.getValue().get(bean));
         }
         return Collections.unmodifiableMap(map);
     }

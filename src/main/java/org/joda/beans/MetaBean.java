@@ -40,7 +40,7 @@ public interface MetaBean<B> {
      * @param bean  the bean to create the map for, not null
      * @return the created property map, never null
      */
-    PropertyMap<B> createPropertyMap(B bean);
+    PropertyMap<B> createPropertyMap(Bean<B> bean);
 
     //-----------------------------------------------------------------------
     /**

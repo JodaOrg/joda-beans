@@ -34,8 +34,8 @@ import org.joda.beans.PropertyMap;
 public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
 
     @SuppressWarnings("unchecked")
-    public B bean() {
-        return (B) this;
+    public B beanData() {
+        return (B) this;  // generics isn't quite strong enough to define the constraint we need
     }
 
     public boolean propertyExists(String propertyName) {
@@ -43,14 +43,22 @@ public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
     }
 
     public Property<B, Object> property(String propertyName) {
-        return metaBean().metaProperty(propertyName).createProperty(bean());
+        return metaBean().metaProperty(propertyName).createProperty(this);
     }
 
     public PropertyMap<B> propertyMap() {
-        return metaBean().createPropertyMap(bean());
+        return metaBean().createPropertyMap(this);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Compares this bean to another.
+     * <p>
+     * This compares all the properties of the bean.
+     * 
+     * @param obj  the object to compare to, null returns false
+     * @return true if the beans are equal
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -63,11 +71,25 @@ public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
         return false;
     }
 
+    /**
+     * Returns a suitable hash code.
+     * <p>
+     * The hash code is derived from all the properties of the bean.
+     * 
+     * @return a suitable hash code
+     */
     @Override
     public int hashCode() {
         return propertyMap().flatten().hashCode();
     }
 
+    /**
+     * Returns a string that summarises the property.
+     * <p>
+     * The string contains the class name and properties.
+     * 
+     * @return a summary string, never null
+     */
     @Override
     public String toString() {
         return getClass().getSimpleName() + propertyMap().flatten().toString();

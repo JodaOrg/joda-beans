@@ -20,6 +20,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
@@ -91,7 +92,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<B, P> createProperty(B bean) {
+    public Property<B, P> createProperty(Bean<B> bean) {
         return StandardProperty.of(bean, this);
     }
 
@@ -119,12 +120,12 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     //-----------------------------------------------------------------------
     @Override
     @SuppressWarnings("unchecked")
-    public P get(B bean) {
+    public P get(Bean<B> bean) {
         if (readWrite().isReadable() == false) {
             throw new UnsupportedOperationException("Property cannot be read: " + name);
         }
         try {
-            return (P) readMethod.invoke(bean, (Object[]) null);
+            return (P) readMethod.invoke(bean.beanData(), (Object[]) null);
         } catch (IllegalArgumentException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + name, ex);
         } catch (IllegalAccessException ex) {
@@ -138,12 +139,12 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     @Override
-    public void set(B bean, P value) {
+    public void set(Bean<B> bean, P value) {
         if (readWrite().isWritable() == false) {
             throw new UnsupportedOperationException("Property cannot be written: " + name);
         }
         try {
-            writeMethod.invoke(bean, value);
+            writeMethod.invoke(bean.beanData(), value);
         } catch (IllegalArgumentException ex) {
             if (value == null && writeMethod.getParameterTypes()[0].isPrimitive()) {
                 throw new NullPointerException("Property cannot be written: " + name + ": Cannot store null in primitive");
@@ -163,7 +164,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     @Override
-    public P put(B bean, P value) {
+    public P put(Bean<B> bean, P value) {
         P old = get(bean);
         set(bean, value);
         return old;

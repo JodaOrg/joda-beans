@@ -31,7 +31,7 @@ public interface MetaProperty<B, P> {
      * @param bean  the bean to create the property for, not null
      * @return the property, never null
      */
-    Property<B, P> createProperty(B bean);
+    Property<B, P> createProperty(Bean<B> bean);
 
     //-----------------------------------------------------------------------
     /**
@@ -76,7 +76,7 @@ public interface MetaProperty<B, P> {
      * @return the value of the property on the specified bean, may be null
      * @throws UnsupportedOperationException if the property is write-only
      */
-    P get(B bean);
+    P get(Bean<B> bean);
 
     /**
      * Sets the value of the property on the specified bean.
@@ -90,7 +90,7 @@ public interface MetaProperty<B, P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void set(B bean, P value);
+    void set(Bean<B> bean, P value);
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -104,6 +104,6 @@ public interface MetaProperty<B, P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    P put(B bean, P value);
+    P put(Bean<B> bean, P value);
 
 }
