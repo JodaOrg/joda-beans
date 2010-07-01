@@ -16,11 +16,11 @@
 package org.joda.beans;
 
 /**
- * Test property using Person.
+ * Examples using Person.
  * 
  * @author Stephen Colebourne
  */
-public class TestProperty {
+public class Examples {
 
     public static void main(String[] args) {
         // create the bean the hard way - could just do new Person() instead
@@ -37,6 +37,7 @@ public class TestProperty {
         // access all the properties
         System.out.println(p.propertyMap().values());
         System.out.println(p.metaBean().metaPropertyMap().values());
+        System.out.println(p.propertyMap().flatten());
         // perform validation
         boolean valid =
             validateNotEmpty(p.surname()) &&

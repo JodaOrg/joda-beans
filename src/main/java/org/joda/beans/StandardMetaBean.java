@@ -35,7 +35,7 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
     /** The bean class. */
     private final Class<B> beanClass;
     /** The meta-property instances of the bean. */
-    private final Map<String, MetaProperty<B, ?>> metaPropertyMap;
+    private final Map<String, MetaProperty<B, Object>> metaPropertyMap;
 
     /**
      * Factory to create a meta-bean avoiding duplicate generics.
@@ -55,14 +55,14 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
     private StandardMetaBean(Class<B> beanClass) {
         Beans.checkNotNull(beanClass, "Class must not be null");
         this.beanClass = beanClass;
-        Map<String, MetaProperty<B,?>> map = new HashMap<String, MetaProperty<B,?>>();
+        Map<String, MetaProperty<B, Object>> map = new HashMap<String, MetaProperty<B, Object>>();
         Field[] fields = beanClass.getFields();
         for (Field field : fields) {
             if (MetaProperty.class.isAssignableFrom(field.getType()) &&
                     Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
-                MetaProperty<B, ?> mp;
+                MetaProperty<B, Object> mp;
                 try {
-                    mp = (MetaProperty<B, ?>) field.get(null);
+                    mp = (MetaProperty<B, Object>) field.get(null);
                 } catch (IllegalArgumentException ex) {
                     throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
                 } catch (IllegalAccessException ex) {
@@ -88,7 +88,7 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
     }
 
     @Override
-    public Map<String, Property<B, ?>> createPropertyMap(B bean) {
+    public PropertyMap<B> createPropertyMap(B bean) {
         return StandardPropertyMap.of(bean);
     }
 
@@ -105,8 +105,13 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
 
     //-----------------------------------------------------------------------
     @Override
-    public MetaProperty<B, ?> metaProperty(String propertyName) {
-        MetaProperty<B, ?> metaProperty = metaPropertyMap.get(propertyName);
+    public boolean metaPropertyExists(String propertyName) {
+        return metaPropertyMap.containsKey(propertyName);
+    }
+
+    @Override
+    public MetaProperty<B, Object> metaProperty(String propertyName) {
+        MetaProperty<B, Object> metaProperty = metaPropertyMap.get(propertyName);
         if (metaProperty == null) {
             throw new NoSuchElementException("Property not found: " + propertyName);
         }
@@ -114,11 +119,25 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
     }
 
     @Override
-    public Map<String, MetaProperty<B, ?>> metaPropertyMap() {
+    public Map<String, MetaProperty<B, Object>> metaPropertyMap() {
         return metaPropertyMap;
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof StandardMetaBean<?>) {
+            StandardMetaBean<?> other = (StandardMetaBean<?>) obj;
+            return this.beanClass.equals(other.beanClass);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return beanClass.hashCode() + 3;
+    }
+
     /**
      * Returns a string that summarizes the property.
      * 

@@ -107,16 +107,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the bound property for the provided bean.
-     * <p>
-     * This is the equivalent to calling <code>getFoo()</code> on the bean itself.
-     * However some implementations of this interface may not require an actual get method.
-     * 
-     * @param bean  the bean to query, not null
-     * @return the value of the property on the bound bean
-     * @throws UnsupportedOperationException if the property is write-only
-     */
+    @Override
     @SuppressWarnings("unchecked")
     public P get(B bean) {
         if (readWrite().isReadable() == false) {
@@ -136,16 +127,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
         }
     }
 
-    /**
-     * Sets the value of the bound property on the provided bean.
-     * <p>
-     * This is the equivalent to calling <code>setFoo()</code> on the bean itself.
-     * However some implementations of this interface may not require an actual set method.
-     * 
-     * @param bean  the bean to update, not null
-     * @param value  the value to set into the property on the bound bean
-     * @throws UnsupportedOperationException if the property is read-only
-     */
+    @Override
     public void set(B bean, P value) {
         if (readWrite().isWritable() == false) {
             throw new UnsupportedOperationException("Property cannot be written: " + name);
@@ -155,6 +137,9 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
         } catch (IllegalArgumentException ex) {
             if (value == null && writeMethod.getParameterTypes()[0].isPrimitive()) {
                 throw new NullPointerException("Property cannot be written: " + name + ": Cannot store null in primitive");
+            }
+            if (propertyClass.isInstance(value) == false) {
+                throw new ClassCastException("Property cannot be written: " + name + ": Invalid type: " + value.getClass().getName());
             }
             throw new UnsupportedOperationException("Property cannot be written: " + name, ex);
         } catch (IllegalAccessException ex) {
@@ -167,9 +152,30 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
         }
     }
 
+    @Override
+    public P put(B bean, P value) {
+        P old = get(bean);
+        set(bean, value);
+        return old;
+    }
+
     //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof StandardMetaProperty<?, ?>) {
+            StandardMetaProperty<?, ?> other = (StandardMetaProperty<?, ?>) obj;
+            return this.beanClass.equals(other.beanClass) && this.name.equals(other.name);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return beanClass.hashCode() ^ name.hashCode();
+    }
+
     /**
-     * Returns a string that summarizes the property.
+     * Returns a string that summarises the property.
      * 
      * @return a summary string, never null
      */

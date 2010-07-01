@@ -70,21 +70,31 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
         return metaProperty;
     }
 
+    @Override
+    public String name() {
+        return metaProperty.name();
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public P get() {
-        return metaProperty().get(bean());
+        return metaProperty.get(bean);
     }
 
     @Override
     public void set(P value) {
-        metaProperty().set(bean(), value);
+        metaProperty.set(bean, value);
+    }
+
+    @Override
+    public P put(P value) {
+        return metaProperty.put(bean, value);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public String getKey() {
-        return metaProperty().name();
+        return name();
     }
 
     @Override
@@ -98,6 +108,7 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
     }
 
     //-----------------------------------------------------------------------
+    @Override
     public boolean equals(Object obj) {
         // specified by Map.Entry
         if (obj instanceof Entry<?, ?>) {
@@ -108,19 +119,20 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
         return false;
     }
 
+    @Override
     public int hashCode() {
         // specified by Map.Entry
         return (getKey()==null ? 0 : getKey().hashCode()) ^ (getValue()==null ? 0 : getValue().hashCode());
     }
 
     /**
-     * Returns a string that summarizes the property.
+     * Returns a string that summarises the property.
      * 
      * @return a summary string, never null
      */
     @Override
     public String toString() {
-        return metaProperty().name() + ":" + get();
+        return name() + ":" + get();
     }
 
 }

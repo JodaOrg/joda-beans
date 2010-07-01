@@ -43,82 +43,50 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Creates a property that binds this meta property to a specific bean.
-     * 
-     * @param bean  the bean to create the bound property for
-     * @return the bound property
-     */
+    @Override
     public Property<Map<String, T>, T> createProperty(Map<String, T> bean) {
         return StandardProperty.of(bean, this);
     }
 
-    /**
-     * Gets the property name.
-     * 
-     * @return the name of the property
-     */
+    @Override
     public String name() {
         return key;
     }
 
-    /**
-     * Get the type of the property represented as a Class.
-     * 
-     * @return the type of the property
-     */
+    @Override
     public Class<T> propertyClass() {
         // isn't erasure horrible
         return null;
     }
 
-    /**
-     * Get the type of the bean represented as a Class.
-     * 
-     * @return the type of the bean
-     */
+    @Override
     @SuppressWarnings("unchecked")
     public Class<Map<String, T>> beanClass() {
         // if you think erasure is great, try fixing this
         return (Class<Map<String, T>>) (Class) Map.class;
     }
 
-    /**
-     * Gets whether the property is read-write, read-only or write-only.
-     * 
-     * @return the property read-write type
-     */
+    @Override
     public ReadWriteProperty readWrite() {
         return ReadWriteProperty.READ_WRITE;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the bound property for the provided bean.
-     * <p>
-     * This is the equivalent to calling <code>getFoo()</code> on the bean itself.
-     * However some implementations of this interface may not require an actual get method.
-     * 
-     * @param bean  the bean to query, not null
-     * @return the value of the property on the bound bean
-     * @throws UnsupportedOperationException if the property is write-only
-     */
+    @Override
     public T get(Map<String, T> bean) {
         return bean.get(key);
     }
 
-    /**
-     * Sets the value of the bound property on the provided bean.
-     * <p>
-     * This is the equivalent to calling <code>setFoo()</code> on the bean itself.
-     * However some implementations of this interface may not require an actual set method.
-     * 
-     * @param bean  the bean to update, not null
-     * @param value  the value to set into the property on the bound bean
-     * @throws UnsupportedOperationException if the property is read-only
-     */
+    @Override
     public void set(Map<String, T> bean, T value) {
         bean.put(key, value);
+    }
+
+    @Override
+    public T put(Map<String,T> bean, T value) {
+        T old = get(bean);
+        set(bean, value);
+        return old;
     }
 
     //-----------------------------------------------------------------------

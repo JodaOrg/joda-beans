@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-import static java.util.Locale.ENGLISH;
 
 /**
  * Utility methods for working with beans.
@@ -43,16 +42,33 @@ public final class Beans {
         }
     }
 
-    /**
-     * Converts a property name to a capitalized property name.
-     * @param name  the name to capitalize, not null
-     * @return the capitalized name, never null
-     */
-    public static String capitalize(String name) {
-        if (name.length() == 0) {
-            return name;
-        }
-        return name.substring(0, 1).toUpperCase(ENGLISH) + name.substring(1);
-    }
+//    /**
+//     * Converts a property name to a capitalized property name.
+//     * @param name  the name to capitalize, not null
+//     * @return the capitalized name, never null
+//     */
+//    public static String capitalize(String name) {
+//        if (name.length() == 0) {
+//            return name;
+//        }
+//        return name.substring(0, 1).toUpperCase(ENGLISH) + name.substring(1);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the contents of the specified bean converted to a modifiable {@code HashMap}.
+//     * <p>
+//     * The returned map will contain 
+//     * 
+//     * @return the modifiable map of property objects, never null
+//     */
+//    public static <B> Map<String, Object> toMap(Bean<B> bean) {
+//        Map<String, Property<B, Object>> propertyMap = bean.propertyMap();
+//        Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
+//        for (Entry<String, Property<B, Object>> entry : propertyMap.entrySet()) {
+//            map.put(entry.getKey(), entry.getValue().get());
+//        }
+//        return map;
+//    }
 
 }

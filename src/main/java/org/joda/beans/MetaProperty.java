@@ -67,7 +67,7 @@ public interface MetaProperty<B, P> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the bound property for the specified bean.
+     * Gets the value of the property for the specified bean.
      * <p>
      * For a standard JavaBean, this is equivalent to calling <code>getFoo()</code> on the bean.
      * Alternate implementations may perform any logic to obtain the value.
@@ -79,15 +79,31 @@ public interface MetaProperty<B, P> {
     P get(B bean);
 
     /**
-     * Sets the value of the bound property on the specified bean.
+     * Sets the value of the property on the specified bean.
      * <p>
      * For a standard JavaBean, this is equivalent to calling <code>setFoo()</code> on the bean.
      * Alternate implementations may perform any logic to change the value.
      * 
      * @param bean  the bean to update, not null
      * @param value  the value to set into the property on the specified bean, may be null
+     * @throws ClassCastException if the value is of an invalid type for the property
      * @throws UnsupportedOperationException if the property is read-only
+     * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
     void set(B bean, P value);
+
+    /**
+     * Sets the value of the property on the associated bean and returns the previous value.
+     * <p>
+     * This is a combination of the {@code get} and {@code set} methods that matches the definition
+     * of {@code put} in a {@code Map}.
+     * 
+     * @param bean  the bean to update, not null
+     * @param value  the value to set into the property on the specified bean, may be null
+     * @throws ClassCastException if the value is of an invalid type for the property
+     * @throws UnsupportedOperationException if the property is read-only
+     * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
+     */
+    P put(B bean, P value);
 
 }

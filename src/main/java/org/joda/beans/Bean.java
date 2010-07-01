@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -51,11 +50,12 @@ public interface Bean<B> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the map of properties, keyed by property name.
+     * Checks if a property exists.
      * 
-     * @return the unmodifiable map of property objects, never null
+     * @param propertyName  the property name to check, null returns false
+     * @return true if the property exists
      */
-    Map<String, Property<B, ?>> propertyMap();
+    boolean propertyExists(String propertyName);
 
     /**
      * Gets a property by name.
@@ -64,6 +64,13 @@ public interface Bean<B> {
      * @return the property, never null
      * @throws NoSuchElementException if the property name is invalid
      */
-    Property<B, ?> property(String propertyName);
+    Property<B, Object> property(String propertyName);
+
+    /**
+     * Gets the map of properties, keyed by property name.
+     * 
+     * @return the unmodifiable map of property objects, never null
+     */
+    PropertyMap<B> propertyMap();
 
 }

@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-import java.util.Map;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -117,11 +116,15 @@ public class Person implements Bean<Person> {
         return META;
     }
 
-    public Property<Person, ?> property(String propertyName) {
+    public boolean propertyExists(String propertyName) {
+        return metaBean().metaPropertyExists(propertyName);
+    }
+
+    public Property<Person, Object> property(String propertyName) {
         return metaBean().metaProperty(propertyName).createProperty(this);
     }
 
-    public Map<String, Property<Person, ?>> propertyMap() {
+    public PropertyMap<Person> propertyMap() {
         return metaBean().createPropertyMap(this);
     }
 

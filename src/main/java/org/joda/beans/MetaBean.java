@@ -40,7 +40,7 @@ public interface MetaBean<B> {
      * @param bean  the bean to create the map for, not null
      * @return the created property map, never null
      */
-    Map<String, Property<B, ?>> createPropertyMap(B bean);
+    PropertyMap<B> createPropertyMap(B bean);
 
     //-----------------------------------------------------------------------
     /**
@@ -59,19 +59,27 @@ public interface MetaBean<B> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the map of meta properties, keyed by property name.
+     * Checks if a property exists.
      * 
-     * @return the unmodifiable map of meta property objects, never null
+     * @param propertyName  the property name to check, null returns false
+     * @return true if the property exists
      */
-    Map<String, MetaProperty<B, ?>> metaPropertyMap();
+    boolean metaPropertyExists(String propertyName);
 
     /**
-     * Gets a meta property by name.
+     * Gets a meta-property by name.
      * 
      * @param propertyName  the property name to retrieve, null throws NoSuchElementException
      * @return the meta property, never null
      * @throws NoSuchElementException if the property name is invalid
      */
-    MetaProperty<B, ?> metaProperty(String propertyName);
+    MetaProperty<B, Object> metaProperty(String propertyName);
+
+    /**
+     * Gets the map of meta-properties, keyed by property name.
+     * 
+     * @return the unmodifiable map of meta property objects, never null
+     */
+    Map<String, MetaProperty<B, Object>> metaPropertyMap();
 
 }

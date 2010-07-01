@@ -44,6 +44,16 @@ public interface Property<B, P> {
      */
     MetaProperty<B, P> metaProperty();
 
+    /**
+     * Gets the property name.
+     * <p>
+     * The JavaBean style methods getFoo() and setFoo() will lead to a property
+     * name of 'foo' and so on.
+     * 
+     * @return the name of the property, never null
+     */
+    String name();
+
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the property for the associated bean.
@@ -63,8 +73,23 @@ public interface Property<B, P> {
      * Alternate implementations may perform any logic to change the value.
      * 
      * @param value  the value to set into the property on the bean
+     * @throws ClassCastException if the value is of an invalid type for the property
      * @throws UnsupportedOperationException if the property is read-only
+     * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
     void set(P value);
+
+    /**
+     * Sets the value of the property on the associated bean and returns the previous value.
+     * <p>
+     * This is a combination of the {@code get} and {@code set} methods that matches the definition
+     * of {@code put} in a {@code Map}.
+     * 
+     * @param value  the value to set into the property on the bean
+     * @throws ClassCastException if the value is of an invalid type for the property
+     * @throws UnsupportedOperationException if the property is read-only
+     * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
+     */
+    P put(P value);
 
 }
