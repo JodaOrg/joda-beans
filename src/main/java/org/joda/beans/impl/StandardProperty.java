@@ -26,7 +26,7 @@ import org.joda.beans.Property;
  * This is the standard implementation of a property.
  * It defers the strategy of getting and setting the value to the meta-property.
  * <p>
- * This implementation is also a map entry to aid performance in {@code }
+ * This implementation is also a map entry to aid performance in maps.
  * 
  * @param <B>  the type of the bean
  * @param <P>  the type of the property content
