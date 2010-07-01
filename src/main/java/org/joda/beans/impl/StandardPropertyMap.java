@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.impl;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -21,6 +21,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.joda.beans.Bean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
+import org.joda.beans.PropertyMap;
 
 /**
  * A standard map of properties.
@@ -51,7 +56,9 @@ public final class StandardPropertyMap<B>
      * @param bean  the bean that the property is bound to, not null
      */
     private StandardPropertyMap(Bean<B> bean) {
-        Beans.checkNotNull(bean, "Bean must not be null");
+        if (bean == null) {
+            throw new NullPointerException("Bean must not be null");
+        }
         this.bean = bean;
     }
 

@@ -13,9 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.impl;
 
 import java.util.Map.Entry;
+
+import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
 
 /**
  * A property that binds a {@code Bean} to a {@code MetaProperty}.
@@ -53,8 +56,12 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
      * @param metaProperty  the meta property, not null
      */
     private StandardProperty(B bean, MetaProperty<B, P> metaProperty) {
-        Beans.checkNotNull(bean, "Bean must not be null");
-        Beans.checkNotNull(metaProperty, "MetaProperty must not be null");
+        if (bean == null) {
+            throw new NullPointerException("Bean must not be null");
+        }
+        if (metaProperty == null) {
+            throw new NullPointerException("MetaProperty must not be null");
+        }
         this.bean = bean;
         this.metaProperty = metaProperty;
     }

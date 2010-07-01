@@ -13,12 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.impl;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
+import org.joda.beans.ReadWriteProperty;
 
 /**
  * A meta-property implemented using a {@code PropertyDescriptor}.
@@ -56,14 +60,20 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     /**
      * Constructor using {@code PropertyDescriptor} to find the get and set methods.
      * 
-     * @param beanType  the bean type, not null
+     * @param beanClass  the bean class, not null
      * @param propertyName  the property name, not null
      */
     @SuppressWarnings("unchecked")
-    private StandardMetaProperty(Class<B> beanType, String propertyName) {
+    private StandardMetaProperty(Class<B> beanClass, String propertyName) {
+        if (beanClass == null) {
+            throw new NullPointerException("Bean class must not be null");
+        }
+        if (propertyName == null) {
+            throw new NullPointerException("Property name must not be null");
+        }
         PropertyDescriptor descriptor;
         try {
-            descriptor = new PropertyDescriptor(propertyName, beanType);
+            descriptor = new PropertyDescriptor(propertyName, beanClass);
         } catch (IntrospectionException ex) {
             throw new NoSuchFieldError("Invalid property: " + propertyName + ": " + ex.getMessage());
         }
@@ -76,7 +86,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
         this.propertyClass = (Class<P>) descriptor.getPropertyType();
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
-        this.beanClass = beanType;
+        this.beanClass = beanClass;
     }
 
     //-----------------------------------------------------------------------

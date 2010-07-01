@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-
 /**
  * Utility methods for working with beans.
  * 
@@ -30,18 +29,6 @@ public final class Beans {
     }
 
     //-------------------------------------------------------------------------
-    /**
-     * Checks that the argument is non-null.
-     * 
-     * @param obj  the object to check
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object obj, String message) {
-        if (obj == null) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
 //    /**
 //     * Converts a property name to a capitalized property name.
 //     * @param name  the name to capitalize, not null

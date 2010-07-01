@@ -15,6 +15,9 @@
  */
 package org.joda.beans;
 
+import org.joda.beans.impl.StandardMetaBean;
+import org.joda.beans.impl.StandardMetaProperty;
+
 
 /**
  * Mock person JavaBean, used for testing.

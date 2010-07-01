@@ -13,13 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import org.joda.beans.Bean;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.PropertyMap;
 
 /**
  * A standard meta-bean implementation.
@@ -53,7 +58,9 @@ public final class StandardMetaBean<B extends Bean<B>> implements MetaBean<B> {
      */
     @SuppressWarnings("unchecked")
     private StandardMetaBean(Class<B> beanClass) {
-        Beans.checkNotNull(beanClass, "Class must not be null");
+        if (beanClass == null) {
+            throw new NullPointerException("Bean class must not be null");
+        }
         this.beanClass = beanClass;
         Map<String, MetaProperty<B, Object>> map = new HashMap<String, MetaProperty<B, Object>>();
         Field[] fields = beanClass.getFields();

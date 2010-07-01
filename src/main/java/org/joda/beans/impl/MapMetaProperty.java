@@ -13,9 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.impl;
 
 import java.util.Map;
+
+import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
+import org.joda.beans.ReadWriteProperty;
 
 /**
  * A meta-property using a {@code Map} for storage.
