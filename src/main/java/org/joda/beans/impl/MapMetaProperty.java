@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.ReadWriteProperty;
+import org.joda.beans.PropertyReadWrite;
 
 /**
  * A meta-property using a {@code Map} for storage.
@@ -71,8 +71,8 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
     }
 
     @Override
-    public ReadWriteProperty readWrite() {
-        return ReadWriteProperty.READ_WRITE;
+    public PropertyReadWrite readWrite() {
+        return PropertyReadWrite.READ_WRITE;
     }
 
     //-----------------------------------------------------------------------

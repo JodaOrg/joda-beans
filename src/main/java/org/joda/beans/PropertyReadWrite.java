@@ -23,7 +23,7 @@ package org.joda.beans;
  * 
  * @author Stephen Colebourne
  */
-public enum ReadWriteProperty {
+public enum PropertyReadWrite {
 
     /**
      * The property can be read and written.

@@ -63,7 +63,7 @@ public interface MetaProperty<B, P> {
      * 
      * @return the property read-write type, never null
      */
-    ReadWriteProperty readWrite();
+    PropertyReadWrite readWrite();
 
     //-----------------------------------------------------------------------
     /**

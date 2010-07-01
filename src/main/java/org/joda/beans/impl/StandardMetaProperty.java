@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.ReadWriteProperty;
+import org.joda.beans.PropertyReadWrite;
 
 /**
  * A meta-property implemented using a {@code PropertyDescriptor}.
@@ -111,9 +111,9 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     @Override
-    public ReadWriteProperty readWrite() {
-        return (readMethod == null ? ReadWriteProperty.WRITE_ONLY :
-                (writeMethod == null ? ReadWriteProperty.READ_ONLY : ReadWriteProperty.READ_WRITE));
+    public PropertyReadWrite readWrite() {
+        return (readMethod == null ? PropertyReadWrite.WRITE_ONLY :
+                (writeMethod == null ? PropertyReadWrite.READ_ONLY : PropertyReadWrite.READ_WRITE));
     }
 
     //-----------------------------------------------------------------------
