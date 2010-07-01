@@ -17,6 +17,7 @@ package org.joda.beans.impl;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -120,12 +121,13 @@ public final class StandardPropertyMap<B>
     //-----------------------------------------------------------------------
     @Override
     public Map<String, Object> flatten() {
+        // TODO: dedicated map implementation
         Map<String, MetaProperty<B, Object>> propertyMap = bean.metaBean().metaPropertyMap();
         Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
         for (Entry<String, MetaProperty<B, Object>> entry : propertyMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().get(bean.bean()));
         }
-        return map;
+        return Collections.unmodifiableMap(map);
     }
 
 }

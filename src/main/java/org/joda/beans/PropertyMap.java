@@ -29,13 +29,11 @@ import java.util.Map;
 public interface PropertyMap<B> extends Map<String, Property<B, Object>> {
 
     /**
-     * Flattens the contents of this property map to a modifiable {@code HashMap}.
+     * Flattens the contents of this property map to a {@code HashMap}.
      * <p>
-     * The returned map will contain all the properties from the bean with their values.
-     * <p>
-     * Alterations to the map will not have any impact on the bean.
+     * The returned map will contain all the properties from the bean with their actual values.
      * 
-     * @return the modifiable map of property name to value, never null
+     * @return the unmodifiable map of property name to value, never null
      */
     Map<String, Object> flatten();
 
