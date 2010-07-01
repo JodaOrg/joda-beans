@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/org/mongodb/mongo-java-driver/1.4/mongo-java-driver-1.4.jar" sourcepath="/M2_REPO/org/mongodb/mongo-java-driver/1.4/mongo-java-driver-1.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/testng/testng/5.8/testng-5.8-jdk15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
