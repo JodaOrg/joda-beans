@@ -87,17 +87,10 @@ public final class StandardPropertyMap<B>
     @Override
     public Set<Entry<String, Property<B, Object>>> entrySet() {
         return new AbstractSet<Entry<String,Property<B, Object>>>() {
+            // TODO: possibly override contains()
             @Override
             public int size() {
                 return bean.metaBean().metaPropertyMap().size();
-            }
-            @Override
-            public boolean contains(Object obj) {
-                if (obj instanceof Entry<?, ?>) {
-                    Entry<?, ?> entry = (Entry<?, ?>) obj;
-                    return entry.getKey() instanceof String && bean.metaBean().metaPropertyExists(obj.toString());
-                }
-                return false;
             }
             @Override
             public Iterator<Entry<String, Property<B, Object>>> iterator() {

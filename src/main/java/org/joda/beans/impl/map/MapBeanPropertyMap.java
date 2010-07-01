@@ -83,17 +83,10 @@ public final class MapBeanPropertyMap
     @Override
     public Set<Entry<String, Property<MapBean, Object>>> entrySet() {
         return new AbstractSet<Entry<String,Property<MapBean, Object>>>() {
+            // TODO: possibly override contains()
             @Override
             public int size() {
                 return bean.size();
-            }
-            @Override
-            public boolean contains(Object obj) {
-                if (obj instanceof Entry<?, ?>) {
-                    Entry<?, ?> entry = (Entry<?, ?>) obj;
-                    return entry.getKey() instanceof String && bean.containsKey(entry.getKey().toString());
-                }
-                return false;
             }
             @Override
             public Iterator<Entry<String, Property<MapBean, Object>>> iterator() {
