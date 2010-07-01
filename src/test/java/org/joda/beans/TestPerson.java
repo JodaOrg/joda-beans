@@ -137,4 +137,23 @@ public class TestPerson {
         assertEquals(test.get(NUMBER_OF_CARS), 3);
     }
 
+    //-----------------------------------------------------------------------
+    public void test_metaProperty() {
+        Person person = new Person();
+        MetaProperty<Person, String> test = Person.FORENAME;
+        
+        assertSame(test.beanClass(), Person.class);
+        assertSame(test.propertyClass(), String.class);
+        assertSame(test.name(), FORENAME);
+        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        
+        assertEquals(test.get(person), null);
+        person.setForename("A");
+        assertEquals(test.get(person), "A");
+        test.set(person, "B");
+        assertEquals(test.get(person), "B");
+        assertEquals(test.put(person, "C"), "B");
+        assertEquals(test.get(person), "C");
+    }
+
 }
