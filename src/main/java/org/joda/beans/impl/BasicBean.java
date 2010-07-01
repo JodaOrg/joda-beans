@@ -33,19 +33,23 @@ import org.joda.beans.PropertyMap;
  */
 public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
 
+    @Override
     @SuppressWarnings("unchecked")
     public B beanData() {
         return (B) this;  // generics isn't quite strong enough to define the constraint we need
     }
 
+    @Override
     public boolean propertyExists(String propertyName) {
         return metaBean().metaPropertyExists(propertyName);
     }
 
+    @Override
     public Property<B, Object> property(String propertyName) {
         return metaBean().metaProperty(propertyName).createProperty(this);
     }
 
+    @Override
     public PropertyMap<B> propertyMap() {
         return metaBean().createPropertyMap(this);
     }
