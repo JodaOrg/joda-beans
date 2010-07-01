@@ -24,7 +24,7 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.StandardProperty;
+import org.joda.beans.impl.BasicProperty;
 
 /**
  * Implementation of a fully dynamic {@code Bean} based on an exposed {@code Map}.
@@ -57,7 +57,7 @@ public class MapBean extends HashMap<String, Object> implements Bean<MapBean>, M
 
     @Override
     public Property<MapBean, Object> property(String name) {
-        return StandardProperty.of(this, metaProperty(name));
+        return BasicProperty.of(this, metaProperty(name));
     }
 
     @Override

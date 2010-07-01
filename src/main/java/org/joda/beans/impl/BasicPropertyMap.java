@@ -36,7 +36,7 @@ import org.joda.beans.PropertyMap;
  * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public final class StandardPropertyMap<B>
+public final class BasicPropertyMap<B>
         extends AbstractMap<String, Property<B, Object>> implements PropertyMap<B> {
 
     /** The bean. */
@@ -47,8 +47,8 @@ public final class StandardPropertyMap<B>
      * 
      * @param bean  the bean
      */
-    public static <B, T extends Bean<B>> StandardPropertyMap<B> of(T bean) {
-        return new StandardPropertyMap<B>(bean);
+    public static <B, T extends Bean<B>> BasicPropertyMap<B> of(T bean) {
+        return new BasicPropertyMap<B>(bean);
     }
 
     /**
@@ -56,7 +56,7 @@ public final class StandardPropertyMap<B>
      * 
      * @param bean  the bean that the property is bound to, not null
      */
-    private StandardPropertyMap(Bean<B> bean) {
+    private BasicPropertyMap(Bean<B> bean) {
         if (bean == null) {
             throw new NullPointerException("Bean must not be null");
         }
@@ -104,7 +104,7 @@ public final class StandardPropertyMap<B>
                     @SuppressWarnings("unchecked")
                     public Entry<String, Property<B, Object>> next() {
                         MetaProperty<B, Object> meta = it.next();
-                        return (Entry) StandardProperty.of(bean, meta);
+                        return (Entry) BasicProperty.of(bean, meta);
                     }
                     @Override
                     public void remove() {

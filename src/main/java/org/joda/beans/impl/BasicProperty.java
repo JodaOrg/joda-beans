@@ -33,7 +33,7 @@ import org.joda.beans.Property;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class StandardProperty<B, P> implements Property<B, P>, Entry<String, Property<B, P>> {
+public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, Property<B, P>> {
 
     /** The bean that the property is bound to. */
     private final Bean<B> bean;
@@ -46,8 +46,8 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
      */
-    public static <B, P> StandardProperty<B, P> of(Bean<B> bean, MetaProperty<B, P> metaProperty) {
-        return new StandardProperty<B, P>(bean, metaProperty);
+    public static <B, P> BasicProperty<B, P> of(Bean<B> bean, MetaProperty<B, P> metaProperty) {
+        return new BasicProperty<B, P>(bean, metaProperty);
     }
 
     /**
@@ -56,7 +56,7 @@ public final class StandardProperty<B, P> implements Property<B, P>, Entry<Strin
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
      */
-    private StandardProperty(Bean<B> bean, MetaProperty<B, P> metaProperty) {
+    private BasicProperty(Bean<B> bean, MetaProperty<B, P> metaProperty) {
         if (bean == null) {
             throw new NullPointerException("Bean must not be null");
         }

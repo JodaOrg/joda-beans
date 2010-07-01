@@ -18,6 +18,7 @@ package org.joda.beans.impl;
 import org.joda.beans.Bean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
+import org.joda.beans.impl.reflection.ReflectiveMetaBean;
 
 /**
  * Basic implementation of {@code Bean} intended for applications to subclass.
@@ -25,7 +26,7 @@ import org.joda.beans.PropertyMap;
  * The subclass must to provide an implementation for {@link Bean#metaBean()}.
  * This returns the complete definition of the bean at the meta level.
  * <p>
- * A standard meta-bean implementation is {@link StandardMetaBean}. This is normally
+ * A simple meta-bean implementation is {@link ReflectiveMetaBean}. This is normally
  * declared as a static constant, so {@code metaBean()} simply returns the constant.
  * This approach also requires a public static {@link MetaProperty} instance for each property.
  * 

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.impl;
+package org.joda.beans.impl.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -25,6 +25,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyMap;
+import org.joda.beans.impl.BasicPropertyMap;
 
 /**
  * A standard meta-bean implementation.
@@ -35,7 +36,7 @@ import org.joda.beans.PropertyMap;
  * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public final class StandardMetaBean<B> implements MetaBean<B> {
+public final class ReflectiveMetaBean<B> implements MetaBean<B> {
 
     /** The bean class. */
     private final Class<B> beanClass;
@@ -47,8 +48,8 @@ public final class StandardMetaBean<B> implements MetaBean<B> {
      * 
      * @param beanClass  the bean class, not null
      */
-    public static <B extends Bean<B>> StandardMetaBean<B> of(Class<B> beanClass) {
-        return new StandardMetaBean<B>(beanClass);
+    public static <B extends Bean<B>> ReflectiveMetaBean<B> of(Class<B> beanClass) {
+        return new ReflectiveMetaBean<B>(beanClass);
     }
 
     /**
@@ -57,7 +58,7 @@ public final class StandardMetaBean<B> implements MetaBean<B> {
      * @param beanClass  the bean class, not null
      */
     @SuppressWarnings("unchecked")
-    private StandardMetaBean(Class<B> beanClass) {
+    private ReflectiveMetaBean(Class<B> beanClass) {
         if (beanClass == null) {
             throw new NullPointerException("Bean class must not be null");
         }
@@ -104,7 +105,7 @@ public final class StandardMetaBean<B> implements MetaBean<B> {
 
     @Override
     public PropertyMap<B> createPropertyMap(Bean<B> bean) {
-        return StandardPropertyMap.of(bean);
+        return BasicPropertyMap.of(bean);
     }
 
     //-----------------------------------------------------------------------
@@ -141,8 +142,8 @@ public final class StandardMetaBean<B> implements MetaBean<B> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof StandardMetaBean<?>) {
-            StandardMetaBean<?> other = (StandardMetaBean<?>) obj;
+        if (obj instanceof ReflectiveMetaBean<?>) {
+            ReflectiveMetaBean<?> other = (ReflectiveMetaBean<?>) obj;
             return this.beanClass.equals(other.beanClass);
         }
         return false;

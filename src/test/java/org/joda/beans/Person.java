@@ -16,8 +16,8 @@
 package org.joda.beans;
 
 import org.joda.beans.impl.BasicBean;
-import org.joda.beans.impl.StandardMetaBean;
-import org.joda.beans.impl.StandardMetaProperty;
+import org.joda.beans.impl.reflection.ReflectiveMetaBean;
+import org.joda.beans.impl.reflection.ReflectiveMetaProperty;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -27,22 +27,22 @@ import org.joda.beans.impl.StandardMetaProperty;
 public class Person extends BasicBean<Person> {
 
     /** The forename meta-property. */
-    public static final MetaProperty<Person, String> FORENAME = StandardMetaProperty.of(Person.class, "forename");
+    public static final MetaProperty<Person, String> FORENAME = ReflectiveMetaProperty.of(Person.class, "forename");
     /** The forename. */
     private String forename;
 
     /** The surname meta-property. */
-    public static final MetaProperty<Person, String> SURNAME = StandardMetaProperty.of(Person.class, "surname");
+    public static final MetaProperty<Person, String> SURNAME = ReflectiveMetaProperty.of(Person.class, "surname");
     /** The surname. */
     private String surname;
 
     /** The number of cars meta-property. */
-    public static final MetaProperty<Person, Integer> NUMBER_OF_CARS = StandardMetaProperty.of(Person.class, "numberOfCars");
+    public static final MetaProperty<Person, Integer> NUMBER_OF_CARS = ReflectiveMetaProperty.of(Person.class, "numberOfCars");
     /** The surname. */
     private int numberOfCars;
 
     /** The meta-bean. */
-    public static final MetaBean<Person> META = StandardMetaBean.of(Person.class);
+    public static final MetaBean<Person> META = ReflectiveMetaBean.of(Person.class);
 
     //-----------------------------------------------------------------------
     /**

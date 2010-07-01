@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.impl;
+package org.joda.beans.impl.reflection;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -24,6 +24,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.impl.BasicProperty;
 
 /**
  * A meta-property implemented using a {@code PropertyDescriptor}.
@@ -35,7 +36,7 @@ import org.joda.beans.PropertyReadWrite;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
+public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
 
     /** The name of the property. */
     private final String name;
@@ -54,8 +55,8 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
      * @param beanClass  the bean class, not null
      * @param propertyName  the property name, not null
      */
-    public static <B, P> StandardMetaProperty<B, P> of(Class<B> beanClass, String propertyName) {
-        return new StandardMetaProperty<B, P>(beanClass, propertyName);
+    public static <B, P> ReflectiveMetaProperty<B, P> of(Class<B> beanClass, String propertyName) {
+        return new ReflectiveMetaProperty<B, P>(beanClass, propertyName);
     }
 
     /**
@@ -65,7 +66,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
      * @param propertyName  the property name, not null
      */
     @SuppressWarnings("unchecked")
-    private StandardMetaProperty(Class<B> beanClass, String propertyName) {
+    private ReflectiveMetaProperty(Class<B> beanClass, String propertyName) {
         if (beanClass == null) {
             throw new NullPointerException("Bean class must not be null");
         }
@@ -93,7 +94,7 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     //-----------------------------------------------------------------------
     @Override
     public Property<B, P> createProperty(Bean<B> bean) {
-        return StandardProperty.of(bean, this);
+        return BasicProperty.of(bean, this);
     }
 
     @Override
@@ -173,8 +174,8 @@ public final class StandardMetaProperty<B, P> implements MetaProperty<B, P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof StandardMetaProperty<?, ?>) {
-            StandardMetaProperty<?, ?> other = (StandardMetaProperty<?, ?>) obj;
+        if (obj instanceof ReflectiveMetaProperty<?, ?>) {
+            ReflectiveMetaProperty<?, ?> other = (ReflectiveMetaProperty<?, ?>) obj;
             return this.beanClass.equals(other.beanClass) && this.name.equals(other.name);
         }
         return false;

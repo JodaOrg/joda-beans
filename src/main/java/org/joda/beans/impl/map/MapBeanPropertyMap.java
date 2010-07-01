@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.StandardProperty;
+import org.joda.beans.impl.BasicProperty;
 
 /**
  * A map of properties for a {@code MapBean}.
@@ -99,7 +99,7 @@ public final class MapBeanPropertyMap
                     @Override
                     public Entry<String, Property<MapBean, Object>> next() {
                         String name = it.next();
-                        return StandardProperty.of(bean, MapBeanMetaProperty.of(name));
+                        return BasicProperty.of(bean, MapBeanMetaProperty.of(name));
                     }
                     @Override
                     public void remove() {
