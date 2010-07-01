@@ -13,62 +13,64 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.impl;
-
-import java.util.Map;
+package org.joda.beans.impl.map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.impl.StandardProperty;
 
 /**
- * A meta-property using a {@code Map} for storage.
- * <p>
- * This meta-property uses a {@code Map} instead of a JavaBean to store the property.
+ * A meta-property using a {@code MapBean} for storage.
  * 
  * @author Stephen Colebourne
  */
-public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
+public class MapBeanMetaProperty implements MetaProperty<MapBean, Object> {
 
     /** The map key, also known as the property name. */
-    private final String key;
+    private final String name;
+
+    /**
+     * Factory to create a meta-property.
+     * 
+     * @param propertyName  the property name, not null
+     */
+    public static MapBeanMetaProperty of(String propertyName) {
+        return new MapBeanMetaProperty(propertyName);
+    }
 
     /**
      * Constructor.
      * 
-     * @param propertyName  the property name
+     * @param propertyName  the property name, not null
      */
-    public MapMetaProperty(String propertyName) {
-        super();
+    private MapBeanMetaProperty(String propertyName) {
         if (propertyName == null || propertyName.length() == 0) {
             throw new IllegalArgumentException("Invalid property name: " + propertyName);
         }
-        key = propertyName;
+        name = propertyName;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<Map<String, T>, T> createProperty(Bean<Map<String, T>> bean) {
+    public Property<MapBean, Object> createProperty(Bean<MapBean> bean) {
         return StandardProperty.of(bean, this);
     }
 
     @Override
     public String name() {
-        return key;
+        return name;
     }
 
     @Override
-    public Class<T> propertyClass() {
-        // isn't erasure horrible
-        return null;
+    public Class<Object> propertyClass() {
+        return Object.class;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Class<Map<String, T>> beanClass() {
-        // if you think erasure is great, try fixing this
-        return (Class<Map<String, T>>) (Class) Map.class;
+    public Class<MapBean> beanClass() {
+        return MapBean.class;
     }
 
     @Override
@@ -78,18 +80,18 @@ public class MapMetaProperty<T> implements MetaProperty<Map<String, T>, T> {
 
     //-----------------------------------------------------------------------
     @Override
-    public T get(Bean<Map<String, T>> bean) {
-        return bean.beanData().get(key);
+    public Object get(Bean<MapBean> bean) {
+        return bean.beanData().get(name);
     }
 
     @Override
-    public void set(Bean<Map<String, T>> bean, T value) {
-        bean.beanData().put(key, value);
+    public void set(Bean<MapBean> bean, Object value) {
+        bean.beanData().put(name, value);
     }
 
     @Override
-    public T put(Bean<Map<String, T>> bean, T value) {
-        T old = get(bean);
+    public Object put(Bean<MapBean> bean, Object value) {
+        Object old = get(bean);
         set(bean, value);
         return old;
     }
