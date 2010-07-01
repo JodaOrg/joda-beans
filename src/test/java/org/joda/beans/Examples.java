@@ -38,6 +38,7 @@ public class Examples {
         System.out.println(p.propertyMap().values());
         System.out.println(p.metaBean().metaPropertyMap().values());
         System.out.println(p.propertyMap().flatten());
+        System.out.println(p);
         // perform validation
         boolean valid =
             validateNotEmpty(p.surname()) &&

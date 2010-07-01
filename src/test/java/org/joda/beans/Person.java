@@ -15,16 +15,16 @@
  */
 package org.joda.beans;
 
+import org.joda.beans.impl.BasicBean;
 import org.joda.beans.impl.StandardMetaBean;
 import org.joda.beans.impl.StandardMetaProperty;
-
 
 /**
  * Mock person JavaBean, used for testing.
  * 
  * @author Stephen Colebourne
  */
-public class Person implements Bean<Person> {
+public class Person extends BasicBean<Person> {
 
     /** The forename meta-property. */
     public static final MetaProperty<Person, String> FORENAME = StandardMetaProperty.of(Person.class, "forename");
@@ -111,24 +111,8 @@ public class Person implements Bean<Person> {
     }
 
     //-----------------------------------------------------------------------
-    public Person bean() {
-        return this;
-    }
-
     public MetaBean<Person> metaBean() {
         return META;
-    }
-
-    public boolean propertyExists(String propertyName) {
-        return metaBean().metaPropertyExists(propertyName);
-    }
-
-    public Property<Person, Object> property(String propertyName) {
-        return metaBean().metaProperty(propertyName).createProperty(this);
-    }
-
-    public PropertyMap<Person> propertyMap() {
-        return metaBean().createPropertyMap(this);
     }
 
 }
