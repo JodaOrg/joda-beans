@@ -15,6 +15,7 @@
  */
 package org.joda.beans;
 
+
 /**
  * Examples using Person.
  * 
@@ -44,6 +45,19 @@ public class Examples {
             validateNotEmpty(p.surname()) &&
             validateNotEmpty(p.forename());
         System.out.println(valid ? "Valid" : "Not valid");
+        
+//        try {
+//            Mongo mongo = new Mongo("127.0.0.1");
+//            System.out.println(mongo);
+//            mongo.dropDatabase("BeansTest");
+//            DB db = mongo.getDB("BeansTest");
+//            DBCollection coll = db.createCollection("Test", new BeanMongoDBObject(p));
+//            System.out.println(coll);
+//            System.out.println("Docs " + coll.getCount());
+//            
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     private static boolean validateNotEmpty(Property<?, String> property) {
