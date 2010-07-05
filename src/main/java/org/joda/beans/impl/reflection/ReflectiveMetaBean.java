@@ -167,7 +167,7 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     /**
      * Returns a string that summarises the meta-bean.
      * 
-     * @return a summary string, never null
+     * @return a summary string, not null
      */
     @Override
     public String toString() {

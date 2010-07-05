@@ -136,7 +136,7 @@ public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, 
     /**
      * Returns a string that summarises the property.
      * 
-     * @return a summary string, never null
+     * @return a summary string, not null
      */
     @Override
     public String toString() {

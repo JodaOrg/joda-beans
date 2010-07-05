@@ -37,7 +37,7 @@ public interface Bean<B> {
      * case this method would return {@code this}.
      * More complicated approaches use different data stores.
      * 
-     * @return the bean itself, never null
+     * @return the bean itself, not null
      */
     B beanData();
 
@@ -45,7 +45,7 @@ public interface Bean<B> {
      * Gets the meta-bean representing the parts of the bean that are
      * common across all instances, such as the set of meta-properties.
      * 
-     * @return the meta-bean, never null
+     * @return the meta-bean, not null
      */
     MetaBean<B> metaBean();
 
@@ -62,7 +62,7 @@ public interface Bean<B> {
      * Gets a property by name.
      * 
      * @param propertyName  the property name to retrieve, null throws NoSuchElementException
-     * @return the property, never null
+     * @return the property, not empty
      * @throws NoSuchElementException if the property name is invalid
      */
     Property<B, Object> property(String propertyName);
@@ -70,7 +70,7 @@ public interface Bean<B> {
     /**
      * Gets the map of properties, keyed by property name.
      * 
-     * @return the unmodifiable map of property objects, never null
+     * @return the unmodifiable map of property objects, not null
      */
     PropertyMap<B> propertyMap();
 

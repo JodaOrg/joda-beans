@@ -30,7 +30,7 @@ public interface MetaBean<B> {
     /**
      * Creates a new instance of the bean represented by this meta bean.
      * 
-     * @return the created bean, never null
+     * @return the created bean, not null
      */
     Bean<B> createBean();
 
@@ -38,7 +38,7 @@ public interface MetaBean<B> {
      * Creates a map of properties for the specified bean.
      * 
      * @param bean  the bean to create the map for, not null
-     * @return the created property map, never null
+     * @return the created property map, not null
      */
     PropertyMap<B> createPropertyMap(Bean<B> bean);
 
@@ -46,14 +46,14 @@ public interface MetaBean<B> {
     /**
      * Gets the bean name, which is normally the fully qualified class name of the bean.
      * 
-     * @return the name of the bean, never null
+     * @return the name of the bean, not empty
      */
     String name();
 
     /**
      * Get the type of the bean represented as a {@code Class}.
      * 
-     * @return the type of the bean, never null
+     * @return the type of the bean, not null
      */
     Class<B> beanType();
 
@@ -77,7 +77,7 @@ public interface MetaBean<B> {
      * Gets a meta-property by name.
      * 
      * @param propertyName  the property name to retrieve, null throws NoSuchElementException
-     * @return the meta property, never null
+     * @return the meta property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
     MetaProperty<B, Object> metaProperty(String propertyName);
@@ -89,7 +89,7 @@ public interface MetaBean<B> {
      * As a result, implementations may be able to optimise, and so this method should be
      * preferred to {@link #metaPropertyMap()} where a choice is possible.
      * 
-     * @return the unmodifiable map of meta property objects, never null
+     * @return the unmodifiable map of meta property objects, not null
      */
     Iterable<MetaProperty<B, Object>> metaPropertyIterable();
 
@@ -98,7 +98,7 @@ public interface MetaBean<B> {
      * <p>
      * Where possible, use {@link #metaPropertyIterable()} instead.
      * 
-     * @return the unmodifiable map of meta property objects, never null
+     * @return the unmodifiable map of meta property objects, not null
      */
     Map<String, MetaProperty<B, Object>> metaPropertyMap();
 

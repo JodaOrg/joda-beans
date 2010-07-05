@@ -31,7 +31,7 @@ public class MapBeanMetaProperty extends AbstractMetaProperty<MapBean, Object> {
     /**
      * Factory to create a meta-property.
      * 
-     * @param propertyName  the property name, not null
+     * @param propertyName  the property name, not empty
      */
     public static MapBeanMetaProperty of(String propertyName) {
         return new MapBeanMetaProperty(propertyName);

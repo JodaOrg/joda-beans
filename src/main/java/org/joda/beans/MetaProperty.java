@@ -29,7 +29,7 @@ public interface MetaProperty<B, P> {
      * Creates a property that binds this meta-property to a specific bean.
      * 
      * @param bean  the bean to create the property for, not null
-     * @return the property, never null
+     * @return the property, not null
      */
     Property<B, P> createProperty(Bean<B> bean);
 
@@ -37,7 +37,7 @@ public interface MetaProperty<B, P> {
     /**
      * Get the type of the bean represented as a {@code Class}.
      * 
-     * @return the type of the bean, never null
+     * @return the type of the bean, not null
      */
     Class<B> beanType();
 
@@ -47,21 +47,21 @@ public interface MetaProperty<B, P> {
      * The JavaBean style methods getFoo() and setFoo() will lead to a property
      * name of 'foo' and so on.
      * 
-     * @return the name of the property, never null
+     * @return the name of the property, not empty
      */
     String name();
 
     /**
      * Get the type of the property represented as a {@code Class}.
      * 
-     * @return the type of the property, never null
+     * @return the type of the property, not null
      */
     Class<P> propertyType();
 
     /**
      * Gets whether the property is read-only, read-write or write-only.
      * 
-     * @return the property read-write type, never null
+     * @return the property read-write type, not null
      */
     PropertyReadWrite readWrite();
 
@@ -100,6 +100,7 @@ public interface MetaProperty<B, P> {
      * 
      * @param bean  the bean to update, not null
      * @param value  the value to set into the property on the specified bean, may be null
+     * @return the old value of the property, may be null
      * @throws ClassCastException if the value is of an invalid type for the property
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)

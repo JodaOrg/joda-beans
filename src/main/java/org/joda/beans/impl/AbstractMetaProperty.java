@@ -96,7 +96,7 @@ public abstract class AbstractMetaProperty<B, P> implements MetaProperty<B, P> {
     /**
      * Returns a string that summarises the property.
      * 
-     * @return a summary string, never null
+     * @return a summary string, not null
      */
     @Override
     public String toString() {

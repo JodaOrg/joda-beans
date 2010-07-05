@@ -32,7 +32,7 @@ public interface Property<B, P> {
      * <p>
      * Each property is fully owned by a single bean.
      * 
-     * @return the bean, never null
+     * @return the bean, not null
      */
     Bean<B> bean();
 
@@ -40,7 +40,7 @@ public interface Property<B, P> {
      * Gets the meta-property representing the parts of the property that are
      * common across all instances, such as the name.
      * 
-     * @return the meta-property, never null
+     * @return the meta-property, not null
      */
     MetaProperty<B, P> metaProperty();
 
@@ -50,7 +50,7 @@ public interface Property<B, P> {
      * The JavaBean style methods getFoo() and setFoo() will lead to a property
      * name of 'foo' and so on.
      * 
-     * @return the name of the property, never null
+     * @return the name of the property, not empty
      */
     String name();
 
@@ -61,7 +61,7 @@ public interface Property<B, P> {
      * For a JavaBean, this is the equivalent to calling <code>getFoo()</code> on the bean itself.
      * Alternate implementations may perform any logic to obtain the value.
      * 
-     * @return the value of the property on the bound bean
+     * @return the value of the property on the bound bean, may be null
      * @throws UnsupportedOperationException if the property is write-only
      */
     P get();
@@ -86,6 +86,7 @@ public interface Property<B, P> {
      * of {@code put} in a {@code Map}.
      * 
      * @param value  the value to set into the property on the bean
+     * @return the old value of the property, may be null
      * @throws ClassCastException if the value is of an invalid type for the property
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)

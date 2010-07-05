@@ -157,7 +157,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
      * <p>
      * The string contains the class name and properties.
      * 
-     * @return a summary string, never null
+     * @return a summary string, not null
      */
     @Override
     public String toString() {

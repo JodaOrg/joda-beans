@@ -93,7 +93,7 @@ public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
      * <p>
      * The string contains the class name and properties.
      * 
-     * @return a summary string, never null
+     * @return a summary string, not null
      */
     @Override
     public String toString() {

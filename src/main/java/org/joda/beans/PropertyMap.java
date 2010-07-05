@@ -33,7 +33,7 @@ public interface PropertyMap<B> extends Map<String, Property<B, Object>> {
      * <p>
      * The returned map will contain all the properties from the bean with their actual values.
      * 
-     * @return the unmodifiable map of property name to value, never null
+     * @return the unmodifiable map of property name to value, not null
      */
     Map<String, Object> flatten();
 
