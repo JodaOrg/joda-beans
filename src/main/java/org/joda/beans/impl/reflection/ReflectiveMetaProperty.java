@@ -21,9 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.impl.AbstractMetaProperty;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -36,14 +36,10 @@ import org.joda.beans.impl.BasicProperty;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
+public final class ReflectiveMetaProperty<B, P> extends AbstractMetaProperty<B, P> {
 
-    /** The name of the property. */
-    private final String name;
     /** The type of the property. */
-    private final Class<P> propertyClass;
-    /** The type of the bean. */
-    private final Class<B> beanClass;
+    private final Class<P> propertyType;
     /** The read method. */
     private final Method readMethod;
     /** The write method. */
@@ -52,30 +48,25 @@ public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
     /**
      * Factory to create a meta-property avoiding duplicate generics.
      * 
-     * @param beanClass  the bean class, not null
-     * @param propertyName  the property name, not null
+     * @param beanType  the bean type, not null
+     * @param propertyName  the property name, not empty
      */
-    public static <B, P> ReflectiveMetaProperty<B, P> of(Class<B> beanClass, String propertyName) {
-        return new ReflectiveMetaProperty<B, P>(beanClass, propertyName);
+    public static <B, P> ReflectiveMetaProperty<B, P> of(Class<B> beanType, String propertyName) {
+        return new ReflectiveMetaProperty<B, P>(beanType, propertyName);
     }
 
     /**
      * Constructor using {@code PropertyDescriptor} to find the get and set methods.
      * 
-     * @param beanClass  the bean class, not null
-     * @param propertyName  the property name, not null
+     * @param beanType  the bean type, not null
+     * @param propertyName  the property name, not empty
      */
     @SuppressWarnings("unchecked")
-    private ReflectiveMetaProperty(Class<B> beanClass, String propertyName) {
-        if (beanClass == null) {
-            throw new NullPointerException("Bean class must not be null");
-        }
-        if (propertyName == null) {
-            throw new NullPointerException("Property name must not be null");
-        }
+    private ReflectiveMetaProperty(Class<B> beanType, String propertyName) {
+        super(beanType, propertyName);
         PropertyDescriptor descriptor;
         try {
-            descriptor = new PropertyDescriptor(propertyName, beanClass);
+            descriptor = new PropertyDescriptor(propertyName, beanType);
         } catch (IntrospectionException ex) {
             throw new NoSuchFieldError("Invalid property: " + propertyName + ": " + ex.getMessage());
         }
@@ -84,11 +75,9 @@ public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
         if (readMethod == null && writeMethod == null) {
             throw new NoSuchFieldError("Invalid property: " + propertyName + ": Both read and write methods are missing");
         }
-        this.name = descriptor.getName();
-        this.propertyClass = (Class<P>) descriptor.getPropertyType();
+        this.propertyType = (Class<P>) descriptor.getPropertyType();
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
-        this.beanClass = beanClass;
     }
 
     //-----------------------------------------------------------------------
@@ -98,18 +87,8 @@ public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
     public Class<P> propertyClass() {
-        return propertyClass;
-    }
-
-    @Override
-    public Class<B> beanClass() {
-        return beanClass;
+        return propertyType;
     }
 
     @Override
@@ -123,14 +102,14 @@ public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
     @SuppressWarnings("unchecked")
     public P get(Bean<B> bean) {
         if (readWrite().isReadable() == false) {
-            throw new UnsupportedOperationException("Property cannot be read: " + name);
+            throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
         try {
             return (P) readMethod.invoke(bean.beanData(), (Object[]) null);
         } catch (IllegalArgumentException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + name, ex);
+            throw new UnsupportedOperationException("Property cannot be read: " + name(), ex);
         } catch (IllegalAccessException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + name, ex);
+            throw new UnsupportedOperationException("Property cannot be read: " + name(), ex);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();
@@ -142,58 +121,26 @@ public final class ReflectiveMetaProperty<B, P> implements MetaProperty<B, P> {
     @Override
     public void set(Bean<B> bean, P value) {
         if (readWrite().isWritable() == false) {
-            throw new UnsupportedOperationException("Property cannot be written: " + name);
+            throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
         try {
             writeMethod.invoke(bean.beanData(), value);
         } catch (IllegalArgumentException ex) {
             if (value == null && writeMethod.getParameterTypes()[0].isPrimitive()) {
-                throw new NullPointerException("Property cannot be written: " + name + ": Cannot store null in primitive");
+                throw new NullPointerException("Property cannot be written: " + name() + ": Cannot store null in primitive");
             }
-            if (propertyClass.isInstance(value) == false) {
-                throw new ClassCastException("Property cannot be written: " + name + ": Invalid type: " + value.getClass().getName());
+            if (propertyType.isInstance(value) == false) {
+                throw new ClassCastException("Property cannot be written: " + name() + ": Invalid type: " + value.getClass().getName());
             }
-            throw new UnsupportedOperationException("Property cannot be written: " + name, ex);
+            throw new UnsupportedOperationException("Property cannot be written: " + name(), ex);
         } catch (IllegalAccessException ex) {
-            throw new UnsupportedOperationException("Property cannot be written: " + name, ex);
+            throw new UnsupportedOperationException("Property cannot be written: " + name(), ex);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();
             }
             throw new RuntimeException(ex);
         }
-    }
-
-    @Override
-    public P put(Bean<B> bean, P value) {
-        P old = get(bean);
-        set(bean, value);
-        return old;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ReflectiveMetaProperty<?, ?>) {
-            ReflectiveMetaProperty<?, ?> other = (ReflectiveMetaProperty<?, ?>) obj;
-            return this.beanClass.equals(other.beanClass) && this.name.equals(other.name);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return beanClass.hashCode() ^ name.hashCode();
-    }
-
-    /**
-     * Returns a string that summarises the property.
-     * 
-     * @return a summary string, never null
-     */
-    @Override
-    public String toString() {
-        return "MetaProperty:" + name;
     }
 
 }

@@ -16,9 +16,9 @@
 package org.joda.beans.impl.map;
 
 import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.impl.AbstractMetaProperty;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -26,10 +26,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public class MapBeanMetaProperty implements MetaProperty<MapBean, Object> {
-
-    /** The map key, also known as the property name. */
-    private final String name;
+public class MapBeanMetaProperty extends AbstractMetaProperty<MapBean, Object> {
 
     /**
      * Factory to create a meta-property.
@@ -43,13 +40,10 @@ public class MapBeanMetaProperty implements MetaProperty<MapBean, Object> {
     /**
      * Constructor.
      * 
-     * @param propertyName  the property name, not null
+     * @param propertyName  the property name, not empty
      */
     private MapBeanMetaProperty(String propertyName) {
-        if (propertyName == null || propertyName.length() == 0) {
-            throw new IllegalArgumentException("Invalid property name: " + propertyName);
-        }
-        name = propertyName;
+        super(MapBean.class, propertyName);
     }
 
     //-----------------------------------------------------------------------
@@ -59,18 +53,8 @@ public class MapBeanMetaProperty implements MetaProperty<MapBean, Object> {
     }
 
     @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
     public Class<Object> propertyClass() {
         return Object.class;
-    }
-
-    @Override
-    public Class<MapBean> beanClass() {
-        return MapBean.class;
     }
 
     @Override
@@ -81,30 +65,12 @@ public class MapBeanMetaProperty implements MetaProperty<MapBean, Object> {
     //-----------------------------------------------------------------------
     @Override
     public Object get(Bean<MapBean> bean) {
-        return bean.beanData().get(name);
+        return bean.beanData().get(name());
     }
 
     @Override
     public void set(Bean<MapBean> bean, Object value) {
-        bean.beanData().put(name, value);
-    }
-
-    @Override
-    public Object put(Bean<MapBean> bean, Object value) {
-        Object old = get(bean);
-        set(bean, value);
-        return old;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a debugging string.
-     * 
-     * @return a debugging string
-     */
-    @Override
-    public String toString() {
-        return "MetaProperty:" + name();
+        bean.beanData().put(name(), value);
     }
 
 }

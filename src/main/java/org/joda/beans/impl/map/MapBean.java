@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
+import org.joda.beans.DynamicBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
@@ -35,7 +36,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public class MapBean extends HashMap<String, Object> implements Bean<MapBean>, MetaBean<MapBean> {
+public class MapBean extends HashMap<String, Object> implements DynamicBean<MapBean>, MetaBean<MapBean> {
     // TODO: maybe it would be cleaner to create a separate short-lived meta-bean class
 
     /** Serialization version. */
@@ -64,6 +65,16 @@ public class MapBean extends HashMap<String, Object> implements Bean<MapBean>, M
     @Override
     public PropertyMap<MapBean> propertyMap() {
         return MapBeanPropertyMap.of(this);
+    }
+
+    @Override
+    public void propertyDefine(String propertyName, Class<?> propertyType) {
+        // no need to define
+    }
+
+    @Override
+    public void propertyRemove(String propertyName) {
+        remove(propertyName);
     }
 
     //-----------------------------------------------------------------------

@@ -38,8 +38,8 @@ import org.joda.beans.impl.BasicPropertyMap;
  */
 public final class ReflectiveMetaBean<B> implements MetaBean<B> {
 
-    /** The bean class. */
-    private final Class<B> beanClass;
+    /** The bean type. */
+    private final Class<B> beanType;
     /** The meta-property instances of the bean. */
     private final Map<String, MetaProperty<B, Object>> metaPropertyMap;
 
@@ -53,18 +53,18 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     /**
-     * Creates a property binding the bean to the meta-property.
+     * Constructor.
      * 
-     * @param beanClass  the bean class, not null
+     * @param beanType  the bean type, not null
      */
     @SuppressWarnings("unchecked")
-    private ReflectiveMetaBean(Class<B> beanClass) {
-        if (beanClass == null) {
+    private ReflectiveMetaBean(Class<B> beanType) {
+        if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
-        this.beanClass = beanClass;
+        this.beanType = beanType;
         Map<String, MetaProperty<B, Object>> map = new HashMap<String, MetaProperty<B, Object>>();
-        Field[] fields = beanClass.getFields();
+        Field[] fields = beanType.getFields();
         for (Field field : fields) {
             if (MetaProperty.class.isAssignableFrom(field.getType()) &&
                     Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
@@ -91,7 +91,7 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     @SuppressWarnings("unchecked")
     public Bean<B> createBean() {
         try {
-            Object obj = beanClass.newInstance();
+            Object obj = beanType.newInstance();
             if (obj instanceof Bean<?>) {
                 return (Bean<B>) obj;
             }
@@ -111,12 +111,12 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     //-----------------------------------------------------------------------
     @Override
     public String name() {
-        return beanClass.getName();
+        return beanType.getName();
     }
 
     @Override
     public Class<B> beanClass() {
-        return beanClass;
+        return beanType;
     }
 
     //-----------------------------------------------------------------------
@@ -154,14 +154,14 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     public boolean equals(Object obj) {
         if (obj instanceof ReflectiveMetaBean<?>) {
             ReflectiveMetaBean<?> other = (ReflectiveMetaBean<?>) obj;
-            return this.beanClass.equals(other.beanClass);
+            return this.beanType.equals(other.beanType);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return beanClass.hashCode() + 3;
+        return beanType.hashCode() + 3;
     }
 
     /**

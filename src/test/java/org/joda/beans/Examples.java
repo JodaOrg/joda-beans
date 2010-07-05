@@ -46,6 +46,28 @@ public class Examples {
             validateNotEmpty(p.forename());
         System.out.println(valid ? "Valid" : "Not valid");
         
+        // create the bean the hard way - could just do new Address() instead
+        Address a = Address.META.createBean().beanData();
+        // set surname using normal method
+        a.setStreet("Barnsnap Close");
+        // query using property method
+        System.out.println(a.street().get());
+        // set/get forename using property method
+        a.city().set("Horsham");
+        System.out.println(a.city().get());
+        // set cars
+        a.number().set(22);
+        // access all the properties
+        System.out.println(a.propertyMap().values());
+        System.out.println(a.metaBean().metaPropertyMap().values());
+        System.out.println(a.propertyMap().flatten());
+        System.out.println(a);
+        // perform validation
+        valid =
+            validateNotEmpty(a.street()) &&
+            validateNotEmpty(a.city());
+        System.out.println(valid ? "Valid" : "Not valid");
+        
 //        try {
 //            Mongo mongo = new Mongo("127.0.0.1");
 //            System.out.println(mongo);
