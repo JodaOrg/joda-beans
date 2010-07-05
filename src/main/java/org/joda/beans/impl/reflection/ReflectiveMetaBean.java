@@ -140,6 +140,11 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     @Override
+    public Iterable<MetaProperty<B, Object>> metaPropertyIterable() {
+        return metaPropertyMap.values();
+    }
+
+    @Override
     public Map<String, MetaProperty<B, Object>> metaPropertyMap() {
         return metaPropertyMap;
     }

@@ -83,7 +83,20 @@ public interface MetaBean<B> {
     MetaProperty<B, Object> metaProperty(String propertyName);
 
     /**
+     * Gets an iterator of meta-properties.
+     * <p>
+     * This method returns an {@code Iterable}, which is simpler than a {@code Map}.
+     * As a result, implementations may be able to optimise, and so this method should be
+     * preferred to {@link #metaPropertyMap()} where a choice is possible.
+     * 
+     * @return the unmodifiable map of meta property objects, never null
+     */
+    Iterable<MetaProperty<B, Object>> metaPropertyIterable();
+
+    /**
      * Gets the map of meta-properties, keyed by property name.
+     * <p>
+     * Where possible, use {@link #metaPropertyIterable()} instead.
      * 
      * @return the unmodifiable map of meta property objects, never null
      */

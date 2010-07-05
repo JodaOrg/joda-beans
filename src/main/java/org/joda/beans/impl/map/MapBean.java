@@ -16,6 +16,7 @@
 package org.joda.beans.impl.map;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -103,6 +104,31 @@ public class MapBean extends HashMap<String, Object> implements Bean<MapBean>, M
             throw new NoSuchElementException("Property not found: " + name);
         }
         return MapBeanMetaProperty.of(name);
+    }
+
+    @Override
+    public Iterable<MetaProperty<MapBean, Object>> metaPropertyIterable() {
+        return new Iterable<MetaProperty<MapBean,Object>>() {
+            private final Iterator<String> it = keySet().iterator();
+            @Override
+            public Iterator<MetaProperty<MapBean, Object>> iterator() {
+                return new Iterator<MetaProperty<MapBean,Object>>() {
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+                    @Override
+                    public MetaProperty<MapBean, Object> next() {
+                        return MapBeanMetaProperty.of(it.next());
+                    }
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException("Unmodifiable");
+                    }
+                    
+                };
+            }
+        };
     }
 
     @Override
