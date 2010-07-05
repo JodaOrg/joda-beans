@@ -87,7 +87,7 @@ public final class ReflectiveMetaProperty<B, P> extends AbstractMetaProperty<B, 
     }
 
     @Override
-    public Class<P> propertyClass() {
+    public Class<P> propertyType() {
         return propertyType;
     }
 

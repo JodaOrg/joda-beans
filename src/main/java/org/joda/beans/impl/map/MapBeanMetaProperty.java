@@ -53,7 +53,7 @@ public class MapBeanMetaProperty extends AbstractMetaProperty<MapBean, Object> {
     }
 
     @Override
-    public Class<Object> propertyClass() {
+    public Class<Object> propertyType() {
         return Object.class;
     }
 

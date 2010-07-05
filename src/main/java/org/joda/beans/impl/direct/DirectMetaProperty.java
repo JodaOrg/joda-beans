@@ -97,7 +97,7 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends Abstra
 
     //-----------------------------------------------------------------------
     @Override
-    public Class<P> propertyClass() {
+    public Class<P> propertyType() {
         return propertyType;
     }
 

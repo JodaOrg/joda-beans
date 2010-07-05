@@ -35,6 +35,13 @@ public interface MetaProperty<B, P> {
 
     //-----------------------------------------------------------------------
     /**
+     * Get the type of the bean represented as a {@code Class}.
+     * 
+     * @return the type of the bean, never null
+     */
+    Class<B> beanType();
+
+    /**
      * Gets the property name.
      * <p>
      * The JavaBean style methods getFoo() and setFoo() will lead to a property
@@ -49,14 +56,7 @@ public interface MetaProperty<B, P> {
      * 
      * @return the type of the property, never null
      */
-    Class<P> propertyClass();
-
-    /**
-     * Get the type of the bean represented as a {@code Class}.
-     * 
-     * @return the type of the bean, never null
-     */
-    Class<B> beanClass();
+    Class<P> propertyType();
 
     /**
      * Gets whether the property is read-only, read-write or write-only.

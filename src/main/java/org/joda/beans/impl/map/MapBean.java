@@ -89,7 +89,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
     }
 
     @Override
-    public Class<MapBean> beanClass() {
+    public Class<MapBean> beanType() {
         return MapBean.class;
     }
 

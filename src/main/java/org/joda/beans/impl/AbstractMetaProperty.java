@@ -66,7 +66,7 @@ public abstract class AbstractMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     @Override
-    public Class<B> beanClass() {
+    public Class<B> beanType() {
         return beanType;
     }
 

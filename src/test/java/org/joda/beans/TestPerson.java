@@ -65,7 +65,7 @@ public class TestPerson {
     public void test_metaBean() {
         MetaBean<Person> test = Person.META;
         
-        assertEquals(test.beanClass(), Person.class);
+        assertEquals(test.beanType(), Person.class);
         
         assertEquals(test.name(), Person.class.getName());
         
@@ -144,8 +144,8 @@ public class TestPerson {
         Person person = new Person();
         MetaProperty<Person, String> test = Person.FORENAME;
         
-        assertSame(test.beanClass(), Person.class);
-        assertSame(test.propertyClass(), String.class);
+        assertSame(test.beanType(), Person.class);
+        assertSame(test.propertyType(), String.class);
         assertSame(test.name(), FORENAME);
         assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
         
