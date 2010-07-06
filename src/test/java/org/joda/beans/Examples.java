@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-
 /**
  * Examples using Person.
  * 
@@ -45,6 +44,12 @@ public class Examples {
             validateNotEmpty(p.surname()) &&
             validateNotEmpty(p.forename());
         System.out.println(valid ? "Valid" : "Not valid");
+        // extensions
+        p.getExtensions().set("suffix", "Jr");
+        System.out.println(p.propertyMap().values());
+        System.out.println(p.metaBean().metaPropertyMap().values());
+        System.out.println(p.propertyMap().flatten());
+        System.out.println(p);
         
         // create the bean the hard way - could just do new Address() instead
         Address a = Address.META.createBean().beanData();
