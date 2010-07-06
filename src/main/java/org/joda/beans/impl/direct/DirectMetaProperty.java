@@ -17,7 +17,7 @@ package org.joda.beans.impl.direct;
 
 import org.joda.beans.Bean;
 import org.joda.beans.PropertyReadWrite;
-import org.joda.beans.impl.AbstractMetaProperty;
+import org.joda.beans.impl.BasicMetaProperty;
 
 /**
  * A meta-property implemented using the methods of {@code DirectBean}.
@@ -29,7 +29,7 @@ import org.joda.beans.impl.AbstractMetaProperty;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class DirectMetaProperty<B extends DirectBean<B>, P> extends AbstractMetaProperty<B, P> {
+public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicMetaProperty<B, P> {
 
     /** The type of the property. */
     private final Class<P> propertyType;

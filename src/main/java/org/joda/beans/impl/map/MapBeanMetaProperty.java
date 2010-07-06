@@ -18,7 +18,7 @@ package org.joda.beans.impl.map;
 import org.joda.beans.Bean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
-import org.joda.beans.impl.AbstractMetaProperty;
+import org.joda.beans.impl.BasicMetaProperty;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -26,7 +26,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public class MapBeanMetaProperty extends AbstractMetaProperty<MapBean, Object> {
+public class MapBeanMetaProperty extends BasicMetaProperty<MapBean, Object> {
 
     /**
      * Factory to create a meta-property.

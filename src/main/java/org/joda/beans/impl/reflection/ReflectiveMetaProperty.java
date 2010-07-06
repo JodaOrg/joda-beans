@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import org.joda.beans.Bean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
-import org.joda.beans.impl.AbstractMetaProperty;
+import org.joda.beans.impl.BasicMetaProperty;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -36,7 +36,7 @@ import org.joda.beans.impl.BasicProperty;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class ReflectiveMetaProperty<B, P> extends AbstractMetaProperty<B, P> {
+public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> {
 
     /** The type of the property. */
     private final Class<P> propertyType;

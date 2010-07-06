@@ -26,7 +26,7 @@ import org.joda.beans.Property;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public abstract class AbstractMetaProperty<B, P> implements MetaProperty<B, P> {
+public abstract class BasicMetaProperty<B, P> implements MetaProperty<B, P> {
 
     /** The type of the bean. */
     private final Class<B> beanType;
@@ -41,7 +41,7 @@ public abstract class AbstractMetaProperty<B, P> implements MetaProperty<B, P> {
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    protected AbstractMetaProperty(Class<B> beanType, String propertyName) {
+    protected BasicMetaProperty(Class<B> beanType, String propertyName) {
         if (beanType == null) {
             throw new NullPointerException("Bean type must not be null");
         }
@@ -81,8 +81,8 @@ public abstract class AbstractMetaProperty<B, P> implements MetaProperty<B, P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof AbstractMetaProperty<?, ?>) {
-            AbstractMetaProperty<?, ?> other = (AbstractMetaProperty<?, ?>) obj;
+        if (obj instanceof BasicMetaProperty<?, ?>) {
+            BasicMetaProperty<?, ?> other = (BasicMetaProperty<?, ?>) obj;
             return this.beanType.equals(other.beanType) && this.name.equals(other.name);
         }
         return false;
