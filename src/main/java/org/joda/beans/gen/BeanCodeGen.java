@@ -18,7 +18,6 @@ package org.joda.beans.gen;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -42,6 +41,7 @@ public class BeanCodeGen {
      */
     public static void main(String[] args) {
         String indent = "    ";
+        boolean recurse = false;
         File file = null;
         try {
             if (args.length == 0) {
@@ -52,6 +52,8 @@ public class BeanCodeGen {
                     indent = "\t";
                 } else if (args[i].startsWith("-indent=")) {
                     indent = "          ".substring(0, Integer.parseInt(args[i].substring(8)));
+                } else if (args[i].equals("-R")) {
+                    recurse = true;
                 }
             }
             file = new File(args[args.length - 1]);
@@ -59,22 +61,13 @@ public class BeanCodeGen {
             System.out.println("Code generator");
             System.out.println("  Usage java org.joda.beans.gen.BeanCodeGen [file]");
             System.out.println("  Options");
+            System.out.println("    -R                process all files recursively, default false");
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.exit(0);
         }
         try {
-            File[] files;
-            if (file.isDirectory()) {
-                files = file.listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File child) {
-                        return child.getName().endsWith(".java") && child.isFile();
-                    }
-                });
-            } else {
-                files = new File[] {file};
-            }
+            List<File> files = findFiles(file, recurse);
             for (File child : files) {
                 BeanCodeGen gen = new BeanCodeGen(child, indent);
                 gen.process();
@@ -86,6 +79,30 @@ public class BeanCodeGen {
             ex.printStackTrace(System.out);
             System.exit(1);
         }
+    }
+
+    private static List<File> findFiles(final File parent, boolean recurse) {
+        final List<File> result = new ArrayList<File>();
+        if (parent.isDirectory()) {
+            File[] files = parent.listFiles();
+            for (File child : files) {
+                if (child.isFile() && child.getName().endsWith(".java")) {
+                    result.add(child);
+                }
+            }
+            if (recurse) {
+                for (File child : files) {
+                    if (child.isDirectory() && child.getName().startsWith(".") == false) {
+                        result.addAll(findFiles(child, recurse));
+                    }
+                }
+            }
+        } else {
+            if (parent.getName().endsWith(".java")) {
+                result.add(parent);
+            }
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
