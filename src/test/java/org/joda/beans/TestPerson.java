@@ -69,7 +69,7 @@ public class TestPerson {
         
         assertEquals(test.name(), Person.class.getName());
         
-        assertEquals(test.metaPropertyCount(), 3);
+        assertEquals(test.metaPropertyCount(), 5);
         
         assertEquals(test.metaPropertyExists(FORENAME), true);
         assertEquals(test.metaPropertyExists(SURNAME), true);
@@ -81,7 +81,7 @@ public class TestPerson {
         assertEquals(test.metaProperty(NUMBER_OF_CARS).name(), NUMBER_OF_CARS);
         
         Map<String, MetaProperty<Person, Object>> map = test.metaPropertyMap();
-        assertEquals(map.size(), 3);
+        assertEquals(map.size(), 5);
         assertEquals(map.containsKey(FORENAME), true);
         assertEquals(map.containsKey(SURNAME), true);
         assertEquals(map.containsKey(NUMBER_OF_CARS), true);
@@ -120,7 +120,7 @@ public class TestPerson {
         Person person = new Person();
         PropertyMap<Person> test = person.propertyMap();
         
-        assertSame(test.size(), 3);
+        assertSame(test.size(), 5);
         assertEquals(test.containsKey(FORENAME), true);
         assertEquals(test.containsKey(SURNAME), true);
         assertEquals(test.containsKey(NUMBER_OF_CARS), true);
@@ -133,7 +133,7 @@ public class TestPerson {
         person.setNumberOfCars(3);
         Map<String, Object> test = person.propertyMap().flatten();
         
-        assertSame(test.size(), 3);
+        assertSame(test.size(), 5);
         assertEquals(test.get(FORENAME), "A");
         assertEquals(test.get(SURNAME), "B");
         assertEquals(test.get(NUMBER_OF_CARS), 3);
