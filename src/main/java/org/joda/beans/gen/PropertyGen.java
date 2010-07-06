@@ -135,7 +135,7 @@ class PropertyGen {
                 throw new RuntimeException("Unable to locate field type at line " + annotationIndex + ", mismatched generics");
             }
             partsPos--;
-            type = parts[partsPos] + type;
+            type = parts[partsPos] + " " + type;
         }
         return type;
     }
@@ -188,7 +188,7 @@ class PropertyGen {
         list.add("\t/**");
         list.add("\t * The meta-property for the {@code " + name + "} property.");
         list.add("\t */");
-        if (type.contains("<")) {
+        if (isGenericType()) {
             list.add("\t@SuppressWarnings(\"unchecked\")");
         }
         String metaLine = "\tpublic static final MetaProperty<" + beanName + ", " + propertyType() + "> " + metaName() +
@@ -291,7 +291,7 @@ class PropertyGen {
         if (pt.equals(type)) {
             int genericStart = pt.indexOf('<');
             if (genericStart >= 0) {
-                return "(Class<" + pt + ">) (Object) " + pt.substring(0, genericStart) + ".class";
+                return "(Class<" + pt + ">) (Class) " + pt.substring(0, genericStart) + ".class";
             }
             return pt + ".class";
         }
@@ -353,6 +353,10 @@ class PropertyGen {
 
     private String getterPrefix() {
         return type.equals("boolean") ? "is" : "get";
+    }
+
+    boolean isGenericType() {
+        return type.contains("<");
     }
 
 }

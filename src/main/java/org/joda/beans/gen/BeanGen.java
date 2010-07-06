@@ -34,9 +34,9 @@ class BeanGen {
     private final List<String> content;
     /** The simple name of the bean class. */
     private final String beanName;
-    /** The start position of autogeneration. */
+    /** The start position of auto-generation. */
     private final int autoStartIndex;
-    /** The end position of autogeneration. */
+    /** The end position of auto-generation. */
     private final int autoEndIndex;
     /** The region to insert into. */
     private List<String> insertRegion;
@@ -48,20 +48,28 @@ class BeanGen {
     BeanGen(List<String> content) {
         this.content = content;
         this.beanName = parseBeanName();
-        this.autoStartIndex = parseStartAutogen();
-        this.autoEndIndex = parseEndAutogen();
-        this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
+        if (parseIsBean()) {
+            this.autoStartIndex = parseStartAutogen();
+            this.autoEndIndex = parseEndAutogen();
+            this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
+        } else {
+            this.autoStartIndex = -1;
+            this.autoEndIndex = -1;
+            this.insertRegion = null;
+        }
     }
 
     //-----------------------------------------------------------------------
     void process() {
-        List<PropertyGen> props = parseProperties();
-        removeOld();
-        generateMetaProperties(props);
-        generateMetaBean();
-        generatePropertyGet(props);
-        generatePropertySet(props);
-        generateGettersSetters(props);
+        if (insertRegion != null) {
+            List<PropertyGen> props = parseProperties();
+            removeOld();
+            generateMetaProperties(props);
+            generateMetaBean();
+            generatePropertyGet(props);
+            generatePropertySet(props);
+            generateGettersSetters(props);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -74,6 +82,16 @@ class BeanGen {
             }
         }
         throw new RuntimeException("Unable to locate bean name");
+    }
+
+    private boolean parseIsBean() {
+        for (int index = 0; index < content.size(); index++) {
+            String line = content.get(index).trim();
+            if (line.contains(" extends DirectBean<" + beanName + "> ")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<PropertyGen> parseProperties() {
@@ -175,7 +193,13 @@ class BeanGen {
 
     private void generatePropertySet(List<PropertyGen> props) {
         insertRegion.add("\t@Override");
-        insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        boolean generics = false;
+        for (PropertyGen prop : props) {
+            generics |= prop.isGenericType();
+        }
+        if (generics) {
+            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        }
         insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue) {");
         insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
         for (PropertyGen prop : props) {
@@ -188,6 +212,10 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
+    boolean isBean() {
+        return insertRegion != null;
+    }
+
     String getBeanName() {
         return beanName;
     }

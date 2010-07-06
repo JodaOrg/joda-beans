@@ -18,6 +18,7 @@ package org.joda.beans.gen;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -35,18 +36,50 @@ import java.util.List;
  */
 public class BeanCodeGen {
 
-    private static final String TAB_EXPAND = "    ";
-
     /**
      * Main.
      * @param args  the arguments, not null
      */
     public static void main(String[] args) {
+        String indent = "    ";
+        File file = null;
         try {
-            File file = new File("src/test/java/org/joda/beans/Person.java");
-//            File file = new File(args[0]);
-            BeanCodeGen gen = new BeanCodeGen(file);
-            gen.process();
+            if (args.length == 0) {
+                throw new RuntimeException();
+            }
+            for (int i = 0; i < args.length - 1; i++) {
+                if (args[i].startsWith("-indent=tab")) {
+                    indent = "\t";
+                } else if (args[i].startsWith("-indent=")) {
+                    indent = "          ".substring(0, Integer.parseInt(args[i].substring(8)));
+                }
+            }
+            file = new File(args[args.length - 1]);
+        } catch (Exception ex) {
+            System.out.println("Code generator");
+            System.out.println("  Usage java org.joda.beans.gen.BeanCodeGen [file]");
+            System.out.println("  Options");
+            System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
+            System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
+            System.exit(0);
+        }
+        try {
+            File[] files;
+            if (file.isDirectory()) {
+                files = file.listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File child) {
+                        return child.getName().endsWith(".java") && child.isFile();
+                    }
+                });
+            } else {
+                files = new File[] {file};
+            }
+            for (File child : files) {
+                BeanCodeGen gen = new BeanCodeGen(child, indent);
+                gen.process();
+            }
+            System.out.println("Finished");
             System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -57,20 +90,30 @@ public class BeanCodeGen {
     //-----------------------------------------------------------------------
     /** The file to process. */
     private final File file;
+    /** The indent to use. */
+    private final String indent;
 
     /**
      * Constructor.
      * @param file  the file to process, not null
+     * @param indent  the indent to use, not null
      */
-    public BeanCodeGen(File file) {
+    public BeanCodeGen(File file, String indent) {
         this.file = file;
+        this.indent = indent;
     }
 
     //-----------------------------------------------------------------------
     private void process() throws Exception {
+        System.out.print(file);
         List<String> content = readFile();
         BeanGen gen = new BeanGen(content);
-        gen.process();
+        if (gen.isBean() ) {
+            System.out.println("  [processing]");
+            gen.process();
+        } else {
+            System.out.println("  [ignored]");
+        }
         writeFile(content);
     }
 
@@ -93,7 +136,7 @@ public class BeanCodeGen {
         PrintWriter os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
         try {
             for (String line : content) {
-                line = line.replace("\t", TAB_EXPAND);
+                line = line.replace("\t", indent);
                 os.println(line);
             }
         } finally {
