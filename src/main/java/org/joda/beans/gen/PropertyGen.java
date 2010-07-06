@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.beans.Address;
 import org.joda.beans.PropertyReadWrite;
 
 /**
