@@ -111,10 +111,10 @@ public class BeanCodeGen {
         if (gen.isBean() ) {
             System.out.println("  [processing]");
             gen.process();
+            writeFile(content);
         } else {
             System.out.println("  [ignored]");
         }
-        writeFile(content);
     }
 
     //-----------------------------------------------------------------------
