@@ -102,7 +102,8 @@ class PropertyGen {
 
     //-----------------------------------------------------------------------
     private String parseName(List<String> content) {
-        String[] parts = content.get(fieldIndex).trim().split(" ");
+        String line = parseFieldDefinition(content);
+        String[] parts = line.split(" ");
         String last = parts[parts.length - 1];
         if (last.endsWith(";") && last.length() > 1) {
             return last.substring(0, last.length() - 1);
@@ -111,7 +112,8 @@ class PropertyGen {
     }
 
     private String parseType(List<String> content) {
-        String[] parts = content.get(fieldIndex).trim().split(" ");
+        String line = parseFieldDefinition(content);
+        String[] parts = line.split(" ");
         if (parts.length < 2) {
             throw new RuntimeException("Unable to locate field type at line " + annotationIndex);
         }
@@ -138,6 +140,14 @@ class PropertyGen {
             type = parts[partsPos] + " " + type;
         }
         return type;
+    }
+
+    private String parseFieldDefinition(List<String> content) {
+        String line = content.get(fieldIndex).trim();
+        if (line.contains(" = ")) {
+            line = line.substring(0, line.indexOf(" = ")).trim() + ";";
+        }
+        return line;
     }
 
     private List<String> parseComment(List<String> content) {

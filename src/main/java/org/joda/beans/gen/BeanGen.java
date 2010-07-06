@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Code generator for a bean.
@@ -40,14 +41,18 @@ class BeanGen {
     private final int autoEndIndex;
     /** The region to insert into. */
     private List<String> insertRegion;
+    /** The indent. */
+    private final String indent;
 
     /**
      * Constructor.
      * @param content  the content to process, not null
+     * @param indent  the indent to use, not null
      */
-    BeanGen(List<String> content) {
+    BeanGen(List<String> content, String indent) {
         this.content = content;
         this.beanName = parseBeanName();
+        this.indent = indent;
         if (parseIsBean()) {
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
@@ -69,6 +74,13 @@ class BeanGen {
             generatePropertyGet(props);
             generatePropertySet(props);
             generateGettersSetters(props);
+            resolveIndents();
+        }
+    }
+
+    private void resolveIndents() {
+        for (ListIterator<String> it = content.listIterator(); it.hasNext(); ) {
+            it.set(it.next().replace("\t", indent));
         }
     }
 

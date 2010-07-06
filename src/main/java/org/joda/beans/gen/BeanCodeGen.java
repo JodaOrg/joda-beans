@@ -82,7 +82,8 @@ public class BeanCodeGen {
             System.out.println("Finished");
             System.exit(0);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println();
+            ex.printStackTrace(System.out);
             System.exit(1);
         }
     }
@@ -106,12 +107,23 @@ public class BeanCodeGen {
     //-----------------------------------------------------------------------
     private void process() throws Exception {
         System.out.print(file);
-        List<String> content = readFile();
-        BeanGen gen = new BeanGen(content);
+        List<String> original = readFile();
+        List<String> content = new ArrayList<String>(original);
+        BeanGen gen = new BeanGen(content, indent);
         if (gen.isBean() ) {
-            System.out.println("  [processing]");
+            System.out.print("  [processing]");
             gen.process();
-            writeFile(content);
+            if (content.equals(original) == false) {
+                System.out.print(" [writing]");
+//                System.out.println();
+//                System.out.println(content.subList(49, 50));
+//                System.out.println(original.subList(49, 50));
+//                System.out.println(content.subList(0, 49).equals(original.subList(0, 49)));
+                writeFile(content);
+            } else {
+                System.out.print(" [no change]");
+            }
+            System.out.println();
         } else {
             System.out.println("  [ignored]");
         }
@@ -136,7 +148,6 @@ public class BeanCodeGen {
         PrintWriter os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
         try {
             for (String line : content) {
-                line = line.replace("\t", indent);
                 os.println(line);
             }
         } finally {
