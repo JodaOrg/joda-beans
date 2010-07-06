@@ -153,7 +153,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string that summarises the property.
+     * Returns a string that summarises the bean.
      * <p>
      * The string contains the class name and properties.
      * 
