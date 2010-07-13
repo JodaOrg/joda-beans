@@ -15,8 +15,6 @@
  */
 package org.joda.beans;
 
-import java.util.NoSuchElementException;
-
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.reflection.ReflectiveMetaBean;
@@ -72,7 +70,7 @@ public class Address extends DirectBean<Address> {
             case 3053931:  // city
                 return getCity();
         }
-        throw new NoSuchElementException("Unknown property: " + propertyName);
+        return super.propertyGet(propertyName);
     }
 
     @Override
@@ -88,7 +86,7 @@ public class Address extends DirectBean<Address> {
                 setCity((String) newValue);
                 return;
         }
-        throw new NoSuchElementException("Unknown property: " + propertyName);
+        super.propertySet(propertyName, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -99,6 +97,7 @@ public class Address extends DirectBean<Address> {
     public int getNumber() {
         return number;
     }
+
     /**
      * Sets the number.
      * @param number  the new value of the property
@@ -106,6 +105,7 @@ public class Address extends DirectBean<Address> {
     public void setNumber(int number) {
         this.number = number;
     }
+
     /**
      * Gets the the {@code number} property.
      * @return the property, not null
@@ -122,6 +122,7 @@ public class Address extends DirectBean<Address> {
     public String getStreet() {
         return street;
     }
+
     /**
      * Sets the street.
      * @param street  the new value of the property
@@ -129,6 +130,7 @@ public class Address extends DirectBean<Address> {
     public void setStreet(String street) {
         this.street = street;
     }
+
     /**
      * Gets the the {@code street} property.
      * @return the property, not null
@@ -145,6 +147,7 @@ public class Address extends DirectBean<Address> {
     public String getCity() {
         return city;
     }
+
     /**
      * Sets the city.
      * @param city  the new value of the property
@@ -152,6 +155,7 @@ public class Address extends DirectBean<Address> {
     public void setCity(String city) {
         this.city = city;
     }
+
     /**
      * Gets the the {@code city} property.
      * @return the property, not null

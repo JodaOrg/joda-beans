@@ -17,7 +17,6 @@ package org.joda.beans;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
@@ -101,7 +100,7 @@ public class Person extends DirectBean<Person> {
             case -1809421292:  // extensions
                 return getExtensions();
         }
-        throw new NoSuchElementException("Unknown property: " + propertyName);
+        return super.propertyGet(propertyName);
     }
 
     @Override
@@ -127,7 +126,7 @@ public class Person extends DirectBean<Person> {
                 setExtensions((FlexiBean) newValue);
                 return;
         }
-        throw new NoSuchElementException("Unknown property: " + propertyName);
+        super.propertySet(propertyName, newValue);
     }
 
     //-----------------------------------------------------------------------
@@ -138,6 +137,7 @@ public class Person extends DirectBean<Person> {
     public String getForename() {
         return forename;
     }
+
     /**
      * Sets the forename.
      * @param forename  the new value of the property
@@ -145,6 +145,7 @@ public class Person extends DirectBean<Person> {
     public void setForename(String forename) {
         this.forename = forename;
     }
+
     /**
      * Gets the the {@code forename} property.
      * @return the property, not null
@@ -161,6 +162,7 @@ public class Person extends DirectBean<Person> {
     public String getSurname() {
         return surname;
     }
+
     /**
      * Sets the surname.
      * @param surname  the new value of the property
@@ -168,6 +170,7 @@ public class Person extends DirectBean<Person> {
     public void setSurname(String surname) {
         this.surname = surname;
     }
+
     /**
      * Gets the the {@code surname} property.
      * @return the property, not null
@@ -184,6 +187,7 @@ public class Person extends DirectBean<Person> {
     public int getNumberOfCars() {
         return numberOfCars;
     }
+
     /**
      * Sets the number of cars.
      * @param numberOfCars  the new value of the property
@@ -191,6 +195,7 @@ public class Person extends DirectBean<Person> {
     public void setNumberOfCars(int numberOfCars) {
         this.numberOfCars = numberOfCars;
     }
+
     /**
      * Gets the the {@code numberOfCars} property.
      * @return the property, not null
@@ -207,6 +212,7 @@ public class Person extends DirectBean<Person> {
     public List<Address> getAddressList() {
         return addressList;
     }
+
     /**
      * Sets the addressList.
      * @param addressList  the new value of the property
@@ -214,6 +220,7 @@ public class Person extends DirectBean<Person> {
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
     }
+
     /**
      * Gets the the {@code addressList} property.
      * @return the property, not null
@@ -230,6 +237,7 @@ public class Person extends DirectBean<Person> {
     public Map<String, Address> getOtherAddressMap() {
         return otherAddressMap;
     }
+
     /**
      * Sets the otherAddressMap.
      * @param otherAddressMap  the new value of the property
@@ -237,6 +245,7 @@ public class Person extends DirectBean<Person> {
     public void setOtherAddressMap(Map<String, Address> otherAddressMap) {
         this.otherAddressMap = otherAddressMap;
     }
+
     /**
      * Gets the the {@code otherAddressMap} property.
      * @return the property, not null
@@ -253,6 +262,7 @@ public class Person extends DirectBean<Person> {
     public FlexiBean getExtensions() {
         return extensions;
     }
+
     /**
      * Sets the extensions.
      * @param extensions  the new value of the property
@@ -260,6 +270,7 @@ public class Person extends DirectBean<Person> {
     public void setExtensions(FlexiBean extensions) {
         this.extensions = extensions;
     }
+
     /**
      * Gets the the {@code extensions} property.
      * @return the property, not null

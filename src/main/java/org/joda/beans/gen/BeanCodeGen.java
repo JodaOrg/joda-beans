@@ -41,6 +41,7 @@ public class BeanCodeGen {
      */
     public static void main(String[] args) {
         String indent = "    ";
+        String prefix = "";
         boolean recurse = false;
         File file = null;
         try {
@@ -52,6 +53,8 @@ public class BeanCodeGen {
                     indent = "\t";
                 } else if (args[i].startsWith("-indent=")) {
                     indent = "          ".substring(0, Integer.parseInt(args[i].substring(8)));
+                } else if (args[i].startsWith("-prefix=")) {
+                    prefix = args[i].substring(8);
                 } else if (args[i].equals("-R")) {
                     recurse = true;
                 }
@@ -64,12 +67,13 @@ public class BeanCodeGen {
             System.out.println("    -R                process all files recursively, default false");
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
+            System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
             System.exit(0);
         }
         try {
             List<File> files = findFiles(file, recurse);
             for (File child : files) {
-                BeanCodeGen gen = new BeanCodeGen(child, indent);
+                BeanCodeGen gen = new BeanCodeGen(child, indent, prefix);
                 gen.process();
             }
             System.out.println("Finished");
@@ -110,15 +114,19 @@ public class BeanCodeGen {
     private final File file;
     /** The indent to use. */
     private final String indent;
+    /** The prefix to use. */
+    private final String prefix;
 
     /**
      * Constructor.
      * @param file  the file to process, not null
      * @param indent  the indent to use, not null
+     * @param prefix  the prefix to use, not null
      */
-    public BeanCodeGen(File file, String indent) {
+    public BeanCodeGen(File file, String indent, String prefix) {
         this.file = file;
         this.indent = indent;
+        this.prefix = prefix;
     }
 
     //-----------------------------------------------------------------------
@@ -126,16 +134,12 @@ public class BeanCodeGen {
         System.out.print(file);
         List<String> original = readFile();
         List<String> content = new ArrayList<String>(original);
-        BeanGen gen = new BeanGen(content, indent);
+        BeanGen gen = new BeanGen(content, indent, prefix);
         if (gen.isBean() ) {
             System.out.print("  [processing]");
             gen.process();
             if (content.equals(original) == false) {
                 System.out.print(" [writing]");
-//                System.out.println();
-//                System.out.println(content.subList(49, 50));
-//                System.out.println(original.subList(49, 50));
-//                System.out.println(content.subList(0, 49).equals(original.subList(0, 49)));
                 writeFile(content);
             } else {
                 System.out.print(" [no change]");

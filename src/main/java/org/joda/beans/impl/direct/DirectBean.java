@@ -37,7 +37,9 @@ public abstract class DirectBean<B extends DirectBean<B>> extends BasicBean<B> {
      * @return the value of the property, may be null
      * @throws NoSuchElementException if the property name is invalid
      */
-    protected abstract Object propertyGet(String propertyName);
+    protected Object propertyGet(String propertyName) {
+        throw new NoSuchElementException("Unknown property: " + propertyName);
+    }
 
     /**
      * Sets the value of the property.
@@ -46,6 +48,8 @@ public abstract class DirectBean<B extends DirectBean<B>> extends BasicBean<B> {
      * @param value  the value of the property, may be null
      * @throws NoSuchElementException if the property name is invalid
      */
-    protected abstract void propertySet(String propertyName, Object value);
+    protected void propertySet(String propertyName, Object value) {
+        throw new NoSuchElementException("Unknown property: " + propertyName);
+    }
 
 }

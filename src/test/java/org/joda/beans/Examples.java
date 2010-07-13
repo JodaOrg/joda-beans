@@ -73,6 +73,14 @@ public class Examples {
             validateNotEmpty(a.city());
         System.out.println(valid ? "Valid" : "Not valid");
         
+        // generics
+        Documentation<Address> d = new Documentation<Address>();
+        d.setType("ADDRESS");
+        d.setContent(a);
+        Property<Documentation<Address>, Address> dProp = d.content();
+        Address a2 = dProp.metaProperty().get(d);
+//        Address a3 = Documentation.CONTENT.get(d);
+        
 //        try {
 //            Mongo mongo = new Mongo("127.0.0.1");
 //            System.out.println(mongo);

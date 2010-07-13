@@ -35,7 +35,11 @@ class PropertyGen {
     /** Field line index in input file. */
     private final int fieldIndex;
     /** Property name. */
-    private final String name;
+    private final String propertyName;
+    /** Field name. */
+    private final String fieldName;
+    /** Upper property name. */
+    private final String upperName;
     /** Property type. */
     private final String type;
     /** Read-write type. */
@@ -51,21 +55,34 @@ class PropertyGen {
 
     /**
      * Constructor.
-     * @param content  the lines, not null
-     * @param lineIndex  the index of an @PropertyDefinition
      * @param bean  the bean generator
+     * @param content  the lines, not null
+     * @param lineIndex  the index of a PropertyDefinition
      */
-    public PropertyGen(List<String> content, int lineIndex, BeanGen bean) {
+    public PropertyGen(BeanGen bean, List<String> content, int lineIndex) {
+        this.bean = bean;
         this.annotationIndex = lineIndex;
         this.fieldIndex = parseFieldIndex(content);
         this.readWrite = parseReadWrite(content);
         this.deprecated = parseDeprecated(content);
-        this.name = parseName(content);
+        this.fieldName = parseName(content);
+        this.propertyName = makePropertyName(bean, fieldName);
+        this.upperName = makeUpperName(propertyName);
         this.type = parseType(content);
         List<String> comments = parseComment(content);
         this.firstComment = comments.get(0);
         this.comments = comments.subList(1, comments.size());
-        this.bean = bean;
+    }
+
+    private String makePropertyName(BeanGen bean, String name) {
+        if (name.startsWith(bean.getFieldPrefix())) {
+            name = name.substring(bean.getFieldPrefix().length());
+        }
+        return name;
+    }
+
+    private String makeUpperName(String name) {
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     //-----------------------------------------------------------------------
@@ -83,7 +100,7 @@ class PropertyGen {
 
     private PropertyReadWrite parseReadWrite(List<String> content) {
         String line = content.get(annotationIndex).trim();
-        Matcher matcher = Pattern.compile(".*readWrite[=]PropertyReadWrite\\.([A-Z_]+).*").matcher(line);
+        Matcher matcher = Pattern.compile(".*readWrite[ ]*[=][ ]*PropertyReadWrite\\.([A-Z_]+).*").matcher(line);
         if (matcher.matches()) {
             return PropertyReadWrite.valueOf(matcher.group(1));
         }
@@ -183,7 +200,7 @@ class PropertyGen {
             comments.add(comment.substring(0, 1).toLowerCase() + comment.substring(1));
         }
         if (comments.size() == 0) {
-            comments.add("the " + name + ".");
+            comments.add("the " + propertyName + ".");
         }
         return comments;
     }
@@ -194,15 +211,19 @@ class PropertyGen {
         if (deprecated) {
             list.add("\t@Deprecated");
         }
-        String beanName = bean.getBeanName();
+        String beanName = bean.getBeanNoGenericsType();
         list.add("\t/**");
-        list.add("\t * The meta-property for the {@code " + name + "} property.");
+        list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
         list.add("\t */");
-        if (isGenericType()) {
+        if (isGenericProperty() || bean.isGenericBean()) {
             list.add("\t@SuppressWarnings(\"unchecked\")");
         }
-        String metaLine = "\tpublic static final MetaProperty<" + beanName + ", " + propertyType() + "> " + metaName() +
-            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + name + "\", " + actualType() + ");";
+        String propertyType = propertyType();
+        if (propertyType.length() == 1) {
+            propertyType = "Object";
+        }
+        String metaLine = "\tpublic static final MetaProperty<" + beanName + ", " + propertyType + "> " + metaName() +
+            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");";
         list.add(metaLine);
         return list;
     }
@@ -217,15 +238,15 @@ class PropertyGen {
         for (String comment : comments) {
             list.add("\t * " + comment);
         }
-//        list.add("\t * Gets the value of the {@code " + name + "} property.");
         list.add("\t * @return the value of the property");
         list.add("\t */");
         if (deprecated) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic " + type + " " + getterPrefix() + upperName() + "() {");
-        list.add("\t\treturn " + name + ";");
+        list.add("\tpublic " + type + " " + getterPrefix() + upperName + "() {");
+        list.add("\t\treturn " + fieldName + ";");
         list.add("\t}");
+        list.add("");
         return list;
     }
 
@@ -239,45 +260,60 @@ class PropertyGen {
         for (String comment : comments) {
             list.add("\t * " + comment);
         }
-//        list.add("\t * Sets the value of the {@code " + name + "} property.");
-        list.add("\t * @param " + name + "  the new value of the property");
+        list.add("\t * @param " + propertyName + "  the new value of the property");
         list.add("\t */");
         if (deprecated) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic void set" + upperName() + "(" + type +  " " + name + ") {");
-        list.add("\t\tthis." + name + " = " + name + ";");
+        list.add("\tpublic void set" + upperName + "(" + type +  " " + propertyName + ") {");
+        list.add("\t\tthis." + fieldName + " = " + propertyName + ";");
         list.add("\t}");
+        list.add("");
         return list;
     }
 
     List<String> generateProperty() {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
-        list.add("\t * Gets the the {@code " + name + "} property.");
+        list.add("\t * Gets the the {@code " + propertyName + "} property.");
         list.add("\t * @return the property, not null");
         list.add("\t */");
         if (deprecated) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic Property<" + bean.getBeanName() + ", " + propertyType() + "> " + name + "() {");
-        list.add("\t\treturn " + metaName() + ".createProperty(this);");
+        if (bean.isGenericBean()) {
+            list.add("\t@SuppressWarnings(\"unchecked\")");
+        }
+        list.add("\tpublic Property<" + bean.getBeanType() + ", " + propertyType() + "> " + propertyName + "() {");
+        if (bean.isGenericBean()) {
+            list.add("\t\treturn (Property<" + bean.getBeanType() + ", " + propertyType() + ">) (Object) " + metaName() + ".createProperty((" + bean.getBeanNoGenericsType() + ") this);");
+        } else {
+            list.add("\t\treturn " + metaName() + ".createProperty(this);");
+        }
         list.add("\t}");
         return list;
     }
 
     List<String> generatePropertyGetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\tcase " + name.hashCode() + ":  // " + name);
-        list.add("\t\t\t\treturn " + getterPrefix() + upperName() + "();");
+        list.add("\t\t\tcase " + propertyName.hashCode() + ":  // " + propertyName);
+        if (readWrite.isReadable()) {
+            list.add("\t\t\t\treturn " + getterPrefix() + upperName + "();");
+        } else {
+            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + propertyName + "\");");
+        }
         return list;
     }
 
     List<String> generatePropertySetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\tcase " + name.hashCode() + ":  // " + name);
-        list.add("\t\t\t\tset" + upperName() + "(" + castObject() + "newValue);");
-        list.add("\t\t\t\treturn;");
+        list.add("\t\t\tcase " + propertyName.hashCode() + ":  // " + propertyName);
+        if (readWrite.isWritable()) {
+            list.add("\t\t\t\tset" + upperName + "(" + castObject() + "newValue);");
+            list.add("\t\t\t\treturn;");
+        } else {
+            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + propertyName + "\");");
+        }
         return list;
     }
 
@@ -302,6 +338,9 @@ class PropertyGen {
             int genericStart = pt.indexOf('<');
             if (genericStart >= 0) {
                 return "(Class<" + pt + ">) (Class) " + pt.substring(0, genericStart) + ".class";
+            }
+            if (type.length() == 1) {
+                return "Object.class";
             }
             return pt + ".class";
         }
@@ -346,8 +385,8 @@ class PropertyGen {
 
     private String metaName() {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < name.length(); i++) {
-            char ch = name.charAt(i);
+        for (int i = 0; i < propertyName.length(); i++) {
+            char ch = propertyName.charAt(i);
             if (Character.isUpperCase(ch)) {
                 buf.append('_').append(ch);
             } else {
@@ -357,16 +396,16 @@ class PropertyGen {
         return buf.toString();
     }
 
-    private String upperName() {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
-
     private String getterPrefix() {
         return type.equals("boolean") ? "is" : "get";
     }
 
-    boolean isGenericType() {
-        return type.contains("<");
+    private boolean isGenericProperty() {
+        return type.contains("<") || type.length() == 1;
+    }
+
+    boolean isGenericWritableProperty() {
+        return readWrite.isWritable() && (type.contains("<") || type.length() == 1);
     }
 
 }

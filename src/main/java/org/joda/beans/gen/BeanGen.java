@@ -34,7 +34,9 @@ class BeanGen {
     /** The content to process. */
     private final List<String> content;
     /** The simple name of the bean class. */
-    private final String beanName;
+    private final String beanType;
+    /** The bean type with generics removed. */
+    private final String beanNoGenericsType;
     /** The start position of auto-generation. */
     private final int autoStartIndex;
     /** The end position of auto-generation. */
@@ -43,25 +45,38 @@ class BeanGen {
     private List<String> insertRegion;
     /** The indent. */
     private final String indent;
+    /** The prefix. */
+    private final String prefix;
 
     /**
      * Constructor.
      * @param content  the content to process, not null
      * @param indent  the indent to use, not null
+     * @param prefix  the prefix to use, not null
      */
-    BeanGen(List<String> content, String indent) {
+    BeanGen(List<String> content, String indent, String prefix) {
         this.content = content;
-        this.beanName = parseBeanName();
         this.indent = indent;
-        if (parseIsBean()) {
+        this.prefix = prefix;
+        int extendsIndex = parseIsBean();
+        if (extendsIndex >= 0) {
+            this.beanType = parseBeanName(extendsIndex);
+            this.beanNoGenericsType = makeNoGenerics(beanType);
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
         } else {
+            this.beanType = null;
+            this.beanNoGenericsType = null;
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
             this.insertRegion = null;
         }
+    }
+
+    private String makeNoGenerics(String beanType) {
+        int pos = beanType.indexOf("<");
+        return (pos < 0 ? beanType : beanType.substring(0, pos));
     }
 
     //-----------------------------------------------------------------------
@@ -85,8 +100,8 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
-    private String parseBeanName() {
-        for (int index = 0; index < content.size(); index++) {
+    private String parseBeanName(int extendsLine) {
+        for (int index = extendsLine; index >= 0; index--) {
             String line = content.get(index).trim();
             int pos = line.indexOf(" class ");
             if (pos >= 0) {
@@ -96,14 +111,14 @@ class BeanGen {
         throw new RuntimeException("Unable to locate bean name");
     }
 
-    private boolean parseIsBean() {
+    private int parseIsBean() {
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
-            if (line.contains(" extends DirectBean<" + beanName + "> ")) {
-                return true;
+            if (line.contains(" extends DirectBean<")) {
+                return index;
             }
         }
-        return false;
+        return -1;
     }
 
     private List<PropertyGen> parseProperties() {
@@ -111,7 +126,7 @@ class BeanGen {
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
             if (line.startsWith("@PropertyDefinition")) {
-                props.add(new PropertyGen(content, index, this));
+                props.add(new PropertyGen(this, content, index));
             }
         }
         return props;
@@ -167,15 +182,25 @@ class BeanGen {
 
     private void generateMetaBean() {
         insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + beanName + "}.");
+        insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
         insertRegion.add("\t */");
-        String line = "\tpublic static final MetaBean<" + beanName + "> META = ReflectiveMetaBean.of(" + beanName + ".class);";
+        if (isGenericBean()) {
+            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        }
+        String line = "\tpublic static final MetaBean<" + beanNoGenericsType + "> META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);";
         insertRegion.add(line);
         insertRegion.add("");
         generateSeparator();
+        if (isGenericBean()) {
+            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        }
         insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic MetaBean<" + beanName + "> metaBean() {");
-        insertRegion.add("\t\treturn META;");
+        insertRegion.add("\tpublic MetaBean<" + beanType + "> metaBean() {");
+        if (isGenericBean()) {
+            insertRegion.add("\t\treturn (MetaBean<" + beanType + ">) (Object) META;");
+        } else {
+            insertRegion.add("\t\treturn META;");
+        }
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -198,7 +223,7 @@ class BeanGen {
             insertRegion.addAll(prop.generatePropertyGetCase());
         }
         insertRegion.add("\t\t}");
-        insertRegion.add("\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+        insertRegion.add("\t\treturn super.propertyGet(propertyName);");
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -207,7 +232,7 @@ class BeanGen {
         insertRegion.add("\t@Override");
         boolean generics = false;
         for (PropertyGen prop : props) {
-            generics |= prop.isGenericType();
+            generics |= prop.isGenericWritableProperty();
         }
         if (generics) {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
@@ -218,18 +243,30 @@ class BeanGen {
             insertRegion.addAll(prop.generatePropertySetCase());
         }
         insertRegion.add("\t\t}");
-        insertRegion.add("\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+        insertRegion.add("\t\tsuper.propertySet(propertyName, newValue);");
         insertRegion.add("\t}");
         insertRegion.add("");
     }
 
     //-----------------------------------------------------------------------
     boolean isBean() {
-        return insertRegion != null;
+        return beanType != null;
     }
 
-    String getBeanName() {
-        return beanName;
+    String getBeanType() {
+        return beanType;
+    }
+
+    String getBeanNoGenericsType() {
+        return beanNoGenericsType;
+    }
+
+    boolean isGenericBean() {
+        return getBeanType().equals(getBeanNoGenericsType()) == false;
+    }
+
+    String getFieldPrefix() {
+        return prefix;
     }
 
 }
