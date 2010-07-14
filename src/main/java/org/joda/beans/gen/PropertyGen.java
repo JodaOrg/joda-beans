@@ -206,11 +206,8 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
-    List<String> generateMetaProperty() {
+    List<String> generateMetaPropertyConstant() {
         List<String> list = new ArrayList<String>();
-        if (deprecated) {
-            list.add("\t@Deprecated");
-        }
         String beanName = bean.getBeanNoGenericsType();
         list.add("\t/**");
         list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
@@ -222,9 +219,13 @@ class PropertyGen {
         if (propertyType.length() == 1) {
             propertyType = "Object";
         }
-        String metaLine = "\tpublic static final MetaProperty<" + beanName + ", " + propertyType + "> " + metaName() +
-            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");";
-        list.add(metaLine);
+        if (bean.isGenericBean()) {
+            list.add("\tprivate static final MetaProperty " + metaName() +
+            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");");
+        } else {
+            list.add("\tprivate static final MetaProperty<" + beanName + ", " + propertyType + "> " + metaName() +
+            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");");
+        }
         return list;
     }
 
@@ -281,16 +282,46 @@ class PropertyGen {
         if (deprecated) {
             list.add("\t@Deprecated");
         }
+        list.add("\tpublic final Property<" + bean.getBeanType() + ", " + propertyType() + "> " + propertyName + "() {");
         if (bean.isGenericBean()) {
-            list.add("\t@SuppressWarnings(\"unchecked\")");
-        }
-        list.add("\tpublic Property<" + bean.getBeanType() + ", " + propertyType() + "> " + propertyName + "() {");
-        if (bean.isGenericBean()) {
-            list.add("\t\treturn (Property<" + bean.getBeanType() + ", " + propertyType() + ">) (Object) " + metaName() + ".createProperty((" + bean.getBeanNoGenericsType() + ") this);");
+            String beanGeneric = bean.getBeanType().substring(bean.getBeanNoGenericsType().length());
+            list.add("\t\treturn " + bean.getBeanNoGenericsType() + "." + beanGeneric + propertyName + "Meta().createProperty(this);");
         } else {
             list.add("\t\treturn " + metaName() + ".createProperty(this);");
         }
         list.add("\t}");
+        list.add("");
+        return list;
+    }
+
+    List<String> generateMetaProperty() {
+        List<String> list = new ArrayList<String>();
+        String beanName = bean.getBeanNoGenericsType();
+        String propertyType = propertyType();
+        if (propertyType.length() == 1) {
+            propertyType = "Object";
+        }
+        list.add("\t/**");
+        list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
+        list.add("\t */");
+        if (deprecated) {
+            list.add("\t@Deprecated");
+        }
+        if (bean.isGenericBean()) {
+            list.add("\t@SuppressWarnings(\"unchecked\")");
+            if (bean.getBeanGeneric().equals(type)) {
+                list.add("\tpublic static final <R> MetaProperty<" + beanName + "<R>, R> " + propertyName + "Meta() {");
+                list.add("\t\treturn (MetaProperty<" + beanName + "<R>, R>) " + metaName() + ";");
+            } else {
+                list.add("\tpublic static final <R> MetaProperty<" + beanName + "<R>, " + propertyType + "> " + propertyName + "Meta() {");
+                list.add("\t\treturn (MetaProperty<" + beanName + "<R>, " + propertyType + ">) " + metaName() + ";");
+            }
+        } else {
+            list.add("\tpublic static final MetaProperty<" + beanName + ", " + propertyType + "> " + propertyName + "Meta() {");
+            list.add("\t\treturn " + metaName() + ";");
+        }
+        list.add("\t}");
+        list.add("");
         return list;
     }
 

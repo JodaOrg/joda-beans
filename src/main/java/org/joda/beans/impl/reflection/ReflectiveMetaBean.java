@@ -64,10 +64,10 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
         }
         this.beanType = beanType;
         Map<String, MetaProperty<B, Object>> map = new HashMap<String, MetaProperty<B, Object>>();
-        Field[] fields = beanType.getFields();
+        Field[] fields = beanType.getDeclaredFields();
         for (Field field : fields) {
-            if (MetaProperty.class.isAssignableFrom(field.getType()) &&
-                    Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
+            if (MetaProperty.class.isAssignableFrom(field.getType()) && Modifier.isStatic(field.getModifiers())) {
+                field.setAccessible(true);
                 MetaProperty<B, Object> mp;
                 try {
                     mp = (MetaProperty<B, Object>) field.get(null);

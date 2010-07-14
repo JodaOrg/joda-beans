@@ -29,16 +29,17 @@ import org.testng.annotations.Test;
 @Test
 public class TestPerson {
 
+    private static final int NUM_PROPERTIES = 6;
     private static final String FORENAME = "forename";
     private static final String SURNAME = "surname";
     private static final String NUMBER_OF_CARS = "numberOfCars";
 
     public void test_bean() {
-        Bean<Person> test = Person.META.createBean();
+        Bean<Person> test = Person.meta().createBean();
         
         assertEquals(test.beanData() instanceof Person, true);
         
-        assertEquals(test.metaBean(), Person.META);
+        assertEquals(test.metaBean(), Person.meta());
         
         assertEquals(test.propertyExists(FORENAME), true);
         assertEquals(test.propertyExists(SURNAME), true);
@@ -52,7 +53,7 @@ public class TestPerson {
 
     @Test(expectedExceptions=NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
-        Bean<Person> test = Person.META.createBean();
+        Bean<Person> test = Person.meta().createBean();
         try {
             test.property("Rubbish");
         } catch (NoSuchElementException ex) {
@@ -63,13 +64,13 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     public void test_metaBean() {
-        MetaBean<Person> test = Person.META;
+        MetaBean<Person> test = Person.meta();
         
         assertEquals(test.beanType(), Person.class);
         
         assertEquals(test.name(), Person.class.getName());
         
-        assertEquals(test.metaPropertyCount(), 6);
+        assertEquals(test.metaPropertyCount(), NUM_PROPERTIES);
         
         assertEquals(test.metaPropertyExists(FORENAME), true);
         assertEquals(test.metaPropertyExists(SURNAME), true);
@@ -81,7 +82,7 @@ public class TestPerson {
         assertEquals(test.metaProperty(NUMBER_OF_CARS).name(), NUMBER_OF_CARS);
         
         Map<String, MetaProperty<Person, Object>> map = test.metaPropertyMap();
-        assertEquals(map.size(), 6);
+        assertEquals(map.size(), NUM_PROPERTIES);
         assertEquals(map.containsKey(FORENAME), true);
         assertEquals(map.containsKey(SURNAME), true);
         assertEquals(map.containsKey(NUMBER_OF_CARS), true);
@@ -89,7 +90,7 @@ public class TestPerson {
 
     @Test(expectedExceptions=NoSuchElementException.class)
     public void test_metaBean_invalidPropertyName() {
-        MetaBean<Person> test = Person.META;
+        MetaBean<Person> test = Person.meta();
         try {
             test.metaProperty("Rubbish");
         } catch (NoSuchElementException ex) {
@@ -104,7 +105,7 @@ public class TestPerson {
         Property<Person, String> test = person.forename();
         
         assertSame(test.bean(), person);
-        assertSame(test.metaProperty(), Person.FORENAME);
+        assertSame(test.metaProperty(), Person.forenameMeta());
         
         assertEquals(test.get(), null);
         person.setForename("A");
@@ -120,7 +121,7 @@ public class TestPerson {
         Person person = new Person();
         PropertyMap<Person> test = person.propertyMap();
         
-        assertSame(test.size(), 6);
+        assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.containsKey(FORENAME), true);
         assertEquals(test.containsKey(SURNAME), true);
         assertEquals(test.containsKey(NUMBER_OF_CARS), true);
@@ -133,7 +134,7 @@ public class TestPerson {
         person.setNumberOfCars(3);
         Map<String, Object> test = person.propertyMap().flatten();
         
-        assertSame(test.size(), 6);
+        assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.get(FORENAME), "A");
         assertEquals(test.get(SURNAME), "B");
         assertEquals(test.get(NUMBER_OF_CARS), 3);
@@ -142,7 +143,7 @@ public class TestPerson {
     //-----------------------------------------------------------------------
     public void test_metaProperty() {
         Person person = new Person();
-        MetaProperty<Person, String> test = Person.FORENAME;
+        MetaProperty<Person, String> test = Person.forenameMeta();
         
         assertSame(test.beanType(), Person.class);
         assertSame(test.propertyType(), String.class);

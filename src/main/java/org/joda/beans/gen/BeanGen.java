@@ -176,33 +176,58 @@ class BeanGen {
 
     private void generateMetaProperties(List<PropertyGen> props) {
         for (PropertyGen prop : props) {
-            insertRegion.addAll(prop.generateMetaProperty());
+            insertRegion.addAll(prop.generateMetaPropertyConstant());
         }
     }
 
     private void generateMetaBean() {
-        insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
-        insertRegion.add("\t */");
         if (isGenericBean()) {
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
+            insertRegion.add("\t */");
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-        }
-        String line = "\tpublic static final MetaBean<" + beanNoGenericsType + "> META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);";
-        insertRegion.add(line);
-        insertRegion.add("");
-        generateSeparator();
-        if (isGenericBean()) {
+            String line = "\tprivate static final MetaBean META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);";
+            insertRegion.add(line);
+            insertRegion.add("");
+            generateSeparator();
+            
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
+            insertRegion.add("\t */");
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-        }
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic MetaBean<" + beanType + "> metaBean() {");
-        if (isGenericBean()) {
-            insertRegion.add("\t\treturn (MetaBean<" + beanType + ">) (Object) META;");
+            insertRegion.add("\tpublic static final <R> MetaBean<" + beanNoGenericsType + "<R>> meta() {");
+            insertRegion.add("\t\treturn (MetaBean<" + beanNoGenericsType + "<R>>) META;");
+            insertRegion.add("\t}");
+            insertRegion.add("");
+            
+            insertRegion.add("\t@Override");
+            insertRegion.add("\tpublic final MetaBean<" + beanType + "> metaBean() {");
+            insertRegion.add("\t\treturn " + beanNoGenericsType + ".<" + getBeanGeneric() + ">meta();");
+            insertRegion.add("\t}");
+            insertRegion.add("");
         } else {
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
+            insertRegion.add("\t */");
+            String line = "\tprivate static final MetaBean<" + beanNoGenericsType + "> META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);";
+            insertRegion.add(line);
+            insertRegion.add("");
+            generateSeparator();
+            
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
+            insertRegion.add("\t */");
+            insertRegion.add("\tpublic static final MetaBean<" + beanType + "> meta() {");
             insertRegion.add("\t\treturn META;");
+            insertRegion.add("\t}");
+            insertRegion.add("");
+            
+            insertRegion.add("\t@Override");
+            insertRegion.add("\tpublic final MetaBean<" + beanType + "> metaBean() {");
+            insertRegion.add("\t\treturn META;");
+            insertRegion.add("\t}");
+            insertRegion.add("");
         }
-        insertRegion.add("\t}");
-        insertRegion.add("");
     }
 
     private void generateGettersSetters(List<PropertyGen> props) {
@@ -211,7 +236,7 @@ class BeanGen {
             insertRegion.addAll(prop.generateGetter());
             insertRegion.addAll(prop.generateSetter());
             insertRegion.addAll(prop.generateProperty());
-            insertRegion.add("");
+            insertRegion.addAll(prop.generateMetaProperty());
         }
     }
 
@@ -263,6 +288,12 @@ class BeanGen {
 
     boolean isGenericBean() {
         return getBeanType().equals(getBeanNoGenericsType()) == false;
+    }
+
+    String getBeanGeneric() {
+        String beanGeneric = beanType.substring(beanNoGenericsType.length());
+        beanGeneric = (beanGeneric.startsWith("<") ? beanGeneric.substring(1) : beanGeneric);
+        return (beanGeneric.endsWith(">") ? beanGeneric.substring(0, beanGeneric.length() - 1) : beanGeneric);
     }
 
     String getFieldPrefix() {
