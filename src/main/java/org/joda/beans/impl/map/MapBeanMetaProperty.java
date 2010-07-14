@@ -53,6 +53,11 @@ public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
+    public Class<MapBean> beanType() {
+        return MapBean.class;
+    }
+
+    @Override
     public Class<Object> propertyType() {
         return Object.class;
     }
@@ -65,12 +70,12 @@ public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     //-----------------------------------------------------------------------
     @Override
     public Object get(Bean bean) {
-        return bean.<MapBean>beanData().get(name());
+        return beanType().cast(bean).get(name());
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        bean.<MapBean>beanData().put(name(), value);
+        beanType().cast(bean).put(name(), value);
     }
 
 }

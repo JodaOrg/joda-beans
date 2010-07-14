@@ -33,7 +33,7 @@ public interface Property<P> {
      * 
      * @return the bean, not null
      */
-    Bean bean();
+    <B extends Bean> B bean();
 
     /**
      * Gets the meta-property representing the parts of the property that are

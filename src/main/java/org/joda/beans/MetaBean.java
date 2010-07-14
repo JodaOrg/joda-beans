@@ -54,7 +54,7 @@ public interface MetaBean {
      * 
      * @return the type of the bean, not null
      */
-    Class<?> beanType();
+    Class<? extends Bean> beanType();
 
     //-----------------------------------------------------------------------
     /**

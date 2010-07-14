@@ -67,9 +67,10 @@ public final class BasicProperty<P> implements Property<P>, Entry<String, Proper
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
-    public Bean bean() {
-        return bean;
+    public <B extends Bean> B bean() {
+        return (B) bean;
     }
 
     @Override

@@ -265,12 +265,6 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public FlexiBean beanData() {
-        return this;
-    }
-
     @Override
     public MetaBean metaBean() {
         return new FlexiMetaBean();
@@ -370,7 +364,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
         @Override
         public PropertyMap createPropertyMap(Bean bean) {
-            return FlexiPropertyMap.of(bean.<FlexiBean>beanData());
+            return FlexiPropertyMap.of(beanType().cast(bean));
         }
 
         @Override

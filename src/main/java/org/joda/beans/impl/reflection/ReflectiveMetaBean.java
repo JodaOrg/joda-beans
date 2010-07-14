@@ -111,7 +111,7 @@ public final class ReflectiveMetaBean implements MetaBean {
     }
 
     @Override
-    public Class<?> beanType() {
+    public Class<? extends Bean> beanType() {
         return beanType;
     }
 

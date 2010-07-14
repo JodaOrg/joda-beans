@@ -42,12 +42,6 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public MapBean beanData() {
-        return this;
-    }
-
     @Override
     public MetaBean metaBean() {
         return this;
@@ -87,7 +81,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
 
     @Override
     public PropertyMap createPropertyMap(Bean bean) {
-        return MapBeanPropertyMap.of(bean.<MapBean>beanData());
+        return MapBeanPropertyMap.of(beanType().cast(bean));
     }
 
     @Override

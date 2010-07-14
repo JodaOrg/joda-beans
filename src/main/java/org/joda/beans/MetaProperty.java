@@ -38,7 +38,7 @@ public interface MetaProperty<P> {
      * 
      * @return the type of the bean, not null
      */
-    Class<?> beanType();
+    Class<? extends Bean> beanType();
 
     /**
      * Gets the property name.

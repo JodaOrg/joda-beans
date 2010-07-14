@@ -18,27 +18,16 @@ package org.joda.beans.impl;
 import org.joda.beans.Bean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.reflection.ReflectiveMetaBean;
 
 /**
  * Basic implementation of {@code Bean} intended for applications to subclass.
  * <p>
  * The subclass must to provide an implementation for {@link Bean#metaBean()}.
  * This returns the complete definition of the bean at the meta level.
- * <p>
- * A simple meta-bean implementation is {@link ReflectiveMetaBean}. This is normally
- * declared as a static constant, so {@code metaBean()} simply returns the constant.
- * This approach also requires a public static {@link MetaProperty} instance for each property.
  * 
  * @author Stephen Colebourne
  */
 public abstract class BasicBean implements Bean {
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <B> B beanData() {
-        return (B) this;
-    }
 
     @Override
     public boolean propertyExists(String propertyName) {

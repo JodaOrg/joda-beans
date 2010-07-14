@@ -80,12 +80,6 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class<? extends Bean> beanType() {
-        return (Class<? extends Bean>) super.beanType();
-    }
-
     @Override
     public Property<P> createProperty(Bean bean) {
         return BasicProperty.of(bean, this);
@@ -110,7 +104,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
         try {
-            return (P) readMethod.invoke(bean.beanData(), (Object[]) null);
+            return (P) readMethod.invoke(bean, (Object[]) null);
         } catch (IllegalArgumentException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + name(), ex);
         } catch (IllegalAccessException ex) {
@@ -129,7 +123,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
         try {
-            writeMethod.invoke(bean.beanData(), value);
+            writeMethod.invoke(bean, value);
         } catch (IllegalArgumentException ex) {
             if (value == null && writeMethod.getParameterTypes()[0].isPrimitive()) {
                 throw new NullPointerException("Property cannot be written: " + name() + ": Cannot store null in primitive");

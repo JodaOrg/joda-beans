@@ -20,26 +20,13 @@ import java.util.NoSuchElementException;
 /**
  * A bean consisting of a set of properties.
  * <p>
- * For a JavaBean, this will ultimately wrap a get/set methods of the bean.
- * Alternate implementations might store the properties in another data structure
- * such as a map.
+ * The implementation may be any class, but is typically a standard JavaBean
+ * with get/set methods. Alternate implementations might store the properties
+ * in another data structure such as a map.
  * 
  * @author Stephen Colebourne
  */
 public interface Bean {
-
-    /**
-     * Gets the data store for this bean.
-     * <p>
-     * There are multiple ways that this bean can be implemented.
-     * The simplest is to make a regular JavaBean implement this interface, in which
-     * case this method would return {@code this}.
-     * More complicated approaches use different data stores.
-     * 
-     * @param <B>  the bean type
-     * @return the bean itself, not null
-     */
-    <B> B beanData();
 
     /**
      * Gets the meta-bean representing the parts of the bean that are
@@ -49,7 +36,6 @@ public interface Bean {
      */
     MetaBean metaBean();
 
-    //-----------------------------------------------------------------------
     /**
      * Checks if a property exists.
      * 

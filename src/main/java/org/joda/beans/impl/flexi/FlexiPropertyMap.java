@@ -121,7 +121,7 @@ final class FlexiPropertyMap
     //-----------------------------------------------------------------------
     @Override
     public Map<String, Object> flatten() {
-        return bean.beanData().toMap();
+        return bean.toMap();
     }
 
 }

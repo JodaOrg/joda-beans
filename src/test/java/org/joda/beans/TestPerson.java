@@ -35,9 +35,9 @@ public class TestPerson {
     private static final String NUMBER_OF_CARS = "numberOfCars";
 
     public void test_bean() {
-        Person test = Person.meta().createBean();
+        Bean test = Person.meta().createBean();
         
-        assertEquals(test.beanData() instanceof Person, true);
+        assertEquals(test instanceof Person, true);
         
         assertEquals(test.metaBean(), Person.meta());
         

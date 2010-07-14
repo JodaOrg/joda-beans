@@ -28,7 +28,7 @@ import org.joda.beans.Property;
 public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
 
     /** The type of the bean. */
-    private final Class<?> beanType;
+    private final Class<? extends Bean> beanType;
     /** The name of the property. */
     private final String name;
 
@@ -40,7 +40,7 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    protected BasicMetaProperty(Class<?> beanType, String propertyName) {
+    protected BasicMetaProperty(Class<? extends Bean> beanType, String propertyName) {
         if (beanType == null) {
             throw new NullPointerException("Bean type must not be null");
         }
@@ -65,7 +65,7 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     }
 
     @Override
-    public Class<?> beanType() {
+    public Class<? extends Bean> beanType() {
         return beanType;
     }
 

@@ -53,6 +53,11 @@ class FlexiMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
+    public Class<FlexiBean> beanType() {
+        return FlexiBean.class;
+    }
+
+    @Override
     public Class<Object> propertyType() {
         return Object.class;
     }
@@ -65,12 +70,12 @@ class FlexiMetaProperty extends BasicMetaProperty<Object> {
     //-----------------------------------------------------------------------
     @Override
     public Object get(Bean bean) {
-        return bean.<FlexiBean>beanData().propertyGet(name());
+        return beanType().cast(bean).propertyGet(name());
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        bean.<FlexiBean>beanData().propertySet(name(), value);
+        beanType().cast(bean).propertySet(name(), value);
     }
 
 }
