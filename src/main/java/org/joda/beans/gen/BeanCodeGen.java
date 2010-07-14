@@ -43,6 +43,7 @@ public class BeanCodeGen {
         String indent = "    ";
         String prefix = "";
         boolean recurse = false;
+        boolean verbose = false;
         File file = null;
         try {
             if (args.length == 0) {
@@ -57,6 +58,8 @@ public class BeanCodeGen {
                     prefix = args[i].substring(8);
                 } else if (args[i].equals("-R")) {
                     recurse = true;
+                } else if (args[i].equals("-v")) {
+                    verbose = true;
                 }
             }
             file = new File(args[args.length - 1]);
@@ -68,12 +71,13 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
+            System.out.println("    -verbose          output verbose logging, default false");
             System.exit(0);
         }
         try {
             List<File> files = findFiles(file, recurse);
             for (File child : files) {
-                BeanCodeGen gen = new BeanCodeGen(child, indent, prefix);
+                BeanCodeGen gen = new BeanCodeGen(child, indent, prefix, verbose);
                 gen.process();
             }
             System.out.println("Finished");
@@ -116,26 +120,35 @@ public class BeanCodeGen {
     private final String indent;
     /** The prefix to use. */
     private final String prefix;
+    /** The verbosity level. */
+    private final boolean verbose;
 
     /**
      * Constructor.
      * @param file  the file to process, not null
      * @param indent  the indent to use, not null
      * @param prefix  the prefix to use, not null
+     * @param verbose  the verbosity
      */
-    public BeanCodeGen(File file, String indent, String prefix) {
+    public BeanCodeGen(File file, String indent, String prefix, boolean verbose) {
         this.file = file;
         this.indent = indent;
         this.prefix = prefix;
+        this.verbose = verbose;
     }
 
     //-----------------------------------------------------------------------
     private void process() throws Exception {
-        System.out.print(file);
+        if (verbose) {
+            System.out.print(file);
+        }
         List<String> original = readFile();
         List<String> content = new ArrayList<String>(original);
         BeanGen gen = new BeanGen(content, indent, prefix);
         if (gen.isBean() ) {
+            if (verbose == false) {
+                System.out.print(file);
+            }
             System.out.print("  [processing]");
             gen.process();
             if (content.equals(original) == false) {
@@ -146,7 +159,9 @@ public class BeanCodeGen {
             }
             System.out.println();
         } else {
-            System.out.println("  [ignored]");
+            if (verbose) {
+                System.out.println("  [ignored]");
+            }
         }
     }
 
