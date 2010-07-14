@@ -57,6 +57,7 @@ public class Address extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Address}.
+     * @return the meta-bean, not null
      */
     public static final MetaBean meta() {
         return META;
@@ -123,6 +124,7 @@ public class Address extends DirectBean {
 
     /**
      * The meta-property for the {@code number} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<Integer> numberMeta() {
         return NUMBER;
@@ -155,6 +157,7 @@ public class Address extends DirectBean {
 
     /**
      * The meta-property for the {@code street} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<String> streetMeta() {
         return STREET;
@@ -187,6 +190,7 @@ public class Address extends DirectBean {
 
     /**
      * The meta-property for the {@code city} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<String> cityMeta() {
         return CITY;

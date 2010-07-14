@@ -190,6 +190,7 @@ class BeanGen {
         
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
+        insertRegion.add("\t * @return the meta-bean, not null");
         insertRegion.add("\t */");
         insertRegion.add("\tpublic static final MetaBean meta() {");
         insertRegion.add("\t\treturn META;");

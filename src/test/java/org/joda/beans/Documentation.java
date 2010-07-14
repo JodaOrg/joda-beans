@@ -51,6 +51,7 @@ public class Documentation<T> extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Documentation<T>}.
+     * @return the meta-bean, not null
      */
     public static final MetaBean meta() {
         return META;
@@ -113,6 +114,7 @@ public class Documentation<T> extends DirectBean {
 
     /**
      * The meta-property for the {@code type} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<String> typeMeta() {
         return TYPE;
@@ -145,6 +147,7 @@ public class Documentation<T> extends DirectBean {
 
     /**
      * The meta-property for the {@code content} property.
+     * @return the meta-property, not null
      */
     @SuppressWarnings("unchecked")
     public static final <R> MetaProperty<R> contentMeta() {

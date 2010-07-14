@@ -81,6 +81,7 @@ public class Person extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Person}.
+     * @return the meta-bean, not null
      */
     public static final MetaBean meta() {
         return META;
@@ -163,6 +164,7 @@ public class Person extends DirectBean {
 
     /**
      * The meta-property for the {@code forename} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<String> forenameMeta() {
         return FORENAME;
@@ -195,6 +197,7 @@ public class Person extends DirectBean {
 
     /**
      * The meta-property for the {@code surname} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<String> surnameMeta() {
         return SURNAME;
@@ -227,6 +230,7 @@ public class Person extends DirectBean {
 
     /**
      * The meta-property for the {@code numberOfCars} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<Integer> numberOfCarsMeta() {
         return NUMBER_OF_CARS;
@@ -259,6 +263,7 @@ public class Person extends DirectBean {
 
     /**
      * The meta-property for the {@code addressList} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<List<Address>> addressListMeta() {
         return ADDRESS_LIST;
@@ -291,6 +296,7 @@ public class Person extends DirectBean {
 
     /**
      * The meta-property for the {@code otherAddressMap} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<Map<String, Address>> otherAddressMapMeta() {
         return OTHER_ADDRESS_MAP;
@@ -323,6 +329,7 @@ public class Person extends DirectBean {
 
     /**
      * The meta-property for the {@code extensions} property.
+     * @return the meta-property, not null
      */
     public static final MetaProperty<FlexiBean> extensionsMeta() {
         return EXTENSIONS;

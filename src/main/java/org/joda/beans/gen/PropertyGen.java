@@ -303,6 +303,7 @@ class PropertyGen {
         }
         list.add("\t/**");
         list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
+        list.add("\t * @return the meta-property, not null");
         list.add("\t */");
         if (deprecated) {
             list.add("\t@Deprecated");
