@@ -147,6 +147,7 @@ public class Documentation<T> extends DirectBean {
 
     /**
      * The meta-property for the {@code content} property.
+     * @param <R>  the property type (which cannot be inferred in a static context)
      * @return the meta-property, not null
      */
     @SuppressWarnings("unchecked")

@@ -303,6 +303,9 @@ class PropertyGen {
         }
         list.add("\t/**");
         list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
+        if (isGenericPropertyType()) {
+            list.add("\t * @param <R>  the property type (which cannot be inferred in a static context)");
+        }
         list.add("\t * @return the meta-property, not null");
         list.add("\t */");
         if (deprecated) {
