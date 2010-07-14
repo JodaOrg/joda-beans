@@ -64,6 +64,22 @@ public interface MetaProperty<P> {
      */
     PropertyReadWrite readWrite();
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the annotations of the property.
+//     * 
+//     * @return the map of annotations, unmodifiable, not null
+//     */
+//    Map<Class<Annotation>, Annotation> annotations();
+//
+//    /**
+//     * Gets the specified annotation of the property.
+//     * 
+//     * @return the annotation, not null
+//     * @throws NoSuchElementException if the annotation is not specified
+//     */
+//    <A extends Annotation> A annotation(Class<A> annotation);
+
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the property for the specified bean.
