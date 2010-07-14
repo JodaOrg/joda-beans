@@ -33,23 +33,23 @@ import org.joda.beans.impl.BasicPropertyMap;
  * This is the standard implementation of a meta-bean.
  * It requires that the bean implements {@code Bean} and has a no-arguments constructor.
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public final class ReflectiveMetaBean<B> implements MetaBean<B> {
+public final class ReflectiveMetaBean implements MetaBean {
 
     /** The bean type. */
-    private final Class<B> beanType;
+    private final Class<? extends Bean> beanType;
     /** The meta-property instances of the bean. */
-    private final Map<String, MetaProperty<B, Object>> metaPropertyMap;
+    private final Map<String, MetaProperty<Object>> metaPropertyMap;
 
     /**
      * Factory to create a meta-bean avoiding duplicate generics.
      * 
+     * @param <B>  the type of the bean
      * @param beanClass  the bean class, not null
      */
-    public static <B extends Bean<B>> ReflectiveMetaBean<B> of(Class<B> beanClass) {
-        return new ReflectiveMetaBean<B>(beanClass);
+    public static <B extends Bean> ReflectiveMetaBean of(Class<B> beanClass) {
+        return new ReflectiveMetaBean(beanClass);
     }
 
     /**
@@ -58,19 +58,19 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
      * @param beanType  the bean type, not null
      */
     @SuppressWarnings("unchecked")
-    private ReflectiveMetaBean(Class<B> beanType) {
+    private ReflectiveMetaBean(Class<? extends Bean> beanType) {
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<B, Object>> map = new HashMap<String, MetaProperty<B, Object>>();
+        Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
         Field[] fields = beanType.getDeclaredFields();
         for (Field field : fields) {
             if (MetaProperty.class.isAssignableFrom(field.getType()) && Modifier.isStatic(field.getModifiers())) {
                 field.setAccessible(true);
-                MetaProperty<B, Object> mp;
+                MetaProperty<Object> mp;
                 try {
-                    mp = (MetaProperty<B, Object>) field.get(null);
+                    mp = (MetaProperty<Object>) field.get(null);
                 } catch (IllegalArgumentException ex) {
                     throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
                 } catch (IllegalAccessException ex) {
@@ -87,15 +87,11 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     //-----------------------------------------------------------------------
-    @Override
     @SuppressWarnings("unchecked")
-    public Bean<B> createBean() {
+    @Override
+    public Bean createBean() {
         try {
-            Object obj = beanType.newInstance();
-            if (obj instanceof Bean<?>) {
-                return (Bean<B>) obj;
-            }
-            throw new UnsupportedOperationException("TODO: Write WrappingBean impl");
+            return beanType.newInstance();
         } catch (InstantiationException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + name(), ex);
         } catch (IllegalAccessException ex) {
@@ -104,7 +100,7 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     @Override
-    public PropertyMap<B> createPropertyMap(Bean<B> bean) {
+    public PropertyMap createPropertyMap(Bean bean) {
         return BasicPropertyMap.of(bean);
     }
 
@@ -115,7 +111,7 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     @Override
-    public Class<B> beanType() {
+    public Class<?> beanType() {
         return beanType;
     }
 
@@ -131,8 +127,8 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     @Override
-    public MetaProperty<B, Object> metaProperty(String propertyName) {
-        MetaProperty<B, Object> metaProperty = metaPropertyMap.get(propertyName);
+    public MetaProperty<Object> metaProperty(String propertyName) {
+        MetaProperty<Object> metaProperty = metaPropertyMap.get(propertyName);
         if (metaProperty == null) {
             throw new NoSuchElementException("Property not found: " + propertyName);
         }
@@ -140,20 +136,20 @@ public final class ReflectiveMetaBean<B> implements MetaBean<B> {
     }
 
     @Override
-    public Iterable<MetaProperty<B, Object>> metaPropertyIterable() {
+    public Iterable<MetaProperty<Object>> metaPropertyIterable() {
         return metaPropertyMap.values();
     }
 
     @Override
-    public Map<String, MetaProperty<B, Object>> metaPropertyMap() {
+    public Map<String, MetaProperty<Object>> metaPropertyMap() {
         return metaPropertyMap;
     }
 
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ReflectiveMetaBean<?>) {
-            ReflectiveMetaBean<?> other = (ReflectiveMetaBean<?>) obj;
+        if (obj instanceof ReflectiveMetaBean) {
+            ReflectiveMetaBean other = (ReflectiveMetaBean) obj;
             return this.beanType.equals(other.beanType);
         }
         return false;

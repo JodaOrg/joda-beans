@@ -22,14 +22,13 @@ import org.joda.beans.Property;
 /**
  * An abstract base meta-property.
  * 
- * @param <B>  the type of the bean
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public abstract class BasicMetaProperty<B, P> implements MetaProperty<B, P> {
+public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
 
     /** The type of the bean. */
-    private final Class<B> beanType;
+    private final Class<?> beanType;
     /** The name of the property. */
     private final String name;
 
@@ -41,7 +40,7 @@ public abstract class BasicMetaProperty<B, P> implements MetaProperty<B, P> {
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    protected BasicMetaProperty(Class<B> beanType, String propertyName) {
+    protected BasicMetaProperty(Class<?> beanType, String propertyName) {
         if (beanType == null) {
             throw new NullPointerException("Bean type must not be null");
         }
@@ -56,7 +55,7 @@ public abstract class BasicMetaProperty<B, P> implements MetaProperty<B, P> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<B, P> createProperty(Bean<B> bean) {
+    public Property<P> createProperty(Bean bean) {
         return BasicProperty.of(bean, this);
     }
 
@@ -66,13 +65,13 @@ public abstract class BasicMetaProperty<B, P> implements MetaProperty<B, P> {
     }
 
     @Override
-    public Class<B> beanType() {
+    public Class<?> beanType() {
         return beanType;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public P put(Bean<B> bean, P value) {
+    public P put(Bean bean, P value) {
         P old = get(bean);
         set(bean, value);
         return old;
@@ -81,8 +80,8 @@ public abstract class BasicMetaProperty<B, P> implements MetaProperty<B, P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BasicMetaProperty<?, ?>) {
-            BasicMetaProperty<?, ?> other = (BasicMetaProperty<?, ?>) obj;
+        if (obj instanceof BasicMetaProperty<?>) {
+            BasicMetaProperty<?> other = (BasicMetaProperty<?>) obj;
             return this.beanType.equals(other.beanType) && this.name.equals(other.name);
         }
         return false;

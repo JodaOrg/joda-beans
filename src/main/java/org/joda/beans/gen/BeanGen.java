@@ -114,7 +114,7 @@ class BeanGen {
     private int parseIsBean() {
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
-            if (line.contains(" extends DirectBean<")) {
+            if (line.contains(" extends DirectBean ")) {
                 return index;
             }
         }
@@ -181,53 +181,26 @@ class BeanGen {
     }
 
     private void generateMetaBean() {
-        if (isGenericBean()) {
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
-            insertRegion.add("\t */");
-            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            String line = "\tprivate static final MetaBean META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);";
-            insertRegion.add(line);
-            insertRegion.add("");
-            generateSeparator();
-            
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
-            insertRegion.add("\t */");
-            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            insertRegion.add("\tpublic static final <R> MetaBean<" + beanNoGenericsType + "<R>> meta() {");
-            insertRegion.add("\t\treturn (MetaBean<" + beanNoGenericsType + "<R>>) META;");
-            insertRegion.add("\t}");
-            insertRegion.add("");
-            
-            insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic final MetaBean<" + beanType + "> metaBean() {");
-            insertRegion.add("\t\treturn " + beanNoGenericsType + ".<" + getBeanGeneric() + ">meta();");
-            insertRegion.add("\t}");
-            insertRegion.add("");
-        } else {
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
-            insertRegion.add("\t */");
-            String line = "\tprivate static final MetaBean<" + beanNoGenericsType + "> META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);";
-            insertRegion.add(line);
-            insertRegion.add("");
-            generateSeparator();
-            
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
-            insertRegion.add("\t */");
-            insertRegion.add("\tpublic static final MetaBean<" + beanType + "> meta() {");
-            insertRegion.add("\t\treturn META;");
-            insertRegion.add("\t}");
-            insertRegion.add("");
-            
-            insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic final MetaBean<" + beanType + "> metaBean() {");
-            insertRegion.add("\t\treturn META;");
-            insertRegion.add("\t}");
-            insertRegion.add("");
-        }
+        insertRegion.add("\t/**");
+        insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
+        insertRegion.add("\t */");
+        insertRegion.add("\tprivate static final MetaBean META = ReflectiveMetaBean.of(" + beanNoGenericsType + ".class);");
+        insertRegion.add("");
+        generateSeparator();
+        
+        insertRegion.add("\t/**");
+        insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
+        insertRegion.add("\t */");
+        insertRegion.add("\tpublic static final MetaBean meta() {");
+        insertRegion.add("\t\treturn META;");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+        
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tpublic final MetaBean metaBean() {");
+        insertRegion.add("\t\treturn META;");
+        insertRegion.add("\t}");
+        insertRegion.add("");
     }
 
     private void generateGettersSetters(List<PropertyGen> props) {

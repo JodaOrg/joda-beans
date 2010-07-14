@@ -32,7 +32,7 @@ import org.joda.beans.impl.BasicProperty;
  * @author Stephen Colebourne
  */
 final class FlexiPropertyMap
-        extends AbstractMap<String, Property<FlexiBean, Object>> implements PropertyMap<FlexiBean> {
+        extends AbstractMap<String, Property<Object>> implements PropertyMap {
 
     /** The bean. */
     private final FlexiBean bean;
@@ -73,7 +73,7 @@ final class FlexiPropertyMap
     }
 
     @Override
-    public Property<FlexiBean, Object> get(Object obj) {
+    public Property<Object> get(Object obj) {
         return containsKey(obj) ? bean.property(obj.toString()) : null;
     }
 
@@ -86,26 +86,26 @@ final class FlexiPropertyMap
     }
 
     @Override
-    public Set<Entry<String, Property<FlexiBean, Object>>> entrySet() {
+    public Set<Entry<String, Property<Object>>> entrySet() {
         if (size() == 0) {
             return Collections.emptySet();
         }
-        return new AbstractSet<Entry<String,Property<FlexiBean, Object>>>() {
+        return new AbstractSet<Entry<String,Property<Object>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {
                 return bean.size();
             }
             @Override
-            public Iterator<Entry<String, Property<FlexiBean, Object>>> iterator() {
+            public Iterator<Entry<String, Property<Object>>> iterator() {
                 final Iterator<String> it = bean.data.keySet().iterator();
-                return new Iterator<Entry<String, Property<FlexiBean, Object>>>() {
+                return new Iterator<Entry<String, Property<Object>>>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
-                    public Entry<String, Property<FlexiBean, Object>> next() {
+                    public Entry<String, Property<Object>> next() {
                         String name = it.next();
                         return BasicProperty.of(bean, FlexiMetaProperty.of(name));
                     }

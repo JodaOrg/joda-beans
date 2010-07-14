@@ -29,16 +29,15 @@ import org.joda.beans.Property;
  * <p>
  * This implementation is also a map entry to aid performance in maps.
  * 
- * @param <B>  the type of the bean
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, Property<B, P>> {
+public final class BasicProperty<P> implements Property<P>, Entry<String, Property<P>> {
 
     /** The bean that the property is bound to. */
-    private final Bean<B> bean;
+    private final Bean bean;
     /** The meta-property that the property is bound to. */
-    private final MetaProperty<B, P> metaProperty;
+    private final MetaProperty<P> metaProperty;
 
     /**
      * Factory to create a property avoiding duplicate generics.
@@ -46,8 +45,8 @@ public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, 
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
      */
-    public static <B, P> BasicProperty<B, P> of(Bean<B> bean, MetaProperty<B, P> metaProperty) {
-        return new BasicProperty<B, P>(bean, metaProperty);
+    public static <P> BasicProperty<P> of(Bean bean, MetaProperty<P> metaProperty) {
+        return new BasicProperty<P>(bean, metaProperty);
     }
 
     /**
@@ -56,7 +55,7 @@ public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, 
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
      */
-    private BasicProperty(Bean<B> bean, MetaProperty<B, P> metaProperty) {
+    private BasicProperty(Bean bean, MetaProperty<P> metaProperty) {
         if (bean == null) {
             throw new NullPointerException("Bean must not be null");
         }
@@ -69,12 +68,12 @@ public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, 
 
     //-----------------------------------------------------------------------
     @Override
-    public Bean<B> bean() {
+    public Bean bean() {
         return bean;
     }
 
     @Override
-    public MetaProperty<B, P> metaProperty() {
+    public MetaProperty<P> metaProperty() {
         return metaProperty;
     }
 
@@ -106,12 +105,12 @@ public final class BasicProperty<B, P> implements Property<B, P>, Entry<String, 
     }
 
     @Override
-    public Property<B, P> getValue() {
+    public Property<P> getValue() {
         return this;
     }
 
     @Override
-    public Property<B, P> setValue(Property<B, P> value) {
+    public Property<P> setValue(Property<P> value) {
         throw new UnsupportedOperationException("Unmodifiable");
     }
 

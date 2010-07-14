@@ -26,7 +26,7 @@ import java.util.Map;
  * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public interface PropertyMap<B> extends Map<String, Property<B, Object>> {
+public interface PropertyMap extends Map<String, Property<Object>> {
 
     /**
      * Flattens the contents of this property map to a {@code HashMap}.

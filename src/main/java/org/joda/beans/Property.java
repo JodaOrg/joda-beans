@@ -21,11 +21,10 @@ package org.joda.beans;
  * For a JavaBean, this will ultimately wrap a get/set method pair.
  * Alternate implementations may perform any logic to obtain the value.
  * 
- * @param <B>  the type of the bean
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public interface Property<B, P> {
+public interface Property<P> {
 
     /**
      * Gets the bean which owns this property.
@@ -34,7 +33,7 @@ public interface Property<B, P> {
      * 
      * @return the bean, not null
      */
-    Bean<B> bean();
+    Bean bean();
 
     /**
      * Gets the meta-property representing the parts of the property that are
@@ -42,7 +41,7 @@ public interface Property<B, P> {
      * 
      * @return the meta-property, not null
      */
-    MetaProperty<B, P> metaProperty();
+    MetaProperty<P> metaProperty();
 
     /**
      * Gets the property name.

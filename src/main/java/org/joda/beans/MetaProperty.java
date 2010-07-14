@@ -19,11 +19,10 @@ package org.joda.beans;
  * A meta-property, defining those aspects of a property which are not specific
  * to a particular bean, such as the property type and name.
  * 
- * @param <B>  the type of the bean
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public interface MetaProperty<B, P> {
+public interface MetaProperty<P> {
 
     /**
      * Creates a property that binds this meta-property to a specific bean.
@@ -31,7 +30,7 @@ public interface MetaProperty<B, P> {
      * @param bean  the bean to create the property for, not null
      * @return the property, not null
      */
-    Property<B, P> createProperty(Bean<B> bean);
+    Property<P> createProperty(Bean bean);
 
     //-----------------------------------------------------------------------
     /**
@@ -39,7 +38,7 @@ public interface MetaProperty<B, P> {
      * 
      * @return the type of the bean, not null
      */
-    Class<B> beanType();
+    Class<?> beanType();
 
     /**
      * Gets the property name.
@@ -76,7 +75,7 @@ public interface MetaProperty<B, P> {
      * @return the value of the property on the specified bean, may be null
      * @throws UnsupportedOperationException if the property is write-only
      */
-    P get(Bean<B> bean);
+    P get(Bean bean);
 
     /**
      * Sets the value of the property on the specified bean.
@@ -90,7 +89,7 @@ public interface MetaProperty<B, P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void set(Bean<B> bean, P value);
+    void set(Bean bean, P value);
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -105,6 +104,6 @@ public interface MetaProperty<B, P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    P put(Bean<B> bean, P value);
+    P put(Bean bean, P value);
 
 }

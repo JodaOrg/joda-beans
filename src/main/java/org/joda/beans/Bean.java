@@ -24,10 +24,9 @@ import java.util.NoSuchElementException;
  * Alternate implementations might store the properties in another data structure
  * such as a map.
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public interface Bean<B> {
+public interface Bean {
 
     /**
      * Gets the data store for this bean.
@@ -37,9 +36,10 @@ public interface Bean<B> {
      * case this method would return {@code this}.
      * More complicated approaches use different data stores.
      * 
+     * @param <B>  the bean type
      * @return the bean itself, not null
      */
-    B beanData();
+    <B> B beanData();
 
     /**
      * Gets the meta-bean representing the parts of the bean that are
@@ -47,7 +47,7 @@ public interface Bean<B> {
      * 
      * @return the meta-bean, not null
      */
-    MetaBean<B> metaBean();
+    MetaBean metaBean();
 
     //-----------------------------------------------------------------------
     /**
@@ -65,13 +65,13 @@ public interface Bean<B> {
      * @return the property, not empty
      * @throws NoSuchElementException if the property name is invalid
      */
-    Property<B, Object> property(String propertyName);
+    Property<Object> property(String propertyName);
 
     /**
      * Gets the map of properties, keyed by property name.
      * 
      * @return the unmodifiable map of property objects, not null
      */
-    PropertyMap<B> propertyMap();
+    PropertyMap propertyMap();
 
 }

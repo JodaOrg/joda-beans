@@ -33,7 +33,7 @@ import org.joda.beans.impl.BasicProperty;
  * @author Stephen Colebourne
  */
 public final class MapBeanPropertyMap
-        extends AbstractMap<String, Property<MapBean, Object>> implements PropertyMap<MapBean> {
+        extends AbstractMap<String, Property<Object>> implements PropertyMap {
 
     /** The bean. */
     private final MapBean bean;
@@ -71,7 +71,7 @@ public final class MapBeanPropertyMap
     }
 
     @Override
-    public Property<MapBean, Object> get(Object obj) {
+    public Property<Object> get(Object obj) {
         return containsKey(obj) ? bean.property(obj.toString()) : null;
     }
 
@@ -81,23 +81,23 @@ public final class MapBeanPropertyMap
     }
 
     @Override
-    public Set<Entry<String, Property<MapBean, Object>>> entrySet() {
-        return new AbstractSet<Entry<String,Property<MapBean, Object>>>() {
+    public Set<Entry<String, Property<Object>>> entrySet() {
+        return new AbstractSet<Entry<String,Property<Object>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {
                 return bean.size();
             }
             @Override
-            public Iterator<Entry<String, Property<MapBean, Object>>> iterator() {
+            public Iterator<Entry<String, Property<Object>>> iterator() {
                 final Iterator<String> it = bean.keySet().iterator();
-                return new Iterator<Entry<String, Property<MapBean, Object>>>() {
+                return new Iterator<Entry<String, Property<Object>>>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
-                    public Entry<String, Property<MapBean, Object>> next() {
+                    public Entry<String, Property<Object>> next() {
                         String name = it.next();
                         return BasicProperty.of(bean, MapBeanMetaProperty.of(name));
                     }

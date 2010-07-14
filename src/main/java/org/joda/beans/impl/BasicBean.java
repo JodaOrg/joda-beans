@@ -32,12 +32,12 @@ import org.joda.beans.impl.reflection.ReflectiveMetaBean;
  * 
  * @author Stephen Colebourne
  */
-public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
+public abstract class BasicBean implements Bean {
 
-    @Override
     @SuppressWarnings("unchecked")
-    public B beanData() {
-        return (B) this;  // generics isn't quite strong enough to define the constraint we need
+    @Override
+    public <B> B beanData() {
+        return (B) this;
     }
 
     @Override
@@ -46,12 +46,12 @@ public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
     }
 
     @Override
-    public Property<B, Object> property(String propertyName) {
+    public Property<Object> property(String propertyName) {
         return metaBean().metaProperty(propertyName).createProperty(this);
     }
 
     @Override
-    public PropertyMap<B> propertyMap() {
+    public PropertyMap propertyMap() {
         return metaBean().createPropertyMap(this);
     }
 
@@ -69,8 +69,8 @@ public abstract class BasicBean<B extends BasicBean<B>> implements Bean<B> {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof BasicBean<?>) {
-            BasicBean<?> other = (BasicBean<?>) obj;
+        if (obj instanceof BasicBean) {
+            BasicBean other = (BasicBean) obj;
             return propertyMap().flatten().equals(other.propertyMap().flatten());
         }
         return false;

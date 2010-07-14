@@ -22,10 +22,9 @@ package org.joda.beans;
  * Instances of this interface allow additional properties to be added and removed
  * probably by wrapping a map
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public interface DynamicBean<B> extends Bean<B> {
+public interface DynamicBean extends Bean {
 
     /**
      * Adds a property to those allowed to be stored in the bean.

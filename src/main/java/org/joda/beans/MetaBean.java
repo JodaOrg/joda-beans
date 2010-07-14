@@ -22,17 +22,16 @@ import java.util.NoSuchElementException;
  * A meta-bean, defining those aspects of a bean which are not specific
  * to a particular instance, such as the type and set of meta-properties.
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public interface MetaBean<B> {
+public interface MetaBean {
 
     /**
      * Creates a new instance of the bean represented by this meta bean.
      * 
      * @return the created bean, not null
      */
-    Bean<B> createBean();
+    <B extends Bean> B createBean();
 
     /**
      * Creates a map of properties for the specified bean.
@@ -40,7 +39,7 @@ public interface MetaBean<B> {
      * @param bean  the bean to create the map for, not null
      * @return the created property map, not null
      */
-    PropertyMap<B> createPropertyMap(Bean<B> bean);
+    PropertyMap createPropertyMap(Bean bean);
 
     //-----------------------------------------------------------------------
     /**
@@ -55,7 +54,7 @@ public interface MetaBean<B> {
      * 
      * @return the type of the bean, not null
      */
-    Class<B> beanType();
+    Class<?> beanType();
 
     //-----------------------------------------------------------------------
     /**
@@ -80,7 +79,7 @@ public interface MetaBean<B> {
      * @return the meta property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
-    MetaProperty<B, Object> metaProperty(String propertyName);
+    MetaProperty<Object> metaProperty(String propertyName);
 
     /**
      * Gets an iterator of meta-properties.
@@ -91,7 +90,7 @@ public interface MetaBean<B> {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    Iterable<MetaProperty<B, Object>> metaPropertyIterable();
+    Iterable<MetaProperty<Object>> metaPropertyIterable();
 
     /**
      * Gets the map of meta-properties, keyed by property name.
@@ -100,6 +99,6 @@ public interface MetaBean<B> {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    Map<String, MetaProperty<B, Object>> metaPropertyMap();
+    Map<String, MetaProperty<Object>> metaPropertyMap();
 
 }

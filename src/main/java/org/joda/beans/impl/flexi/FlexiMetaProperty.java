@@ -26,7 +26,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-class FlexiMetaProperty extends BasicMetaProperty<FlexiBean, Object> {
+class FlexiMetaProperty extends BasicMetaProperty<Object> {
 
     /**
      * Factory to create a meta-property.
@@ -48,7 +48,7 @@ class FlexiMetaProperty extends BasicMetaProperty<FlexiBean, Object> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<FlexiBean, Object> createProperty(Bean<FlexiBean> bean) {
+    public Property<Object> createProperty(Bean bean) {
         return BasicProperty.of(bean, this);
     }
 
@@ -64,13 +64,13 @@ class FlexiMetaProperty extends BasicMetaProperty<FlexiBean, Object> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Object get(Bean<FlexiBean> bean) {
-        return bean.beanData().propertyGet(name());
+    public Object get(Bean bean) {
+        return bean.<FlexiBean>beanData().propertyGet(name());
     }
 
     @Override
-    public void set(Bean<FlexiBean> bean, Object value) {
-        bean.beanData().propertySet(name(), value);
+    public void set(Bean bean, Object value) {
+        bean.<FlexiBean>beanData().propertySet(name(), value);
     }
 
 }

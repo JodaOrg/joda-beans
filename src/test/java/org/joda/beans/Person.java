@@ -28,7 +28,7 @@ import org.joda.beans.impl.reflection.ReflectiveMetaBean;
  * 
  * @author Stephen Colebourne
  */
-public class Person extends DirectBean<Person> {
+public class Person extends DirectBean {
 
     /** The forename. */
     @PropertyDefinition
@@ -50,44 +50,44 @@ public class Person extends DirectBean<Person> {
     /**
      * The meta-property for the {@code forename} property.
      */
-    private static final MetaProperty<Person, String> FORENAME = DirectMetaProperty.ofReadWrite(Person.class, "forename", String.class);
+    private static final MetaProperty<String> FORENAME = DirectMetaProperty.ofReadWrite(Person.class, "forename", String.class);
     /**
      * The meta-property for the {@code surname} property.
      */
-    private static final MetaProperty<Person, String> SURNAME = DirectMetaProperty.ofReadWrite(Person.class, "surname", String.class);
+    private static final MetaProperty<String> SURNAME = DirectMetaProperty.ofReadWrite(Person.class, "surname", String.class);
     /**
      * The meta-property for the {@code numberOfCars} property.
      */
-    private static final MetaProperty<Person, Integer> NUMBER_OF_CARS = DirectMetaProperty.ofReadWrite(Person.class, "numberOfCars", Integer.TYPE);
+    private static final MetaProperty<Integer> NUMBER_OF_CARS = DirectMetaProperty.ofReadWrite(Person.class, "numberOfCars", Integer.TYPE);
     /**
      * The meta-property for the {@code addressList} property.
      */
     @SuppressWarnings("unchecked")
-    private static final MetaProperty<Person, List<Address>> ADDRESS_LIST = DirectMetaProperty.ofReadWrite(Person.class, "addressList", (Class<List<Address>>) (Class) List.class);
+    private static final MetaProperty<List<Address>> ADDRESS_LIST = DirectMetaProperty.ofReadWrite(Person.class, "addressList", (Class<List<Address>>) (Class) List.class);
     /**
      * The meta-property for the {@code otherAddressMap} property.
      */
     @SuppressWarnings("unchecked")
-    private static final MetaProperty<Person, Map<String, Address>> OTHER_ADDRESS_MAP = DirectMetaProperty.ofReadWrite(Person.class, "otherAddressMap", (Class<Map<String, Address>>) (Class) Map.class);
+    private static final MetaProperty<Map<String, Address>> OTHER_ADDRESS_MAP = DirectMetaProperty.ofReadWrite(Person.class, "otherAddressMap", (Class<Map<String, Address>>) (Class) Map.class);
     /**
      * The meta-property for the {@code extensions} property.
      */
-    private static final MetaProperty<Person, FlexiBean> EXTENSIONS = DirectMetaProperty.ofReadWrite(Person.class, "extensions", FlexiBean.class);
+    private static final MetaProperty<FlexiBean> EXTENSIONS = DirectMetaProperty.ofReadWrite(Person.class, "extensions", FlexiBean.class);
     /**
      * The meta-bean for {@code Person}.
      */
-    private static final MetaBean<Person> META = ReflectiveMetaBean.of(Person.class);
+    private static final MetaBean META = ReflectiveMetaBean.of(Person.class);
 
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Person}.
      */
-    public static final MetaBean<Person> meta() {
+    public static final MetaBean meta() {
         return META;
     }
 
     @Override
-    public final MetaBean<Person> metaBean() {
+    public final MetaBean metaBean() {
         return META;
     }
 
@@ -157,14 +157,14 @@ public class Person extends DirectBean<Person> {
      * Gets the the {@code forename} property.
      * @return the property, not null
      */
-    public final Property<Person, String> forename() {
+    public final Property<String> forename() {
         return FORENAME.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code forename} property.
      */
-    public static final MetaProperty<Person, String> forenameMeta() {
+    public static final MetaProperty<String> forenameMeta() {
         return FORENAME;
     }
 
@@ -189,14 +189,14 @@ public class Person extends DirectBean<Person> {
      * Gets the the {@code surname} property.
      * @return the property, not null
      */
-    public final Property<Person, String> surname() {
+    public final Property<String> surname() {
         return SURNAME.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code surname} property.
      */
-    public static final MetaProperty<Person, String> surnameMeta() {
+    public static final MetaProperty<String> surnameMeta() {
         return SURNAME;
     }
 
@@ -221,14 +221,14 @@ public class Person extends DirectBean<Person> {
      * Gets the the {@code numberOfCars} property.
      * @return the property, not null
      */
-    public final Property<Person, Integer> numberOfCars() {
+    public final Property<Integer> numberOfCars() {
         return NUMBER_OF_CARS.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code numberOfCars} property.
      */
-    public static final MetaProperty<Person, Integer> numberOfCarsMeta() {
+    public static final MetaProperty<Integer> numberOfCarsMeta() {
         return NUMBER_OF_CARS;
     }
 
@@ -253,14 +253,14 @@ public class Person extends DirectBean<Person> {
      * Gets the the {@code addressList} property.
      * @return the property, not null
      */
-    public final Property<Person, List<Address>> addressList() {
+    public final Property<List<Address>> addressList() {
         return ADDRESS_LIST.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code addressList} property.
      */
-    public static final MetaProperty<Person, List<Address>> addressListMeta() {
+    public static final MetaProperty<List<Address>> addressListMeta() {
         return ADDRESS_LIST;
     }
 
@@ -285,14 +285,14 @@ public class Person extends DirectBean<Person> {
      * Gets the the {@code otherAddressMap} property.
      * @return the property, not null
      */
-    public final Property<Person, Map<String, Address>> otherAddressMap() {
+    public final Property<Map<String, Address>> otherAddressMap() {
         return OTHER_ADDRESS_MAP.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code otherAddressMap} property.
      */
-    public static final MetaProperty<Person, Map<String, Address>> otherAddressMapMeta() {
+    public static final MetaProperty<Map<String, Address>> otherAddressMapMeta() {
         return OTHER_ADDRESS_MAP;
     }
 
@@ -317,14 +317,14 @@ public class Person extends DirectBean<Person> {
      * Gets the the {@code extensions} property.
      * @return the property, not null
      */
-    public final Property<Person, FlexiBean> extensions() {
+    public final Property<FlexiBean> extensions() {
         return EXTENSIONS.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code extensions} property.
      */
-    public static final MetaProperty<Person, FlexiBean> extensionsMeta() {
+    public static final MetaProperty<FlexiBean> extensionsMeta() {
         return EXTENSIONS;
     }
 

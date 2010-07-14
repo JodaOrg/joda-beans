@@ -212,18 +212,19 @@ class PropertyGen {
         list.add("\t/**");
         list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
         list.add("\t */");
-        if (isGenericProperty() || bean.isGenericBean()) {
-            list.add("\t@SuppressWarnings(\"unchecked\")");
-        }
         String propertyType = propertyType();
         if (propertyType.length() == 1) {
             propertyType = "Object";
         }
-        if (bean.isGenericBean()) {
+        if (isGenericPropertyType()) {
+            list.add("\t@SuppressWarnings(\"unchecked\")");
             list.add("\tprivate static final MetaProperty " + metaName() +
             " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");");
         } else {
-            list.add("\tprivate static final MetaProperty<" + beanName + ", " + propertyType + "> " + metaName() +
+            if (isGenericTypedProperty()) {
+                list.add("\t@SuppressWarnings(\"unchecked\")");
+            }
+            list.add("\tprivate static final MetaProperty<" + propertyType + "> " + metaName() +
             " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");");
         }
         return list;
@@ -282,8 +283,8 @@ class PropertyGen {
         if (deprecated) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic final Property<" + bean.getBeanType() + ", " + propertyType() + "> " + propertyName + "() {");
-        if (bean.isGenericBean()) {
+        list.add("\tpublic final Property<" + propertyType() + "> " + propertyName + "() {");
+        if (isGenericPropertyType()) {
             String beanGeneric = bean.getBeanType().substring(bean.getBeanNoGenericsType().length());
             list.add("\t\treturn " + bean.getBeanNoGenericsType() + "." + beanGeneric + propertyName + "Meta().createProperty(this);");
         } else {
@@ -296,7 +297,6 @@ class PropertyGen {
 
     List<String> generateMetaProperty() {
         List<String> list = new ArrayList<String>();
-        String beanName = bean.getBeanNoGenericsType();
         String propertyType = propertyType();
         if (propertyType.length() == 1) {
             propertyType = "Object";
@@ -307,17 +307,12 @@ class PropertyGen {
         if (deprecated) {
             list.add("\t@Deprecated");
         }
-        if (bean.isGenericBean()) {
+        if (isGenericPropertyType()) {
             list.add("\t@SuppressWarnings(\"unchecked\")");
-            if (bean.getBeanGeneric().equals(type)) {
-                list.add("\tpublic static final <R> MetaProperty<" + beanName + "<R>, R> " + propertyName + "Meta() {");
-                list.add("\t\treturn (MetaProperty<" + beanName + "<R>, R>) " + metaName() + ";");
-            } else {
-                list.add("\tpublic static final <R> MetaProperty<" + beanName + "<R>, " + propertyType + "> " + propertyName + "Meta() {");
-                list.add("\t\treturn (MetaProperty<" + beanName + "<R>, " + propertyType + ">) " + metaName() + ";");
-            }
+            list.add("\tpublic static final <R> MetaProperty<R> " + propertyName + "Meta() {");
+            list.add("\t\treturn (MetaProperty<R>) " + metaName() + ";");
         } else {
-            list.add("\tpublic static final MetaProperty<" + beanName + ", " + propertyType + "> " + propertyName + "Meta() {");
+            list.add("\tpublic static final MetaProperty<" + propertyType + "> " + propertyName + "Meta() {");
             list.add("\t\treturn " + metaName() + ";");
         }
         list.add("\t}");
@@ -431,8 +426,12 @@ class PropertyGen {
         return type.equals("boolean") ? "is" : "get";
     }
 
-    private boolean isGenericProperty() {
-        return type.contains("<") || type.length() == 1;
+    private boolean isGenericTypedProperty() {
+        return type.contains("<");
+    }
+
+    private boolean isGenericPropertyType() {
+        return type.length() == 1;
     }
 
     boolean isGenericWritableProperty() {

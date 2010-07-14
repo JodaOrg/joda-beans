@@ -25,10 +25,9 @@ import org.joda.beans.impl.BasicBean;
  * This implementation is used to avoid reflection.
  * The bean must directly extend this class and have a no-arguments constructor.
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public abstract class DirectBean<B extends DirectBean<B>> extends BasicBean<B> {
+public abstract class DirectBean extends BasicBean {
 
     /**
      * Gets the value of the property.

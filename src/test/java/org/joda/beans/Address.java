@@ -24,7 +24,7 @@ import org.joda.beans.impl.reflection.ReflectiveMetaBean;
  * 
  * @author Stephen Colebourne
  */
-public class Address extends DirectBean<Address> {
+public class Address extends DirectBean {
 
     /** The number. */
     @PropertyDefinition
@@ -40,30 +40,30 @@ public class Address extends DirectBean<Address> {
     /**
      * The meta-property for the {@code number} property.
      */
-    private static final MetaProperty<Address, Integer> NUMBER = DirectMetaProperty.ofReadWrite(Address.class, "number", Integer.TYPE);
+    private static final MetaProperty<Integer> NUMBER = DirectMetaProperty.ofReadWrite(Address.class, "number", Integer.TYPE);
     /**
      * The meta-property for the {@code street} property.
      */
-    private static final MetaProperty<Address, String> STREET = DirectMetaProperty.ofReadWrite(Address.class, "street", String.class);
+    private static final MetaProperty<String> STREET = DirectMetaProperty.ofReadWrite(Address.class, "street", String.class);
     /**
      * The meta-property for the {@code city} property.
      */
-    private static final MetaProperty<Address, String> CITY = DirectMetaProperty.ofReadWrite(Address.class, "city", String.class);
+    private static final MetaProperty<String> CITY = DirectMetaProperty.ofReadWrite(Address.class, "city", String.class);
     /**
      * The meta-bean for {@code Address}.
      */
-    private static final MetaBean<Address> META = ReflectiveMetaBean.of(Address.class);
+    private static final MetaBean META = ReflectiveMetaBean.of(Address.class);
 
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Address}.
      */
-    public static final MetaBean<Address> meta() {
+    public static final MetaBean meta() {
         return META;
     }
 
     @Override
-    public final MetaBean<Address> metaBean() {
+    public final MetaBean metaBean() {
         return META;
     }
 
@@ -117,14 +117,14 @@ public class Address extends DirectBean<Address> {
      * Gets the the {@code number} property.
      * @return the property, not null
      */
-    public final Property<Address, Integer> number() {
+    public final Property<Integer> number() {
         return NUMBER.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code number} property.
      */
-    public static final MetaProperty<Address, Integer> numberMeta() {
+    public static final MetaProperty<Integer> numberMeta() {
         return NUMBER;
     }
 
@@ -149,14 +149,14 @@ public class Address extends DirectBean<Address> {
      * Gets the the {@code street} property.
      * @return the property, not null
      */
-    public final Property<Address, String> street() {
+    public final Property<String> street() {
         return STREET.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code street} property.
      */
-    public static final MetaProperty<Address, String> streetMeta() {
+    public static final MetaProperty<String> streetMeta() {
         return STREET;
     }
 
@@ -181,14 +181,14 @@ public class Address extends DirectBean<Address> {
      * Gets the the {@code city} property.
      * @return the property, not null
      */
-    public final Property<Address, String> city() {
+    public final Property<String> city() {
         return CITY.createProperty(this);
     }
 
     /**
      * The meta-property for the {@code city} property.
      */
-    public static final MetaProperty<Address, String> cityMeta() {
+    public static final MetaProperty<String> cityMeta() {
         return CITY;
     }
 

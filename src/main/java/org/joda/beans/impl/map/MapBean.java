@@ -36,19 +36,20 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public class MapBean extends HashMap<String, Object> implements DynamicBean<MapBean>, MetaBean<MapBean> {
+public class MapBean extends HashMap<String, Object> implements DynamicBean, MetaBean {
     // TODO: maybe it would be cleaner to create a separate short-lived meta-bean class
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("unchecked")
     @Override
     public MapBean beanData() {
         return this;
     }
 
     @Override
-    public MetaBean<MapBean> metaBean() {
+    public MetaBean metaBean() {
         return this;
     }
 
@@ -58,12 +59,12 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
     }
 
     @Override
-    public Property<MapBean, Object> property(String name) {
+    public Property<Object> property(String name) {
         return BasicProperty.of(this, metaProperty(name));
     }
 
     @Override
-    public PropertyMap<MapBean> propertyMap() {
+    public PropertyMap propertyMap() {
         return MapBeanPropertyMap.of(this);
     }
 
@@ -78,14 +79,15 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
-    public Bean<MapBean> createBean() {
+    public MapBean createBean() {
         return new MapBean();
     }
 
     @Override
-    public PropertyMap<MapBean> createPropertyMap(Bean<MapBean> bean) {
-        return MapBeanPropertyMap.of(bean.beanData());
+    public PropertyMap createPropertyMap(Bean bean) {
+        return MapBeanPropertyMap.of(bean.<MapBean>beanData());
     }
 
     @Override
@@ -109,7 +111,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
     }
 
     @Override
-    public MetaProperty<MapBean, Object> metaProperty(String name) {
+    public MetaProperty<Object> metaProperty(String name) {
         Object obj = get(name);
         if (obj == null) {
             throw new NoSuchElementException("Property not found: " + name);
@@ -118,18 +120,18 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
     }
 
     @Override
-    public Iterable<MetaProperty<MapBean, Object>> metaPropertyIterable() {
-        return new Iterable<MetaProperty<MapBean,Object>>() {
+    public Iterable<MetaProperty<Object>> metaPropertyIterable() {
+        return new Iterable<MetaProperty<Object>>() {
             private final Iterator<String> it = keySet().iterator();
             @Override
-            public Iterator<MetaProperty<MapBean, Object>> iterator() {
-                return new Iterator<MetaProperty<MapBean,Object>>() {
+            public Iterator<MetaProperty<Object>> iterator() {
+                return new Iterator<MetaProperty<Object>>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
-                    public MetaProperty<MapBean, Object> next() {
+                    public MetaProperty<Object> next() {
                         return MapBeanMetaProperty.of(it.next());
                     }
                     @Override
@@ -143,8 +145,8 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean<MapB
     }
 
     @Override
-    public Map<String, MetaProperty<MapBean, Object>> metaPropertyMap() {
-        Map<String, MetaProperty<MapBean, Object>> map = new HashMap<String, MetaProperty<MapBean,Object>>();
+    public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
         for (String name : keySet()) {
             map.put(name, MapBeanMetaProperty.of(name));
         }

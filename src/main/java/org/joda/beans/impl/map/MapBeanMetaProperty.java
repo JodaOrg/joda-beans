@@ -26,7 +26,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public class MapBeanMetaProperty extends BasicMetaProperty<MapBean, Object> {
+public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
     /**
      * Factory to create a meta-property.
@@ -48,7 +48,7 @@ public class MapBeanMetaProperty extends BasicMetaProperty<MapBean, Object> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<MapBean, Object> createProperty(Bean<MapBean> bean) {
+    public Property<Object> createProperty(Bean bean) {
         return BasicProperty.of(bean, this);
     }
 
@@ -64,13 +64,13 @@ public class MapBeanMetaProperty extends BasicMetaProperty<MapBean, Object> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Object get(Bean<MapBean> bean) {
-        return bean.beanData().get(name());
+    public Object get(Bean bean) {
+        return bean.<MapBean>beanData().get(name());
     }
 
     @Override
-    public void set(Bean<MapBean> bean, Object value) {
-        bean.beanData().put(name(), value);
+    public void set(Bean bean, Object value) {
+        bean.<MapBean>beanData().put(name(), value);
     }
 
 }

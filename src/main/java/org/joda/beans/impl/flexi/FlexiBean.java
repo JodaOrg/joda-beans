@@ -28,6 +28,7 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
+import org.joda.beans.impl.BasicBean;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -38,7 +39,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
+public final class FlexiBean extends BasicBean implements DynamicBean, Serializable {
     // Alternate way to implement this would be to create a list/map of real property
     // objects which could then be properly typed
 
@@ -264,13 +265,14 @@ public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
     public FlexiBean beanData() {
         return this;
     }
 
     @Override
-    public MetaBean<FlexiBean> metaBean() {
+    public MetaBean metaBean() {
         return new FlexiMetaBean();
     }
 
@@ -280,12 +282,12 @@ public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
     }
 
     @Override
-    public Property<FlexiBean, Object> property(String name) {
+    public Property<Object> property(String name) {
         return BasicProperty.of(this, FlexiMetaProperty.of(name));
     }
 
     @Override
-    public PropertyMap<FlexiBean> propertyMap() {
+    public PropertyMap propertyMap() {
         return FlexiPropertyMap.of(this);
     }
 
@@ -359,15 +361,16 @@ public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
     }
 
     //-----------------------------------------------------------------------
-    class FlexiMetaBean implements MetaBean<FlexiBean> {
+    class FlexiMetaBean implements MetaBean {
+        @SuppressWarnings("unchecked")
         @Override
-        public Bean<FlexiBean> createBean() {
+        public FlexiBean createBean() {
             return new FlexiBean();
         }
 
         @Override
-        public PropertyMap<FlexiBean> createPropertyMap(Bean<FlexiBean> bean) {
-            return FlexiPropertyMap.of(bean.beanData());
+        public PropertyMap createPropertyMap(Bean bean) {
+            return FlexiPropertyMap.of(bean.<FlexiBean>beanData());
         }
 
         @Override
@@ -391,7 +394,7 @@ public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
         }
 
         @Override
-        public MetaProperty<FlexiBean, Object> metaProperty(String name) {
+        public MetaProperty<Object> metaProperty(String name) {
             Object obj = get(name);
             if (obj == null) {
                 throw new NoSuchElementException("Unknown property: " + name);
@@ -400,21 +403,21 @@ public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
         }
 
         @Override
-        public Iterable<MetaProperty<FlexiBean, Object>> metaPropertyIterable() {
+        public Iterable<MetaProperty<Object>> metaPropertyIterable() {
             if (data == null) {
                 return Collections.emptySet();
             }
-            return new Iterable<MetaProperty<FlexiBean,Object>>() {
+            return new Iterable<MetaProperty<Object>>() {
                 private final Iterator<String> it = data.keySet().iterator();
                 @Override
-                public Iterator<MetaProperty<FlexiBean, Object>> iterator() {
-                    return new Iterator<MetaProperty<FlexiBean,Object>>() {
+                public Iterator<MetaProperty<Object>> iterator() {
+                    return new Iterator<MetaProperty<Object>>() {
                         @Override
                         public boolean hasNext() {
                             return it.hasNext();
                         }
                         @Override
-                        public MetaProperty<FlexiBean, Object> next() {
+                        public MetaProperty<Object> next() {
                             return FlexiMetaProperty.of(it.next());
                         }
                         @Override
@@ -428,11 +431,11 @@ public final class FlexiBean implements DynamicBean<FlexiBean>, Serializable {
         }
 
         @Override
-        public Map<String, MetaProperty<FlexiBean, Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<Object>> metaPropertyMap() {
             if (data == null) {
                 return Collections.emptyMap();
             }
-            Map<String, MetaProperty<FlexiBean, Object>> map = new HashMap<String, MetaProperty<FlexiBean,Object>>();
+            Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
             for (String name : data.keySet()) {
                 map.put(name, FlexiMetaProperty.of(name));
             }

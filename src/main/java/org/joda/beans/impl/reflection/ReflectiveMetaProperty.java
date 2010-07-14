@@ -32,11 +32,10 @@ import org.joda.beans.impl.BasicProperty;
  * The property descriptor class is part of the JDK JavaBean standard.
  * It provides access to get and set a property on a bean.
  * 
- * @param <B>  the type of the bean
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> {
+public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The type of the property. */
     private final Class<P> propertyType;
@@ -51,8 +50,8 @@ public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> 
      * @param beanType  the bean type, not null
      * @param propertyName  the property name, not empty
      */
-    public static <B, P> ReflectiveMetaProperty<B, P> of(Class<B> beanType, String propertyName) {
-        return new ReflectiveMetaProperty<B, P>(beanType, propertyName);
+    public static <P> ReflectiveMetaProperty<P> of(Class<? extends Bean> beanType, String propertyName) {
+        return new ReflectiveMetaProperty<P>(beanType, propertyName);
     }
 
     /**
@@ -62,7 +61,7 @@ public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> 
      * @param propertyName  the property name, not empty
      */
     @SuppressWarnings("unchecked")
-    private ReflectiveMetaProperty(Class<B> beanType, String propertyName) {
+    private ReflectiveMetaProperty(Class<? extends Bean> beanType, String propertyName) {
         super(beanType, propertyName);
         PropertyDescriptor descriptor;
         try {
@@ -81,8 +80,14 @@ public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> 
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     @Override
-    public Property<B, P> createProperty(Bean<B> bean) {
+    public Class<? extends Bean> beanType() {
+        return (Class<? extends Bean>) super.beanType();
+    }
+
+    @Override
+    public Property<P> createProperty(Bean bean) {
         return BasicProperty.of(bean, this);
     }
 
@@ -100,7 +105,7 @@ public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> 
     //-----------------------------------------------------------------------
     @Override
     @SuppressWarnings("unchecked")
-    public P get(Bean<B> bean) {
+    public P get(Bean bean) {
         if (readWrite().isReadable() == false) {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
@@ -119,7 +124,7 @@ public final class ReflectiveMetaProperty<B, P> extends BasicMetaProperty<B, P> 
     }
 
     @Override
-    public void set(Bean<B> bean, P value) {
+    public void set(Bean bean, P value) {
         if (readWrite().isWritable() == false) {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }

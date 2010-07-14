@@ -33,22 +33,21 @@ import org.joda.beans.PropertyMap;
  * <p>
  * This is the standard implementation of a map of properties derived from a meta-bean.
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
-public final class BasicPropertyMap<B>
-        extends AbstractMap<String, Property<B, Object>> implements PropertyMap<B> {
+public final class BasicPropertyMap
+        extends AbstractMap<String, Property<Object>> implements PropertyMap {
 
     /** The bean. */
-    private final Bean<B> bean;
+    private final Bean bean;
 
     /**
      * Factory to create a property map avoiding duplicate generics.
      * 
      * @param bean  the bean
      */
-    public static <B, T extends Bean<B>> BasicPropertyMap<B> of(T bean) {
-        return new BasicPropertyMap<B>(bean);
+    public static BasicPropertyMap of(Bean bean) {
+        return new BasicPropertyMap(bean);
     }
 
     /**
@@ -56,7 +55,7 @@ public final class BasicPropertyMap<B>
      * 
      * @param bean  the bean that the property is bound to, not null
      */
-    private BasicPropertyMap(Bean<B> bean) {
+    private BasicPropertyMap(Bean bean) {
         if (bean == null) {
             throw new NullPointerException("Bean must not be null");
         }
@@ -75,7 +74,7 @@ public final class BasicPropertyMap<B>
     }
 
     @Override
-    public Property<B, Object> get(Object obj) {
+    public Property<Object> get(Object obj) {
         return containsKey(obj) ? bean.metaBean().metaProperty(obj.toString()).createProperty(bean) : null;
     }
 
@@ -85,25 +84,25 @@ public final class BasicPropertyMap<B>
     }
 
     @Override
-    public Set<Entry<String, Property<B, Object>>> entrySet() {
-        return new AbstractSet<Entry<String,Property<B, Object>>>() {
+    public Set<Entry<String, Property<Object>>> entrySet() {
+        return new AbstractSet<Entry<String,Property<Object>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {
                 return bean.metaBean().metaPropertyCount();
             }
             @Override
-            public Iterator<Entry<String, Property<B, Object>>> iterator() {
-                final Iterator<MetaProperty<B, Object>> it = bean.metaBean().metaPropertyMap().values().iterator();
-                return new Iterator<Entry<String, Property<B, Object>>>() {
+            public Iterator<Entry<String, Property<Object>>> iterator() {
+                final Iterator<MetaProperty<Object>> it = bean.metaBean().metaPropertyMap().values().iterator();
+                return new Iterator<Entry<String, Property<Object>>>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
                     @SuppressWarnings("unchecked")
-                    public Entry<String, Property<B, Object>> next() {
-                        MetaProperty<B, Object> meta = it.next();
+                    public Entry<String, Property<Object>> next() {
+                        MetaProperty<Object> meta = it.next();
                         return (Entry) BasicProperty.of(bean, meta);
                     }
                     @Override
@@ -119,9 +118,9 @@ public final class BasicPropertyMap<B>
     @Override
     public Map<String, Object> flatten() {
         // TODO: dedicated map implementation
-        Map<String, MetaProperty<B, Object>> propertyMap = bean.metaBean().metaPropertyMap();
+        Map<String, MetaProperty<Object>> propertyMap = bean.metaBean().metaPropertyMap();
         Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
-        for (Entry<String, MetaProperty<B, Object>> entry : propertyMap.entrySet()) {
+        for (Entry<String, MetaProperty<Object>> entry : propertyMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().get(bean));
         }
         return Collections.unmodifiableMap(map);

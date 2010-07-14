@@ -25,11 +25,10 @@ import org.joda.beans.impl.BasicMetaProperty;
  * The property descriptor class is part of the JDK JavaBean standard.
  * It provides access to get and set a property on a bean.
  * 
- * @param <B>  the type of the bean
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicMetaProperty<B, P> {
+public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The type of the property. */
     private final Class<P> propertyType;
@@ -44,9 +43,9 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicM
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    public static <B extends DirectBean<B>, P> DirectMetaProperty<B, P> ofReadWrite(
-            Class<B> beanType, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<B, P>(beanType, propertyName, propertyType, PropertyReadWrite.READ_WRITE);
+    public static <P> DirectMetaProperty<P> ofReadWrite(
+            Class<? extends Bean> beanType, String propertyName, Class<P> propertyType) {
+        return new DirectMetaProperty<P>(beanType, propertyName, propertyType, PropertyReadWrite.READ_WRITE);
     }
 
     /**
@@ -57,9 +56,9 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicM
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    public static <B extends DirectBean<B>, P> DirectMetaProperty<B, P> ofReadOnly(
-            Class<B> beanType, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<B, P>(beanType, propertyName, propertyType, PropertyReadWrite.READ_ONLY);
+    public static <P> DirectMetaProperty<P> ofReadOnly(
+            Class<? extends Bean> beanType, String propertyName, Class<P> propertyType) {
+        return new DirectMetaProperty<P>(beanType, propertyName, propertyType, PropertyReadWrite.READ_ONLY);
     }
 
     /**
@@ -70,9 +69,9 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicM
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    public static <B extends DirectBean<B>, P> DirectMetaProperty<B, P> ofWriteOnly(
-            Class<B> beanType, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<B, P>(beanType, propertyName, propertyType, PropertyReadWrite.WRITE_ONLY);
+    public static <P> DirectMetaProperty<P> ofWriteOnly(
+            Class<? extends Bean> beanType, String propertyName, Class<P> propertyType) {
+        return new DirectMetaProperty<P>(beanType, propertyName, propertyType, PropertyReadWrite.WRITE_ONLY);
     }
 
     /**
@@ -83,7 +82,7 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicM
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    private DirectMetaProperty(Class<B> beanType, String propertyName, Class<P> propertyType, PropertyReadWrite readWrite) {
+    private DirectMetaProperty(Class<? extends Bean> beanType, String propertyName, Class<P> propertyType, PropertyReadWrite readWrite) {
         super(beanType, propertyName);
         if (propertyType == null) {
             throw new NullPointerException("Property type must not be null");
@@ -96,6 +95,12 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicM
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<? extends Bean> beanType() {
+        return (Class<? extends Bean>) super.beanType();
+    }
+
     @Override
     public Class<P> propertyType() {
         return propertyType;
@@ -109,19 +114,19 @@ public final class DirectMetaProperty<B extends DirectBean<B>, P> extends BasicM
     //-----------------------------------------------------------------------
     @Override
     @SuppressWarnings("unchecked")
-    public P get(Bean<B> bean) {
+    public P get(Bean bean) {
         if (readWrite.isReadable() == false) {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
-        return (P) bean.beanData().propertyGet(name());
+        return (P) bean.<DirectBean>beanData().propertyGet(name());
     }
 
     @Override
-    public void set(Bean<B> bean, P value) {
+    public void set(Bean bean, P value) {
         if (readWrite.isWritable() == false) {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
-        bean.beanData().propertySet(name(), value);
+        bean.<DirectBean>beanData().propertySet(name(), value);
     }
 
 }

@@ -77,12 +77,12 @@ public class Examples {
         Documentation<Address> d = new Documentation<Address>();
         d.setType("ADDRESS");
         d.setContent(a);
-        Property<Documentation<Address>, Address> dProp = d.content();
+        Property<Address> dProp = d.content();
         Address a2 = dProp.metaProperty().get(d);
         System.out.println(a2);
         Address a3 = Documentation.<Address>contentMeta().get(d);
         System.out.println(a3);
-        Bean<Documentation<Address>> d2 = Documentation.<Address>meta().createBean();
+        Documentation<Address> d2 = Documentation.meta().createBean();
         System.out.println(d2);
         
 //        try {
@@ -99,7 +99,7 @@ public class Examples {
 //        }
     }
 
-    private static boolean validateNotEmpty(Property<?, String> property) {
+    private static boolean validateNotEmpty(Property<String> property) {
         String str = property.get();
         return (str != null && str.length() > 0);
     }

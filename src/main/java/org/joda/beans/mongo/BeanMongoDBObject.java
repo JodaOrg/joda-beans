@@ -33,7 +33,7 @@ public class BeanMongoDBObject implements DBObject {
     /**
      * The underlying bean.
      */
-    private final Bean<?> bean;
+    private final Bean bean;
     /**
      * The Mongo partial flag.
      */
@@ -43,7 +43,7 @@ public class BeanMongoDBObject implements DBObject {
      * Creates an instance wrapping a bean.
      * @param bean  the bean to wrap, not null
      */
-    public BeanMongoDBObject(Bean<?> bean) {
+    public BeanMongoDBObject(Bean bean) {
         this.bean = bean;
     }
 
