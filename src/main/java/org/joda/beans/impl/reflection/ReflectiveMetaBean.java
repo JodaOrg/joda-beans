@@ -96,9 +96,9 @@ public final class ReflectiveMetaBean implements MetaBean {
         try {
             return beanType.newInstance();
         } catch (InstantiationException ex) {
-            throw new UnsupportedOperationException("Bean cannot be created: " + name(), ex);
+            throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
         } catch (IllegalAccessException ex) {
-            throw new UnsupportedOperationException("Bean cannot be created: " + name(), ex);
+            throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
         }
     }
 
@@ -109,7 +109,7 @@ public final class ReflectiveMetaBean implements MetaBean {
 
     //-----------------------------------------------------------------------
     @Override
-    public String name() {
+    public String beanName() {
         return beanType.getName();
     }
 
@@ -170,7 +170,7 @@ public final class ReflectiveMetaBean implements MetaBean {
      */
     @Override
     public String toString() {
-        return "MetaBean:" + name();
+        return "MetaBean:" + beanName();
     }
 
 }

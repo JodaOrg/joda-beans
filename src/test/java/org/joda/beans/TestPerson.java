@@ -68,7 +68,7 @@ public class TestPerson {
         
         assertEquals(test.beanType(), Person.class);
         
-        assertEquals(test.name(), Person.class.getName());
+        assertEquals(test.beanName(), Person.class.getName());
         
         assertEquals(test.metaPropertyCount(), NUM_PROPERTIES);
         

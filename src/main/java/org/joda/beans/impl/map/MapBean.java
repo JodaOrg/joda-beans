@@ -89,7 +89,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
     }
 
     @Override
-    public String name() {
+    public String beanName() {
         return MapBean.class.getName();
     }
 

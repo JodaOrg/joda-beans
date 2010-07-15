@@ -35,7 +35,7 @@ public abstract class BasicMetaBean implements MetaBean {
     }
 
     @Override
-    public String name() {
+    public String beanName() {
         return beanType().getName();
     }
 

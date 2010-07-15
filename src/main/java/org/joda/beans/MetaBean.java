@@ -48,7 +48,7 @@ public interface MetaBean {
      * 
      * @return the name of the bean, not empty
      */
-    String name();
+    String beanName();
 
     /**
      * Get the type of the bean represented as a {@code Class}.

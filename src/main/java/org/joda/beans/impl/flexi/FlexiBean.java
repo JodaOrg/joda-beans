@@ -374,7 +374,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
         }
 
         @Override
-        public String name() {
+        public String beanName() {
             return FlexiBean.class.getName();
         }
 
