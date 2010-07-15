@@ -143,12 +143,12 @@ public class Documentation<T> extends DirectBean {
         /**
          * The meta-property for the {@code type} property.
          */
-        final MetaProperty<String> type = DirectMetaProperty.ofReadWrite(this, "type", String.class);
+        private final MetaProperty<String> type = DirectMetaProperty.ofReadWrite(this, "type", String.class);
         /**
          * The meta-property for the {@code content} property.
          */
         @SuppressWarnings("unchecked")
-        final MetaProperty<T> content = (DirectMetaProperty) DirectMetaProperty.ofReadWrite(this, "content", Object.class);
+        private final MetaProperty<T> content = (DirectMetaProperty) DirectMetaProperty.ofReadWrite(this, "content", Object.class);
         /**
          * The meta-properties.
          */

@@ -270,29 +270,29 @@ public class Person extends DirectBean {
         /**
          * The meta-property for the {@code forename} property.
          */
-        final MetaProperty<String> forename = DirectMetaProperty.ofReadWrite(this, "forename", String.class);
+        private final MetaProperty<String> forename = DirectMetaProperty.ofReadWrite(this, "forename", String.class);
         /**
          * The meta-property for the {@code surname} property.
          */
-        final MetaProperty<String> surname = DirectMetaProperty.ofReadWrite(this, "surname", String.class);
+        private final MetaProperty<String> surname = DirectMetaProperty.ofReadWrite(this, "surname", String.class);
         /**
          * The meta-property for the {@code numberOfCars} property.
          */
-        final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadWrite(this, "numberOfCars", Integer.TYPE);
+        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadWrite(this, "numberOfCars", Integer.TYPE);
         /**
          * The meta-property for the {@code addressList} property.
          */
         @SuppressWarnings("unchecked")
-        final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(this, "addressList", (Class) List.class);
+        private final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(this, "addressList", (Class) List.class);
         /**
          * The meta-property for the {@code otherAddressMap} property.
          */
         @SuppressWarnings("unchecked")
-        final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(this, "otherAddressMap", (Class) Map.class);
+        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(this, "otherAddressMap", (Class) Map.class);
         /**
          * The meta-property for the {@code extensions} property.
          */
-        final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(this, "extensions", FlexiBean.class);
+        private final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(this, "extensions", FlexiBean.class);
         /**
          * The meta-properties.
          */

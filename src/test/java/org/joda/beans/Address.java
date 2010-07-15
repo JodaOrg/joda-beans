@@ -171,15 +171,15 @@ public class Address extends DirectBean {
         /**
          * The meta-property for the {@code number} property.
          */
-        final MetaProperty<Integer> number = DirectMetaProperty.ofReadWrite(this, "number", Integer.TYPE);
+        private final MetaProperty<Integer> number = DirectMetaProperty.ofReadWrite(this, "number", Integer.TYPE);
         /**
          * The meta-property for the {@code street} property.
          */
-        final MetaProperty<String> street = DirectMetaProperty.ofReadWrite(this, "street", String.class);
+        private final MetaProperty<String> street = DirectMetaProperty.ofReadWrite(this, "street", String.class);
         /**
          * The meta-property for the {@code city} property.
          */
-        final MetaProperty<String> city = DirectMetaProperty.ofReadWrite(this, "city", String.class);
+        private final MetaProperty<String> city = DirectMetaProperty.ofReadWrite(this, "city", String.class);
         /**
          * The meta-properties.
          */

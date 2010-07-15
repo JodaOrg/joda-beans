@@ -217,13 +217,13 @@ class PropertyGen {
         }
         if (isGenericPropertyType()) {
             list.add("\t\t@SuppressWarnings(\"unchecked\")");
-            list.add("\t\tfinal MetaProperty<" + bean.getBeanGeneric() + "> " + propertyName +
+            list.add("\t\tprivate final MetaProperty<" + bean.getBeanGeneric() + "> " + metaFieldName() +
                 " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
         } else {
             if (isGenericTypedProperty()) {
                 list.add("\t\t@SuppressWarnings(\"unchecked\")");
             }
-            list.add("\t\tfinal MetaProperty<" + propertyType + "> " + propertyName +
+            list.add("\t\tprivate final MetaProperty<" + propertyType + "> " + metaFieldName() +
                 " = DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
         }
         return list;
@@ -231,7 +231,7 @@ class PropertyGen {
 
     List<String> generateMetaPropertyMapBuild() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\ttemp.put(\"" + propertyName + "\", " + propertyName + ");");
+        list.add("\t\t\ttemp.put(\"" + propertyName + "\", " + metaFieldName() + ");");
         return list;
     }
 
@@ -313,9 +313,9 @@ class PropertyGen {
             list.add("\t\t@Deprecated");
         }
         if (isGenericPropertyType()) {
-            list.add("\t\tpublic final MetaProperty<" + bean.getBeanGeneric() + "> " + propertyName + "() {");
+            list.add("\t\tpublic final MetaProperty<" + bean.getBeanGeneric() + "> " + metaFieldName() + "() {");
         } else {
-            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + propertyName + "() {");
+            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + metaFieldName() + "() {");
         }
         list.add("\t\t\treturn " + propertyName + ";");
         list.add("\t\t}");
@@ -414,6 +414,10 @@ class PropertyGen {
 
     private String getterPrefix() {
         return type.equals("boolean") ? "is" : "get";
+    }
+
+    private String metaFieldName() {
+        return bean.getFieldPrefix() + propertyName;
     }
 
     private boolean isGenericTypedProperty() {
