@@ -81,8 +81,8 @@ public class Person extends DirectBean {
         return super.propertyGet(propertyName);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     protected void propertySet(String propertyName, Object newValue) {
         switch (propertyName.hashCode()) {
             case 467061063:  // forename

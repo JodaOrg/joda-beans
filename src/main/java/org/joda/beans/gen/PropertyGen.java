@@ -217,8 +217,8 @@ class PropertyGen {
         }
         if (isGenericPropertyType()) {
             list.add("\t\t@SuppressWarnings(\"unchecked\")");
-            list.add("\t\tfinal MetaProperty " + propertyName +
-                " = DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
+            list.add("\t\tfinal MetaProperty<" + bean.getBeanGeneric() + "> " + propertyName +
+                " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
         } else {
             if (isGenericTypedProperty()) {
                 list.add("\t\t@SuppressWarnings(\"unchecked\")");
@@ -290,8 +290,7 @@ class PropertyGen {
         }
         list.add("\tpublic final Property<" + propertyType() + "> " + propertyName + "() {");
         if (isGenericPropertyType()) {
-            String beanGeneric = bean.getBeanType().substring(bean.getBeanNoGenericsType().length());
-            list.add("\t\treturn meta()." + beanGeneric + propertyName + "().createProperty(this);");
+            list.add("\t\treturn metaBean()." + propertyName + "().createProperty(this);");
         } else {
             list.add("\t\treturn meta()." + propertyName + "().createProperty(this);");
         }
@@ -308,22 +307,17 @@ class PropertyGen {
         }
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + propertyName + "} property.");
-        if (isGenericPropertyType()) {
-            list.add("\t\t * @param <R>  the property type (which cannot be inferred in a static context)");
-        }
         list.add("\t\t * @return the meta-property, not null");
         list.add("\t\t */");
         if (deprecated) {
             list.add("\t\t@Deprecated");
         }
         if (isGenericPropertyType()) {
-            list.add("\t\t@SuppressWarnings(\"unchecked\")");
-            list.add("\t\tpublic final <R> MetaProperty<R> " + propertyName + "() {");
-            list.add("\t\t\treturn (MetaProperty<R>) " + propertyName + ";");
+            list.add("\t\tpublic final MetaProperty<" + bean.getBeanGeneric() + "> " + propertyName + "() {");
         } else {
             list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + propertyName + "() {");
-            list.add("\t\t\treturn " + propertyName + ";");
         }
+        list.add("\t\t\treturn " + propertyName + ";");
         list.add("\t\t}");
         list.add("");
         return list;

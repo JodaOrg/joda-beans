@@ -177,15 +177,30 @@ class BeanGen {
     private void generateMetaBean() {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
-        insertRegion.add("\t * @return the meta-bean, not null");
-        insertRegion.add("\t */");
-        insertRegion.add("\tpublic static Meta meta() {");
+        if (isGenericBean()) {
+            insertRegion.add("\t * @param <R>  the bean's generic type");
+            insertRegion.add("\t * @return the meta-bean, not null");
+            insertRegion.add("\t */");
+            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+            insertRegion.add("\tpublic static <R> Meta<R> meta() {");
+        } else {
+            insertRegion.add("\t * @return the meta-bean, not null");
+            insertRegion.add("\t */");
+            insertRegion.add("\tpublic static Meta meta() {");
+        }
         insertRegion.add("\t\treturn Meta.INSTANCE;");
         insertRegion.add("\t}");
         insertRegion.add("");
         
+        if (isGenericBean()) {
+            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        }
         insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic Meta metaBean() {");
+        if (isGenericBean()) {
+            insertRegion.add("\tpublic Meta<" + getBeanGeneric() + "> metaBean() {");
+        } else {
+            insertRegion.add("\tpublic Meta metaBean() {");
+        }
         insertRegion.add("\t\treturn Meta.INSTANCE;");
         insertRegion.add("\t}");
         insertRegion.add("");
@@ -214,7 +229,6 @@ class BeanGen {
     }
 
     private void generatePropertySet(List<PropertyGen> props) {
-        insertRegion.add("\t@Override");
         boolean generics = false;
         for (PropertyGen prop : props) {
             generics |= prop.isGenericWritableProperty();
@@ -222,6 +236,7 @@ class BeanGen {
         if (generics) {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
         }
+        insertRegion.add("\t@Override");
         insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue) {");
         insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
         for (PropertyGen prop : props) {
@@ -238,10 +253,17 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
         insertRegion.add("\t */");
-        insertRegion.add("\tpublic static class Meta extends BasicMetaBean {");
+        if (isGenericBean()) {
+            insertRegion.add("\tpublic static class Meta<" + getBeanGeneric() + "> extends BasicMetaBean {");
+        } else {
+            insertRegion.add("\tpublic static class Meta extends BasicMetaBean {");
+        }
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The singleton instance of the meta-bean.");
         insertRegion.add("\t\t */");
+        if (isGenericBean()) {
+            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+        }
         insertRegion.add("\t\tstatic final Meta INSTANCE = new Meta();");
         insertRegion.add("");
         generateMetaPropertyConstants(props);
@@ -257,24 +279,21 @@ class BeanGen {
         insertRegion.add("\t\t\tmap = Collections.unmodifiableMap(temp);");
         insertRegion.add("\t\t}");
         insertRegion.add("");
-        if (isGenericBean()) {
-            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tpublic " + beanNoGenericsType + "<?> createBean() {");
-            insertRegion.add("\t\t\treturn new " + beanNoGenericsType + "();");
-        } else {
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tpublic " + beanType + " createBean() {");
-            insertRegion.add("\t\t\treturn new " + beanType + "();");
-        }
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic " + beanType + " createBean() {");
+        insertRegion.add("\t\t\treturn new " + beanType + "();");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         if (isGenericBean()) {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Class<? extends " + beanNoGenericsType + "> beanType() {");
-        insertRegion.add("\t\t\treturn " + beanNoGenericsType + ".class;");
+        insertRegion.add("\t\tpublic Class<? extends " + beanType + "> beanType() {");
+        if (isGenericBean()) {
+            insertRegion.add("\t\t\treturn (Class) " + beanNoGenericsType + ".class;");
+        } else {
+            insertRegion.add("\t\t\treturn " + beanType + ".class;");
+        }
         insertRegion.add("\t\t}");
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
