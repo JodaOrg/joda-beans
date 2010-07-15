@@ -100,9 +100,26 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
-    public void test_property() {
+    public void test_namedPropertyMethod() {
         Person person = new Person();
         Property<String> test = person.forename();
+        
+        assertSame(test.bean(), person);
+        assertSame(test.metaProperty(), Person.forenameMeta());
+        
+        assertEquals(test.get(), null);
+        person.setForename("A");
+        assertEquals(test.get(), "A");
+        test.set("B");
+        assertEquals(test.get(), "B");
+        assertEquals(test.put("C"), "B");
+        assertEquals(test.get(), "C");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_property_String() {
+        Person person = new Person();
+        Property<String> test = person.property(FORENAME);
         
         assertSame(test.bean(), person);
         assertSame(test.metaProperty(), Person.forenameMeta());
@@ -141,9 +158,28 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
-    public void test_metaProperty() {
+    public void test_namedMetaPropertyMethod() {
         Person person = new Person();
         MetaProperty<String> test = Person.forenameMeta();
+        
+        assertSame(test.beanType(), Person.class);
+        assertSame(test.propertyType(), String.class);
+        assertSame(test.name(), FORENAME);
+        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        
+        assertEquals(test.get(person), null);
+        person.setForename("A");
+        assertEquals(test.get(person), "A");
+        test.set(person, "B");
+        assertEquals(test.get(person), "B");
+        assertEquals(test.put(person, "C"), "B");
+        assertEquals(test.get(person), "C");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_metaProperty_String() {
+        Person person = new Person();
+        MetaProperty<String> test = Person.meta().metaProperty(FORENAME);
         
         assertSame(test.beanType(), Person.class);
         assertSame(test.propertyType(), String.class);

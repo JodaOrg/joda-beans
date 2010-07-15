@@ -88,7 +88,6 @@ public final class ReflectiveMetaBean implements MetaBean {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public Bean createBean() {
         try {

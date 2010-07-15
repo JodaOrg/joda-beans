@@ -47,11 +47,12 @@ public interface Bean {
     /**
      * Gets a property by name.
      * 
+     * @param <R>  the property type, optional, enabling auto-casting
      * @param propertyName  the property name to retrieve, null throws NoSuchElementException
      * @return the property, not empty
      * @throws NoSuchElementException if the property name is invalid
      */
-    Property<Object> property(String propertyName);
+    <R> Property<R> property(String propertyName);
 
     /**
      * Gets the map of properties, keyed by property name.

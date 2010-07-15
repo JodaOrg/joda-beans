@@ -29,9 +29,10 @@ public interface MetaBean {
     /**
      * Creates a new instance of the bean represented by this meta bean.
      * 
+     * @param <B>  the bean type, optional, enabling auto-casting
      * @return the created bean, not null
      */
-    <B extends Bean> B createBean();
+    Bean createBean();
 
     /**
      * Creates a map of properties for the specified bean.
@@ -52,6 +53,7 @@ public interface MetaBean {
     /**
      * Get the type of the bean represented as a {@code Class}.
      * 
+     * @param <B>  the bean type, optional, enabling auto-casting
      * @return the type of the bean, not null
      */
     Class<? extends Bean> beanType();
@@ -75,11 +77,12 @@ public interface MetaBean {
     /**
      * Gets a meta-property by name.
      * 
+     * @param <R>  the property type, optional, enabling auto-casting
      * @param propertyName  the property name to retrieve, null throws NoSuchElementException
      * @return the meta property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
-    MetaProperty<Object> metaProperty(String propertyName);
+    <R> MetaProperty<R> metaProperty(String propertyName);
 
     /**
      * Gets an iterator of meta-properties.

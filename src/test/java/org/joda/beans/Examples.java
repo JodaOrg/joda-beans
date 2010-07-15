@@ -24,7 +24,7 @@ public class Examples {
 
     public static void main(String[] args) {
         // create the bean the hard way - could just do new Person() instead
-        Person p = Person.meta().createBean();
+        Person p = (Person) Person.meta().createBean();
         // set surname using normal method
         p.setSurname("Colebourne");
         // query using property method
@@ -52,7 +52,7 @@ public class Examples {
         System.out.println(p);
         
         // create the bean the hard way - could just do new Address() instead
-        Address a = Address.meta().createBean();
+        Address a = (Address) Address.meta().createBean();
         // set surname using normal method
         a.setStreet("Barnsnap Close");
         // query using property method
@@ -82,7 +82,7 @@ public class Examples {
         System.out.println(a2);
         Address a3 = Documentation.<Address>contentMeta().get(d);
         System.out.println(a3);
-        Documentation<Address> d2 = Documentation.meta().createBean();
+        Documentation<Address> d2 = (Documentation<Address>) Documentation.meta().createBean();
         System.out.println(d2);
         
 //        try {

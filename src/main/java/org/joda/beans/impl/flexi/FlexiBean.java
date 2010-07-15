@@ -356,7 +356,6 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     //-----------------------------------------------------------------------
     class FlexiMetaBean implements MetaBean {
-        @SuppressWarnings("unchecked")
         @Override
         public FlexiBean createBean() {
             return new FlexiBean();

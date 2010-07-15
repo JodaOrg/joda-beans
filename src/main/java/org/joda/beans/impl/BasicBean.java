@@ -35,8 +35,8 @@ public abstract class BasicBean implements Bean {
     }
 
     @Override
-    public Property<Object> property(String propertyName) {
-        return metaBean().metaProperty(propertyName).createProperty(this);
+    public <R> Property<R> property(String propertyName) {
+        return metaBean().<R>metaProperty(propertyName).createProperty(this);
     }
 
     @Override

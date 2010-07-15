@@ -73,7 +73,6 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
     public MapBean createBean() {
         return new MapBean();
