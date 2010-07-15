@@ -16,6 +16,7 @@
 package org.joda.beans.impl.direct;
 
 import org.joda.beans.Bean;
+import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
 
@@ -30,6 +31,8 @@ import org.joda.beans.impl.BasicMetaProperty;
  */
 public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
+    /** The meta-bean. */
+    private final MetaBean metaBean;
     /** The type of the property. */
     private final Class<P> propertyType;
     /** The read-write type. */
@@ -38,67 +41,70 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     /**
      * Factory to create a read-write meta-property avoiding duplicate generics.
      * 
-     * @param beanType  the bean type, not null
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
     public static <P> DirectMetaProperty<P> ofReadWrite(
-            Class<? extends DirectBean> beanType, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<P>(beanType, propertyName, propertyType, PropertyReadWrite.READ_WRITE);
+            MetaBean metaBean, String propertyName, Class<P> propertyType) {
+        return new DirectMetaProperty<P>(metaBean, propertyName, propertyType, PropertyReadWrite.READ_WRITE);
     }
 
     /**
      * Factory to create a read-write meta-property avoiding duplicate generics.
      * 
-     * @param beanType  the bean type, not null
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
     public static <P> DirectMetaProperty<P> ofReadOnly(
-            Class<? extends DirectBean> beanType, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<P>(beanType, propertyName, propertyType, PropertyReadWrite.READ_ONLY);
+            MetaBean metaBean, String propertyName, Class<P> propertyType) {
+        return new DirectMetaProperty<P>(metaBean, propertyName, propertyType, PropertyReadWrite.READ_ONLY);
     }
 
     /**
      * Factory to create a read-write meta-property avoiding duplicate generics.
      * 
-     * @param beanType  the bean type, not null
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
     public static <P> DirectMetaProperty<P> ofWriteOnly(
-            Class<? extends DirectBean> beanType, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<P>(beanType, propertyName, propertyType, PropertyReadWrite.WRITE_ONLY);
+            MetaBean metaBean, String propertyName, Class<P> propertyType) {
+        return new DirectMetaProperty<P>(metaBean, propertyName, propertyType, PropertyReadWrite.WRITE_ONLY);
     }
 
     /**
      * Constructor.
      * 
-     * @param beanType  the bean type, not null
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    private DirectMetaProperty(Class<? extends DirectBean> beanType, String propertyName, Class<P> propertyType, PropertyReadWrite readWrite) {
-        super(beanType, propertyName);
+    private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<P> propertyType, PropertyReadWrite readWrite) {
+        super(propertyName);
+        if (metaBean == null) {
+            throw new NullPointerException("MetaBean must not be null");
+        }
         if (propertyType == null) {
             throw new NullPointerException("Property type must not be null");
         }
         if (readWrite == null) {
             throw new NullPointerException("PropertyReadWrite must not be null");
         }
+        this.metaBean = metaBean;
         this.propertyType = propertyType;
         this.readWrite = readWrite;
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     @Override
-    public Class<? extends DirectBean> beanType() {
-        return (Class<? extends DirectBean>) super.beanType();
+    public MetaBean metaBean() {
+        return metaBean;
     }
 
     @Override
@@ -112,13 +118,13 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     //-----------------------------------------------------------------------
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public P get(Bean bean) {
         if (readWrite.isReadable() == false) {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
-        return (P) beanType().cast(bean).propertyGet(name());
+        return (P) ((DirectBean) bean).propertyGet(name());
     }
 
     @Override
@@ -126,7 +132,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         if (readWrite.isWritable() == false) {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
-        beanType().cast(bean).propertySet(name(), value);
+        ((DirectBean) bean).propertySet(name(), value);
     }
 
 }

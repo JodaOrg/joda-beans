@@ -16,6 +16,7 @@
 package org.joda.beans.impl.flexi;
 
 import org.joda.beans.Bean;
+import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
@@ -28,22 +29,28 @@ import org.joda.beans.impl.BasicProperty;
  */
 class FlexiMetaProperty extends BasicMetaProperty<Object> {
 
+    /** The meta-bean. */
+    private final MetaBean metaBean;
+
     /**
      * Factory to create a meta-property.
      * 
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      */
-    static FlexiMetaProperty of(String propertyName) {
-        return new FlexiMetaProperty(propertyName);
+    static FlexiMetaProperty of(MetaBean metaBean, String propertyName) {
+        return new FlexiMetaProperty(metaBean, propertyName);
     }
 
     /**
      * Constructor.
      * 
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      */
-    private FlexiMetaProperty(String propertyName) {
-        super(FlexiBean.class, propertyName);
+    private FlexiMetaProperty(MetaBean metaBean, String propertyName) {
+        super(propertyName);
+        this.metaBean = metaBean;
     }
 
     //-----------------------------------------------------------------------
@@ -53,8 +60,8 @@ class FlexiMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
-    public Class<FlexiBean> beanType() {
-        return FlexiBean.class;
+    public MetaBean metaBean() {
+        return metaBean;
     }
 
     @Override
@@ -70,12 +77,12 @@ class FlexiMetaProperty extends BasicMetaProperty<Object> {
     //-----------------------------------------------------------------------
     @Override
     public Object get(Bean bean) {
-        return beanType().cast(bean).propertyGet(name());
+        return ((FlexiBean) bean).propertyGet(name());
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        beanType().cast(bean).propertySet(name(), value);
+        ((FlexiBean) bean).propertySet(name(), value);
     }
 
 }

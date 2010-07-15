@@ -34,11 +34,13 @@ public interface MetaProperty<P> {
 
     //-----------------------------------------------------------------------
     /**
-     * Get the type of the bean represented as a {@code Class}.
+     * Gets the meta-bean which owns this meta-property.
+     * <p>
+     * Each meta-property is fully owned by a single bean.
      * 
-     * @return the type of the bean, not null
+     * @return the meta-bean, not null
      */
-    Class<? extends Bean> beanType();
+    MetaBean metaBean();
 
     /**
      * Gets the property name.
@@ -89,6 +91,7 @@ public interface MetaProperty<P> {
      * 
      * @param bean  the bean to query, not null
      * @return the value of the property on the specified bean, may be null
+     * @throws ClassCastException if the bean is of an incorrect type
      * @throws UnsupportedOperationException if the property is write-only
      */
     P get(Bean bean);
@@ -101,6 +104,7 @@ public interface MetaProperty<P> {
      * 
      * @param bean  the bean to update, not null
      * @param value  the value to set into the property on the specified bean, may be null
+     * @throws ClassCastException if the bean is of an incorrect type
      * @throws ClassCastException if the value is of an invalid type for the property
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
@@ -116,6 +120,7 @@ public interface MetaProperty<P> {
      * @param bean  the bean to update, not null
      * @param value  the value to set into the property on the specified bean, may be null
      * @return the old value of the property, may be null
+     * @throws ClassCastException if the bean is of an incorrect type
      * @throws ClassCastException if the value is of an invalid type for the property
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)

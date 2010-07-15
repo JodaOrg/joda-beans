@@ -105,7 +105,7 @@ public class TestPerson {
         Property<String> test = person.forename();
         
         assertSame(test.bean(), person);
-        assertSame(test.metaProperty(), Person.forenameMeta());
+        assertSame(test.metaProperty(), Person.meta().forename());
         
         assertEquals(test.get(), null);
         person.setForename("A");
@@ -122,7 +122,7 @@ public class TestPerson {
         Property<String> test = person.property(FORENAME);
         
         assertSame(test.bean(), person);
-        assertSame(test.metaProperty(), Person.forenameMeta());
+        assertSame(test.metaProperty(), Person.meta().forename());
         
         assertEquals(test.get(), null);
         person.setForename("A");
@@ -160,9 +160,9 @@ public class TestPerson {
     //-----------------------------------------------------------------------
     public void test_namedMetaPropertyMethod() {
         Person person = new Person();
-        MetaProperty<String> test = Person.forenameMeta();
+        MetaProperty<String> test = Person.meta().forename();
         
-        assertSame(test.beanType(), Person.class);
+        assertSame(test.metaBean().beanType(), Person.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), FORENAME);
         assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
@@ -181,7 +181,7 @@ public class TestPerson {
         Person person = new Person();
         MetaProperty<String> test = Person.meta().metaProperty(FORENAME);
         
-        assertSame(test.beanType(), Person.class);
+        assertSame(test.metaBean().beanType(), Person.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), FORENAME);
         assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);

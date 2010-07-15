@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.joda.beans.Bean;
+import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
@@ -31,12 +32,17 @@ import org.joda.beans.impl.BasicProperty;
  * <p>
  * The property descriptor class is part of the JDK JavaBean standard.
  * It provides access to get and set a property on a bean.
+ * <p>
+ * Instances of this class should be declared as a static constant on the bean,
+ * one for each property, followed by a {@code ReflectiveMetaBean} declaration.
  * 
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
 public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 
+    /** The meta-bean. */
+    private volatile MetaBean metaBean;
     /** The type of the property. */
     private final Class<P> propertyType;
     /** The read method. */
@@ -62,7 +68,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
      */
     @SuppressWarnings("unchecked")
     private ReflectiveMetaProperty(Class<? extends Bean> beanType, String propertyName) {
-        super(beanType, propertyName);
+        super(propertyName);
         PropertyDescriptor descriptor;
         try {
             descriptor = new PropertyDescriptor(propertyName, beanType);
@@ -79,10 +85,23 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
         this.writeMethod = writeMethod;
     }
 
+    /**
+     * Sets the meta-bean, necessary due to ordering restrictions during loading.
+     * @param metaBean  the meta-bean, not null
+     */
+    void setMetaBean(MetaBean metaBean) {
+        this.metaBean = metaBean;
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public Property<P> createProperty(Bean bean) {
         return BasicProperty.of(bean, this);
+    }
+
+    @Override
+    public MetaBean metaBean() {
+        return metaBean;
     }
 
     @Override

@@ -27,29 +27,22 @@ import org.joda.beans.Property;
  */
 public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
 
-    /** The type of the bean. */
-    private final Class<? extends Bean> beanType;
     /** The name of the property. */
     private final String name;
 
     /**
      * Constructor.
      * 
-     * @param beanType  the bean type, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
      * @param readWrite  the read-write type, not null
      */
-    protected BasicMetaProperty(Class<? extends Bean> beanType, String propertyName) {
-        if (beanType == null) {
-            throw new NullPointerException("Bean type must not be null");
-        }
+    protected BasicMetaProperty(String propertyName) {
         if (propertyName == null || propertyName.length() == 0) {
             throw new NullPointerException("Property name must not be null or empty");
         }
         if (propertyName == null) {
         }
-        this.beanType = beanType;
         this.name = propertyName;
     }
 
@@ -62,11 +55,6 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     @Override
     public String name() {
         return name;
-    }
-
-    @Override
-    public Class<? extends Bean> beanType() {
-        return beanType;
     }
 
     //-----------------------------------------------------------------------
@@ -82,18 +70,18 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     public boolean equals(Object obj) {
         if (obj instanceof BasicMetaProperty<?>) {
             BasicMetaProperty<?> other = (BasicMetaProperty<?>) obj;
-            return this.beanType.equals(other.beanType) && this.name.equals(other.name);
+            return this.metaBean().beanType().equals(other.metaBean().beanType()) && this.name.equals(other.name);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return beanType.hashCode() ^ name.hashCode();
+        return metaBean().beanType().hashCode() ^ name.hashCode();
     }
 
     /**
-     * Returns a string that summarises the property.
+     * Returns a string that summarises the meta-property.
      * 
      * @return a summary string, not null
      */

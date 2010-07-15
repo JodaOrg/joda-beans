@@ -29,6 +29,8 @@ public class Examples {
         p.setSurname("Colebourne");
         // query using property method
         System.out.println(p.surname().get());
+        // query using meta-property method
+        System.out.println(Person.meta().surname().get(p));
         // set/get forename using property method
         p.forename().set("Stephen");
         System.out.println(p.forename().get());
@@ -80,7 +82,7 @@ public class Examples {
         Property<Address> dProp = d.content();
         Address a2 = dProp.metaProperty().get(d);
         System.out.println(a2);
-        Address a3 = Documentation.<Address>contentMeta().get(d);
+        Address a3 = Documentation.meta().<Address>content().get(d);
         System.out.println(a3);
         Documentation<Address> d2 = (Documentation<Address>) Documentation.meta().createBean();
         System.out.println(d2);

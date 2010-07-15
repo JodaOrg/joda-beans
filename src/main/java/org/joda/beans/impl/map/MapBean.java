@@ -109,7 +109,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
         if (obj == null) {
             throw new NoSuchElementException("Property not found: " + name);
         }
-        return MapBeanMetaProperty.of(name);
+        return MapBeanMetaProperty.of(this, name);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
                     }
                     @Override
                     public MetaProperty<Object> next() {
-                        return MapBeanMetaProperty.of(it.next());
+                        return MapBeanMetaProperty.of(MapBean.this, it.next());
                     }
                     @Override
                     public void remove() {
@@ -141,7 +141,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean, Met
     public Map<String, MetaProperty<Object>> metaPropertyMap() {
         Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
         for (String name : keySet()) {
-            map.put(name, MapBeanMetaProperty.of(name));
+            map.put(name, MapBeanMetaProperty.of(this, name));
         }
         return map;
     }

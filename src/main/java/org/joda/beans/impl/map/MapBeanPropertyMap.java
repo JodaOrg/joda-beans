@@ -99,7 +99,7 @@ public final class MapBeanPropertyMap
                     @Override
                     public Entry<String, Property<Object>> next() {
                         String name = it.next();
-                        return BasicProperty.of(bean, MapBeanMetaProperty.of(name));
+                        return BasicProperty.of(bean, MapBeanMetaProperty.of(bean, name));
                     }
                     @Override
                     public void remove() {

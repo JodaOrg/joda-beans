@@ -46,6 +46,8 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
+    /** The meta-bean. */
+    final FlexiMetaBean metaBean = new FlexiMetaBean();
     /** The underlying data. */
     volatile Map<String, Object> data;  // shared in package
 
@@ -267,7 +269,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     //-----------------------------------------------------------------------
     @Override
     public MetaBean metaBean() {
-        return new FlexiMetaBean();
+        return metaBean;
     }
 
     @Override
@@ -277,7 +279,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     @Override
     public Property<Object> property(String name) {
-        return BasicProperty.of(this, FlexiMetaProperty.of(name));
+        return BasicProperty.of(this, FlexiMetaProperty.of(metaBean, name));
     }
 
     @Override
@@ -392,7 +394,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
             if (obj == null) {
                 throw new NoSuchElementException("Unknown property: " + name);
             }
-            return FlexiMetaProperty.of(name);
+            return FlexiMetaProperty.of(metaBean, name);
         }
 
         @Override
@@ -411,7 +413,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
                         }
                         @Override
                         public MetaProperty<Object> next() {
-                            return FlexiMetaProperty.of(it.next());
+                            return FlexiMetaProperty.of(metaBean, it.next());
                         }
                         @Override
                         public void remove() {
@@ -430,7 +432,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
             }
             Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
             for (String name : data.keySet()) {
-                map.put(name, FlexiMetaProperty.of(name));
+                map.put(name, FlexiMetaProperty.of(metaBean, name));
             }
             return map;
         }

@@ -20,10 +20,11 @@ import java.util.NoSuchElementException;
 import org.joda.beans.impl.BasicBean;
 
 /**
- * A meta-bean implementation for use with subclasses of {@code DirectBean}.
+ * A base bean implementation used by the code generator.
  * <p>
  * This implementation is used to avoid reflection.
- * The bean must directly extend this class and have a no-arguments constructor.
+ * The bean must directly extend this class and have a no-arguments constructor
+ * of at least package scope.
  * 
  * @author Stephen Colebourne
  */

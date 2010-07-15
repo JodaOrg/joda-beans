@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
 import org.joda.beans.impl.BasicProperty;
@@ -90,6 +91,7 @@ final class FlexiPropertyMap
         if (size() == 0) {
             return Collections.emptySet();
         }
+        final MetaBean metaBean = bean.metaBean();
         return new AbstractSet<Entry<String,Property<Object>>>() {
             // TODO: possibly override contains()
             @Override
@@ -107,7 +109,7 @@ final class FlexiPropertyMap
                     @Override
                     public Entry<String, Property<Object>> next() {
                         String name = it.next();
-                        return BasicProperty.of(bean, FlexiMetaProperty.of(name));
+                        return BasicProperty.of(bean, FlexiMetaProperty.of(metaBean, name));
                     }
                     @Override
                     public void remove() {

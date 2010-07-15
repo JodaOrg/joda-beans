@@ -16,6 +16,7 @@
 package org.joda.beans.impl.map;
 
 import org.joda.beans.Bean;
+import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
@@ -28,22 +29,28 @@ import org.joda.beans.impl.BasicProperty;
  */
 public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
+    /** The bean. */
+    private MapBean bean;
+
     /**
      * Factory to create a meta-property.
      * 
+     * @param mapBean  the {@code MapBean}, not null
      * @param propertyName  the property name, not empty
      */
-    public static MapBeanMetaProperty of(String propertyName) {
-        return new MapBeanMetaProperty(propertyName);
+    public static MapBeanMetaProperty of(MapBean mapBean, String propertyName) {
+        return new MapBeanMetaProperty(mapBean, propertyName);
     }
 
     /**
      * Constructor.
      * 
+     * @param mapBean  the {@code MapBean}, not null
      * @param propertyName  the property name, not empty
      */
-    private MapBeanMetaProperty(String propertyName) {
-        super(MapBean.class, propertyName);
+    private MapBeanMetaProperty(MapBean mapBean, String propertyName) {
+        super(propertyName);
+        this.bean = mapBean;
     }
 
     //-----------------------------------------------------------------------
@@ -53,8 +60,8 @@ public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
-    public Class<MapBean> beanType() {
-        return MapBean.class;
+    public MetaBean metaBean() {
+        return bean;
     }
 
     @Override
@@ -70,12 +77,18 @@ public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     //-----------------------------------------------------------------------
     @Override
     public Object get(Bean bean) {
-        return beanType().cast(bean).get(name());
+        if (bean != this.bean) {
+            throw new ClassCastException("Bean is a MapBean, but not the correct MapBean");
+        }
+        return this.bean.get(name());
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        beanType().cast(bean).put(name(), value);
+        if (bean != this.bean) {
+            throw new ClassCastException("Bean is a MapBean, but not the correct MapBean");
+        }
+        this.bean.put(name(), value);
     }
 
 }

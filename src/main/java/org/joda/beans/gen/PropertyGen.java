@@ -208,25 +208,30 @@ class PropertyGen {
     //-----------------------------------------------------------------------
     List<String> generateMetaPropertyConstant() {
         List<String> list = new ArrayList<String>();
-        String beanName = bean.getBeanNoGenericsType();
-        list.add("\t/**");
-        list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
-        list.add("\t */");
+        list.add("\t\t/**");
+        list.add("\t\t * The meta-property for the {@code " + propertyName + "} property.");
+        list.add("\t\t */");
         String propertyType = propertyType();
         if (propertyType.length() == 1) {
             propertyType = "Object";
         }
         if (isGenericPropertyType()) {
-            list.add("\t@SuppressWarnings(\"unchecked\")");
-            list.add("\tprivate static final MetaProperty " + metaName() +
-            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");");
+            list.add("\t\t@SuppressWarnings(\"unchecked\")");
+            list.add("\t\tfinal MetaProperty " + propertyName +
+                " = DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
         } else {
             if (isGenericTypedProperty()) {
-                list.add("\t@SuppressWarnings(\"unchecked\")");
+                list.add("\t\t@SuppressWarnings(\"unchecked\")");
             }
-            list.add("\tprivate static final MetaProperty<" + propertyType + "> " + metaName() +
-            " = DirectMetaProperty.of" + readWrite() + "(" + beanName + ".class, \"" + propertyName + "\", " + actualType() + ");");
+            list.add("\t\tfinal MetaProperty<" + propertyType + "> " + propertyName +
+                " = DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
         }
+        return list;
+    }
+
+    List<String> generateMetaPropertyMapBuild() {
+        List<String> list = new ArrayList<String>();
+        list.add("\t\t\ttemp.put(\"" + propertyName + "\", " + propertyName + ");");
         return list;
     }
 
@@ -286,9 +291,9 @@ class PropertyGen {
         list.add("\tpublic final Property<" + propertyType() + "> " + propertyName + "() {");
         if (isGenericPropertyType()) {
             String beanGeneric = bean.getBeanType().substring(bean.getBeanNoGenericsType().length());
-            list.add("\t\treturn " + bean.getBeanNoGenericsType() + "." + beanGeneric + propertyName + "Meta().createProperty(this);");
+            list.add("\t\treturn meta()." + beanGeneric + propertyName + "().createProperty(this);");
         } else {
-            list.add("\t\treturn " + metaName() + ".createProperty(this);");
+            list.add("\t\treturn meta()." + propertyName + "().createProperty(this);");
         }
         list.add("\t}");
         list.add("");
@@ -301,25 +306,25 @@ class PropertyGen {
         if (propertyType.length() == 1) {
             propertyType = "Object";
         }
-        list.add("\t/**");
-        list.add("\t * The meta-property for the {@code " + propertyName + "} property.");
+        list.add("\t\t/**");
+        list.add("\t\t * The meta-property for the {@code " + propertyName + "} property.");
         if (isGenericPropertyType()) {
-            list.add("\t * @param <R>  the property type (which cannot be inferred in a static context)");
+            list.add("\t\t * @param <R>  the property type (which cannot be inferred in a static context)");
         }
-        list.add("\t * @return the meta-property, not null");
-        list.add("\t */");
+        list.add("\t\t * @return the meta-property, not null");
+        list.add("\t\t */");
         if (deprecated) {
-            list.add("\t@Deprecated");
+            list.add("\t\t@Deprecated");
         }
         if (isGenericPropertyType()) {
-            list.add("\t@SuppressWarnings(\"unchecked\")");
-            list.add("\tpublic static final <R> MetaProperty<R> " + propertyName + "Meta() {");
-            list.add("\t\treturn (MetaProperty<R>) " + metaName() + ";");
+            list.add("\t\t@SuppressWarnings(\"unchecked\")");
+            list.add("\t\tpublic final <R> MetaProperty<R> " + propertyName + "() {");
+            list.add("\t\t\treturn (MetaProperty<R>) " + propertyName + ";");
         } else {
-            list.add("\tpublic static final MetaProperty<" + propertyType + "> " + propertyName + "Meta() {");
-            list.add("\t\treturn " + metaName() + ";");
+            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + propertyName + "() {");
+            list.add("\t\t\treturn " + propertyName + ";");
         }
-        list.add("\t}");
+        list.add("\t\t}");
         list.add("");
         return list;
     }
@@ -367,7 +372,7 @@ class PropertyGen {
         if (pt.equals(type)) {
             int genericStart = pt.indexOf('<');
             if (genericStart >= 0) {
-                return "(Class<" + pt + ">) (Class) " + pt.substring(0, genericStart) + ".class";
+                return "(Class) " + pt.substring(0, genericStart) + ".class";
             }
             if (type.length() == 1) {
                 return "Object.class";
@@ -411,19 +416,6 @@ class PropertyGen {
             return "Double";
         }
         return type;
-    }
-
-    private String metaName() {
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < propertyName.length(); i++) {
-            char ch = propertyName.charAt(i);
-            if (Character.isUpperCase(ch)) {
-                buf.append('_').append(ch);
-            } else {
-                buf.append(Character.toUpperCase(ch));
-            }
-        }
-        return buf.toString();
     }
 
     private String getterPrefix() {
