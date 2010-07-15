@@ -313,11 +313,11 @@ class PropertyGen {
             list.add("\t\t@Deprecated");
         }
         if (isGenericPropertyType()) {
-            list.add("\t\tpublic final MetaProperty<" + bean.getBeanGeneric() + "> " + metaFieldName() + "() {");
+            list.add("\t\tpublic final MetaProperty<" + bean.getBeanGeneric() + "> " + propertyName + "() {");
         } else {
-            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + metaFieldName() + "() {");
+            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + propertyName + "() {");
         }
-        list.add("\t\t\treturn " + propertyName + ";");
+        list.add("\t\t\treturn " + metaFieldName() + ";");
         list.add("\t\t}");
         list.add("");
         return list;

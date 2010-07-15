@@ -270,13 +270,13 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> map;");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map;");
         insertRegion.add("");
         insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         insertRegion.add("\t\tprotected Meta() {");
         insertRegion.add("\t\t\tLinkedHashMap temp = new LinkedHashMap();");
         generateMetaMapBuild(props);
-        insertRegion.add("\t\t\tmap = Collections.unmodifiableMap(temp);");
+        insertRegion.add("\t\t\t" + prefix + "map = Collections.unmodifiableMap(temp);");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
@@ -298,7 +298,7 @@ class BeanGen {
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
-        insertRegion.add("\t\t\treturn map;");
+        insertRegion.add("\t\t\treturn " + prefix + "map;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
