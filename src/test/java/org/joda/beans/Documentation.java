@@ -44,14 +44,14 @@ public class Documentation<T> extends DirectBean {
      * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R> Meta<R> meta() {
-        return Meta.INSTANCE;
+    public static <R> Documentation.Meta<R> meta() {
+        return Documentation.Meta.INSTANCE;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Meta<T> metaBean() {
-        return Meta.INSTANCE;
+    public Documentation.Meta<T> metaBean() {
+        return Documentation.Meta.INSTANCE;
     }
 
     @Override

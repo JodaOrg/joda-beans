@@ -45,13 +45,13 @@ public class Address extends DirectBean {
      * The meta-bean for {@code Address}.
      * @return the meta-bean, not null
      */
-    public static Meta meta() {
-        return Meta.INSTANCE;
+    public static Address.Meta meta() {
+        return Address.Meta.INSTANCE;
     }
 
     @Override
-    public Meta metaBean() {
-        return Meta.INSTANCE;
+    public Address.Meta metaBean() {
+        return Address.Meta.INSTANCE;
     }
 
     @Override

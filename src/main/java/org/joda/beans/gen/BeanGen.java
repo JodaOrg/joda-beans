@@ -182,13 +182,13 @@ class BeanGen {
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            insertRegion.add("\tpublic static <R> Meta<R> meta() {");
+            insertRegion.add("\tpublic static <R> " + beanNoGenericsType + ".Meta<R> meta() {");
         } else {
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
-            insertRegion.add("\tpublic static Meta meta() {");
+            insertRegion.add("\tpublic static " + beanNoGenericsType + ".Meta meta() {");
         }
-        insertRegion.add("\t\treturn Meta.INSTANCE;");
+        insertRegion.add("\t\treturn " + beanNoGenericsType + ".Meta.INSTANCE;");
         insertRegion.add("\t}");
         insertRegion.add("");
         
@@ -197,11 +197,11 @@ class BeanGen {
         }
         insertRegion.add("\t@Override");
         if (isGenericBean()) {
-            insertRegion.add("\tpublic Meta<" + getBeanGeneric() + "> metaBean() {");
+            insertRegion.add("\tpublic " + beanNoGenericsType + ".Meta<" + getBeanGeneric() + "> metaBean() {");
         } else {
-            insertRegion.add("\tpublic Meta metaBean() {");
+            insertRegion.add("\tpublic " + beanNoGenericsType + ".Meta metaBean() {");
         }
-        insertRegion.add("\t\treturn Meta.INSTANCE;");
+        insertRegion.add("\t\treturn " + beanNoGenericsType + ".Meta.INSTANCE;");
         insertRegion.add("\t}");
         insertRegion.add("");
     }

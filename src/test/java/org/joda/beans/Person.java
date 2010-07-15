@@ -53,13 +53,13 @@ public class Person extends DirectBean {
      * The meta-bean for {@code Person}.
      * @return the meta-bean, not null
      */
-    public static Meta meta() {
-        return Meta.INSTANCE;
+    public static Person.Meta meta() {
+        return Person.Meta.INSTANCE;
     }
 
     @Override
-    public Meta metaBean() {
-        return Meta.INSTANCE;
+    public Person.Meta metaBean() {
+        return Person.Meta.INSTANCE;
     }
 
     @Override
