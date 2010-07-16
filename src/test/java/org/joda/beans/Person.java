@@ -30,6 +30,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
  * 
  * @author Stephen Colebourne
  */
+@BeanDefinition
 public class Person extends DirectBean {
 
     /** The forename. */

@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
  * 
  * @author Stephen Colebourne
  */
+@BeanDefinition
 public class Address extends DirectBean {
 
     /**

@@ -35,6 +35,8 @@ class BeanGen {
     private final List<String> content;
     /** The simple name of the bean class. */
     private final String beanType;
+    /** The simple name of the bean superclass. */
+    private final String beanSuperType;
     /** The bean type with generics removed. */
     private final String beanNoGenericsType;
     /** The start position of auto-generation. */
@@ -58,15 +60,17 @@ class BeanGen {
         this.content = content;
         this.indent = indent;
         this.prefix = prefix;
-        int extendsIndex = parseIsBean();
-        if (extendsIndex >= 0) {
-            this.beanType = parseBeanName(extendsIndex);
+        int beanDefIndex = parseBeanDefinition();
+        if (beanDefIndex >= 0) {
+            this.beanType = parseBeanType(beanDefIndex);
+            this.beanSuperType = parseBeanSuperType(beanDefIndex);
             this.beanNoGenericsType = makeNoGenerics(beanType);
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
         } else {
             this.beanType = null;
+            this.beanSuperType = null;
             this.beanNoGenericsType = null;
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
@@ -100,8 +104,18 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
-    private String parseBeanName(int extendsLine) {
-        for (int index = extendsLine; index >= 0; index--) {
+    private int parseBeanDefinition() {
+        for (int index = 0; index < content.size(); index++) {
+            String line = content.get(index).trim();
+            if (line.startsWith("@BeanDefinition")) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    private String parseBeanType(int defLine) {
+        for (int index = defLine; index >= 0; index++) {
             String line = content.get(index).trim();
             int pos = line.indexOf(" class ");
             if (pos >= 0) {
@@ -111,14 +125,15 @@ class BeanGen {
         throw new RuntimeException("Unable to locate bean name");
     }
 
-    private int parseIsBean() {
-        for (int index = 0; index < content.size(); index++) {
+    private String parseBeanSuperType(int defLine) {
+        for (int index = defLine; index >= 0; index++) {
             String line = content.get(index).trim();
-            if (line.contains(" extends DirectBean ")) {
-                return index;
+            int pos = line.indexOf(" extends ");
+            if (pos >= 0) {
+                return line.substring(pos + 9).split(" ")[0];
             }
         }
-        return -1;
+        throw new RuntimeException("Unable to locate bean name");
     }
 
     private List<PropertyGen> parseProperties() {
@@ -253,10 +268,11 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
         insertRegion.add("\t */");
+        String superMeta = (isSubclass() ? makeNoGenerics(beanSuperType) + ".Meta" : "BasicMetaBean");
         if (isGenericBean()) {
-            insertRegion.add("\tpublic static class Meta<" + getBeanGeneric() + "> extends BasicMetaBean {");
+            insertRegion.add("\tpublic static class Meta<" + getBeanGeneric() + "> extends " + superMeta + " {");
         } else {
-            insertRegion.add("\tpublic static class Meta extends BasicMetaBean {");
+            insertRegion.add("\tpublic static class Meta extends " + superMeta + " {");
         }
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The singleton instance of the meta-bean.");
@@ -274,7 +290,8 @@ class BeanGen {
         insertRegion.add("");
         insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         insertRegion.add("\t\tprotected Meta() {");
-        insertRegion.add("\t\t\tLinkedHashMap temp = new LinkedHashMap();");
+        String dataToCopy = (isSubclass() ? "super.metaPropertyMap()" : "");
+        insertRegion.add("\t\t\tLinkedHashMap temp = new LinkedHashMap(" + dataToCopy + ");");
         generateMetaMapBuild(props);
         insertRegion.add("\t\t\t" + prefix + "map = Collections.unmodifiableMap(temp);");
         insertRegion.add("\t\t}");
@@ -326,6 +343,10 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
+    private boolean isSubclass() {
+        return beanSuperType.equals("DirectBean") == false;
+    }
+
     boolean isBean() {
         return beanType != null;
     }
