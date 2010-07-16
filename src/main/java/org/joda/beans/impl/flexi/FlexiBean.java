@@ -72,8 +72,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     //-----------------------------------------------------------------------
     /**
      * Gets the number of properties.
-     * @param propertyName  the property name, not empty
-     * @return the value of the property, may be null
+     * @return the number of properties
      */
     public int size() {
         return data != null ? data.size() : 0;
@@ -260,7 +259,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     /**
      * Sets the value of the property.
      * @param propertyName  the property name, not empty
-     * @param value  the value of the property, may be null
+     * @param newValue  the new value of the property, may be null
      */
     public void propertySet(String propertyName, Object newValue) {
         data().put(propertyName, newValue);

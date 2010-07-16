@@ -29,7 +29,6 @@ public interface MetaBean {
     /**
      * Creates a new instance of the bean represented by this meta bean.
      * 
-     * @param <B>  the bean type, optional, enabling auto-casting
      * @return the created bean, not null
      */
     Bean createBean();
@@ -53,7 +52,6 @@ public interface MetaBean {
     /**
      * Get the type of the bean represented as a {@code Class}.
      * 
-     * @param <B>  the bean type, optional, enabling auto-casting
      * @return the type of the bean, not null
      */
     Class<? extends Bean> beanType();

@@ -44,7 +44,6 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
-     * @param readWrite  the read-write type, not null
      */
     public static <P> DirectMetaProperty<P> ofReadWrite(
             MetaBean metaBean, String propertyName, Class<P> propertyType) {
@@ -57,7 +56,6 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
-     * @param readWrite  the read-write type, not null
      */
     public static <P> DirectMetaProperty<P> ofReadOnly(
             MetaBean metaBean, String propertyName, Class<P> propertyType) {
@@ -70,7 +68,6 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      * @param propertyType  the property type, not null
-     * @param readWrite  the read-write type, not null
      */
     public static <P> DirectMetaProperty<P> ofWriteOnly(
             MetaBean metaBean, String propertyName, Class<P> propertyType) {

@@ -23,7 +23,6 @@ import java.util.Map;
  * For a JavaBean, this will ultimately wrap get/set method pairs.
  * Alternate implementations may perform any logic to obtain the value.
  * 
- * @param <B>  the type of the bean
  * @author Stephen Colebourne
  */
 public interface PropertyMap extends Map<String, Property<Object>> {

@@ -34,8 +34,6 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
      * Constructor.
      * 
      * @param propertyName  the property name, not empty
-     * @param propertyType  the property type, not null
-     * @param readWrite  the read-write type, not null
      */
     protected BasicMetaProperty(String propertyName) {
         if (propertyName == null || propertyName.length() == 0) {
