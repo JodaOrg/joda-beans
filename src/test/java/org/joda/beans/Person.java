@@ -129,7 +129,7 @@ public class Person extends DirectBean {
      * @return the property, not null
      */
     public final Property<String> forename() {
-        return meta().forename().createProperty(this);
+        return metaBean().forename().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -154,7 +154,7 @@ public class Person extends DirectBean {
      * @return the property, not null
      */
     public final Property<String> surname() {
-        return meta().surname().createProperty(this);
+        return metaBean().surname().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -179,7 +179,7 @@ public class Person extends DirectBean {
      * @return the property, not null
      */
     public final Property<Integer> numberOfCars() {
-        return meta().numberOfCars().createProperty(this);
+        return metaBean().numberOfCars().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -204,7 +204,7 @@ public class Person extends DirectBean {
      * @return the property, not null
      */
     public final Property<List<Address>> addressList() {
-        return meta().addressList().createProperty(this);
+        return metaBean().addressList().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -229,7 +229,7 @@ public class Person extends DirectBean {
      * @return the property, not null
      */
     public final Property<Map<String, Address>> otherAddressMap() {
-        return meta().otherAddressMap().createProperty(this);
+        return metaBean().otherAddressMap().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -254,7 +254,7 @@ public class Person extends DirectBean {
      * @return the property, not null
      */
     public final Property<FlexiBean> extensions() {
-        return meta().extensions().createProperty(this);
+        return metaBean().extensions().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

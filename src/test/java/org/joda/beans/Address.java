@@ -30,7 +30,10 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
  */
 public class Address extends DirectBean {
 
-    /** The number. */
+    /**
+     * The number.
+     * This will be the flat, house number or house name.
+     */
     @PropertyDefinition
     private int number;
     /** The street. */
@@ -86,6 +89,7 @@ public class Address extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the number.
+     * This will be the flat, house number or house name.
      * @return the value of the property
      */
     public int getNumber() {
@@ -94,6 +98,7 @@ public class Address extends DirectBean {
 
     /**
      * Sets the number.
+     * This will be the flat, house number or house name.
      * @param number  the new value of the property
      */
     public void setNumber(int number) {
@@ -102,10 +107,11 @@ public class Address extends DirectBean {
 
     /**
      * Gets the the {@code number} property.
+     * This will be the flat, house number or house name.
      * @return the property, not null
      */
     public final Property<Integer> number() {
-        return meta().number().createProperty(this);
+        return metaBean().number().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -130,7 +136,7 @@ public class Address extends DirectBean {
      * @return the property, not null
      */
     public final Property<String> street() {
-        return meta().street().createProperty(this);
+        return metaBean().street().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -155,7 +161,7 @@ public class Address extends DirectBean {
      * @return the property, not null
      */
     public final Property<String> city() {
-        return meta().city().createProperty(this);
+        return metaBean().city().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

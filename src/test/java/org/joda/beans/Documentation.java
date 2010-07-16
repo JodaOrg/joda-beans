@@ -101,7 +101,7 @@ public class Documentation<T> extends DirectBean {
      * @return the property, not null
      */
     public final Property<String> type() {
-        return meta().type().createProperty(this);
+        return metaBean().type().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
