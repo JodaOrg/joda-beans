@@ -283,17 +283,16 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets the the {@code " + propertyName + "} property.");
+        for (String comment : comments) {
+            list.add("\t * " + comment);
+        }
         list.add("\t * @return the property, not null");
         list.add("\t */");
         if (deprecated) {
             list.add("\t@Deprecated");
         }
         list.add("\tpublic final Property<" + propertyType() + "> " + propertyName + "() {");
-        if (isGenericPropertyType()) {
-            list.add("\t\treturn metaBean()." + propertyName + "().createProperty(this);");
-        } else {
-            list.add("\t\treturn meta()." + propertyName + "().createProperty(this);");
-        }
+        list.add("\t\treturn metaBean()." + propertyName + "().createProperty(this);");
         list.add("\t}");
         list.add("");
         return list;
