@@ -192,11 +192,13 @@
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
       <version>1.4</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>1.6.4</version>
+      <optional>true</optional>
     </dependency>
   	<dependency>
       <groupId>org.testng</groupId>
