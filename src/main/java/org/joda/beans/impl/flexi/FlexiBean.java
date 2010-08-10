@@ -216,7 +216,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     }
 
     /**
-     * Adds or updates a property.
+     * Puts the property into this bean.
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      * @return the old value of the property, may be null
@@ -226,12 +226,30 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     }
 
     /**
-     * Adds or updates a map of properties.
+     * Puts the properties in the specified map into this bean.
      * @param map  the map of properties to add, not null
      */
     public void putAll(Map<String, Object> map) {
         if (map.size() > 0) {
-            data().putAll(map);
+            if (data == null) {
+                data = new HashMap<String, Object>(map);
+            } else {
+                data.putAll(map);
+            }
+        }
+    }
+
+    /**
+     * Puts the properties in the specified bean into this bean.
+     * @param map  the map of properties to add, not null
+     */
+    public void putAll(FlexiBean other) {
+        if (other.size() > 0) {
+            if (data == null) {
+                data = new HashMap<String, Object>(other.data);
+            } else {
+                data.putAll(other.data);
+            }
         }
     }
 
@@ -241,6 +259,15 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      */
     public void remove(String propertyName) {
         propertyRemove(propertyName);
+    }
+
+    /**
+     * Removes all properties.
+     */
+    public void clear() {
+        if (data != null) {
+            data.clear();
+        }
     }
 
     //-----------------------------------------------------------------------
