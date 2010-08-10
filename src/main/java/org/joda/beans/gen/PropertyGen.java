@@ -17,11 +17,22 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.gen.GetterGen.GetGetterGen;
+import org.joda.beans.gen.GetterGen.IsGetterGen;
+import org.joda.beans.gen.GetterGen.ManualGetterGen;
+import org.joda.beans.gen.GetterGen.SmartGetterGen;
+import org.joda.beans.gen.SetterGen.ManualSetterGen;
+import org.joda.beans.gen.SetterGen.SetCollectionSetterGen;
+import org.joda.beans.gen.SetterGen.SetMapSetterGen;
+import org.joda.beans.gen.SetterGen.SetSetterGen;
+import org.joda.beans.gen.SetterGen.SmartSetterGen;
 
 /**
  * A property parsed from the source file.
@@ -29,6 +40,24 @@ import org.joda.beans.PropertyReadWrite;
  * @author Stephen Colebourne
  */
 class PropertyGen {
+
+    /** The known getter generators. */
+    static final Map<String, GetterGen> GETTERS = new HashMap<String, GetterGen>();
+    static {
+        GETTERS.put("smart", SmartGetterGen.INSTANCE);
+        GETTERS.put("get", GetGetterGen.INSTANCE);
+        GETTERS.put("is", IsGetterGen.INSTANCE);
+        GETTERS.put("manual", ManualGetterGen.INSTANCE);
+    }
+    /** The known setter generators. */
+    static final Map<String, SetterGen> SETTERS = new HashMap<String, SetterGen>();
+    static {
+        SETTERS.put("smart", SmartSetterGen.INSTANCE);
+        SETTERS.put("set", SetSetterGen.INSTANCE);
+        SETTERS.put("setCollection", SetCollectionSetterGen.INSTANCE);
+        SETTERS.put("setMap", SetMapSetterGen.INSTANCE);
+        SETTERS.put("manual", ManualSetterGen.INSTANCE);
+    }
 
     /** Annotation line index in input file. */
     private final int annotationIndex;
@@ -55,6 +84,7 @@ class PropertyGen {
         prop.setFieldName(parseName(content));
         prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
         prop.setUpperName(makeUpperName(prop.getPropertyName()));
+        prop.setFinal(parseFinal(content));
         prop.setType(parseType(content));
         List<String> comments = parseComment(content, prop.getPropertyName());
         prop.setFirstComment(comments.get(0));
@@ -114,6 +144,20 @@ class PropertyGen {
             return last.substring(0, last.length() - 1);
         }
         throw new RuntimeException("Unable to locate field name at line " + annotationIndex);
+    }
+
+    private boolean parseFinal(List<String> content) {
+        String line = parseFieldDefinition(content);
+        String[] parts = line.split(" ");
+        if (parts.length < 2) {
+            throw new RuntimeException("Unable to locate field type at line " + annotationIndex);
+        }
+        String first = parts[0];
+        String second = parts[1];
+        if (first.equals("final") || second.equals("final")) {
+            return true;
+        }
+        return false;
     }
 
     private String parseType(List<String> content) {
@@ -227,44 +271,14 @@ class PropertyGen {
         if (data.getReadWrite().isReadable() == false) {
             return Collections.emptyList();
         }
-        List<String> list = new ArrayList<String>();
-        list.add("\t/**");
-        list.add("\t * Gets " + data.getFirstComment());
-        for (String comment : data.getComments()) {
-            list.add("\t * " + comment);
-        }
-        list.add("\t * @return the value of the property");
-        list.add("\t */");
-        if (data.isDeprecated()) {
-            list.add("\t@Deprecated");
-        }
-        list.add("\tpublic " + data.getType() + " " + getterPrefix() + data.getUpperName() + "() {");
-        list.add("\t\treturn " + data.getFieldName() + ";");
-        list.add("\t}");
-        list.add("");
-        return list;
+        return SmartGetterGen.INSTANCE.generateGetter(data);
     }
 
     List<String> generateSetter() {
         if (data.getReadWrite().isWritable() == false) {
             return Collections.emptyList();
         }
-        List<String> list = new ArrayList<String>();
-        list.add("\t/**");
-        list.add("\t * Sets " + data.getFirstComment());
-        for (String comment : data.getComments()) {
-            list.add("\t * " + comment);
-        }
-        list.add("\t * @param " + data.getPropertyName() + "  the new value of the property");
-        list.add("\t */");
-        if (data.isDeprecated()) {
-            list.add("\t@Deprecated");
-        }
-        list.add("\tpublic void set" + data.getUpperName() + "(" + data.getType() +  " " + data.getPropertyName() + ") {");
-        list.add("\t\tthis." + data.getFieldName() + " = " + data.getPropertyName() + ";");
-        list.add("\t}");
-        list.add("");
-        return list;
+        return SmartSetterGen.INSTANCE.generateSetter(data);
     }
 
     List<String> generateProperty() {
@@ -314,7 +328,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isReadable()) {
-            list.add("\t\t\t\treturn " + getterPrefix() + data.getUpperName() + "();");
+            list.add("\t\t\t\treturn " + SmartGetterGen.INSTANCE.generateGetInvoke(data) + "();");
         } else {
             list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + data.getPropertyName() + "\");");
         }
@@ -325,7 +339,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isWritable()) {
-            list.add("\t\t\t\tset" + data.getUpperName() + "(" + castObject() + "newValue);");
+            list.add("\t\t\t\t" + SmartSetterGen.INSTANCE.generateSetInvoke(data) + "(" + castObject() + "newValue);");
             list.add("\t\t\t\treturn;");
         } else {
             list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + data.getPropertyName() + "\");");
@@ -397,10 +411,6 @@ class PropertyGen {
             return "Double";
         }
         return data.getType();
-    }
-
-    private String getterPrefix() {
-        return data.getType().equals("boolean") ? "is" : "get";
     }
 
     private String metaFieldName() {

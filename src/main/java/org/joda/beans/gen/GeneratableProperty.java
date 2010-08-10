@@ -37,6 +37,12 @@ class GeneratableProperty {
     private String upperName;
     /** Property type. */
     private String type;
+    /** Whether the field is declared final. */
+    private boolean isFinal;
+//    /** The getter style. */
+//    private String getStyle;
+//    /** The setter style. */
+//    private String setStyle;
     /** Read-write type. */
     private PropertyReadWrite readWrite;
     /** Deprecated flag. */
@@ -124,6 +130,22 @@ class GeneratableProperty {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Gets whether the field is declared final.
+     * @return the type
+     */
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    /**
+     * Sets whether the field is declared final.
+     * @param type  the field is final flag
+     */
+    public void setFinal(boolean isFinal) {
+        this.isFinal = isFinal;
     }
 
     /**
