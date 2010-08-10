@@ -33,22 +33,20 @@ class BeanGen {
 
     /** The content to process. */
     private final List<String> content;
-    /** The simple name of the bean class. */
-    private final String beanType;
-    /** The simple name of the bean superclass. */
-    private final String beanSuperType;
-    /** The bean type with generics removed. */
-    private final String beanNoGenericsType;
+    /** The indent. */
+    private final String indent;
+    /** The prefix. */
+    private final String prefix;
     /** The start position of auto-generation. */
     private final int autoStartIndex;
     /** The end position of auto-generation. */
     private final int autoEndIndex;
     /** The region to insert into. */
-    private List<String> insertRegion;
-    /** The indent. */
-    private final String indent;
-    /** The prefix. */
-    private final String prefix;
+    private final List<String> insertRegion;
+    /** The list of property generators. */
+    private final List<PropertyGen> properties;
+    /** The data model of the bean. */
+    private final GeneratableBean data;
 
     /**
      * Constructor.
@@ -62,37 +60,31 @@ class BeanGen {
         this.prefix = prefix;
         int beanDefIndex = parseBeanDefinition();
         if (beanDefIndex >= 0) {
-            this.beanType = parseBeanType(beanDefIndex);
-            this.beanSuperType = parseBeanSuperType(beanDefIndex);
-            this.beanNoGenericsType = makeNoGenerics(beanType);
+            this.data = new GeneratableBean();
+            this.data.setType(parseBeanType(beanDefIndex));
+            this.data.setSuperType(parseBeanSuperType(beanDefIndex));
+            this.properties = parseProperties(data);
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
         } else {
-            this.beanType = null;
-            this.beanSuperType = null;
-            this.beanNoGenericsType = null;
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
             this.insertRegion = null;
+            this.data = null;
+            this.properties = null;
         }
-    }
-
-    private String makeNoGenerics(String beanType) {
-        int pos = beanType.indexOf("<");
-        return (pos < 0 ? beanType : beanType.substring(0, pos));
     }
 
     //-----------------------------------------------------------------------
     void process() {
         if (insertRegion != null) {
-            List<PropertyGen> props = parseProperties();
             removeOld();
             generateMetaBean();
-            generatePropertyGet(props);
-            generatePropertySet(props);
-            generateGettersSetters(props);
-            generateMetaClass(props);
+            generatePropertyGet();
+            generatePropertySet();
+            generateGettersSetters();
+            generateMetaClass();
             resolveIndents();
         }
     }
@@ -136,12 +128,14 @@ class BeanGen {
         throw new RuntimeException("Unable to locate bean name");
     }
 
-    private List<PropertyGen> parseProperties() {
+    private List<PropertyGen> parseProperties(GeneratableBean data) {
         List<PropertyGen> props = new ArrayList<PropertyGen>();
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
             if (line.startsWith("@PropertyDefinition")) {
-                props.add(new PropertyGen(this, content, index));
+                PropertyGen prop = new PropertyGen(this, content, index);
+                props.add(prop);
+                data.getProperties().add(prop.getData());
             }
         }
         return props;
@@ -191,38 +185,38 @@ class BeanGen {
 
     private void generateMetaBean() {
         insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + beanType + "}.");
-        if (isGenericBean()) {
+        insertRegion.add("\t * The meta-bean for {@code " + data.getType() + "}.");
+        if (data.isGenericParamType()) {
             insertRegion.add("\t * @param <R>  the bean's generic type");
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            insertRegion.add("\tpublic static <R> " + beanNoGenericsType + ".Meta<R> meta() {");
+            insertRegion.add("\tpublic static <R> " + data.getRawType() + ".Meta<R> meta() {");
         } else {
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
-            insertRegion.add("\tpublic static " + beanNoGenericsType + ".Meta meta() {");
+            insertRegion.add("\tpublic static " + data.getRawType() + ".Meta meta() {");
         }
-        insertRegion.add("\t\treturn " + beanNoGenericsType + ".Meta.INSTANCE;");
+        insertRegion.add("\t\treturn " + data.getRawType() + ".Meta.INSTANCE;");
         insertRegion.add("\t}");
         insertRegion.add("");
         
-        if (isGenericBean()) {
+        if (data.isGenericParamType()) {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t@Override");
-        if (isGenericBean()) {
-            insertRegion.add("\tpublic " + beanNoGenericsType + ".Meta<" + getBeanGeneric() + "> metaBean() {");
+        if (data.isGenericParamType()) {
+            insertRegion.add("\tpublic " + data.getRawType() + ".Meta<" + data.getGenericParamType() + "> metaBean() {");
         } else {
-            insertRegion.add("\tpublic " + beanNoGenericsType + ".Meta metaBean() {");
+            insertRegion.add("\tpublic " + data.getRawType() + ".Meta metaBean() {");
         }
-        insertRegion.add("\t\treturn " + beanNoGenericsType + ".Meta.INSTANCE;");
+        insertRegion.add("\t\treturn " + data.getRawType() + ".Meta.INSTANCE;");
         insertRegion.add("\t}");
         insertRegion.add("");
     }
 
-    private void generateGettersSetters(List<PropertyGen> props) {
-        for (PropertyGen prop : props) {
+    private void generateGettersSetters() {
+        for (PropertyGen prop : properties) {
             generateSeparator();
             insertRegion.addAll(prop.generateGetter());
             insertRegion.addAll(prop.generateSetter());
@@ -230,11 +224,11 @@ class BeanGen {
         }
     }
 
-    private void generatePropertyGet(List<PropertyGen> props) {
+    private void generatePropertyGet() {
         insertRegion.add("\t@Override");
         insertRegion.add("\tprotected Object propertyGet(String propertyName) {");
         insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
-        for (PropertyGen prop : props) {
+        for (PropertyGen prop : properties) {
             insertRegion.addAll(prop.generatePropertyGetCase());
         }
         insertRegion.add("\t\t}");
@@ -243,10 +237,10 @@ class BeanGen {
         insertRegion.add("");
     }
 
-    private void generatePropertySet(List<PropertyGen> props) {
+    private void generatePropertySet() {
         boolean generics = false;
-        for (PropertyGen prop : props) {
-            generics |= prop.isGenericWritableProperty();
+        for (GeneratableProperty prop : data.getProperties()) {
+            generics |= prop.getReadWrite().isWritable() && prop.isGeneric();
         }
         if (generics) {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
@@ -254,7 +248,7 @@ class BeanGen {
         insertRegion.add("\t@Override");
         insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue) {");
         insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
-        for (PropertyGen prop : props) {
+        for (PropertyGen prop : properties) {
             insertRegion.addAll(prop.generatePropertySetCase());
         }
         insertRegion.add("\t\t}");
@@ -263,26 +257,26 @@ class BeanGen {
         insertRegion.add("");
     }
 
-    private void generateMetaClass(List<PropertyGen> props) {
+    private void generateMetaClass() {
         generateSeparator();
         insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + beanNoGenericsType + "}.");
+        insertRegion.add("\t * The meta-bean for {@code " + data.getRawType() + "}.");
         insertRegion.add("\t */");
-        String superMeta = (isSubclass() ? makeNoGenerics(beanSuperType) + ".Meta" : "BasicMetaBean");
-        if (isGenericBean()) {
-            insertRegion.add("\tpublic static class Meta<" + getBeanGeneric() + "> extends " + superMeta + " {");
+        String superMeta = (data.isSubclass() ? data.getRawSuperType() + ".Meta" : "BasicMetaBean");
+        if (data.isGenericParamType()) {
+            insertRegion.add("\tpublic static class Meta<" + data.getGenericParamType() + "> extends " + superMeta + " {");
         } else {
             insertRegion.add("\tpublic static class Meta extends " + superMeta + " {");
         }
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The singleton instance of the meta-bean.");
         insertRegion.add("\t\t */");
-        if (isGenericBean()) {
+        if (data.isGenericParamType()) {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t\tstatic final Meta INSTANCE = new Meta();");
         insertRegion.add("");
-        generateMetaPropertyConstants(props);
+        generateMetaPropertyConstants();
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
@@ -290,26 +284,26 @@ class BeanGen {
         insertRegion.add("");
         insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         insertRegion.add("\t\tprotected Meta() {");
-        String dataToCopy = (isSubclass() ? "super.metaPropertyMap()" : "");
+        String dataToCopy = (data.isSubclass() ? "super.metaPropertyMap()" : "");
         insertRegion.add("\t\t\tLinkedHashMap temp = new LinkedHashMap(" + dataToCopy + ");");
-        generateMetaMapBuild(props);
+        generateMetaMapBuild();
         insertRegion.add("\t\t\t" + prefix + "map = Collections.unmodifiableMap(temp);");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic " + beanType + " createBean() {");
-        insertRegion.add("\t\t\treturn new " + beanType + "();");
+        insertRegion.add("\t\tpublic " + data.getType() + " createBean() {");
+        insertRegion.add("\t\t\treturn new " + data.getType() + "();");
         insertRegion.add("\t\t}");
         insertRegion.add("");
-        if (isGenericBean()) {
+        if (data.isGenericParamType()) {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Class<? extends " + beanType + "> beanType() {");
-        if (isGenericBean()) {
-            insertRegion.add("\t\t\treturn (Class) " + beanNoGenericsType + ".class;");
+        insertRegion.add("\t\tpublic Class<? extends " + data.getType() + "> beanType() {");
+        if (data.isGenericParamType()) {
+            insertRegion.add("\t\t\treturn (Class) " + data.getRawType() + ".class;");
         } else {
-            insertRegion.add("\t\t\treturn " + beanType + ".class;");
+            insertRegion.add("\t\t\treturn " + data.getType() + ".class;");
         }
         insertRegion.add("\t\t}");
         insertRegion.add("");
@@ -319,54 +313,36 @@ class BeanGen {
         insertRegion.add("\t\t}");
         insertRegion.add("");
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
-        generateMetaProperties(props);
+        generateMetaProperties();
         insertRegion.add("\t}");
         insertRegion.add("");
     }
 
-    private void generateMetaPropertyConstants(List<PropertyGen> props) {
-        for (PropertyGen prop : props) {
+    private void generateMetaPropertyConstants() {
+        for (PropertyGen prop : properties) {
             insertRegion.addAll(prop.generateMetaPropertyConstant());
         }
     }
 
-    private void generateMetaMapBuild(List<PropertyGen> props) {
-        for (PropertyGen prop : props) {
+    private void generateMetaMapBuild() {
+        for (PropertyGen prop : properties) {
             insertRegion.addAll(prop.generateMetaPropertyMapBuild());
         }
     }
 
-    private void generateMetaProperties(List<PropertyGen> props) {
-        for (PropertyGen prop : props) {
+    private void generateMetaProperties() {
+        for (PropertyGen prop : properties) {
             insertRegion.addAll(prop.generateMetaProperty());
         }
     }
 
     //-----------------------------------------------------------------------
-    private boolean isSubclass() {
-        return beanSuperType.equals("DirectBean") == false;
-    }
-
     boolean isBean() {
-        return beanType != null;
+        return data != null;
     }
 
-    String getBeanType() {
-        return beanType;
-    }
-
-    String getBeanNoGenericsType() {
-        return beanNoGenericsType;
-    }
-
-    boolean isGenericBean() {
-        return getBeanType().equals(getBeanNoGenericsType()) == false;
-    }
-
-    String getBeanGeneric() {
-        String beanGeneric = beanType.substring(beanNoGenericsType.length());
-        beanGeneric = (beanGeneric.startsWith("<") ? beanGeneric.substring(1) : beanGeneric);
-        return (beanGeneric.endsWith(">") ? beanGeneric.substring(0, beanGeneric.length() - 1) : beanGeneric);
+    GeneratableBean getData() {
+        return data;
     }
 
     String getFieldPrefix() {

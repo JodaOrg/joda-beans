@@ -34,24 +34,10 @@ class PropertyGen {
     private final int annotationIndex;
     /** Field line index in input file. */
     private final int fieldIndex;
-    /** Property name. */
-    private final String propertyName;
-    /** Field name. */
-    private final String fieldName;
-    /** Upper property name. */
-    private final String upperName;
-    /** Property type. */
-    private final String type;
-    /** Read-write type. */
-    private final PropertyReadWrite readWrite;
-    /** Deprecated flag. */
-    private final boolean deprecated;
-    /** First comment about the property. */
-    private final String firstComment;
-    /** Other comments about the property. */
-    private final List<String> comments;
     /** The bean generator. */
     private final BeanGen bean;
+    /** The data model of the property. */
+    private final GeneratableProperty data;
 
     /**
      * Constructor.
@@ -63,15 +49,17 @@ class PropertyGen {
         this.bean = bean;
         this.annotationIndex = lineIndex;
         this.fieldIndex = parseFieldIndex(content);
-        this.readWrite = parseReadWrite(content);
-        this.deprecated = parseDeprecated(content);
-        this.fieldName = parseName(content);
-        this.propertyName = makePropertyName(bean, fieldName);
-        this.upperName = makeUpperName(propertyName);
-        this.type = parseType(content);
-        List<String> comments = parseComment(content);
-        this.firstComment = comments.get(0);
-        this.comments = comments.subList(1, comments.size());
+        GeneratableProperty prop = new GeneratableProperty(bean.getData());
+        prop.setReadWrite(parseReadWrite(content));
+        prop.setDeprecated(parseDeprecated(content));
+        prop.setFieldName(parseName(content));
+        prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
+        prop.setUpperName(makeUpperName(prop.getPropertyName()));
+        prop.setType(parseType(content));
+        List<String> comments = parseComment(content, prop.getPropertyName());
+        prop.setFirstComment(comments.get(0));
+        prop.getComments().addAll(comments.subList(1, comments.size()));
+        this.data = prop;
     }
 
     private String makePropertyName(BeanGen bean, String name) {
@@ -167,7 +155,7 @@ class PropertyGen {
         return line;
     }
 
-    private List<String> parseComment(List<String> content) {
+    private List<String> parseComment(List<String> content, String propertyName) {
         List<String> comments = new ArrayList<String>();
         String commentEnd = content.get(annotationIndex - 1).trim();
         if (commentEnd.equals("*/")) {
@@ -209,71 +197,71 @@ class PropertyGen {
     List<String> generateMetaPropertyConstant() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t/**");
-        list.add("\t\t * The meta-property for the {@code " + propertyName + "} property.");
+        list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t */");
         String propertyType = propertyType();
         if (propertyType.length() == 1) {
             propertyType = "Object";
         }
-        if (isGenericPropertyType()) {
+        if (data.isBeanGenericType()) {
             list.add("\t\t@SuppressWarnings(\"unchecked\")");
-            list.add("\t\tprivate final MetaProperty<" + bean.getBeanGeneric() + "> " + metaFieldName() +
-                " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
+            list.add("\t\tprivate final MetaProperty<" + data.getBean().getGenericParamType() + "> " + metaFieldName() +
+                " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(this, \"" + data.getPropertyName() + "\", " + actualType() + ");");
         } else {
-            if (isGenericTypedProperty()) {
+            if (data.isGenericParamType()) {
                 list.add("\t\t@SuppressWarnings(\"unchecked\")");
             }
             list.add("\t\tprivate final MetaProperty<" + propertyType + "> " + metaFieldName() +
-                " = DirectMetaProperty.of" + readWrite() + "(this, \"" + propertyName + "\", " + actualType() + ");");
+                " = DirectMetaProperty.of" + readWrite() + "(this, \"" + data.getPropertyName() + "\", " + actualType() + ");");
         }
         return list;
     }
 
     List<String> generateMetaPropertyMapBuild() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\ttemp.put(\"" + propertyName + "\", " + metaFieldName() + ");");
+        list.add("\t\t\ttemp.put(\"" + data.getPropertyName() + "\", " + metaFieldName() + ");");
         return list;
     }
 
     List<String> generateGetter() {
-        if (readWrite.isReadable() == false) {
+        if (data.getReadWrite().isReadable() == false) {
             return Collections.emptyList();
         }
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
-        list.add("\t * Gets " + firstComment);
-        for (String comment : comments) {
+        list.add("\t * Gets " + data.getFirstComment());
+        for (String comment : data.getComments()) {
             list.add("\t * " + comment);
         }
         list.add("\t * @return the value of the property");
         list.add("\t */");
-        if (deprecated) {
+        if (data.isDeprecated()) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic " + type + " " + getterPrefix() + upperName + "() {");
-        list.add("\t\treturn " + fieldName + ";");
+        list.add("\tpublic " + data.getType() + " " + getterPrefix() + data.getUpperName() + "() {");
+        list.add("\t\treturn " + data.getFieldName() + ";");
         list.add("\t}");
         list.add("");
         return list;
     }
 
     List<String> generateSetter() {
-        if (readWrite.isWritable() == false) {
+        if (data.getReadWrite().isWritable() == false) {
             return Collections.emptyList();
         }
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
-        list.add("\t * Sets " + firstComment);
-        for (String comment : comments) {
+        list.add("\t * Sets " + data.getFirstComment());
+        for (String comment : data.getComments()) {
             list.add("\t * " + comment);
         }
-        list.add("\t * @param " + propertyName + "  the new value of the property");
+        list.add("\t * @param " + data.getPropertyName() + "  the new value of the property");
         list.add("\t */");
-        if (deprecated) {
+        if (data.isDeprecated()) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic void set" + upperName + "(" + type +  " " + propertyName + ") {");
-        list.add("\t\tthis." + fieldName + " = " + propertyName + ";");
+        list.add("\tpublic void set" + data.getUpperName() + "(" + data.getType() +  " " + data.getPropertyName() + ") {");
+        list.add("\t\tthis." + data.getFieldName() + " = " + data.getPropertyName() + ";");
         list.add("\t}");
         list.add("");
         return list;
@@ -282,17 +270,17 @@ class PropertyGen {
     List<String> generateProperty() {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
-        list.add("\t * Gets the the {@code " + propertyName + "} property.");
-        for (String comment : comments) {
+        list.add("\t * Gets the the {@code " + data.getPropertyName() + "} property.");
+        for (String comment : data.getComments()) {
             list.add("\t * " + comment);
         }
         list.add("\t * @return the property, not null");
         list.add("\t */");
-        if (deprecated) {
+        if (data.isDeprecated()) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic final Property<" + propertyType() + "> " + propertyName + "() {");
-        list.add("\t\treturn metaBean()." + propertyName + "().createProperty(this);");
+        list.add("\tpublic final Property<" + propertyType() + "> " + data.getPropertyName() + "() {");
+        list.add("\t\treturn metaBean()." + data.getPropertyName() + "().createProperty(this);");
         list.add("\t}");
         list.add("");
         return list;
@@ -305,16 +293,16 @@ class PropertyGen {
             propertyType = "Object";
         }
         list.add("\t\t/**");
-        list.add("\t\t * The meta-property for the {@code " + propertyName + "} property.");
+        list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t * @return the meta-property, not null");
         list.add("\t\t */");
-        if (deprecated) {
+        if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        if (isGenericPropertyType()) {
-            list.add("\t\tpublic final MetaProperty<" + bean.getBeanGeneric() + "> " + propertyName + "() {");
+        if (data.isBeanGenericType()) {
+            list.add("\t\tpublic final MetaProperty<" + data.getBean().getGenericParamType() + "> " + data.getPropertyName() + "() {");
         } else {
-            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + propertyName + "() {");
+            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + data.getPropertyName() + "() {");
         }
         list.add("\t\t\treturn " + metaFieldName() + ";");
         list.add("\t\t}");
@@ -324,30 +312,30 @@ class PropertyGen {
 
     List<String> generatePropertyGetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\tcase " + propertyName.hashCode() + ":  // " + propertyName);
-        if (readWrite.isReadable()) {
-            list.add("\t\t\t\treturn " + getterPrefix() + upperName + "();");
+        list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getReadWrite().isReadable()) {
+            list.add("\t\t\t\treturn " + getterPrefix() + data.getUpperName() + "();");
         } else {
-            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + propertyName + "\");");
+            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + data.getPropertyName() + "\");");
         }
         return list;
     }
 
     List<String> generatePropertySetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\tcase " + propertyName.hashCode() + ":  // " + propertyName);
-        if (readWrite.isWritable()) {
-            list.add("\t\t\t\tset" + upperName + "(" + castObject() + "newValue);");
+        list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getReadWrite().isWritable()) {
+            list.add("\t\t\t\tset" + data.getUpperName() + "(" + castObject() + "newValue);");
             list.add("\t\t\t\treturn;");
         } else {
-            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + propertyName + "\");");
+            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + data.getPropertyName() + "\");");
         }
         return list;
     }
 
     //-----------------------------------------------------------------------
     private String readWrite() {
-        switch (readWrite) {
+        switch (data.getReadWrite()) {
             case READ_WRITE:
                 return "ReadWrite";
             case READ_ONLY:
@@ -362,12 +350,12 @@ class PropertyGen {
 
     private String actualType() {
         String pt = propertyType();
-        if (pt.equals(type)) {
+        if (pt.equals(data.getType())) {
             int genericStart = pt.indexOf('<');
             if (genericStart >= 0) {
                 return "(Class) " + pt.substring(0, genericStart) + ".class";
             }
-            if (type.length() == 1) {
+            if (data.getType().length() == 1) {
                 return "Object.class";
             }
             return pt + ".class";
@@ -377,58 +365,50 @@ class PropertyGen {
 
     private String castObject() {
         String pt = propertyType();
-        if (pt.equals(type)) {
+        if (pt.equals(data.getType())) {
             return "(" + pt + ") ";
         }
-        return "(" + type + ") (" + pt + ") ";
+        return "(" + data.getType() + ") (" + pt + ") ";
     }
 
     private String propertyType() {
-        if (type.equals("boolean")) {
+        if (data.getType().equals("boolean")) {
             return "Boolean";
         }
-        if (type.equals("byte")) {
+        if (data.getType().equals("byte")) {
             return "Byte";
         }
-        if (type.equals("short")) {
+        if (data.getType().equals("short")) {
             return "Short";
         }
-        if (type.equals("char")) {
+        if (data.getType().equals("char")) {
             return "Character";
         }
-        if (type.equals("int")) {
+        if (data.getType().equals("int")) {
             return "Integer";
         }
-        if (type.equals("long")) {
+        if (data.getType().equals("long")) {
             return "Long";
         }
-        if (type.equals("float")) {
+        if (data.getType().equals("float")) {
             return "Float";
         }
-        if (type.equals("double")) {
+        if (data.getType().equals("double")) {
             return "Double";
         }
-        return type;
+        return data.getType();
     }
 
     private String getterPrefix() {
-        return type.equals("boolean") ? "is" : "get";
+        return data.getType().equals("boolean") ? "is" : "get";
     }
 
     private String metaFieldName() {
-        return bean.getFieldPrefix() + propertyName;
+        return bean.getFieldPrefix() + data.getPropertyName();
     }
 
-    private boolean isGenericTypedProperty() {
-        return type.contains("<");
-    }
-
-    private boolean isGenericPropertyType() {
-        return type.length() == 1;
-    }
-
-    boolean isGenericWritableProperty() {
-        return readWrite.isWritable() && (type.contains("<") || type.length() == 1);
+    GeneratableProperty getData() {
+        return data;
     }
 
 }
