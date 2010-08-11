@@ -55,9 +55,9 @@ public @interface PropertyDefinition {
      * <p>
      * The style is a string describing the mutator, typically used for code generation.
      * By default this is 'smart' which will use the source code knowledge to determine
-     * what to generate. This will be a method of the form {@code setXxx()} for all types
-     * unless the field is {@code final}. If the field is a final {@code Collection} or
-     * {@code Map} then {@code replaceXxx()} will be generated.
+     * what to generate. This will be a method of the form {@code setXxx()} for all types unless
+     * the field is {@code final}. If the field is a final {@code Collection} or {@code Map}
+     * of a known type then a set method is generated using {@code addAll} or {@code puAll}
      * <p>
      * Supported style stings are:
      * <p>
