@@ -3,7 +3,7 @@
   <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
   <bannerLeft>
     <name>Joda.org</name>
-    <src>images/joda.png</src>
+    <!--src>images/joda.png</src-->
     <href>http://joda.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
@@ -35,16 +35,17 @@
 
     <menu name="Joda">
       <item name="Joda home" href="http://joda.sourceforge.net"/>
-      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
       <item name="Money" href="http://joda-money.sourceforge.net/index.html"/>
       <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
+      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
     </menu>
 
     <menu ref="reports"/>
   </body>
 
   <poweredBy>
-    <logo name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"
-        img="http://sflogo.sourceforge.net/sflogo.php?group_id=186518&amp;type=13" width="125" height="37" />
+    <logo name="Get Joda - Beans at SourceForge.net. Fast, secure and Free Open Source software downloads"
+        href="http://sourceforge.net/projects/joda-beans/"
+        img="http://sflogo.sourceforge.net/sflogo.php?group_id=186518&amp;type=13" width="120" height="30" />
   </poweredBy>
 </project>
