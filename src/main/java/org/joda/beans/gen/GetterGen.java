@@ -94,7 +94,7 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new GetGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return generateGetter(prop, "get");
+            return doGenerateGetter(prop, "get");
         }
     }
 
@@ -102,7 +102,7 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new IsGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return generateGetter(prop, "is");
+            return doGenerateGetter(prop, "is");
         }
         @Override
         String generateGetInvoke(GeneratableProperty prop) {
@@ -118,7 +118,7 @@ abstract class GetterGen {
         }
     }
 
-    private static final List<String> generateGetter(GeneratableProperty prop, String prefix) {
+    private static final List<String> doGenerateGetter(GeneratableProperty prop, String prefix) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());

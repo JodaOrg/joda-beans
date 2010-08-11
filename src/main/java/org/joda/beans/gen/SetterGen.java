@@ -151,7 +151,7 @@ abstract class SetterGen {
         static final SetterGen INSTANCE = new SetClearAddAllSetterGen();
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
-            return generateBulkSetter(prop, "addAll");
+            return doGenerateBulkSetter(prop, "addAll");
         }
     }
 
@@ -159,7 +159,7 @@ abstract class SetterGen {
         static final SetterGen INSTANCE = new SetClearPutAllSetterGen();
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
-            return generateBulkSetter(prop, "putAll");
+            return doGenerateBulkSetter(prop, "putAll");
         }
     }
 
@@ -171,7 +171,7 @@ abstract class SetterGen {
         }
     }
 
-    private static List<String> generateBulkSetter(GeneratableProperty prop, String alterMethod) {
+    private static List<String> doGenerateBulkSetter(GeneratableProperty prop, String alterMethod) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Sets " + prop.getFirstComment());
