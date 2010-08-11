@@ -138,7 +138,7 @@ public class BeanCodeGen {
     }
 
     //-----------------------------------------------------------------------
-    private void process() throws Exception {
+    public void process() throws Exception {
         if (verbose) {
             System.out.print(file);
         }
