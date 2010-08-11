@@ -124,7 +124,10 @@ public class BeanCodeGen {
     private final boolean verbose;
 
     /**
-     * Constructor.
+     * Creates the generator for a single bean.
+     * <p>
+     * To generate, use {@link #process()}.
+     * 
      * @param file  the file to process, not null
      * @param indent  the indent to use, not null
      * @param prefix  the prefix to use, not null
@@ -138,6 +141,9 @@ public class BeanCodeGen {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Processes the bean, generating the code.
+     */
     public void process() throws Exception {
         if (verbose) {
             System.out.print(file);
