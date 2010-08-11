@@ -18,8 +18,10 @@ package org.joda.beans.gen;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,6 +43,31 @@ abstract class SetterGen {
                     "Map", "SortedMap", "NavigableMap", "ConcurrentMap", "ConcurrentNavigableMap",
                     "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap"));
 
+    /** The known setter generators. */
+    static final Map<String, SetterGen> SETTERS = new HashMap<String, SetterGen>();
+    static {
+        SETTERS.put("", NoSetterGen.INSTANCE);
+        SETTERS.put("smart", SmartSetterGen.INSTANCE);
+        SETTERS.put("set", SetSetterGen.INSTANCE);
+        SETTERS.put("setClearAddAll", SetClearAddAllSetterGen.INSTANCE);
+        SETTERS.put("setClearPutAll", SetClearPutAllSetterGen.INSTANCE);
+        SETTERS.put("manual", NoSetterGen.INSTANCE);
+    }
+
+    /**
+     * Generates the setter method.
+     * @param prop  the property data, not null
+     * @return the generated code, not null
+     */
+    static SetterGen of(GeneratableProperty prop) {
+        SetterGen gen = SETTERS.get(prop.getSetStyle());
+        if (gen == null) {
+            throw new RuntimeException("Unable to locate setter generator '" + prop.getSetStyle() + "'");
+        }
+        return gen;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Generates the setter method.
      * @param prop  the property data, not null
@@ -65,10 +92,10 @@ abstract class SetterGen {
         List<String> generateSetter(GeneratableProperty prop) {
             if (prop.isFinal()) {
                 if (isCollection(prop)) {
-                    return SetCollectionSetterGen.INSTANCE.generateSetter(prop);
+                    return SetClearAddAllSetterGen.INSTANCE.generateSetter(prop);
                 }
                 if (isMap(prop)) {
-                    return SetMapSetterGen.INSTANCE.generateSetter(prop);
+                    return SetClearPutAllSetterGen.INSTANCE.generateSetter(prop);
                 }
                 return Collections.emptyList();
             } else {
@@ -79,10 +106,10 @@ abstract class SetterGen {
         String generateSetInvoke(GeneratableProperty prop) {
             if (prop.isFinal()) {
                 if (isCollection(prop)) {
-                    return SetCollectionSetterGen.INSTANCE.generateSetInvoke(prop);
+                    return SetClearAddAllSetterGen.INSTANCE.generateSetInvoke(prop);
                 }
                 if (isMap(prop)) {
-                    return SetMapSetterGen.INSTANCE.generateSetInvoke(prop);
+                    return SetClearPutAllSetterGen.INSTANCE.generateSetInvoke(prop);
                 }
                 return null;
             } else {
@@ -120,24 +147,24 @@ abstract class SetterGen {
         }
     }
 
-    static class SetCollectionSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new SetCollectionSetterGen();
+    static class SetClearAddAllSetterGen extends SetterGen {
+        static final SetterGen INSTANCE = new SetClearAddAllSetterGen();
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
             return generateBulkSetter(prop, "addAll");
         }
     }
 
-    static class SetMapSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new SetMapSetterGen();
+    static class SetClearPutAllSetterGen extends SetterGen {
+        static final SetterGen INSTANCE = new SetClearPutAllSetterGen();
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
             return generateBulkSetter(prop, "putAll");
         }
     }
 
-    static class ManualSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new ManualSetterGen();
+    static class NoSetterGen extends SetterGen {
+        static final SetterGen INSTANCE = new NoSetterGen();
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
             return Collections.emptyList();

@@ -30,10 +30,56 @@ import java.lang.annotation.Target;
 public @interface PropertyDefinition {
 
     /**
-     * The read-write type of the property.
+     * The style of the method used to query the property.
+     * <p>
+     * The style is a string describing the getter, typically used for code generation.
+     * By default this is 'smart' which will use the source code knowledge to determine
+     * what to generate. This will be a method of the form {@code isXxx()} for {@code boolean}
+     * and {@code getXxx()} for all other types.
+     * <p>
+     * Supported style stings are:
+     * <ul>
+     * <li>'' - do not generate any form of getter
+     * <li>'smart' - process intelligently - 'is' for boolean and 'get' for other types
+     * <li>'is' - generates isXxx()
+     * <li>'get' - generates getXxx()
+     * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
+     * </ul>
      * 
-     * @return the bean itself, not null
+     * @return the style of the property, not null
      */
-    PropertyReadWrite readWrite() default PropertyReadWrite.READ_WRITE;
+    String get() default "smart";
+
+    /**
+     * The style of the method used to mutate the property.
+     * <p>
+     * The style is a string describing the mutator, typically used for code generation.
+     * By default this is 'smart' which will use the source code knowledge to determine
+     * what to generate. This will be a method of the form {@code setXxx()} for all types
+     * unless the field is {@code final}. If the field is a final {@code Collection} or
+     * {@code Map} then {@code replaceXxx()} will be generated.
+     * <p>
+     * Supported style stings are:
+     * <p>
+     * The style is a comma separated list determining what methods the property has.
+     * By default this is 'getOrIs,set' meaning that a standard getter and setter is generated.
+     * You may specify multiple style strings, although some may overlap and generate
+     * code that will not compile.
+     * <p>
+     * Standard style stings are:
+     * <ul>
+     * <li>'' - do not generate any form of setter
+     *  for common list types or 'setClearPutAll' for common map types and FlexiBean
+     * <li>'smart' - process intelligently - uses 'set' unless final, when it will use 'setClearAddAll'
+     *  for common list types or 'setClearPutAll' for common map types and FlexiBean
+     * <li>'set' - generates setXxx()
+     * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
+     * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
+     * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
+     * </ul>
+     * 
+     * @return the style of the property, not null
+     */
+    String set() default "smart";
 
 }

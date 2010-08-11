@@ -17,7 +17,9 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A generator of get methods.
@@ -26,6 +28,30 @@ import java.util.List;
  */
 abstract class GetterGen {
 
+    /** The known getter generators. */
+    static final Map<String, GetterGen> GETTERS = new HashMap<String, GetterGen>();
+    static {
+        GETTERS.put("", NoGetterGen.INSTANCE);
+        GETTERS.put("smart", SmartGetterGen.INSTANCE);
+        GETTERS.put("get", GetGetterGen.INSTANCE);
+        GETTERS.put("is", IsGetterGen.INSTANCE);
+        GETTERS.put("manual", NoGetterGen.INSTANCE);
+    }
+
+    /**
+     * Generates the getter method.
+     * @param prop  the property data, not null
+     * @return the generated code, not null
+     */
+    static GetterGen of(GeneratableProperty prop) {
+        GetterGen gen = GETTERS.get(prop.getGetStyle());
+        if (gen == null) {
+            throw new RuntimeException("Unable to locate getter generator '" + prop.getGetStyle() + "'");
+        }
+        return gen;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Generates the getter method.
      * @param prop  the property data, not null
@@ -84,15 +110,15 @@ abstract class GetterGen {
         }
     }
 
-    static class ManualGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new ManualGetterGen();
+    static class NoGetterGen extends GetterGen {
+        static final GetterGen INSTANCE = new NoGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
             return Collections.emptyList();
         }
     }
 
-    static final List<String> generateGetter(GeneratableProperty prop, String prefix) {
+    private static final List<String> generateGetter(GeneratableProperty prop, String prefix) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());

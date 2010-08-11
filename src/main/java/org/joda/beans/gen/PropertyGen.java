@@ -16,23 +16,11 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.beans.PropertyReadWrite;
-import org.joda.beans.gen.GetterGen.GetGetterGen;
-import org.joda.beans.gen.GetterGen.IsGetterGen;
-import org.joda.beans.gen.GetterGen.ManualGetterGen;
-import org.joda.beans.gen.GetterGen.SmartGetterGen;
-import org.joda.beans.gen.SetterGen.ManualSetterGen;
-import org.joda.beans.gen.SetterGen.SetCollectionSetterGen;
-import org.joda.beans.gen.SetterGen.SetMapSetterGen;
-import org.joda.beans.gen.SetterGen.SetSetterGen;
-import org.joda.beans.gen.SetterGen.SmartSetterGen;
 
 /**
  * A property parsed from the source file.
@@ -41,23 +29,10 @@ import org.joda.beans.gen.SetterGen.SmartSetterGen;
  */
 class PropertyGen {
 
-    /** The known getter generators. */
-    static final Map<String, GetterGen> GETTERS = new HashMap<String, GetterGen>();
-    static {
-        GETTERS.put("smart", SmartGetterGen.INSTANCE);
-        GETTERS.put("get", GetGetterGen.INSTANCE);
-        GETTERS.put("is", IsGetterGen.INSTANCE);
-        GETTERS.put("manual", ManualGetterGen.INSTANCE);
-    }
-    /** The known setter generators. */
-    static final Map<String, SetterGen> SETTERS = new HashMap<String, SetterGen>();
-    static {
-        SETTERS.put("smart", SmartSetterGen.INSTANCE);
-        SETTERS.put("set", SetSetterGen.INSTANCE);
-        SETTERS.put("setCollection", SetCollectionSetterGen.INSTANCE);
-        SETTERS.put("setMap", SetMapSetterGen.INSTANCE);
-        SETTERS.put("manual", ManualSetterGen.INSTANCE);
-    }
+    /** The getter pattern. */
+    private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
+    /** The getter pattern. */
+    private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
 
     /** Annotation line index in input file. */
     private final int annotationIndex;
@@ -79,7 +54,9 @@ class PropertyGen {
         this.annotationIndex = lineIndex;
         this.fieldIndex = parseFieldIndex(content);
         GeneratableProperty prop = new GeneratableProperty(bean.getData());
-        prop.setReadWrite(parseReadWrite(content));
+        prop.setGetStyle(parseGetStyle(content));
+        prop.setSetStyle(parseSetStyle(content));
+        prop.setReadWrite(makeReadWrite(prop.getGetStyle(), prop.getSetStyle(), prop.getPropertyName()));
         prop.setDeprecated(parseDeprecated(content));
         prop.setFieldName(parseName(content));
         prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
@@ -103,6 +80,19 @@ class PropertyGen {
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
+    private PropertyReadWrite makeReadWrite(String getter, String setter, String propertyName) {
+        if (getter.length() > 0 && setter.length() > 0) {
+            return PropertyReadWrite.READ_WRITE;
+        }
+        if (getter.length() > 0) {
+            return PropertyReadWrite.READ_ONLY;
+        }
+        if (setter.length() > 0) {
+            return PropertyReadWrite.WRITE_ONLY;
+        }
+        throw new RuntimeException("Property must have a getter or setter: " + propertyName);
+    }
+
     //-----------------------------------------------------------------------
     private int parseFieldIndex(List<String> content) {
         for (int index = annotationIndex; index < content.size(); index++) {
@@ -116,13 +106,22 @@ class PropertyGen {
         throw new RuntimeException("Unable to locate field for property at line " + annotationIndex);
     }
 
-    private PropertyReadWrite parseReadWrite(List<String> content) {
+    private String parseGetStyle(List<String> content) {
         String line = content.get(annotationIndex).trim();
-        Matcher matcher = Pattern.compile(".*readWrite[ ]*[=][ ]*PropertyReadWrite\\.([A-Z_]+).*").matcher(line);
+        Matcher matcher = GETTER_PATTERN.matcher(line);
         if (matcher.matches()) {
-            return PropertyReadWrite.valueOf(matcher.group(1));
+            return matcher.group(1);
         }
-        return PropertyReadWrite.READ_WRITE;
+        return "smart";
+    }
+
+    private String parseSetStyle(List<String> content) {
+        String line = content.get(annotationIndex).trim();
+        Matcher matcher = SETTER_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
     }
 
     private boolean parseDeprecated(List<String> content) {
@@ -268,17 +267,11 @@ class PropertyGen {
     }
 
     List<String> generateGetter() {
-        if (data.getReadWrite().isReadable() == false) {
-            return Collections.emptyList();
-        }
-        return SmartGetterGen.INSTANCE.generateGetter(data);
+        return GetterGen.of(data).generateGetter(data);
     }
 
     List<String> generateSetter() {
-        if (data.getReadWrite().isWritable() == false) {
-            return Collections.emptyList();
-        }
-        return SmartSetterGen.INSTANCE.generateSetter(data);
+        return SetterGen.of(data).generateSetter(data);
     }
 
     List<String> generateProperty() {
@@ -328,7 +321,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isReadable()) {
-            list.add("\t\t\t\treturn " + SmartGetterGen.INSTANCE.generateGetInvoke(data) + "();");
+            list.add("\t\t\t\treturn " + GetterGen.of(data).generateGetInvoke(data) + "();");
         } else {
             list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + data.getPropertyName() + "\");");
         }
@@ -339,7 +332,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isWritable()) {
-            list.add("\t\t\t\t" + SmartSetterGen.INSTANCE.generateSetInvoke(data) + "(" + castObject() + "newValue);");
+            list.add("\t\t\t\t" + SetterGen.of(data).generateSetInvoke(data) + "(" + castObject() + "newValue);");
             list.add("\t\t\t\treturn;");
         } else {
             list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + data.getPropertyName() + "\");");

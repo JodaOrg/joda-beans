@@ -39,10 +39,10 @@ class GeneratableProperty {
     private String type;
     /** Whether the field is declared final. */
     private boolean isFinal;
-//    /** The getter style. */
-//    private String getStyle;
-//    /** The setter style. */
-//    private String setStyle;
+    /** The getter style. */
+    private String getStyle;
+    /** The setter style. */
+    private String setStyle;
     /** Read-write type. */
     private PropertyReadWrite readWrite;
     /** Deprecated flag. */
@@ -146,6 +146,38 @@ class GeneratableProperty {
      */
     public void setFinal(boolean isFinal) {
         this.isFinal = isFinal;
+    }
+
+    /**
+     * Gets the getter style.
+     * @return the getter style
+     */
+    public String getGetStyle() {
+        return getStyle;
+    }
+
+    /**
+     * Sets the getter style.
+     * @param getStyle  the getter style to set
+     */
+    public void setGetStyle(String getStyle) {
+        this.getStyle = getStyle;
+    }
+
+    /**
+     * Gets the setter style.
+     * @return the setter style
+     */
+    public String getSetStyle() {
+        return setStyle;
+    }
+
+    /**
+     * Sets the setter style.
+     * @param setStyle  the setter style to set
+     */
+    public void setSetStyle(String setStyle) {
+        this.setStyle = setStyle;
     }
 
     /**
