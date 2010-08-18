@@ -194,6 +194,12 @@
       <version>1.4</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.15</version>
+      <optional>true</optional>
+    </dependency>
     <!--dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
