@@ -241,7 +241,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Puts the properties in the specified bean into this bean.
-     * @param map  the map of properties to add, not null
+     * @param other  the map of properties to add, not null
      */
     public void putAll(FlexiBean other) {
         if (other.size() > 0) {
