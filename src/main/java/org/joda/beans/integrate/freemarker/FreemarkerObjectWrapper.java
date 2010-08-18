@@ -27,19 +27,14 @@ import freemarker.template.TemplateModelException;
  * <p>
  * This class allows Joda-Beans to be used in the Freemarker templating system.
  * When creating a Freemarker {@code Configuration}, simply set call
- * {@code setObjectWrapper(ObjectWrapper)} with the singleton instance of this class.
+ * {@code setObjectWrapper(ObjectWrapper)} with an instance of this class.
  */
 public class FreemarkerObjectWrapper extends DefaultObjectWrapper {
 
     /**
-     * Singleton instance of the wrapper.
+     * Creates a new instance.
      */
-    public static final FreemarkerObjectWrapper INSTANCE = new FreemarkerObjectWrapper();
-
-    /**
-     * Constructor to enable subclasses.
-     */
-    protected FreemarkerObjectWrapper() {
+    public FreemarkerObjectWrapper() {
     }
 
     //-------------------------------------------------------------------------
