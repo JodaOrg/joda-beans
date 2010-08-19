@@ -62,13 +62,14 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateModel get(String key) throws TemplateModelException {
-        Property<Object> property;
+        Object object;
         try {
-            property = _bean.property(key);
+            Property<Object> property = _bean.property(key);
+            object = property.get();
         } catch (NoSuchElementException ex) {
             return null;
         }
-        return wrap(property.get());
+        return wrap(object);
     }
 
     /**

@@ -305,6 +305,9 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     @Override
     public Property<Object> property(String name) {
+        if (propertyExists(name) == false) {
+            throw new NoSuchElementException("Unknown property: " + name);
+        }
         return BasicProperty.of(this, FlexiMetaProperty.of(metaBean, name));
     }
 
