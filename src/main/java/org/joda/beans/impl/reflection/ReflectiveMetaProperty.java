@@ -17,8 +17,12 @@ package org.joda.beans.impl.reflection;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
@@ -110,9 +114,25 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     @Override
+    public Type propertyGenericType() {
+        if (readMethod != null) {
+            return readMethod.getGenericReturnType();
+        }
+        return writeMethod.getGenericParameterTypes()[0];
+    }
+
+    @Override
     public PropertyReadWrite readWrite() {
         return (readMethod == null ? PropertyReadWrite.WRITE_ONLY :
                 (writeMethod == null ? PropertyReadWrite.READ_ONLY : PropertyReadWrite.READ_WRITE));
+    }
+
+    @Override
+    public List<Annotation> annotations() {
+        if (readMethod != null) {
+            return Arrays.asList(readMethod.getDeclaredAnnotations());
+        }
+        return Arrays.asList(writeMethod.getDeclaredAnnotations());
     }
 
     //-----------------------------------------------------------------------

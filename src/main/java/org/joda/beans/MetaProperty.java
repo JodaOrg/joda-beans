@@ -15,6 +15,11 @@
  */
 package org.joda.beans;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 /**
  * A meta-property, defining those aspects of a property which are not specific
  * to a particular bean, such as the property type and name.
@@ -60,27 +65,36 @@ public interface MetaProperty<P> {
     Class<P> propertyType();
 
     /**
+     * Gets the generic types of the property.
+     * <p>
+     * This provides access to the generic type declared in the source code.
+     * 
+     * @return the full generic type of the property, unmodifiable, not null
+     */
+    Type propertyGenericType();
+
+    /**
      * Gets whether the property is read-only, read-write or write-only.
      * 
      * @return the property read-write type, not null
      */
     PropertyReadWrite readWrite();
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the annotations of the property.
-//     * 
-//     * @return the map of annotations, unmodifiable, not null
-//     */
-//    Map<Class<Annotation>, Annotation> annotations();
-//
-//    /**
-//     * Gets the specified annotation of the property.
-//     * 
-//     * @return the annotation, not null
-//     * @throws NoSuchElementException if the annotation is not specified
-//     */
-//    <A extends Annotation> A annotation(Class<A> annotation);
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the annotations of the property.
+     * 
+     * @return the annotations, unmodifiable, not null
+     */
+    List<Annotation> annotations();
+
+    /**
+     * Gets a specified annotation of the property.
+     * 
+     * @return the annotation, not null
+     * @throws NoSuchElementException if the annotation is not specified
+     */
+    <A extends Annotation> A annotation(Class<A> annotation);
 
     //-----------------------------------------------------------------------
     /**

@@ -15,6 +15,10 @@
  */
 package org.joda.beans.impl.flexi;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.List;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
@@ -70,8 +74,18 @@ class FlexiMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
+    public Class<Object> propertyGenericType() {
+        return Object.class;
+    }
+
+    @Override
     public PropertyReadWrite readWrite() {
         return PropertyReadWrite.READ_WRITE;
+    }
+
+    @Override
+    public List<Annotation> annotations() {
+        return Collections.emptyList();
     }
 
     //-----------------------------------------------------------------------

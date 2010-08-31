@@ -15,6 +15,13 @@
  */
 package org.joda.beans.impl.direct;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyReadWrite;
@@ -33,8 +40,8 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The meta-bean. */
     private final MetaBean metaBean;
-    /** The type of the property. */
-    private final Class<P> propertyType;
+    /** The field implementing the property. */
+    private final Field field;
     /** The read-write type. */
     private final PropertyReadWrite readWrite;
 
@@ -94,7 +101,25 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
             throw new NullPointerException("PropertyReadWrite must not be null");
         }
         this.metaBean = metaBean;
-        this.propertyType = propertyType;
+        Field field = null;
+        Class<?> cls = metaBean.beanType();
+        while (cls != DirectBean.class) {
+            try {
+                field = cls.getDeclaredField(propertyName);
+                break;
+            } catch (NoSuchFieldException ex) {
+                try {
+                    field = cls.getDeclaredField("_" + propertyName);
+                    break;
+                } catch (NoSuchFieldException ex2) {
+                    cls = cls.getSuperclass();
+                }
+            }
+        }
+        if (field == null) {
+            throw new IllegalStateException("Unable to find field for property: " + metaBean.beanType().getName() + "#" + propertyName);
+        }
+        this.field = field;
         this.readWrite = readWrite;
     }
 
@@ -104,14 +129,34 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         return metaBean;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class<P> propertyType() {
-        return propertyType;
+        return (Class<P>) field.getType();
+    }
+
+    @Override
+    public Type propertyGenericType() {
+        return field.getGenericType();
     }
 
     @Override
     public PropertyReadWrite readWrite() {
         return readWrite;
+    }
+
+    @Override
+    public <A extends Annotation> A annotation(Class<A> annotationClass) {
+        A annotation = field.getAnnotation(annotationClass);
+        if (annotation == null) {
+            throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+        }
+        return annotation;
+    }
+
+    @Override
+    public List<Annotation> annotations() {
+        return Arrays.asList(field.getDeclaredAnnotations());
     }
 
     //-----------------------------------------------------------------------

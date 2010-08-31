@@ -18,9 +18,16 @@ package org.joda.beans;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import javax.xml.bind.annotation.XmlID;
+
+import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 
 /**
@@ -29,7 +36,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestPerson {
 
-    private static final int NUM_PROPERTIES = 6;
+    private static final int NUM_PROPERTIES = 7;
     private static final String FORENAME = "forename";
     private static final String SURNAME = "surname";
     private static final String NUMBER_OF_CARS = "numberOfCars";
@@ -193,6 +200,67 @@ public class TestPerson {
         assertEquals(test.get(person), "B");
         assertEquals(test.put(person, "C"), "B");
         assertEquals(test.get(person), "C");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_metaProperty_types_addressList() {
+        MetaProperty<List<Address>> test = Person.meta().addressList();
+        
+        assertSame(test.metaBean().beanType(), Person.class);
+        assertSame(test.propertyType(), List.class);
+        assertSame(test.propertyGenericType() instanceof ParameterizedType, true);
+        ParameterizedType pt = (ParameterizedType) test.propertyGenericType();
+        assertEquals(pt.getRawType(), List.class);
+        assertEquals(pt.getOwnerType(), null);
+        Type[] actualTypes = pt.getActualTypeArguments();
+        assertEquals(actualTypes.length, 1);
+        assertEquals(actualTypes[0], Address.class);
+    }
+
+    public void test_BeanUtils_addressList() {
+        MetaProperty<List<Address>> test = Person.meta().addressList();
+        
+        assertSame(test.metaBean().beanType(), Person.class);
+        assertSame(test.propertyType(), List.class);
+        assertSame(test.propertyGenericType() instanceof ParameterizedType, true);
+        ParameterizedType pt = (ParameterizedType) test.propertyGenericType();
+        assertEquals(pt.getRawType(), List.class);
+        assertEquals(pt.getOwnerType(), null);
+        Type[] actualTypes = pt.getActualTypeArguments();
+        assertEquals(actualTypes.length, 1);
+        assertEquals(actualTypes[0], Address.class);
+    }
+
+    public void test_metaProperty_types_otherAddressMap() {
+        MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
+        
+        assertSame(test.metaBean().beanType(), Person.class);
+        assertSame(test.propertyType(), Map.class);
+        assertSame(test.propertyGenericType() instanceof ParameterizedType, true);
+        ParameterizedType pt = (ParameterizedType) test.propertyGenericType();
+        assertEquals(pt.getRawType(), Map.class);
+        assertEquals(pt.getOwnerType(), null);
+        Type[] actualTypes = pt.getActualTypeArguments();
+        assertEquals(actualTypes.length, 2);
+        assertEquals(actualTypes[0], String.class);
+        assertEquals(actualTypes[1], Address.class);
+    }
+
+    public void test_metaProperty_annotations_addressList() {
+        MetaProperty<List<Address>> prop = Person.meta().addressList();
+        List<Annotation> test = prop.annotations();
+        
+        assertEquals(test.size(), 1);
+        assertEquals(test.get(0) instanceof PropertyDefinition, true);
+    }
+
+    public void test_metaProperty_annotations_extensions() {
+        MetaProperty<FlexiBean> prop = Person.meta().extensions();
+        List<Annotation> test = prop.annotations();
+        
+        assertEquals(test.size(), 2);
+        assertEquals(test.get(0) instanceof PropertyDefinition, true);
+        assertEquals(test.get(1) instanceof XmlID, true);
     }
 
 }

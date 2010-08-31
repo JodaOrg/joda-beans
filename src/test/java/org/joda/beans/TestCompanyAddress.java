@@ -18,6 +18,8 @@ package org.joda.beans;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -267,6 +269,23 @@ public class TestCompanyAddress {
         assertEquals(test.get(address), "B");
         assertEquals(test.put(address, "C"), "B");
         assertEquals(test.get(address), "C");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_metaProperty_types() {
+        MetaProperty<String> test = CompanyAddress.meta().companyName();
+        
+        assertSame(test.metaBean().beanType(), CompanyAddress.class);
+        assertSame(test.propertyType(), String.class);
+        assertSame(test.propertyGenericType(), String.class);
+    }
+
+    public void test_metaProperty_annotations() {
+        MetaProperty<String> prop = CompanyAddress.meta().companyName();
+        List<Annotation> test = prop.annotations();
+        
+        assertEquals(test.size(), 1);
+        assertEquals(test.get(0) instanceof PropertyDefinition, true);
     }
 
 }

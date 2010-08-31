@@ -15,6 +15,10 @@
  */
 package org.joda.beans.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
@@ -61,6 +65,19 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
         P old = get(bean);
         set(bean, value);
         return old;
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <A extends Annotation> A annotation(Class<A> annotationClass) {
+        List<Annotation> annotations = annotations();
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return (A) annotation;
+            }
+        }
+        throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
     }
 
     //-----------------------------------------------------------------------
