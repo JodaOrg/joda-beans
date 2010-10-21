@@ -59,13 +59,6 @@ public @interface PropertyDefinition {
      * the field is {@code final}. If the field is a final {@code Collection} or {@code Map}
      * of a known type then a set method is generated using {@code addAll} or {@code puAll}
      * <p>
-     * Supported style stings are:
-     * <p>
-     * The style is a comma separated list determining what methods the property has.
-     * By default this is 'getOrIs,set' meaning that a standard getter and setter is generated.
-     * You may specify multiple style strings, although some may overlap and generate
-     * code that will not compile.
-     * <p>
      * Standard style stings are:
      * <ul>
      * <li>'' - do not generate any form of setter
