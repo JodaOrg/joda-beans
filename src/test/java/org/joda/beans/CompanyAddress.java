@@ -111,7 +111,7 @@ public class CompanyAddress extends Address {
          */
         private final Map<String, MetaProperty<Object>> map;
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         protected Meta() {
             LinkedHashMap temp = new LinkedHashMap(super.metaPropertyMap());
             temp.put("companyName", companyName);

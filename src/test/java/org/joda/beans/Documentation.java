@@ -139,7 +139,7 @@ public class Documentation<T> extends DirectBean {
         /**
          * The singleton instance of the meta-bean.
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         static final Meta INSTANCE = new Meta();
 
         /**
@@ -149,14 +149,14 @@ public class Documentation<T> extends DirectBean {
         /**
          * The meta-property for the {@code content} property.
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         private final MetaProperty<T> content = (DirectMetaProperty) DirectMetaProperty.ofReadWrite(this, "content", Object.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map;
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         protected Meta() {
             LinkedHashMap temp = new LinkedHashMap();
             temp.put("type", type);
@@ -169,7 +169,7 @@ public class Documentation<T> extends DirectBean {
             return new Documentation<T>();
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         @Override
         public Class<? extends Documentation<T>> beanType() {
             return (Class) Documentation.class;

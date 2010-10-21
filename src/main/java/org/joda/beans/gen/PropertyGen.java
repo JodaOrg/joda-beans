@@ -247,12 +247,12 @@ class PropertyGen {
             propertyType = "Object";
         }
         if (data.isBeanGenericType()) {
-            list.add("\t\t@SuppressWarnings(\"unchecked\")");
+            list.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
             list.add("\t\tprivate final MetaProperty<" + data.getBean().getGenericParamType() + "> " + metaFieldName() +
                 " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(this, \"" + data.getPropertyName() + "\", " + actualType() + ");");
         } else {
             if (data.isGenericParamType()) {
-                list.add("\t\t@SuppressWarnings(\"unchecked\")");
+                list.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
             }
             list.add("\t\tprivate final MetaProperty<" + propertyType + "> " + metaFieldName() +
                 " = DirectMetaProperty.of" + readWrite() + "(this, \"" + data.getPropertyName() + "\", " + actualType() + ");");
@@ -375,7 +375,8 @@ class PropertyGen {
         if (pt.equals(data.getType())) {
             return "(" + pt + ") ";
         }
-        return "(" + data.getType() + ") (" + pt + ") ";
+        return "(" + pt + ") ";
+//        return "(" + data.getType() + ") (" + pt + ") ";
     }
 
     private String propertyType() {

@@ -274,7 +274,7 @@ class BeanGen {
         insertRegion.add("\t\t * The singleton instance of the meta-bean.");
         insertRegion.add("\t\t */");
         if (data.isGenericParamType()) {
-            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+            insertRegion.add("\t\t@SuppressWarnings(\"rawtypes\")");
         }
         insertRegion.add("\t\tstatic final Meta INSTANCE = new Meta();");
         insertRegion.add("");
@@ -284,7 +284,7 @@ class BeanGen {
         insertRegion.add("\t\t */");
         insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map;");
         insertRegion.add("");
-        insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+        insertRegion.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
         insertRegion.add("\t\tprotected Meta() {");
         String dataToCopy = (data.isSubclass() ? "super.metaPropertyMap()" : "");
         insertRegion.add("\t\t\tLinkedHashMap temp = new LinkedHashMap(" + dataToCopy + ");");
@@ -298,7 +298,7 @@ class BeanGen {
         insertRegion.add("\t\t}");
         insertRegion.add("");
         if (data.isGenericParamType()) {
-            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+            insertRegion.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
         }
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Class<? extends " + data.getType() + "> beanType() {");

@@ -103,7 +103,7 @@ public class Person extends DirectBean {
                 setSurname((String) newValue);
                 return;
             case 926656063:  // numberOfCars
-                setNumberOfCars((int) (Integer) newValue);
+                setNumberOfCars((Integer) newValue);
                 return;
             case -1377524046:  // addressList
                 setAddressList((List<Address>) newValue);
@@ -325,17 +325,17 @@ public class Person extends DirectBean {
         /**
          * The meta-property for the {@code addressList} property.
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         private final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(this, "addressList", (Class) List.class);
         /**
          * The meta-property for the {@code otherAddressMap} property.
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(this, "otherAddressMap", (Class) Map.class);
         /**
          * The meta-property for the {@code addressesList} property.
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadWrite(this, "addressesList", (Class) List.class);
         /**
          * The meta-property for the {@code extensions} property.
@@ -346,7 +346,7 @@ public class Person extends DirectBean {
          */
         private final Map<String, MetaProperty<Object>> map;
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         protected Meta() {
             LinkedHashMap temp = new LinkedHashMap();
             temp.put("forename", forename);

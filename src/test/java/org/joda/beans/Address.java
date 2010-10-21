@@ -76,7 +76,7 @@ public class Address extends DirectBean {
     protected void propertySet(String propertyName, Object newValue) {
         switch (propertyName.hashCode()) {
             case -1034364087:  // number
-                setNumber((int) (Integer) newValue);
+                setNumber((Integer) newValue);
                 return;
             case -891990013:  // street
                 setStreet((String) newValue);
@@ -193,7 +193,7 @@ public class Address extends DirectBean {
          */
         private final Map<String, MetaProperty<Object>> map;
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes" })
         protected Meta() {
             LinkedHashMap temp = new LinkedHashMap();
             temp.put("number", number);
