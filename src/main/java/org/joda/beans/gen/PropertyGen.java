@@ -242,15 +242,15 @@ class PropertyGen {
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t */");
-        String propertyType = propertyType();
-        if (propertyType.length() == 1) {
-            propertyType = "Object";
-        }
         if (data.isBeanGenericType()) {
             list.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
-            list.add("\t\tprivate final MetaProperty<" + data.getBean().getGenericParamType() + "> " + metaFieldName() +
+            list.add("\t\tprivate final MetaProperty<" + data.getBean().getTypeGenericName(false) + "> " + metaFieldName() +
                 " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(this, \"" + data.getPropertyName() + "\", " + actualType() + ");");
         } else {
+            String propertyType = propertyType();
+            if (propertyType.length() == 1) {
+                propertyType = "Object";
+            }
             if (data.isGenericParamType()) {
                 list.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
             }
@@ -299,6 +299,9 @@ class PropertyGen {
         if (propertyType.length() == 1) {
             propertyType = "Object";
         }
+        if (data.isBeanGenericType()) {
+            propertyType = data.getBean().getTypeGenericName(false);
+        }
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t * @return the meta-property, not null");
@@ -306,11 +309,7 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        if (data.isBeanGenericType()) {
-            list.add("\t\tpublic final MetaProperty<" + data.getBean().getGenericParamType() + "> " + data.getPropertyName() + "() {");
-        } else {
-            list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + data.getPropertyName() + "() {");
-        }
+        list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + data.getPropertyName() + "() {");
         list.add("\t\t\treturn " + metaFieldName() + ";");
         list.add("\t\t}");
         list.add("");

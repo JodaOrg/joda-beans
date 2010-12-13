@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.2.20101111" date="2010-11-11" description="v0.2.20101111">
+      <action dev="scolebourne" type="fix">
+        Handle generic subclasses.
+      </action>              
+    </release>
     <release version="0.2" date="2010-06-30" description="Initial version">
       <action dev="scolebourne" type="add">
         Initial version.

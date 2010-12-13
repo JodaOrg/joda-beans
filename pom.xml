@@ -8,7 +8,7 @@
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda beans</name>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2.20101111</version>
   <description>Beans and Properties</description>
   <url>http://joda-beans.sourceforge.net</url>
   <issueManagement>

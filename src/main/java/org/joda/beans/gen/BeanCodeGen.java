@@ -150,7 +150,12 @@ public class BeanCodeGen {
         }
         List<String> original = readFile();
         List<String> content = new ArrayList<String>(original);
-        BeanGen gen = new BeanGen(content, indent, prefix);
+        BeanGen gen;
+        try {
+            gen = new BeanGen(content, indent, prefix);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error in bean: " + file, ex);
+        }
         if (gen.isBean() ) {
             if (verbose == false) {
                 System.out.print(file);

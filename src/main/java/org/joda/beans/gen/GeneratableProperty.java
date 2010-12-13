@@ -238,7 +238,7 @@ class GeneratableProperty {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the property is parameterized with generics.
+     * Checks if the property is parameterised with generics.
      * @return true if generified
      */
     public boolean isGenericParamType() {
@@ -246,7 +246,7 @@ class GeneratableProperty {
     }
 
     /**
-     * Gets the parameterization of the property.
+     * Gets the parameterisation of the property.
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getGenericParamType() {
@@ -272,7 +272,7 @@ class GeneratableProperty {
      * @return true if matches
      */
     public boolean isBeanGenericType() {
-        return type.equals(bean.getGenericParamType());
+        return type.equals(bean.getTypeGenericName(false));
     }
 
     /**
