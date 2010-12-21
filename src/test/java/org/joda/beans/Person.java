@@ -53,6 +53,8 @@ public class Person extends DirectBean {
     @PropertyDefinition
     private final List<List<Address>> addressesList = new ArrayList<List<Address>>();
     @PropertyDefinition
+    private Address mainAddress;
+    @PropertyDefinition
     @XmlID
     private final FlexiBean extensions = new FlexiBean();
 
@@ -86,6 +88,8 @@ public class Person extends DirectBean {
                 return getOtherAddressMap();
             case -226885792:  // addressesList
                 return getAddressesList();
+            case -2032731141:  // mainAddress
+                return getMainAddress();
             case -1809421292:  // extensions
                 return getExtensions();
         }
@@ -113,6 +117,9 @@ public class Person extends DirectBean {
                 return;
             case -226885792:  // addressesList
                 setAddressesList((List<List<Address>>) newValue);
+                return;
+            case -2032731141:  // mainAddress
+                setMainAddress((Address) newValue);
                 return;
             case -1809421292:  // extensions
                 setExtensions((FlexiBean) newValue);
@@ -276,6 +283,31 @@ public class Person extends DirectBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the mainAddress.
+     * @return the value of the property
+     */
+    public Address getMainAddress() {
+        return mainAddress;
+    }
+
+    /**
+     * Sets the mainAddress.
+     * @param mainAddress  the new value of the property
+     */
+    public void setMainAddress(Address mainAddress) {
+        this.mainAddress = mainAddress;
+    }
+
+    /**
+     * Gets the the {@code mainAddress} property.
+     * @return the property, not null
+     */
+    public final Property<Address> mainAddress() {
+        return metaBean().mainAddress().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the extensions.
      * @return the value of the property
      */
@@ -338,6 +370,10 @@ public class Person extends DirectBean {
         @SuppressWarnings({"unchecked", "rawtypes" })
         private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadWrite(this, "addressesList", (Class) List.class);
         /**
+         * The meta-property for the {@code mainAddress} property.
+         */
+        private final MetaProperty<Address> mainAddress = DirectMetaProperty.ofReadWrite(this, "mainAddress", Address.class);
+        /**
          * The meta-property for the {@code extensions} property.
          */
         private final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(this, "extensions", FlexiBean.class);
@@ -355,6 +391,7 @@ public class Person extends DirectBean {
             temp.put("addressList", addressList);
             temp.put("otherAddressMap", otherAddressMap);
             temp.put("addressesList", addressesList);
+            temp.put("mainAddress", mainAddress);
             temp.put("extensions", extensions);
             map = Collections.unmodifiableMap(temp);
         }
@@ -421,6 +458,14 @@ public class Person extends DirectBean {
          */
         public final MetaProperty<List<List<Address>>> addressesList() {
             return addressesList;
+        }
+
+        /**
+         * The meta-property for the {@code mainAddress} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<Address> mainAddress() {
+            return mainAddress;
         }
 
         /**

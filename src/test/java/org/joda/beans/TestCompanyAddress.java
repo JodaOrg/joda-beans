@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestCompanyAddress {
 
-    private static final int NUM_PROPERTIES = 4;
+    private static final int NUM_PROPERTIES = 5;
     private static final String STREET = "street";
     private static final String CITY = "city";
     private static final String NUMBER = "number";

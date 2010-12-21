@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestPerson {
 
-    private static final int NUM_PROPERTIES = 7;
+    private static final int NUM_PROPERTIES = 8;
     private static final String FORENAME = "forename";
     private static final String SURNAME = "surname";
     private static final String NUMBER_OF_CARS = "numberOfCars";
