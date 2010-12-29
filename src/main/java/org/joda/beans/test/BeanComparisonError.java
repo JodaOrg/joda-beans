@@ -56,8 +56,15 @@ class BeanComparisonError extends AssertionError {
         StringBuilder buf = new StringBuilder();
         buf.append(message != null ? message + ": " : "");
         buf.append("Bean did not equal expected. Differences:");
+        int size = diffs.size();
+        if (size > 10) {
+            diffs = diffs.subList(0, 10);
+        }
         for (String diff : diffs) {
             buf.append('\n').append(diff);
+        }
+        if (size > 10) {
+            buf.append("\n...and " + (size - 10) + " more differences");
         }
         return buf.toString();
     }
