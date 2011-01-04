@@ -100,10 +100,9 @@ public final class BasicPropertyMap
                         return it.hasNext();
                     }
                     @Override
-                    @SuppressWarnings("unchecked")
                     public Entry<String, Property<Object>> next() {
                         MetaProperty<Object> meta = it.next();
-                        return (Entry) BasicProperty.of(bean, meta);
+                        return (Entry<String, Property<Object>>) BasicProperty.of(bean, meta);
                     }
                     @Override
                     public void remove() {

@@ -80,7 +80,7 @@ public class BeanMongoDBObject implements DBObject {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void putAll(Map map) {
         for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
             Object key = (Object) it.next();
@@ -99,7 +99,7 @@ public class BeanMongoDBObject implements DBObject {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Map toMap() {
         return bean.propertyMap().flatten();
     }

@@ -43,8 +43,6 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
         if (propertyName == null || propertyName.length() == 0) {
             throw new NullPointerException("Property name must not be null or empty");
         }
-        if (propertyName == null) {
-        }
         this.name = propertyName;
     }
 

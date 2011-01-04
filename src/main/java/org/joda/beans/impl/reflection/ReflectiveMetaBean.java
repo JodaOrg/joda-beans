@@ -73,7 +73,7 @@ public final class ReflectiveMetaBean implements MetaBean {
                 try {
                     mp = (MetaProperty<Object>) field.get(null);
                     if (mp instanceof ReflectiveMetaProperty) {
-                        ((ReflectiveMetaProperty) mp).setMetaBean(this);
+                        ((ReflectiveMetaProperty<Object>) mp).setMetaBean(this);
                     }
                 } catch (IllegalArgumentException ex) {
                     throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);

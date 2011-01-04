@@ -112,7 +112,7 @@ public class FreemarkerTemplateModel
      * Unwraps the model, returning the bean.
      * @return the underlying bean, not null
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdaptedObject(Class hint) {
         return _bean;
