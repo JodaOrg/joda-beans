@@ -35,7 +35,7 @@ class BeanGen {
     /** Pattern to find bean type. */
     private static final Pattern BEAN_TYPE = Pattern.compile(".*class (([A-Z][A-Za-z0-9_]+)(?:<([A-Z])( extends [A-Za-z0-9_]+)?>)?) .*");
     /** Pattern to find super type. */
-    private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_]*)>)?).*");
+    private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_<> ]*)>)?).*");
 
     /** The content to process. */
     private final List<String> content;
