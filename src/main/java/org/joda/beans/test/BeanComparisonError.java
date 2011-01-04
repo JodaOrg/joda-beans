@@ -33,11 +33,12 @@ class BeanComparisonError extends AssertionError {
      * Creates a new error.
      * 
      * @param message  the message, may be null
+     * @param maxErrors  the maximum number of errors to report
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public BeanComparisonError(final String message, final Bean expected, final Bean actual) {
-        super(buildMessage(message, expected, actual));
+    public BeanComparisonError(final String message, final int maxErrors, final Bean expected, final Bean actual) {
+        super(buildMessage(message, maxErrors, expected, actual));
         _expected = expected;
         _actual = actual;
     }
@@ -46,24 +47,25 @@ class BeanComparisonError extends AssertionError {
      * Compares the two beans.
      * 
      * @param message  the message, may be null
+     * @param maxErrors  the maximum number of errors to report
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      * @return the message, not null
      */
-    private static String buildMessage(final String message, final Bean expected, final Bean actual) {
+    private static String buildMessage(final String message, final int maxErrors, final Bean expected, final Bean actual) {
         List<String> diffs = new ArrayList<String>();
         buildMessage(diffs, "", expected, actual);
         StringBuilder buf = new StringBuilder();
         buf.append(message != null ? message + ": " : "");
         buf.append("Bean did not equal expected. Differences:");
         int size = diffs.size();
-        if (size > 10) {
-            diffs = diffs.subList(0, 10);
+        if (size > maxErrors) {
+            diffs = diffs.subList(0, maxErrors);
         }
         for (String diff : diffs) {
             buf.append('\n').append(diff);
         }
-        if (size > 10) {
+        if (size > maxErrors) {
             buf.append("\n...and " + (size - 10) + " more differences");
         }
         return buf.toString();

@@ -141,4 +141,15 @@ public class TestBeanAssert {
         }
     }
 
+    public void test_beanFullDetail_twoFields() {
+        person2.setForename("Bug1");
+        person2.setSurname("Bug2");
+        try {
+            BeanAssert.assertBeanEqualsFullDetail(person1, person2);
+        } catch (BeanComparisonError ex) {
+            Assert.assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>\n.surname: Content differs, expected String <Cable> but was <Bug2>", ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+    }
+
 }

@@ -21,6 +21,7 @@ public final class BeanAssert {
     private BeanAssert() {
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Asserts that two beans are equal, providing a better error message.
      * 
@@ -45,7 +46,37 @@ public final class BeanAssert {
             throw new AssertionError(message + ": Actual bean must not be null");
         }
         if (expected.equals(actual) == false) {
-            throw new BeanComparisonError(message, expected, actual);
+            throw new BeanComparisonError(message, 10, expected, actual);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Asserts that two beans are equal, providing a better error message.
+     * 
+     * @param expected  the expected value, not null
+     * @param actual  the actual value, not null
+     */
+    public static void assertBeanEqualsFullDetail(final Bean expected, final Bean actual) {
+        assertBeanEqualsFullDetail(null, expected, actual);
+    }
+
+    /**
+     * Asserts that two beans are equal, providing a better error message, with
+     * an unlimited number of errors reported.
+     * 
+     * @param expected  the expected value, not null
+     * @param actual  the actual value, not null
+     */
+    public static void assertBeanEqualsFullDetail(final String message, final Bean expected, final Bean actual) {
+        if (expected == null) {
+            throw new AssertionError(message + ": Expected bean must not be null");
+        }
+        if (actual == null) {
+            throw new AssertionError(message + ": Actual bean must not be null");
+        }
+        if (expected.equals(actual) == false) {
+            throw new BeanComparisonError(message, Integer.MAX_VALUE, expected, actual);
         }
     }
 
