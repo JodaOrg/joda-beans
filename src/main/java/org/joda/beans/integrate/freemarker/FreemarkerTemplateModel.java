@@ -15,14 +15,14 @@
  */
 package org.joda.beans.integrate.freemarker;
 
-import java.util.NoSuchElementException;
-
 import org.joda.beans.Bean;
-import org.joda.beans.Property;
+import org.joda.beans.MetaProperty;
 
+import freemarker.ext.beans.BeanModel;
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.AdapterTemplateModel;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleCollection;
+import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
@@ -49,7 +49,7 @@ public class FreemarkerTemplateModel
      * @param bean  the bean being wrapped, not null
      * @param wrapper  the default wrapper for further wrapping, not null
      */
-    public FreemarkerTemplateModel(final Bean bean, final ObjectWrapper wrapper) {
+    public FreemarkerTemplateModel(final Bean bean, final FreemarkerObjectWrapper wrapper) {
         super(wrapper);
         _bean = bean;
     }
@@ -62,14 +62,21 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateModel get(String key) throws TemplateModelException {
-        Object object;
-        try {
-            Property<Object> property = _bean.property(key);
-            object = property.get();
-        } catch (NoSuchElementException ex) {
-            return null;
+        MetaProperty<Object> metaProperty = _bean.metaBean().metaPropertyMap().get(key);
+        if (metaProperty == null) {
+          // try standard approach via BeanModel for non-bean properties and methods
+          BeanModel model = new BeanModel(_bean, (BeansWrapper) getObjectWrapper());
+          TemplateModel result = model.get(key);
+          if (result instanceof SimpleScalar) {
+            // have to map empty string to null
+            String str = ((SimpleScalar) result).getAsString();
+            if (str == null || str.isEmpty()) {
+              return null;
+            }
+          }
+          return result;
         }
-        return wrap(object);
+        return wrap(metaProperty.get(_bean));
     }
 
     /**
@@ -110,6 +117,7 @@ public class FreemarkerTemplateModel
 
     /**
      * Unwraps the model, returning the bean.
+     * @param hint  the class hint
      * @return the underlying bean, not null
      */
     @SuppressWarnings("rawtypes")
