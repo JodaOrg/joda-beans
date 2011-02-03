@@ -43,7 +43,8 @@ public class BeanCodeGen {
         String indent = "    ";
         String prefix = "";
         boolean recurse = false;
-        boolean verbose = false;
+        int verbosity = 1;
+        boolean write = true;
         File file = null;
         try {
             if (args.length == 0) {
@@ -58,8 +59,10 @@ public class BeanCodeGen {
                     prefix = args[i].substring(8);
                 } else if (args[i].equals("-R")) {
                     recurse = true;
-                } else if (args[i].equals("-v")) {
-                    verbose = true;
+                } else if (args[i].startsWith("-v=")) {
+                    verbosity = Integer.parseInt(args[i].substring(3));
+                } else if (args[i].equals("-nowrite")) {
+                    write = false;
                 }
             }
             file = new File(args[args.length - 1]);
@@ -71,16 +74,18 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
-            System.out.println("    -verbose          output verbose logging, default false");
+            System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
+            System.out.println("    -nowrite          output messages rather than writing, default is to write");
             System.exit(0);
         }
         try {
             List<File> files = findFiles(file, recurse);
+            int changed = 0;
             for (File child : files) {
-                BeanCodeGen gen = new BeanCodeGen(child, indent, prefix, verbose);
-                gen.process();
+                BeanCodeGen gen = new BeanCodeGen(child, indent, prefix, verbosity, write);
+                changed += (gen.process() ? 1 : 0);
             }
-            System.out.println("Finished");
+            System.out.println("Finished, found " + changed + " changed files");
             System.exit(0);
         } catch (Exception ex) {
             System.out.println();
@@ -121,7 +126,9 @@ public class BeanCodeGen {
     /** The prefix to use. */
     private final String prefix;
     /** The verbosity level. */
-    private final boolean verbose;
+    private final int verbosity;
+    /** Whether to write or not. */
+    private final boolean write;
 
     /**
      * Creates the generator for a single bean.
@@ -131,23 +138,23 @@ public class BeanCodeGen {
      * @param file  the file to process, not null
      * @param indent  the indent to use, not null
      * @param prefix  the prefix to use, not null
-     * @param verbose  the verbosity
+     * @param verbosity  the verbosity
+     * @param write  whether to write or not
      */
-    public BeanCodeGen(File file, String indent, String prefix, boolean verbose) {
+    public BeanCodeGen(File file, String indent, String prefix, int verbosity, boolean write) {
         this.file = file;
         this.indent = indent;
         this.prefix = prefix;
-        this.verbose = verbose;
+        this.verbosity = verbosity;
+        this.write = write;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Processes the bean, generating the code.
+     * @return true if changed
      */
-    public void process() throws Exception {
-        if (verbose) {
-            System.out.print(file);
-        }
+    public boolean process() throws Exception {
         List<String> original = readFile();
         List<String> content = new ArrayList<String>(original);
         BeanGen gen;
@@ -157,23 +164,37 @@ public class BeanCodeGen {
             throw new RuntimeException("Error in bean: " + file, ex);
         }
         if (gen.isBean() ) {
-            if (verbose == false) {
-                System.out.print(file);
+            if (verbosity >= 2) {
+                System.out.print(file + "  [processing]");
             }
-            System.out.print("  [processing]");
             gen.process();
             if (content.equals(original) == false) {
-                System.out.print(" [writing]");
-                writeFile(content);
+                if (write) {
+                    if (verbosity >= 2) {
+                        System.out.println(" [writing]");
+                    } else if (verbosity == 1) {
+                        System.out.println(file + "  [writing]");
+                    }
+                    writeFile(content);
+                } else {
+                    if (verbosity >= 2) {
+                        System.out.println(" [changed not written]");
+                    } else if (verbosity == 1) {
+                        System.out.println(file + "  [changed not written]");
+                    }
+                }
+                return true;
             } else {
-                System.out.print(" [no change]");
+                if (verbosity >= 2) {
+                    System.out.println(" [no change]");
+                }
             }
-            System.out.println();
         } else {
-            if (verbose) {
-                System.out.println("  [ignored]");
+            if (verbosity == 3) {
+                System.out.println(file + "  [ignored]");
             }
         }
+        return false;
     }
 
     //-----------------------------------------------------------------------
