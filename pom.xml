@@ -43,9 +43,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://joda-beans.svn.sourceforge.net/svnroot/joda-beans/JodaBeans/trunk/</connection>
-    <developerConnection>scm:svn:https://joda-beans.svn.sourceforge.net/svnroot/joda-beans/JodaBeans/trunk/</developerConnection>
-    <url>http://joda-beans.svn.sourceforge.net/viewvc/joda-beans/JodaBeans/trunk/</url>
+    <connection>scm:git:git@github.com:JodaOrg/joda-beans.git</connection>
+    <developerConnection>scm:git:git@github.com:JodaOrg/joda-beans.git</developerConnection>
+    <url>https://github.com/JodaOrg/joda-beans</url>
   </scm>
   <organization>
     <name>Joda.org</name>
@@ -289,7 +289,7 @@
     <site>
       <id>sf-web-joda-beans</id>
       <name>Sourceforge Site</name>
-      <url>scpexe://shell.sourceforge.net/home/groups/j/jo/joda-beans/htdocs</url>
+      <url>scpexe://shell.sourceforge.net/home/project-web/joda-beans/htdocs</url>
     </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
