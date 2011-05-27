@@ -42,7 +42,7 @@ public interface Bean {
      * 
      * @param <R>  the property type, optional, enabling auto-casting
      * @param propertyName  the property name to retrieve, null throws NoSuchElementException
-     * @return the property, not empty
+     * @return the property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
     <R> Property<R> property(String propertyName);

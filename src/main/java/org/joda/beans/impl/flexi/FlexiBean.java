@@ -384,7 +384,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
             FlexiBean other = (FlexiBean) obj;
             return this.data.equals(other.data);
         }
-        return false;
+        return super.equals(obj);
     }
 
     /**
