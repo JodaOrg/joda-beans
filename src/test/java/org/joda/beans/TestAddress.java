@@ -88,6 +88,8 @@ public class TestAddress {
         assertEquals(map.containsKey(STREET), true);
         assertEquals(map.containsKey(CITY), true);
         assertEquals(map.containsKey(NUMBER), true);
+        assertEquals(map.containsKey("NotHere"), false);
+        assertEquals(map.get(STREET), Address.meta().street());
     }
 
     @Test(expectedExceptions=NoSuchElementException.class)

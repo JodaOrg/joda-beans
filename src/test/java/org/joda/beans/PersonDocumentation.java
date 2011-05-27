@@ -15,11 +15,10 @@
  */
 package org.joda.beans;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
  * Mock JavaBean, used for testing.
@@ -110,14 +109,9 @@ public class PersonDocumentation extends Documentation<Person> {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map;
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        protected Meta() {
-            LinkedHashMap temp = new LinkedHashMap(super.metaPropertyMap());
-            temp.put("name", name);
-            map = Collections.unmodifiableMap(temp);
-        }
+        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+            "name");
 
         @Override
         public PersonDocumentation createBean() {
@@ -127,6 +121,15 @@ public class PersonDocumentation extends Documentation<Person> {
         @Override
         public Class<? extends PersonDocumentation> beanType() {
             return PersonDocumentation.class;
+        }
+
+        @Override
+        protected MetaProperty<?> metaPropertyGet(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 3373707:  // name
+                    return name;
+            }
+            return super.metaPropertyGet(propertyName);
         }
 
         @Override

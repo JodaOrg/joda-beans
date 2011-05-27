@@ -16,17 +16,16 @@
 package org.joda.beans;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlID;
 
-import org.joda.beans.impl.BasicMetaBean;
 import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.flexi.FlexiBean;
 
 /**
@@ -336,7 +335,7 @@ public class Person extends DirectBean {
     /**
      * The meta-bean for {@code Person}.
      */
-    public static class Meta extends BasicMetaBean {
+    public static class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -380,21 +379,16 @@ public class Person extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map;
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        protected Meta() {
-            LinkedHashMap temp = new LinkedHashMap();
-            temp.put("forename", forename);
-            temp.put("surname", surname);
-            temp.put("numberOfCars", numberOfCars);
-            temp.put("addressList", addressList);
-            temp.put("otherAddressMap", otherAddressMap);
-            temp.put("addressesList", addressesList);
-            temp.put("mainAddress", mainAddress);
-            temp.put("extensions", extensions);
-            map = Collections.unmodifiableMap(temp);
-        }
+        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+            this, null,
+            "forename",
+            "surname",
+            "numberOfCars",
+            "addressList",
+            "otherAddressMap",
+            "addressesList",
+            "mainAddress",
+            "extensions");
 
         @Override
         public Person createBean() {
@@ -404,6 +398,29 @@ public class Person extends DirectBean {
         @Override
         public Class<? extends Person> beanType() {
             return Person.class;
+        }
+
+        @Override
+        protected MetaProperty<?> metaPropertyGet(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 467061063:  // forename
+                    return forename;
+                case -1852993317:  // surname
+                    return surname;
+                case 926656063:  // numberOfCars
+                    return numberOfCars;
+                case -1377524046:  // addressList
+                    return addressList;
+                case 1368089592:  // otherAddressMap
+                    return otherAddressMap;
+                case -226885792:  // addressesList
+                    return addressesList;
+                case -2032731141:  // mainAddress
+                    return mainAddress;
+                case -1809421292:  // extensions
+                    return extensions;
+            }
+            return super.metaPropertyGet(propertyName);
         }
 
         @Override

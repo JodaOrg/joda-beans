@@ -8,18 +8,23 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.3.1" date="2011-xx-xx" description="v0.3.1">
+      <action dev="jodastephen" type="fix">
+        Enhance meta-property map.
+      </action>              
+    </release>
     <release version="0.3" date="2010-12-13" description="v0.3">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Handle generic subclass of a generic class.
       </action>              
     </release>
     <release version="0.2.20101111" date="2010-11-11" description="v0.2.20101111">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Handle subclass of a generic class.
       </action>              
     </release>
     <release version="0.2" date="2010-06-30" description="Initial version">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Initial version.
       </action>              
     </release>

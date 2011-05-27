@@ -15,13 +15,12 @@
  */
 package org.joda.beans;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.joda.beans.impl.BasicMetaBean;
 import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
  * Mock JavaBean, used for testing.
@@ -135,7 +134,7 @@ public class Documentation<T> extends DirectBean {
     /**
      * The meta-bean for {@code Documentation}.
      */
-    public static class Meta<T> extends BasicMetaBean {
+    public static class Meta<T> extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -154,15 +153,10 @@ public class Documentation<T> extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map;
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        protected Meta() {
-            LinkedHashMap temp = new LinkedHashMap();
-            temp.put("type", type);
-            temp.put("content", content);
-            map = Collections.unmodifiableMap(temp);
-        }
+        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+            this, null,
+            "type",
+            "content");
 
         @Override
         public Documentation<T> createBean() {
@@ -173,6 +167,17 @@ public class Documentation<T> extends DirectBean {
         @Override
         public Class<? extends Documentation<T>> beanType() {
             return (Class) Documentation.class;
+        }
+
+        @Override
+        protected MetaProperty<?> metaPropertyGet(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 3575610:  // type
+                    return type;
+                case 951530617:  // content
+                    return content;
+            }
+            return super.metaPropertyGet(propertyName);
         }
 
         @Override

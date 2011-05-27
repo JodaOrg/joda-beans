@@ -282,7 +282,7 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
-        String superMeta = (data.isSubclass() ? data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true) : "BasicMetaBean");
+        String superMeta = (data.isSubclass() ? data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true) : "DirectMetaBean");
         if (data.isTypeGeneric()) {
             insertRegion.add("\tpublic static class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
         } else {
@@ -300,15 +300,17 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map;");
-        insertRegion.add("");
-        insertRegion.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
-        insertRegion.add("\t\tprotected Meta() {");
-        String dataToCopy = (data.isSubclass() ? "super.metaPropertyMap()" : "");
-        insertRegion.add("\t\t\tLinkedHashMap temp = new LinkedHashMap(" + dataToCopy + ");");
-        generateMetaMapBuild();
-        insertRegion.add("\t\t\t" + prefix + "map = Collections.unmodifiableMap(temp);");
-        insertRegion.add("\t\t}");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map = new DirectMetaPropertyMap(");
+        if (data.isSubclass()) {
+            insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap(),");
+        } else {
+            insertRegion.add("\t\t\tthis, null,");
+        }
+        for (int i = 0; i < properties.size(); i++) {
+            String line = "\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"";
+            line += (i + 1 == properties.size() ? ");" : ",");
+            insertRegion.add(line);
+        }
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic " + data.getTypeNoExtends() + " createBean() {");
@@ -331,13 +333,14 @@ class BeanGen {
         }
         insertRegion.add("\t\t}");
         insertRegion.add("");
+        generateMetaPropertyGet();
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
         insertRegion.add("\t\t\treturn " + prefix + "map;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
-        generateMetaProperties();
+        generateMetaPropertyMethods();
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -348,13 +351,20 @@ class BeanGen {
         }
     }
 
-    private void generateMetaMapBuild() {
+    private void generateMetaPropertyGet() {
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tprotected MetaProperty<?> metaPropertyGet(String propertyName) {");
+        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
         for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generateMetaPropertyMapBuild());
+            insertRegion.addAll(prop.generateMetaPropertyGetCase());
         }
+        insertRegion.add("\t\t\t}");
+        insertRegion.add("\t\t\treturn super.metaPropertyGet(propertyName);");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
     }
 
-    private void generateMetaProperties() {
+    private void generateMetaPropertyMethods() {
         for (PropertyGen prop : properties) {
             insertRegion.addAll(prop.generateMetaProperty());
         }

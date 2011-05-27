@@ -15,13 +15,12 @@
  */
 package org.joda.beans;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.joda.beans.impl.BasicMetaBean;
 import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -203,7 +202,7 @@ public class Address extends DirectBean {
     /**
      * The meta-bean for {@code Address}.
      */
-    public static class Meta extends BasicMetaBean {
+    public static class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -228,17 +227,12 @@ public class Address extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map;
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        protected Meta() {
-            LinkedHashMap temp = new LinkedHashMap();
-            temp.put("number", number);
-            temp.put("street", street);
-            temp.put("city", city);
-            temp.put("owner", owner);
-            map = Collections.unmodifiableMap(temp);
-        }
+        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+            this, null,
+            "number",
+            "street",
+            "city",
+            "owner");
 
         @Override
         public Address createBean() {
@@ -248,6 +242,21 @@ public class Address extends DirectBean {
         @Override
         public Class<? extends Address> beanType() {
             return Address.class;
+        }
+
+        @Override
+        protected MetaProperty<?> metaPropertyGet(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -1034364087:  // number
+                    return number;
+                case -891990013:  // street
+                    return street;
+                case 3053931:  // city
+                    return city;
+                case 106164915:  // owner
+                    return owner;
+            }
+            return super.metaPropertyGet(propertyName);
         }
 
         @Override

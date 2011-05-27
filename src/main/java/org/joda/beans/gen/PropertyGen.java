@@ -260,9 +260,10 @@ class PropertyGen {
         return list;
     }
 
-    List<String> generateMetaPropertyMapBuild() {
+    List<String> generateMetaPropertyGetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\ttemp.put(\"" + data.getPropertyName() + "\", " + metaFieldName() + ");");
+        list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        list.add("\t\t\t\t\treturn " + metaFieldName() + ";");
         return list;
     }
 

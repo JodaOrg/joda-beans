@@ -15,11 +15,10 @@
  */
 package org.joda.beans;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -109,14 +108,9 @@ public class CompanyAddress extends Address {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map;
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        protected Meta() {
-            LinkedHashMap temp = new LinkedHashMap(super.metaPropertyMap());
-            temp.put("companyName", companyName);
-            map = Collections.unmodifiableMap(temp);
-        }
+        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+            "companyName");
 
         @Override
         public CompanyAddress createBean() {
@@ -126,6 +120,15 @@ public class CompanyAddress extends Address {
         @Override
         public Class<? extends CompanyAddress> beanType() {
             return CompanyAddress.class;
+        }
+
+        @Override
+        protected MetaProperty<?> metaPropertyGet(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -508582744:  // companyName
+                    return companyName;
+            }
+            return super.metaPropertyGet(propertyName);
         }
 
         @Override
