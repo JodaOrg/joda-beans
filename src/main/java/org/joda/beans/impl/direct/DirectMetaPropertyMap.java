@@ -32,7 +32,6 @@ import org.joda.beans.MetaProperty;
  * The property descriptor class is part of the JDK JavaBean standard.
  * It provides access to get and set a property on a bean.
  * 
- * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
 @SuppressWarnings("rawtypes")

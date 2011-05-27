@@ -297,8 +297,8 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * @param propertyName  the property name, not empty
      * @return true if the property exists
      */
-    public boolean propertyExists(String name) {
-        return data.containsKey(name);
+    public boolean propertyExists(String propertyName) {
+        return data.containsKey(propertyName);
     }
 
     /**
