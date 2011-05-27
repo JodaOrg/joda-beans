@@ -30,9 +30,9 @@ public class TestBasicBean {
         Person a2 = new Person();
         Person b = new Person();
         
-        a1.setForename("A");
-        a2.setForename("A");
-        b.setForename("B");
+        a1.setForename("Stephen");
+        a2.setForename("Stephen");
+        b.setForename("Etienne");
         
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
@@ -50,21 +50,76 @@ public class TestBasicBean {
         Person a1 = new Person();
         Person a2 = new Person();
         
-        a1.setForename("A");
-        a2.setForename("A");
+        a1.setForename("Stephen");
+        a2.setForename("Stephen");
         
         assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     public void test_toString() {
         Person a = new Person();
-        a.setForename("A");
-        a.setSurname("B");
+        a.setForename("Stephen");
+        a.setSurname("Colebourne");
         
         assertEquals(a.toString().startsWith("Person{"), true);
         assertEquals(a.toString().endsWith("}"), true);
-        assertEquals(a.toString().contains("forename=A"), true);
-        assertEquals(a.toString().contains("surname=B"), true);
+        assertEquals(a.toString().contains("forename=Stephen"), true);
+        assertEquals(a.toString().contains("surname=Colebourne"), true);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_property_equals() {
+        Address obj1 = new Address();
+        CompanyAddress obj2 = new CompanyAddress();
+        Property<String> p1 = obj1.city();
+        Property<String> p2 = obj2.city();
+        
+        obj1.setCity("London");
+        obj2.setCity("London");
+        
+        assertEquals(p1, p2);
+    }
+
+    public void test_property_hashCode() {
+        Person obj1 = new Person();
+        Person obj2 = new Person();
+        Property<String> p1 = obj1.forename();
+        Property<String> p2 = obj2.forename();
+        
+        obj1.setForename("Stephen");
+        obj2.setForename("Stephen");
+        
+        assertEquals(p1.hashCode(), p2.hashCode());
+    }
+
+    public void test_property_toString() {
+        Person obj1 = new Person();
+        Property<String> p1 = obj1.forename();
+        
+        obj1.setForename("Stephen");
+        
+        assertEquals(p1.toString(), "forename=Stephen");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_metaProperty_equals() {
+        MetaProperty<String> p1 = Address.meta().city();
+        MetaProperty<String> p2 = CompanyAddress.meta().city();
+        
+        assertEquals(p1, p2);
+    }
+
+    public void test_metaProperty_hashCode() {
+        MetaProperty<String> p1 = Person.meta().forename();
+        MetaProperty<String> p2 = Person.meta().forename();
+        
+        assertEquals(p1.hashCode(), p2.hashCode());
+    }
+
+    public void test_metaProperty_toString() {
+        MetaProperty<String> mp1 = Person.meta().forename();
+        
+        assertEquals(mp1.toString(), "forename");
     }
 
 }

@@ -92,4 +92,25 @@ public interface Property<P> {
      */
     P put(P value);
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this property equals another.
+     * <p>
+     * This compares the property name and value.
+     * It does not consider the property or bean types.
+     * 
+     * @param obj  the other property, null returns false
+     * @return true if equal
+     */
+    @Override
+    boolean equals(Object obj);
+
+    /**
+     * Returns a suitable hash code.
+     * 
+     * @return the hash code
+     */
+    @Override
+    int hashCode();
+
 }

@@ -102,7 +102,7 @@ public final class BasicPropertyMap
                     @Override
                     public Entry<String, Property<Object>> next() {
                         MetaProperty<Object> meta = it.next();
-                        return (Entry<String, Property<Object>>) BasicProperty.of(bean, meta);
+                        return new SimpleImmutableEntry<String, Property<Object>>(meta.name(), BasicProperty.of(bean, meta));
                     }
                     @Override
                     public void remove() {

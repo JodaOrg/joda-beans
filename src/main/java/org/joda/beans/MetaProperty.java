@@ -141,4 +141,25 @@ public interface MetaProperty<P> {
      */
     P put(Bean bean, P value);
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this meta-property equals another.
+     * <p>
+     * This compares the property name.
+     * It does not compare the property or bean types.
+     * 
+     * @param obj  the other meta-property, null returns false
+     * @return true if equal
+     */
+    @Override
+    boolean equals(Object obj);
+
+    /**
+     * Returns a suitable hash code.
+     * 
+     * @return the hash code
+     */
+    @Override
+    int hashCode();
+
 }

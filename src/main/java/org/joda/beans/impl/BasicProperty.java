@@ -15,8 +15,6 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Map.Entry;
-
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
@@ -32,7 +30,7 @@ import org.joda.beans.Property;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public final class BasicProperty<P> implements Property<P>, Entry<String, Property<P>> {
+public final class BasicProperty<P> implements Property<P> {
 
     /** The bean that the property is bound to. */
     private final Bean bean;
@@ -101,36 +99,25 @@ public final class BasicProperty<P> implements Property<P>, Entry<String, Proper
 
     //-----------------------------------------------------------------------
     @Override
-    public String getKey() {
-        return name();
-    }
-
-    @Override
-    public Property<P> getValue() {
-        return this;
-    }
-
-    @Override
-    public Property<P> setValue(Property<P> value) {
-        throw new UnsupportedOperationException("Unmodifiable");
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
     public boolean equals(Object obj) {
-        // specified by Map.Entry
-        if (obj instanceof Entry<?, ?>) {
-            Entry<?, ?> other = (Entry<?, ?>) obj;
-            return (this.getKey() == null ? other.getKey() == null : this.getKey().equals(other.getKey())) &&
-                (this.getValue() == null ? other.getValue() == null : this.getValue().equals(other.getValue()));
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Property) {
+            Property<?> other = (Property<?>) obj;
+            if (name().equals(other.name())) {
+                Object a = get();
+                Object b = other.get();
+                return a == null ? b == null : a.equals(b);
+            }
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        // specified by Map.Entry
-        return (getKey()==null ? 0 : getKey().hashCode()) ^ (getValue()==null ? 0 : getValue().hashCode());
+        P value = get();
+        return name().hashCode() ^ (value == null ? 0 : value.hashCode());
     }
 
     /**
@@ -140,7 +127,7 @@ public final class BasicProperty<P> implements Property<P>, Entry<String, Proper
      */
     @Override
     public String toString() {
-        return name() + ":" + get();
+        return name() + "=" + get();
     }
 
 }
