@@ -28,10 +28,9 @@ import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
- * A meta-property implemented using the methods of {@code DirectBean}.
+ * A meta-property implementation used by the code generator.
  * <p>
- * The property descriptor class is part of the JDK JavaBean standard.
- * It provides access to get and set a property on a bean.
+ * This meta-property is designed for use with subclasses of {@link DirectBean}.
  * 
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
