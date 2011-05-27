@@ -28,7 +28,7 @@ import java.util.Map;
 public interface PropertyMap extends Map<String, Property<Object>> {
 
     /**
-     * Flattens the contents of this property map to a {@code HashMap}.
+     * Flattens the contents of this property map to a {@code Map}.
      * <p>
      * The returned map will contain all the properties from the bean with their actual values.
      * 
