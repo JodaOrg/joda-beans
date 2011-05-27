@@ -227,7 +227,7 @@ public class Address extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<?>> map = new DirectMetaPropertyMap(
             this, null,
             "number",
             "street",
@@ -260,7 +260,7 @@ public class Address extends DirectBean {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             return map;
         }
 

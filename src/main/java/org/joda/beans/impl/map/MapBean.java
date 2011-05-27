@@ -130,18 +130,18 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
         }
 
         @Override
-        public Iterable<MetaProperty<Object>> metaPropertyIterable() {
-            return new Iterable<MetaProperty<Object>>() {
+        public Iterable<MetaProperty<?>> metaPropertyIterable() {
+            return new Iterable<MetaProperty<?>>() {
                 private final Iterator<String> it = MapBean.this.keySet().iterator();
                 @Override
-                public Iterator<MetaProperty<Object>> iterator() {
-                    return new Iterator<MetaProperty<Object>>() {
+                public Iterator<MetaProperty<?>> iterator() {
+                    return new Iterator<MetaProperty<?>>() {
                         @Override
                         public boolean hasNext() {
                             return it.hasNext();
                         }
                         @Override
-                        public MetaProperty<Object> next() {
+                        public MetaProperty<?> next() {
                             return MapBeanMetaProperty.of(MapBean.this, it.next());
                         }
                         @Override
@@ -155,8 +155,8 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
-            Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
+            Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
             for (String name : MapBean.this.keySet()) {
                 map.put(name, MapBeanMetaProperty.of(MapBean.this, name));
             }

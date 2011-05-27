@@ -169,7 +169,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     @Override
-    public void set(Bean bean, P value) {
+    public void set(Bean bean, Object value) {
         if (readWrite.isWritable() == false) {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }

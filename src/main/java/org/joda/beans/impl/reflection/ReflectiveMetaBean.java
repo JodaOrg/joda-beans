@@ -41,7 +41,7 @@ public final class ReflectiveMetaBean implements MetaBean {
     /** The bean type. */
     private final Class<? extends Bean> beanType;
     /** The meta-property instances of the bean. */
-    private final Map<String, MetaProperty<Object>> metaPropertyMap;
+    private final Map<String, MetaProperty<?>> metaPropertyMap;
 
     /**
      * Factory to create a meta-bean avoiding duplicate generics.
@@ -58,22 +58,21 @@ public final class ReflectiveMetaBean implements MetaBean {
      * 
      * @param beanType  the bean type, not null
      */
-    @SuppressWarnings("unchecked")
     private ReflectiveMetaBean(Class<? extends Bean> beanType) {
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
+        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
         Field[] fields = beanType.getDeclaredFields();
         for (Field field : fields) {
             if (MetaProperty.class.isAssignableFrom(field.getType()) && Modifier.isStatic(field.getModifiers())) {
                 field.setAccessible(true);
-                MetaProperty<Object> mp;
+                MetaProperty<?> mp;
                 try {
-                    mp = (MetaProperty<Object>) field.get(null);
+                    mp = (MetaProperty<?>) field.get(null);
                     if (mp instanceof ReflectiveMetaProperty) {
-                        ((ReflectiveMetaProperty<Object>) mp).setMetaBean(this);
+                        ((ReflectiveMetaProperty<?>) mp).setMetaBean(this);
                     }
                 } catch (IllegalArgumentException ex) {
                     throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
@@ -130,8 +129,9 @@ public final class ReflectiveMetaBean implements MetaBean {
     }
 
     @Override
-    public MetaProperty<Object> metaProperty(String propertyName) {
-        MetaProperty<Object> metaProperty = metaPropertyMap.get(propertyName);
+    public <R> MetaProperty<R> metaProperty(String propertyName) {
+        @SuppressWarnings("unchecked")
+        MetaProperty<R> metaProperty = (MetaProperty<R>) metaPropertyMap.get(propertyName);
         if (metaProperty == null) {
             throw new NoSuchElementException("Property not found: " + propertyName);
         }
@@ -139,12 +139,12 @@ public final class ReflectiveMetaBean implements MetaBean {
     }
 
     @Override
-    public Iterable<MetaProperty<Object>> metaPropertyIterable() {
+    public Iterable<MetaProperty<?>> metaPropertyIterable() {
         return metaPropertyMap.values();
     }
 
     @Override
-    public Map<String, MetaProperty<Object>> metaPropertyMap() {
+    public Map<String, MetaProperty<?>> metaPropertyMap() {
         return metaPropertyMap;
     }
 

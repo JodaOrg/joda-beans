@@ -451,21 +451,21 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
         }
 
         @Override
-        public Iterable<MetaProperty<Object>> metaPropertyIterable() {
+        public Iterable<MetaProperty<?>> metaPropertyIterable() {
             if (data.isEmpty()) {
                 return Collections.emptySet();
             }
-            return new Iterable<MetaProperty<Object>>() {
+            return new Iterable<MetaProperty<?>>() {
                 private final Iterator<String> it = data.keySet().iterator();
                 @Override
-                public Iterator<MetaProperty<Object>> iterator() {
-                    return new Iterator<MetaProperty<Object>>() {
+                public Iterator<MetaProperty<?>> iterator() {
+                    return new Iterator<MetaProperty<?>>() {
                         @Override
                         public boolean hasNext() {
                             return it.hasNext();
                         }
                         @Override
-                        public MetaProperty<Object> next() {
+                        public MetaProperty<?> next() {
                             return FlexiMetaProperty.of(metaBean, it.next());
                         }
                         @Override
@@ -479,11 +479,11 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             if (data.isEmpty()) {
                 return Collections.emptyMap();
             }
-            Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
+            Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
             for (String name : data.keySet()) {
                 map.put(name, FlexiMetaProperty.of(metaBean, name));
             }

@@ -300,7 +300,7 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map = new DirectMetaPropertyMap(");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + prefix + "map = new DirectMetaPropertyMap(");
         if (data.isSubclass()) {
             insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap(),");
         } else {
@@ -335,7 +335,7 @@ class BeanGen {
         insertRegion.add("");
         generateMetaPropertyGet();
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
+        insertRegion.add("\t\tpublic Map<String, MetaProperty<?>> metaPropertyMap() {");
         insertRegion.add("\t\t\treturn " + prefix + "map;");
         insertRegion.add("\t\t}");
         insertRegion.add("");

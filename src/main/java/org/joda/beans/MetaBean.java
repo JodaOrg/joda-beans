@@ -91,7 +91,7 @@ public interface MetaBean {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    Iterable<MetaProperty<Object>> metaPropertyIterable();
+    Iterable<MetaProperty<?>> metaPropertyIterable();
 
     /**
      * Gets the map of meta-properties, keyed by property name.
@@ -100,6 +100,6 @@ public interface MetaBean {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    Map<String, MetaProperty<Object>> metaPropertyMap();
+    Map<String, MetaProperty<?>> metaPropertyMap();
 
 }

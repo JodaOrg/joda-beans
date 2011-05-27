@@ -52,7 +52,7 @@ public abstract class BasicMetaBean implements MetaBean {
     @SuppressWarnings("unchecked")
     @Override
     public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<Object> mp = metaPropertyMap().get(propertyName);
+        MetaProperty<?> mp = metaPropertyMap().get(propertyName);
         if (mp == null) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
@@ -60,7 +60,7 @@ public abstract class BasicMetaBean implements MetaBean {
     }
 
     @Override
-    public Iterable<MetaProperty<Object>> metaPropertyIterable() {
+    public Iterable<MetaProperty<?>> metaPropertyIterable() {
         return metaPropertyMap().values();
     }
 

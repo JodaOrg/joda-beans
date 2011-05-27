@@ -25,7 +25,7 @@ import java.util.Map;
  * 
  * @author Stephen Colebourne
  */
-public interface PropertyMap extends Map<String, Property<Object>> {
+public interface PropertyMap extends Map<String, Property<?>> {
 
     /**
      * Flattens the contents of this property map to a {@code Map}.

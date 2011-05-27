@@ -88,11 +88,25 @@ public class TestPerson {
         assertEquals(test.metaProperty(SURNAME).name(), SURNAME);
         assertEquals(test.metaProperty(NUMBER_OF_CARS).name(), NUMBER_OF_CARS);
         
-        Map<String, MetaProperty<Object>> map = test.metaPropertyMap();
+        Map<String, MetaProperty<?>> map = test.metaPropertyMap();
         assertEquals(map.size(), NUM_PROPERTIES);
         assertEquals(map.containsKey(FORENAME), true);
         assertEquals(map.containsKey(SURNAME), true);
         assertEquals(map.containsKey(NUMBER_OF_CARS), true);
+    }
+
+    public void test_metaBean_setMetaProperty() {
+        Person person = new Person();
+        Person.Meta test = person.metaBean();
+        
+        assertEquals(test.metaProperty(FORENAME), test.forename());
+        
+        test.metaProperty(FORENAME).set(person, "Stephen");
+        assertEquals(person.getForename(), "Stephen");
+        
+        MetaProperty<?> mp = test.metaProperty(SURNAME);
+        mp.set(person, "Colebourne");
+        assertEquals(person.getSurname(), "Colebourne");
     }
 
     @Test(expectedExceptions=NoSuchElementException.class)

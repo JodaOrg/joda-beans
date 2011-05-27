@@ -151,7 +151,7 @@ public class Pair extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<?>> map = new DirectMetaPropertyMap(
             this, null,
             "first",
             "second");
@@ -178,7 +178,7 @@ public class Pair extends DirectBean {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             return map;
         }
 

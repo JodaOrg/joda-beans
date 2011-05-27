@@ -112,7 +112,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<?>> map = new DirectMetaPropertyMap(
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
             "name");
 
@@ -137,7 +137,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             return map;
         }
 

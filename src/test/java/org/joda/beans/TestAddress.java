@@ -83,7 +83,7 @@ public class TestAddress {
         assertEquals(test.metaProperty(CITY).name(), CITY);
         assertEquals(test.metaProperty(NUMBER).name(), NUMBER);
         
-        Map<String, MetaProperty<Object>> map = test.metaPropertyMap();
+        Map<String, MetaProperty<?>> map = test.metaPropertyMap();
         assertEquals(map.size(), NUM_PROPERTIES);
         assertEquals(map.containsKey(STREET), true);
         assertEquals(map.containsKey(CITY), true);

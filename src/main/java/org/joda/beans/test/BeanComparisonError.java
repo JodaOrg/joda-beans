@@ -120,7 +120,7 @@ class BeanComparisonError extends AssertionError {
             return;
         }
         if (expected instanceof Bean) {
-            for (MetaProperty<Object> prop : ((Bean) expected).metaBean().metaPropertyIterable()) {
+            for (MetaProperty<?> prop : ((Bean) expected).metaBean().metaPropertyIterable()) {
                 buildMessage(diffs, prefix + '.' + prop.name(), prop.get((Bean) expected), prop.get((Bean) actual));
             }
             return;

@@ -33,7 +33,7 @@ import org.joda.beans.impl.BasicProperty;
  * @author Stephen Colebourne
  */
 final class FlexiPropertyMap
-        extends AbstractMap<String, Property<Object>> implements PropertyMap {
+        extends AbstractMap<String, Property<?>> implements PropertyMap {
 
     /** The bean. */
     private final FlexiBean bean;
@@ -81,30 +81,30 @@ final class FlexiPropertyMap
     }
 
     @Override
-    public Set<Entry<String, Property<Object>>> entrySet() {
+    public Set<Entry<String, Property<?>>> entrySet() {
         if (size() == 0) {
             return Collections.emptySet();
         }
         final MetaBean metaBean = bean.metaBean();
-        return new AbstractSet<Entry<String,Property<Object>>>() {
+        return new AbstractSet<Entry<String,Property<?>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {
                 return bean.size();
             }
             @Override
-            public Iterator<Entry<String, Property<Object>>> iterator() {
+            public Iterator<Entry<String, Property<?>>> iterator() {
                 final Iterator<String> it = bean.data.keySet().iterator();
-                return new Iterator<Entry<String, Property<Object>>>() {
+                return new Iterator<Entry<String, Property<?>>>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
-                    public Entry<String, Property<Object>> next() {
+                    public Entry<String, Property<?>> next() {
                         String name = it.next();
                         Property<Object> prop = BasicProperty.of(bean, FlexiMetaProperty.of(metaBean, name));
-                        return new SimpleImmutableEntry<String, Property<Object>>(name, prop);
+                        return new SimpleImmutableEntry<String, Property<?>>(name, prop);
                     }
                     @Override
                     public void remove() {

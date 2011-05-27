@@ -62,7 +62,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateModel get(String key) throws TemplateModelException {
-        MetaProperty<Object> metaProperty = _bean.metaBean().metaPropertyMap().get(key);
+        MetaProperty<?> metaProperty = _bean.metaBean().metaPropertyMap().get(key);
         if (metaProperty == null) {
           // try standard approach via BeanModel for non-bean properties and methods
           BeanModel model = new BeanModel(_bean, (BeansWrapper) getObjectWrapper());
