@@ -48,10 +48,10 @@ public class TestPerson {
         
         assertEquals(test.metaBean(), Person.meta());
         
-        assertEquals(test.propertyExists(FORENAME), true);
-        assertEquals(test.propertyExists(SURNAME), true);
-        assertEquals(test.propertyExists(NUMBER_OF_CARS), true);
-        assertEquals(test.propertyExists("Rubbish"), false);
+        assertEquals(test.propertyNames().contains(FORENAME), true);
+        assertEquals(test.propertyNames().contains(SURNAME), true);
+        assertEquals(test.propertyNames().contains(NUMBER_OF_CARS), true);
+        assertEquals(test.propertyNames().contains("Rubbish"), false);
         
         assertEquals(test.property(FORENAME).name(), FORENAME);
         assertEquals(test.property(SURNAME).name(), SURNAME);
@@ -143,7 +143,7 @@ public class TestPerson {
     //-----------------------------------------------------------------------
     public void test_propertyMap() {
         Person person = new Person();
-        PropertyMap test = person.propertyMap();
+        PropertyMap test = person.metaBean().createPropertyMap(person);
         
         assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.containsKey(FORENAME), true);
@@ -156,7 +156,7 @@ public class TestPerson {
         person.setForename("A");
         person.setSurname("B");
         person.setNumberOfCars(3);
-        Map<String, Object> test = person.propertyMap().flatten();
+        Map<String, Object> test = person.metaBean().createPropertyMap(person).flatten();
         
         assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.get(FORENAME), "A");

@@ -16,6 +16,7 @@
 package org.joda.beans;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * A bean consisting of a set of properties.
@@ -37,14 +38,6 @@ public interface Bean {
     MetaBean metaBean();
 
     /**
-     * Checks if a property exists.
-     * 
-     * @param propertyName  the property name to check, null returns false
-     * @return true if the property exists
-     */
-    boolean propertyExists(String propertyName);
-
-    /**
      * Gets a property by name.
      * 
      * @param <R>  the property type, optional, enabling auto-casting
@@ -55,10 +48,10 @@ public interface Bean {
     <R> Property<R> property(String propertyName);
 
     /**
-     * Gets the map of properties, keyed by property name.
+     * Gets the set of property names.
      * 
      * @return the unmodifiable map of property objects, not null
      */
-    PropertyMap propertyMap();
+    Set<String> propertyNames();
 
 }

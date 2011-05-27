@@ -16,7 +16,9 @@
 package org.joda.beans.impl.direct;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
 
+import org.joda.beans.BeanUtils;
 import org.joda.beans.impl.BasicBean;
 
 /**
@@ -50,6 +52,57 @@ public abstract class DirectBean extends BasicBean {
      */
     protected void propertySet(String propertyName, Object value) {
         throw new NoSuchElementException("Unknown property: " + propertyName);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof DirectBean) {
+            DirectBean other = (DirectBean) obj;
+            Set<String> names = propertyNames();
+            if (names.equals(other.propertyNames()) == false) {
+                return false;
+            }
+            for (String name : names) {
+                Object value1 = propertyGet(name);
+                Object value2 = other.propertyGet(name);
+                if (BeanUtils.equal(value1, value2) == false) {
+                    return false;
+                }
+            }
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        Set<String> names = propertyNames();
+        for (String name : names) {
+            Object value = propertyGet(name);
+            hash += (name.hashCode() ^ (value == null ? 0 : value.hashCode()));
+        }
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        Set<String> names = propertyNames();
+        StringBuilder buf = new StringBuilder((names.size()) * 32 + 32);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        if (names.size() > 0) {
+            for (String name : names) {
+                Object value = propertyGet(name);
+                buf.append(name).append('=').append(value).append(',').append(' ');
+            }
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
     }
 
 }

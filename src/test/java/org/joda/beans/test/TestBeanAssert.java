@@ -136,7 +136,7 @@ public class TestBeanAssert {
         try {
             BeanAssert.assertBeanEquals(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.otherAddressMap[Home].city: Content differs, expected String <Skyton> but was <Bug>\n.otherAddressMap[Home].owner: Expected null, but was Person <Person{addressList=[], forename=null, numberOfCars=0, sur...>", ex.getMessage());
+            Assert.assertEquals("Bean did not equal expected. Differences:\n.otherAddressMap[Home].city: Content differs, expected String <Skyton> but was <Bug>\n.otherAddressMap[Home].owner: Expected null, but was Person <Person{forename=null, surname=null, numberOfCars=0, addre...>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }

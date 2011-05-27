@@ -15,9 +15,11 @@
  */
 package org.joda.beans.impl;
 
+import java.util.Set;
+
 import org.joda.beans.Bean;
+import org.joda.beans.BeanUtils;
 import org.joda.beans.Property;
-import org.joda.beans.PropertyMap;
 
 /**
  * Basic implementation of {@code Bean} intended for applications to subclass.
@@ -30,18 +32,13 @@ import org.joda.beans.PropertyMap;
 public abstract class BasicBean implements Bean {
 
     @Override
-    public boolean propertyExists(String propertyName) {
-        return metaBean().metaPropertyExists(propertyName);
-    }
-
-    @Override
     public <R> Property<R> property(String propertyName) {
         return metaBean().<R>metaProperty(propertyName).createProperty(this);
     }
 
     @Override
-    public PropertyMap propertyMap() {
-        return metaBean().createPropertyMap(this);
+    public Set<String> propertyNames() {
+        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------
@@ -58,9 +55,9 @@ public abstract class BasicBean implements Bean {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof BasicBean) {
-            BasicBean other = (BasicBean) obj;
-            return propertyMap().flatten().equals(other.propertyMap().flatten());
+        if (obj instanceof Bean) {
+            Bean other = (Bean) obj;
+            return BeanUtils.propertiesEqual(this, other);
         }
         return false;
     }
@@ -74,7 +71,7 @@ public abstract class BasicBean implements Bean {
      */
     @Override
     public int hashCode() {
-        return propertyMap().flatten().hashCode();
+        return BeanUtils.propertiesHashCode(this);
     }
 
     /**
@@ -86,7 +83,7 @@ public abstract class BasicBean implements Bean {
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + propertyMap().flatten().toString();
+        return BeanUtils.propertiesToString(this, metaBean().beanType().getSimpleName());
     }
 
 }

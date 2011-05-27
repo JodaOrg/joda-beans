@@ -65,7 +65,7 @@ public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
     @Override
     public MetaBean metaBean() {
-        return bean;
+        return bean.metaBean();
     }
 
     @Override

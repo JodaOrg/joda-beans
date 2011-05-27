@@ -67,9 +67,6 @@ final class FlexiPropertyMap
 
     @Override
     public boolean containsKey(Object obj) {
-        if (size() == 0) {
-            return false;
-        }
         return bean.data.containsKey(obj);
     }
 
@@ -80,9 +77,6 @@ final class FlexiPropertyMap
 
     @Override
     public Set<String> keySet() {
-        if (size() == 0) {
-            return Collections.emptySet();
-        }
         return bean.data.keySet();
     }
 

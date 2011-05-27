@@ -37,9 +37,8 @@ public class Examples {
         // set cars
         p.numberOfCars().set(2);
         // access all the properties
-        System.out.println(p.propertyMap().values());
-        System.out.println(p.metaBean().metaPropertyMap().values());
-        System.out.println(p.propertyMap().flatten());
+        System.out.println(p.propertyNames());
+        System.out.println(p.metaBean().createPropertyMap(p).flatten());
         System.out.println(p);
         // perform validation
         boolean valid =
@@ -48,9 +47,8 @@ public class Examples {
         System.out.println(valid ? "Valid" : "Not valid");
         // extensions
         p.getExtensions().set("suffix", "Jr");
-        System.out.println(p.propertyMap().values());
-        System.out.println(p.metaBean().metaPropertyMap().values());
-        System.out.println(p.propertyMap().flatten());
+        System.out.println(p.propertyNames());
+        System.out.println(p.metaBean().createPropertyMap(p).flatten());
         System.out.println(p);
         
         // create the bean the hard way - could just do new Address() instead
@@ -65,9 +63,8 @@ public class Examples {
         // set cars
         a.number().set(22);
         // access all the properties
-        System.out.println(a.propertyMap().values());
-        System.out.println(a.metaBean().metaPropertyMap().values());
-        System.out.println(a.propertyMap().flatten());
+        System.out.println(a.propertyNames());
+        System.out.println(a.metaBean().createPropertyMap(p).flatten());
         System.out.println(a);
         // perform validation
         valid =

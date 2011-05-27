@@ -50,7 +50,7 @@ public class BeanMongoDBObject implements DBObject {
     //-----------------------------------------------------------------------
     @Override
     public boolean containsField(String name) {
-        return bean.propertyExists(name);
+        return bean.propertyNames().contains(name);
     }
 
     /** 
@@ -95,13 +95,13 @@ public class BeanMongoDBObject implements DBObject {
 
     @Override
     public Set<String> keySet() {
-        return bean.propertyMap().keySet();
+        return bean.propertyNames();
     }
 
     @Override
     @SuppressWarnings("rawtypes")
     public Map toMap() {
-        return bean.propertyMap().flatten();
+        return bean.metaBean().createPropertyMap(bean).flatten();
     }
 
     //-----------------------------------------------------------------------

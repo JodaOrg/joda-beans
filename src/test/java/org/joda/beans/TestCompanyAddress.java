@@ -44,11 +44,11 @@ public class TestCompanyAddress {
         
         assertEquals(test.metaBean(), CompanyAddress.meta());
         
-        assertEquals(test.propertyExists(STREET), true);
-        assertEquals(test.propertyExists(CITY), true);
-        assertEquals(test.propertyExists(NUMBER), true);
-        assertEquals(test.propertyExists(COMPANY_NAME), true);
-        assertEquals(test.propertyExists("Rubbish"), false);
+        assertEquals(test.propertyNames().contains(STREET), true);
+        assertEquals(test.propertyNames().contains(CITY), true);
+        assertEquals(test.propertyNames().contains(NUMBER), true);
+        assertEquals(test.propertyNames().contains(COMPANY_NAME), true);
+        assertEquals(test.propertyNames().contains("Rubbish"), false);
         
         assertEquals(test.property(STREET).name(), STREET);
         assertEquals(test.property(CITY).name(), CITY);
@@ -173,7 +173,7 @@ public class TestCompanyAddress {
     //-----------------------------------------------------------------------
     public void test_propertyMap() {
         CompanyAddress address = new CompanyAddress();
-        PropertyMap test = address.propertyMap();
+        PropertyMap test = address.metaBean().createPropertyMap(address);
         
         assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.containsKey(STREET), true);
@@ -188,7 +188,7 @@ public class TestCompanyAddress {
         address.setCity("B");
         address.setNumber(3);
         address.setCompanyName("D");
-        Map<String, Object> test = address.propertyMap().flatten();
+        Map<String, Object> test = address.metaBean().createPropertyMap(address).flatten();
         
         assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.get(STREET), "A");

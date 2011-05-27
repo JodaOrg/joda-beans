@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.3.1" date="2011-xx-xx" description="v0.3.1">
+      <action dev="jodastephen" type="add">
+        Refactor to improve equals/hashCode performance.
+      </action>              
       <action dev="jodastephen" type="fix">
         Fix property/meta-property equals/hashCode.
       </action>              

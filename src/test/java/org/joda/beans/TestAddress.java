@@ -43,10 +43,10 @@ public class TestAddress {
         
         assertEquals(test.metaBean(), Address.meta());
         
-        assertEquals(test.propertyExists(STREET), true);
-        assertEquals(test.propertyExists(CITY), true);
-        assertEquals(test.propertyExists(NUMBER), true);
-        assertEquals(test.propertyExists("Rubbish"), false);
+        assertEquals(test.propertyNames().contains(STREET), true);
+        assertEquals(test.propertyNames().contains(CITY), true);
+        assertEquals(test.propertyNames().contains(NUMBER), true);
+        assertEquals(test.propertyNames().contains("Rubbish"), false);
         
         assertEquals(test.property(STREET).name(), STREET);
         assertEquals(test.property(CITY).name(), CITY);
@@ -140,7 +140,7 @@ public class TestAddress {
     //-----------------------------------------------------------------------
     public void test_propertyMap() {
         Address address = new Address();
-        PropertyMap test = address.propertyMap();
+        PropertyMap test = address.metaBean().createPropertyMap(address);
         
         assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.containsKey(STREET), true);
@@ -153,7 +153,7 @@ public class TestAddress {
         address.setStreet("A");
         address.setCity("B");
         address.setNumber(3);
-        Map<String, Object> test = address.propertyMap().flatten();
+        Map<String, Object> test = address.metaBean().createPropertyMap(address).flatten();
         
         assertSame(test.size(), NUM_PROPERTIES);
         assertEquals(test.get(STREET), "A");

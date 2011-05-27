@@ -103,7 +103,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateCollectionModel keys() {
-        return new SimpleCollection(_bean.propertyMap().keySet(), getObjectWrapper());
+        return new SimpleCollection(_bean.propertyNames(), getObjectWrapper());
     }
 
     /**
@@ -112,7 +112,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateCollectionModel values() {
-        return new SimpleCollection(_bean.propertyMap().flatten().values(), getObjectWrapper());
+        return new SimpleCollection(_bean.metaBean().createPropertyMap(_bean).flatten().values(), getObjectWrapper());
     }
 
     /**

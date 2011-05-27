@@ -19,6 +19,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.flexi.FlexiBean;
 
 /**
  * A set of utilities to assist when working with beans and properties.
@@ -31,6 +35,98 @@ public final class BeanUtils {
      * Restricted constructor.
      */
     private BeanUtils() {
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if two objects are equal handling null.
+     * 
+     * @param obj1  the first object, may be null
+     * @param obj2  the second object, may be null
+     * @return true if equal
+     */
+    public static boolean equal(Object obj1, Object obj2) {
+        return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the two beans have the same set of properties.
+     * <p>
+     * This comparison checks that both beans have the same set of property names
+     * and that the value of each property name is also equal.
+     * It does not check the bean type, thus a {@link FlexiBean} may be equal
+     * to a {@link DirectBean}.
+     * <p>
+     * This comparison is usable with the {@link #propertiesHashCode} method.
+     * The result is the same as that if each bean was converted to a {@code Map}
+     * from name to value.
+     * 
+     * @param bean1  the first bean to compare, not null
+     * @param bean2  the second bean to compare, not null
+     * @return true if equal
+     */
+    public static boolean propertiesEqual(Bean bean1, Bean bean2) {
+        Set<String> names = bean1.propertyNames();
+        if (names.equals(bean2.propertyNames()) == false) {
+            return false;
+        }
+        for (String name : names) {
+            Object value1 = bean1.property(name).get();
+            Object value2 = bean2.property(name).get();
+            if (equal(value1, value2) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns a hash code based on the set of properties on a bean.
+     * <p>
+     * This hash code is usable with the {@link #propertiesEqual} method.
+     * The result is the same as that if each bean was converted to a {@code Map}
+     * from name to value.
+     * 
+     * @param bean  the bean to generate a hash code for, not null
+     * @return the hash code
+     */
+    public static int propertiesHashCode(Bean bean) {
+        int hash = 0;
+        Set<String> names = bean.propertyNames();
+        for (String name : names) {
+            Object value = bean.property(name).get();
+            hash += (name.hashCode() ^ (value == null ? 0 : value.hashCode()));
+        }
+        return hash;
+    }
+
+    /**
+     * Returns a string describing the set of properties on a bean.
+     * <p>
+     * The result is the same as that if the bean was converted to a {@code Map}
+     * from name to value.
+     * 
+     * @param bean  the bean to generate a string for, not null
+     * @param prefix  the prefix to use, null ignored
+     * @return the string form of the bean, not null
+     */
+    public static String propertiesToString(Bean bean, String prefix) {
+        Set<String> names = bean.propertyNames();
+        StringBuilder buf = new StringBuilder((names.size()) * 32 + prefix.length());
+        if (prefix != null) {
+            buf.append(prefix);
+        }
+        buf.append('{');
+        if (names.size() > 0) {
+            for (String name : names) {
+                Object value = bean.property(name).get();
+                buf.append(name).append('=').append(value).append(',').append(' ');
+            }
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------

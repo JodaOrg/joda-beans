@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.DynamicBean;
@@ -35,7 +36,8 @@ import org.joda.beans.impl.BasicProperty;
  * Implementation of a fully dynamic {@code Bean}.
  * <p>
  * Properties are dynamic, and can be added and removed at will from the map.
- * The implementation is the {@code Bean}, {@code MetaBean} and data store combined.
+ * The internal storage is created lazily to allow a flexi-bean to be used as
+ * a lightweight extension to another bean.
  * 
  * @author Stephen Colebourne
  */
@@ -49,7 +51,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     /** The meta-bean. */
     final FlexiMetaBean metaBean = new FlexiMetaBean();
     /** The underlying data. */
-    volatile Map<String, Object> data;  // shared in package
+    volatile Map<String, Object> data = Collections.emptyMap();
 
     /**
      * Constructor.
@@ -60,10 +62,11 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     //-----------------------------------------------------------------------
     /**
      * Gets the internal data map.
+     * 
      * @return the data, not null
      */
-    private Map<String, Object> data() {
-        if (data == null) {
+    private Map<String, Object> dataWritable() {
+        if (data == Collections.EMPTY_MAP) {
             data = new HashMap<String, Object>();
         }
         return data;
@@ -72,14 +75,16 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     //-----------------------------------------------------------------------
     /**
      * Gets the number of properties.
+     * 
      * @return the number of properties
      */
     public int size() {
-        return data != null ? data.size() : 0;
+        return data.size();
     }
 
     /**
      * Checks if the bean contains a specific property.
+     * 
      * @param propertyName  the property name, null returns false
      * @return true if the bean contains the property
      */
@@ -89,15 +94,17 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property, may be null
      */
     public Object get(String propertyName) {
-        return data != null ? data.get(propertyName) : null;
+        return data.get(propertyName);
     }
 
     /**
      * Gets the value of the property cast to a specific type.
+     * 
      * @param propertyName  the property name, not empty
      * @param type  the type to cast to, not null
      * @return the value of the property, may be null
@@ -110,6 +117,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     /**
      * Gets the value of the property as a {@code String}.
      * This will use {@link Object#toString()}.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property, may be null
      */
@@ -120,6 +128,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code boolean}.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
@@ -130,6 +139,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code int}.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
@@ -140,6 +150,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code int} using a default value.
+     * 
      * @param propertyName  the property name, not empty
      * @param defaultValue  the default value for null
      * @return the value of the property
@@ -152,6 +163,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code long}.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
@@ -162,6 +174,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code long} using a default value.
+     * 
      * @param propertyName  the property name, not empty
      * @param defaultValue  the default value for null
      * @return the value of the property
@@ -174,6 +187,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code double}.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
@@ -184,6 +198,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property as a {@code double} using a default value.
+     * 
      * @param propertyName  the property name, not empty
      * @param defaultValue  the default value for null
      * @return the value of the property
@@ -197,41 +212,45 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     //-----------------------------------------------------------------------
     /**
      * Adds or updates a property returning {@code this} for chaining.
+     * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      * @return {@code this} for chaining, not null
      */
     public FlexiBean append(String propertyName, Object newValue) {
-        data().put(propertyName, newValue);
+        dataWritable().put(propertyName, newValue);
         return this;
     }
 
     /**
      * Adds or updates a property.
+     * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      */
     public void set(String propertyName, Object newValue) {
-        data().put(propertyName, newValue);
+        dataWritable().put(propertyName, newValue);
     }
 
     /**
      * Puts the property into this bean.
+     * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      * @return the old value of the property, may be null
      */
     public Object put(String propertyName, Object newValue) {
-        return data().put(propertyName, newValue);
+        return dataWritable().put(propertyName, newValue);
     }
 
     /**
      * Puts the properties in the specified map into this bean.
+     * 
      * @param map  the map of properties to add, not null
      */
     public void putAll(Map<String, Object> map) {
         if (map.size() > 0) {
-            if (data == null) {
+            if (data == Collections.EMPTY_MAP) {
                 data = new HashMap<String, Object>(map);
             } else {
                 data.putAll(map);
@@ -241,11 +260,12 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Puts the properties in the specified bean into this bean.
+     * 
      * @param other  the map of properties to add, not null
      */
     public void putAll(FlexiBean other) {
         if (other.size() > 0) {
-            if (data == null) {
+            if (data == Collections.EMPTY_MAP) {
                 data = new HashMap<String, Object>(other.data);
             } else {
                 data.putAll(other.data);
@@ -265,14 +285,25 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * Removes all properties.
      */
     public void clear() {
-        if (data != null) {
+        if (data != Collections.EMPTY_MAP) {
             data.clear();
         }
     }
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the property exists.
+     * 
+     * @param propertyName  the property name, not empty
+     * @return true if the property exists
+     */
+    public boolean propertyExists(String name) {
+        return data.containsKey(name);
+    }
+
+    /**
      * Gets the value of the property.
+     * 
      * @param propertyName  the property name, not empty
      * @return the value of the property, may be null
      */
@@ -285,22 +316,18 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Sets the value of the property.
+     * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value of the property, may be null
      */
     public void propertySet(String propertyName, Object newValue) {
-        data().put(propertyName, newValue);
+        dataWritable().put(propertyName, newValue);
     }
 
     //-----------------------------------------------------------------------
     @Override
     public MetaBean metaBean() {
         return metaBean;
-    }
-
-    @Override
-    public boolean propertyExists(String name) {
-        return data != null ? data.containsKey(name) : null;
     }
 
     @Override
@@ -312,8 +339,8 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     }
 
     @Override
-    public PropertyMap propertyMap() {
-        return FlexiPropertyMap.of(this);
+    public Set<String> propertyNames() {
+        return data.keySet();
     }
 
     @Override
@@ -323,7 +350,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     @Override
     public void propertyRemove(String propertyName) {
-        if (data != null) {
+        if (data != Collections.EMPTY_MAP) {
             data.remove(propertyName);
         }
     }
@@ -355,9 +382,6 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
         }
         if (obj instanceof FlexiBean) {
             FlexiBean other = (FlexiBean) obj;
-            if (this.size() == 0) {
-                return other.size() == 0;
-            }
             return this.data.equals(other.data);
         }
         return false;
@@ -370,7 +394,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      */
     @Override
     public int hashCode() {
-        return data != null ? data.hashCode() : 0;
+        return data.hashCode();
     }
 
     /**
@@ -382,7 +406,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      */
     @Override
     public String toString() {
-        return getClass().getSimpleName() + (data != null ? data.toString() : "{}");
+        return getClass().getSimpleName() + data.toString();
     }
 
     //-----------------------------------------------------------------------
@@ -428,7 +452,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
         @Override
         public Iterable<MetaProperty<Object>> metaPropertyIterable() {
-            if (data == null) {
+            if (data.isEmpty()) {
                 return Collections.emptySet();
             }
             return new Iterable<MetaProperty<Object>>() {
@@ -456,14 +480,14 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
         @Override
         public Map<String, MetaProperty<Object>> metaPropertyMap() {
-            if (data == null) {
+            if (data.isEmpty()) {
                 return Collections.emptyMap();
             }
             Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
             for (String name : data.keySet()) {
                 map.put(name, FlexiMetaProperty.of(metaBean, name));
             }
-            return map;
+            return Collections.unmodifiableMap(map);
         }
     }
 
