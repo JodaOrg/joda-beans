@@ -28,9 +28,9 @@ import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
- * A meta-property implementation used by the code generator.
+ * A meta-property implementation designed for use by {@code DirectBean}.
  * <p>
- * This meta-property is designed for use with subclasses of {@link DirectBean}.
+ * This meta-property uses reflection to find the {@code Field} to obtain the annotations.
  * 
  * @param <P>  the type of the property content
  * @author Stephen Colebourne

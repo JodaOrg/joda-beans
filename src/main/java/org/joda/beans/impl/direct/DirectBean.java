@@ -22,11 +22,13 @@ import org.joda.beans.BeanUtils;
 import org.joda.beans.impl.BasicBean;
 
 /**
- * A base bean implementation used by the code generator.
+ * A bean implementation designed for use by the code generator.
  * <p>
- * This implementation is used to avoid reflection.
- * The bean must directly extend this class and have a no-arguments constructor
- * of at least package scope.
+ * This implementation uses direct access via {@link #propertyGet(String)} and
+ * {@link #propertySet(String, Object)} to avoid reflection.
+ * <p>
+ * For code generation, the bean must directly extend this class and have a
+ * no-arguments constructor.
  * 
  * @author Stephen Colebourne
  */
@@ -57,6 +59,7 @@ public abstract class DirectBean extends BasicBean {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
+        // override to gain better performance using propertyGet(String)
         if (obj == this) {
             return true;
         }
@@ -79,6 +82,7 @@ public abstract class DirectBean extends BasicBean {
 
     @Override
     public int hashCode() {
+        // override to gain better performance using propertyGet(String)
         int hash = 0;
         Set<String> names = propertyNames();
         for (String name : names) {
@@ -90,6 +94,7 @@ public abstract class DirectBean extends BasicBean {
 
     @Override
     public String toString() {
+        // override to gain better performance using propertyGet(String)
         Set<String> names = propertyNames();
         StringBuilder buf = new StringBuilder((names.size()) * 32 + 32);
         buf.append(getClass().getSimpleName());

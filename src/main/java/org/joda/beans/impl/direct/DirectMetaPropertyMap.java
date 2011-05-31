@@ -27,10 +27,13 @@ import java.util.Set;
 import org.joda.beans.MetaProperty;
 
 /**
- * A map of name to meta-property for use by a {@code DirectBean}.
+ * A map of name to meta-property designed for use by {@code DirectBean}.
  * <p>
- * The property descriptor class is part of the JDK JavaBean standard.
- * It provides access to get and set a property on a bean.
+ * This meta-property map implementation is designed primarily for code-generation.
+ * It stores a reference to the meta-bean and the meta-properties.
+ * The meta-properties are accessed using {@link DirectMetaBean#metaPropertyGet(String)}.
+ * <p>
+ * This class is immutable and thread-safe.
  * 
  * @author Stephen Colebourne
  */
@@ -110,22 +113,22 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
     //-----------------------------------------------------------------------
     @Override
     public MetaProperty<Object> put(String key, MetaProperty<Object> value) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
     @Override
     public MetaProperty<Object> remove(Object key) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends MetaProperty<Object>> m) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
     //-----------------------------------------------------------------------
@@ -145,6 +148,9 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Collection implementation for the keys.
+     */
     private static final class Keys extends AbstractSet<String> {
         private final Entry<String, MetaProperty<Object>>[] metaProperties;
 
@@ -177,6 +183,9 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
         }
     }
 
+    /**
+     * Collection implementation for the values.
+     */
     private static final class Values extends AbstractCollection<MetaProperty<Object>> {
         private final Entry<String, MetaProperty<Object>>[] metaProperties;
 
@@ -209,6 +218,9 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
         }
     }
 
+    /**
+     * Collection implementation for the entries.
+     */
     private static final class Entries extends AbstractSet<Entry<String, MetaProperty<Object>>> {
         private final Entry<String, MetaProperty<Object>>[] metaProperties;
 

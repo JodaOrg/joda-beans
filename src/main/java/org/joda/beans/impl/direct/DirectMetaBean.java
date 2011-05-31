@@ -19,9 +19,9 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.BasicMetaBean;
 
 /**
- * A base meta-bean implementation used by the code generator.
+ * A meta-bean implementation designed for use by {@code DirectBean}.
  * <p>
- * This implementation is used to avoid reflection.
+ * This implementation uses direct access via {@link #metaPropertyGet(String)} to avoid reflection.
  * 
  * @author Stephen Colebourne
  */
@@ -30,6 +30,8 @@ public abstract class DirectMetaBean extends BasicMetaBean {
 
     /**
      * Gets the meta-property by name.
+     * <p>
+     * This implementation returns null, and must be overridden in subclasses.
      * 
      * @param propertyName  the property name, not null
      * @return the meta-property, null if not found
