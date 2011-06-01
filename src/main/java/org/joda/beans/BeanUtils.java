@@ -49,6 +49,46 @@ public final class BeanUtils {
         return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
     }
 
+    /**
+     * Returns a hash code for an object handling null.
+     * 
+     * @param obj  the object, may be null
+     * @return the hash code
+     */
+    public static int hashCode(Object obj) {
+        return obj == null ? 0 : obj.hashCode();
+    }
+
+    /**
+     * Returns a hash code for a {@code long}.
+     * 
+     * @param obj  the object, may be null
+     * @return the hash code
+     */
+    public static int hashCode(long value) {
+        return (int) (value ^ value >>> 32);
+    }
+
+    /**
+     * Returns a hash code for a {@code float}.
+     * 
+     * @param obj  the object, may be null
+     * @return the hash code
+     */
+    public static int hashCode(float value) {
+        return Float.floatToIntBits(value);
+    }
+
+    /**
+     * Returns a hash code for a {@code double}.
+     * 
+     * @param obj  the object, may be null
+     * @return the hash code
+     */
+    public static int hashCode(double value) {
+        return hashCode(Double.doubleToLongBits(value));
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if the two beans have the same set of properties.
