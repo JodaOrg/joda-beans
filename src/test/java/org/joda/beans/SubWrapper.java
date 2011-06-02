@@ -67,6 +67,26 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            SubWrapper other = (SubWrapper) obj;
+            return BeanUtils.equal(getName(), other.getName()) &&
+                    super.equals(other);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += hash * 31 + BeanUtils.hashCode(getName());
+        return hash ^ super.hashCode();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the name.

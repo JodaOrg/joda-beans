@@ -66,6 +66,26 @@ public class CompanyAddress extends Address {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            CompanyAddress other = (CompanyAddress) obj;
+            return BeanUtils.equal(getCompanyName(), other.getCompanyName()) &&
+                    super.equals(other);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += hash * 31 + BeanUtils.hashCode(getCompanyName());
+        return hash ^ super.hashCode();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the company name.

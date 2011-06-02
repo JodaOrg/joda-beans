@@ -80,6 +80,27 @@ public class Pair extends DirectBean {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Pair other = (Pair) obj;
+            return BeanUtils.equal(getFirst(), other.getFirst()) &&
+                    BeanUtils.equal(getSecond(), other.getSecond());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += hash * 31 + BeanUtils.hashCode(getFirst());
+        hash += hash * 31 + BeanUtils.hashCode(getSecond());
+        return hash;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the first value.

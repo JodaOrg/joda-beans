@@ -127,6 +127,39 @@ public class Person extends DirectBean {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Person other = (Person) obj;
+            return BeanUtils.equal(getForename(), other.getForename()) &&
+                    BeanUtils.equal(getSurname(), other.getSurname()) &&
+                    BeanUtils.equal(getNumberOfCars(), other.getNumberOfCars()) &&
+                    BeanUtils.equal(getAddressList(), other.getAddressList()) &&
+                    BeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
+                    BeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
+                    BeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
+                    BeanUtils.equal(getExtensions(), other.getExtensions());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += hash * 31 + BeanUtils.hashCode(getForename());
+        hash += hash * 31 + BeanUtils.hashCode(getSurname());
+        hash += hash * 31 + BeanUtils.hashCode(getNumberOfCars());
+        hash += hash * 31 + BeanUtils.hashCode(getAddressList());
+        hash += hash * 31 + BeanUtils.hashCode(getOtherAddressMap());
+        hash += hash * 31 + BeanUtils.hashCode(getAddressesList());
+        hash += hash * 31 + BeanUtils.hashCode(getMainAddress());
+        hash += hash * 31 + BeanUtils.hashCode(getExtensions());
+        return hash;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the forename.

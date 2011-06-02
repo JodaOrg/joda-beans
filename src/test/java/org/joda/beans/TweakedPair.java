@@ -57,6 +57,24 @@ public class TweakedPair extends Pair {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            TweakedPair other = (TweakedPair) obj;
+            return super.equals(other);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash ^ super.hashCode();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code TweakedPair}.

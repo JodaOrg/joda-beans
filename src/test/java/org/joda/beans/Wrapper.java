@@ -80,6 +80,27 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Wrapper<?> other = (Wrapper<?>) obj;
+            return BeanUtils.equal(getType(), other.getType()) &&
+                    BeanUtils.equal(getContent(), other.getContent());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += hash * 31 + BeanUtils.hashCode(getType());
+        hash += hash * 31 + BeanUtils.hashCode(getContent());
+        return hash;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the type.

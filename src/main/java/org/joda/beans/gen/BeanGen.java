@@ -74,6 +74,7 @@ class BeanGen {
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
+            this.data.setManualEqualsHashCode(parseManualEqualsHashCode(beanDefIndex));
         } else {
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
@@ -92,6 +93,10 @@ class BeanGen {
             generateMetaBean();
             generatePropertyGet();
             generatePropertySet();
+            if (data.isManualEqualsHashCode() == false) {
+                generateEquals();
+                generateHashCode();
+            }
             generateGettersSetters();
             generateMetaClass();
             insertRegion.add("\t///CLOVER:ON");
@@ -197,6 +202,22 @@ class BeanGen {
         insertRegion.clear();
     }
 
+    private boolean parseManualEqualsHashCode(int defLine) {
+        for (int index = defLine; index < autoStartIndex; index++) {
+            String line = content.get(index).trim();
+            if (line.equals("public int hashCode() {") || (line.startsWith("public boolean equals(") && line.endsWith(") {"))) {
+                return true;
+            }
+        }
+        for (int index = autoEndIndex; index < content.size(); index++) {
+            String line = content.get(index).trim();
+            if (line.equals("public int hashCode() {") || (line.startsWith("public boolean equals(") && line.endsWith(") {"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //-----------------------------------------------------------------------
     private void generateSeparator() {
         insertRegion.add("\t//-----------------------------------------------------------------------");
@@ -273,6 +294,53 @@ class BeanGen {
         }
         insertRegion.add("\t\t}");
         insertRegion.add("\t\tsuper.propertySet(propertyName, newValue);");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    private void generateEquals() {
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tpublic boolean equals(Object obj) {");
+        insertRegion.add("\t\tif (obj == this) {");
+        insertRegion.add("\t\t\treturn true;");
+        insertRegion.add("\t\t}");
+        insertRegion.add("\t\tif (obj != null && obj.getClass() == this.getClass()) {");
+        insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
+        for (int i = 0; i < properties.size(); i++) {
+            PropertyGen prop = properties.get(i);
+            String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+            insertRegion.add(
+                    (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
+                    "BeanUtils.equal(" + getter + "(), other." + getter + "())" +
+                    (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
+        }
+        if (data.isSubclass()) {
+            insertRegion.add(
+                    (properties.size() == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
+                    "super.equals(other);");
+        } else if (properties.size() == 0) {
+            insertRegion.add("\t\t\treturn true;");
+        }
+        insertRegion.add("\t\t}");
+        insertRegion.add("\t\treturn false;");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    private void generateHashCode() {
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tpublic int hashCode() {");
+        insertRegion.add("\t\tint hash = 7;");
+        for (int i = 0; i < properties.size(); i++) {
+            PropertyGen prop = properties.get(i);
+            String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+            insertRegion.add("\t\thash += hash * 31 + BeanUtils.hashCode(" + getter + "());");
+        }
+        if (data.isSubclass()) {
+            insertRegion.add("\t\treturn hash ^ super.hashCode();");
+        } else {
+            insertRegion.add("\t\treturn hash;");
+        }
         insertRegion.add("\t}");
         insertRegion.add("");
     }

@@ -95,6 +95,31 @@ public class Address extends DirectBean {
         super.propertySet(propertyName, newValue);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Address other = (Address) obj;
+            return BeanUtils.equal(getNumber(), other.getNumber()) &&
+                    BeanUtils.equal(getStreet(), other.getStreet()) &&
+                    BeanUtils.equal(getCity(), other.getCity()) &&
+                    BeanUtils.equal(getOwner(), other.getOwner());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += hash * 31 + BeanUtils.hashCode(getNumber());
+        hash += hash * 31 + BeanUtils.hashCode(getStreet());
+        hash += hash * 31 + BeanUtils.hashCode(getCity());
+        hash += hash * 31 + BeanUtils.hashCode(getOwner());
+        return hash;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the number.

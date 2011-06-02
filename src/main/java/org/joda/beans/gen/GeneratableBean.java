@@ -43,6 +43,8 @@ class GeneratableBean {
     private String superTypeGeneric;
     /** The list of properties, in the order they are declared. */
     private List<GeneratableProperty> properties = new ArrayList<GeneratableProperty>();
+    /** Does the class have a manual equals or hash code. */
+    private boolean manualEqualsHashCode;
 
     /**
      * Constructor.
@@ -64,6 +66,22 @@ class GeneratableBean {
      */
     public void setConstructable(boolean constructable) {
         this.constructable = constructable;
+    }
+
+    /**
+     * Checks if the equals/hashCode is manual.
+     * @return true if manual
+     */
+    public boolean isManualEqualsHashCode() {
+        return manualEqualsHashCode;
+    }
+
+    /**
+     * Sets if the equals/hashCode is manual.
+     * @param manualEqualsHashCode  true if manual
+     */
+    public void setManualEqualsHashCode(boolean manualEqualsHashCode) {
+        this.manualEqualsHashCode = manualEqualsHashCode;
     }
 
     /**
@@ -162,6 +180,14 @@ class GeneratableBean {
      */
     public String getTypeRaw() {
         return typeRaw;
+    }
+
+    /**
+     * Gets the wildcarded type.
+     * @return the wildcarded type, not null
+     */
+    public String getTypeWildcard() {
+        return typeRaw + (isTypeGeneric() ? "<?>" : "");
     }
 
     //-----------------------------------------------------------------------
