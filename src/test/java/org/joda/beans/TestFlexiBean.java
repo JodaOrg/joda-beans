@@ -48,28 +48,4 @@ public class TestFlexiBean {
         assertEquals(b.equals(null), false);
     }
 
-    public void test_equalsHashCode_DirectBean() {
-        Pair a = new Pair();
-        a.setFirst("A");
-        
-        FlexiBean b = new FlexiBean();
-        b.set("first", "A");
-        assertEquals(BeanUtils.propertiesEqual(a, b), false);
-        assertEquals(BeanUtils.propertiesEqual(b, a), false);
-        
-        b.set("second", null);
-        assertEquals(BeanUtils.propertiesEqual(a, b), true);
-        assertEquals(BeanUtils.propertiesEqual(b, a), true);
-        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
-        
-        b.set("second", "B");
-        assertEquals(BeanUtils.propertiesEqual(a, b), false);
-        assertEquals(BeanUtils.propertiesEqual(b, a), false);
-        
-        a.setSecond("B");
-        assertEquals(BeanUtils.propertiesEqual(a, b), true);
-        assertEquals(BeanUtils.propertiesEqual(b, a), true);
-        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
-    }
-
 }

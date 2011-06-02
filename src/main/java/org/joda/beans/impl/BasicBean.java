@@ -45,7 +45,7 @@ public abstract class BasicBean implements Bean {
     /**
      * Compares this bean to another.
      * <p>
-     * This compares all the properties of the bean.
+     * This compares the class and all the properties of the bean.
      * 
      * @param obj  the object to compare to, null returns false
      * @return true if the beans are equal
@@ -55,7 +55,7 @@ public abstract class BasicBean implements Bean {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof Bean) {
+        if (obj != null && getClass() == obj.getClass()) {
             Bean other = (Bean) obj;
             return BeanUtils.propertiesEqual(this, other);
         }
@@ -71,7 +71,7 @@ public abstract class BasicBean implements Bean {
      */
     @Override
     public int hashCode() {
-        return BeanUtils.propertiesHashCode(this);
+        return getClass().hashCode() ^ BeanUtils.propertiesHashCode(this);
     }
 
     /**

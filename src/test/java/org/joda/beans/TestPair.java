@@ -26,13 +26,15 @@ import org.testng.annotations.Test;
 public class TestPair {
 
     public void test_equalsHashCode() {
+        // even though TwekedPair adds no new properties, we treat it as different
+        // this can be avoided (see Git history) but at a performance cost
         Pair a1 = new Pair();
-        TweakedPair a2 = new TweakedPair();
-        Pair b = new Pair();
+        Pair a2 = new Pair();
+        TweakedPair b = new TweakedPair();
         
         a1.setFirst("A");
         a2.setFirst("A");
-        b.setFirst("B");
+        b.setFirst("A");
         
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);

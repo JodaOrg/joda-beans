@@ -63,7 +63,7 @@ public abstract class DirectBean extends BasicBean {
         if (obj == this) {
             return true;
         }
-        if (obj != null && (getClass().isInstance(obj) || obj.getClass().isInstance(this))) {
+        if (obj != null && getClass() == obj.getClass()) {
             DirectBean other = (DirectBean) obj;
             Set<String> names = propertyNames();
             if (names.equals(other.propertyNames()) == false) {
@@ -78,13 +78,13 @@ public abstract class DirectBean extends BasicBean {
             }
             return true;
         }
-        return super.equals(obj);
+        return false;
     }
 
     @Override
     public int hashCode() {
         // override to gain better performance using propertyGet(String)
-        int hash = 0;
+        int hash = getClass().hashCode();
         Set<String> names = propertyNames();
         for (String name : names) {
             Object value = propertyGet(name);

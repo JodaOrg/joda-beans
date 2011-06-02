@@ -20,6 +20,7 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 
 /**
@@ -27,6 +28,30 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestBeanUtils {
+
+    public void test_propertiesEqual_propertiesHashCode() {
+        Pair a = new Pair();
+        a.setFirst("A");
+        
+        FlexiBean b = new FlexiBean();
+        b.set("first", "A");
+        assertEquals(BeanUtils.propertiesEqual(a, b), false);
+        assertEquals(BeanUtils.propertiesEqual(b, a), false);
+        
+        b.set("second", null);
+        assertEquals(BeanUtils.propertiesEqual(a, b), true);
+        assertEquals(BeanUtils.propertiesEqual(b, a), true);
+        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
+        
+        b.set("second", "B");
+        assertEquals(BeanUtils.propertiesEqual(a, b), false);
+        assertEquals(BeanUtils.propertiesEqual(b, a), false);
+        
+        a.setSecond("B");
+        assertEquals(BeanUtils.propertiesEqual(a, b), true);
+        assertEquals(BeanUtils.propertiesEqual(b, a), true);
+        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
+    }
 
     public void test_equal() {
         assertEquals(BeanUtils.equal("A", new Character('A').toString()), true);
