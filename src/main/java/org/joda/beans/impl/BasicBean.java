@@ -18,7 +18,7 @@ package org.joda.beans.impl;
 import java.util.Set;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanUtils;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.Property;
 
 /**
@@ -57,7 +57,7 @@ public abstract class BasicBean implements Bean {
         }
         if (obj != null && getClass() == obj.getClass()) {
             Bean other = (Bean) obj;
-            return BeanUtils.propertiesEqual(this, other);
+            return JodaBeanUtils.propertiesEqual(this, other);
         }
         return false;
     }
@@ -71,7 +71,7 @@ public abstract class BasicBean implements Bean {
      */
     @Override
     public int hashCode() {
-        return getClass().hashCode() ^ BeanUtils.propertiesHashCode(this);
+        return getClass().hashCode() ^ JodaBeanUtils.propertiesHashCode(this);
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class BasicBean implements Bean {
      */
     @Override
     public String toString() {
-        return BeanUtils.propertiesToString(this, metaBean().beanType().getSimpleName());
+        return JodaBeanUtils.propertiesToString(this, metaBean().beanType().getSimpleName());
     }
 
 }

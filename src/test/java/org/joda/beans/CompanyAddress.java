@@ -73,7 +73,7 @@ public class CompanyAddress extends Address {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             CompanyAddress other = (CompanyAddress) obj;
-            return BeanUtils.equal(getCompanyName(), other.getCompanyName()) &&
+            return JodaBeanUtils.equal(getCompanyName(), other.getCompanyName()) &&
                     super.equals(other);
         }
         return false;
@@ -82,7 +82,7 @@ public class CompanyAddress extends Address {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getCompanyName());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getCompanyName());
         return hash ^ super.hashCode();
     }
 
@@ -124,13 +124,14 @@ public class CompanyAddress extends Address {
         /**
          * The meta-property for the {@code companyName} property.
          */
-        private final MetaProperty<String> companyName = DirectMetaProperty.ofReadWrite(this, "companyName", CompanyAddress.class, String.class);
+        private final MetaProperty<String> companyName = DirectMetaProperty.ofReadWrite(
+                this, "companyName", CompanyAddress.class, String.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
-            "companyName");
+                "companyName");
 
         /**
          * Restricted constructor.

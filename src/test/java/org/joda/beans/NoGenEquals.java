@@ -114,13 +114,14 @@ public class NoGenEquals extends DirectBean {
         /**
          * The meta-property for the {@code value} property.
          */
-        private final MetaProperty<Object> value = DirectMetaProperty.ofReadWrite(this, "value", NoGenEquals.class, Object.class);
+        private final MetaProperty<Object> value = DirectMetaProperty.ofReadWrite(
+                this, "value", NoGenEquals.class, Object.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
-            this, null,
-            "value");
+                this, null,
+                "value");
 
         /**
          * Restricted constructor.

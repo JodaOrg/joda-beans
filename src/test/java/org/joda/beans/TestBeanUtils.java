@@ -35,53 +35,53 @@ public class TestBeanUtils {
         
         FlexiBean b = new FlexiBean();
         b.set("first", "A");
-        assertEquals(BeanUtils.propertiesEqual(a, b), false);
-        assertEquals(BeanUtils.propertiesEqual(b, a), false);
+        assertEquals(JodaBeanUtils.propertiesEqual(a, b), false);
+        assertEquals(JodaBeanUtils.propertiesEqual(b, a), false);
         
         b.set("second", null);
-        assertEquals(BeanUtils.propertiesEqual(a, b), true);
-        assertEquals(BeanUtils.propertiesEqual(b, a), true);
-        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
+        assertEquals(JodaBeanUtils.propertiesEqual(a, b), true);
+        assertEquals(JodaBeanUtils.propertiesEqual(b, a), true);
+        assertEquals(JodaBeanUtils.propertiesHashCode(a), JodaBeanUtils.propertiesHashCode(b));
         
         b.set("second", "B");
-        assertEquals(BeanUtils.propertiesEqual(a, b), false);
-        assertEquals(BeanUtils.propertiesEqual(b, a), false);
+        assertEquals(JodaBeanUtils.propertiesEqual(a, b), false);
+        assertEquals(JodaBeanUtils.propertiesEqual(b, a), false);
         
         a.setSecond("B");
-        assertEquals(BeanUtils.propertiesEqual(a, b), true);
-        assertEquals(BeanUtils.propertiesEqual(b, a), true);
-        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
+        assertEquals(JodaBeanUtils.propertiesEqual(a, b), true);
+        assertEquals(JodaBeanUtils.propertiesEqual(b, a), true);
+        assertEquals(JodaBeanUtils.propertiesHashCode(a), JodaBeanUtils.propertiesHashCode(b));
     }
 
     public void test_equal() {
-        assertEquals(BeanUtils.equal("A", new Character('A').toString()), true);
-        assertEquals(BeanUtils.equal("A", "B"), false);
-        assertEquals(BeanUtils.equal("A", null), false);
-        assertEquals(BeanUtils.equal(null, "A"), false);
+        assertEquals(JodaBeanUtils.equal("A", new Character('A').toString()), true);
+        assertEquals(JodaBeanUtils.equal("A", "B"), false);
+        assertEquals(JodaBeanUtils.equal("A", null), false);
+        assertEquals(JodaBeanUtils.equal(null, "A"), false);
     }
 
     public void test_hashCode_Object() {
-        assertEquals(BeanUtils.hashCode("A"), "A".hashCode());
-        assertEquals(BeanUtils.hashCode(null), 0);
+        assertEquals(JodaBeanUtils.hashCode("A"), "A".hashCode());
+        assertEquals(JodaBeanUtils.hashCode(null), 0);
     }
 
     public void test_listType_Person_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
-        assertEquals(BeanUtils.listType(test), Address.class);
+        assertEquals(JodaBeanUtils.listType(test), Address.class);
     }
 
     public void test_listType_Person_addressesList() {
         MetaProperty<List<List<Address>>> test = Person.meta().addressesList();
         
-        assertEquals(BeanUtils.listType(test), List.class);
+        assertEquals(JodaBeanUtils.listType(test), List.class);
     }
 
     public void test_mapType_Person_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
-        assertEquals(BeanUtils.mapKeyType(test), String.class);
-        assertEquals(BeanUtils.mapValueType(test), Address.class);
+        assertEquals(JodaBeanUtils.mapKeyType(test), String.class);
+        assertEquals(JodaBeanUtils.mapValueType(test), Address.class);
     }
 
 }

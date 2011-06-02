@@ -18,7 +18,7 @@ package org.joda.beans.impl.direct;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.joda.beans.BeanUtils;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.impl.BasicBean;
 
 /**
@@ -68,7 +68,7 @@ public abstract class DirectBean extends BasicBean {
             for (String name : propertyNames()) {
                 Object value1 = propertyGet(name);
                 Object value2 = other.propertyGet(name);
-                if (BeanUtils.equal(value1, value2) == false) {
+                if (JodaBeanUtils.equal(value1, value2) == false) {
                     return false;
                 }
             }
@@ -84,7 +84,7 @@ public abstract class DirectBean extends BasicBean {
         Set<String> names = propertyNames();
         for (String name : names) {
             Object value = propertyGet(name);
-            hash += BeanUtils.hashCode(value);
+            hash += JodaBeanUtils.hashCode(value);
         }
         return hash;
     }

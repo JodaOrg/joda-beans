@@ -76,7 +76,7 @@ public class DocumentationHolder extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             DocumentationHolder other = (DocumentationHolder) obj;
-            return BeanUtils.equal(getDocumentation(), other.getDocumentation());
+            return JodaBeanUtils.equal(getDocumentation(), other.getDocumentation());
         }
         return false;
     }
@@ -84,7 +84,7 @@ public class DocumentationHolder extends DirectBean {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getDocumentation());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getDocumentation());
         return hash;
     }
 
@@ -127,13 +127,14 @@ public class DocumentationHolder extends DirectBean {
          * The meta-property for the {@code documentation} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<Documentation<?>> documentation = DirectMetaProperty.ofReadWrite(this, "documentation", DocumentationHolder.class, (Class) Documentation.class);
+        private final MetaProperty<Documentation<?>> documentation = DirectMetaProperty.ofReadWrite(
+                this, "documentation", DocumentationHolder.class, (Class) Documentation.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
-            this, null,
-            "documentation");
+                this, null,
+                "documentation");
 
         /**
          * Restricted constructor.

@@ -87,8 +87,8 @@ public class Pair extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Pair other = (Pair) obj;
-            return BeanUtils.equal(getFirst(), other.getFirst()) &&
-                    BeanUtils.equal(getSecond(), other.getSecond());
+            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(getSecond(), other.getSecond());
         }
         return false;
     }
@@ -96,8 +96,8 @@ public class Pair extends DirectBean {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getFirst());
-        hash += hash * 31 + BeanUtils.hashCode(getSecond());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
         return hash;
     }
 
@@ -164,18 +164,20 @@ public class Pair extends DirectBean {
         /**
          * The meta-property for the {@code first} property.
          */
-        private final MetaProperty<Object> first = DirectMetaProperty.ofReadWrite(this, "first", Pair.class, Object.class);
+        private final MetaProperty<Object> first = DirectMetaProperty.ofReadWrite(
+                this, "first", Pair.class, Object.class);
         /**
          * The meta-property for the {@code second} property.
          */
-        private final MetaProperty<Object> second = DirectMetaProperty.ofReadWrite(this, "second", Pair.class, Object.class);
+        private final MetaProperty<Object> second = DirectMetaProperty.ofReadWrite(
+                this, "second", Pair.class, Object.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
-            this, null,
-            "first",
-            "second");
+                this, null,
+                "first",
+                "second");
 
         /**
          * Restricted constructor.

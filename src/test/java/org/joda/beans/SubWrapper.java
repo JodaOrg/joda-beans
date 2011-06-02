@@ -74,7 +74,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             SubWrapper other = (SubWrapper) obj;
-            return BeanUtils.equal(getName(), other.getName()) &&
+            return JodaBeanUtils.equal(getName(), other.getName()) &&
                     super.equals(other);
         }
         return false;
@@ -83,7 +83,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getName());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getName());
         return hash ^ super.hashCode();
     }
 
@@ -125,13 +125,14 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         /**
          * The meta-property for the {@code name} property.
          */
-        private final MetaProperty<String> name = DirectMetaProperty.ofReadWrite(this, "name", SubWrapper.class, String.class);
+        private final MetaProperty<String> name = DirectMetaProperty.ofReadWrite(
+                this, "name", SubWrapper.class, String.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
-            "name");
+                "name");
 
         /**
          * Restricted constructor.

@@ -134,14 +134,14 @@ public class Person extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Person other = (Person) obj;
-            return BeanUtils.equal(getForename(), other.getForename()) &&
-                    BeanUtils.equal(getSurname(), other.getSurname()) &&
-                    BeanUtils.equal(getNumberOfCars(), other.getNumberOfCars()) &&
-                    BeanUtils.equal(getAddressList(), other.getAddressList()) &&
-                    BeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
-                    BeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
-                    BeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
-                    BeanUtils.equal(getExtensions(), other.getExtensions());
+            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
+                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
+                    JodaBeanUtils.equal(getNumberOfCars(), other.getNumberOfCars()) &&
+                    JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
+                    JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
+                    JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
+                    JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
+                    JodaBeanUtils.equal(getExtensions(), other.getExtensions());
         }
         return false;
     }
@@ -149,14 +149,14 @@ public class Person extends DirectBean {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getForename());
-        hash += hash * 31 + BeanUtils.hashCode(getSurname());
-        hash += hash * 31 + BeanUtils.hashCode(getNumberOfCars());
-        hash += hash * 31 + BeanUtils.hashCode(getAddressList());
-        hash += hash * 31 + BeanUtils.hashCode(getOtherAddressMap());
-        hash += hash * 31 + BeanUtils.hashCode(getAddressesList());
-        hash += hash * 31 + BeanUtils.hashCode(getMainAddress());
-        hash += hash * 31 + BeanUtils.hashCode(getExtensions());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getExtensions());
         return hash;
     }
 
@@ -377,51 +377,59 @@ public class Person extends DirectBean {
         /**
          * The meta-property for the {@code forename} property.
          */
-        private final MetaProperty<String> forename = DirectMetaProperty.ofReadWrite(this, "forename", Person.class, String.class);
+        private final MetaProperty<String> forename = DirectMetaProperty.ofReadWrite(
+                this, "forename", Person.class, String.class);
         /**
          * The meta-property for the {@code surname} property.
          */
-        private final MetaProperty<String> surname = DirectMetaProperty.ofReadWrite(this, "surname", Person.class, String.class);
+        private final MetaProperty<String> surname = DirectMetaProperty.ofReadWrite(
+                this, "surname", Person.class, String.class);
         /**
          * The meta-property for the {@code numberOfCars} property.
          */
-        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadWrite(this, "numberOfCars", Person.class, Integer.TYPE);
+        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadWrite(
+                this, "numberOfCars", Person.class, Integer.TYPE);
         /**
          * The meta-property for the {@code addressList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(this, "addressList", Person.class, (Class) List.class);
+        private final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(
+                this, "addressList", Person.class, (Class) List.class);
         /**
          * The meta-property for the {@code otherAddressMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(this, "otherAddressMap", Person.class, (Class) Map.class);
+        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(
+                this, "otherAddressMap", Person.class, (Class) Map.class);
         /**
          * The meta-property for the {@code addressesList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadWrite(this, "addressesList", Person.class, (Class) List.class);
+        private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadWrite(
+                this, "addressesList", Person.class, (Class) List.class);
         /**
          * The meta-property for the {@code mainAddress} property.
          */
-        private final MetaProperty<Address> mainAddress = DirectMetaProperty.ofReadWrite(this, "mainAddress", Person.class, Address.class);
+        private final MetaProperty<Address> mainAddress = DirectMetaProperty.ofReadWrite(
+                this, "mainAddress", Person.class, Address.class);
         /**
          * The meta-property for the {@code extensions} property.
          */
-        private final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(this, "extensions", Person.class, FlexiBean.class);
+        private final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(
+                this, "extensions", Person.class, FlexiBean.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
-            this, null,
-            "forename",
-            "surname",
-            "numberOfCars",
-            "addressList",
-            "otherAddressMap",
-            "addressesList",
-            "mainAddress",
-            "extensions");
+                this, null,
+                "forename",
+                "surname",
+                "numberOfCars",
+                "addressList",
+                "otherAddressMap",
+                "addressesList",
+                "mainAddress",
+                "extensions");
 
         /**
          * Restricted constructor.

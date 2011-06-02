@@ -87,8 +87,8 @@ public class Documentation<T> extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Documentation<?> other = (Documentation<?>) obj;
-            return BeanUtils.equal(getType(), other.getType()) &&
-                    BeanUtils.equal(getContent(), other.getContent());
+            return JodaBeanUtils.equal(getType(), other.getType()) &&
+                    JodaBeanUtils.equal(getContent(), other.getContent());
         }
         return false;
     }
@@ -96,8 +96,8 @@ public class Documentation<T> extends DirectBean {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getType());
-        hash += hash * 31 + BeanUtils.hashCode(getContent());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
         return hash;
     }
 
@@ -165,19 +165,21 @@ public class Documentation<T> extends DirectBean {
         /**
          * The meta-property for the {@code type} property.
          */
-        private final MetaProperty<String> type = DirectMetaProperty.ofReadWrite(this, "type", Documentation.class, String.class);
+        private final MetaProperty<String> type = DirectMetaProperty.ofReadWrite(
+                this, "type", Documentation.class, String.class);
         /**
          * The meta-property for the {@code content} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<T> content = (DirectMetaProperty) DirectMetaProperty.ofReadWrite(this, "content", Documentation.class, Object.class);
+        private final MetaProperty<T> content = (DirectMetaProperty) DirectMetaProperty.ofReadWrite(
+                this, "content", Documentation.class, Object.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
-            this, null,
-            "type",
-            "content");
+                this, null,
+                "type",
+                "content");
 
         /**
          * Restricted constructor.

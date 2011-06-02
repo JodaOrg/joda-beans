@@ -102,10 +102,10 @@ public class Address extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Address other = (Address) obj;
-            return BeanUtils.equal(getNumber(), other.getNumber()) &&
-                    BeanUtils.equal(getStreet(), other.getStreet()) &&
-                    BeanUtils.equal(getCity(), other.getCity()) &&
-                    BeanUtils.equal(getOwner(), other.getOwner());
+            return JodaBeanUtils.equal(getNumber(), other.getNumber()) &&
+                    JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
+                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
+                    JodaBeanUtils.equal(getOwner(), other.getOwner());
         }
         return false;
     }
@@ -113,10 +113,10 @@ public class Address extends DirectBean {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + BeanUtils.hashCode(getNumber());
-        hash += hash * 31 + BeanUtils.hashCode(getStreet());
-        hash += hash * 31 + BeanUtils.hashCode(getCity());
-        hash += hash * 31 + BeanUtils.hashCode(getOwner());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
         return hash;
     }
 
@@ -236,28 +236,32 @@ public class Address extends DirectBean {
         /**
          * The meta-property for the {@code number} property.
          */
-        private final MetaProperty<Integer> number = DirectMetaProperty.ofReadWrite(this, "number", Address.class, Integer.TYPE);
+        private final MetaProperty<Integer> number = DirectMetaProperty.ofReadWrite(
+                this, "number", Address.class, Integer.TYPE);
         /**
          * The meta-property for the {@code street} property.
          */
-        private final MetaProperty<String> street = DirectMetaProperty.ofReadWrite(this, "street", Address.class, String.class);
+        private final MetaProperty<String> street = DirectMetaProperty.ofReadWrite(
+                this, "street", Address.class, String.class);
         /**
          * The meta-property for the {@code city} property.
          */
-        private final MetaProperty<String> city = DirectMetaProperty.ofReadWrite(this, "city", Address.class, String.class);
+        private final MetaProperty<String> city = DirectMetaProperty.ofReadWrite(
+                this, "city", Address.class, String.class);
         /**
          * The meta-property for the {@code owner} property.
          */
-        private final MetaProperty<Person> owner = DirectMetaProperty.ofReadWrite(this, "owner", Address.class, Person.class);
+        private final MetaProperty<Person> owner = DirectMetaProperty.ofReadWrite(
+                this, "owner", Address.class, Person.class);
         /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
-            this, null,
-            "number",
-            "street",
-            "city",
-            "owner");
+                this, null,
+                "number",
+                "street",
+                "city",
+                "owner");
 
         /**
          * Restricted constructor.

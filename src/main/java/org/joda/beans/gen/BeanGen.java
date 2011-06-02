@@ -311,7 +311,7 @@ class BeanGen {
             String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
             insertRegion.add(
                     (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
-                    "BeanUtils.equal(" + getter + "(), other." + getter + "())" +
+                    "JodaBeanUtils.equal(" + getter + "(), other." + getter + "())" +
                     (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
         }
         if (data.isSubclass()) {
@@ -334,7 +334,7 @@ class BeanGen {
         for (int i = 0; i < properties.size(); i++) {
             PropertyGen prop = properties.get(i);
             String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
-            insertRegion.add("\t\thash += hash * 31 + BeanUtils.hashCode(" + getter + "());");
+            insertRegion.add("\t\thash += hash * 31 + JodaBeanUtils.hashCode(" + getter + "());");
         }
         if (data.isSubclass()) {
             insertRegion.add("\t\treturn hash ^ super.hashCode();");
@@ -396,10 +396,10 @@ class BeanGen {
         if (data.isSubclass()) {
             insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
-            insertRegion.add("\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
+            insertRegion.add("\t\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
         }
         for (int i = 0; i < properties.size(); i++) {
-            String line = "\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"";
+            String line = "\t\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"";
             line += (i + 1 == properties.size() ? ");" : ",");
             insertRegion.add(line);
         }
