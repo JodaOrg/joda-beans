@@ -158,15 +158,10 @@ public class Documentation<T> extends DirectBean {
             "type",
             "content");
 
-        @Override
-        public Documentation<T> createBean() {
-            return new Documentation<T>();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        @Override
-        public Class<? extends Documentation<T>> beanType() {
-            return (Class) Documentation.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -178,6 +173,17 @@ public class Documentation<T> extends DirectBean {
                     return content;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public Documentation<T> createBean() {
+            return new Documentation<T>();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        @Override
+        public Class<? extends Documentation<T>> beanType() {
+            return (Class) Documentation.class;
         }
 
         @Override

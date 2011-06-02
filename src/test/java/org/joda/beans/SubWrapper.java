@@ -113,14 +113,10 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
             "name");
 
-        @Override
-        public SubWrapper createBean() {
-            return new SubWrapper();
-        }
-
-        @Override
-        public Class<? extends SubWrapper> beanType() {
-            return SubWrapper.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -130,6 +126,16 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
                     return name;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public SubWrapper createBean() {
+            return new SubWrapper();
+        }
+
+        @Override
+        public Class<? extends SubWrapper> beanType() {
+            return SubWrapper.class;
         }
 
         @Override

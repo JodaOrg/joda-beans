@@ -158,15 +158,10 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
             "type",
             "content");
 
-        @Override
-        public Wrapper<T> createBean() {
-            throw new UnsupportedOperationException("Wrapper is an abstract class");
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        @Override
-        public Class<? extends Wrapper<T>> beanType() {
-            return (Class) Wrapper.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -178,6 +173,17 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
                     return content;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public Wrapper<T> createBean() {
+            throw new UnsupportedOperationException("Wrapper is an abstract class");
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        @Override
+        public Class<? extends Wrapper<T>> beanType() {
+            return (Class) Wrapper.class;
         }
 
         @Override

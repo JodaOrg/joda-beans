@@ -54,22 +54,22 @@ public class TestFlexiBean {
         
         FlexiBean b = new FlexiBean();
         b.set("first", "A");
-        assertEquals(a.equals(b), false);
-        assertEquals(b.equals(a), false);
+        assertEquals(BeanUtils.propertiesEqual(a, b), false);
+        assertEquals(BeanUtils.propertiesEqual(b, a), false);
         
         b.set("second", null);
-        assertEquals(a.equals(b), true);
-        assertEquals(b.equals(a), true);
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(BeanUtils.propertiesEqual(a, b), true);
+        assertEquals(BeanUtils.propertiesEqual(b, a), true);
+        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
         
         b.set("second", "B");
-        assertEquals(a.equals(b), false);
-        assertEquals(b.equals(a), false);
+        assertEquals(BeanUtils.propertiesEqual(a, b), false);
+        assertEquals(BeanUtils.propertiesEqual(b, a), false);
         
         a.setSecond("B");
-        assertEquals(a.equals(b), true);
-        assertEquals(b.equals(a), true);
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(BeanUtils.propertiesEqual(a, b), true);
+        assertEquals(BeanUtils.propertiesEqual(b, a), true);
+        assertEquals(BeanUtils.propertiesHashCode(a), BeanUtils.propertiesHashCode(b));
     }
 
 }

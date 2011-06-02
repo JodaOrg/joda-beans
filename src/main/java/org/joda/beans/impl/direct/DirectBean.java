@@ -63,7 +63,7 @@ public abstract class DirectBean extends BasicBean {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof DirectBean) {
+        if (obj != null && (getClass().isInstance(obj) || obj.getClass().isInstance(this))) {
             DirectBean other = (DirectBean) obj;
             Set<String> names = propertyNames();
             if (names.equals(other.propertyNames()) == false) {

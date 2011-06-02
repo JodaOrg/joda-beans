@@ -116,15 +116,10 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
             "name");
 
-        @Override
-        public GenericSubWrapper<T> createBean() {
-            return new GenericSubWrapper<T>();
-        }
-
-        @SuppressWarnings({"unchecked", "rawtypes" })
-        @Override
-        public Class<? extends GenericSubWrapper<T>> beanType() {
-            return (Class) GenericSubWrapper.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -134,6 +129,17 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
                     return name;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public GenericSubWrapper<T> createBean() {
+            return new GenericSubWrapper<T>();
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        @Override
+        public Class<? extends GenericSubWrapper<T>> beanType() {
+            return (Class) GenericSubWrapper.class;
         }
 
         @Override

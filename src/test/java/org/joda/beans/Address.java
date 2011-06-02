@@ -234,14 +234,10 @@ public class Address extends DirectBean {
             "city",
             "owner");
 
-        @Override
-        public Address createBean() {
-            return new Address();
-        }
-
-        @Override
-        public Class<? extends Address> beanType() {
-            return Address.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -257,6 +253,16 @@ public class Address extends DirectBean {
                     return owner;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public Address createBean() {
+            return new Address();
+        }
+
+        @Override
+        public Class<? extends Address> beanType() {
+            return Address.class;
         }
 
         @Override

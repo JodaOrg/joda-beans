@@ -28,6 +28,18 @@ import org.testng.annotations.Test;
 @Test
 public class TestBeanUtils {
 
+    public void test_equal() {
+        assertEquals(BeanUtils.equal("A", new Character('A').toString()), true);
+        assertEquals(BeanUtils.equal("A", "B"), false);
+        assertEquals(BeanUtils.equal("A", null), false);
+        assertEquals(BeanUtils.equal(null, "A"), false);
+    }
+
+    public void test_hashCode_Object() {
+        assertEquals(BeanUtils.hashCode("A"), "A".hashCode());
+        assertEquals(BeanUtils.hashCode(null), 0);
+    }
+
     public void test_listType_Person_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
@@ -40,7 +52,7 @@ public class TestBeanUtils {
         assertEquals(BeanUtils.listType(test), List.class);
     }
 
-    public void test_listType_Person_otherAddressMap() {
+    public void test_mapType_Person_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
         assertEquals(BeanUtils.mapKeyType(test), String.class);

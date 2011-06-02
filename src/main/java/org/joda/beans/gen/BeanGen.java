@@ -297,48 +297,17 @@ class BeanGen {
         insertRegion.add("\t\tstatic final Meta INSTANCE = new Meta();");
         insertRegion.add("");
         generateMetaPropertyConstants();
+        generateMetaPropertyMapSetup();
         insertRegion.add("\t\t/**");
-        insertRegion.add("\t\t * The meta-properties.");
+        insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map = new DirectMetaPropertyMap(");
-        if (data.isSubclass()) {
-            insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap(),");
-        } else {
-            insertRegion.add("\t\t\tthis, null,");
-        }
-        for (int i = 0; i < properties.size(); i++) {
-            String line = "\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"";
-            line += (i + 1 == properties.size() ? ");" : ",");
-            insertRegion.add(line);
-        }
-        insertRegion.add("");
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic " + data.getTypeNoExtends() + " createBean() {");
-        if (data.isConstructable()) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeNoExtends() + "();");
-        } else {
-            insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
-        }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
-        if (data.isTypeGeneric()) {
-            insertRegion.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
-        }
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Class<? extends " + data.getTypeNoExtends() + "> beanType() {");
-        if (data.isTypeGeneric()) {
-            insertRegion.add("\t\t\treturn (Class) " + data.getTypeRaw() + ".class;");
-        } else {
-            insertRegion.add("\t\t\treturn " + data.getTypeNoExtends() + ".class;");
-        }
+        insertRegion.add("\t\tprotected Meta() {");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         generateMetaPropertyGet();
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
-        insertRegion.add("\t\t\treturn " + prefix + "map;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        generateMetaCreateBean();
+        generateMetaBeanType();
+        generateMetaPropertyMap();
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
         generateMetaPropertyMethods();
         insertRegion.add("\t}");
@@ -351,15 +320,70 @@ class BeanGen {
         }
     }
 
-    private void generateMetaPropertyGet() {
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tprotected MetaProperty<?> metaPropertyGet(String propertyName) {");
-        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
-        for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generateMetaPropertyGetCase());
+    private void generateMetaPropertyMapSetup() {
+        insertRegion.add("\t\t/**");
+        insertRegion.add("\t\t * The meta-properties.");
+        insertRegion.add("\t\t */");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map = new DirectMetaPropertyMap(");
+        if (data.isSubclass()) {
+            insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
+        } else {
+            insertRegion.add("\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
         }
-        insertRegion.add("\t\t\t}");
-        insertRegion.add("\t\t\treturn super.metaPropertyGet(propertyName);");
+        for (int i = 0; i < properties.size(); i++) {
+            String line = "\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"";
+            line += (i + 1 == properties.size() ? ");" : ",");
+            insertRegion.add(line);
+        }
+        insertRegion.add("");
+    }
+
+    private void generateMetaCreateBean() {
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic " + data.getTypeNoExtends() + " createBean() {");
+        if (data.isConstructable()) {
+            insertRegion.add("\t\t\treturn new " + data.getTypeNoExtends() + "();");
+        } else {
+            insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+        }
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateMetaBeanType() {
+        if (data.isTypeGeneric()) {
+            insertRegion.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
+        }
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Class<? extends " + data.getTypeNoExtends() + "> beanType() {");
+        if (data.isTypeGeneric()) {
+            insertRegion.add("\t\t\treturn (Class) " + data.getTypeRaw() + ".class;");
+        } else {
+            insertRegion.add("\t\t\treturn " + data.getTypeNoExtends() + ".class;");
+        }
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateMetaPropertyGet() {
+        if (properties.size() > 0) {
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tprotected MetaProperty<?> metaPropertyGet(String propertyName) {");
+            insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+            for (PropertyGen prop : properties) {
+                insertRegion.addAll(prop.generateMetaPropertyGetCase());
+            }
+            insertRegion.add("\t\t\t}");
+            insertRegion.add("\t\t\treturn super.metaPropertyGet(propertyName);");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+        }
+    }
+
+    private void generateMetaPropertyMap() {
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
+        insertRegion.add("\t\t\treturn " + prefix + "map;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }

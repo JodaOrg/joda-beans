@@ -390,14 +390,10 @@ public class Person extends DirectBean {
             "mainAddress",
             "extensions");
 
-        @Override
-        public Person createBean() {
-            return new Person();
-        }
-
-        @Override
-        public Class<? extends Person> beanType() {
-            return Person.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -421,6 +417,16 @@ public class Person extends DirectBean {
                     return extensions;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public Person createBean() {
+            return new Person();
+        }
+
+        @Override
+        public Class<? extends Person> beanType() {
+            return Person.class;
         }
 
         @Override

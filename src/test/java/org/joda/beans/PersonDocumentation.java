@@ -113,14 +113,10 @@ public class PersonDocumentation extends Documentation<Person> {
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
             "name");
 
-        @Override
-        public PersonDocumentation createBean() {
-            return new PersonDocumentation();
-        }
-
-        @Override
-        public Class<? extends PersonDocumentation> beanType() {
-            return PersonDocumentation.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -130,6 +126,16 @@ public class PersonDocumentation extends Documentation<Person> {
                     return name;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public PersonDocumentation createBean() {
+            return new PersonDocumentation();
+        }
+
+        @Override
+        public Class<? extends PersonDocumentation> beanType() {
+            return PersonDocumentation.class;
         }
 
         @Override

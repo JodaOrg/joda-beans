@@ -112,14 +112,10 @@ public class CompanyAddress extends Address {
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
             "companyName");
 
-        @Override
-        public CompanyAddress createBean() {
-            return new CompanyAddress();
-        }
-
-        @Override
-        public Class<? extends CompanyAddress> beanType() {
-            return CompanyAddress.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -129,6 +125,16 @@ public class CompanyAddress extends Address {
                     return companyName;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public CompanyAddress createBean() {
+            return new CompanyAddress();
+        }
+
+        @Override
+        public Class<? extends CompanyAddress> beanType() {
+            return CompanyAddress.class;
         }
 
         @Override

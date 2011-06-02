@@ -156,14 +156,10 @@ public class Pair extends DirectBean {
             "first",
             "second");
 
-        @Override
-        public Pair createBean() {
-            return new Pair();
-        }
-
-        @Override
-        public Class<? extends Pair> beanType() {
-            return Pair.class;
+        /**
+         * Restricted constructor.
+         */
+        protected Meta() {
         }
 
         @Override
@@ -175,6 +171,16 @@ public class Pair extends DirectBean {
                     return second;
             }
             return super.metaPropertyGet(propertyName);
+        }
+
+        @Override
+        public Pair createBean() {
+            return new Pair();
+        }
+
+        @Override
+        public Class<? extends Pair> beanType() {
+            return Pair.class;
         }
 
         @Override
