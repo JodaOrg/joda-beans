@@ -65,11 +65,7 @@ public abstract class DirectBean extends BasicBean {
         }
         if (obj != null && getClass() == obj.getClass()) {
             DirectBean other = (DirectBean) obj;
-            Set<String> names = propertyNames();
-            if (names.equals(other.propertyNames()) == false) {
-                return false;
-            }
-            for (String name : names) {
+            for (String name : propertyNames()) {
                 Object value1 = propertyGet(name);
                 Object value2 = other.propertyGet(name);
                 if (BeanUtils.equal(value1, value2) == false) {
