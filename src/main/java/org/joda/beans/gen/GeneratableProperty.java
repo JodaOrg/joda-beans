@@ -291,4 +291,12 @@ class GeneratableProperty {
         return isGenericParamType() || isBeanGenericType();
     }
 
+    /**
+     * Checks if the property is derived.
+     * @return true if derived
+     */
+    public boolean isDerived() {
+        return fieldName == null;
+    }
+
 }

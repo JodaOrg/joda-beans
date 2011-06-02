@@ -157,7 +157,11 @@ class BeanGen {
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
             if (line.startsWith("@PropertyDefinition")) {
-                PropertyGen prop = new PropertyGen(this, content, index);
+                PropertyGen prop = new PropertyGen(this, content, index, false);
+                props.add(prop);
+                data.getProperties().add(prop.getData());
+            } else if (line.startsWith("@DerivedProperty")) {
+                PropertyGen prop = new PropertyGen(this, content, index, true);
                 props.add(prop);
                 data.getProperties().add(prop.getData());
             }

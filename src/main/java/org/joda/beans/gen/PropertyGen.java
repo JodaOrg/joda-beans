@@ -48,21 +48,32 @@ class PropertyGen {
      * @param bean  the bean generator
      * @param content  the lines, not null
      * @param lineIndex  the index of a PropertyDefinition
+     * @param derived  true if derived
      */
-    public PropertyGen(BeanGen bean, List<String> content, int lineIndex) {
+    public PropertyGen(BeanGen bean, List<String> content, int lineIndex, boolean derived) {
         this.bean = bean;
         this.annotationIndex = lineIndex;
-        this.fieldIndex = parseFieldIndex(content);
+        this.fieldIndex = parseCodeIndex(content);
         GeneratableProperty prop = new GeneratableProperty(bean.getData());
-        prop.setGetStyle(parseGetStyle(content));
-        prop.setSetStyle(parseSetStyle(content));
-        prop.setReadWrite(makeReadWrite(prop.getGetStyle(), prop.getSetStyle(), prop.getPropertyName()));
-        prop.setDeprecated(parseDeprecated(content));
-        prop.setFieldName(parseName(content));
-        prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
-        prop.setUpperName(makeUpperName(prop.getPropertyName()));
-        prop.setFinal(parseFinal(content));
-        prop.setType(parseType(content));
+        if (derived) {
+            prop.setGetStyle("manual");
+            prop.setSetStyle("");
+            prop.setReadWrite(PropertyReadWrite.READ_ONLY);
+            prop.setDeprecated(parseDeprecated(content));
+            prop.setPropertyName(parseMethodNameAsPropertyName(content));
+            prop.setUpperName(makeUpperName(prop.getPropertyName()));
+            prop.setType(parseMethodType(content));
+        } else {
+            prop.setGetStyle(parseGetStyle(content));
+            prop.setSetStyle(parseSetStyle(content));
+            prop.setReadWrite(makeReadWrite(prop.getGetStyle(), prop.getSetStyle(), prop.getPropertyName()));
+            prop.setDeprecated(parseDeprecated(content));
+            prop.setFieldName(parseFieldName(content));
+            prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
+            prop.setUpperName(makeUpperName(prop.getPropertyName()));
+            prop.setFinal(parseFinal(content));
+            prop.setType(parseFieldType(content));
+        }
         List<String> comments = parseComment(content, prop.getPropertyName());
         prop.setFirstComment(comments.get(0));
         prop.getComments().addAll(comments.subList(1, comments.size()));
@@ -94,7 +105,7 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
-    private int parseFieldIndex(List<String> content) {
+    private int parseCodeIndex(List<String> content) {
         for (int index = annotationIndex; index < content.size(); index++) {
             if (content.get(index).trim().startsWith("@") == false) {
                 if (content.get(index).trim().length() == 0) {
@@ -135,7 +146,7 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
-    private String parseName(List<String> content) {
+    private String parseFieldName(List<String> content) {
         String line = parseFieldDefinition(content);
         String[] parts = line.split(" ");
         String last = parts[parts.length - 1];
@@ -159,7 +170,7 @@ class PropertyGen {
         return false;
     }
 
-    private String parseType(List<String> content) {
+    private String parseFieldType(List<String> content) {
         String line = parseFieldDefinition(content);
         String[] parts = line.split(" ");
         if (parts.length < 2) {
@@ -198,6 +209,44 @@ class PropertyGen {
         return line;
     }
 
+    //-----------------------------------------------------------------------
+    private String parseMethodNameAsPropertyName(List<String> content) {
+        String[] parts = parseMethodDefinition(content);
+        if (parts[1].length() == 0 || Character.isUpperCase(parts[1].charAt(0)) == false) {
+            throw new RuntimeException("@DerivedProperty method name invalid'");
+        }
+        return Character.toLowerCase(parts[1].charAt(0)) + parts[1].substring(1);
+    }
+
+    private String parseMethodType(List<String> content) {
+        String[] parts = parseMethodDefinition(content);
+        return parts[0];
+    }
+
+    private String[] parseMethodDefinition(List<String> content) {
+        String line = content.get(fieldIndex).trim();
+        if (line.startsWith("public ")) {
+            line = line.substring(7).trim();
+        } else if (line.startsWith("private ")) {
+            line = line.substring(8).trim();
+        } else if (line.startsWith("protected ")) {
+            line = line.substring(10).trim();
+        }
+        int getIndex = line.indexOf(" get");
+        if (getIndex < 0) {
+            throw new RuntimeException("@DerivedProperty method must start with 'get'");
+        }
+        if (line.endsWith("() {") == false) {
+            throw new RuntimeException("@DerivedProperty method must end with '() {'");
+        }
+        line = line.substring(0, line.length() - 4);
+        String[] split = new String[2];
+        split[0] = line.substring(0, getIndex).trim();
+        split[1] = line.substring(getIndex + 4).trim();
+        return split;
+    }
+
+    //-----------------------------------------------------------------------
     private List<String> parseComment(List<String> content, String propertyName) {
         List<String> comments = new ArrayList<String>();
         String commentEnd = content.get(annotationIndex - 1).trim();
@@ -219,7 +268,10 @@ class PropertyGen {
                     if (commentLine.startsWith("*")) {
                         commentLine = commentLine.substring(1).trim();
                     }
-                    comments.add(commentLine);
+                    if (commentLine.startsWith("@return") == false && commentLine.startsWith("@param") == false &&
+                            commentLine.startsWith("@throws") == false && commentLine.startsWith("@exception") == false) {
+                        comments.add(commentLine);
+                    }
                 }
                 String firstLine = comments.get(0);
                 comments.set(0, firstLine.substring(0, 1).toLowerCase() + firstLine.substring(1));
