@@ -344,38 +344,38 @@ public class Person extends DirectBean {
         /**
          * The meta-property for the {@code forename} property.
          */
-        private final MetaProperty<String> forename = DirectMetaProperty.ofReadWrite(this, "forename", String.class);
+        private final MetaProperty<String> forename = DirectMetaProperty.ofReadWrite(this, "forename", Person.class, String.class);
         /**
          * The meta-property for the {@code surname} property.
          */
-        private final MetaProperty<String> surname = DirectMetaProperty.ofReadWrite(this, "surname", String.class);
+        private final MetaProperty<String> surname = DirectMetaProperty.ofReadWrite(this, "surname", Person.class, String.class);
         /**
          * The meta-property for the {@code numberOfCars} property.
          */
-        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadWrite(this, "numberOfCars", Integer.TYPE);
+        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadWrite(this, "numberOfCars", Person.class, Integer.TYPE);
         /**
          * The meta-property for the {@code addressList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(this, "addressList", (Class) List.class);
+        private final MetaProperty<List<Address>> addressList = DirectMetaProperty.ofReadWrite(this, "addressList", Person.class, (Class) List.class);
         /**
          * The meta-property for the {@code otherAddressMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(this, "otherAddressMap", (Class) Map.class);
+        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadWrite(this, "otherAddressMap", Person.class, (Class) Map.class);
         /**
          * The meta-property for the {@code addressesList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadWrite(this, "addressesList", (Class) List.class);
+        private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadWrite(this, "addressesList", Person.class, (Class) List.class);
         /**
          * The meta-property for the {@code mainAddress} property.
          */
-        private final MetaProperty<Address> mainAddress = DirectMetaProperty.ofReadWrite(this, "mainAddress", Address.class);
+        private final MetaProperty<Address> mainAddress = DirectMetaProperty.ofReadWrite(this, "mainAddress", Person.class, Address.class);
         /**
          * The meta-property for the {@code extensions} property.
          */
-        private final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(this, "extensions", FlexiBean.class);
+        private final MetaProperty<FlexiBean> extensions = DirectMetaProperty.ofReadWrite(this, "extensions", Person.class, FlexiBean.class);
         /**
          * The meta-properties.
          */

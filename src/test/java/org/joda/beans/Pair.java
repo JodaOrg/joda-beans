@@ -143,11 +143,11 @@ public class Pair extends DirectBean {
         /**
          * The meta-property for the {@code first} property.
          */
-        private final MetaProperty<Object> first = DirectMetaProperty.ofReadWrite(this, "first", Object.class);
+        private final MetaProperty<Object> first = DirectMetaProperty.ofReadWrite(this, "first", Pair.class, Object.class);
         /**
          * The meta-property for the {@code second} property.
          */
-        private final MetaProperty<Object> second = DirectMetaProperty.ofReadWrite(this, "second", Object.class);
+        private final MetaProperty<Object> second = DirectMetaProperty.ofReadWrite(this, "second", Pair.class, Object.class);
         /**
          * The meta-properties.
          */

@@ -83,14 +83,14 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     public boolean equals(Object obj) {
         if (obj instanceof MetaProperty<?>) {
             MetaProperty<?> other = (MetaProperty<?>) obj;
-            return name().equals(other.name());
+            return name().equals(other.name()) && declaringType().equals(other.declaringType());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return name().hashCode() ^ declaringType().hashCode();
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
      */
     @Override
     public String toString() {
-        return name;
+        return declaringType().getSimpleName() + ":" + name();
     }
 
 }

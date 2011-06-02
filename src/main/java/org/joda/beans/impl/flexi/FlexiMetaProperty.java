@@ -69,6 +69,11 @@ class FlexiMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
+    public Class<?> declaringType() {
+        return FlexiBean.class;
+    }
+
+    @Override
     public Class<Object> propertyType() {
         return Object.class;
     }

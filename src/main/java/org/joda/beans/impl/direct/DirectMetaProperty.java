@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -39,6 +40,10 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The meta-bean. */
     private final MetaBean metaBean;
+    /** The property type. */
+    private final Class<P> propertyType;
+    /** The declaring type. */
+    private final Class<?> declaringType;
     /** The field implementing the property. */
     private final Field field;
     /** The read-write type. */
@@ -52,8 +57,9 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param propertyType  the property type, not null
      */
     public static <P> DirectMetaProperty<P> ofReadWrite(
-            MetaBean metaBean, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<P>(metaBean, propertyName, propertyType, PropertyReadWrite.READ_WRITE);
+            MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
+        Field field = findField(metaBean, propertyName);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyReadWrite.READ_WRITE, field);
     }
 
     /**
@@ -64,8 +70,9 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param propertyType  the property type, not null
      */
     public static <P> DirectMetaProperty<P> ofReadOnly(
-            MetaBean metaBean, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<P>(metaBean, propertyName, propertyType, PropertyReadWrite.READ_ONLY);
+            MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
+        Field field = findField(metaBean, propertyName);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyReadWrite.READ_ONLY, field);
     }
 
     /**
@@ -76,30 +83,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param propertyType  the property type, not null
      */
     public static <P> DirectMetaProperty<P> ofWriteOnly(
-            MetaBean metaBean, String propertyName, Class<P> propertyType) {
-        return new DirectMetaProperty<P>(metaBean, propertyName, propertyType, PropertyReadWrite.WRITE_ONLY);
+            MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
+        Field field = findField(metaBean, propertyName);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyReadWrite.WRITE_ONLY, field);
     }
 
-    /**
-     * Constructor.
-     * 
-     * @param metaBean  the meta-bean, not null
-     * @param propertyName  the property name, not empty
-     * @param propertyType  the property type, not null
-     * @param readWrite  the read-write type, not null
-     */
-    private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<P> propertyType, PropertyReadWrite readWrite) {
-        super(propertyName);
-        if (metaBean == null) {
-            throw new NullPointerException("MetaBean must not be null");
-        }
-        if (propertyType == null) {
-            throw new NullPointerException("Property type must not be null");
-        }
-        if (readWrite == null) {
-            throw new NullPointerException("PropertyReadWrite must not be null");
-        }
-        this.metaBean = metaBean;
+    private static Field findField(MetaBean metaBean, String propertyName) {
         Field field = null;
         Class<?> cls = metaBean.beanType();
         while (cls != DirectBean.class) {
@@ -115,11 +104,39 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
                 }
             }
         }
-        if (field == null) {
-            throw new IllegalStateException("Unable to find field for property: " + metaBean.beanType().getName() + "#" + propertyName);
+        return field;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param metaBean  the meta-bean, not null
+     * @param propertyName  the property name, not empty
+     * @param declaringType  the declaring type, not null
+     * @param propertyType  the property type, not null
+     * @param readWrite  the read-write type, not null
+     * @param field  the reflected field, not null
+     */
+    private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<?> declaringType,
+            Class<P> propertyType, PropertyReadWrite readWrite, Field field) {
+        super(propertyName);
+        if (metaBean == null) {
+            throw new NullPointerException("MetaBean must not be null");
         }
-        this.field = field;
+        if (declaringType == null) {
+            throw new NullPointerException("Declaring type must not be null");
+        }
+        if (propertyType == null) {
+            throw new NullPointerException("Property type must not be null");
+        }
+        if (readWrite == null) {
+            throw new NullPointerException("PropertyReadWrite must not be null");
+        }
+        this.metaBean = metaBean;
+        this.propertyType = propertyType;
+        this.declaringType = declaringType;
         this.readWrite = readWrite;
+        this.field = field;  // may be null
     }
 
     //-----------------------------------------------------------------------
@@ -128,14 +145,21 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         return metaBean;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public Class<?> declaringType() {
+        return declaringType;
+    }
+
     @Override
     public Class<P> propertyType() {
-        return (Class<P>) field.getType();
+        return propertyType;
     }
 
     @Override
     public Type propertyGenericType() {
+        if (field == null) {
+            return propertyType;
+        }
         return field.getGenericType();
     }
 
@@ -146,6 +170,9 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public <A extends Annotation> A annotation(Class<A> annotationClass) {
+        if (field == null) {
+            throw new UnsupportedOperationException("Field not found for property: " + name());
+        }
         A annotation = field.getAnnotation(annotationClass);
         if (annotation == null) {
             throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
@@ -155,6 +182,9 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public List<Annotation> annotations() {
+        if (field == null) {
+            return Collections.emptyList();
+        }
         return Arrays.asList(field.getDeclaredAnnotations());
     }
 

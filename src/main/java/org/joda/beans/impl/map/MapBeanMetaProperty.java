@@ -31,7 +31,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
+class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
     /** The bean. */
     private MapBean bean;
@@ -66,6 +66,11 @@ public class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     @Override
     public MetaBean metaBean() {
         return bean.metaBean();
+    }
+
+    @Override
+    public Class<?> declaringType() {
+        return MapBean.class;
     }
 
     @Override

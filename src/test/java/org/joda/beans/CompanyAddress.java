@@ -104,7 +104,7 @@ public class CompanyAddress extends Address {
         /**
          * The meta-property for the {@code companyName} property.
          */
-        private final MetaProperty<String> companyName = DirectMetaProperty.ofReadWrite(this, "companyName", String.class);
+        private final MetaProperty<String> companyName = DirectMetaProperty.ofReadWrite(this, "companyName", CompanyAddress.class, String.class);
         /**
          * The meta-properties.
          */

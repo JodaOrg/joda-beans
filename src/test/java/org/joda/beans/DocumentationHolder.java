@@ -112,7 +112,7 @@ public class DocumentationHolder<T> extends DirectBean {
          * The meta-property for the {@code documentation} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<Documentation<?>> documentation = DirectMetaProperty.ofReadWrite(this, "documentation", (Class) Documentation.class);
+        private final MetaProperty<Documentation<?>> documentation = DirectMetaProperty.ofReadWrite(this, "documentation", DocumentationHolder.class, (Class) Documentation.class);
         /**
          * The meta-properties.
          */

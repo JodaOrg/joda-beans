@@ -105,7 +105,7 @@ public class PersonDocumentation extends Documentation<Person> {
         /**
          * The meta-property for the {@code name} property.
          */
-        private final MetaProperty<String> name = DirectMetaProperty.ofReadWrite(this, "name", String.class);
+        private final MetaProperty<String> name = DirectMetaProperty.ofReadWrite(this, "name", PersonDocumentation.class, String.class);
         /**
          * The meta-properties.
          */

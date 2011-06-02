@@ -98,7 +98,7 @@ public class TestBasicBean {
         
         obj1.setForename("Stephen");
         
-        assertEquals(p1.toString(), "forename=Stephen");
+        assertEquals(p1.toString(), "Person:forename=Stephen");
     }
 
     //-----------------------------------------------------------------------
@@ -119,7 +119,7 @@ public class TestBasicBean {
     public void test_metaProperty_toString() {
         MetaProperty<String> mp1 = Person.meta().forename();
         
-        assertEquals(mp1.toString(), "forename");
+        assertEquals(mp1.toString(), "Person:forename");
     }
 
 }

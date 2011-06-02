@@ -96,7 +96,7 @@ public interface Property<P> {
     /**
      * Checks if this property equals another.
      * <p>
-     * This compares the property name and value.
+     * This compares the meta-property and value.
      * It does not consider the property or bean types.
      * 
      * @param obj  the other property, null returns false

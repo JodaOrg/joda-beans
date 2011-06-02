@@ -47,6 +47,8 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The meta-bean. */
     private volatile MetaBean metaBean;
+    /** The declaring type. */
+    private final Class<?> declaringType;
     /** The type of the property. */
     private final Class<P> propertyType;
     /** The read method. */
@@ -84,6 +86,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
         if (readMethod == null && writeMethod == null) {
             throw new NoSuchFieldError("Invalid property: " + propertyName + ": Both read and write methods are missing");
         }
+        this.declaringType = (readMethod != null ? readMethod.getDeclaringClass() : writeMethod.getDeclaringClass());
         this.propertyType = (Class<P>) descriptor.getPropertyType();
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
@@ -106,6 +109,11 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @Override
     public MetaBean metaBean() {
         return metaBean;
+    }
+
+    @Override
+    public Class<?> declaringType() {
+        return declaringType;
     }
 
     @Override

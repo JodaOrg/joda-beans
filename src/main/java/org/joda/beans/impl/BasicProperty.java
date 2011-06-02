@@ -105,7 +105,7 @@ public final class BasicProperty<P> implements Property<P> {
         }
         if (obj instanceof Property) {
             Property<?> other = (Property<?>) obj;
-            if (name().equals(other.name())) {
+            if (metaProperty.equals(other.metaProperty())) {
                 Object a = get();
                 Object b = other.get();
                 return a == null ? b == null : a.equals(b);
@@ -117,7 +117,7 @@ public final class BasicProperty<P> implements Property<P> {
     @Override
     public int hashCode() {
         P value = get();
-        return name().hashCode() ^ (value == null ? 0 : value.hashCode());
+        return metaProperty.hashCode() ^ (value == null ? 0 : value.hashCode());
     }
 
     /**
@@ -127,7 +127,7 @@ public final class BasicProperty<P> implements Property<P> {
      */
     @Override
     public String toString() {
-        return name() + "=" + get();
+        return metaProperty + "=" + get();
     }
 
 }

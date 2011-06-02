@@ -58,6 +58,13 @@ public interface MetaProperty<P> {
     String name();
 
     /**
+     * Get the type that declares the property, represented as a {@code Class}.
+     * 
+     * @return the type declaring the property, not null
+     */
+    Class<?> declaringType();
+
+    /**
      * Get the type of the property represented as a {@code Class}.
      * 
      * @return the type of the property, not null
@@ -145,7 +152,7 @@ public interface MetaProperty<P> {
     /**
      * Checks if this meta-property equals another.
      * <p>
-     * This compares the property name.
+     * This compares the property name and declaring type.
      * It does not compare the property or bean types.
      * 
      * @param obj  the other meta-property, null returns false

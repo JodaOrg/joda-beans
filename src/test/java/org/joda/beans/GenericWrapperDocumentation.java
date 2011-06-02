@@ -108,7 +108,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
         /**
          * The meta-property for the {@code name} property.
          */
-        private final MetaProperty<String> name = DirectMetaProperty.ofReadWrite(this, "name", String.class);
+        private final MetaProperty<String> name = DirectMetaProperty.ofReadWrite(this, "name", GenericWrapperDocumentation.class, String.class);
         /**
          * The meta-properties.
          */

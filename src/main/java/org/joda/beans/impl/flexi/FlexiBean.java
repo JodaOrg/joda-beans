@@ -18,17 +18,13 @@ package org.joda.beans.impl.flexi;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.joda.beans.Bean;
 import org.joda.beans.DynamicBean;
 import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.PropertyMap;
 import org.joda.beans.impl.BasicBean;
 import org.joda.beans.impl.BasicProperty;
 
@@ -49,7 +45,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     private static final long serialVersionUID = 1L;
 
     /** The meta-bean. */
-    final FlexiMetaBean metaBean = new FlexiMetaBean();
+    final FlexiMetaBean metaBean = new FlexiMetaBean(this);
     /** The underlying data. */
     volatile Map<String, Object> data = Collections.emptyMap();
 
@@ -407,88 +403,6 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     @Override
     public String toString() {
         return getClass().getSimpleName() + data.toString();
-    }
-
-    //-----------------------------------------------------------------------
-    class FlexiMetaBean implements MetaBean {
-        @Override
-        public FlexiBean createBean() {
-            return new FlexiBean();
-        }
-
-        @Override
-        public PropertyMap createPropertyMap(Bean bean) {
-            return FlexiPropertyMap.of(beanType().cast(bean));
-        }
-
-        @Override
-        public Class<FlexiBean> beanType() {
-            return FlexiBean.class;
-        }
-
-        @Override
-        public String beanName() {
-            return FlexiBean.class.getName();
-        }
-
-        @Override
-        public int metaPropertyCount() {
-            return FlexiBean.this.size();
-        }
-
-        @Override
-        public boolean metaPropertyExists(String name) {
-            return FlexiBean.this.propertyExists(name);
-        }
-
-        @Override
-        public MetaProperty<Object> metaProperty(String name) {
-            Object obj = get(name);
-            if (obj == null) {
-                throw new NoSuchElementException("Unknown property: " + name);
-            }
-            return FlexiMetaProperty.of(metaBean, name);
-        }
-
-        @Override
-        public Iterable<MetaProperty<Object>> metaPropertyIterable() {
-            if (data.isEmpty()) {
-                return Collections.emptySet();
-            }
-            return new Iterable<MetaProperty<Object>>() {
-                private final Iterator<String> it = data.keySet().iterator();
-                @Override
-                public Iterator<MetaProperty<Object>> iterator() {
-                    return new Iterator<MetaProperty<Object>>() {
-                        @Override
-                        public boolean hasNext() {
-                            return it.hasNext();
-                        }
-                        @Override
-                        public MetaProperty<Object> next() {
-                            return FlexiMetaProperty.of(metaBean, it.next());
-                        }
-                        @Override
-                        public void remove() {
-                            throw new UnsupportedOperationException("Unmodifiable");
-                        }
-                        
-                    };
-                }
-            };
-        }
-
-        @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
-            if (data.isEmpty()) {
-                return Collections.emptyMap();
-            }
-            Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
-            for (String name : data.keySet()) {
-                map.put(name, FlexiMetaProperty.of(metaBean, name));
-            }
-            return Collections.unmodifiableMap(map);
-        }
     }
 
 }
