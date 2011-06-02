@@ -311,7 +311,7 @@ class BeanGen {
             String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
             insertRegion.add(
                     (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
-                    "JodaBeanUtils.equal(" + getter + "(), other." + getter + "())" +
+                    "JodaBeanUtils.equal(" + getter + ", other." + getter + ")" +
                     (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
         }
         if (data.isSubclass()) {
@@ -334,7 +334,7 @@ class BeanGen {
         for (int i = 0; i < properties.size(); i++) {
             PropertyGen prop = properties.get(i);
             String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
-            insertRegion.add("\t\thash += hash * 31 + JodaBeanUtils.hashCode(" + getter + "());");
+            insertRegion.add("\t\thash += hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }
         if (data.isSubclass()) {
             insertRegion.add("\t\treturn hash ^ super.hashCode();");

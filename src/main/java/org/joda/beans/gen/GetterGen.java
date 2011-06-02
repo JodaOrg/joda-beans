@@ -66,7 +66,7 @@ abstract class GetterGen {
      * @return the generated code, not null
      */
     String generateGetInvoke(GeneratableProperty prop) {
-        return "get" + prop.getUpperName();
+        return "get" + prop.getUpperName() + "()";
     }
 
     //-----------------------------------------------------------------------
@@ -106,7 +106,7 @@ abstract class GetterGen {
         }
         @Override
         String generateGetInvoke(GeneratableProperty prop) {
-            return "is" + prop.getUpperName();
+            return "is" + prop.getUpperName() + "()";
         }
     }
 
@@ -115,6 +115,10 @@ abstract class GetterGen {
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
             return Collections.emptyList();
+        }
+        @Override
+        String generateGetInvoke(GeneratableProperty prop) {
+            return prop.getFieldName();
         }
     }
 

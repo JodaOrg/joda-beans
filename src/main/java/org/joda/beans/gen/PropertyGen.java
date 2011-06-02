@@ -325,7 +325,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isReadable()) {
-            list.add("\t\t\t\treturn " + GetterGen.of(data).generateGetInvoke(data) + "();");
+            list.add("\t\t\t\treturn " + GetterGen.of(data).generateGetInvoke(data) + ";");
         } else {
             list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + data.getPropertyName() + "\");");
         }
