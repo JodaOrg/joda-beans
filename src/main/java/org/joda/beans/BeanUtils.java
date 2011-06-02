@@ -132,11 +132,11 @@ public final class BeanUtils {
      * @return the hash code
      */
     public static int propertiesHashCode(Bean bean) {
-        int hash = 0;
+        int hash = 7;
         Set<String> names = bean.propertyNames();
         for (String name : names) {
             Object value = bean.property(name).get();
-            hash += (name.hashCode() ^ (value == null ? 0 : value.hashCode()));
+            hash += hashCode(value);
         }
         return hash;
     }

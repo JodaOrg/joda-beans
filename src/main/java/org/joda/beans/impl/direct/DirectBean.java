@@ -88,7 +88,7 @@ public abstract class DirectBean extends BasicBean {
         Set<String> names = propertyNames();
         for (String name : names) {
             Object value = propertyGet(name);
-            hash += (name.hashCode() ^ (value == null ? 0 : value.hashCode()));
+            hash += BeanUtils.hashCode(value);
         }
         return hash;
     }
