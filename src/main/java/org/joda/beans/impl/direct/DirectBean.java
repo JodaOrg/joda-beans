@@ -76,6 +76,7 @@ public abstract class DirectBean extends BasicBean {
                     return false;
                 }
             }
+            return true;
         }
         return super.equals(obj);
     }
