@@ -2,17 +2,25 @@ Package: org.joda.beans
 Extension-Name: joda-beans
 Specification-Title: Joda Beans
 Specification-Vendor: Joda.org
-Specification-Version: 0.6
+Specification-Version: 0.4
 Implementation-Vendor: Joda.org
 Implementation-Title: org.joda.beans
-Implementation-Version: 0.6
+Implementation-Version: 0.4
 Implementation-Vendor-Id: org.joda
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Joda.org
 Bundle-Name: Joda-Beans
 Bundle-SymbolicName: joda-beans
-Bundle-Version: 0.6
-Export-Package: org.joda.beans;version=0.2,
+Bundle-Version: 0.4
+Export-Package: org.joda.beans,
+ org.joda.beans.gen,
+ org.joda.beans.impl,
+ org.joda.beans.impl.direct,
+ org.joda.beans.impl.flexi,
+ org.joda.beans.impl.map,
+ org.joda.beans.impl.reflection,
+ org.joda.beans.integrate.freemarker,
+ org.joda.beans.integrate.mongo,
+ org.joda.beans.test
 Bundle-License: Apache 2.0
-Bundle-RequiredExecutionEnvironment: J2SE-1.6
 Bundle-DocURL: http://joda-beans.sourceforge.net/
