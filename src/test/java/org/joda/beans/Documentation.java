@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
@@ -199,8 +200,8 @@ public class Documentation<T> extends DirectBean {
         }
 
         @Override
-        public Documentation<T> createBean() {
-            return new Documentation<T>();
+        public BeanBuilder<? extends Documentation<T>> builder() {
+            return new BasicBeanBuilder<Documentation<T>>(new Documentation<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

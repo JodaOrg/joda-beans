@@ -373,7 +373,7 @@ class BeanGen {
         insertRegion.add("\t\t}");
         insertRegion.add("");
         generateMetaPropertyGet();
-        generateMetaCreateBean();
+        generateMetaBuilder();
         generateMetaBeanType();
         generateMetaPropertyMap();
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
@@ -406,11 +406,11 @@ class BeanGen {
         insertRegion.add("");
     }
 
-    private void generateMetaCreateBean() {
+    private void generateMetaBuilder() {
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic " + data.getTypeNoExtends() + " createBean() {");
+        insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
         if (data.isConstructable()) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeNoExtends() + "();");
+            insertRegion.add("\t\t\treturn new BasicBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
         } else {
             insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
         }

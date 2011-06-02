@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
@@ -153,8 +154,8 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
         }
 
         @Override
-        public GenericWrapperDocumentation<T> createBean() {
-            return new GenericWrapperDocumentation<T>();
+        public BeanBuilder<? extends GenericWrapperDocumentation<T>> builder() {
+            return new BasicBeanBuilder<GenericWrapperDocumentation<T>>(new GenericWrapperDocumentation<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

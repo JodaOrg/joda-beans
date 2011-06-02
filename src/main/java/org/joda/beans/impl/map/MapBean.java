@@ -16,18 +16,13 @@
 package org.joda.beans.impl.map;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.joda.beans.Bean;
 import org.joda.beans.DynamicBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.BasicMetaBean;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -44,7 +39,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
 
     @Override
     public MetaBean metaBean() {
-        return new Meta();
+        return new MapMetaBean(this);
     }
 
     @Override
@@ -52,7 +47,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
         return BasicProperty.of(this, metaProperty(name));
     }
 
-    private MetaProperty<Object> metaProperty(String name) {
+    MetaProperty<Object> metaProperty(String name) {
         Object obj = get(name);
         if (obj == null) {
             throw new NoSuchElementException("Property not found: " + name);
@@ -86,82 +81,6 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
     @Override
     public String toString() {
         return getClass().getSimpleName() + super.toString();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * The meta-bean for the map.
-     */
-    class Meta extends BasicMetaBean {
-
-        @Override
-        public MapBean createBean() {
-            return new MapBean();
-        }
-
-        @Override
-        public PropertyMap createPropertyMap(Bean bean) {
-            return MapBeanPropertyMap.of(beanType().cast(bean));
-        }
-
-        @Override
-        public Class<MapBean> beanType() {
-            return MapBean.class;
-        }
-
-        @Override
-        public String beanName() {
-            return MapBean.class.getName();
-        }
-
-        @Override
-        public int metaPropertyCount() {
-            return MapBean.this.size();
-        }
-
-        @Override
-        public boolean metaPropertyExists(String name) {
-            return MapBean.this.containsKey(name);
-        }
-
-        @Override
-        public MetaProperty<Object> metaProperty(String name) {
-            return MapBean.this.metaProperty(name);
-        }
-
-        @Override
-        public Iterable<MetaProperty<Object>> metaPropertyIterable() {
-            return new Iterable<MetaProperty<Object>>() {
-                private final Iterator<String> it = MapBean.this.keySet().iterator();
-                @Override
-                public Iterator<MetaProperty<Object>> iterator() {
-                    return new Iterator<MetaProperty<Object>>() {
-                        @Override
-                        public boolean hasNext() {
-                            return it.hasNext();
-                        }
-                        @Override
-                        public MetaProperty<Object> next() {
-                            return MapBeanMetaProperty.of(MapBean.this, it.next());
-                        }
-                        @Override
-                        public void remove() {
-                            throw new UnsupportedOperationException("Unmodifiable");
-                        }
-                        
-                    };
-                }
-            };
-        }
-
-        @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
-            Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
-            for (String name : MapBean.this.keySet()) {
-                map.put(name, MapBeanMetaProperty.of(MapBean.this, name));
-            }
-            return map;
-        }
     }
 
 }

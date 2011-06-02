@@ -38,7 +38,7 @@ public class TestCompanyAddress {
     private static final String COMPANY_NAME = "companyName";
 
     public void test_bean() {
-        Bean test = CompanyAddress.meta().createBean();
+        Bean test = CompanyAddress.meta().builder().build();
         
         assertEquals(test instanceof CompanyAddress, true);
         
@@ -58,7 +58,7 @@ public class TestCompanyAddress {
 
     @Test(expectedExceptions=NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
-        Bean test = CompanyAddress.meta().createBean();
+        Bean test = CompanyAddress.meta().builder().build();
         try {
             test.property("Rubbish");
         } catch (NoSuchElementException ex) {

@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
@@ -181,8 +182,8 @@ public class RWOnlyBean extends DirectBean {
         }
 
         @Override
-        public RWOnlyBean createBean() {
-            return new RWOnlyBean();
+        public BeanBuilder<? extends RWOnlyBean> builder() {
+            return new BasicBeanBuilder<RWOnlyBean>(new RWOnlyBean());
         }
 
         @Override

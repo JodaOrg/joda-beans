@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlID;
 
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
@@ -461,8 +462,8 @@ public class Person extends DirectBean {
         }
 
         @Override
-        public Person createBean() {
-            return new Person();
+        public BeanBuilder<? extends Person> builder() {
+            return new BasicBeanBuilder<Person>(new Person());
         }
 
         @Override

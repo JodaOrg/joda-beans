@@ -23,9 +23,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
+import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyMap;
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.BasicPropertyMap;
 
 /**
@@ -92,9 +94,10 @@ public final class ReflectiveMetaBean implements MetaBean {
 
     //-----------------------------------------------------------------------
     @Override
-    public Bean createBean() {
+    public BeanBuilder<Bean> builder() {
         try {
-            return beanType.newInstance();
+            Bean bean = beanType.newInstance();
+            return new BasicBeanBuilder<Bean>(bean);
         } catch (InstantiationException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
         } catch (IllegalAccessException ex) {

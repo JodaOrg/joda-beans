@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
@@ -150,8 +151,8 @@ public class PersonDocumentation extends Documentation<Person> {
         }
 
         @Override
-        public PersonDocumentation createBean() {
-            return new PersonDocumentation();
+        public BeanBuilder<? extends PersonDocumentation> builder() {
+            return new BasicBeanBuilder<PersonDocumentation>(new PersonDocumentation());
         }
 
         @Override

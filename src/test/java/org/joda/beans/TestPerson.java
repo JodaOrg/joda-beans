@@ -42,7 +42,7 @@ public class TestPerson {
     private static final String NUMBER_OF_CARS = "numberOfCars";
 
     public void test_bean() {
-        Bean test = Person.meta().createBean();
+        Bean test = Person.meta().builder().build();
         
         assertEquals(test instanceof Person, true);
         
@@ -60,7 +60,7 @@ public class TestPerson {
 
     @Test(expectedExceptions=NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
-        Bean test = Person.meta().createBean();
+        Bean test = Person.meta().builder().build();
         try {
             test.property("Rubbish");
         } catch (NoSuchElementException ex) {

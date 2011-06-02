@@ -19,6 +19,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -37,7 +38,7 @@ public class TestAddress {
     private static final String NUMBER = "number";
 
     public void test_bean() {
-        Bean test = Address.meta().createBean();
+        Bean test = new Address();
         
         assertEquals(test instanceof Address, true);
         
@@ -55,13 +56,28 @@ public class TestAddress {
 
     @Test(expectedExceptions=NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
-        Bean test = Address.meta().createBean();
+        Bean test = Address.meta().builder().build();
         try {
             test.property("Rubbish");
         } catch (NoSuchElementException ex) {
             System.out.println(ex.getMessage());
             throw ex;
         }
+    }
+
+    public void test_bean_builder() {
+        BeanBuilder<? extends Address> builder = Address.meta().builder();
+        builder.set("street", "Main Street");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("city", "London");
+        builder.setAll(map);
+        
+        Address test = builder.build();
+        Address expected = new Address();
+        expected.setStreet("Main Street");
+        expected.setCity("London");
+        
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

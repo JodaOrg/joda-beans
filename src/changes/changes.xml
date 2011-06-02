@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.4" date="2011-06-02" description="v0.4">
       <action dev="jodastephen" type="add">
+        Add BeanBuilder concept.
+      </action>              
+      <action dev="jodastephen" type="add">
         Refactor to improve equals/hashCode performance.
       </action>              
       <action dev="jodastephen" type="fix">

@@ -27,11 +27,12 @@ import java.util.NoSuchElementException;
 public interface MetaBean {
 
     /**
-     * Creates a new instance of the bean represented by this meta bean.
+     * Creates a bean builder that can be used to create an instance of this bean.
      * 
-     * @return the created bean, not null
+     * @return the bean builder, not null
+     * @throws UnsupportedOperationException if the bean cannot be created
      */
-    Bean createBean();
+    BeanBuilder<? extends Bean> builder();
 
     /**
      * Creates a map of properties for the specified bean.

@@ -199,7 +199,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         }
 
         @Override
-        public Wrapper<T> createBean() {
+        public BeanBuilder<? extends Wrapper<T>> builder() {
             throw new UnsupportedOperationException("Wrapper is an abstract class");
         }
 

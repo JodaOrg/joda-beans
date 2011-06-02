@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
@@ -197,8 +198,8 @@ public class Pair extends DirectBean {
         }
 
         @Override
-        public Pair createBean() {
-            return new Pair();
+        public BeanBuilder<? extends Pair> builder() {
+            return new BasicBeanBuilder<Pair>(new Pair());
         }
 
         @Override
