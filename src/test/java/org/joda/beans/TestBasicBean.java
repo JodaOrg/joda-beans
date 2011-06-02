@@ -122,4 +122,11 @@ public class TestBasicBean {
         assertEquals(mp1.toString(), "Person:forename");
     }
 
+    public void test_rwOnly() {
+        RWOnlyBean test = new RWOnlyBean();
+        assertEquals(test.getManualGet(), "goo");
+        assertEquals(test.propertyGet("manualGet"), "goo");
+        assertEquals(test.manualGet().get(), "goo");
+    }
+
 }

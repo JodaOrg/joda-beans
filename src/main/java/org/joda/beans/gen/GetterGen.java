@@ -35,7 +35,7 @@ abstract class GetterGen {
         GETTERS.put("smart", SmartGetterGen.INSTANCE);
         GETTERS.put("get", GetGetterGen.INSTANCE);
         GETTERS.put("is", IsGetterGen.INSTANCE);
-        GETTERS.put("manual", NoGetterGen.INSTANCE);
+        GETTERS.put("manual", ManualGetterGen.INSTANCE);
     }
 
     /**
@@ -107,6 +107,14 @@ abstract class GetterGen {
         @Override
         String generateGetInvoke(GeneratableProperty prop) {
             return "is" + prop.getUpperName() + "()";
+        }
+    }
+
+    static class ManualGetterGen extends GetterGen {
+        static final GetterGen INSTANCE = new ManualGetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            return Collections.emptyList();
         }
     }
 
