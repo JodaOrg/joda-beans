@@ -21,7 +21,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation defining a property.
+ * Annotation defining a property for code generation.
+ * <p>
+ * This annotation must be used on all private instance variables that
+ * should be treated as properties.
  * 
  * @author Stephen Colebourne
  */

@@ -21,7 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation defining a bean.
+ * Annotation defining a bean for code generation.
+ * <p>
+ * This annotation must be used on classes that should be treated as beans.
  * 
  * @author Stephen Colebourne
  */
