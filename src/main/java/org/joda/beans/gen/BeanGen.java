@@ -260,7 +260,7 @@ class BeanGen {
     private void generatePropertySet() {
         boolean generics = false;
         for (GeneratableProperty prop : data.getProperties()) {
-            generics |= prop.getReadWrite().isWritable() && prop.isGeneric();
+            generics |= (prop.getReadWrite().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
         }
         if (generics) {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
