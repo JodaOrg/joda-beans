@@ -149,7 +149,7 @@ public class Person extends DirectBean {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = getClass().hashCode();
         hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
         hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
         hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());

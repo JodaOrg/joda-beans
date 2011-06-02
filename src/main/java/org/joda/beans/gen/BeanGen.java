@@ -268,11 +268,13 @@ class BeanGen {
     private void generatePropertyGet() {
         insertRegion.add("\t@Override");
         insertRegion.add("\tprotected Object propertyGet(String propertyName) {");
-        insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
-        for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generatePropertyGetCase());
+        if (properties.size() > 0) {
+            insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
+            for (PropertyGen prop : properties) {
+                insertRegion.addAll(prop.generatePropertyGetCase());
+            }
+            insertRegion.add("\t\t}");
         }
-        insertRegion.add("\t\t}");
         insertRegion.add("\t\treturn super.propertyGet(propertyName);");
         insertRegion.add("\t}");
         insertRegion.add("");
@@ -288,11 +290,13 @@ class BeanGen {
         }
         insertRegion.add("\t@Override");
         insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue) {");
-        insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
-        for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generatePropertySetCase());
+        if (properties.size() > 0) {
+            insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
+            for (PropertyGen prop : properties) {
+                insertRegion.addAll(prop.generatePropertySetCase());
+            }
+            insertRegion.add("\t\t}");
         }
-        insertRegion.add("\t\t}");
         insertRegion.add("\t\tsuper.propertySet(propertyName, newValue);");
         insertRegion.add("\t}");
         insertRegion.add("");
@@ -305,21 +309,25 @@ class BeanGen {
         insertRegion.add("\t\t\treturn true;");
         insertRegion.add("\t\t}");
         insertRegion.add("\t\tif (obj != null && obj.getClass() == this.getClass()) {");
-        insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
-        for (int i = 0; i < properties.size(); i++) {
-            PropertyGen prop = properties.get(i);
-            String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
-            insertRegion.add(
-                    (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
-                    "JodaBeanUtils.equal(" + getter + ", other." + getter + ")" +
-                    (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
-        }
-        if (data.isSubclass()) {
-            insertRegion.add(
-                    (properties.size() == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
-                    "super.equals(other);");
-        } else if (properties.size() == 0) {
-            insertRegion.add("\t\t\treturn true;");
+        if (properties.size() == 0) {
+            if (data.isSubclass()) {
+                insertRegion.add("\t\t\treturn super.equals(obj);");
+            } else {
+                insertRegion.add("\t\t\treturn true;");
+            }
+        } else {
+            insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
+            for (int i = 0; i < properties.size(); i++) {
+                PropertyGen prop = properties.get(i);
+                String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+                insertRegion.add(
+                        (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
+                        "JodaBeanUtils.equal(" + getter + ", other." + getter + ")" +
+                        (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
+            }
+            if (data.isSubclass()) {
+                insertRegion.add("\t\t\t\t\tsuper.equals(obj);");
+            }
         }
         insertRegion.add("\t\t}");
         insertRegion.add("\t\treturn false;");
@@ -330,7 +338,11 @@ class BeanGen {
     private void generateHashCode() {
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic int hashCode() {");
-        insertRegion.add("\t\tint hash = 7;");
+        if (data.isSubclass()) {
+            insertRegion.add("\t\tint hash = 7;");
+        } else {
+            insertRegion.add("\t\tint hash = getClass().hashCode();");
+        }
         for (int i = 0; i < properties.size(); i++) {
             PropertyGen prop = properties.get(i);
             String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());

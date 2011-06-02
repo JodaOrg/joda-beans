@@ -113,7 +113,7 @@ public class Address extends DirectBean {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = getClass().hashCode();
         hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
         hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
         hash += hash * 31 + JodaBeanUtils.hashCode(getCity());

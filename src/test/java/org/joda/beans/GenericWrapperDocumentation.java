@@ -78,7 +78,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
         if (obj != null && obj.getClass() == this.getClass()) {
             GenericWrapperDocumentation<?> other = (GenericWrapperDocumentation<?>) obj;
             return JodaBeanUtils.equal(getName(), other.getName()) &&
-                    super.equals(other);
+                    super.equals(obj);
         }
         return false;
     }

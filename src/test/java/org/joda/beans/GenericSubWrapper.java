@@ -78,7 +78,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         if (obj != null && obj.getClass() == this.getClass()) {
             GenericSubWrapper<?> other = (GenericSubWrapper<?>) obj;
             return JodaBeanUtils.equal(getName(), other.getName()) &&
-                    super.equals(other);
+                    super.equals(obj);
         }
         return false;
     }

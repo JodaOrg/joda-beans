@@ -96,7 +96,7 @@ public class Pair extends DirectBean {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = getClass().hashCode();
         hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
         hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
         return hash;

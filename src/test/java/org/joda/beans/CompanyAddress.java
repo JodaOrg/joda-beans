@@ -75,7 +75,7 @@ public class CompanyAddress extends Address {
         if (obj != null && obj.getClass() == this.getClass()) {
             CompanyAddress other = (CompanyAddress) obj;
             return JodaBeanUtils.equal(getCompanyName(), other.getCompanyName()) &&
-                    super.equals(other);
+                    super.equals(obj);
         }
         return false;
     }

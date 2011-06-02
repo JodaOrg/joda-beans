@@ -76,7 +76,7 @@ public class PersonDocumentation extends Documentation<Person> {
         if (obj != null && obj.getClass() == this.getClass()) {
             PersonDocumentation other = (PersonDocumentation) obj;
             return JodaBeanUtils.equal(getName(), other.getName()) &&
-                    super.equals(other);
+                    super.equals(obj);
         }
         return false;
     }

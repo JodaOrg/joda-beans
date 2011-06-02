@@ -76,7 +76,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         if (obj != null && obj.getClass() == this.getClass()) {
             SubWrapper other = (SubWrapper) obj;
             return JodaBeanUtils.equal(getName(), other.getName()) &&
-                    super.equals(other);
+                    super.equals(obj);
         }
         return false;
     }

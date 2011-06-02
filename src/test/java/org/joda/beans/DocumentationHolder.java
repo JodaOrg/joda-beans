@@ -84,7 +84,7 @@ public class DocumentationHolder extends DirectBean {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = getClass().hashCode();
         hash += hash * 31 + JodaBeanUtils.hashCode(getDocumentation());
         return hash;
     }
