@@ -43,7 +43,7 @@ public abstract class BasicBean implements Bean {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this bean to another.
+     * Checks if this bean equals another.
      * <p>
      * This compares the class and all the properties of the bean.
      * 
@@ -75,7 +75,7 @@ public abstract class BasicBean implements Bean {
     }
 
     /**
-     * Returns a string that summarises the property.
+     * Returns a string that summarises the bean.
      * <p>
      * The string contains the class name and properties.
      * 
