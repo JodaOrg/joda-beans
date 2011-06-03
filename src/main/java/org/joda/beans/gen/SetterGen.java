@@ -134,12 +134,16 @@ abstract class SetterGen {
             for (String comment : prop.getComments()) {
                 list.add("\t * " + comment);
             }
-            list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property");
+            list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" +
+                    (prop.isNotNull() ? ", not null" : ""));
             list.add("\t */");
             if (prop.isDeprecated()) {
                 list.add("\t@Deprecated");
             }
             list.add("\tpublic void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            if (prop.isValidated()) {
+                list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
+            }
             list.add("\t\tthis." + prop.getFieldName() + " = " + prop.getPropertyName() + ";");
             list.add("\t}");
             list.add("");

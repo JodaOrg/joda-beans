@@ -93,6 +93,9 @@ class BeanGen {
             generateMetaBean();
             generatePropertyGet();
             generatePropertySet();
+            if (data.isValidated()) {
+                generateValidate();
+            }
             if (data.isManualEqualsHashCode() == false) {
                 generateEquals();
                 generateHashCode();
@@ -306,6 +309,19 @@ class BeanGen {
         insertRegion.add("");
     }
 
+    private void generateValidate() {
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tprotected void validate() {");
+        for (PropertyGen prop : properties) {
+            if (prop.getData().isValidated()) {
+                insertRegion.add("\t\t" + prop.getData().getValidationMethodName() + "(" + prop.getData().getPropertyName() + ", \"" + prop.getData().getPropertyName() + "\");");
+            }
+        }
+        insertRegion.add("\t\tsuper.validate();");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
     private void generateEquals() {
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic boolean equals(Object obj) {");
@@ -426,7 +442,7 @@ class BeanGen {
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
         if (data.isConstructable()) {
-            insertRegion.add("\t\t\treturn new BasicBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
+            insertRegion.add("\t\t\treturn new DirectBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
         } else {
             insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
         }

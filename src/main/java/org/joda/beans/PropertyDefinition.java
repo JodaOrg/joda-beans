@@ -65,7 +65,6 @@ public @interface PropertyDefinition {
      * Standard style stings are:
      * <ul>
      * <li>'' - do not generate any form of setter
-     *  for common list types or 'setClearPutAll' for common map types and FlexiBean
      * <li>'smart' - process intelligently - uses 'set' unless final, when it will use 'setClearAddAll'
      *  for common list types or 'setClearPutAll' for common map types and FlexiBean
      * <li>'set' - generates setXxx()
@@ -77,5 +76,33 @@ public @interface PropertyDefinition {
      * @return the style of the property, not null
      */
     String set() default "smart";
+
+    /**
+     * The validator to use.
+     * <p>
+     * The property value may be validated by specifying this attribute.
+     * By default no validation is performed.
+     * The code generator places the validation into the set method and ensures that
+     * new objects are validated correctly.
+     * <p>
+     * Custom validations, are written by writing a static method and referring to it.
+     * For example, {@code public void checkMyValue(Integer val, String propertyName) ...}
+     * The method generally has a {@code void} return, throwing an exception if validation fails.
+     * There must be two arguments, the value and the property name. The value may be the
+     * property type or a superclass (like Object). The property name should be a String.
+     * <p>
+     * Standard validation stings are:
+     * <ul>
+     * <li>'' - do not generate any form of validation
+     * <li>'notNull' - suitable for checking that the value is non-null,
+     *  calls JodaBeanUtils.notNull() which throws an IllegalArgumentException
+     * <li>'notEmpty' - suitable for checking that a string is non-null and non-empty,
+     *  calls JodaBeanUtils.notEmpty() which throws an IllegalArgumentException
+     * <li>'{className}.{staticMethodName}' - a custom validation method, described above
+     * </ul>
+     * 
+     * @return the validation type, not null
+     */
+    String validate() default "";
 
 }

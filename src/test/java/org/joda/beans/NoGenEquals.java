@@ -17,8 +17,8 @@ package org.joda.beans;
 
 import java.util.Map;
 
-import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
@@ -141,7 +141,7 @@ public class NoGenEquals extends DirectBean {
 
         @Override
         public BeanBuilder<? extends NoGenEquals> builder() {
-            return new BasicBeanBuilder<NoGenEquals>(new NoGenEquals());
+            return new DirectBeanBuilder<NoGenEquals>(new NoGenEquals());
         }
 
         @Override

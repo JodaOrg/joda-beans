@@ -17,8 +17,8 @@ package org.joda.beans;
 
 import java.util.Map;
 
-import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
@@ -287,7 +287,7 @@ public class Address extends DirectBean {
 
         @Override
         public BeanBuilder<? extends Address> builder() {
-            return new BasicBeanBuilder<Address>(new Address());
+            return new DirectBeanBuilder<Address>(new Address());
         }
 
         @Override

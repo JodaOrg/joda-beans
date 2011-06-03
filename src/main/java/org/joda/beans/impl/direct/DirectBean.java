@@ -56,6 +56,14 @@ public abstract class DirectBean extends BasicBean {
         throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
+    /**
+     * Validates the values of the properties.
+     * 
+     * @throws RuntimeException if a property is invalid
+     */
+    protected void validate() {
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {

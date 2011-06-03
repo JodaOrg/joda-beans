@@ -17,7 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
-import org.joda.beans.impl.BasicBeanBuilder;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
@@ -155,7 +155,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
 
         @Override
         public BeanBuilder<? extends GenericSubWrapper<T>> builder() {
-            return new BasicBeanBuilder<GenericSubWrapper<T>>(new GenericSubWrapper<T>());
+            return new DirectBeanBuilder<GenericSubWrapper<T>>(new GenericSubWrapper<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

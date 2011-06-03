@@ -48,6 +48,28 @@ public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
         this.bean = bean;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the target bean.
+     * 
+     * @return the target bean, not null
+     */
+    protected T getTargetBean() {
+        return bean;
+    }
+
+    /**
+     * Gets the current value of the property.
+     * 
+     * @param propertyName  the property name, not null
+     * @return the current value in the builder, null if not found or value is null
+     */
+    protected BeanBuilder<T> get(String propertyName) {
+        bean.property(propertyName).get();
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public BeanBuilder<T> set(String propertyName, Object value) {
         bean.property(propertyName).set(value);
@@ -64,7 +86,17 @@ public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
 
     @Override
     public T build() {
+        validate(bean);
         return bean;
+    }
+
+    /**
+     * Hook to allow a subclass to validate the bean.
+     * 
+     * @param bean  the bean to validate, not null
+     */
+    protected void validate(T bean) {
+        // override to validate the bean
     }
 
     //-----------------------------------------------------------------------

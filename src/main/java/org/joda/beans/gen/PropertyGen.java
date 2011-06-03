@@ -31,8 +31,10 @@ class PropertyGen {
 
     /** The getter pattern. */
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
-    /** The getter pattern. */
+    /** The setter pattern. */
     private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
+    /** The validation pattern. */
+    private static final Pattern VALIDATION_PATTERN = Pattern.compile(".*[ ,(]validate[ ]*[=][ ]*[\"]([a-zA-Z_.]*)[\"].*");
 
     /** Annotation line index in input file. */
     private final int annotationIndex;
@@ -66,6 +68,7 @@ class PropertyGen {
         } else {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
+            prop.setValidation(parseValidation(content));
             prop.setReadWrite(makeReadWrite(prop.getGetStyle(), prop.getSetStyle(), prop.getPropertyName()));
             prop.setDeprecated(parseDeprecated(content));
             prop.setFieldName(parseFieldName(content));
@@ -133,6 +136,15 @@ class PropertyGen {
             return matcher.group(1);
         }
         return "smart";
+    }
+
+    private String parseValidation(List<String> content) {
+        String line = content.get(annotationIndex).trim();
+        Matcher matcher = VALIDATION_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private boolean parseDeprecated(List<String> content) {

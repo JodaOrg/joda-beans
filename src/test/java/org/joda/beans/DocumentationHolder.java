@@ -17,8 +17,8 @@ package org.joda.beans;
 
 import java.util.Map;
 
-import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
@@ -154,7 +154,7 @@ public class DocumentationHolder extends DirectBean {
 
         @Override
         public BeanBuilder<? extends DocumentationHolder> builder() {
-            return new BasicBeanBuilder<DocumentationHolder>(new DocumentationHolder());
+            return new DirectBeanBuilder<DocumentationHolder>(new DocumentationHolder());
         }
 
         @Override

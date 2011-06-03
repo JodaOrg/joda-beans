@@ -171,6 +171,33 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the value is not null, throwing an exception if it is.
+     * 
+     * @param value  the value to check, may be null
+     * @param propertyName  the property name, should not be null
+     * @throws IllegalArgumentException if the value is null
+     */
+    public static void notNull(String value, String propertyName) {
+        if (value == null) {
+            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be null");
+        }
+    }
+
+    /**
+     * Checks if the value is not empty, throwing an exception if it is.
+     * 
+     * @param value  the value to check, may be null
+     * @param propertyName  the property name, should not be null
+     * @throws IllegalArgumentException if the value is null or empty
+     */
+    public static void notEmpty(String value, String propertyName) {
+        if (value == null || value.length() == 0) {
+            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be empty");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Extracts the list content type as a {@code Class} from a meta-property.
      * 
      * @param prop  the property to examine, not null

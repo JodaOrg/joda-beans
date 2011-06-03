@@ -224,4 +224,17 @@ class GeneratableBean {
         return superTypeRaw;
     }
 
+    /**
+     * Checks if any property is validated.
+     * @return true if validated
+     */
+    public boolean isValidated() {
+        for (GeneratableProperty property : properties) {
+            if (property.isValidated()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

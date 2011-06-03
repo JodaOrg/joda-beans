@@ -8,7 +8,10 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.4" date="2011-06-02" description="v0.4">
+    <release version="0.4" date="2011-06-03" description="v0.4">
+      <action dev="jodastephen" type="add">
+        Add basic validation support.
+      </action>              
       <action dev="jodastephen" type="add">
         Add derived property annotation and support.
       </action>              

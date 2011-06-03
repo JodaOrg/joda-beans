@@ -17,7 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
-import org.joda.beans.impl.BasicBeanBuilder;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
@@ -95,7 +95,7 @@ public class TweakedPair extends Pair {
 
         @Override
         public BeanBuilder<? extends TweakedPair> builder() {
-            return new BasicBeanBuilder<TweakedPair>(new TweakedPair());
+            return new DirectBeanBuilder<TweakedPair>(new TweakedPair());
         }
 
         @Override

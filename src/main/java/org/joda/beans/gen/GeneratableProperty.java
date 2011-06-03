@@ -43,6 +43,8 @@ class GeneratableProperty {
     private String getStyle;
     /** The setter style. */
     private String setStyle;
+    /** The validation string. */
+    private String validation;
     /** Read-write type. */
     private PropertyReadWrite readWrite;
     /** Deprecated flag. */
@@ -181,6 +183,22 @@ class GeneratableProperty {
     }
 
     /**
+     * Gets the validation.
+     * @return the validation
+     */
+    public String getValidation() {
+        return validation;
+    }
+
+    /**
+     * Sets the validation.
+     * @param validation  the validation to set
+     */
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
+
+    /**
      * Gets the read-write flag.
      * @return the read write
      */
@@ -297,6 +315,37 @@ class GeneratableProperty {
      */
     public boolean isDerived() {
         return fieldName == null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the validation is non-null.
+     * @return true if non-null
+     */
+    public boolean isValidated() {
+        return getValidation() != null && getValidation().length() > 0;
+    }
+
+    /**
+     * Checks if the validation is non-null.
+     * @return true if non-null
+     */
+    public boolean isNotNull() {
+        return getValidation().equals("notNull") || getValidation().equals("notEmpty");
+    }
+
+    /**
+     * Gets the validation method name.
+     * @return the method name
+     */
+    public String getValidationMethodName() {
+        if (isValidated() == false) {
+            throw new IllegalStateException();
+        }
+        if (getValidation().equals("notNull") || getValidation().equals("notEmpty")) {
+            return "JodaBeanUtils." + getValidation();
+        }
+        return getValidation();  // method in bean or static
     }
 
 }

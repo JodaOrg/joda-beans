@@ -137,7 +137,7 @@ abstract class GetterGen {
         for (String comment : prop.getComments()) {
             list.add("\t * " + comment);
         }
-        list.add("\t * @return the value of the property");
+        list.add("\t * @return the value of the property" + (prop.isNotNull() ? ", not null" : ""));
         list.add("\t */");
         if (prop.isDeprecated()) {
             list.add("\t@Deprecated");

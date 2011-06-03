@@ -17,7 +17,7 @@ package org.joda.beans;
 
 import java.util.Map;
 
-import org.joda.beans.impl.BasicBeanBuilder;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
@@ -152,7 +152,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
 
         @Override
         public BeanBuilder<? extends SubWrapper> builder() {
-            return new BasicBeanBuilder<SubWrapper>(new SubWrapper());
+            return new DirectBeanBuilder<SubWrapper>(new SubWrapper());
         }
 
         @Override
