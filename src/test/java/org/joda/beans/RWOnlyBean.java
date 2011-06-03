@@ -47,6 +47,7 @@ public class RWOnlyBean extends DirectBean {
      * A manual get property, no set.
      */
     @PropertyDefinition(get = "manual", set = "")
+    @SuppressWarnings("unused")
     private String manualGet;
 
     public String getManualGet() {
