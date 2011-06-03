@@ -177,7 +177,7 @@ public final class JodaBeanUtils {
      * @param propertyName  the property name, should not be null
      * @throws IllegalArgumentException if the value is null
      */
-    public static void notNull(String value, String propertyName) {
+    public static void notNull(Object value, String propertyName) {
         if (value == null) {
             throw new IllegalArgumentException("Argument '" + propertyName + "' must not be null");
         }
