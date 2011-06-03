@@ -314,7 +314,7 @@ class BeanGen {
         insertRegion.add("\tprotected void validate() {");
         for (PropertyGen prop : properties) {
             if (prop.getData().isValidated()) {
-                insertRegion.add("\t\t" + prop.getData().getValidationMethodName() + "(" + prop.getData().getPropertyName() + ", \"" + prop.getData().getPropertyName() + "\");");
+                insertRegion.add("\t\t" + prop.getData().getValidationMethodName() + "(" + prop.getData().getFieldName() + ", \"" + prop.getData().getPropertyName() + "\");");
             }
         }
         insertRegion.add("\t\tsuper.validate();");
