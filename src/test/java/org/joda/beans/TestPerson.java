@@ -27,6 +27,8 @@ import java.util.NoSuchElementException;
 
 import javax.xml.bind.annotation.XmlID;
 
+import org.joda.beans.gen.Address;
+import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 

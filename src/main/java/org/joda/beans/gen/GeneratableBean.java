@@ -17,6 +17,8 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A bean that can be generated.
@@ -25,6 +27,12 @@ import java.util.List;
  */
 class GeneratableBean {
 
+    /** The list of current imports. */
+    private final SortedSet<String> currentImports = new TreeSet<String>();
+    /** The list of new imports. */
+    private final SortedSet<String> newImports = new TreeSet<String>();
+    /** The last import line. */
+    private int lastImportLine;
     /** The flag as to whether the class can be constructed. */
     private boolean constructable;
     /** The full type of the bean class. */
@@ -50,6 +58,48 @@ class GeneratableBean {
      * Constructor.
      */
     GeneratableBean() {
+    }
+
+    /**
+     * Gets the current set of imports.
+     * @return the imports
+     */
+    public SortedSet<String> getCurrentImports() {
+        return currentImports;
+    }
+
+    /**
+     * Gets the new imports.
+     * @return the imports
+     */
+    public SortedSet<String> getNewImports() {
+        return newImports;
+    }
+
+    /**
+     * Ensures an import is present.
+     * @param cls  the class, not null
+     */
+    public void ensureImport(Class<?> cls) {
+        if (currentImports.contains(cls.getName()) == false) {
+            newImports.add(cls.getName());
+        }
+    }
+
+    /**
+     * Gets the import insert location.
+     * @return the insert location
+     */
+    public int getImportInsertLocation() {
+        return lastImportLine;
+    }
+
+    /**
+     * Sets the import insert location.
+     * @param location  the insert location
+     */
+    public void setImportInsertLocation(int location) {
+        lastImportLine = location;
     }
 
     /**

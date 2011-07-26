@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
 import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.impl.direct.DirectMetaProperty;
 
 /**
  * A property parsed from the source file.
@@ -302,6 +305,8 @@ class PropertyGen {
 
     //-----------------------------------------------------------------------
     List<String> generateMetaPropertyConstant() {
+        data.getBean().ensureImport(MetaProperty.class);
+        data.getBean().ensureImport(DirectMetaProperty.class);
         List<String> list = new ArrayList<String>();
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
@@ -344,6 +349,7 @@ class PropertyGen {
     }
 
     List<String> generateProperty() {
+        data.getBean().ensureImport(Property.class);
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets the the {@code " + data.getPropertyName() + "} property.");

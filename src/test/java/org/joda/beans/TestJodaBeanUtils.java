@@ -16,10 +16,15 @@
 package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotSame;
 
 import java.util.List;
 import java.util.Map;
 
+import org.joda.beans.gen.Address;
+import org.joda.beans.gen.Pair;
+import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 
@@ -29,6 +34,16 @@ import org.testng.annotations.Test;
 @Test
 public class TestJodaBeanUtils {
 
+    public void test_metaBean() {
+        assertEquals(JodaBeanUtils.metaBean(Person.class), Person.meta());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_metaBean_notFound() {
+        JodaBeanUtils.metaBean(String.class);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_propertiesEqual_propertiesHashCode() {
         Pair a = new Pair();
         a.setFirst("A");
@@ -60,11 +75,27 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(null, "A"), false);
     }
 
+    //-----------------------------------------------------------------------
     public void test_hashCode_Object() {
         assertEquals(JodaBeanUtils.hashCode("A"), "A".hashCode());
         assertEquals(JodaBeanUtils.hashCode(null), 0);
     }
 
+    //-----------------------------------------------------------------------
+    public void test_clone() {
+        Person p = new Person();
+        p.setForename("Stephen");
+        p.setSurname("Colebourne");
+        p.getOtherAddressMap().put("A", new Address());
+        p.getOtherAddressMap().get("A").setCity("London");
+        Person cloned = JodaBeanUtils.clone(p);
+        assertNotSame(cloned, p);
+        assertEquals(cloned, p);
+        p.getOtherAddressMap().put("B", new Address());
+        assertFalse(cloned.equals(p));
+    }
+
+    //-----------------------------------------------------------------------
     public void test_listType_Person_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         

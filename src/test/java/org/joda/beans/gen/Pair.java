@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.gen;
 
 import java.util.Map;
 
@@ -21,6 +21,12 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.BeanBuilder;
+import org.joda.beans.BeanDefinition;
+import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
+import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
@@ -50,6 +56,9 @@ public class Pair extends DirectBean {
      */
     public static Pair.Meta meta() {
         return Pair.Meta.INSTANCE;
+    }
+    static {
+        JodaBeanUtils.registerMetaBean(Pair.Meta.INSTANCE);
     }
 
     @Override

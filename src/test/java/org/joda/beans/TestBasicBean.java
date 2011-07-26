@@ -17,6 +17,9 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import org.joda.beans.gen.Address;
+import org.joda.beans.gen.CompanyAddress;
+import org.joda.beans.gen.Person;
 import org.testng.annotations.Test;
 
 /**

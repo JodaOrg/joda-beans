@@ -16,10 +16,21 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.joda.beans.BeanBuilder;
+import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.impl.direct.DirectBean;
+import org.joda.beans.impl.direct.DirectBeanBuilder;
+import org.joda.beans.impl.direct.DirectMetaBean;
+import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
  * Code generator for a bean.
@@ -67,6 +78,8 @@ class BeanGen {
         int beanDefIndex = parseBeanDefinition();
         if (beanDefIndex >= 0) {
             this.data = new GeneratableBean();
+            this.data.getCurrentImports().addAll(parseImports(beanDefIndex));
+            this.data.setImportInsertLocation(parseImportLocation(beanDefIndex));
             this.data.setConstructable(parseConstructable(beanDefIndex));
             this.data.setTypeParts(parseBeanType(beanDefIndex));
             this.data.setSuperTypeParts(parseBeanSuperType(beanDefIndex));
@@ -103,7 +116,17 @@ class BeanGen {
             generateGettersSetters();
             generateMetaClass();
             insertRegion.add("\t///CLOVER:ON");
+            resolveImports();
             resolveIndents();
+        }
+    }
+
+    private void resolveImports() {
+        if (data.getNewImports().size() > 0) {
+            int pos = data.getImportInsertLocation();
+            for (String imp : data.getNewImports()) {
+                content.add(pos++, "import " + imp + ";");
+            }
         }
     }
 
@@ -122,6 +145,30 @@ class BeanGen {
             }
         }
         return -1;
+    }
+
+    private Set<String> parseImports(int defLine) {
+        Set<String> imports = new HashSet<String>();
+        for (int index = 0; index < defLine; index++) {
+            if (content.get(index).startsWith("import ")) {
+                String imp = content.get(index).substring(7).trim();
+                imp = imp.substring(0, imp.indexOf(';'));
+                if (imp.endsWith(".*") == false) {
+                    imports.add(imp);
+                }
+            }
+        }
+        return imports;
+    }
+
+    private int parseImportLocation(int defLine) {
+        int location = 0;
+        for (int index = 0; index < defLine; index++) {
+            if (content.get(index).startsWith("import ") || content.get(index).startsWith("package ")) {
+                location = index;
+            }
+        }
+        return location;
     }
 
     private boolean parseConstructable(int defLine) {
@@ -231,6 +278,10 @@ class BeanGen {
     }
 
     private void generateMeta() {
+        if (data.isSubclass() == false) {
+            data.ensureImport(DirectBean.class);
+        }
+        data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         if (data.isTypeGeneric()) {
@@ -248,6 +299,9 @@ class BeanGen {
             insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
         }
         insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
+        insertRegion.add("\t}");
+        insertRegion.add("\tstatic {");
+        insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -323,6 +377,7 @@ class BeanGen {
     }
 
     private void generateEquals() {
+        data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic boolean equals(Object obj) {");
         insertRegion.add("\t\tif (obj == this) {");
@@ -356,6 +411,7 @@ class BeanGen {
     }
 
     private void generateHashCode() {
+        data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic int hashCode() {");
         if (data.isSubclass()) {
@@ -382,7 +438,13 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
-        String superMeta = (data.isSubclass() ? data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true) : "DirectMetaBean");
+        String superMeta;
+        if (data.isSubclass()) {
+            superMeta = data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true);
+        } else {
+            data.ensureImport(DirectMetaBean.class);
+            superMeta = "DirectMetaBean";
+        }
         if (data.isTypeGeneric()) {
             insertRegion.add("\tpublic static class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
         } else {
@@ -421,6 +483,7 @@ class BeanGen {
     }
 
     private void generateMetaPropertyMapSetup() {
+        data.ensureImport(DirectMetaPropertyMap.class);
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
@@ -439,6 +502,8 @@ class BeanGen {
     }
 
     private void generateMetaBuilder() {
+        data.ensureImport(BeanBuilder.class);
+        data.ensureImport(DirectBeanBuilder.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
         if (data.isConstructable()) {
@@ -467,6 +532,7 @@ class BeanGen {
 
     private void generateMetaPropertyGet() {
         if (properties.size() > 0) {
+            data.ensureImport(MetaProperty.class);
             insertRegion.add("\t\t@Override");
             insertRegion.add("\t\tprotected MetaProperty<?> metaPropertyGet(String propertyName) {");
             insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
@@ -481,6 +547,7 @@ class BeanGen {
     }
 
     private void generateMetaPropertyMap() {
+        data.ensureImport(Map.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
         insertRegion.add("\t\t\treturn " + prefix + "map;");

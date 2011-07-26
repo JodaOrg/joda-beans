@@ -15,8 +15,8 @@
  */
 package org.joda.beans.test;
 
-import org.joda.beans.Address;
-import org.joda.beans.Person;
+import org.joda.beans.gen.Address;
+import org.joda.beans.gen.Person;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

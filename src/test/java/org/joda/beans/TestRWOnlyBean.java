@@ -17,40 +17,37 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import org.joda.beans.gen.RWOnlyBean;
 import org.testng.annotations.Test;
 
 /**
  * Test RWOnlyBean.
  */
 @Test
-public class TestRWOnlyBean {
+public class TestRWOnlyBean extends RWOnlyBean {
 
     public void test_ro() {
-        RWOnlyBean test = new RWOnlyBean();
-        assertEquals(test.getRo(), null);
-        assertEquals(test.propertyGet("ro"), null);
-        assertEquals(test.ro().get(), null);
+        assertEquals(getRo(), null);
+        assertEquals(propertyGet("ro"), null);
+        assertEquals(ro().get(), null);
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void test_wo() {
-        RWOnlyBean test = new RWOnlyBean();
-        test.setWo("woo");
-        test.propertyGet("wo");
+        setWo("woo");
+        propertyGet("wo");
     }
 
     public void test_manualGet() {
-        RWOnlyBean test = new RWOnlyBean();
-        assertEquals(test.getManualGet(), "goo");
-        assertEquals(test.propertyGet("manualGet"), "goo");
-        assertEquals(test.manualGet().get(), "goo");
+        assertEquals(getManualGet(), "goo");
+        assertEquals(propertyGet("manualGet"), "goo");
+        assertEquals(manualGet().get(), "goo");
     }
 
     public void test_derived() {
-        RWOnlyBean test = new RWOnlyBean();
-        assertEquals(test.getDerived(), "drv");
-        assertEquals(test.propertyGet("derived"), "drv");
-        assertEquals(test.derived().get(), "drv");
+        assertEquals(getDerived(), "drv");
+        assertEquals(propertyGet("derived"), "drv");
+        assertEquals(derived().get(), "drv");
     }
 
 }

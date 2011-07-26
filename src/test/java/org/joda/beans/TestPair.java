@@ -17,6 +17,8 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import org.joda.beans.gen.Pair;
+import org.joda.beans.gen.TweakedPair;
 import org.testng.annotations.Test;
 
 /**

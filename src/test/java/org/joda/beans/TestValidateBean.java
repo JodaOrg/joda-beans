@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import org.joda.beans.gen.ValidateBean;
 import org.testng.annotations.Test;
 
 /**

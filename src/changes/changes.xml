@@ -8,6 +8,19 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.4.1" date="2011-07-26" description="v0.4.1">
+      <action dev="jodastephen" type="add">
+        Add JodaBeanUtils.clone().
+      </action>              
+      <action dev="jodastephen" type="add">
+        Add JodaBeanUtils.metaBean(), to lookup meta-bean by class.
+        This requires regeneration of direct beans.
+      </action>              
+      <action dev="jodastephen" type="update">
+        Improve generation of imports.
+        This may require regeneration of direct beans.
+      </action>              
+    </release>
     <release version="0.4" date="2011-06-03" description="v0.4">
       <action dev="jodastephen" type="add">
         Add basic validation support.

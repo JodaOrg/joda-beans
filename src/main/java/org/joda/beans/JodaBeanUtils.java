@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -32,9 +33,49 @@ import org.joda.beans.impl.flexi.FlexiBean;
 public final class JodaBeanUtils {
 
     /**
+     * The cache of meta-beans.
+     */
+    private static final ConcurrentHashMap<Class<?>, MetaBean> metaBeans = new ConcurrentHashMap<Class<?>, MetaBean>();
+
+    /**
      * Restricted constructor.
      */
     private JodaBeanUtils() {
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the meta-bean given a class.
+     * <p>
+     * This only works for those beans that have registered their meta-beans.
+     * See {@link #registerMetaBean(MetaBean)}.
+     * 
+     * @param cls  the class to get the meta-bean for, not null
+     * @return the meta-bean, not null
+     * @throws IllegalArgumentException if unable to obtain the meta-bean
+     */
+    public static MetaBean metaBean(Class<?> cls) {
+        MetaBean meta = metaBeans.get(cls);
+        if (meta == null) {
+            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+        }
+        return meta;
+    }
+
+    /**
+     * Registers a meta-bean.
+     * <p>
+     * This should be done for all beans in a static factory where possible.
+     * If the meta-bean is dynamic, this method should not be called.
+     * 
+     * @param metaBean  the meta-bean, not null
+     * @throws IllegalArgumentException if unable to register
+     */
+    public static void registerMetaBean(MetaBean metaBean) {
+        Class<? extends Bean> type = metaBean.beanType();
+        if (metaBeans.putIfAbsent(type, metaBean) != null) {
+            throw new IllegalArgumentException("Cannot register class twice: " + type.getName());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -167,6 +208,22 @@ public final class JodaBeanUtils {
         }
         buf.append('}');
         return buf.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    public static <T extends Bean> T clone(T original) {
+      BeanBuilder<? extends Bean> builder = original.metaBean().builder();
+      for (MetaProperty<Object> mp : original.metaBean().metaPropertyIterable()) {
+        if (mp.readWrite().isWritable()) {
+          Object value = mp.get(original);
+          if (value instanceof Bean) {
+            value = clone((Bean) value);
+          }
+          builder.set(mp.name(), value);
+        }
+      }
+      return (T) builder.build();
     }
 
     //-----------------------------------------------------------------------
