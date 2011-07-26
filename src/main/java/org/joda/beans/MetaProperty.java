@@ -120,6 +120,7 @@ public interface MetaProperty<P> {
     /**
      * Sets the value of the property on the specified bean.
      * <p>
+     * The value must be of the correct type for the property.
      * For a standard JavaBean, this is equivalent to calling <code>setFoo()</code> on the bean.
      * Alternate implementations may perform any logic to change the value.
      * 
@@ -135,6 +136,7 @@ public interface MetaProperty<P> {
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
      * <p>
+     * The value must be of the correct type for the property.
      * This is a combination of the {@code get} and {@code set} methods that matches the definition
      * of {@code put} in a {@code Map}.
      * 
@@ -147,6 +149,38 @@ public interface MetaProperty<P> {
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
     P put(Bean bean, P value);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the property for the specified bean converted to a string.
+     * <p>
+     * This converts the result of {@link #get(Bean)} to a standard format string.
+     * Conversion uses Joda-Convert.
+     * 
+     * For a standard JavaBean, this is equivalent to calling <code>getFoo()</code> on the bean.
+     * Alternate implementations may perform any logic to obtain the value.
+     * 
+     * @param bean  the bean to query, not null
+     * @return the value of the property on the specified bean, may be null
+     * @throws ClassCastException if the bean is of an incorrect type
+     * @throws UnsupportedOperationException if the property is write-only
+     */
+    String getString(Bean bean);
+
+    /**
+     * Sets the value of the property on the specified bean from a string by conversion.
+     * <p>
+     * This converts the string to the correct type for the property and then sets it
+     * using {@link #set(Bean, Object)}. Conversion uses Joda-Convert.
+     * 
+     * @param bean  the bean to update, not null
+     * @param value  the value to set into the property on the specified bean, may be null
+     * @throws ClassCastException if the bean is of an incorrect type
+     * @throws ClassCastException if the value is of an invalid type for the property
+     * @throws UnsupportedOperationException if the property is read-only
+     * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
+     */
+    void setString(Bean bean, String value);
 
     //-----------------------------------------------------------------------
     /**

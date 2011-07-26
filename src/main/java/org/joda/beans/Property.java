@@ -68,6 +68,8 @@ public interface Property<P> {
     /**
      * Sets the value of the property on the associated bean.
      * <p>
+     * The value must be of the correct type for the property.
+     * See the meta-property for string conversion.
      * For a standard JavaBean, this is equivalent to calling <code>setFoo()</code> on the bean.
      * Alternate implementations may perform any logic to change the value.
      * 

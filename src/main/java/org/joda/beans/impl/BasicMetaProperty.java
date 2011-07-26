@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 
@@ -63,6 +64,18 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
         P old = get(bean);
         set(bean, value);
         return old;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String getString(Bean bean) {
+        Object value = get(bean);
+        return JodaBeanUtils.stringConverter().convertToString(value);
+    }
+
+    @Override
+    public void setString(Bean bean, String value) {
+        set(bean, JodaBeanUtils.stringConverter().convertFromString(propertyType(), value));
     }
 
     //-----------------------------------------------------------------------

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.convert.StringConvert;
 
 /**
  * A set of utilities to assist when working with beans and properties.
@@ -36,6 +37,10 @@ public final class JodaBeanUtils {
      * The cache of meta-beans.
      */
     private static final ConcurrentHashMap<Class<?>, MetaBean> metaBeans = new ConcurrentHashMap<Class<?>, MetaBean>();
+    /**
+     * The cache of meta-beans.
+     */
+    private static final StringConvert converter = new StringConvert();
 
     /**
      * Restricted constructor.
@@ -76,6 +81,19 @@ public final class JodaBeanUtils {
         if (metaBeans.putIfAbsent(type, metaBean) != null) {
             throw new IllegalArgumentException("Cannot register class twice: " + type.getName());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the standard string format converter.
+     * <p>
+     * This returns a singleton that may be mutated (holds a concurrent map).
+     * New conversions should be registered at program startup.
+     * 
+     * @return the standard string converter, not null
+     */
+    public static StringConvert stringConverter() {
+        return converter;
     }
 
     //-----------------------------------------------------------------------
