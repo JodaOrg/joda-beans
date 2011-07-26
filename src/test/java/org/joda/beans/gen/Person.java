@@ -83,7 +83,7 @@ public class Person extends DirectBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName) {
+    protected Object propertyGet(String propertyName, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 467061063:  // forename
                 return getForename();
@@ -102,12 +102,12 @@ public class Person extends DirectBean {
             case -1809421292:  // extensions
                 return getExtensions();
         }
-        return super.propertyGet(propertyName);
+        return super.propertyGet(propertyName, quiet);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void propertySet(String propertyName, Object newValue) {
+    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 467061063:  // forename
                 setForename((String) newValue);
@@ -134,7 +134,7 @@ public class Person extends DirectBean {
                 setExtensions((FlexiBean) newValue);
                 return;
         }
-        super.propertySet(propertyName, newValue);
+        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override

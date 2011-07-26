@@ -192,18 +192,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings("unchecked")
     @Override
     public P get(Bean bean) {
-        if (readWrite.isReadable() == false) {
-            throw new UnsupportedOperationException("Property cannot be read: " + name());
-        }
-        return (P) ((DirectBean) bean).propertyGet(name());
+        return (P) ((DirectBean) bean).propertyGet(name(), false);
     }
 
     @Override
     public void set(Bean bean, P value) {
-        if (readWrite.isWritable() == false) {
-            throw new UnsupportedOperationException("Property cannot be written: " + name());
-        }
-        ((DirectBean) bean).propertySet(name(), value);
+        ((DirectBean) bean).propertySet(name(), value, false);
     }
 
 }

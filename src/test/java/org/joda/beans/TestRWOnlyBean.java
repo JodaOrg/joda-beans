@@ -28,25 +28,25 @@ public class TestRWOnlyBean extends RWOnlyBean {
 
     public void test_ro() {
         assertEquals(getRo(), null);
-        assertEquals(propertyGet("ro"), null);
+        assertEquals(propertyGet("ro", false), null);
         assertEquals(ro().get(), null);
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void test_wo() {
         setWo("woo");
-        propertyGet("wo");
+        propertyGet("wo", false);
     }
 
     public void test_manualGet() {
         assertEquals(getManualGet(), "goo");
-        assertEquals(propertyGet("manualGet"), "goo");
+        assertEquals(propertyGet("manualGet", false), "goo");
         assertEquals(manualGet().get(), "goo");
     }
 
     public void test_derived() {
         assertEquals(getDerived(), "drv");
-        assertEquals(propertyGet("derived"), "drv");
+        assertEquals(propertyGet("derived", false), "drv");
         assertEquals(derived().get(), "drv");
     }
 

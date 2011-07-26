@@ -90,34 +90,46 @@ public class RWOnlyBean extends DirectBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName) {
+    protected Object propertyGet(String propertyName, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 3645:  // ro
                 return getRo();
             case 3800:  // wo
+                if (quiet) {
+                    return null;
+                }
                 throw new UnsupportedOperationException("Property cannot be read: wo");
             case 93508016:  // manualGet
                 return getManualGet();
             case 1556125213:  // derived
                 return getDerived();
         }
-        return super.propertyGet(propertyName);
+        return super.propertyGet(propertyName, quiet);
     }
 
     @Override
-    protected void propertySet(String propertyName, Object newValue) {
+    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 3645:  // ro
+                if (quiet) {
+                    return;
+                }
                 throw new UnsupportedOperationException("Property cannot be written: ro");
             case 3800:  // wo
                 setWo((Object) newValue);
                 return;
             case 93508016:  // manualGet
+                if (quiet) {
+                    return;
+                }
                 throw new UnsupportedOperationException("Property cannot be written: manualGet");
             case 1556125213:  // derived
+                if (quiet) {
+                    return;
+                }
                 throw new UnsupportedOperationException("Property cannot be written: derived");
         }
-        super.propertySet(propertyName, newValue);
+        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override

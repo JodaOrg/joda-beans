@@ -66,19 +66,19 @@ public class Documentation<T> extends DirectBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName) {
+    protected Object propertyGet(String propertyName, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 3575610:  // type
                 return getType();
             case 951530617:  // content
                 return getContent();
         }
-        return super.propertyGet(propertyName);
+        return super.propertyGet(propertyName, quiet);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void propertySet(String propertyName, Object newValue) {
+    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 3575610:  // type
                 setType((String) newValue);
@@ -87,7 +87,7 @@ public class Documentation<T> extends DirectBean {
                 setContent((T) newValue);
                 return;
         }
-        super.propertySet(propertyName, newValue);
+        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override

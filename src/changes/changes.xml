@@ -20,6 +20,10 @@
         Improve generation of imports.
         This may require regeneration of direct beans.
       </action>              
+      <action dev="jodastephen" type="update">
+        Handle write-only properties better.
+        This requires regeneration of direct beans.
+      </action>              
     </release>
     <release version="0.4" date="2011-06-03" description="v0.4">
       <action dev="jodastephen" type="add">

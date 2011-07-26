@@ -101,6 +101,9 @@ class BeanGen {
     void process() {
         if (insertRegion != null) {
             removeOld();
+            if (data.isSubclass() == false) {
+                data.ensureImport(DirectBean.class);
+            }
             insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
             generateMetaBean();
@@ -123,7 +126,7 @@ class BeanGen {
 
     private void resolveImports() {
         if (data.getNewImports().size() > 0) {
-            int pos = data.getImportInsertLocation();
+            int pos = data.getImportInsertLocation() + 1;
             for (String imp : data.getNewImports()) {
                 content.add(pos++, "import " + imp + ";");
             }
@@ -278,9 +281,6 @@ class BeanGen {
     }
 
     private void generateMeta() {
-        if (data.isSubclass() == false) {
-            data.ensureImport(DirectBean.class);
-        }
         data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
@@ -328,7 +328,7 @@ class BeanGen {
 
     private void generatePropertyGet() {
         insertRegion.add("\t@Override");
-        insertRegion.add("\tprotected Object propertyGet(String propertyName) {");
+        insertRegion.add("\tprotected Object propertyGet(String propertyName, boolean quiet) {");
         if (properties.size() > 0) {
             insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
             for (PropertyGen prop : properties) {
@@ -336,7 +336,7 @@ class BeanGen {
             }
             insertRegion.add("\t\t}");
         }
-        insertRegion.add("\t\treturn super.propertyGet(propertyName);");
+        insertRegion.add("\t\treturn super.propertyGet(propertyName, quiet);");
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -350,7 +350,7 @@ class BeanGen {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t@Override");
-        insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue) {");
+        insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue, boolean quiet) {");
         if (properties.size() > 0) {
             insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
             for (PropertyGen prop : properties) {
@@ -358,7 +358,7 @@ class BeanGen {
             }
             insertRegion.add("\t\t}");
         }
-        insertRegion.add("\t\tsuper.propertySet(propertyName, newValue);");
+        insertRegion.add("\t\tsuper.propertySet(propertyName, newValue, quiet);");
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -503,10 +503,10 @@ class BeanGen {
 
     private void generateMetaBuilder() {
         data.ensureImport(BeanBuilder.class);
-        data.ensureImport(DirectBeanBuilder.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
         if (data.isConstructable()) {
+            data.ensureImport(DirectBeanBuilder.class);
             insertRegion.add("\t\t\treturn new DirectBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
         } else {
             insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");

@@ -38,10 +38,11 @@ public abstract class DirectBean extends BasicBean {
      * Gets the value of the property.
      * 
      * @param propertyName  the property name, not null
+     * @param quiet  true to return null if unable to read
      * @return the value of the property, may be null
      * @throws NoSuchElementException if the property name is invalid
      */
-    protected Object propertyGet(String propertyName) {
+    protected Object propertyGet(String propertyName, boolean quiet) {
         throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
@@ -50,9 +51,10 @@ public abstract class DirectBean extends BasicBean {
      * 
      * @param propertyName  the property name, not null
      * @param value  the value of the property, may be null
+     * @param quiet  true to take no action if unable to write
      * @throws NoSuchElementException if the property name is invalid
      */
-    protected void propertySet(String propertyName, Object value) {
+    protected void propertySet(String propertyName, Object value, boolean quiet) {
         throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
@@ -74,8 +76,8 @@ public abstract class DirectBean extends BasicBean {
         if (obj != null && getClass() == obj.getClass()) {
             DirectBean other = (DirectBean) obj;
             for (String name : propertyNames()) {
-                Object value1 = propertyGet(name);
-                Object value2 = other.propertyGet(name);
+                Object value1 = propertyGet(name, true);
+                Object value2 = other.propertyGet(name, true);
                 if (JodaBeanUtils.equal(value1, value2) == false) {
                     return false;
                 }
@@ -91,7 +93,7 @@ public abstract class DirectBean extends BasicBean {
         int hash = getClass().hashCode();
         Set<String> names = propertyNames();
         for (String name : names) {
-            Object value = propertyGet(name);
+            Object value = propertyGet(name, true);
             hash += JodaBeanUtils.hashCode(value);
         }
         return hash;
@@ -106,7 +108,7 @@ public abstract class DirectBean extends BasicBean {
         buf.append('{');
         if (names.size() > 0) {
             for (String name : names) {
-                Object value = propertyGet(name);
+                Object value = propertyGet(name, true);
                 buf.append(name).append('=').append(value).append(',').append(' ');
             }
             buf.setLength(buf.length() - 2);

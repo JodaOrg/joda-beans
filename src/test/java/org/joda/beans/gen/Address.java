@@ -72,7 +72,7 @@ public class Address extends DirectBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName) {
+    protected Object propertyGet(String propertyName, boolean quiet) {
         switch (propertyName.hashCode()) {
             case -1034364087:  // number
                 return getNumber();
@@ -83,11 +83,11 @@ public class Address extends DirectBean {
             case 106164915:  // owner
                 return getOwner();
         }
-        return super.propertyGet(propertyName);
+        return super.propertyGet(propertyName, quiet);
     }
 
     @Override
-    protected void propertySet(String propertyName, Object newValue) {
+    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
         switch (propertyName.hashCode()) {
             case -1034364087:  // number
                 setNumber((Integer) newValue);
@@ -102,7 +102,7 @@ public class Address extends DirectBean {
                 setOwner((Person) newValue);
                 return;
         }
-        super.propertySet(propertyName, newValue);
+        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override

@@ -67,18 +67,18 @@ public class Pair extends DirectBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName) {
+    protected Object propertyGet(String propertyName, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 97440432:  // first
                 return getFirst();
             case -906279820:  // second
                 return getSecond();
         }
-        return super.propertyGet(propertyName);
+        return super.propertyGet(propertyName, quiet);
     }
 
     @Override
-    protected void propertySet(String propertyName, Object newValue) {
+    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
         switch (propertyName.hashCode()) {
             case 97440432:  // first
                 setFirst((Object) newValue);
@@ -87,7 +87,7 @@ public class Pair extends DirectBean {
                 setSecond((Object) newValue);
                 return;
         }
-        super.propertySet(propertyName, newValue);
+        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
