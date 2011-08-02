@@ -51,6 +51,16 @@ public class RWOnlyBean extends DirectBean {
     private Object wo;
 
     /**
+     * The final read only property.
+     */
+    @PropertyDefinition
+    private final Object fin;
+
+    public RWOnlyBean() {
+        fin = "";
+    }
+
+    /**
      * A manual get property, no set.
      */
     @PropertyDefinition(get = "manual", set = "")
@@ -99,6 +109,8 @@ public class RWOnlyBean extends DirectBean {
                     return null;
                 }
                 throw new UnsupportedOperationException("Property cannot be read: wo");
+            case 101387:  // fin
+                return getFin();
             case 93508016:  // manualGet
                 return getManualGet();
             case 1556125213:  // derived
@@ -118,6 +130,11 @@ public class RWOnlyBean extends DirectBean {
             case 3800:  // wo
                 setWo((Object) newValue);
                 return;
+            case 101387:  // fin
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: fin");
             case 93508016:  // manualGet
                 if (quiet) {
                     return;
@@ -141,6 +158,7 @@ public class RWOnlyBean extends DirectBean {
             RWOnlyBean other = (RWOnlyBean) obj;
             return JodaBeanUtils.equal(getRo(), other.getRo()) &&
                     JodaBeanUtils.equal(wo, other.wo) &&
+                    JodaBeanUtils.equal(getFin(), other.getFin()) &&
                     JodaBeanUtils.equal(getManualGet(), other.getManualGet()) &&
                     JodaBeanUtils.equal(getDerived(), other.getDerived());
         }
@@ -152,6 +170,7 @@ public class RWOnlyBean extends DirectBean {
         int hash = getClass().hashCode();
         hash += hash * 31 + JodaBeanUtils.hashCode(getRo());
         hash += hash * 31 + JodaBeanUtils.hashCode(wo);
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFin());
         hash += hash * 31 + JodaBeanUtils.hashCode(getManualGet());
         hash += hash * 31 + JodaBeanUtils.hashCode(getDerived());
         return hash;
@@ -189,6 +208,23 @@ public class RWOnlyBean extends DirectBean {
      */
     public final Property<Object> wo() {
         return metaBean().wo().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the final read only property.
+     * @return the value of the property
+     */
+    public Object getFin() {
+        return fin;
+    }
+
+    /**
+     * Gets the the {@code fin} property.
+     * @return the property, not null
+     */
+    public final Property<Object> fin() {
+        return metaBean().fin().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -231,6 +267,11 @@ public class RWOnlyBean extends DirectBean {
         private final MetaProperty<Object> wo = DirectMetaProperty.ofWriteOnly(
                 this, "wo", RWOnlyBean.class, Object.class);
         /**
+         * The meta-property for the {@code fin} property.
+         */
+        private final MetaProperty<Object> fin = DirectMetaProperty.ofReadWrite(
+                this, "fin", RWOnlyBean.class, Object.class);
+        /**
          * The meta-property for the {@code manualGet} property.
          */
         private final MetaProperty<String> manualGet = DirectMetaProperty.ofReadOnly(
@@ -247,6 +288,7 @@ public class RWOnlyBean extends DirectBean {
                 this, null,
                 "ro",
                 "wo",
+                "fin",
                 "manualGet",
                 "derived");
 
@@ -263,6 +305,8 @@ public class RWOnlyBean extends DirectBean {
                     return ro;
                 case 3800:  // wo
                     return wo;
+                case 101387:  // fin
+                    return fin;
                 case 93508016:  // manualGet
                     return manualGet;
                 case 1556125213:  // derived
@@ -301,6 +345,14 @@ public class RWOnlyBean extends DirectBean {
          */
         public final MetaProperty<Object> wo() {
             return wo;
+        }
+
+        /**
+         * The meta-property for the {@code fin} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<Object> fin() {
+            return fin;
         }
 
         /**

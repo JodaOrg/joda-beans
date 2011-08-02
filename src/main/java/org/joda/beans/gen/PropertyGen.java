@@ -408,8 +408,9 @@ class PropertyGen {
     List<String> generatePropertySetCase() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
-        if (data.getReadWrite().isWritable()) {
-            list.add("\t\t\t\t" + SetterGen.of(data).generateSetInvoke(data) + "(" + castObject() + "newValue);");
+        String setter = SetterGen.of(data).generateSetInvoke(data);
+        if (data.getReadWrite().isWritable() && setter != null) {
+            list.add("\t\t\t\t" + setter + "(" + castObject() + "newValue);");
             list.add("\t\t\t\treturn;");
         } else {
             list.add("\t\t\t\tif (quiet) {");
