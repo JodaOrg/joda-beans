@@ -17,7 +17,7 @@ package org.joda.beans;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -273,15 +273,15 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Extracts the list content type as a {@code Class} from a meta-property.
+     * Extracts the collection content type as a {@code Class} from a meta-property.
      * 
      * @param prop  the property to examine, not null
-     * @return the list content type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a list
+     * @return the collection content type, null if unable to determine
+     * @throws IllegalArgumentException if the property is not a collection
      */
-    public static Class<?> listType(MetaProperty<?> prop) {
-        if (List.class.isAssignableFrom(prop.propertyType()) == false) {
-            throw new IllegalArgumentException("Property is not a List");
+    public static Class<?> collectionType(MetaProperty<?> prop) {
+        if (Collection.class.isAssignableFrom(prop.propertyType()) == false) {
+            throw new IllegalArgumentException("Property is not a Collection");
         }
         return extractType(prop, 1, 0);
     }
