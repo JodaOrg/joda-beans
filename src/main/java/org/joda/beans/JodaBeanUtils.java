@@ -15,9 +15,13 @@
  */
 package org.joda.beans;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -273,17 +277,33 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Extracts the collection content type as a {@code Class} from a meta-property.
+     * Extracts the collection content type as a {@code Class} from a property.
+     * <p>
+     * This method allows the resolution of generics in certain cases.
      * 
      * @param prop  the property to examine, not null
      * @return the collection content type, null if unable to determine
      * @throws IllegalArgumentException if the property is not a collection
      */
-    public static Class<?> collectionType(MetaProperty<?> prop) {
+    public static Class<?> collectionType(Property<?> prop) {
+        return collectionType(prop.metaProperty(), prop.bean().getClass());
+    }
+
+    /**
+     * Extracts the collection content type as a {@code Class} from a meta-property.
+     * <p>
+     * The target type is the type of the object, not the declaring type of the meta-property.
+     * 
+     * @param prop  the property to examine, not null
+     * @param targetClass  the target type to evaluate against, not null
+     * @return the collection content type, null if unable to determine
+     * @throws IllegalArgumentException if the property is not a collection
+     */
+    public static Class<?> collectionType(MetaProperty<?> prop, Class<?> targetClass) {
         if (Collection.class.isAssignableFrom(prop.propertyType()) == false) {
             throw new IllegalArgumentException("Property is not a Collection");
         }
-        return extractType(prop, 1, 0);
+        return extractType(targetClass, prop, 1, 0);
     }
 
     /**
@@ -291,13 +311,27 @@ public final class JodaBeanUtils {
      * 
      * @param prop  the property to examine, not null
      * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a list
+     * @throws IllegalArgumentException if the property is not a map
      */
-    public static Class<?> mapKeyType(MetaProperty<?> prop) {
+    public static Class<?> mapKeyType(Property<?> prop) {
+        return mapKeyType(prop.metaProperty(), prop.bean().getClass());
+    }
+
+    /**
+     * Extracts the map key type as a {@code Class} from a meta-property.
+     * <p>
+     * The target type is the type of the object, not the declaring type of the meta-property.
+     * 
+     * @param prop  the property to examine, not null
+     * @param targetClass  the target type to evaluate against, not null
+     * @return the map key type, null if unable to determine
+     * @throws IllegalArgumentException if the property is not a map
+     */
+    public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> targetClass) {
         if (Map.class.isAssignableFrom(prop.propertyType()) == false) {
             throw new IllegalArgumentException("Property is not a Map");
         }
-        return extractType(prop, 2, 0);
+        return extractType(targetClass, prop, 2, 0);
     }
 
     /**
@@ -305,30 +339,90 @@ public final class JodaBeanUtils {
      * 
      * @param prop  the property to examine, not null
      * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a list
+     * @throws IllegalArgumentException if the property is not a map
      */
-    public static Class<?> mapValueType(MetaProperty<?> prop) {
+    public static Class<?> mapValueType(Property<?> prop) {
+        return mapValueType(prop.metaProperty(), prop.bean().getClass());
+    }
+
+    /**
+     * Extracts the map key type as a {@code Class} from a meta-property.
+     * <p>
+     * The target type is the type of the object, not the declaring type of the meta-property.
+     * 
+     * @param prop  the property to examine, not null
+     * @param targetClass  the target type to evaluate against, not null
+     * @return the map key type, null if unable to determine
+     * @throws IllegalArgumentException if the property is not a map
+     */
+    public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> targetClass) {
         if (Map.class.isAssignableFrom(prop.propertyType()) == false) {
             throw new IllegalArgumentException("Property is not a Map");
         }
-        return extractType(prop, 2, 1);
+        return extractType(targetClass, prop, 2, 1);
     }
 
-    private static Class<?> extractType(MetaProperty<?> prop, int size, int index) {
+    private static Class<?> extractType(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
         Type genType = prop.propertyGenericType();
         if (genType instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) genType;
             Type[] types = pt.getActualTypeArguments();
             if (types.length == size) {
-                if (types[index] instanceof Class<?>) {
-                    return (Class<?>) types[index];
+                Type type = types[index];
+                if (type instanceof TypeVariable) {
+                    type = resolveGenerics(targetClass, (TypeVariable<?>) type);
                 }
-                if (types[index] instanceof ParameterizedType) {
-                    Type rawType = ((ParameterizedType) types[index]).getRawType();
-                    if (rawType instanceof Class<?>) {
-                        return (Class<?>) rawType;
-                    }
+                return eraseToClass(type);
+            }
+        }
+        return null;
+    }
+
+    private static Type resolveGenerics(Class<?> targetClass, TypeVariable<?> typevar) {
+        // looks up meaning of type variables like T
+        Map<Type, Type> resolved = new HashMap<Type, Type>();
+        Type type = targetClass;
+        while (type != null) {
+            if (type instanceof Class) {
+                type = ((Class<?>) type).getGenericSuperclass();
+            } else if (type instanceof ParameterizedType) {
+                // find actual types captured by subclass
+                ParameterizedType pt = (ParameterizedType) type;
+                Type[] actualTypeArguments = pt.getActualTypeArguments();
+                // find type variables declared in source code
+                Class<?> rawType = eraseToClass(pt.getRawType());
+                TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+                for (int i = 0; i < actualTypeArguments.length; i++) {
+                    resolved.put(typeParameters[i], actualTypeArguments[i]);
                 }
+                type = rawType.getGenericSuperclass();
+            }
+        }
+        // resolve type variable to a meaningful type
+        Type result = typevar;
+        while (resolved.containsKey(result)) {
+            result = resolved.get(result);
+        }
+        return result;
+    }
+
+    private static Class<?> eraseToClass(Type type) {
+        if (type instanceof Class) {
+            return (Class<?>) type;
+        } else if (type instanceof ParameterizedType) {
+            return eraseToClass(((ParameterizedType) type).getRawType());
+        } else if (type instanceof GenericArrayType) {
+            Type componentType = ((GenericArrayType) type).getGenericComponentType();
+            Class<?> componentClass = eraseToClass(componentType);
+            if (componentClass != null ) {
+              return Array.newInstance(componentClass, 0).getClass();
+            }
+        } else if (type instanceof TypeVariable) {
+            Type[] bounds = ((TypeVariable<?>) type).getBounds();
+            if (bounds.length == 0) {
+                return Object.class;
+            } else {
+                return eraseToClass(bounds[0]);
             }
         }
         return null;

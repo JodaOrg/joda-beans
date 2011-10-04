@@ -99,20 +99,20 @@ public class TestJodaBeanUtils {
     public void test_listType_Person_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
-        assertEquals(JodaBeanUtils.collectionType(test), Address.class);
+        assertEquals(JodaBeanUtils.collectionType(test, Person.class), Address.class);
     }
 
     public void test_listType_Person_addressesList() {
         MetaProperty<List<List<Address>>> test = Person.meta().addressesList();
         
-        assertEquals(JodaBeanUtils.collectionType(test), List.class);
+        assertEquals(JodaBeanUtils.collectionType(test, Person.class), List.class);
     }
 
     public void test_mapType_Person_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
-        assertEquals(JodaBeanUtils.mapKeyType(test), String.class);
-        assertEquals(JodaBeanUtils.mapValueType(test), Address.class);
+        assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), String.class);
+        assertEquals(JodaBeanUtils.mapValueType(test, Person.class), Address.class);
     }
 
 }
