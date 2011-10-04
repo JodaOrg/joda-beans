@@ -20,6 +20,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +110,32 @@ public final class JodaBeanUtils {
      * @return true if equal
      */
     public static boolean equal(Object obj1, Object obj2) {
-        return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
+        if (obj1 == obj2) {
+            return true;
+        }
+        if (obj1 == null || obj2 == null) {
+            return false;
+        }
+        if (obj1.getClass().isArray() && obj1.getClass() == obj2.getClass()) {
+            if (obj1 instanceof Object[] && obj2 instanceof Object[]) {
+                return Arrays.deepEquals((Object[]) obj1, (Object[]) obj2);
+            } else if (obj1 instanceof int[] && obj2 instanceof int[]) {
+                return Arrays.equals((int[]) obj1, (int[]) obj2);
+            } else if (obj1 instanceof long[] && obj2 instanceof long[]) {
+                return Arrays.equals((long[]) obj1, (long[]) obj2);
+            } else if (obj1 instanceof double[] && obj2 instanceof double[]) {
+                return Arrays.equals((double[]) obj1, (double[]) obj2);
+            } else if (obj1 instanceof float[] && obj2 instanceof float[]) {
+                return Arrays.equals((float[]) obj1, (float[]) obj2);
+            } else if (obj1 instanceof char[] && obj2 instanceof char[]) {
+                return Arrays.equals((char[]) obj1, (char[]) obj2);
+            } else if (obj1 instanceof short[] && obj2 instanceof short[]) {
+                return Arrays.equals((short[]) obj1, (short[]) obj2);
+            } else if (obj1 instanceof boolean[] && obj2 instanceof boolean[]) {
+                return Arrays.equals((boolean[]) obj1, (boolean[]) obj2);
+            }
+        }
+        return obj1.equals(obj2);
     }
 
     /**

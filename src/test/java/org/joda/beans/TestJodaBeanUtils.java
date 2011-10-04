@@ -68,11 +68,59 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.propertiesHashCode(a), JodaBeanUtils.propertiesHashCode(b));
     }
 
+    //-------------------------------------------------------------------------
     public void test_equal() {
         assertEquals(JodaBeanUtils.equal("A", new Character('A').toString()), true);
         assertEquals(JodaBeanUtils.equal("A", "B"), false);
         assertEquals(JodaBeanUtils.equal("A", null), false);
         assertEquals(JodaBeanUtils.equal(null, "A"), false);
+    }
+
+    public void test_equal_ObjectArray() {
+        Object[] a1 = new Object[] {1, 2, 3};
+        Object[] a2 = new Object[] {1, 2, 3};
+        Object[] b = new Object[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_IntegerArray() {
+        Object[] a1 = new Integer[] {1, 2, 3};
+        Object[] a2 = new Integer[] {1, 2, 3};
+        Object[] b = new Integer[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_IntegerNumberArray() {
+        Object[] a = new Integer[] {1, 2, 3};
+        Object[] b = new Number[] {1, 2, 3};
+        assertEquals(JodaBeanUtils.equal(a, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a), false);
+    }
+
+    public void test_equal_IntegerIntArray() {
+        Object[] a = new Integer[] {1, 2, 3};
+        int[] b = new int[] {1, 2, 3};
+        assertEquals(JodaBeanUtils.equal(a, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a), false);
+    }
+
+    public void test_equal_IntIntArray() {
+        int[] a1 = new int[] {1, 2, 3};
+        int[] a2 = new int[] {1, 2, 3};
+        int[] b = new int[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
     //-----------------------------------------------------------------------
