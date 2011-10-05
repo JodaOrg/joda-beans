@@ -123,6 +123,8 @@ public final class JodaBeanUtils {
                 return Arrays.equals((int[]) obj1, (int[]) obj2);
             } else if (obj1 instanceof long[] && obj2 instanceof long[]) {
                 return Arrays.equals((long[]) obj1, (long[]) obj2);
+            } else if (obj1 instanceof byte[] && obj2 instanceof byte[]) {
+                return Arrays.equals((byte[]) obj1, (byte[]) obj2);
             } else if (obj1 instanceof double[] && obj2 instanceof double[]) {
                 return Arrays.equals((double[]) obj1, (double[]) obj2);
             } else if (obj1 instanceof float[] && obj2 instanceof float[]) {

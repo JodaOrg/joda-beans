@@ -112,10 +112,87 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a), false);
     }
 
-    public void test_equal_IntIntArray() {
+    public void test_equal_IntArray() {
         int[] a1 = new int[] {1, 2, 3};
         int[] a2 = new int[] {1, 2, 3};
         int[] b = new int[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_LongArray() {
+        long[] a1 = new long[] {1, 2, 3};
+        long[] a2 = new long[] {1, 2, 3};
+        long[] b = new long[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_DoubleArray() {
+        double[] a1 = new double[] {1, 2, 3};
+        double[] a2 = new double[] {1, 2, 3};
+        double[] b = new double[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_FloatArray() {
+        float[] a1 = new float[] {1, 2, 3};
+        float[] a2 = new float[] {1, 2, 3};
+        float[] b = new float[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_ShortArray() {
+        short[] a1 = new short[] {1, 2, 3};
+        short[] a2 = new short[] {1, 2, 3};
+        short[] b = new short[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_CharArray() {
+        char[] a1 = new char[] {1, 2, 3};
+        char[] a2 = new char[] {1, 2, 3};
+        char[] b = new char[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_ByteArray() {
+        byte[] a1 = new byte[] {1, 2, 3};
+        byte[] a2 = new byte[] {1, 2, 3};
+        byte[] b = new byte[] {1, 2, 4};
+        assertEquals(JodaBeanUtils.equal(a1, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, a2), true);
+        assertEquals(JodaBeanUtils.equal(a2, a1), true);
+        assertEquals(JodaBeanUtils.equal(a1, b), false);
+        assertEquals(JodaBeanUtils.equal(b, a1), false);
+    }
+
+    public void test_equal_BooleanArray() {
+        boolean[] a1 = new boolean[] {true, false};
+        boolean[] a2 = new boolean[] {true, false};
+        boolean[] b = new boolean[] {true, true};
         assertEquals(JodaBeanUtils.equal(a1, a1), true);
         assertEquals(JodaBeanUtils.equal(a1, a2), true);
         assertEquals(JodaBeanUtils.equal(a2, a1), true);
