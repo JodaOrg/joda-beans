@@ -11,81 +11,65 @@
 
 <section name="Joda Beans">
 <p>
-Joda-Beans provides a small framework that greatly enhances working with JavaBeans.
+Joda-Beans provides a small framework that adds properties to Java, greatly enhancing JavaBeans.
 The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 </p>
-<!--
-<p>
-As a flavour of Joda-Beans, here's some example code:
-<source>
-</source>
--->
 <p>
 Joda-Beans is unreleased at present.
+Stable tagged versions are available in <a href="https://github.com/JodaOrg/joda-beans">GitHub</a>.
 </p>
 </section>
 
-<!--
-<section name="Why Joda Time?">
+<section name="Why Joda Beans?">
 <p>
-Joda-Time has been created to radically change date and time handling is Java.
-The JDK classes Date and Calendar are very badly designed, have had numerous bugs
-and have odd performance effects.
-Here are some of our reasons for developing and using Joda-Time:
-<ul>
-<li></li>
-</ul>
+Joda-Beans has been created to plug a gap in the Java language - properties.
+The concept of properties is familiar to those coding in almost every other modern language.
+Java stands alone in its pursuit of the terrible JavaBean approach, and personally I believe that
+properties should have been added to Java before generics and closures.
+</p>
+<p>
+JavaBeans are typically created by manual coding or one-off IDE generation, such as by Eclipse.
+The same approach is taken to the creation of equals and hashCode methods.
+However, none of these approaches provides for a simple and fast mechanism to query a bean for the properties it exposes.
+</p>
+<p>
+Joda-Beans provides a solution. As a developer, you just write the fields much as you would today.
+Then you add annotations to the bean and properties.
+Finally, you run a code generator, which creates the get/set methods plus framework methods that allow the properties
+to be effectively queried.
+A key point is that the code generator may be run again and again on the Java file, and is non-destructive.
+</p>
+<p>
+See these sample classes used for testing -
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.4.4/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>,
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.4.4/src/test/java/org/joda/beans/gen/Examples.java#L25">example usage</a>,
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.4.4/src/test/java/org/joda/beans/gen/ValidateBean.java#L38">example of validation</a>.
 </p>
 </section>
--->
+
 <section name="Documentation">
 <p>
 Various documentation is available:
 <ul>
-<!--
-<li>Two user guides - <a href="quickstart.html">quick</a> and <a href="userguide.html">full</a></li>
-<li>The key concepts and chronology documents in the left navigation area</li>
-<li>The javadoc for the <a href="api-release/index.html">current release</a></li>
--->
 <li>The javadoc for the <a href="apidocs/index.html">latest source code</a></li>
-<!--
-<li>A <a href="faq.html">FAQ</a> list</li>
-<li>Information on <a href="installation.html">downloading and installing</a> Joda-Time</li>
--->
 <li>The <a href="https://github.com/JodaOrg/joda-beans">GitHub</a> source repository</li>
 </ul>
 </p>
 </section>
-<!--
-<section name="Releases">
-<p>
-<a href="http://sourceforge.net/project/showfiles.php?group_id=97367&amp;package_id=104212">Release 1.4</a>
-is the current latest release.
-This release is considered stable and worthy of the 1.x tag.
-It has extensive testing suites and has been used in production.
-We now recommend JDK 1.3 or later, and have performed no testing on earlier JDKs.
-</p>
-<p>
-We will support the 1.x product line using standard Java mechanisms.
-The main public API will remain backwards compatible for both source and binary.
-The version number will change to 2.0 to indicate a change in compatibility.
-</p>
-</section>
--->
+
 <section name="Support">
 <p>
 Support on bugs, library usage or enhancement requests is available via:
 </p>
 <ul>
-<!--
-<li>the joda-interest <a href="mail-lists.html">mailing list</a>. Due to spam, you must be subscribed to post to the mailing list.</li>
--->
+<li>the joda-beans-interest <a href="mail-lists.html">mailing list</a>. Due to spam, you must be subscribed to post to the mailing list.</li>
 <li>the joda-beans sourceforge <a href="https://sourceforge.net/projects/joda-beans/forums/forum/652493">forum</a>.</li>
 </ul>
 <p>
 Please contact the project lead, Stephen Colebourne via scolebourne joda org.
 </p>
 </section>
+
 </body>
 </document>
