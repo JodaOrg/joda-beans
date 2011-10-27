@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.4.5" date="2011-10-27" description="v0.5">
+      <action dev="jodastephen" type="update">
+        DirectBean no longer extends BasicBean to simplify the hierarchy.
+      </action>              
       <action dev="jodastephen" type="add">
         Add BeanQuery and comparator support.
       </action>              

@@ -18,8 +18,9 @@ package org.joda.beans.impl.direct;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.impl.BasicBean;
+import org.joda.beans.Property;
 
 /**
  * A bean implementation designed for use by the code generator.
@@ -32,8 +33,19 @@ import org.joda.beans.impl.BasicBean;
  * 
  * @author Stephen Colebourne
  */
-public abstract class DirectBean extends BasicBean {
+public abstract class DirectBean implements Bean {
 
+    @Override
+    public <R> Property<R> property(String propertyName) {
+        return metaBean().<R>metaProperty(propertyName).createProperty(this);
+    }
+
+    @Override
+    public Set<String> propertyNames() {
+        return metaBean().metaPropertyMap().keySet();
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Gets the value of the property.
      * 
@@ -69,7 +81,6 @@ public abstract class DirectBean extends BasicBean {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        // override to gain better performance using propertyGet(String)
         if (obj == this) {
             return true;
         }
@@ -89,7 +100,6 @@ public abstract class DirectBean extends BasicBean {
 
     @Override
     public int hashCode() {
-        // override to gain better performance using propertyGet(String)
         int hash = getClass().hashCode();
         Set<String> names = propertyNames();
         for (String name : names) {
@@ -101,7 +111,6 @@ public abstract class DirectBean extends BasicBean {
 
     @Override
     public String toString() {
-        // override to gain better performance using propertyGet(String)
         Set<String> names = propertyNames();
         StringBuilder buf = new StringBuilder((names.size()) * 32 + 32);
         buf.append(getClass().getSimpleName());
