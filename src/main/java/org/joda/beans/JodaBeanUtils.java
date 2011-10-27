@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -454,6 +456,70 @@ public final class JodaBeanUtils {
             }
         }
         return null;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Obtains a comparator for the specified bean query.
+     * <p>
+     * The result of the query must be {@link Comparable}.
+     * 
+     * @param query  the query to use, not null
+     * @param ascending  true for ascending, false for descending
+     * @return the comparator, not null
+     */
+    public static Comparator<Bean> comparator(BeanQuery<?> query, boolean ascending) {
+        return (ascending ? comparatorAscending(query) : comparatorDescending(query));
+    }
+
+    /**
+     * Obtains an ascending comparator for the specified bean query.
+     * <p>
+     * The result of the query must be {@link Comparable}.
+     * 
+     * @param query  the query to use, not null
+     * @return the comparator, not null
+     */
+    public static Comparator<Bean> comparatorAscending(BeanQuery<?> query) {
+        if (query == null) {
+            throw new NullPointerException("BeanQuery must not be null");
+        }
+        return new Comp(query);
+    }
+
+    /**
+     * Obtains an descending comparator for the specified bean query.
+     * <p>
+     * The result of the query must be {@link Comparable}.
+     * 
+     * @param query  the query to use, not null
+     * @return the comparator, not null
+     */
+    public static Comparator<Bean> comparatorDescending(BeanQuery<?> query) {
+        if (query == null) {
+            throw new NullPointerException("BeanQuery must not be null");
+        }
+        return Collections.reverseOrder(new Comp(query));
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Compare for BeanQuery.
+     */
+    private static final class Comp implements Comparator<Bean> {
+        private final BeanQuery<?> query;
+
+        private Comp(BeanQuery<?> query) {
+            this.query = query;
+        }
+
+        @Override
+        public int compare(Bean bean1, Bean bean2) {
+            @SuppressWarnings("unchecked")
+            Comparable<Object> value1 = (Comparable<Object>) query.get(bean1);
+            Object value2 = query.get(bean2);
+            return value1.compareTo(value2);
+        }
     }
 
 }

@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-public interface MetaProperty<P> {
+public interface MetaProperty<P> extends BeanQuery<P> {
 
     /**
      * Creates a property that binds this meta-property to a specific bean.

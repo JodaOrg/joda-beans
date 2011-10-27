@@ -19,6 +19,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotSame;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,10 +27,11 @@ import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.query.ChainedBeanQuery;
 import org.testng.annotations.Test;
 
 /**
- * Test BeanUtils.
+ * Test utils.
  */
 @Test
 public class TestJodaBeanUtils {
@@ -238,6 +240,47 @@ public class TestJodaBeanUtils {
         
         assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), String.class);
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), Address.class);
+    }
+
+    //-------------------------------------------------------------------------
+    public void test_compare_ascending() {
+        Address address1 = new Address();
+        address1.setOwner(new Person());
+        address1.getOwner().setSurname("Joda");
+        Address address2 = new Address();
+        address2.setOwner(new Person());
+        address2.getOwner().setSurname("Beans");
+        ChainedBeanQuery<String> bq = ChainedBeanQuery.of(Address.meta().owner(), Person.meta().surname());
+        
+        Comparator<Bean> asc = JodaBeanUtils.comparator(bq, true);
+        assertEquals(asc.compare(address1, address1) == 0, true);
+        assertEquals(asc.compare(address1, address2) > 1, true);
+        assertEquals(asc.compare(address2, address1) < 1, true);
+    }
+
+    public void test_compare_descending() {
+        Address address1 = new Address();
+        address1.setOwner(new Person());
+        address1.getOwner().setSurname("Joda");
+        Address address2 = new Address();
+        address2.setOwner(new Person());
+        address2.getOwner().setSurname("Beans");
+        ChainedBeanQuery<String> bq = ChainedBeanQuery.of(Address.meta().owner(), Person.meta().surname());
+        
+        Comparator<Bean> desc = JodaBeanUtils.comparator(bq, false);
+        assertEquals(desc.compare(address1, address1) == 0, true);
+        assertEquals(desc.compare(address1, address2) < 1, true);
+        assertEquals(desc.compare(address2, address1) > 1, true);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_compare_ascending_null() {
+        JodaBeanUtils.comparatorAscending(null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_compare_descending_null() {
+        JodaBeanUtils.comparatorDescending(null);
     }
 
 }
