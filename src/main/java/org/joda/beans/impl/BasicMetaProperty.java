@@ -69,8 +69,8 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     //-----------------------------------------------------------------------
     @Override
     public String getString(Bean bean) {
-        Object value = get(bean);
-        return JodaBeanUtils.stringConverter().convertToString(value);
+        P value = get(bean);
+        return JodaBeanUtils.stringConverter().convertToString(propertyType(), value);
     }
 
     @Override
