@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.5.1" date="" description="v0.5.1">
       <action dev="jodastephen" type="fix">
+        Allow a property to be named 'map'.
+      </action>              
+      <action dev="jodastephen" type="fix">
         Handle empty comments correctly.
       </action>              
     </release>

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -487,7 +487,7 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "map = new DirectMetaPropertyMap(");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<Object>> " + prefix + "metaPropertyMap$ = new DirectMetaPropertyMap(");
         if (data.isSubclass()) {
             insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
@@ -550,7 +550,7 @@ class BeanGen {
         data.ensureImport(Map.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<Object>> metaPropertyMap() {");
-        insertRegion.add("\t\t\treturn " + prefix + "map;");
+        insertRegion.add("\t\t\treturn " + prefix + "metaPropertyMap$;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }

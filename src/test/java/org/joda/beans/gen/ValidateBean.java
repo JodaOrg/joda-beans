@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -291,7 +291,7 @@ public class ValidateBean extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<Object>> metaPropertyMap$ = new DirectMetaPropertyMap(
                 this, null,
                 "first",
                 "second",
@@ -331,7 +331,7 @@ public class ValidateBean extends DirectBean {
 
         @Override
         public Map<String, MetaProperty<Object>> metaPropertyMap() {
-            return map;
+            return metaPropertyMap$;
         }
 
         //-----------------------------------------------------------------------

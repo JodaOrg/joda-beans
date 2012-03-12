@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> map = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<Object>> metaPropertyMap$ = new DirectMetaPropertyMap(
             this, (DirectMetaPropertyMap) super.metaPropertyMap());
 
         /**
@@ -115,7 +115,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
 
         @Override
         public Map<String, MetaProperty<Object>> metaPropertyMap() {
-            return map;
+            return metaPropertyMap$;
         }
 
         //-----------------------------------------------------------------------
