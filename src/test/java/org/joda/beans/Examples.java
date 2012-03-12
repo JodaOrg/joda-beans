@@ -13,9 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.gen;
+package org.joda.beans;
 
 import org.joda.beans.Property;
+import org.joda.beans.gen.Address;
+import org.joda.beans.gen.Documentation;
+import org.joda.beans.gen.Person;
 
 /**
  * Examples using Person.
