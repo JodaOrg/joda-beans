@@ -66,7 +66,7 @@ public class TestAddress {
         }
     }
 
-    public void test_bean_builder() {
+    public void test_bean_builder1() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
         Map<String, Object> map = new HashMap<String, Object>();
@@ -77,6 +77,19 @@ public class TestAddress {
         Address expected = new Address();
         expected.setStreet("Main Street");
         expected.setCity("London");
+        
+        assertEquals(test, expected);
+    }
+
+    public void test_bean_builder2() {
+        BeanBuilder<? extends Address> builder = Address.meta().builder();
+        builder.set(Address.meta().street(), "Main Street");
+        builder.setString(Address.meta().number(), "12");
+        
+        Address test = builder.build();
+        Address expected = new Address();
+        expected.setStreet("Main Street");
+        expected.setNumber(12);
         
         assertEquals(test, expected);
     }

@@ -51,7 +51,7 @@ public interface BeanBuilder<T extends Bean> {
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if the property name is invalid
      */
-    BeanBuilder<T> set(MetaProperty<Object> property, Object value);
+    BeanBuilder<T> set(MetaProperty<?> property, Object value);
 
     /**
      * Sets the value of a single property into the builder.
@@ -83,7 +83,7 @@ public interface BeanBuilder<T extends Bean> {
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if the property name is invalid
      */
-    BeanBuilder<T> setString(MetaProperty<Object> property, String value);
+    BeanBuilder<T> setString(MetaProperty<?> property, String value);
 
     /**
      * Sets the value of a map of properties into the builder.
