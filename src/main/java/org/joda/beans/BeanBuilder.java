@@ -41,6 +41,21 @@ public interface BeanBuilder<T extends Bean> {
     BeanBuilder<T> set(String propertyName, Object value);
 
     /**
+     * Sets the value of a single property into the builder.
+     * This method takes a String value and attempts to convert it to
+     * the expected type for the property.
+     * <p>
+     * This will normally behave as per a {@code Map}, however it may not
+     * and as a general rule callers should only set each property once.
+     * 
+     * @param propertyName  the property name, not null
+     * @param value  the property value, may be null
+     * @return {@code this}, for chaining, not null
+     * @throws RuntimeException optionally thrown if the property name is invalid
+     */
+    BeanBuilder<T> setString(String propertyName, String value);
+
+    /**
      * Sets the value of a map of properties into the builder.
      * <p>
      * Each map entry is used as the input to {@link #set(String, Object)}.

@@ -77,6 +77,12 @@ public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
     }
 
     @Override
+    public BeanBuilder<T> setString(String propertyName, String value) {
+        bean.metaBean().metaProperty(propertyName).setString(bean, value);
+        return this;
+    }
+    
+    @Override
     public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
             set(entry.getKey(), entry.getValue());
