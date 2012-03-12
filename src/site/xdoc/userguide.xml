@@ -222,7 +222,7 @@ Thus a validation attribute of "Validate.noNulls" could be used to connect up to
 <section name="Integration">
 <p>
 Joda-Beans has so far been integrated with Freemarker and MongoDB.
-The OpenGamma project has also provided its own integration with the Fudge messaging project.
+The <a href="http://developers.opengamma.com/">OpenGamma</a> project has also provided its own integration with the Fudge messaging project.
 The support classes are included in the jar file but only work when the optional dependency is present.
 </p>
 <p>
