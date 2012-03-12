@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
         bean.metaBean().metaProperty(propertyName).setString(bean, value);
         return this;
     }
-    
+
     @Override
     public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {

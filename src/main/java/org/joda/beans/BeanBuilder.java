@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,8 +42,9 @@ public interface BeanBuilder<T extends Bean> {
 
     /**
      * Sets the value of a single property into the builder.
-     * This method takes a String value and attempts to convert it to
-     * the expected type for the property.
+     * <p>
+     * This converts the string to the correct type for the property.
+     * Conversion uses Joda-Convert.
      * <p>
      * This will normally behave as per a {@code Map}, however it may not
      * and as a general rule callers should only set each property once.
