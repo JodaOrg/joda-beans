@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.5.1" date="" description="v0.5.1">
+      <action dev="jodastephen" type="fix">
+        Handle empty comments correctly.
+      </action>              
+    </release>
     <release version="0.5" date="2011-10-27" description="v0.5">
       <action dev="jodastephen" type="update">
         Update to Joda-Convert v1.2 and use new feature to improve string conversion.

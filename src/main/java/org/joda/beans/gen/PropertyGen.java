@@ -289,13 +289,19 @@ class PropertyGen {
                     }
                 }
                 String firstLine = comments.get(0);
-                comments.set(0, firstLine.substring(0, 1).toLowerCase() + firstLine.substring(1));
+                if (firstLine.length() > 0) {
+                    comments.set(0, firstLine.substring(0, 1).toLowerCase() + firstLine.substring(1));
+                } else {
+                    comments.remove(0);
+                }
             }
         } else if (commentEnd.startsWith("/**") && commentEnd.endsWith("*/")) {
             int startPos = commentEnd.indexOf("/**") + 3;
             int endPos = commentEnd.lastIndexOf("*/");
             String comment = commentEnd.substring(startPos, endPos).trim();
-            comments.add(comment.substring(0, 1).toLowerCase() + comment.substring(1));
+            if (comment.length() > 0) {
+                comments.add(comment.substring(0, 1).toLowerCase() + comment.substring(1));
+            }
         }
         if (comments.size() == 0) {
             comments.add("the " + propertyName + ".");

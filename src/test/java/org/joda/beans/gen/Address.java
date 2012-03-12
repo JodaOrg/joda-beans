@@ -43,13 +43,17 @@ public class Address extends DirectBean {
      */
     @PropertyDefinition
     private int number;
-    /** The street. */
+    // various empty comments for testing
+    /**
+     *
+     */
     @PropertyDefinition
     private String street;
-    /** The city. */
+    /**
+     */
     @PropertyDefinition
     private String city;
-    /** The owner. */
+    /** */
     @PropertyDefinition
     private Person owner;
 
