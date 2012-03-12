@@ -9,18 +9,21 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.6" date="2012-03-12" description="v0.6">
+      <action dev="jodastephen" type="add">
+        Add builder methods based on meta-property.
+      </action>
       <action dev="jodastephen" type="fix">
         Move example code to correct location.
-      </action>              
+      </action>
       <action dev="jodastephen" type="fix">
         Allow a property to be named 'map'.
-      </action>              
+      </action>
       <action dev="jodastephen" type="fix">
         Handle empty comments correctly.
-      </action>              
+      </action>
       <action dev="lega" type="add">
         Extend builder to support setting by string.
-      </action>              
+      </action>
     </release>
     <release version="0.5" date="2011-10-27" description="v0.5">
       <action dev="jodastephen" type="update">

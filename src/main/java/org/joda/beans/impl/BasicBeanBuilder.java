@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
+import org.joda.beans.MetaProperty;
 
 /**
  * Basic implementation of {@code BeanBuilder} that wraps a real bean.
@@ -72,13 +73,23 @@ public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
     //-----------------------------------------------------------------------
     @Override
     public BeanBuilder<T> set(String propertyName, Object value) {
-        bean.property(propertyName).set(value);
+        return set(bean.metaBean().metaProperty(propertyName), value);
+    }
+
+    @Override
+    public BeanBuilder<T> set(MetaProperty<Object> property, Object value) {
+        property.set(bean, value);
         return this;
     }
 
     @Override
     public BeanBuilder<T> setString(String propertyName, String value) {
-        bean.metaBean().metaProperty(propertyName).setString(bean, value);
+        return setString(bean.metaBean().metaProperty(propertyName), value);
+    }
+
+    @Override
+    public BeanBuilder<T> setString(MetaProperty<Object> property, String value) {
+        property.setString(bean, value);
         return this;
     }
 
