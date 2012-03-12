@@ -60,7 +60,7 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
 
     //-----------------------------------------------------------------------
     @Override
-    public P put(Bean bean, P value) {
+    public P put(Bean bean, Object value) {
         P old = get(bean);
         set(bean, value);
         return old;

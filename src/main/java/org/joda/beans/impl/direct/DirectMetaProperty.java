@@ -196,7 +196,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     @Override
-    public void set(Bean bean, P value) {
+    public void set(Bean bean, Object value) {
         ((DirectBean) bean).propertySet(name(), value, false);
     }
 

@@ -78,7 +78,7 @@ public interface Property<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void set(P value);
+    void set(Object value);
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -92,7 +92,7 @@ public interface Property<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    P put(P value);
+    P put(Object value);
 
     //-----------------------------------------------------------------------
     /**

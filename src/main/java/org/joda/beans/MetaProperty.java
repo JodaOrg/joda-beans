@@ -131,7 +131,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void set(Bean bean, P value);
+    void set(Bean bean, Object value);
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -148,7 +148,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    P put(Bean bean, P value);
+    P put(Bean bean, Object value);
 
     //-----------------------------------------------------------------------
     /**
