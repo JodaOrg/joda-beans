@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,16 +38,16 @@ import org.joda.beans.MetaProperty;
  * @author Stephen Colebourne
  */
 @SuppressWarnings("rawtypes")
-public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Object>> {
+public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>> {
 
     /** The meta-bean. */
     private final DirectMetaBean metaBean;
     /** The property names. */
     private final Set<String> keys;
     /** The meta-properties. */
-    private final Collection<MetaProperty<Object>> values;
+    private final Collection<MetaProperty<?>> values;
     /** The map entries. */
-    private final Set<Entry<String, MetaProperty<Object>>> entries;
+    private final Set<Entry<String, MetaProperty<?>>> entries;
 
     /**
      * Constructor.
@@ -63,7 +63,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
         }
         this.metaBean = metaBean;
         int parentSize = 0;
-        final Entry<String, MetaProperty<Object>>[] metaProperties;
+        final Entry<String, MetaProperty<?>>[] metaProperties;
         if (parent != null) {
             parentSize = parent.size();
             metaProperties = Arrays.copyOf(((Entries) parent.entries).metaProperties, parentSize + propertyNames.length);
@@ -112,17 +112,17 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
 
     //-----------------------------------------------------------------------
     @Override
-    public MetaProperty<Object> put(String key, MetaProperty<Object> value) {
+    public MetaProperty<?> put(String key, MetaProperty<?> value) {
         throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
     @Override
-    public MetaProperty<Object> remove(Object key) {
+    public MetaProperty<?> remove(Object key) {
         throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends MetaProperty<Object>> m) {
+    public void putAll(Map<? extends String, ? extends MetaProperty<?>> m) {
         throw new UnsupportedOperationException("DirectBean meta-property map cannot be modified");
     }
 
@@ -138,12 +138,12 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
     }
 
     @Override
-    public Collection<MetaProperty<Object>> values() {
+    public Collection<MetaProperty<?>> values() {
         return values;
     }
 
     @Override
-    public Set<Entry<String, MetaProperty<Object>>> entrySet() {
+    public Set<Entry<String, MetaProperty<?>>> entrySet() {
         return entries;
     }
 
@@ -152,9 +152,9 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
      * Collection implementation for the keys.
      */
     private static final class Keys extends AbstractSet<String> {
-        private final Entry<String, MetaProperty<Object>>[] metaProperties;
+        private final Entry<String, MetaProperty<?>>[] metaProperties;
 
-        private Keys(Entry<String, MetaProperty<Object>>[] metaProperties) {
+        private Keys(Entry<String, MetaProperty<?>>[] metaProperties) {
             this.metaProperties = metaProperties;
         }
 
@@ -186,23 +186,23 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
     /**
      * Collection implementation for the values.
      */
-    private static final class Values extends AbstractCollection<MetaProperty<Object>> {
-        private final Entry<String, MetaProperty<Object>>[] metaProperties;
+    private static final class Values extends AbstractCollection<MetaProperty<?>> {
+        private final Entry<String, MetaProperty<?>>[] metaProperties;
 
-        private Values(Entry<String, MetaProperty<Object>>[] metaProperties) {
+        private Values(Entry<String, MetaProperty<?>>[] metaProperties) {
             this.metaProperties = metaProperties;
         }
 
         @Override
-        public Iterator<MetaProperty<Object>> iterator() {
-            return new Iterator<MetaProperty<Object>>() {
+        public Iterator<MetaProperty<?>> iterator() {
+            return new Iterator<MetaProperty<?>>() {
                 int index;
                 @Override
                 public boolean hasNext() {
                     return index < metaProperties.length;
                 }
                 @Override
-                public MetaProperty<Object> next() {
+                public MetaProperty<?> next() {
                     return metaProperties[index++].getValue();
                 }
                 @Override
@@ -221,23 +221,23 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<Obj
     /**
      * Collection implementation for the entries.
      */
-    private static final class Entries extends AbstractSet<Entry<String, MetaProperty<Object>>> {
-        private final Entry<String, MetaProperty<Object>>[] metaProperties;
+    private static final class Entries extends AbstractSet<Entry<String, MetaProperty<?>>> {
+        private final Entry<String, MetaProperty<?>>[] metaProperties;
 
-        private Entries(Entry<String, MetaProperty<Object>>[] metaProperties) {
+        private Entries(Entry<String, MetaProperty<?>>[] metaProperties) {
             this.metaProperties = metaProperties;
         }
 
         @Override
-        public Iterator<Entry<String, MetaProperty<Object>>> iterator() {
-            return new Iterator<Entry<String, MetaProperty<Object>>>() {
+        public Iterator<Entry<String, MetaProperty<?>>> iterator() {
+            return new Iterator<Entry<String, MetaProperty<?>>>() {
                 int index;
                 @Override
                 public boolean hasNext() {
                     return index < metaProperties.length;
                 }
                 @Override
-                public Entry<String, MetaProperty<Object>> next() {
+                public Entry<String, MetaProperty<?>> next() {
                     return metaProperties[index++];
                 }
                 @Override

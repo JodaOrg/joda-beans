@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public final class ReflectiveMetaBean implements MetaBean {
     /** The bean type. */
     private final Class<? extends Bean> beanType;
     /** The meta-property instances of the bean. */
-    private final Map<String, MetaProperty<Object>> metaPropertyMap;
+    private final Map<String, MetaProperty<?>> metaPropertyMap;
 
     /**
      * Factory to create a meta-bean avoiding duplicate generics.
@@ -66,7 +66,7 @@ public final class ReflectiveMetaBean implements MetaBean {
             throw new NullPointerException("Bean class must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
+        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
         Field[] fields = beanType.getDeclaredFields();
         for (Field field : fields) {
             if (MetaProperty.class.isAssignableFrom(field.getType()) && Modifier.isStatic(field.getModifiers())) {
@@ -132,22 +132,23 @@ public final class ReflectiveMetaBean implements MetaBean {
         return metaPropertyMap.containsKey(propertyName);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public MetaProperty<Object> metaProperty(String propertyName) {
-        MetaProperty<Object> metaProperty = metaPropertyMap.get(propertyName);
+    public <R> MetaProperty<R> metaProperty(String propertyName) {
+        MetaProperty<?> metaProperty = metaPropertyMap.get(propertyName);
         if (metaProperty == null) {
             throw new NoSuchElementException("Property not found: " + propertyName);
         }
-        return metaProperty;
+        return (MetaProperty<R>) metaProperty;
     }
 
     @Override
-    public Iterable<MetaProperty<Object>> metaPropertyIterable() {
+    public Iterable<MetaProperty<?>> metaPropertyIterable() {
         return metaPropertyMap.values();
     }
 
     @Override
-    public Map<String, MetaProperty<Object>> metaPropertyMap() {
+    public Map<String, MetaProperty<?>> metaPropertyMap() {
         return metaPropertyMap;
     }
 

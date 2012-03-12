@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -78,24 +78,25 @@ class MapMetaBean extends BasicMetaBean {
         return bean.containsKey(name);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public MetaProperty<Object> metaProperty(String name) {
-        return bean.metaProperty(name);
+    public <R> MetaProperty<R> metaProperty(String name) {
+        return (MetaProperty<R>) bean.metaProperty(name);
     }
 
     @Override
-    public Iterable<MetaProperty<Object>> metaPropertyIterable() {
-        return new Iterable<MetaProperty<Object>>() {
+    public Iterable<MetaProperty<?>> metaPropertyIterable() {
+        return new Iterable<MetaProperty<?>>() {
             private final Iterator<String> it = bean.keySet().iterator();
             @Override
-            public Iterator<MetaProperty<Object>> iterator() {
-                return new Iterator<MetaProperty<Object>>() {
+            public Iterator<MetaProperty<?>> iterator() {
+                return new Iterator<MetaProperty<?>>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
-                    public MetaProperty<Object> next() {
+                    public MetaProperty<?> next() {
                         return MapBeanMetaProperty.of(bean, it.next());
                     }
                     @Override
@@ -109,8 +110,8 @@ class MapMetaBean extends BasicMetaBean {
     }
 
     @Override
-    public Map<String, MetaProperty<Object>> metaPropertyMap() {
-        Map<String, MetaProperty<Object>> map = new HashMap<String, MetaProperty<Object>>();
+    public Map<String, MetaProperty<?>> metaPropertyMap() {
+        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
         for (String name : bean.keySet()) {
             map.put(name, MapBeanMetaProperty.of(bean, name));
         }

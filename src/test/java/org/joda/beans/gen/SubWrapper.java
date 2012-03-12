@@ -140,7 +140,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> metaPropertyMap$ = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
             this, (DirectMetaPropertyMap) super.metaPropertyMap(),
                 "name");
 
@@ -170,7 +170,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             return metaPropertyMap$;
         }
 

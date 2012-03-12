@@ -91,7 +91,7 @@ public class TweakedPair extends Pair {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> metaPropertyMap$ = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
             this, (DirectMetaPropertyMap) super.metaPropertyMap());
 
         /**
@@ -111,7 +111,7 @@ public class TweakedPair extends Pair {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             return metaPropertyMap$;
         }
 

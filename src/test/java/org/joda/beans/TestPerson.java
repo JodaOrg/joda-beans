@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class TestPerson {
         assertEquals(test.metaProperty(SURNAME).name(), SURNAME);
         assertEquals(test.metaProperty(NUMBER_OF_CARS).name(), NUMBER_OF_CARS);
         
-        Map<String, MetaProperty<Object>> map = test.metaPropertyMap();
+        Map<String, MetaProperty<?>> map = test.metaPropertyMap();
         assertEquals(map.size(), NUM_PROPERTIES);
         assertEquals(map.containsKey(FORENAME), true);
         assertEquals(map.containsKey(SURNAME), true);

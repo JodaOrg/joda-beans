@@ -129,7 +129,7 @@ public class NoGenEquals extends DirectBean {
         /**
          * The meta-properties.
          */
-        private final Map<String, MetaProperty<Object>> metaPropertyMap$ = new DirectMetaPropertyMap(
+        private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
                 this, null,
                 "value");
 
@@ -159,7 +159,7 @@ public class NoGenEquals extends DirectBean {
         }
 
         @Override
-        public Map<String, MetaProperty<Object>> metaPropertyMap() {
+        public Map<String, MetaProperty<?>> metaPropertyMap() {
             return metaPropertyMap$;
         }
 

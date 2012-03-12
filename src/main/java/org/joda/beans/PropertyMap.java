@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Map;
  * 
  * @author Stephen Colebourne
  */
-public interface PropertyMap extends Map<String, Property<Object>> {
+public interface PropertyMap extends Map<String, Property<?>> {
 
     /**
      * Flattens the contents of this property map to a {@code Map}.
