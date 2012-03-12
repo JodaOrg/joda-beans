@@ -16,10 +16,12 @@ The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 </p>
 <p>
-Joda-Beans is unreleased at present.
-Stable tagged versions are available in <a href="https://github.com/JodaOrg/joda-beans">GitHub</a>.
+Version 0.6 was released on 2012-03-12 -
+<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.6/">Download now</a><br />
+Joda-Beans is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
 </section>
+
 
 <section name="Why Joda Beans?">
 <p>
@@ -42,21 +44,38 @@ A key point is that the code generator may be run again and again on the Java fi
 </p>
 <p>
 See these sample classes used for testing -
-<a href="https://github.com/JodaOrg/joda-beans/blob/v0.4.4/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>,
-<a href="https://github.com/JodaOrg/joda-beans/blob/v0.4.4/src/test/java/org/joda/beans/gen/Examples.java#L25">example usage</a>,
-<a href="https://github.com/JodaOrg/joda-beans/blob/v0.4.4/src/test/java/org/joda/beans/gen/ValidateBean.java#L38">example of validation</a>.
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>,
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6/src/test/java/org/joda/beans/Examples.java#L25">example usage</a>,
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6/src/test/java/org/joda/beans/gen/ValidateBean.java#L38">example of validation</a>.
 </p>
 </section>
+
 
 <section name="Documentation">
 <p>
 Various documentation is available:
 <ul>
+<li>The <a href="userguide.html">user guide</a></li>
 <li>The javadoc for the <a href="apidocs/index.html">latest source code</a></li>
 <li>The <a href="https://github.com/JodaOrg/joda-beans">GitHub</a> source repository</li>
 </ul>
 </p>
 </section>
+
+<section name="Releases">
+<p>
+There are no full releases yet!
+<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.6/">Release 0.6</a>
+is the current development release intended for feedback.
+The code is fully tested, but there may yet be bugs and the API may yet change.
+There should be no great reason why it cannot be used in production if you can cope with future API change.
+</p>
+<p>
+The project runs on JDK 1.6 and requires <a href="http://joda-convert.sourceforge.net/index.html">Joda-Convert</a>.
+There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
+</p>
+</section>
+
 
 <section name="Support">
 <p>

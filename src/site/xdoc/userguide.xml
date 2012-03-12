@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<document>
+
+ <properties>
+  <title>User guide</title>
+  <author>Stephen Colebourne</author>
+ </properties>
+
+ <body>
+
+<section name="User guide">
+<p>
+Joda-Beans is a small library that adds properties to the Java programming language.
+It consists of two main parts - a set of interfaces and classes that define a property
+and a matching code generator.
+</p>
+</section>
+
+
+<section name="Bean and Property model">
+<p>
+The Joda-Bean API is based around a model of properties in the Java programming language.
+</p>
+<p>
+All beans implement the <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/Bean.html">Bean</a> interface.
+This defines a minimal API for all beans, providing the ability to obtain the property names and a named property.
+The interface also provides access to the <i>meta-bean</i> (see below).
+</p>
+<p>
+The bean provides access to instances of the <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/Property.html">Property</a>
+interface for each property.
+Each property object holds a reference to the bean that the property is part of.
+This means that there are simple methods to get and set the value of the property which directly affect the underlying bean.
+The property also provides methods to get the property name, the underlying bean and the <i>meta-property</i> (see below).
+</p>
+<p>
+The <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/MetaBean.html">MetaBean</a> interface defines
+the meta-bean. The "meta" name indicates that this is a higher level description of the bean itself.
+In fact, the meta-bean is the equivalent to <code>java.lang.Class</code> for beans - there is only one meta-bean object
+for all instances of the bean.
+The meta-bean API provides access to the name of the bean, it's type, a builder and the meta-properties.
+</p>
+<p>
+The <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/MetaProperty.html">MetaProperty</a> interface
+is the main definition of a property.
+It is at the "meta" level, describing the property without holding a references to any specific instance of a bean.
+As such, it is effectively the equivalent to <code>java.lang.reflect.Field</code> for a single property on a bean - there is only
+one meta-property object for all instances of the property.
+The meta-property API provides access to the name of the property, it's type, any declared annotations, whether it is read-write or read-only
+as well as methods to get and set the value which require the bean to be passed in, just like <code>java.lang.reflect.Field</code>.
+</p>
+</section>
+
+
+<section name="Use in an application">
+<p>
+Applications can use Joda-Beans properties in many ways, revolving around passing a single property of an object to another method.
+For example, it would be possible to write a validating method that checked the validity of a single property, but perhaps
+registered errors on the underlying bean.
+</p>
+</section>
+
+
+<section name="Use in a framework">
+<p>
+Joda-Beans is designed to work well with frameworks which need dynamic access to the properties of a bean.
+It is recommended when working with a framework to primarily use the meta-bean and associated meta-properties.
+This is because they tend to be singletons and more efficient than using the property objects.
+The meta-property API is also more comprehensive than the property API.
+</p>
+<p>
+Beans are normal Java objects and can be created from scratch using constructors.
+Frameworks may wish to use the <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/BeanBuilder.html">BeanBuilder</a> interface
+which provides a way to build the bean.
+The builder is obtained from the meta-bean.
+Each property is then set before calling <code>build</code>.
+</p>
+<p>
+A selection of utilities is available on <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/JodaBeanUtils.html">JodaBeanUtils</a>.
+This includes the ability to lookup a meta-bean from a <code>java.lang.Class</code>, access to the Joda-Convert string converter and methods
+to extract the types of lists and maps using reflection on generics.
+</p>
+<p>
+The access to the field-level annotations provided by the meta-property is also useful to framework writers.
+</p>
+</section>
+
+
+<section name="Joda-Convert integration">
+<p>
+A Joda-Beans meta-property provides the ability to set a property from a string.
+The conversion between the string and the type of the property, such as <code>int</code> or <code>URI</code>, is handled by
+<a href="http://joda-convert.sourceforge.net/index.html">Joda-Convert</a>. The converter can be customised and is exposed by <code>JodaBeanUtils</code>.
+</p>
+</section>
+
+
+<section name="Chained access">
+<p>
+Joda-Beans provides the ability to chain properties together using
+<a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/query/ChainedBeanQuery.html">ChainedBeanQuery</a>.
+This is an immutable class that allows a list of "queries" to be passed in.
+</p>
+<p>
+Each query is an instance of <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/BeanQuery.html">BeanQuery</a>.
+All meta-properties implement this interface, thus they can be passed directly to <code>ChainedBeanQuery</code>.
+</p>
+<p>
+This feature allows the value of a nested property to be queried from the parent bean.
+For example, these two code sequences are equivalent - obviously the second would only be used within a framework
+where the query setup was separate from the actual query.
+</p>
+<pre>
+ String city = document.getPerson().getAddress().getCity()
+ 
+ ChainedBeanQuery&lt;String&gt; query = ChainedBeanQuery.of(Document.meta().person(), Person.meta().address(), Address.meta().city());
+ String city = query.get(document);
+</pre>
+</section>
+
+
+<section name="Code generator">
+<p>
+It is possible to write a Joda-Bean by hand - they are just normal Java interfaces defining an API for JavaBeans.
+There are some base classes that assist as well as some standard map-based implementations, notably
+<a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/impl/flexi/FlexiBean.html">FlexiBean</a>.
+It is more common to use the code generator, however the generator is optional.
+</p>
+<p>
+A code generated Joda-Bean minimises the amount of code that the developer has to write.
+The developer simply creates an outline class and adds the properties (fields).
+The code generator then produces all the getters and setters, plus additional helper methods.
+See this <a href="https://github.com/JodaOrg/joda-beans/blob/v0.6/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>
+for an example of the generated code.
+</p>
+<p>
+The code generator must be invoked before compilation.
+It cannot operate at runtime, as the getters and setters that are generated must be available for developers
+writing the main part of the application.
+</p>
+<p>
+The code generator operates by creating a portion of the source file marked by "AUTOGENERATED START" and "AUTOGENERATED END" tags
+(when first run, if the tags are not present, it will create the block at the end of the file).
+The generator only ever changes code within the marked block, apart from imports which it inserts if it determines they are necessary.
+Limiting the generation to a fixed part of the file means that developers can customise the rest of the Java file in any
+way that is desired, such as adding constructors and functional methods.
+</p>
+<p>
+The generator has the following requirements:
+</p>
+<ul>
+<li>The class must be annotated with <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/BeanDefinition.html">BeanDefinition</a></li>
+<li>The class must extend <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/impl/direct/DirectBean.html">DirectBean</a>, directly or indirectly</li>
+<li>The class must be a normal top-level class, nested/inner classes and multiple classes per file are not supported</li>
+<li>Each property field must be annotated with <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/PropertyDefinition.html">PropertyDefinition</a></li>
+<li>Each property field must be be private</li>
+<li>The Javadoc of each property field should normally start with the word "The".</li>
+</ul>
+<p>
+It is possible to declare a property without it having a matching field.
+To do this, annotate the getter with <a href="http://joda-beans.sourceforge.net/apidocs/org/joda/beans/DerivedProperty.html">DerivedProperty</a>.
+Apart from the absence of a field, a derived property is very similar to a normal read-only property.
+</p>
+<p>
+The command line takes the following arguments:
+</p>
+<pre>
+  Usage java org.joda.beans.gen.BeanCodeGen [file]
+  Options
+    -R                process all files recursively, default false
+    -indent=tab       use a tab for indenting, default 4 spaces
+    -indent=[n]       use n spaces for indenting, default 4
+    -prefix=[p]       field prefix of p should be removed, no default
+    -verbose=[v]      output logging with verbosity from 0 to 3, default 1
+    -nowrite          output messages rather than writing, default is to write
+</pre>
+<p>
+The prefix is useful for teams that have a coding standard where fields must be prefixed, such as by an underscore or a letter.
+Specifying it to the generator allows that prefix to be stripped before generating the property name.
+</p>
+<p>
+The code generator works by reading the source file and parsing it to memory.
+The parser is deliberately simplistic and will reject complex files or unusual code formatting styles.
+The generator processes the annotated properties and replaces the auto-generated section of the file in memory.
+It then compares the newly generated file with the original and only if they are different is the new file written to the file system.
+The generator will make use of property comments and will respect and propagate deprecated annotations.
+It is reasonably intelligent - final fields will become read-only properties, most collections and maps are sensibly handled
+and booleans generate "is" methods rather than "get" methods. Simple generics are also handled.
+</p>
+<p>
+The generator must be invoked every time that the source file is changed.
+Failure to do so (such as by using an IDE refactoring) could leave the auto-generated block in an invalid state.
+Normally the generator will be invoked from the IDE or a tool like Apache Ant.
+</p>
+<p>
+The code generator only parses and outputs based on a single source Java file.
+It does not require the file to compile and never knows that "String" actually means "java.lang.String".
+In other words, the type system in the generator is totally dumb and based solely on the short simple class name.
+</p>
+</section>
+
+
+<section name="Code generator customisation">
+<p>
+The generator has a limited set of customisations to the core part of the generation.
+</p>
+<p>
+The <code>PropertyDefinition</code> has attributes that allow the getter and setter generation to be controlled.
+The main use cases are to prevent generation by specifying "manual".
+The developer can then write their own method with whatever special logic is required.
+</p>
+<p>
+The <code>PropertyDefinition</code> also has an attribute to specify validation.
+The standard values are "notNull" and "notEmpty", which are implemented in <code>JodaBeanUtils</code>.
+Developers may specify any text in the attribute however, and it is simply inserted into the output.
+Thus a validation attribute of "Validate.noNulls" could be used to connect up to Commons Lang.
+</p>
+</section>
+
+
+<section name="Integration">
+<p>
+Joda-Beans has so far been integrated with Freemarker and MongoDB.
+The OpenGamma project has also provided its own integration with the Fudge messaging project.
+The support classes are included in the jar file but only work when the optional dependency is present.
+</p>
+<p>
+<br />
+</p>
+<p>
+<br />
+</p>
+</section>
+
+</body>
+</document>

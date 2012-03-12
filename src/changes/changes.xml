@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.5.1" date="" description="v0.5.1">
+    <release version="0.6" date="2012-03-12" description="v0.6">
       <action dev="jodastephen" type="fix">
         Move example code to correct location.
       </action>              
@@ -17,6 +17,9 @@
       </action>              
       <action dev="jodastephen" type="fix">
         Handle empty comments correctly.
+      </action>              
+      <action dev="lega" type="add">
+        Extend builder to support setting by string.
       </action>              
     </release>
     <release version="0.5" date="2011-10-27" description="v0.5">
