@@ -231,14 +231,23 @@ class PropertyGen {
         } else if (line.startsWith("protected ")) {
             line = line.substring(10).trim();
         }
+        String lineEnd = "() {";
+        if (line.startsWith("abstract ")) {
+            line = line.substring(9).trim();
+            lineEnd = "();";
+        } else if (line.startsWith("final ")) {
+            line = line.substring(6).trim();
+        } else if (line.startsWith("static ")) {
+            throw new RuntimeException("@DerivedProperty method cannot be static");
+        }
         int getIndex = line.indexOf(" get");
         if (getIndex < 0) {
             throw new RuntimeException("@DerivedProperty method must start with 'get'");
         }
-        if (line.endsWith("() {") == false) {
-            throw new RuntimeException("@DerivedProperty method must end with '() {'");
+        if (line.endsWith(lineEnd) == false) {
+            throw new RuntimeException("@DerivedProperty method must end with '" + lineEnd + "'");
         }
-        line = line.substring(0, line.length() - 4);
+        line = line.substring(0, line.length() - lineEnd.length());
         String[] split = new String[2];
         split[0] = line.substring(0, getIndex).trim();
         split[1] = line.substring(getIndex + 4).trim();

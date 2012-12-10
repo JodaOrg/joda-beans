@@ -59,9 +59,11 @@ public class TestResult {
         MetaBean test = AddressResult.meta();
         assertEquals(test.beanType(), AddressResult.class);
         assertEquals(test.beanName(), AddressResult.class.getName());
-        assertEquals(test.metaPropertyCount(), 1);
+        assertEquals(test.metaPropertyCount(), 2);
         assertEquals(test.metaPropertyExists("docs"), true);
         assertEquals(test.metaProperty("docs").name(), "docs");
+        assertEquals(test.metaPropertyExists("resultType"), true);
+        assertEquals(test.metaProperty("resultType").name(), "resultType");
     }
 
     @Test(expectedExceptions=NoSuchElementException.class)
