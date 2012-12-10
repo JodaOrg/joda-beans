@@ -74,6 +74,9 @@ There should be no great reason why it cannot be used in production if you can c
 The project runs on JDK 1.6 and requires <a href="http://joda-convert.sourceforge.net/index.html">Joda-Convert</a>.
 There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
 </p>
+<p>
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.6|jar">Maven Central</a>.
+</p>
 </section>
 
 

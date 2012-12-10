@@ -12,7 +12,7 @@
   <description>Beans and Properties</description>
   <url>http://joda-beans.sourceforge.net</url>
   <issueManagement>
-  	<system>GitHub issues</system>
+  	<system>GitHub</system>
     <url>https://github.com/JodaOrg/joda-beans/issues</url>
   </issueManagement>
   <inceptionYear>2007</inceptionYear>
