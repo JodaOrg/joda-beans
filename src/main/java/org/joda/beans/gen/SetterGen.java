@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,13 +16,10 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A generator of set methods.
@@ -30,18 +27,6 @@ import java.util.Set;
  * @author Stephen Colebourne
  */
 abstract class SetterGen {
-
-    /** Collection types. */
-    private static final Set<String> COLLECTIONS = new HashSet<String>(
-            Arrays.asList(
-                    "Collection", "Set", "SortedSet", "NavigableSet", "List",
-                    "ArrayList", "LinkedList",
-                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet"));
-    /** Map types. */
-    private static final Set<String> MAPS = new HashSet<String>(
-            Arrays.asList(
-                    "Map", "SortedMap", "NavigableMap", "ConcurrentMap", "ConcurrentNavigableMap",
-                    "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap"));
 
     /** The known setter generators. */
     static final Map<String, SetterGen> SETTERS = new HashMap<String, SetterGen>();
@@ -69,7 +54,16 @@ abstract class SetterGen {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if a setter method is possible.
+     * 
+     * @param prop  the property data, not null
+     * @return true if a setter is possible
+     */
+    abstract boolean isSetterGenerated(GeneratableProperty prop);
+
+    /**
      * Generates the setter method.
+     * 
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
@@ -78,6 +72,7 @@ abstract class SetterGen {
     /**
      * Generates the setter method invocation.
      * This is just the method name.
+     * 
      * @param prop  the property data, not null
      * @return the generated code, null if no setter
      */
@@ -89,12 +84,23 @@ abstract class SetterGen {
     static class SmartSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new SmartSetterGen();
         @Override
+        boolean isSetterGenerated(GeneratableProperty prop) {
+            if (prop.isFinal()) {
+                if (prop.isCollectionType() || prop.isMapType()) {
+                    return true;
+                }
+                return false;
+            } else {
+                return SetSetterGen.INSTANCE.isSetterGenerated(prop);
+            }
+        }
+        @Override
         List<String> generateSetter(GeneratableProperty prop) {
             if (prop.isFinal()) {
-                if (isCollection(prop)) {
+                if (prop.isCollectionType()) {
                     return SetClearAddAllSetterGen.INSTANCE.generateSetter(prop);
                 }
-                if (isMap(prop)) {
+                if (prop.isMapType()) {
                     return SetClearPutAllSetterGen.INSTANCE.generateSetter(prop);
                 }
                 return Collections.emptyList();
@@ -105,10 +111,10 @@ abstract class SetterGen {
         @Override
         String generateSetInvoke(GeneratableProperty prop) {
             if (prop.isFinal()) {
-                if (isCollection(prop)) {
+                if (prop.isCollectionType()) {
                     return SetClearAddAllSetterGen.INSTANCE.generateSetInvoke(prop);
                 }
-                if (isMap(prop)) {
+                if (prop.isMapType()) {
                     return SetClearPutAllSetterGen.INSTANCE.generateSetInvoke(prop);
                 }
                 return null;
@@ -116,16 +122,14 @@ abstract class SetterGen {
                 return SetSetterGen.INSTANCE.generateSetInvoke(prop);
             }
         }
-        private static boolean isCollection(GeneratableProperty prop) {
-            return prop.isGeneric() && COLLECTIONS.contains(prop.getRawType());
-        }
-        private static boolean isMap(GeneratableProperty prop) {
-            return "FlexiBean".equals(prop.getType()) || (prop.isGeneric() && MAPS.contains(prop.getRawType()));
-        }
     }
 
     static class SetSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new SetSetterGen();
+        @Override
+        boolean isSetterGenerated(GeneratableProperty prop) {
+            return true;
+        }
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
             List<String> list = new ArrayList<String>();
@@ -154,6 +158,10 @@ abstract class SetterGen {
     static class SetClearAddAllSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new SetClearAddAllSetterGen();
         @Override
+        boolean isSetterGenerated(GeneratableProperty prop) {
+            return true;
+        }
+        @Override
         List<String> generateSetter(GeneratableProperty prop) {
             return doGenerateBulkSetter(prop, "addAll");
         }
@@ -162,6 +170,10 @@ abstract class SetterGen {
     static class SetClearPutAllSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new SetClearPutAllSetterGen();
         @Override
+        boolean isSetterGenerated(GeneratableProperty prop) {
+            return true;
+        }
+        @Override
         List<String> generateSetter(GeneratableProperty prop) {
             return doGenerateBulkSetter(prop, "putAll");
         }
@@ -169,6 +181,10 @@ abstract class SetterGen {
 
     static class NoSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new NoSetterGen();
+        @Override
+        boolean isSetterGenerated(GeneratableProperty prop) {
+            return false;
+        }
         @Override
         List<String> generateSetter(GeneratableProperty prop) {
             return Collections.emptyList();

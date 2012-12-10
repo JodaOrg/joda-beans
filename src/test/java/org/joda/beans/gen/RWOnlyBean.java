@@ -64,7 +64,6 @@ public class RWOnlyBean extends DirectBean {
      * A manual get property, no set.
      */
     @PropertyDefinition(get = "manual", set = "")
-    @SuppressWarnings("unused")
     private String manualGet;
 
     public String getManualGet() {
@@ -269,7 +268,7 @@ public class RWOnlyBean extends DirectBean {
         /**
          * The meta-property for the {@code fin} property.
          */
-        private final MetaProperty<Object> fin = DirectMetaProperty.ofReadWrite(
+        private final MetaProperty<Object> fin = DirectMetaProperty.ofReadOnly(
                 this, "fin", RWOnlyBean.class, Object.class);
         /**
          * The meta-property for the {@code manualGet} property.

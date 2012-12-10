@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.beans.PropertyReadWrite;
 
@@ -26,6 +29,18 @@ import org.joda.beans.PropertyReadWrite;
  * @author Stephen Colebourne
  */
 class GeneratableProperty {
+
+    /** Collection types. */
+    private static final Set<String> COLLECTIONS = new HashSet<String>(
+            Arrays.asList(
+                    "Collection", "Set", "SortedSet", "NavigableSet", "List",
+                    "ArrayList", "LinkedList",
+                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet"));
+    /** Map types. */
+    private static final Set<String> MAPS = new HashSet<String>(
+            Arrays.asList(
+                    "Map", "SortedMap", "NavigableMap", "ConcurrentMap", "ConcurrentNavigableMap",
+                    "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap"));
 
     /** Owning bean. */
     private final GeneratableBean bean;
@@ -45,8 +60,6 @@ class GeneratableProperty {
     private String setStyle;
     /** The validation string. */
     private String validation;
-    /** Read-write type. */
-    private PropertyReadWrite readWrite;
     /** Deprecated flag. */
     private boolean deprecated;
     /** First comment about the property. */
@@ -199,22 +212,6 @@ class GeneratableProperty {
     }
 
     /**
-     * Gets the read-write flag.
-     * @return the read write
-     */
-    public PropertyReadWrite getReadWrite() {
-        return readWrite;
-    }
-
-    /**
-     * Sets the read-write flag.
-     * @param readWrite  the read write to set
-     */
-    public void setReadWrite(PropertyReadWrite readWrite) {
-        this.readWrite = readWrite;
-    }
-
-    /**
      * Checks if the property is deprecated.
      * @return the deprecated flag
      */
@@ -315,6 +312,44 @@ class GeneratableProperty {
      */
     public boolean isDerived() {
         return fieldName == null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this property is a known collection type.
+     * 
+     * @return true if it is a known collection type
+     */
+    public boolean isCollectionType() {
+        return isGeneric() && COLLECTIONS.contains(getRawType());
+    }
+
+    /**
+     * Checks if this property is a known map type.
+     * 
+     * @return true if it is a known map type
+     */
+    public boolean isMapType() {
+        return "FlexiBean".equals(getType()) || (isGeneric() && MAPS.contains(getRawType()));
+    }
+
+    /**
+     * Gets the read-write flag.
+     * 
+     * @return the read write
+     */
+    public PropertyReadWrite getReadWrite() {
+        SetterGen generator = SetterGen.of(this);
+        if (getGetStyle().length() > 0 && getSetStyle().length() > 0 && (generator.isSetterGenerated(this) || getSetStyle().equals("manual"))) {
+            return PropertyReadWrite.READ_WRITE;
+        }
+        if (getGetStyle().length() > 0) {
+            return PropertyReadWrite.READ_ONLY;
+        }
+        if (getSetStyle().length() > 0) {
+            return PropertyReadWrite.WRITE_ONLY;
+        }
+        throw new RuntimeException("Property must have a getter or setter: " + propertyName);
     }
 
     //-----------------------------------------------------------------------

@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.6.1" date="Pending" description="v0.6.1">
+      <action dev="jodastephen" type="fix">
+        Set correct read/write flag for final fields
+      </action>
+    </release>
     <release version="0.6" date="2012-03-12" description="v0.6">
       <action dev="jodastephen" type="fix">
         Make generics more correct

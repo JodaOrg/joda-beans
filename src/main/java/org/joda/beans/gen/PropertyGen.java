@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 
 /**
@@ -63,7 +62,6 @@ class PropertyGen {
         if (derived) {
             prop.setGetStyle("manual");
             prop.setSetStyle("");
-            prop.setReadWrite(PropertyReadWrite.READ_ONLY);
             prop.setDeprecated(parseDeprecated(content));
             prop.setPropertyName(parseMethodNameAsPropertyName(content));
             prop.setUpperName(makeUpperName(prop.getPropertyName()));
@@ -72,7 +70,6 @@ class PropertyGen {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
             prop.setValidation(parseValidation(content));
-            prop.setReadWrite(makeReadWrite(prop.getGetStyle(), prop.getSetStyle(), prop.getPropertyName()));
             prop.setDeprecated(parseDeprecated(content));
             prop.setFieldName(parseFieldName(content));
             prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
@@ -95,19 +92,6 @@ class PropertyGen {
 
     private String makeUpperName(String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
-
-    private PropertyReadWrite makeReadWrite(String getter, String setter, String propertyName) {
-        if (getter.length() > 0 && setter.length() > 0) {
-            return PropertyReadWrite.READ_WRITE;
-        }
-        if (getter.length() > 0) {
-            return PropertyReadWrite.READ_ONLY;
-        }
-        if (setter.length() > 0) {
-            return PropertyReadWrite.WRITE_ONLY;
-        }
-        throw new RuntimeException("Property must have a getter or setter: " + propertyName);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -156,7 +156,8 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * <p>
      * This converts the result of {@link #get(Bean)} to a standard format string.
      * Conversion uses Joda-Convert.
-     * 
+     * Not all object types can be converted to a string, see Joda-Convert.
+     * <p>
      * For a standard JavaBean, this is equivalent to calling <code>getFoo()</code> on the bean.
      * Alternate implementations may perform any logic to obtain the value.
      * 
@@ -164,6 +165,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @return the value of the property on the specified bean, may be null
      * @throws ClassCastException if the bean is of an incorrect type
      * @throws UnsupportedOperationException if the property is write-only
+     * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
     String getString(Bean bean);
 

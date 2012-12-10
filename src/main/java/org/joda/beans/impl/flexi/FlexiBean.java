@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2011 Stephen Colebourne
+ *  Copyright 2001-2012 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,6 +53,15 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * Constructor.
      */
     public FlexiBean() {
+    }
+
+    /**
+     * Constructor that copies all the data entries from the specified bean.
+     * 
+     * @param copyFrom  the bean to copy from, not null
+     */
+    public FlexiBean(FlexiBean copyFrom) {
+        putAll(copyFrom.data);
     }
 
     //-----------------------------------------------------------------------
