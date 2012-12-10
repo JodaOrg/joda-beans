@@ -51,7 +51,7 @@ public class Person extends DirectBean {
     private String surname;
     /** The number of cars. */
     @PropertyDefinition
-    private int numberOfCars;
+    private transient int numberOfCars;
     @PropertyDefinition
     private final List<Address> addressList = new ArrayList<Address>();
     @PropertyDefinition
