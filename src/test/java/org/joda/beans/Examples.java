@@ -84,9 +84,9 @@ public class Examples {
         Property<Address> dProp = d.content();
         Address a2 = dProp.metaProperty().get(d);
         System.out.println(a2);
-        Address a3 = Documentation.<Address>meta().content().get(d);
+        Address a3 = Documentation.meta(Address.class).content().get(d);
         System.out.println(a3);
-        Documentation<Address> d2 = Documentation.<Address>meta().builder().build();
+        Documentation<Address> d2 = Documentation.meta(Address.class).builder().build();
         System.out.println(d2);
         
 //        try {

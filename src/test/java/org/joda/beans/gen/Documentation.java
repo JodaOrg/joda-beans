@@ -52,9 +52,21 @@ public class Documentation<T> extends DirectBean {
      * The meta-bean for {@code Documentation}.
      * @param <R>  the bean's generic type
      * @return the meta-bean, not null
+     * @deprecated use {@link #meta(Class)}
+     */
+    @SuppressWarnings("rawtypes")
+    @Deprecated
+    public static Documentation.Meta meta() {
+        return Documentation.Meta.INSTANCE;
+    }
+    /**
+     * The meta-bean for {@code Documentation}.
+     * @param <R>  the bean's generic type
+     * @param cls  the bean's generic type
+     * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R> Documentation.Meta<R> meta() {
+    public static <R> Documentation.Meta<R> meta(Class<R> cls) {
         return Documentation.Meta.INSTANCE;
     }
     static {

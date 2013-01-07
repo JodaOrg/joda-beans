@@ -43,7 +43,6 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
      * The meta-bean for {@code CompanyAddressMidResult}.
      * @return the meta-bean, not null
      */
-    @SuppressWarnings("unchecked")
     public static CompanyAddressMidResult.Meta meta() {
         return CompanyAddressMidResult.Meta.INSTANCE;
     }

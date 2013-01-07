@@ -51,9 +51,21 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
      * The meta-bean for {@code AbstractResult}.
      * @param <R>  the bean's generic type
      * @return the meta-bean, not null
+     * @deprecated use {@link #meta(Class)}
+     */
+    @SuppressWarnings("rawtypes")
+    @Deprecated
+    public static AbstractResult.Meta meta() {
+        return AbstractResult.Meta.INSTANCE;
+    }
+    /**
+     * The meta-bean for {@code AbstractResult}.
+     * @param <R>  the bean's generic type
+     * @param cls  the bean's generic type
+     * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R extends Address> AbstractResult.Meta<R> meta() {
+    public static <R extends Address> AbstractResult.Meta<R> meta(Class<R> cls) {
         return AbstractResult.Meta.INSTANCE;
     }
     static {

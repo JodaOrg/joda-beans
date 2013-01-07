@@ -45,7 +45,6 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
      * The meta-bean for {@code SubWrapper}.
      * @return the meta-bean, not null
      */
-    @SuppressWarnings("unchecked")
     public static SubWrapper.Meta meta() {
         return SubWrapper.Meta.INSTANCE;
     }

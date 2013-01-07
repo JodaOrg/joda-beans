@@ -285,21 +285,37 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         if (data.isTypeGeneric()) {
+            // although deprecated, this has to stay, to block superclass meta()
             insertRegion.add("\t * @param <R>  the bean's generic type");
             insertRegion.add("\t * @return the meta-bean, not null");
+            insertRegion.add("\t * @deprecated use {@link #meta(Class)}");
             insertRegion.add("\t */");
-            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends() + "> " + data.getTypeRaw() + ".Meta<R> meta() {");
+            insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
+            insertRegion.add("\t@Deprecated");
+            insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
         } else {
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
-            if (data.isSuperTypeGeneric()) {
-                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            }
             insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
         }
         insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
         insertRegion.add("\t}");
+        
+        if (data.isTypeGeneric()) {
+            // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            insertRegion.add("\t * @param <R>  the bean's generic type");
+            insertRegion.add("\t * @param cls  the bean's generic type");
+            insertRegion.add("\t * @return the meta-bean, not null");
+            insertRegion.add("\t */");
+            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends() + "> " + data.getTypeRaw() +
+                    ".Meta<R> meta(Class<R> cls) {");
+            insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
+            insertRegion.add("\t}");
+        }
+        
         insertRegion.add("\tstatic {");
         insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t}");
@@ -483,6 +499,7 @@ class BeanGen {
     }
 
     private void generateMetaPropertyMapSetup() {
+        data.ensureImport(MetaProperty.class);
         data.ensureImport(DirectMetaPropertyMap.class);
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");

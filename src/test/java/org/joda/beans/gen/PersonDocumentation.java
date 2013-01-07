@@ -45,7 +45,6 @@ public class PersonDocumentation extends Documentation<Person> {
      * The meta-bean for {@code PersonDocumentation}.
      * @return the meta-bean, not null
      */
-    @SuppressWarnings("unchecked")
     public static PersonDocumentation.Meta meta() {
         return PersonDocumentation.Meta.INSTANCE;
     }

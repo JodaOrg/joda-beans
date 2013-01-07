@@ -43,7 +43,6 @@ public class CompanyAddressResult extends AbstractResult<CompanyAddress> {
      * The meta-bean for {@code CompanyAddressResult}.
      * @return the meta-bean, not null
      */
-    @SuppressWarnings("unchecked")
     public static CompanyAddressResult.Meta meta() {
         return CompanyAddressResult.Meta.INSTANCE;
     }

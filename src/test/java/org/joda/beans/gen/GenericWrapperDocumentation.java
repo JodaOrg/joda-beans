@@ -45,9 +45,21 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
      * The meta-bean for {@code GenericWrapperDocumentation}.
      * @param <R>  the bean's generic type
      * @return the meta-bean, not null
+     * @deprecated use {@link #meta(Class)}
+     */
+    @SuppressWarnings("rawtypes")
+    @Deprecated
+    public static GenericWrapperDocumentation.Meta meta() {
+        return GenericWrapperDocumentation.Meta.INSTANCE;
+    }
+    /**
+     * The meta-bean for {@code GenericWrapperDocumentation}.
+     * @param <R>  the bean's generic type
+     * @param cls  the bean's generic type
+     * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R extends Address> GenericWrapperDocumentation.Meta<R> meta() {
+    public static <R extends Address> GenericWrapperDocumentation.Meta<R> meta(Class<R> cls) {
         return GenericWrapperDocumentation.Meta.INSTANCE;
     }
     static {

@@ -43,7 +43,6 @@ public class AddressResult extends AbstractResult<Address> {
      * The meta-bean for {@code AddressResult}.
      * @return the meta-bean, not null
      */
-    @SuppressWarnings("unchecked")
     public static AddressResult.Meta meta() {
         return AddressResult.Meta.INSTANCE;
     }
