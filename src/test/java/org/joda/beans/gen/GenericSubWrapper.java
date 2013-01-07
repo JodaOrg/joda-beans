@@ -43,12 +43,9 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     ///CLOVER:OFF
     /**
      * The meta-bean for {@code GenericSubWrapper}.
-     * @param <R>  the bean's generic type
      * @return the meta-bean, not null
-     * @deprecated use {@link #meta(Class)}
      */
     @SuppressWarnings("rawtypes")
-    @Deprecated
     public static GenericSubWrapper.Meta meta() {
         return GenericSubWrapper.Meta.INSTANCE;
     }
@@ -59,7 +56,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
      * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R extends Address> GenericSubWrapper.Meta<R> meta(Class<R> cls) {
+    public static <R extends Address> GenericSubWrapper.Meta<R> metaGenericSubWrapper(Class<R> cls) {
         return GenericSubWrapper.Meta.INSTANCE;
     }
     static {

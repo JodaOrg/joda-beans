@@ -35,12 +35,9 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
     ///CLOVER:OFF
     /**
      * The meta-bean for {@code MidAbstractResult}.
-     * @param <R>  the bean's generic type
      * @return the meta-bean, not null
-     * @deprecated use {@link #meta(Class)}
      */
     @SuppressWarnings("rawtypes")
-    @Deprecated
     public static MidAbstractResult.Meta meta() {
         return MidAbstractResult.Meta.INSTANCE;
     }
@@ -51,7 +48,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
      * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R extends Address> MidAbstractResult.Meta<R> meta(Class<R> cls) {
+    public static <R extends Address> MidAbstractResult.Meta<R> metaMidAbstractResult(Class<R> cls) {
         return MidAbstractResult.Meta.INSTANCE;
     }
     static {

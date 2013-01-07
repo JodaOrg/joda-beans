@@ -79,7 +79,8 @@ public class TestResult {
 
     //-----------------------------------------------------------------------
     public void test_genericType_abstract() {
-        AbstractResult.Meta<Address> test = AbstractResult.meta(Address.class);
+        @SuppressWarnings("unchecked")
+        AbstractResult.Meta<Address> test = AbstractResult.meta();
         assertEquals(test.docs().propertyType(), List.class);
         assertEquals(JodaBeanUtils.collectionType(test.docs(), AbstractResult.class), Address.class);
     }

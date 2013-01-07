@@ -282,16 +282,14 @@ class BeanGen {
 
     private void generateMeta() {
         data.ensureImport(JodaBeanUtils.class);
+        // this cannot be generified without either Eclipse or javac complaining
+        // raw types forever
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         if (data.isTypeGeneric()) {
-            // although deprecated, this has to stay, to block superclass meta()
-            insertRegion.add("\t * @param <R>  the bean's generic type");
             insertRegion.add("\t * @return the meta-bean, not null");
-            insertRegion.add("\t * @deprecated use {@link #meta(Class)}");
             insertRegion.add("\t */");
             insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
-            insertRegion.add("\t@Deprecated");
             insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
         } else {
             insertRegion.add("\t * @return the meta-bean, not null");
@@ -303,6 +301,7 @@ class BeanGen {
         
         if (data.isTypeGeneric()) {
             // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
+            // long name needed for uniqueness as static overroding is borked
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t * @param <R>  the bean's generic type");
@@ -311,7 +310,7 @@ class BeanGen {
             insertRegion.add("\t */");
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
             insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends() + "> " + data.getTypeRaw() +
-                    ".Meta<R> meta(Class<R> cls) {");
+                    ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
             insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
             insertRegion.add("\t}");
         }

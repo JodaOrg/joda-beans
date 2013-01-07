@@ -47,12 +47,9 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     ///CLOVER:OFF
     /**
      * The meta-bean for {@code Wrapper}.
-     * @param <R>  the bean's generic type
      * @return the meta-bean, not null
-     * @deprecated use {@link #meta(Class)}
      */
     @SuppressWarnings("rawtypes")
-    @Deprecated
     public static Wrapper.Meta meta() {
         return Wrapper.Meta.INSTANCE;
     }
@@ -63,7 +60,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
      * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R extends Address> Wrapper.Meta<R> meta(Class<R> cls) {
+    public static <R extends Address> Wrapper.Meta<R> metaWrapper(Class<R> cls) {
         return Wrapper.Meta.INSTANCE;
     }
     static {

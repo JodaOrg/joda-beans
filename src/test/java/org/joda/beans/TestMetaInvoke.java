@@ -49,10 +49,11 @@ import org.testng.annotations.Test;
 public class TestMetaInvoke {
 
     public void test_method_call_compiles() {
+        @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> a = AbstractResult.meta();
         assertNotNull(a);
         
-        AbstractResult.Meta<Address> a2 = AbstractResult.meta(Address.class);
+        AbstractResult.Meta<Address> a2 = AbstractResult.metaAbstractResult(Address.class);
         assertNotNull(a2);
         
         Address.Meta b = Address.meta();
@@ -70,10 +71,11 @@ public class TestMetaInvoke {
         CompanyAddressResult.Meta f = CompanyAddressResult.meta();
         assertNotNull(f);
         
+        @SuppressWarnings("unchecked")
         Documentation.Meta<String> g = Documentation.meta();
         assertNotNull(g);
         
-        Documentation.Meta<String> g2 = Documentation.meta(String.class);
+        Documentation.Meta<String> g2 = Documentation.metaDocumentation(String.class);
         assertNotNull(g2);
         
         DocumentationHolder.Meta h = DocumentationHolder.meta();
@@ -82,22 +84,25 @@ public class TestMetaInvoke {
         FinalFieldBean.Meta i = FinalFieldBean.meta();
         assertNotNull(i);
         
+        @SuppressWarnings("unchecked")
         GenericSubWrapper.Meta<Address> j = GenericSubWrapper.meta();
         assertNotNull(j);
         
-        GenericSubWrapper.Meta<Address> j2 = GenericSubWrapper.meta(Address.class);
+        GenericSubWrapper.Meta<Address> j2 = GenericSubWrapper.metaGenericSubWrapper(Address.class);
         assertNotNull(j2);
         
+        @SuppressWarnings("unchecked")
         GenericWrapperDocumentation.Meta<Address> k = GenericWrapperDocumentation.meta();
         assertNotNull(k);
         
-        GenericWrapperDocumentation.Meta<Address> k2 = GenericWrapperDocumentation.meta(Address.class);
+        GenericWrapperDocumentation.Meta<Address> k2 = GenericWrapperDocumentation.metaGenericWrapperDocumentation(Address.class);
         assertNotNull(k2);
         
+        @SuppressWarnings("unchecked")
         MidAbstractResult.Meta<Address> l = MidAbstractResult.meta();
         assertNotNull(l);
         
-        MidAbstractResult.Meta<Address> l2 = MidAbstractResult.meta(Address.class);
+        MidAbstractResult.Meta<Address> l2 = MidAbstractResult.metaMidAbstractResult(Address.class);
         assertNotNull(l2);
         
         NoGenEquals.Meta m = NoGenEquals.meta();
@@ -118,10 +123,11 @@ public class TestMetaInvoke {
         RWOnlyBean.Meta r = RWOnlyBean.meta();
         assertNotNull(r);
         
-        SubPerson.Meta s = SubPerson.meta();
+        @SuppressWarnings("unchecked")
+        SubPerson.Meta<String> s = SubPerson.meta();
         assertNotNull(s);
         
-        SubPerson.Meta<String> s2 = SubPerson.meta(String.class);
+        SubPerson.Meta<String> s2 = SubPerson.metaSubPerson(String.class);
         assertNotNull(s2);
         
         SubWrapper.Meta t = SubWrapper.meta();
@@ -133,6 +139,7 @@ public class TestMetaInvoke {
         ValidateBean.Meta v = ValidateBean.meta();
         assertNotNull(v);
         
+        @SuppressWarnings("unchecked")
         Wrapper.Meta<Address> w = Wrapper.meta();
         assertNotNull(w);
     }

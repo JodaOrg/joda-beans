@@ -38,12 +38,9 @@ public class SubPerson<T> extends DirectBean {
     ///CLOVER:OFF
     /**
      * The meta-bean for {@code SubPerson}.
-     * @param <R>  the bean's generic type
      * @return the meta-bean, not null
-     * @deprecated use {@link #meta(Class)}
      */
     @SuppressWarnings("rawtypes")
-    @Deprecated
     public static SubPerson.Meta meta() {
         return SubPerson.Meta.INSTANCE;
     }
@@ -54,7 +51,7 @@ public class SubPerson<T> extends DirectBean {
      * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R> SubPerson.Meta<R> meta(Class<R> cls) {
+    public static <R> SubPerson.Meta<R> metaSubPerson(Class<R> cls) {
         return SubPerson.Meta.INSTANCE;
     }
     static {
