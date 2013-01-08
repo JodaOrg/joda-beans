@@ -8,20 +8,21 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.6.1" date="Pending" description="v0.6.1">
+    <release version="0.6.1" date="2013-01-08" description="v0.6.1">
       <action dev="jodastephen" type="add">
-        Add metaXxx(Class) method to work around Eclipse compiler bugs
+        Add metaXxx(Class) method to work around Eclipse/javac/Intellij generics compiler issues.
+        Existing beans will need regenerating.
       </action>
       <action dev="jodastephen" type="fix">
-        Allow derived property to be abstract or final
+        Allow derived property to be abstract or final.
       </action>
       <action dev="jodastephen" type="fix">
-        Set correct read/write flag for final fields
+        Set correct read/write flag for final fields.
       </action>
     </release>
     <release version="0.6" date="2012-03-12" description="v0.6">
       <action dev="jodastephen" type="fix">
-        Make generics more correct
+        Make generics more correct.
       </action>
       <action dev="jodastephen" type="add">
         Add builder methods based on meta-property.
