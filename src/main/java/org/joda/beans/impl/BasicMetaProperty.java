@@ -23,6 +23,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
+import org.joda.convert.StringConvert;
 
 /**
  * An abstract base meta-property.
@@ -69,13 +70,23 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     //-----------------------------------------------------------------------
     @Override
     public String getString(Bean bean) {
-        P value = get(bean);
-        return JodaBeanUtils.stringConverter().convertToString(propertyType(), value);
+        return getString(bean, JodaBeanUtils.stringConverter());
     }
 
     @Override
+    public String getString(Bean bean, StringConvert stringConvert) {
+        P value = get(bean);
+        return stringConvert.convertToString(propertyType(), value);
+    }
+
+  @Override
     public void setString(Bean bean, String value) {
-        set(bean, JodaBeanUtils.stringConverter().convertFromString(propertyType(), value));
+        setString(bean, value, JodaBeanUtils.stringConverter());
+    }
+
+    @Override
+    public void setString(Bean bean, String value, StringConvert stringConvert) {
+        set(bean, stringConvert.convertFromString(propertyType(), value));
     }
 
     //-----------------------------------------------------------------------

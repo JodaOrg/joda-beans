@@ -20,6 +20,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.joda.convert.StringConvert;
+
 /**
  * A meta-property, defining those aspects of a property which are not specific
  * to a particular bean, such as the property type and name.
@@ -170,6 +172,24 @@ public interface MetaProperty<P> extends BeanQuery<P> {
     String getString(Bean bean);
 
     /**
+     * Gets the value of the property for the specified bean converted to a string.
+     * <p>
+     * This converts the result of {@link #get(Bean)} to a standard format string using the supplied converter.
+     * Not all object types can be converted to a string, see Joda-Convert.
+     * <p>
+     * For a standard JavaBean, this is equivalent to calling <code>getFoo()</code> on the bean.
+     * Alternate implementations may perform any logic to obtain the value.
+     *
+     * @param bean  the bean to query, not null
+     * @param stringConvert  the converter to use, not null
+     * @return the value of the property on the specified bean, may be null
+     * @throws ClassCastException if the bean is of an incorrect type
+     * @throws UnsupportedOperationException if the property is write-only
+     * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
+     */
+    String getString(Bean bean, StringConvert stringConvert);
+
+    /**
      * Sets the value of the property on the specified bean from a string by conversion.
      * <p>
      * This converts the string to the correct type for the property and then sets it
@@ -183,6 +203,22 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
     void setString(Bean bean, String value);
+
+    /**
+     * Sets the value of the property on the specified bean from a string by conversion.
+     * <p>
+     * This converts the string to the correct type for the property using the supplied converter and then sets it
+     * using {@link #set(Bean, Object)}.
+     *
+     * @param bean  the bean to update, not null
+     * @param value  the value to set into the property on the specified bean, may be null
+     * @param stringConvert  the converter, not null
+     * @throws ClassCastException if the bean is of an incorrect type
+     * @throws ClassCastException if the value is of an invalid type for the property
+     * @throws UnsupportedOperationException if the property is read-only
+     * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
+     */
+    void setString(Bean bean, String value, StringConvert stringConvert);
 
     //-----------------------------------------------------------------------
     /**
