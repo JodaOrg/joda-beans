@@ -155,7 +155,7 @@ public final class JodaBeanUtils {
     /**
      * Returns a hash code for a {@code long}.
      * 
-     * @param obj  the object, may be null
+     * @param value  the value to convert to a hash code
      * @return the hash code
      */
     public static int hashCode(long value) {
@@ -165,7 +165,7 @@ public final class JodaBeanUtils {
     /**
      * Returns a hash code for a {@code float}.
      * 
-     * @param obj  the object, may be null
+     * @param value  the value to convert to a hash code
      * @return the hash code
      */
     public static int hashCode(float value) {
@@ -175,7 +175,7 @@ public final class JodaBeanUtils {
     /**
      * Returns a hash code for a {@code double}.
      * 
-     * @param obj  the object, may be null
+     * @param value  the value to convert to a hash code
      * @return the hash code
      */
     public static int hashCode(double value) {

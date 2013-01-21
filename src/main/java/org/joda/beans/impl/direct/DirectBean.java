@@ -25,8 +25,8 @@ import org.joda.beans.Property;
 /**
  * A bean implementation designed for use by the code generator.
  * <p>
- * This implementation uses direct access via {@link #propertyGet(String)} and
- * {@link #propertySet(String, Object)} to avoid reflection.
+ * This implementation uses direct access via {@link #propertyGet(String, boolean)} and
+ * {@link #propertySet(String, Object, boolean)} to avoid reflection.
  * <p>
  * For code generation, the bean must directly extend this class and have a
  * no-arguments constructor.
