@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.6.2" date="" description="v0.6.2">
+      <action dev="cjkent" type="add">
+        Add getString() and setString() overrides that take a StringConvert instance.
+      </action>
+    </release>
     <release version="0.6.1" date="2013-01-08" description="v0.6.1">
       <action dev="jodastephen" type="add">
         Add metaXxx(Class) method to work around Eclipse/javac/Intellij generics compiler issues.
