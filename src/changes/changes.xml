@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.6.2" date="" description="v0.6.2">
+    <release version="0.6.2" date="2013-01-21" description="v0.6.2">
       <action dev="cjkent" type="add">
         Add getString() and setString() overrides that take a StringConvert instance.
       </action>

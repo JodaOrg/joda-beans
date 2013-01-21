@@ -16,8 +16,8 @@ The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 </p>
 <p>
-Version 0.6.1 was released on 2013-01-08 -
-<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.6.1/">Download now</a><br />
+Version 0.6.2 was released on 2013-01-21 -
+<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.6.2/">Download now</a><br />
 Joda-Beans is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
 </section>
@@ -44,9 +44,9 @@ A key point is that the code generator may be run again and again on the Java fi
 </p>
 <p>
 See these sample classes used for testing -
-<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6.1/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>,
-<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6.1/src/test/java/org/joda/beans/Examples.java#L25">example usage</a>,
-<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6.1/src/test/java/org/joda/beans/gen/ValidateBean.java#L38">example of validation</a>.
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6.2/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>,
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6.2/src/test/java/org/joda/beans/Examples.java#L25">example usage</a>,
+<a href="https://github.com/JodaOrg/joda-beans/blob/v0.6.2/src/test/java/org/joda/beans/gen/ValidateBean.java#L38">example of validation</a>.
 </p>
 </section>
 
@@ -65,7 +65,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.6.1/">Release 0.6.1</a>
+<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.6.2/">Release 0.6.2</a>
 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
@@ -75,7 +75,7 @@ The project runs on JDK 1.6 and requires <a href="http://joda-convert.sourceforg
 There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.6.1|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.6.2|jar">Maven Central</a>.
 </p>
 </section>
 
