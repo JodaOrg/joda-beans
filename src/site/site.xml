@@ -29,7 +29,6 @@
       <item name="Test results" href="surefire-report.html"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-beans/issues"/>
       <item name="Mailing lists" href="mail-lists.html"/>
-      <item name="Javadoc (Latest)" href="apidocs/index.html"/>
     </menu>
 
     <menu name="Joda">
