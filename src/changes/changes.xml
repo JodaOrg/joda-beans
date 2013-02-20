@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.6.3" date="2013-02-20" description="v0.6.3">
+    <release version="0.7" date="2013-02-20" description="v0.7">
       <action dev="scolebourne" type="fix">
         Fix indentation issue in metaPropertyMap field.
         Existing beans will regenerate, even though the only change is indentation.

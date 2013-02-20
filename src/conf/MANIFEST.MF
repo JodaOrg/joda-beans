@@ -2,16 +2,16 @@ Package: org.joda.beans
 Extension-Name: joda-beans
 Specification-Title: Joda Beans
 Specification-Vendor: Joda.org
-Specification-Version: 0.6.2
+Specification-Version: 0.7
 Implementation-Vendor: Joda.org
 Implementation-Title: org.joda.beans
-Implementation-Version: 0.6.2
+Implementation-Version: 0.7
 Implementation-Vendor-Id: org.joda
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Joda.org
 Bundle-Name: Joda-Beans
 Bundle-SymbolicName: joda-beans
-Bundle-Version: 0.6.2
+Bundle-Version: 0.7
 Export-Package: org.joda.beans,
  org.joda.beans.gen,
  org.joda.beans.impl,
