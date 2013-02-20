@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.6.3" date="2013-XX-XX" description="v0.6.3">
+      <action dev="scolebourne" type="fix">
+        Fix command line arguments - -v -> -verbose.
+      </action>
+    </release>
     <release version="0.6.2" date="2013-01-21" description="v0.6.2">
       <action dev="cjkent" type="add">
         Add getString() and setString() overrides that take a StringConvert instance.

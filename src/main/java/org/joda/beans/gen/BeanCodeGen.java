@@ -59,7 +59,10 @@ public class BeanCodeGen {
                     prefix = args[i].substring(8);
                 } else if (args[i].equals("-R")) {
                     recurse = true;
+                } else if (args[i].startsWith("-verbose=")) {
+                    verbosity = Integer.parseInt(args[i].substring(3));
                 } else if (args[i].startsWith("-v=")) {
+                    System.out.println("Deprecated command line argument -v (use -verbose instead)");
                     verbosity = Integer.parseInt(args[i].substring(3));
                 } else if (args[i].equals("-nowrite")) {
                     write = false;
