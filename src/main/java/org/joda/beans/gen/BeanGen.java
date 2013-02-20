@@ -505,7 +505,7 @@ class BeanGen {
         insertRegion.add("\t\t */");
         insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + prefix + "metaPropertyMap$ = new DirectMetaPropertyMap(");
         if (data.isSubclass()) {
-            insertRegion.add("\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
+            insertRegion.add("\t\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
             insertRegion.add("\t\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
         }

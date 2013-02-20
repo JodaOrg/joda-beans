@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.6.3" date="2013-02-20" description="v0.6.3">
+      <action dev="scolebourne" type="fix">
+        Fix indentation issue in metaPropertyMap field.
+        Existing beans will regenerate, even though the only change is indentation.
+      </action>
       <action dev="scolebourne" type="update">
         Refactor BeanCodeGen to allow it to be used from tools.
       </action>
