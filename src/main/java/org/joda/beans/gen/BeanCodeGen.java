@@ -83,11 +83,8 @@ public class BeanCodeGen {
         }
         try {
             List<File> files = findFiles(file, recurse);
-            int changed = 0;
-            for (File child : files) {
-                BeanCodeGen gen = new BeanCodeGen(child, indent, prefix, verbosity, write);
-                changed += (gen.process() ? 1 : 0);
-            }
+            BeanCodeGen gen = new BeanCodeGen(files, indent, prefix, verbosity, write);
+            int changed = gen.process();
             System.out.println("Finished, found " + changed + " changed files");
             System.exit(0);
         } catch (Exception ex) {
@@ -122,8 +119,8 @@ public class BeanCodeGen {
     }
 
     //-----------------------------------------------------------------------
-    /** The file to process. */
-    private final File file;
+    /** The files to process. */
+    private final List<File> files;
     /** The indent to use. */
     private final String indent;
     /** The prefix to use. */
@@ -144,8 +141,8 @@ public class BeanCodeGen {
      * @param verbosity  the verbosity
      * @param write  whether to write or not
      */
-    public BeanCodeGen(File file, String indent, String prefix, int verbosity, boolean write) {
-        this.file = file;
+    public BeanCodeGen(List<File> files, String indent, String prefix, int verbosity, boolean write) {
+        this.files = files;
         this.indent = indent;
         this.prefix = prefix;
         this.verbosity = verbosity;
@@ -154,11 +151,26 @@ public class BeanCodeGen {
 
     //-----------------------------------------------------------------------
     /**
+     * Processes the file, recursing as necessary, generating the code.
+     * 
+     * @return the number of changed files
+     */
+    public int process() throws Exception {
+        int changed = 0;
+        for (File child : files) {
+            changed += (processFile(child) ? 1 : 0);
+        }
+        return changed;
+    }
+
+    /**
      * Processes the bean, generating the code.
+     * 
+     * @param file  the file to process, not null
      * @return true if changed
      */
-    public boolean process() throws Exception {
-        List<String> original = readFile();
+    private boolean processFile(File file) throws Exception {
+        List<String> original = readFile(file);
         List<String> content = new ArrayList<String>(original);
         BeanGen gen;
         try {
@@ -178,7 +190,7 @@ public class BeanCodeGen {
                     } else if (verbosity == 1) {
                         System.out.println(file + "  [writing]");
                     }
-                    writeFile(content);
+                    writeFile(file, content);
                 } else {
                     if (verbosity >= 2) {
                         System.out.println(" [changed not written]");
@@ -201,7 +213,7 @@ public class BeanCodeGen {
     }
 
     //-----------------------------------------------------------------------
-    private List<String> readFile() throws Exception {
+    private List<String> readFile(File file) throws Exception {
         List<String> content = new ArrayList<String>(100);
         BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
         try {
@@ -215,7 +227,7 @@ public class BeanCodeGen {
         }
     }
 
-    private void writeFile(List<String> content) throws Exception {
+    private void writeFile(File file, List<String> content) throws Exception {
         PrintWriter os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
         try {
             for (String line : content) {
