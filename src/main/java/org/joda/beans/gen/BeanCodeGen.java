@@ -24,7 +24,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.joda.beans.JodaBeanUtils;
 
 /**
  * Code generator for the beans.
@@ -36,40 +39,17 @@ import java.util.List;
 public class BeanCodeGen {
 
     /**
-     * Main.
+     * Main method.
+     * <p>
+     * This calls {@code System.exit}.
+     * 
      * @param args  the arguments, not null
      */
     public static void main(String[] args) {
-        String indent = "    ";
-        String prefix = "";
-        boolean recurse = false;
-        int verbosity = 1;
-        boolean write = true;
-        File file = null;
+        BeanCodeGen gen = null;
         try {
-            if (args.length == 0) {
-                throw new RuntimeException();
-            }
-            for (int i = 0; i < args.length - 1; i++) {
-                if (args[i].startsWith("-indent=tab")) {
-                    indent = "\t";
-                } else if (args[i].startsWith("-indent=")) {
-                    indent = "          ".substring(0, Integer.parseInt(args[i].substring(8)));
-                } else if (args[i].startsWith("-prefix=")) {
-                    prefix = args[i].substring(8);
-                } else if (args[i].equals("-R")) {
-                    recurse = true;
-                } else if (args[i].startsWith("-verbose=")) {
-                    verbosity = Integer.parseInt(args[i].substring(3));
-                } else if (args[i].startsWith("-v=")) {
-                    System.out.println("Deprecated command line argument -v (use -verbose instead)");
-                    verbosity = Integer.parseInt(args[i].substring(3));
-                } else if (args[i].equals("-nowrite")) {
-                    write = false;
-                }
-            }
-            file = new File(args[args.length - 1]);
-        } catch (Exception ex) {
+            gen = createFromArgs(args);
+        } catch (RuntimeException ex) {
             System.out.println("Code generator");
             System.out.println("  Usage java org.joda.beans.gen.BeanCodeGen [file]");
             System.out.println("  Options");
@@ -82,8 +62,6 @@ public class BeanCodeGen {
             System.exit(0);
         }
         try {
-            List<File> files = findFiles(file, recurse);
-            BeanCodeGen gen = new BeanCodeGen(files, indent, prefix, verbosity, write);
             int changed = gen.process();
             System.out.println("Finished, found " + changed + " changed files");
             System.exit(0);
@@ -94,6 +72,65 @@ public class BeanCodeGen {
         }
     }
 
+    /**
+     * Creates an instance of {@code BeanCodeGen} from arguments.
+     * <p>
+     * This is intended for tools and does not call {@code System.exit}.
+     * 
+     * @param args  the arguments, not null
+     * @return the code generator, not null
+     * @throws RuntimeException if unable to create
+     */
+    public static BeanCodeGen createFromArgs(String[] args) {
+        if (args == null) {
+            throw new IllegalArgumentException("Arguments must not be null");
+        }
+        String indent = "    ";
+        String prefix = "";
+        boolean recurse = false;
+        int verbosity = 1;
+        boolean write = true;
+        File file = null;
+        if (args.length == 0) {
+            throw new IllegalArgumentException("No arguments specified");
+        }
+        for (int i = 0; i < args.length - 1; i++) {
+            String arg = args[i];
+            if (arg == null) {
+                throw new IllegalArgumentException("Argument must not be null: " + Arrays.toString(args));
+            }
+            if (arg.startsWith("-indent=tab")) {
+                indent = "\t";
+            } else if (arg.startsWith("-indent=")) {
+                indent = "          ".substring(0, Integer.parseInt(arg.substring(8)));
+            } else if (arg.startsWith("-prefix=")) {
+                prefix = arg.substring(8);
+            } else if (arg.equals("-R")) {
+                recurse = true;
+            } else if (arg.startsWith("-verbose=")) {
+                verbosity = Integer.parseInt(arg.substring(3));
+            } else if (arg.startsWith("-v=")) {
+                System.out.println("Deprecated command line argument -v (use -verbose instead)");
+                verbosity = Integer.parseInt(arg.substring(3));
+            } else if (arg.equals("-nowrite")) {
+                write = false;
+            } else {
+                throw new IllegalArgumentException("Unknown argument: " + arg);
+            }
+        }
+        file = new File(args[args.length - 1]);
+        
+        List<File> files = findFiles(file, recurse);
+        return new BeanCodeGen(files, indent, prefix, verbosity, write);
+    }
+
+    /**
+     * Finds the set of files to process.
+     * 
+     * @param parent  the root, not null
+     * @param recurse  whether to recurse
+     * @return the files, not null
+     */
     private static List<File> findFiles(final File parent, boolean recurse) {
         final List<File> result = new ArrayList<File>();
         if (parent.isDirectory()) {
@@ -136,12 +173,18 @@ public class BeanCodeGen {
      * To generate, use {@link #process()}.
      * 
      * @param file  the file to process, not null
-     * @param indent  the indent to use, not null
-     * @param prefix  the prefix to use, not null
-     * @param verbosity  the verbosity
+     * @param indent  the indent to use, which will be directly inserted in the output, not null
+     * @param prefix  the prefix to use, which will be directly inserted in the output, not null
+     * @param verbosity  the verbosity, from 0 to 3
      * @param write  whether to write or not
      */
     public BeanCodeGen(List<File> files, String indent, String prefix, int verbosity, boolean write) {
+        JodaBeanUtils.notNull(files, "files");
+        JodaBeanUtils.notNull(indent, "indent");
+        JodaBeanUtils.notNull(prefix, "prefix");
+        if (verbosity < 0 || verbosity > 3) {
+            throw new IllegalArgumentException("Invalid verbosity: " + verbosity);
+        }
         this.files = files;
         this.indent = indent;
         this.prefix = prefix;
