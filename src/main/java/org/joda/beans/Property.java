@@ -31,6 +31,7 @@ public interface Property<P> {
      * <p>
      * Each property is fully owned by a single bean.
      * 
+     * @param <B>  the bean type
      * @return the bean, not null
      */
     <B extends Bean> B bean();

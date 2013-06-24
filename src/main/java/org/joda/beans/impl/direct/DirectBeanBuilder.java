@@ -23,6 +23,7 @@ import org.joda.beans.impl.BasicBeanBuilder;
  * This implementation ensures that all the setters are called.
  * 
  * @author Stephen Colebourne
+ * @param <T> the bean type
  */
 public class DirectBeanBuilder<T extends DirectBean> extends BasicBeanBuilder<T> {
 

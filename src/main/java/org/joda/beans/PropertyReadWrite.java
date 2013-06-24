@@ -54,7 +54,7 @@ public enum PropertyReadWrite {
      * @return true if the property can be written
      */
     public boolean isWritable() {
-      return this != READ_ONLY;
+        return this != READ_ONLY;
     }
 
 }

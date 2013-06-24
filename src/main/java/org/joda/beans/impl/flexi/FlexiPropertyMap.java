@@ -86,7 +86,7 @@ final class FlexiPropertyMap
             return Collections.emptySet();
         }
         final MetaBean metaBean = bean.metaBean();
-        return new AbstractSet<Entry<String,Property<?>>>() {
+        return new AbstractSet<Entry<String, Property<?>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {

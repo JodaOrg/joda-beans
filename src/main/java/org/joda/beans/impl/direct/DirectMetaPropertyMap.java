@@ -70,7 +70,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
         } else {
             metaProperties = new Entry[propertyNames.length];
         }
-        for (int i = 0 ; i < propertyNames.length; i++) {
+        for (int i = 0; i < propertyNames.length; i++) {
             metaProperties[i + parentSize] = new AbstractMap.SimpleImmutableEntry(propertyNames[i], metaBean.metaPropertyGet(propertyNames[i]));
         }
         keys = new Keys(metaProperties);
@@ -161,7 +161,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
         @Override
         public Iterator<String> iterator() {
             return new Iterator<String>() {
-                int index;
+                private int index;
                 @Override
                 public boolean hasNext() {
                     return index < metaProperties.length;
@@ -196,7 +196,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
         @Override
         public Iterator<MetaProperty<?>> iterator() {
             return new Iterator<MetaProperty<?>>() {
-                int index;
+                private int index;
                 @Override
                 public boolean hasNext() {
                     return index < metaProperties.length;
@@ -231,7 +231,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
         @Override
         public Iterator<Entry<String, MetaProperty<?>>> iterator() {
             return new Iterator<Entry<String, MetaProperty<?>>>() {
-                int index;
+                private int index;
                 @Override
                 public boolean hasNext() {
                     return index < metaProperties.length;

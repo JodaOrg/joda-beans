@@ -50,6 +50,7 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
      * {@link MetaProperty} implements {@link BeanQuery}, so typically the parameters
      * are in fact meta-properties.
      * 
+     * @param <P>  the result type
      * @param prop1  the first query, not null
      * @param prop2  the second query, not null
      * @return the compound query, not null
@@ -69,6 +70,7 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
      * {@link MetaProperty} implements {@link BeanQuery}, so typically the parameters
      * are in fact meta-properties.
      * 
+     * @param <P>  the result type
      * @param prop1  the first query, not null
      * @param prop2  the second query, not null
      * @param prop3  the third query, not null
@@ -91,6 +93,7 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
      * {@link MetaProperty} implements {@link BeanQuery}, so typically the parameters
      * are in fact meta-properties.
      * 
+     * @param <P>  the result type
      * @param prop1  the first query, not null
      * @param prop2  the second query, not null
      * @param prop3  the third query, not null

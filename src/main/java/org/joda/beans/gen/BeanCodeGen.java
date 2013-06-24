@@ -172,7 +172,7 @@ public class BeanCodeGen {
      * <p>
      * To generate, use {@link #process()}.
      * 
-     * @param file  the file to process, not null
+     * @param files  the files to process, not null
      * @param indent  the indent to use, which will be directly inserted in the output, not null
      * @param prefix  the prefix to use, which will be directly inserted in the output, not null
      * @param verbosity  the verbosity, from 0 to 3
@@ -221,7 +221,7 @@ public class BeanCodeGen {
         } catch (Exception ex) {
             throw new RuntimeException("Error in bean: " + file, ex);
         }
-        if (gen.isBean() ) {
+        if (gen.isBean()) {
             if (verbosity >= 2) {
                 System.out.print(file + "  [processing]");
             }

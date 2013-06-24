@@ -42,7 +42,7 @@ public class FreemarkerTemplateModel
     /**
      * The bean being wrapped.
      */
-    private final Bean _bean;
+    private final Bean bean;
 
     /**
      * Creates an instance of the model.
@@ -51,7 +51,7 @@ public class FreemarkerTemplateModel
      */
     public FreemarkerTemplateModel(final Bean bean, final FreemarkerObjectWrapper wrapper) {
         super(wrapper);
-        _bean = bean;
+        this.bean = bean;
     }
 
     //-------------------------------------------------------------------------
@@ -62,21 +62,21 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateModel get(String key) throws TemplateModelException {
-        MetaProperty<?> metaProperty = _bean.metaBean().metaPropertyMap().get(key);
+        MetaProperty<?> metaProperty = bean.metaBean().metaPropertyMap().get(key);
         if (metaProperty == null) {
-          // try standard approach via BeanModel for non-bean properties and methods
-          BeanModel model = new BeanModel(_bean, (BeansWrapper) getObjectWrapper());
-          TemplateModel result = model.get(key);
-          if (result instanceof SimpleScalar) {
-            // have to map empty string to null
-            String str = ((SimpleScalar) result).getAsString();
-            if (str == null || str.isEmpty()) {
-              return null;
+            // try standard approach via BeanModel for non-bean properties and methods
+            BeanModel model = new BeanModel(bean, (BeansWrapper) getObjectWrapper());
+            TemplateModel result = model.get(key);
+            if (result instanceof SimpleScalar) {
+                // have to map empty string to null
+                String str = ((SimpleScalar) result).getAsString();
+                if (str == null || str.isEmpty()) {
+                    return null;
+                }
             }
-          }
-          return result;
+            return result;
         }
-        return wrap(metaProperty.get(_bean));
+        return wrap(metaProperty.get(bean));
     }
 
     /**
@@ -94,7 +94,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public int size() {
-        return _bean.metaBean().metaPropertyCount();
+        return bean.metaBean().metaPropertyCount();
     }
 
     /**
@@ -103,7 +103,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateCollectionModel keys() {
-        return new SimpleCollection(_bean.propertyNames(), getObjectWrapper());
+        return new SimpleCollection(bean.propertyNames(), getObjectWrapper());
     }
 
     /**
@@ -112,7 +112,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateCollectionModel values() {
-        return new SimpleCollection(_bean.metaBean().createPropertyMap(_bean).flatten().values(), getObjectWrapper());
+        return new SimpleCollection(bean.metaBean().createPropertyMap(bean).flatten().values(), getObjectWrapper());
     }
 
     /**
@@ -123,7 +123,7 @@ public class FreemarkerTemplateModel
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdaptedObject(Class hint) {
-        return _bean;
+        return bean;
     }
 
 }

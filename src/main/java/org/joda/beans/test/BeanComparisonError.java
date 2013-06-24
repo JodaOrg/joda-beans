@@ -33,11 +33,11 @@ class BeanComparisonError extends AssertionError {
     /**
      * The expected bean.
      */
-    private final Bean _expected;
+    private final Bean expected;
     /**
      * The actual bean.
      */
-    private final Bean _actual;
+    private final Bean actual;
 
     /**
      * Creates a new error.
@@ -49,10 +49,11 @@ class BeanComparisonError extends AssertionError {
      */
     public BeanComparisonError(final String message, final int maxErrors, final Bean expected, final Bean actual) {
         super(buildMessage(message, maxErrors, expected, actual));
-        _expected = expected;
-        _actual = actual;
+        this.expected = expected;
+        this.actual = actual;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Compares the two beans.
      * 
@@ -162,7 +163,7 @@ class BeanComparisonError extends AssertionError {
      * @return the expected
      */
     public Bean getExpected() {
-        return _expected;
+        return expected;
     }
 
     /**
@@ -170,7 +171,7 @@ class BeanComparisonError extends AssertionError {
      * @return the actual
      */
     public Bean getActual() {
-        return _actual;
+        return actual;
     }
 
 }

@@ -50,6 +50,7 @@ public final class ReflectiveMetaBean implements MetaBean {
      * 
      * @param <B>  the type of the bean
      * @param beanClass  the bean class, not null
+     * @return the meta-bean, not null
      */
     public static <B extends Bean> ReflectiveMetaBean of(Class<B> beanClass) {
         return new ReflectiveMetaBean(beanClass);

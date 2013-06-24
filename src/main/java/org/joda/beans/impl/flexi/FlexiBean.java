@@ -45,9 +45,9 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     private static final long serialVersionUID = 1L;
 
     /** The meta-bean. */
-    final FlexiMetaBean metaBean = new FlexiMetaBean(this);
+    final FlexiMetaBean metaBean = new FlexiMetaBean(this);  // CSIGNORE
     /** The underlying data. */
-    volatile Map<String, Object> data = Collections.emptyMap();
+    volatile Map<String, Object> data = Collections.emptyMap();// CSIGNORE
 
     /**
      * Constructor.
@@ -110,6 +110,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     /**
      * Gets the value of the property cast to a specific type.
      * 
+     * @param <T>  the value type
      * @param propertyName  the property name, not empty
      * @param type  the type to cast to, not null
      * @return the value of the property, may be null

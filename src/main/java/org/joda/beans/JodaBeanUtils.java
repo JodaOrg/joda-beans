@@ -265,17 +265,17 @@ public final class JodaBeanUtils {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     public static <T extends Bean> T clone(T original) {
-      BeanBuilder<? extends Bean> builder = original.metaBean().builder();
-      for (MetaProperty<?> mp : original.metaBean().metaPropertyIterable()) {
-        if (mp.readWrite().isWritable()) {
-          Object value = mp.get(original);
-          if (value instanceof Bean) {
-            value = clone((Bean) value);
-          }
-          builder.set(mp.name(), value);
+        BeanBuilder<? extends Bean> builder = original.metaBean().builder();
+        for (MetaProperty<?> mp : original.metaBean().metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(original);
+                if (value instanceof Bean) {
+                    value = clone((Bean) value);
+                }
+                builder.set(mp.name(), value);
+            }
         }
-      }
-      return (T) builder.build();
+        return (T) builder.build();
     }
 
     //-----------------------------------------------------------------------
@@ -444,8 +444,8 @@ public final class JodaBeanUtils {
         } else if (type instanceof GenericArrayType) {
             Type componentType = ((GenericArrayType) type).getGenericComponentType();
             Class<?> componentClass = eraseToClass(componentType);
-            if (componentClass != null ) {
-              return Array.newInstance(componentClass, 0).getClass();
+            if (componentClass != null) {
+                return Array.newInstance(componentClass, 0).getClass();
             }
         } else if (type instanceof TypeVariable) {
             Type[] bounds = ((TypeVariable<?>) type).getBounds();

@@ -31,7 +31,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-class MapBeanMetaProperty extends BasicMetaProperty<Object> {
+final class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
     /** The bean. */
     private MapBean bean;

@@ -45,6 +45,7 @@ public final class BeanAssert {
     /**
      * Asserts that two beans are equal, providing a better error message.
      * 
+     * @param message  the message to use in any error, null uses default message
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
@@ -75,6 +76,7 @@ public final class BeanAssert {
      * Asserts that two beans are equal, providing a better error message, with
      * an unlimited number of errors reported.
      * 
+     * @param message  the message to use in any error, null uses default message
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */

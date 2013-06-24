@@ -29,6 +29,7 @@ import org.joda.beans.MetaProperty;
  * bean has a no-arg constructor and allows properties to be set.
  * 
  * @author Stephen Colebourne
+ * @param <T>  the bean type
  */
 public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
 

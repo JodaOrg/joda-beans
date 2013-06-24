@@ -53,7 +53,8 @@ public class BeanMongoDBObject implements DBObject {
         return bean.propertyNames().contains(name);
     }
 
-    /** 
+    /**
+     * {@inheritDoc}
      * @deprecated Use containsField()
      */
     @Override
@@ -74,7 +75,7 @@ public class BeanMongoDBObject implements DBObject {
 
     @Override
     public void putAll(DBObject object) {
-        for (String name : object.keySet()){
+        for (String name : object.keySet()) {
             put(name, object.get(name));
         }
     }

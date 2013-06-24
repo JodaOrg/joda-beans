@@ -40,6 +40,10 @@ public class FreemarkerObjectWrapper extends DefaultObjectWrapper {
     //-------------------------------------------------------------------------
     /**
      * Overrides to trap instances of {@code Bean} and handle them.
+     * 
+     * @param obj  the object to wrap, not null
+     * @return the template model, not null
+     * @throws TemplateModelException if unable to create the model
      */
     @Override
     public TemplateModel wrap(Object obj) throws TemplateModelException {

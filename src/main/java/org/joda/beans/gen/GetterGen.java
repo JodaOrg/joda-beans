@@ -130,7 +130,7 @@ abstract class GetterGen {
         }
     }
 
-    private static final List<String> doGenerateGetter(GeneratableProperty prop, String prefix) {
+    private static List<String> doGenerateGetter(GeneratableProperty prop, String prefix) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());

@@ -59,8 +59,10 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     /**
      * Factory to create a meta-property avoiding duplicate generics.
      * 
+     * @param <P>  the property type
      * @param beanType  the bean type, not null
      * @param propertyName  the property name, not empty
+     * @return the property, not null
      */
     public static <P> ReflectiveMetaProperty<P> of(Class<? extends Bean> beanType, String propertyName) {
         return new ReflectiveMetaProperty<P>(beanType, propertyName);

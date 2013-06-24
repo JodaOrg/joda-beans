@@ -100,6 +100,8 @@ public interface MetaProperty<P> extends BeanQuery<P> {
     /**
      * Gets a specified annotation of the property.
      * 
+     * @param <A>  the annotation type
+     * @param annotation  the annotation class to find, not null
      * @return the annotation, not null
      * @throws NoSuchElementException if the annotation is not specified
      */

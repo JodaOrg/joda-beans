@@ -31,7 +31,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-class FlexiMetaProperty extends BasicMetaProperty<Object> {
+final class FlexiMetaProperty extends BasicMetaProperty<Object> {
 
     /** The meta-bean. */
     private final MetaBean metaBean;

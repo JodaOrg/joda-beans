@@ -48,8 +48,6 @@ public @interface PropertyDefinition {
      * <li>'get' - generates getXxx()
      * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
      * </ul>
-     * 
-     * @return the style of the property, not null
      */
     String get() default "smart";
 
@@ -72,8 +70,6 @@ public @interface PropertyDefinition {
      * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
      * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
      * </ul>
-     * 
-     * @return the style of the property, not null
      */
     String set() default "smart";
 
@@ -100,8 +96,6 @@ public @interface PropertyDefinition {
      *  calls JodaBeanUtils.notEmpty() which throws an IllegalArgumentException
      * <li>'{className}.{staticMethodName}' - a custom validation method, described above
      * </ul>
-     * 
-     * @return the validation type, not null
      */
     String validate() default "";
 

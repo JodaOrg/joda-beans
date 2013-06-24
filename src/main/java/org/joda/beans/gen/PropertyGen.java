@@ -178,8 +178,7 @@ class PropertyGen {
         int partsPos = parts.length - 2;
         String type = parts[partsPos];
         while (true) {
-            int open, openPos, close, closePos = 0;
-            open = openPos = close = closePos = 0;
+            int open = 0, openPos = 0, close = 0, closePos = 0;
             while ((openPos = type.indexOf('<', openPos)) >= 0) {
                 open++;
                 openPos++;

@@ -40,8 +40,10 @@ public final class BasicProperty<P> implements Property<P> {
     /**
      * Factory to create a property avoiding duplicate generics.
      * 
+     * @param <P>  the property type
      * @param bean  the bean that the property is bound to, not null
      * @param metaProperty  the meta property, not null
+     * @return the property, not null
      */
     public static <P> BasicProperty<P> of(Bean bean, MetaProperty<P> metaProperty) {
         return new BasicProperty<P>(bean, metaProperty);

@@ -45,6 +45,7 @@ public final class BasicPropertyMap
      * Factory to create a property map avoiding duplicate generics.
      * 
      * @param bean  the bean
+     * @return the property map, not null
      */
     public static BasicPropertyMap of(Bean bean) {
         return new BasicPropertyMap(bean);
@@ -85,7 +86,7 @@ public final class BasicPropertyMap
 
     @Override
     public Set<Entry<String, Property<?>>> entrySet() {
-        return new AbstractSet<Entry<String,Property<?>>>() {
+        return new AbstractSet<Entry<String, Property<?>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {

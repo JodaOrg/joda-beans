@@ -41,7 +41,8 @@ public final class MapBeanPropertyMap
     /**
      * Factory to create a property map avoiding duplicate generics.
      * 
-     * @param bean  the bean
+     * @param bean  the bean, not null
+     * @return the property map, not null
      */
     public static MapBeanPropertyMap of(MapBean bean) {
         return new MapBeanPropertyMap(bean);
@@ -82,7 +83,7 @@ public final class MapBeanPropertyMap
 
     @Override
     public Set<Entry<String, Property<?>>> entrySet() {
-        return new AbstractSet<Entry<String,Property<?>>>() {
+        return new AbstractSet<Entry<String, Property<?>>>() {
             // TODO: possibly override contains()
             @Override
             public int size() {
