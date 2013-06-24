@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.7.1" date="2013-06-24" description="v0.7.1">
+      <action dev="scolebourne" type="add">
+        Add checkstyle
+      </action>
       <action dev="scolebourne" type="update">
         Change to use m2e Maven Eclipse
       </action>
