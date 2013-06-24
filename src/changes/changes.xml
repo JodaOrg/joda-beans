@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.7.1" date="2013-06-24" description="v0.7.1">
+      <action dev="scolebourne" type="update">
+        Change to use m2e Maven Eclipse
+      </action>
+    </release>
     <release version="0.7" date="2013-02-20" description="v0.7">
       <action dev="scolebourne" type="fix">
         Fix indentation issue in metaPropertyMap field.

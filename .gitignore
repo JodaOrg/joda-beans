@@ -2,4 +2,9 @@ bin/
 target/
 *.log
 /tests/
+.checkstyle
+.classpath
+.project
 /.settings/
+.idea
+*.iml
