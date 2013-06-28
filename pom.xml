@@ -35,7 +35,7 @@
       <name>Stephen Colebourne</name>
       <email></email>
       <roles>
-        <role>Lead developer</role>
+        <role>Project Lead</role>
       </roles>
       <timezone>0</timezone>
     </developer>
@@ -493,7 +493,7 @@
     <maven-gpg-plugin.version>1.4</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.4</maven-install-plugin.version>
     <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
     <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
     <maven-pmd-plugin.version>3.0.1</maven-pmd-plugin.version>
