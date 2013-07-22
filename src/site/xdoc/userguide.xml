@@ -131,7 +131,7 @@ It is more common to use the code generator, however the generator is optional.
 A code generated Joda-Bean minimises the amount of code that the developer has to write.
 The developer simply creates an outline class and adds the properties (fields).
 The code generator then produces all the getters and setters, plus additional helper methods.
-See this <a href="https://github.com/JodaOrg/joda-beans/blob/v0.7/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>
+See this <a href="https://github.com/JodaOrg/joda-beans/blob/v0.7.1/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>
 for an example of the generated code.
 </p>
 <p>
