@@ -51,6 +51,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
     public static <R extends Address> MidAbstractResult.Meta<R> metaMidAbstractResult(Class<R> cls) {
         return MidAbstractResult.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(MidAbstractResult.Meta.INSTANCE);
     }
@@ -103,7 +104,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap());
+                this, (DirectMetaPropertyMap) super.metaPropertyMap());
 
         /**
          * Restricted constructor.

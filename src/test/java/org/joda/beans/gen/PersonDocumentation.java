@@ -48,6 +48,7 @@ public class PersonDocumentation extends Documentation<Person> {
     public static PersonDocumentation.Meta meta() {
         return PersonDocumentation.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(PersonDocumentation.Meta.INSTANCE);
     }
@@ -140,7 +141,7 @@ public class PersonDocumentation extends Documentation<Person> {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+                this, (DirectMetaPropertyMap) super.metaPropertyMap(),
                 "name");
 
         /**

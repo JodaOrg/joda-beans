@@ -43,6 +43,7 @@ public class NoProperties extends DirectBean {
     public static NoProperties.Meta meta() {
         return NoProperties.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(NoProperties.Meta.INSTANCE);
     }

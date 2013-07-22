@@ -57,6 +57,7 @@ public class Pair extends DirectBean {
     public static Pair.Meta meta() {
         return Pair.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(Pair.Meta.INSTANCE);
     }

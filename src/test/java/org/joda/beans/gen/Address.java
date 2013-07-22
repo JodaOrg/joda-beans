@@ -66,6 +66,7 @@ public class Address extends DirectBean {
     public static Address.Meta meta() {
         return Address.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(Address.Meta.INSTANCE);
     }

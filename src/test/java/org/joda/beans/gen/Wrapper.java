@@ -63,6 +63,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     public static <R extends Address> Wrapper.Meta<R> metaWrapper(Class<R> cls) {
         return Wrapper.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(Wrapper.Meta.INSTANCE);
     }

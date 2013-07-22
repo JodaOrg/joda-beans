@@ -91,6 +91,7 @@ public class FinalFieldBean extends DirectBean {
     public static FinalFieldBean.Meta meta() {
         return FinalFieldBean.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(FinalFieldBean.Meta.INSTANCE);
     }

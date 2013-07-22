@@ -42,6 +42,7 @@ public class TweakedPair extends Pair {
     public static TweakedPair.Meta meta() {
         return TweakedPair.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(TweakedPair.Meta.INSTANCE);
     }
@@ -92,7 +93,7 @@ public class TweakedPair extends Pair {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap());
+                this, (DirectMetaPropertyMap) super.metaPropertyMap());
 
         /**
          * Restricted constructor.

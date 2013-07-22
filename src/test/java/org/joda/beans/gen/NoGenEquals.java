@@ -58,6 +58,7 @@ public class NoGenEquals extends DirectBean {
     public static NoGenEquals.Meta meta() {
         return NoGenEquals.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(NoGenEquals.Meta.INSTANCE);
     }

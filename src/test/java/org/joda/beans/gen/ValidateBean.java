@@ -77,6 +77,7 @@ public class ValidateBean extends DirectBean {
     public static ValidateBean.Meta meta() {
         return ValidateBean.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(ValidateBean.Meta.INSTANCE);
     }

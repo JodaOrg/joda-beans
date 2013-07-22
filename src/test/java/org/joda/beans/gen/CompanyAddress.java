@@ -48,6 +48,7 @@ public class CompanyAddress extends Address {
     public static CompanyAddress.Meta meta() {
         return CompanyAddress.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(CompanyAddress.Meta.INSTANCE);
     }
@@ -140,7 +141,7 @@ public class CompanyAddress extends Address {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+                this, (DirectMetaPropertyMap) super.metaPropertyMap(),
                 "companyName");
 
         /**

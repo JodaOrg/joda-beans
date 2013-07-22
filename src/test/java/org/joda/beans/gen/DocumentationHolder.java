@@ -51,6 +51,7 @@ public class DocumentationHolder extends DirectBean {
     public static DocumentationHolder.Meta meta() {
         return DocumentationHolder.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(DocumentationHolder.Meta.INSTANCE);
     }

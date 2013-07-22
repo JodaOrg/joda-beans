@@ -59,6 +59,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     public static <R extends Address> GenericWrapperDocumentation.Meta<R> metaGenericWrapperDocumentation(Class<R> cls) {
         return GenericWrapperDocumentation.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(GenericWrapperDocumentation.Meta.INSTANCE);
     }
@@ -153,7 +154,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+                this, (DirectMetaPropertyMap) super.metaPropertyMap(),
                 "name");
 
         /**

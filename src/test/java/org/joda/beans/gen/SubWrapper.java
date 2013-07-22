@@ -48,6 +48,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
     public static SubWrapper.Meta meta() {
         return SubWrapper.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(SubWrapper.Meta.INSTANCE);
     }
@@ -140,7 +141,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+                this, (DirectMetaPropertyMap) super.metaPropertyMap(),
                 "name");
 
         /**

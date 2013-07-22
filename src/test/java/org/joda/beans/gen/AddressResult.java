@@ -46,6 +46,7 @@ public class AddressResult extends AbstractResult<Address> {
     public static AddressResult.Meta meta() {
         return AddressResult.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(AddressResult.Meta.INSTANCE);
     }
@@ -96,7 +97,7 @@ public class AddressResult extends AbstractResult<Address> {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap());
+                this, (DirectMetaPropertyMap) super.metaPropertyMap());
 
         /**
          * Restricted constructor.

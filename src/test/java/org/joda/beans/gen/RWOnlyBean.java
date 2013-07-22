@@ -89,6 +89,7 @@ public class RWOnlyBean extends DirectBean {
     public static RWOnlyBean.Meta meta() {
         return RWOnlyBean.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(RWOnlyBean.Meta.INSTANCE);
     }

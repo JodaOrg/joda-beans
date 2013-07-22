@@ -46,6 +46,7 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
     public static CompanyAddressMidResult.Meta meta() {
         return CompanyAddressMidResult.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(CompanyAddressMidResult.Meta.INSTANCE);
     }
@@ -96,7 +97,7 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap());
+                this, (DirectMetaPropertyMap) super.metaPropertyMap());
 
         /**
          * Restricted constructor.

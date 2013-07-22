@@ -66,6 +66,7 @@ public class Documentation<T> extends DirectBean {
     public static <R> Documentation.Meta<R> metaDocumentation(Class<R> cls) {
         return Documentation.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(Documentation.Meta.INSTANCE);
     }

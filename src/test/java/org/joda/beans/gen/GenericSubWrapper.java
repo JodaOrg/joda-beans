@@ -59,6 +59,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     public static <R extends Address> GenericSubWrapper.Meta<R> metaGenericSubWrapper(Class<R> cls) {
         return GenericSubWrapper.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(GenericSubWrapper.Meta.INSTANCE);
     }
@@ -153,7 +154,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
-            this, (DirectMetaPropertyMap) super.metaPropertyMap(),
+                this, (DirectMetaPropertyMap) super.metaPropertyMap(),
                 "name");
 
         /**

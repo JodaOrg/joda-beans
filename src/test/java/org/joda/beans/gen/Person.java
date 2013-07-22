@@ -73,6 +73,7 @@ public class Person extends DirectBean {
     public static Person.Meta meta() {
         return Person.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(Person.Meta.INSTANCE);
     }

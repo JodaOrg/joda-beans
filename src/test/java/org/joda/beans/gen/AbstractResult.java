@@ -65,6 +65,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     public static <R extends Address> AbstractResult.Meta<R> metaAbstractResult(Class<R> cls) {
         return AbstractResult.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(AbstractResult.Meta.INSTANCE);
     }

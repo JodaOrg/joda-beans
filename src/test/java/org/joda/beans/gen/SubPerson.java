@@ -54,6 +54,7 @@ public class SubPerson<T> extends DirectBean {
     public static <R> SubPerson.Meta<R> metaSubPerson(Class<R> cls) {
         return SubPerson.Meta.INSTANCE;
     }
+
     static {
         JodaBeanUtils.registerMetaBean(SubPerson.Meta.INSTANCE);
     }
