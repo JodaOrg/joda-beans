@@ -301,7 +301,8 @@ class BeanGen {
         
         if (data.isTypeGeneric()) {
             // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
-            // long name needed for uniqueness as static overroding is borked
+            // long name needed for uniqueness as static overriding is borked
+            insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t * @param <R>  the bean's generic type");
@@ -315,6 +316,7 @@ class BeanGen {
             insertRegion.add("\t}");
         }
         
+        insertRegion.add("");
         insertRegion.add("\tstatic {");
         insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t}");

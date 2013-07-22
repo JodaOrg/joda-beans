@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.7.1" date="2013-06-24" description="v0.7.1">
+      <action dev="scolebourne" type="update">
+        Adjust code generation so can reformat in Eclipse without changing generated code.
+        Existing beans will regenerate, even though the only change is one blank line.
+      </action>
       <action dev="scolebourne" type="add">
         Add checkstyle
       </action>
