@@ -15,7 +15,7 @@
 
   <!-- ==================================================================== -->
   <issueManagement>
-  	<system>GitHub</system>
+    <system>GitHub</system>
     <url>https://github.com/JodaOrg/joda-beans/issues</url>
   </issueManagement>
   <inceptionYear>2007</inceptionYear>
@@ -172,10 +172,10 @@
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven-checkstyle-plugin.version}</version>
         </plugin>
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-changes-plugin</artifactId>
-	        <version>${maven-changes-plugin.version}</version>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changes-plugin</artifactId>
+          <version>${maven-changes-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -305,7 +305,7 @@
       <version>2.3.15</version>
       <optional>true</optional>
     </dependency>
-  	<dependency>
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>6.8.5</version>
@@ -325,7 +325,7 @@
 
   <!-- ==================================================================== -->
   <reporting>
-  	<plugins>
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -411,7 +411,7 @@
           <targetJdk>1.6</targetJdk>
         </configuration>
       </plugin>
-  	</plugins>
+    </plugins>
   </reporting>
 
   <!-- ==================================================================== -->
