@@ -17,7 +17,7 @@ This enables technologies such as XPath, XML conversion, DB mappings, WebApp val
 </p>
 <p>
 Version 0.7.1 was released on 2013-07-22 -
-<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.7.1/">Download now</a><br />
+<a href="download.html">Download now</a><br />
 Joda-Beans is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
 </section>
@@ -66,7 +66,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="https://sourceforge.net/projects/joda-beans/files/joda-beans/0.7.1/">Release 0.7.1</a>
+<a href="download.html">Release 0.7.1</a>
 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.

@@ -7,8 +7,6 @@ An API is provided that defines a bean and property model, together with a code 
 The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 
-[Version 0.7.1](https://sourceforge.net/projects/joda-beans/files/joda-beans/0.7.1/) was released on 2013-07-22.
-
 Joda-Beans is licensed under the business-friendly [Apache 2.0 licence](http://www.joda.org/joda-beans/license.html).
 
 
@@ -46,7 +44,7 @@ Various documentation is available:
 
 ### Releases
 There are no full releases yet!
-[Release 0.7.1](http://sourceforge.net/projects/joda-beans/files/joda-beans/0.7.1/) is the current latest release.
+[Release 0.7.1](http://www.joda.org/joda-beans/download.html) is the current latest release.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 
