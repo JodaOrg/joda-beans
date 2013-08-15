@@ -3,13 +3,11 @@
   <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
   <bannerLeft>
     <name>Joda.org</name>
-    <!--src>images/joda.png</src-->
-    <href>http://joda.sourceforge.net/</href>
+    <href>http://www.joda.org/</href>
   </bannerLeft>
   <bannerRight>
     <name>Joda-Beans</name>
-    <!--src>images/jodabeans.png</src-->
-    <href>http://joda-beans.sourceforge.net/</href>
+    <href>http://www.joda.org/joda-beans/</href>
   </bannerRight>
 
   <body>
@@ -24,27 +22,27 @@
     </menu>
 
     <menu name="Development">
-      <item name="GitHub (Source code)" href="https://github.com/JodaOrg/joda-beans"/>
-      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"/>
-      <item name="Test results" href="surefire-report.html"/>
+      <item name="GitHub" href="https://github.com/JodaOrg/joda-beans"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-beans/issues"/>
-      <item name="Mailing lists" href="mail-lists.html"/>
+      <item name="Test results" href="surefire-report.html"/>
+      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-beans/"/>
     </menu>
 
     <menu name="Joda">
-      <item name="Joda home" href="http://joda.sourceforge.net"/>
-      <item name="Convert" href="http://joda-convert.sourceforge.net/index.html"/>
-      <item name="Money" href="http://joda-money.sourceforge.net/index.html"/>
-      <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
-      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
+      <item name="Joda home" href="http://www.joda.org"/>
+      <item name="Convert" href="http://www.joda.org/joda-convert/"/>
+      <item name="Money" href="http://www.joda.org/joda-money/"/>
+      <item name="Primitives" href="http://www.joda.org/joda-primitives/"/>
+      <item name="Time" href="http://www.joda.org/joda-time/"/>
     </menu>
 
     <menu ref="reports"/>
   </body>
 
   <poweredBy>
-    <logo name="Get Joda - Beans at SourceForge.net. Fast, secure and Free Open Source software downloads"
-        href="http://sourceforge.net/projects/joda-beans/"
-        img="http://sflogo.sourceforge.net/sflogo.php?group_id=186518&amp;type=13" width="120" height="30" />
+    <logo name="Maven" href="http://maven.apache.org/"
+          img="http://maven.apache.org/images/logos/maven-feather.png"/>
+    <logo name="GitHub" href="https://github.com/JodaOrg/joda-beans"
+          img="http://www.joda.org/images/github.png"/>
   </poweredBy>
 </project>

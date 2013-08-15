@@ -24,4 +24,4 @@ Export-Package: org.joda.beans,
  org.joda.beans.query,
  org.joda.beans.test
 Bundle-License: Apache 2.0
-Bundle-DocURL: http://joda-beans.sourceforge.net/
+Bundle-DocURL: http://www.joda.org/joda-beans/

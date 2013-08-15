@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 
 <document>
 
  <properties>
-  <title>Home</title>
+  <title>Joda Beans</title>
   <author>Stephen Colebourne</author>
  </properties>
 
@@ -55,12 +55,13 @@ See these sample classes used for testing -
 <p>
 Various documentation is available:
 <ul>
-<li>The <a href="userguide.html">user guide</a></li>
-<li>The javadoc for the <a href="apidocs/index.html">latest source code</a></li>
+<li>The helpful <a href="userguide.html">user guide</a></li>
+<li>The <a href="apidocs/index.html">Javadoc</a></li>
 <li>The <a href="https://github.com/JodaOrg/joda-beans">GitHub</a> source repository</li>
 </ul>
 </p>
 </section>
+
 
 <section name="Releases">
 <p>
@@ -71,20 +72,32 @@ The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 </p>
 <p>
-The project runs on JDK 1.6 and requires <a href="http://joda-convert.sourceforge.net/index.html">Joda-Convert</a>.
+The project runs on JDK 1.6 and requires <a href="http://www.joda.org/joda-convert/">Joda-Convert</a>.
 There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
 </p>
 <p>
-Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.7.1|jar">Maven Central repository</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.7.1|jar">Maven Central</a>.
 </p>
 </section>
 
 
 <section name="Support">
 <p>
-Please use <a href="https://github.com/JodaOrg/joda-beans/issues">GitHub issues</a> and Pull Requests for support.
+Support on bugs, library usage or enhancement requests is available on a best efforts basis.
+</p>
+<p>
+To suggest enhancements or contribute, please <a href="https://github.com/JodaOrg/joda-beans">fork the source code</a> on GitHub.
+Alternatively, use GitHub <a href="https://github.com/JodaOrg/joda-beans/issues">issues</a>.
+</p>
+<p>
+<br />
+</p>
+<p>
+<br />
+</p>
+<p>
+<br />
 </p>
 </section>
-
 </body>
 </document>

@@ -9,7 +9,7 @@ This enables technologies such as XPath, XML conversion, DB mappings, WebApp val
 
 [Version 0.7.1](https://sourceforge.net/projects/joda-beans/files/joda-beans/0.7.1/) was released on 2013-07-22.
 
-Joda-Beans is licensed under the business-friendly [Apache 2.0 licence](https://github.com/JodaOrg/joda-beans/blob/master/LICENSE.txt).
+Joda-Beans is licensed under the business-friendly [Apache 2.0 licence](http://www.joda.org/joda-beans/license.html).
 
 
 ### Why Joda Beans?
@@ -38,9 +38,10 @@ See these sample classes used for testing -
 ### Documentation
 Various documentation is available:
 
-* The helpful [user guide](http://joda-beans.sourceforge.net/userguide.html)
-* The javadoc for the [current release](http://joda-beans.sourceforge.net/apidocs/index.html)
-* The change notes for the [releases](http://joda-beans.sourceforge.net/changes-report.html)
+* The [home page](http://www.joda.org/joda-beans/)
+* The helpful [user guide](http://www.joda.org/joda-beans/userguide.html)
+* The [Javadoc](http://www.joda.org/joda-beans/apidocs/index.html)
+* The change notes for the [releases](http://www.joda.org/joda-beans/changes-report.html)
 
 
 ### Releases
@@ -50,7 +51,7 @@ The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 
 Joda-Beans runs on JDK 1.6 or later and requires [Joda-Convert](https://github.com/JodaOrg/joda-convert/)
-There are a number of [optional dependencies](http://joda-convert.sourceforge.net/dependencies.html) which help with integration.
+There are a number of [optional dependencies](http://www.joda.org/joda-convert/dependencies.html) which help with integration.
 
 Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.7.1|jar)
 
@@ -62,4 +63,3 @@ Please use GitHub issues and Pull Requests for support.
 ### History
 Issue tracking and active development is at GitHub.
 Historically, the project was at [Sourceforge](https://sourceforge.net/projects/joda-beans/).
-The [home page](http://joda-beans.sourceforge.net/) is still at Sourceforge.
