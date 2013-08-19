@@ -56,6 +56,7 @@ public class Documentation<T> extends DirectBean {
     public static Documentation.Meta meta() {
         return Documentation.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code Documentation}.
      * @param <R>  the bean's generic type

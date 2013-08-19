@@ -41,6 +41,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
     public static MidAbstractResult.Meta meta() {
         return MidAbstractResult.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code MidAbstractResult}.
      * @param <R>  the bean's generic type

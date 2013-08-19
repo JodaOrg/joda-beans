@@ -49,6 +49,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     public static GenericSubWrapper.Meta meta() {
         return GenericSubWrapper.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code GenericSubWrapper}.
      * @param <R>  the bean's generic type

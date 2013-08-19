@@ -49,6 +49,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     public static GenericWrapperDocumentation.Meta meta() {
         return GenericWrapperDocumentation.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code GenericWrapperDocumentation}.
      * @param <R>  the bean's generic type

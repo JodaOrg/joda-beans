@@ -55,6 +55,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     public static AbstractResult.Meta meta() {
         return AbstractResult.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code AbstractResult}.
      * @param <R>  the bean's generic type

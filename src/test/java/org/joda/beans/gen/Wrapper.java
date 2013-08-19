@@ -53,6 +53,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     public static Wrapper.Meta meta() {
         return Wrapper.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code Wrapper}.
      * @param <R>  the bean's generic type

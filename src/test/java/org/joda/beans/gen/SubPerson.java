@@ -44,6 +44,7 @@ public class SubPerson<T> extends DirectBean {
     public static SubPerson.Meta meta() {
         return SubPerson.Meta.INSTANCE;
     }
+
     /**
      * The meta-bean for {@code SubPerson}.
      * @param <R>  the bean's generic type
