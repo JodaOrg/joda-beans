@@ -117,7 +117,7 @@ public class Address extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Address other = (Address) obj;
-            return JodaBeanUtils.equal(getNumber(), other.getNumber()) &&
+            return (getNumber() == other.getNumber()) &&
                     JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
                     JodaBeanUtils.equal(getCity(), other.getCity()) &&
                     JodaBeanUtils.equal(getOwner(), other.getOwner());

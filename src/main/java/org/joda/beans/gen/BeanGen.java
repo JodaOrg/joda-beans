@@ -47,6 +47,17 @@ class BeanGen {
     private static final Pattern BEAN_TYPE = Pattern.compile(".*class (([A-Z][A-Za-z0-9_]+)(?:<([A-Z])( extends [A-Za-z0-9_]+)?>)?) .*");
     /** Pattern to find super type. */
     private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_<> ]*)>)?).*");
+    /** Pattern to find super type. */
+    private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
+    static {
+        PRIMITIVE_EQUALS.add("boolean");
+        PRIMITIVE_EQUALS.add("char");
+        PRIMITIVE_EQUALS.add("byte");
+        PRIMITIVE_EQUALS.add("short");
+        PRIMITIVE_EQUALS.add("int");
+        PRIMITIVE_EQUALS.add("long");
+        // not float or double, as Double.equals is not the same as double ==
+    }
 
     /** The content to process. */
     private final List<String> content;
@@ -412,9 +423,12 @@ class BeanGen {
             for (int i = 0; i < properties.size(); i++) {
                 PropertyGen prop = properties.get(i);
                 String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+                String equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
+                if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
+                    equals = "(" + getter + " == other." + getter + ")";
+                }
                 insertRegion.add(
-                        (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") +
-                        "JodaBeanUtils.equal(" + getter + ", other." + getter + ")" +
+                        (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +
                         (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
             }
             if (data.isSubclass()) {

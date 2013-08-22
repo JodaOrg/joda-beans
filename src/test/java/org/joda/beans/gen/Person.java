@@ -147,7 +147,7 @@ public class Person extends DirectBean {
             Person other = (Person) obj;
             return JodaBeanUtils.equal(getForename(), other.getForename()) &&
                     JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    JodaBeanUtils.equal(getNumberOfCars(), other.getNumberOfCars()) &&
+                    (getNumberOfCars() == other.getNumberOfCars()) &&
                     JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
                     JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
                     JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&

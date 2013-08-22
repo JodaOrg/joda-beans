@@ -8,7 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.7.2" date="xxxx-xx-xx" description="v0.7.2">
+    <release version="0.8" date="xxxx-xx-xx" description="v0.8">
+      <action dev="scolebourne" type="update" >
+        Optimize performance of generated equals for primitive numbers.
+        Some existing beans will regenerate.
+      </action>
       <action dev="scolebourne" type="add" >
         Home page at GitHub.
       </action>

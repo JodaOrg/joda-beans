@@ -153,6 +153,26 @@ public final class JodaBeanUtils {
     }
 
     /**
+     * Returns a hash code for a {@code boolean}.
+     * 
+     * @param value  the value to convert to a hash code
+     * @return the hash code
+     */
+    public static int hashCode(boolean value) {
+        return value ? 1231 : 1237;
+    }
+
+    /**
+     * Returns a hash code for an {@code int}.
+     * 
+     * @param value  the value to convert to a hash code
+     * @return the hash code
+     */
+    public static int hashCode(int value) {
+        return value;
+    }
+
+    /**
      * Returns a hash code for a {@code long}.
      * 
      * @param value  the value to convert to a hash code
