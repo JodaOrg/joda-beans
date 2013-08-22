@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -99,50 +100,6 @@ public class FinalFieldBean extends DirectBean {
     @Override
     public FinalFieldBean.Meta metaBean() {
         return FinalFieldBean.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 553434268:  // fieldFinal
-                return getFieldFinal();
-            case 1043548611:  // fieldNonFinal
-                return getFieldNonFinal();
-            case -1247489160:  // listFinal
-                return getListFinal();
-            case 1629293510:  // flexiFinal
-                return getFlexiFinal();
-            case -448986335:  // personFinal
-                return getPersonFinal();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 553434268:  // fieldFinal
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: fieldFinal");
-            case 1043548611:  // fieldNonFinal
-                setFieldNonFinal((String) newValue);
-                return;
-            case -1247489160:  // listFinal
-                setListFinal((List<String>) newValue);
-                return;
-            case 1629293510:  // flexiFinal
-                setFlexiFinal((FlexiBean) newValue);
-                return;
-            case -448986335:  // personFinal
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: personFinal");
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -429,6 +386,51 @@ public class FinalFieldBean extends DirectBean {
          */
         public final MetaProperty<Person> personFinal() {
             return personFinal;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 553434268:  // fieldFinal
+                    return ((FinalFieldBean) bean).getFieldFinal();
+                case 1043548611:  // fieldNonFinal
+                    return ((FinalFieldBean) bean).getFieldNonFinal();
+                case -1247489160:  // listFinal
+                    return ((FinalFieldBean) bean).getListFinal();
+                case 1629293510:  // flexiFinal
+                    return ((FinalFieldBean) bean).getFlexiFinal();
+                case -448986335:  // personFinal
+                    return ((FinalFieldBean) bean).getPersonFinal();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 553434268:  // fieldFinal
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: fieldFinal");
+            case 1043548611:  // fieldNonFinal
+                ((FinalFieldBean) bean).setFieldNonFinal((String) newValue);
+                return;
+            case -1247489160:  // listFinal
+                ((FinalFieldBean) bean).setListFinal((List<String>) newValue);
+                return;
+            case 1629293510:  // flexiFinal
+                ((FinalFieldBean) bean).setFlexiFinal((FlexiBean) newValue);
+                return;
+            case -448986335:  // personFinal
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: personFinal");
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

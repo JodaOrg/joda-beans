@@ -117,7 +117,7 @@ class BeanGen {
     void process() {
         if (insertRegion != null) {
             removeOld();
-            if (data.isRootClass()) {
+            if (data.isRootClass() && data.isExtendsDirectBean()) {
                 data.ensureImport(DirectBean.class);
             }
             insertRegion.add("\t///CLOVER:OFF");
@@ -127,8 +127,6 @@ class BeanGen {
                 generatePropertyByName();
                 generatePropertyNames();
             }
-            generatePropertyGet();
-            generatePropertySet();
             if (data.isManualEqualsHashCode() == false) {
                 generateEquals();
                 generateHashCode();
@@ -405,43 +403,6 @@ class BeanGen {
         insertRegion.add("");
     }
 
-    private void generatePropertyGet() {
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tprotected Object propertyGet(String propertyName, boolean quiet) {");
-        if (properties.size() > 0) {
-            insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
-            for (PropertyGen prop : properties) {
-                insertRegion.addAll(prop.generatePropertyGetCase());
-            }
-            insertRegion.add("\t\t}");
-        }
-        insertRegion.add("\t\treturn super.propertyGet(propertyName, quiet);");
-        insertRegion.add("\t}");
-        insertRegion.add("");
-    }
-
-    private void generatePropertySet() {
-        boolean generics = false;
-        for (GeneratableProperty prop : data.getProperties()) {
-            generics |= (prop.getReadWrite().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
-        }
-        if (generics) {
-            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-        }
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tprotected void propertySet(String propertyName, Object newValue, boolean quiet) {");
-        if (properties.size() > 0) {
-            insertRegion.add("\t\tswitch (propertyName.hashCode()) {");
-            for (PropertyGen prop : properties) {
-                insertRegion.addAll(prop.generatePropertySetCase());
-            }
-            insertRegion.add("\t\t}");
-        }
-        insertRegion.add("\t\tsuper.propertySet(propertyName, newValue, quiet);");
-        insertRegion.add("\t}");
-        insertRegion.add("");
-    }
-
     //-----------------------------------------------------------------------
     private void generateEquals() {
         data.ensureImport(JodaBeanUtils.class);
@@ -598,11 +559,18 @@ class BeanGen {
         generateMetaBuilder();
         generateMetaBeanType();
         generateMetaPropertyMap();
-        if (data.isValidated()) {
-            generateMetaValidate();
-        }
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
         generateMetaPropertyMethods();
+        if (properties.size() > 0 || data.isValidated()) {
+            insertRegion.add("\t\t//-----------------------------------------------------------------------");
+            if (properties.size() > 0) {
+                generateMetaGetPropertyValue();
+                generateMetaSetPropertyValue();
+            }
+            if (data.isValidated()) {
+                generateMetaValidate();
+            }
+        }
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -687,6 +655,48 @@ class BeanGen {
         insertRegion.add("");
     }
 
+    private void generateMetaPropertyMethods() {
+        for (PropertyGen prop : properties) {
+            insertRegion.addAll(prop.generateMetaProperty());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    private void generateMetaGetPropertyValue() {
+        data.ensureImport(Bean.class);
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tprotected Object propertyGet(Bean bean, String propertyName, boolean quiet) {");
+        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+        for (PropertyGen prop : properties) {
+            insertRegion.addAll(prop.generatePropertyGetCase());
+        }
+        insertRegion.add("\t\t\t}");
+        insertRegion.add("\t\t\treturn super.propertyGet(bean, propertyName, quiet);");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateMetaSetPropertyValue() {
+        data.ensureImport(Bean.class);
+        boolean generics = data.isTypeGeneric() && properties.size() > 0;
+        for (GeneratableProperty prop : data.getProperties()) {
+            generics |= (prop.getReadWrite().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
+        }
+        if (generics) {
+            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+        }
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tprotected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {");
+        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+        for (PropertyGen prop : properties) {
+            insertRegion.addAll(prop.generatePropertySetCase());
+        }
+        insertRegion.add("\t\t\t}");
+        insertRegion.add("\t\t\tsuper.propertySet(bean, propertyName, newValue, quiet);");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
     private void generateMetaValidate() {
         data.ensureImport(Bean.class);
         insertRegion.add("\t\t@Override");
@@ -705,12 +715,6 @@ class BeanGen {
         }
         insertRegion.add("\t\t}");
         insertRegion.add("");
-    }
-
-    private void generateMetaPropertyMethods() {
-        for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generateMetaProperty());
-        }
     }
 
     //-----------------------------------------------------------------------

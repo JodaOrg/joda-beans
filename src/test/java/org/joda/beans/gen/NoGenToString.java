@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -65,25 +66,6 @@ public class NoGenToString extends DirectBean {
     @Override
     public NoGenToString.Meta metaBean() {
         return NoGenToString.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 111972721:  // value
-                return getValue();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 111972721:  // value
-                setValue((Object) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -189,6 +171,26 @@ public class NoGenToString extends DirectBean {
          */
         public final MetaProperty<Object> value() {
             return value;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 111972721:  // value
+                    return ((NoGenToString) bean).getValue();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 111972721:  // value
+                ((NoGenToString) bean).setValue((Object) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

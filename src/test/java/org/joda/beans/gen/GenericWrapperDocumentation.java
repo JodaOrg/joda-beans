@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -69,25 +70,6 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     @Override
     public GenericWrapperDocumentation.Meta<T> metaBean() {
         return GenericWrapperDocumentation.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3373707:  // name
-                return getName();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3373707:  // name
-                setName((String) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -216,6 +198,27 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
          */
         public final MetaProperty<String> name() {
             return name;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 3373707:  // name
+                    return ((GenericWrapperDocumentation<?>) bean).getName();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 3373707:  // name
+                ((GenericWrapperDocumentation<T>) bean).setName((String) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

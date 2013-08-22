@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -73,31 +74,6 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     @Override
     public Wrapper.Meta<T> metaBean() {
         return Wrapper.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3575610:  // type
-                return getType();
-            case 951530617:  // content
-                return getContent();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3575610:  // type
-                setType((String) newValue);
-                return;
-            case 951530617:  // content
-                setContent((T) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -268,6 +244,32 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
          */
         public final MetaProperty<T> content() {
             return content;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 3575610:  // type
+                    return ((Wrapper<?>) bean).getType();
+                case 951530617:  // content
+                    return ((Wrapper<?>) bean).getContent();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 3575610:  // type
+                ((Wrapper<T>) bean).setType((String) newValue);
+                return;
+            case 951530617:  // content
+                ((Wrapper<T>) bean).setContent((T) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

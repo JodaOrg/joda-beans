@@ -19,9 +19,9 @@ import org.joda.beans.Bean;
 import org.joda.beans.impl.BasicBeanBuilder;
 
 /**
- * Implementation of {@code BeanBuilder} that validates the resulting bean.
+ * A builder implementation designed for use by the code generator.
  * <p>
- * This implementation adds validation.
+ * This implementation adds validation on top of basic builder functionality.
  * 
  * @author Stephen Colebourne
  * @param <T> the bean type

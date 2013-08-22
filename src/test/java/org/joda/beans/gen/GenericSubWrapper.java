@@ -73,25 +73,6 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     }
 
     @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3373707:  // name
-                return getName();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3373707:  // name
-                setName((String) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -211,12 +192,6 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
             return metaPropertyMap$;
         }
 
-        @Override
-        protected void validate(Bean bean) {
-            JodaBeanUtils.notNull(((GenericSubWrapper<?>) bean).name, "name");
-            super.validate(bean);
-        }
-
         //-----------------------------------------------------------------------
         /**
          * The meta-property for the {@code name} property.
@@ -224,6 +199,33 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
          */
         public final MetaProperty<String> name() {
             return name;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 3373707:  // name
+                    return ((GenericSubWrapper<?>) bean).getName();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 3373707:  // name
+                ((GenericSubWrapper<T>) bean).setName((String) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((GenericSubWrapper<?>) bean).name, "name");
+            super.validate(bean);
         }
 
     }

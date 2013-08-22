@@ -391,30 +391,30 @@ class PropertyGen {
 
     List<String> generatePropertyGetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isReadable()) {
-            list.add("\t\t\t\treturn " + GetterGen.of(data).generateGetInvoke(data) + ";");
+            list.add("\t\t\t\t\treturn ((" + data.getBean().getTypeWildcard() + ") bean)." + GetterGen.of(data).generateGetInvoke(data) + ";");
         } else {
-            list.add("\t\t\t\tif (quiet) {");
-            list.add("\t\t\t\t\treturn null;");
-            list.add("\t\t\t\t}");
-            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + data.getPropertyName() + "\");");
+            list.add("\t\t\t\t\tif (quiet) {");
+            list.add("\t\t\t\t\t\treturn null;");
+            list.add("\t\t\t\t\t}");
+            list.add("\t\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be read: " + data.getPropertyName() + "\");");
         }
         return list;
     }
 
     List<String> generatePropertySetCase() {
         List<String> list = new ArrayList<String>();
-        list.add("\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         String setter = SetterGen.of(data).generateSetInvoke(data);
         if (data.getReadWrite().isWritable() && setter != null) {
-            list.add("\t\t\t\t" + setter + "(" + castObject() + "newValue);");
-            list.add("\t\t\t\treturn;");
-        } else {
-            list.add("\t\t\t\tif (quiet) {");
+            list.add("\t\t\t\t\t((" + data.getBean().getTypeNoExtends() + ") bean)." + setter + "(" + castObject() + "newValue);");
             list.add("\t\t\t\t\treturn;");
-            list.add("\t\t\t\t}");
-            list.add("\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + data.getPropertyName() + "\");");
+        } else {
+            list.add("\t\t\t\t\tif (quiet) {");
+            list.add("\t\t\t\t\t\treturn;");
+            list.add("\t\t\t\t\t}");
+            list.add("\t\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + data.getPropertyName() + "\");");
         }
         return list;
     }

@@ -57,16 +57,6 @@ public class CompanyAddressResult extends AbstractResult<CompanyAddress> {
     }
 
     @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        super.propertySet(propertyName, newValue, quiet);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

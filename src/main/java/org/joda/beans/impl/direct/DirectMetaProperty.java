@@ -29,7 +29,7 @@ import org.joda.beans.PropertyReadWrite;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
- * A meta-property implementation designed for use by {@code DirectBean}.
+ * A meta-property implementation designed for use by the code generator.
  * <p>
  * This meta-property uses reflection to find the {@code Field} to obtain the annotations.
  * 
@@ -201,12 +201,14 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings("unchecked")
     @Override
     public P get(Bean bean) {
-        return (P) ((DirectBean) bean).propertyGet(name(), false);
+        DirectMetaBean meta = (DirectMetaBean) bean.metaBean();
+        return (P) meta.propertyGet(bean, name(), false);
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        ((DirectBean) bean).propertySet(name(), value, false);
+        DirectMetaBean meta = (DirectMetaBean) bean.metaBean();
+        meta.propertySet(bean, name(), value, false);
     }
 
 }

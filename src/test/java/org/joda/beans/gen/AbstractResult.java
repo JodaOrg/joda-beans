@@ -18,6 +18,7 @@ package org.joda.beans.gen;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.DerivedProperty;
@@ -75,33 +76,6 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     @Override
     public AbstractResult.Meta<T> metaBean() {
         return AbstractResult.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3088955:  // docs
-                return getDocs();
-            case -571837193:  // resultType
-                return getResultType();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3088955:  // docs
-                setDocs((List<T>) newValue);
-                return;
-            case -571837193:  // resultType
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: resultType");
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -256,6 +230,34 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
          */
         public final MetaProperty<String> resultType() {
             return resultType;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 3088955:  // docs
+                    return ((AbstractResult<?>) bean).getDocs();
+                case -571837193:  // resultType
+                    return ((AbstractResult<?>) bean).getResultType();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 3088955:  // docs
+                ((AbstractResult<T>) bean).setDocs((List<T>) newValue);
+                return;
+            case -571837193:  // resultType
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: resultType");
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -59,25 +60,6 @@ public class DocumentationHolder extends DirectBean {
     @Override
     public DocumentationHolder.Meta metaBean() {
         return DocumentationHolder.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 1587405498:  // documentation
-                return getDocumentation();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 1587405498:  // documentation
-                setDocumentation((Documentation<?>) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -202,6 +184,26 @@ public class DocumentationHolder extends DirectBean {
          */
         public final MetaProperty<Documentation<?>> documentation() {
             return documentation;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 1587405498:  // documentation
+                    return ((DocumentationHolder) bean).getDocumentation();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 1587405498:  // documentation
+                ((DocumentationHolder) bean).setDocumentation((Documentation<?>) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

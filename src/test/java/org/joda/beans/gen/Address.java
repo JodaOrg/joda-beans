@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -74,40 +75,6 @@ public class Address extends DirectBean {
     @Override
     public Address.Meta metaBean() {
         return Address.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case -1034364087:  // number
-                return getNumber();
-            case -891990013:  // street
-                return getStreet();
-            case 3053931:  // city
-                return getCity();
-            case 106164915:  // owner
-                return getOwner();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case -1034364087:  // number
-                setNumber((Integer) newValue);
-                return;
-            case -891990013:  // street
-                setStreet((String) newValue);
-                return;
-            case 3053931:  // city
-                setCity((String) newValue);
-                return;
-            case 106164915:  // owner
-                setOwner((Person) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -366,6 +333,41 @@ public class Address extends DirectBean {
          */
         public final MetaProperty<Person> owner() {
             return owner;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case -1034364087:  // number
+                    return ((Address) bean).getNumber();
+                case -891990013:  // street
+                    return ((Address) bean).getStreet();
+                case 3053931:  // city
+                    return ((Address) bean).getCity();
+                case 106164915:  // owner
+                    return ((Address) bean).getOwner();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case -1034364087:  // number
+                ((Address) bean).setNumber((Integer) newValue);
+                return;
+            case -891990013:  // street
+                ((Address) bean).setStreet((String) newValue);
+                return;
+            case 3053931:  // city
+                ((Address) bean).setCity((String) newValue);
+                return;
+            case 106164915:  // owner
+                ((Address) bean).setOwner((Person) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

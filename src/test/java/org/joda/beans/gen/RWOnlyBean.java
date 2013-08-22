@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.DerivedProperty;
@@ -97,56 +98,6 @@ public class RWOnlyBean extends DirectBean {
     @Override
     public RWOnlyBean.Meta metaBean() {
         return RWOnlyBean.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3645:  // ro
-                return getRo();
-            case 3800:  // wo
-                if (quiet) {
-                    return null;
-                }
-                throw new UnsupportedOperationException("Property cannot be read: wo");
-            case 101387:  // fin
-                return getFin();
-            case 93508016:  // manualGet
-                return getManualGet();
-            case 1556125213:  // derived
-                return getDerived();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3645:  // ro
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: ro");
-            case 3800:  // wo
-                setWo((Object) newValue);
-                return;
-            case 101387:  // fin
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: fin");
-            case 93508016:  // manualGet
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: manualGet");
-            case 1556125213:  // derived
-                if (quiet) {
-                    return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: derived");
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -391,6 +342,57 @@ public class RWOnlyBean extends DirectBean {
          */
         public final MetaProperty<String> derived() {
             return derived;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 3645:  // ro
+                    return ((RWOnlyBean) bean).getRo();
+                case 3800:  // wo
+                    if (quiet) {
+                        return null;
+                    }
+                    throw new UnsupportedOperationException("Property cannot be read: wo");
+                case 101387:  // fin
+                    return ((RWOnlyBean) bean).getFin();
+                case 93508016:  // manualGet
+                    return ((RWOnlyBean) bean).getManualGet();
+                case 1556125213:  // derived
+                    return ((RWOnlyBean) bean).getDerived();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 3645:  // ro
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: ro");
+            case 3800:  // wo
+                ((RWOnlyBean) bean).setWo((Object) newValue);
+                return;
+            case 101387:  // fin
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: fin");
+            case 93508016:  // manualGet
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: manualGet");
+            case 1556125213:  // derived
+                if (quiet) {
+                    return;
+                }
+                throw new UnsupportedOperationException("Property cannot be written: derived");
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

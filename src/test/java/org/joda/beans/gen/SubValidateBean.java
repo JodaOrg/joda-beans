@@ -65,25 +65,6 @@ public class SubValidateBean extends ValidateBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 114240:  // sub
-                return getSub();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 114240:  // sub
-                setSub((String) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -201,12 +182,6 @@ public class SubValidateBean extends ValidateBean {
             return metaPropertyMap$;
         }
 
-        @Override
-        protected void validate(Bean bean) {
-            JodaBeanUtils.notNull(((SubValidateBean) bean).sub, "sub");
-            super.validate(bean);
-        }
-
         //-----------------------------------------------------------------------
         /**
          * The meta-property for the {@code sub} property.
@@ -214,6 +189,32 @@ public class SubValidateBean extends ValidateBean {
          */
         public final MetaProperty<String> sub() {
             return sub;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 114240:  // sub
+                    return ((SubValidateBean) bean).getSub();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 114240:  // sub
+                ((SubValidateBean) bean).setSub((String) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((SubValidateBean) bean).sub, "sub");
+            super.validate(bean);
         }
 
     }

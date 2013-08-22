@@ -89,40 +89,6 @@ public class ValidateBean extends DirectBean {
     }
 
     @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 97440432:  // first
-                return getFirst();
-            case -906279820:  // second
-                return getSecond();
-            case 110331239:  // third
-                return getThird();
-            case -1268684262:  // fourth
-                return getFourth();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 97440432:  // first
-                setFirst((String) newValue);
-                return;
-            case -906279820:  // second
-                setSecond((String) newValue);
-                return;
-            case 110331239:  // third
-                setThird((String) newValue);
-                return;
-            case -1268684262:  // fourth
-                setFourth((String) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -348,14 +314,6 @@ public class ValidateBean extends DirectBean {
             return metaPropertyMap$;
         }
 
-        @Override
-        protected void validate(Bean bean) {
-            JodaBeanUtils.notNull(((ValidateBean) bean).first, "first");
-            JodaBeanUtils.notEmpty(((ValidateBean) bean).second, "second");
-            TestValidateBean.checkInTest(((ValidateBean) bean).third, "third");
-            checkInBean(((ValidateBean) bean).fourth, "fourth");
-        }
-
         //-----------------------------------------------------------------------
         /**
          * The meta-property for the {@code first} property.
@@ -387,6 +345,49 @@ public class ValidateBean extends DirectBean {
          */
         public final MetaProperty<String> fourth() {
             return fourth;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 97440432:  // first
+                    return ((ValidateBean) bean).getFirst();
+                case -906279820:  // second
+                    return ((ValidateBean) bean).getSecond();
+                case 110331239:  // third
+                    return ((ValidateBean) bean).getThird();
+                case -1268684262:  // fourth
+                    return ((ValidateBean) bean).getFourth();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 97440432:  // first
+                ((ValidateBean) bean).setFirst((String) newValue);
+                return;
+            case -906279820:  // second
+                ((ValidateBean) bean).setSecond((String) newValue);
+                return;
+            case 110331239:  // third
+                ((ValidateBean) bean).setThird((String) newValue);
+                return;
+            case -1268684262:  // fourth
+                ((ValidateBean) bean).setFourth((String) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((ValidateBean) bean).first, "first");
+            JodaBeanUtils.notEmpty(((ValidateBean) bean).second, "second");
+            TestValidateBean.checkInTest(((ValidateBean) bean).third, "third");
+            checkInBean(((ValidateBean) bean).fourth, "fourth");
         }
 
     }

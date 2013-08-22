@@ -131,11 +131,11 @@ It is more common to use the code generator, however the generator is optional.
 A code generated Joda-Bean minimises the amount of code that the developer has to write.
 The developer simply creates an outline class and adds the properties (fields).
 The code generator then produces all the getters and setters, plus additional helper methods.
-See this <a href="https://github.com/JodaOrg/joda-beans/blob/v0.7.1/src/test/java/org/joda/beans/gen/Person.java#L43">basic Person class</a>
+See this <a href="https://github.com/JodaOrg/joda-beans/blob/v0.7.1/src/test/java/org/joda/beans/gen/SimplePerson.java#L43">basic Person class</a>
 for an example of the generated code.
 </p>
 <p>
-The code generator must be invoked before compilation.
+The code generator must be invoked before compilation as it generates Java source code.
 It cannot operate at runtime, as the getters and setters that are generated must be available for developers
 writing the main part of the application.
 </p>
@@ -151,7 +151,8 @@ The generator has the following requirements:
 </p>
 <ul>
 <li>The class must be annotated with <a href="apidocs/org/joda/beans/BeanDefinition.html">BeanDefinition</a></li>
-<li>The class must extend <a href="apidocs/org/joda/beans/impl/direct/DirectBean.html">DirectBean</a>, directly or indirectly</li>
+<li>The class must implement the <a href="apidocs/org/joda/beans/Bean.html">Bean</a> interface, or extend a class that does.
+It used to be mandatory to subclass <a href="apidocs/org/joda/beans/impl/direct/DirectBean.html">DirectBean</a> but that is no longer recommended</li>
 <li>The class must be a normal top-level class, nested/inner classes and multiple classes per file are not supported</li>
 <li>Each property field must be annotated with <a href="apidocs/org/joda/beans/PropertyDefinition.html">PropertyDefinition</a></li>
 <li>Each property field must be be private</li>
@@ -197,6 +198,9 @@ Normally the generator will be invoked from the IDE or a tool like Apache Ant.
 The code generator only parses and outputs based on a single source Java file.
 It does not require the file to compile and never knows that "String" actually means "java.lang.String".
 In other words, the type system in the generator is totally dumb and based solely on the short simple class name.
+</p>
+<p>
+A <a href="https://github.com/JodaOrg/joda-beans-maven-plugin">Maven plugin</a> is available to generate the beans.
 </p>
 </section>
 

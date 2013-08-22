@@ -27,7 +27,7 @@ import java.util.Set;
 import org.joda.beans.MetaProperty;
 
 /**
- * A map of name to meta-property designed for use by {@code DirectBean}.
+ * A map of name to meta-property designed for use by the code generator.
  * <p>
  * This meta-property map implementation is designed primarily for code-generation.
  * It stores a reference to the meta-bean and the meta-properties.

@@ -15,21 +15,16 @@
  */
 package org.joda.beans.impl.direct;
 
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.joda.beans.Bean;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.Property;
 
 /**
  * A bean implementation designed for use by the code generator.
  * <p>
- * This implementation uses direct access via {@link #propertyGet(String, boolean)} and
- * {@link #propertySet(String, Object, boolean)} to avoid reflection.
- * <p>
- * For code generation, the bean must directly extend this class and have a
- * no-arguments constructor.
+ * It used to be mandatory for code generated beans to extend this class.
+ * Now, beans can simply implement the {@code Bean} interface.
  * 
  * @author Stephen Colebourne
  */
@@ -43,81 +38,6 @@ public abstract class DirectBean implements Bean {
     @Override
     public Set<String> propertyNames() {
         return metaBean().metaPropertyMap().keySet();
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Gets the value of the property.
-     * 
-     * @param propertyName  the property name, not null
-     * @param quiet  true to return null if unable to read
-     * @return the value of the property, may be null
-     * @throws NoSuchElementException if the property name is invalid
-     */
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        throw new NoSuchElementException("Unknown property: " + propertyName);
-    }
-
-    /**
-     * Sets the value of the property.
-     * 
-     * @param propertyName  the property name, not null
-     * @param value  the value of the property, may be null
-     * @param quiet  true to take no action if unable to write
-     * @throws NoSuchElementException if the property name is invalid
-     */
-    protected void propertySet(String propertyName, Object value, boolean quiet) {
-        throw new NoSuchElementException("Unknown property: " + propertyName);
-    }
-
-    //-----------------------------------------------------------------------
-    // generated code has an optimized version of these methods
-    // these remain in case a manually written subclass method wants to call them
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && getClass() == obj.getClass()) {
-            DirectBean other = (DirectBean) obj;
-            for (String name : propertyNames()) {
-                Object value1 = propertyGet(name, true);
-                Object value2 = other.propertyGet(name, true);
-                if (JodaBeanUtils.equal(value1, value2) == false) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        Set<String> names = propertyNames();
-        for (String name : names) {
-            Object value = propertyGet(name, true);
-            hash += JodaBeanUtils.hashCode(value);
-        }
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        Set<String> names = propertyNames();
-        StringBuilder buf = new StringBuilder((names.size()) * 32 + 32);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        if (names.size() > 0) {
-            for (String name : names) {
-                Object value = propertyGet(name, true);
-                buf.append(name).append('=').append(value).append(',').append(' ');
-            }
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
     }
 
 }

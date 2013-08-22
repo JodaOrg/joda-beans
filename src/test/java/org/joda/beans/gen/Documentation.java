@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -76,36 +77,6 @@ public class Documentation<T> extends DirectBean {
     @Override
     public Documentation.Meta<T> metaBean() {
         return Documentation.Meta.INSTANCE;
-    }
-
-    @Override
-    protected Object propertyGet(String propertyName, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3575610:  // type
-                return getType();
-            case 951530617:  // content
-                return getContent();
-            case 107868:  // map
-                return getMap();
-        }
-        return super.propertyGet(propertyName, quiet);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void propertySet(String propertyName, Object newValue, boolean quiet) {
-        switch (propertyName.hashCode()) {
-            case 3575610:  // type
-                setType((String) newValue);
-                return;
-            case 951530617:  // content
-                setContent((T) newValue);
-                return;
-            case 107868:  // map
-                setMap((Map<String, String>) newValue);
-                return;
-        }
-        super.propertySet(propertyName, newValue, quiet);
     }
 
     @Override
@@ -321,6 +292,37 @@ public class Documentation<T> extends DirectBean {
          */
         public final MetaProperty<Map<String, String>> map() {
             return map;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+            switch (propertyName.hashCode()) {
+                case 3575610:  // type
+                    return ((Documentation<?>) bean).getType();
+                case 951530617:  // content
+                    return ((Documentation<?>) bean).getContent();
+                case 107868:  // map
+                    return ((Documentation<?>) bean).getMap();
+            }
+            return super.propertyGet(bean, propertyName, quiet);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
+            switch (propertyName.hashCode()) {
+            case 3575610:  // type
+                ((Documentation<T>) bean).setType((String) newValue);
+                return;
+            case 951530617:  // content
+                ((Documentation<T>) bean).setContent((T) newValue);
+                return;
+            case 107868:  // map
+                ((Documentation<T>) bean).setMap((Map<String, String>) newValue);
+                return;
+            }
+            super.propertySet(bean, propertyName, newValue, quiet);
         }
 
     }

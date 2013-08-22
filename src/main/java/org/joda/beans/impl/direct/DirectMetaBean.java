@@ -15,14 +15,14 @@
  */
 package org.joda.beans.impl.direct;
 
+import java.util.NoSuchElementException;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.BasicMetaBean;
 
 /**
- * A meta-bean implementation designed for use by {@code DirectBean}.
- * <p>
- * This implementation uses direct access via {@link #metaPropertyGet(String)} to avoid reflection.
+ * A meta-bean implementation designed for use by the code generator.
  * 
  * @author Stephen Colebourne
  */
@@ -39,6 +39,33 @@ public abstract class DirectMetaBean extends BasicMetaBean {
      */
     protected MetaProperty<?> metaPropertyGet(String propertyName) {
         return null;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the value of the property.
+     * 
+     * @param bean  the bean to query, not null
+     * @param propertyName  the property name, not null
+     * @param quiet  true to return null if unable to read
+     * @return the value of the property, may be null
+     * @throws NoSuchElementException if the property name is invalid
+     */
+    protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+        throw new NoSuchElementException("Unknown property: " + propertyName);
+    }
+
+    /**
+     * Sets the value of the property.
+     * 
+     * @param bean  the bean to update, not null
+     * @param propertyName  the property name, not null
+     * @param value  the value of the property, may be null
+     * @param quiet  true to take no action if unable to write
+     * @throws NoSuchElementException if the property name is invalid
+     */
+    protected void propertySet(Bean bean, String propertyName, Object value, boolean quiet) {
+        throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
     /**
