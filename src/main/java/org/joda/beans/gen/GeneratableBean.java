@@ -45,6 +45,8 @@ class GeneratableBean {
     private String typeGenericExtends;
     /** Whether the type is final with no subclasses. */
     private boolean typeFinal;
+    /** Whether the type is a root with no bean super-classes. */
+    private boolean root;
     /** The full name of the bean superclass. */
     private String superTypeFull;
     /** The simple name of the bean superclass. */
@@ -171,9 +173,17 @@ class GeneratableBean {
      * @param parts  the superclass to set
      */
     public void setSuperTypeParts(String[] parts) {
-        this.superTypeFull = parts[0];
-        this.superTypeRaw = parts[1];
-        this.superTypeGeneric = parts[2] != null ? parts[2] : "";
+        if (parts.length == 0) {
+            this.root = true;
+            this.superTypeFull = "";
+            this.superTypeRaw = "";
+            this.superTypeGeneric = "";
+        } else {
+            this.root = "DirectBean".equals(parts[0]);
+            this.superTypeFull = parts[0];
+            this.superTypeRaw = parts[1];
+            this.superTypeGeneric = parts[2] != null ? parts[2] : "";
+        }
     }
 
     /**
@@ -206,7 +216,7 @@ class GeneratableBean {
      * @param true if this is a subclass of another bean
      */
     public boolean isSubClass() {
-        return superTypeFull.equals("DirectBean") == false;
+        return !root;
     }
 
     /**
@@ -214,7 +224,15 @@ class GeneratableBean {
      * @param true if this is the root class with no bean superclasses
      */
     public boolean isRootClass() {
-        return isSubClass() == false;
+        return root;
+    }
+
+    /**
+     * Checks if this bean directly extends {@code DirectBean}.
+     * @param true if this extends DirectBean
+     */
+    public boolean isExtendsDirectBean() {
+        return "DirectBean".equals(superTypeFull);
     }
 
     //-----------------------------------------------------------------------

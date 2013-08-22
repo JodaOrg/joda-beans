@@ -28,6 +28,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.Property;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
@@ -48,6 +49,8 @@ class BeanGen {
     private static final Pattern BEAN_TYPE = Pattern.compile(".*class (([A-Z][A-Za-z0-9_]+)(?:<([A-Z])( extends [A-Za-z0-9_]+)?>)?) .*");
     /** Pattern to find super type. */
     private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_<> ]*)>)?).*");
+    /** Pattern to find root type. */
+    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements .*[ ,]Bean[ ,].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {
@@ -120,6 +123,10 @@ class BeanGen {
             insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
             generateMetaBean();
+            if (data.isRootClass() && data.isExtendsDirectBean() == false) {
+                generatePropertyByName();
+                generatePropertyNames();
+            }
             generatePropertyGet();
             generatePropertySet();
             if (data.isManualEqualsHashCode() == false) {
@@ -210,11 +217,16 @@ class BeanGen {
     }
 
     private String[] parseBeanSuperType(int defLine) {
-        Matcher matcher = SUPER_TYPE.matcher("");
+        Matcher matcherExtends = SUPER_TYPE.matcher("");
+        Matcher matcherImplements = SUPER_IMPL_TYPE.matcher("");
         for (int index = defLine; index < content.size(); index++) {
-            matcher.reset(content.get(index));
-            if (matcher.matches()) {
-                return new String[] {matcher.group(1), matcher.group(2), matcher.group(3)};
+            matcherImplements.reset(content.get(index));
+            if (matcherImplements.matches()) {
+                return new String[0];
+            }
+            matcherExtends.reset(content.get(index));
+            if (matcherExtends.matches()) {
+                return new String[] {matcherExtends.group(1), matcherExtends.group(2), matcherExtends.group(3)};
             }
         }
         throw new RuntimeException("Unable to locate bean superclass");
@@ -372,6 +384,25 @@ class BeanGen {
             insertRegion.addAll(prop.generateSetter());
             insertRegion.addAll(prop.generateProperty());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    private void generatePropertyByName() {
+        data.ensureImport(Property.class);
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tpublic <R> Property<R> property(String propertyName) {");
+        insertRegion.add("\t\treturn metaBean().<R>metaProperty(propertyName).createProperty(this);");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    private void generatePropertyNames() {
+        data.ensureImport(Set.class);
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tpublic Set<String> propertyNames() {");
+        insertRegion.add("\t\treturn metaBean().metaPropertyMap().keySet();");
+        insertRegion.add("\t}");
+        insertRegion.add("");
     }
 
     private void generatePropertyGet() {
