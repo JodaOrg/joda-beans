@@ -251,12 +251,12 @@ public class Pair extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 97440432:  // first
-                ((Pair) bean).setFirst((Object) newValue);
-                return;
-            case -906279820:  // second
-                ((Pair) bean).setSecond((Object) newValue);
-                return;
+                case 97440432:  // first
+                    ((Pair) bean).setFirst((Object) newValue);
+                    return;
+                case -906279820:  // second
+                    ((Pair) bean).setSecond((Object) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

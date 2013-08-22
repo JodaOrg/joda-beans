@@ -50,7 +50,7 @@ class BeanGen {
     /** Pattern to find super type. */
     private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_<> ]*)>)?).*");
     /** Pattern to find root type. */
-    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements .*[ ,]Bean[ ,].*");
+    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements.*[ ,]Bean[ ,].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {

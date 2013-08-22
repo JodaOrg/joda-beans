@@ -199,9 +199,9 @@ public class CompanyAddress extends Address {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case -508582744:  // companyName
-                ((CompanyAddress) bean).setCompanyName((String) newValue);
-                return;
+                case -508582744:  // companyName
+                    ((CompanyAddress) bean).setCompanyName((String) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

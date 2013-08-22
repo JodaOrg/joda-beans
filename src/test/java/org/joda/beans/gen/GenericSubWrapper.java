@@ -216,9 +216,9 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 3373707:  // name
-                ((GenericSubWrapper<T>) bean).setName((String) newValue);
-                return;
+                case 3373707:  // name
+                    ((GenericSubWrapper<T>) bean).setName((String) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

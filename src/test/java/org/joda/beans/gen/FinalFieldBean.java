@@ -411,25 +411,25 @@ public class FinalFieldBean extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 553434268:  // fieldFinal
-                if (quiet) {
+                case 553434268:  // fieldFinal
+                    if (quiet) {
+                        return;
+                    }
+                    throw new UnsupportedOperationException("Property cannot be written: fieldFinal");
+                case 1043548611:  // fieldNonFinal
+                    ((FinalFieldBean) bean).setFieldNonFinal((String) newValue);
                     return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: fieldFinal");
-            case 1043548611:  // fieldNonFinal
-                ((FinalFieldBean) bean).setFieldNonFinal((String) newValue);
-                return;
-            case -1247489160:  // listFinal
-                ((FinalFieldBean) bean).setListFinal((List<String>) newValue);
-                return;
-            case 1629293510:  // flexiFinal
-                ((FinalFieldBean) bean).setFlexiFinal((FlexiBean) newValue);
-                return;
-            case -448986335:  // personFinal
-                if (quiet) {
+                case -1247489160:  // listFinal
+                    ((FinalFieldBean) bean).setListFinal((List<String>) newValue);
                     return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: personFinal");
+                case 1629293510:  // flexiFinal
+                    ((FinalFieldBean) bean).setFlexiFinal((FlexiBean) newValue);
+                    return;
+                case -448986335:  // personFinal
+                    if (quiet) {
+                        return;
+                    }
+                    throw new UnsupportedOperationException("Property cannot be written: personFinal");
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

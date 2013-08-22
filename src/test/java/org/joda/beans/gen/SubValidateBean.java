@@ -205,9 +205,9 @@ public class SubValidateBean extends ValidateBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 114240:  // sub
-                ((SubValidateBean) bean).setSub((String) newValue);
-                return;
+                case 114240:  // sub
+                    ((SubValidateBean) bean).setSub((String) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

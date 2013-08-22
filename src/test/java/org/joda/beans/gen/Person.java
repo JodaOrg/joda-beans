@@ -543,30 +543,30 @@ public final class Person extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 467061063:  // forename
-                ((Person) bean).setForename((String) newValue);
-                return;
-            case -1852993317:  // surname
-                ((Person) bean).setSurname((String) newValue);
-                return;
-            case 926656063:  // numberOfCars
-                ((Person) bean).setNumberOfCars((Integer) newValue);
-                return;
-            case -1377524046:  // addressList
-                ((Person) bean).setAddressList((List<Address>) newValue);
-                return;
-            case 1368089592:  // otherAddressMap
-                ((Person) bean).setOtherAddressMap((Map<String, Address>) newValue);
-                return;
-            case -226885792:  // addressesList
-                ((Person) bean).setAddressesList((List<List<Address>>) newValue);
-                return;
-            case -2032731141:  // mainAddress
-                ((Person) bean).setMainAddress((Address) newValue);
-                return;
-            case -1809421292:  // extensions
-                ((Person) bean).setExtensions((FlexiBean) newValue);
-                return;
+                case 467061063:  // forename
+                    ((Person) bean).setForename((String) newValue);
+                    return;
+                case -1852993317:  // surname
+                    ((Person) bean).setSurname((String) newValue);
+                    return;
+                case 926656063:  // numberOfCars
+                    ((Person) bean).setNumberOfCars((Integer) newValue);
+                    return;
+                case -1377524046:  // addressList
+                    ((Person) bean).setAddressList((List<Address>) newValue);
+                    return;
+                case 1368089592:  // otherAddressMap
+                    ((Person) bean).setOtherAddressMap((Map<String, Address>) newValue);
+                    return;
+                case -226885792:  // addressesList
+                    ((Person) bean).setAddressesList((List<List<Address>>) newValue);
+                    return;
+                case -2032731141:  // mainAddress
+                    ((Person) bean).setMainAddress((Address) newValue);
+                    return;
+                case -1809421292:  // extensions
+                    ((Person) bean).setExtensions((FlexiBean) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

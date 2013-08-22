@@ -367,18 +367,18 @@ public class ValidateBean extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 97440432:  // first
-                ((ValidateBean) bean).setFirst((String) newValue);
-                return;
-            case -906279820:  // second
-                ((ValidateBean) bean).setSecond((String) newValue);
-                return;
-            case 110331239:  // third
-                ((ValidateBean) bean).setThird((String) newValue);
-                return;
-            case -1268684262:  // fourth
-                ((ValidateBean) bean).setFourth((String) newValue);
-                return;
+                case 97440432:  // first
+                    ((ValidateBean) bean).setFirst((String) newValue);
+                    return;
+                case -906279820:  // second
+                    ((ValidateBean) bean).setSecond((String) newValue);
+                    return;
+                case 110331239:  // third
+                    ((ValidateBean) bean).setThird((String) newValue);
+                    return;
+                case -1268684262:  // fourth
+                    ((ValidateBean) bean).setFourth((String) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

@@ -199,9 +199,9 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 3373707:  // name
-                ((SubWrapper) bean).setName((String) newValue);
-                return;
+                case 3373707:  // name
+                    ((SubWrapper) bean).setName((String) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

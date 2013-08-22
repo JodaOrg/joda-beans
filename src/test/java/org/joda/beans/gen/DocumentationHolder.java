@@ -200,9 +200,9 @@ public class DocumentationHolder extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 1587405498:  // documentation
-                ((DocumentationHolder) bean).setDocumentation((Documentation<?>) newValue);
-                return;
+                case 1587405498:  // documentation
+                    ((DocumentationHolder) bean).setDocumentation((Documentation<?>) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

@@ -553,30 +553,30 @@ public final class SimplePerson implements Cloneable, Bean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 467061063:  // forename
-                ((SimplePerson) bean).setForename((String) newValue);
-                return;
-            case -1852993317:  // surname
-                ((SimplePerson) bean).setSurname((String) newValue);
-                return;
-            case 926656063:  // numberOfCars
-                ((SimplePerson) bean).setNumberOfCars((Integer) newValue);
-                return;
-            case -1377524046:  // addressList
-                ((SimplePerson) bean).setAddressList((List<Address>) newValue);
-                return;
-            case 1368089592:  // otherAddressMap
-                ((SimplePerson) bean).setOtherAddressMap((Map<String, Address>) newValue);
-                return;
-            case -226885792:  // addressesList
-                ((SimplePerson) bean).setAddressesList((List<List<Address>>) newValue);
-                return;
-            case -2032731141:  // mainAddress
-                ((SimplePerson) bean).setMainAddress((Address) newValue);
-                return;
-            case -1809421292:  // extensions
-                ((SimplePerson) bean).setExtensions((FlexiBean) newValue);
-                return;
+                case 467061063:  // forename
+                    ((SimplePerson) bean).setForename((String) newValue);
+                    return;
+                case -1852993317:  // surname
+                    ((SimplePerson) bean).setSurname((String) newValue);
+                    return;
+                case 926656063:  // numberOfCars
+                    ((SimplePerson) bean).setNumberOfCars((Integer) newValue);
+                    return;
+                case -1377524046:  // addressList
+                    ((SimplePerson) bean).setAddressList((List<Address>) newValue);
+                    return;
+                case 1368089592:  // otherAddressMap
+                    ((SimplePerson) bean).setOtherAddressMap((Map<String, Address>) newValue);
+                    return;
+                case -226885792:  // addressesList
+                    ((SimplePerson) bean).setAddressesList((List<List<Address>>) newValue);
+                    return;
+                case -2032731141:  // mainAddress
+                    ((SimplePerson) bean).setMainAddress((Address) newValue);
+                    return;
+                case -1809421292:  // extensions
+                    ((SimplePerson) bean).setExtensions((FlexiBean) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

@@ -187,9 +187,9 @@ public class NoGenToString extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 111972721:  // value
-                ((NoGenToString) bean).setValue((Object) newValue);
-                return;
+                case 111972721:  // value
+                    ((NoGenToString) bean).setValue((Object) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

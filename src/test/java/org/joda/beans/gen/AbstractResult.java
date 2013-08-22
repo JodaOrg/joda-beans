@@ -249,14 +249,14 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 3088955:  // docs
-                ((AbstractResult<T>) bean).setDocs((List<T>) newValue);
-                return;
-            case -571837193:  // resultType
-                if (quiet) {
+                case 3088955:  // docs
+                    ((AbstractResult<T>) bean).setDocs((List<T>) newValue);
                     return;
-                }
-                throw new UnsupportedOperationException("Property cannot be written: resultType");
+                case -571837193:  // resultType
+                    if (quiet) {
+                        return;
+                    }
+                    throw new UnsupportedOperationException("Property cannot be written: resultType");
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

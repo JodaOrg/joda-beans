@@ -355,18 +355,18 @@ public class Address extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case -1034364087:  // number
-                ((Address) bean).setNumber((Integer) newValue);
-                return;
-            case -891990013:  // street
-                ((Address) bean).setStreet((String) newValue);
-                return;
-            case 3053931:  // city
-                ((Address) bean).setCity((String) newValue);
-                return;
-            case 106164915:  // owner
-                ((Address) bean).setOwner((Person) newValue);
-                return;
+                case -1034364087:  // number
+                    ((Address) bean).setNumber((Integer) newValue);
+                    return;
+                case -891990013:  // street
+                    ((Address) bean).setStreet((String) newValue);
+                    return;
+                case 3053931:  // city
+                    ((Address) bean).setCity((String) newValue);
+                    return;
+                case 106164915:  // owner
+                    ((Address) bean).setOwner((Person) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }

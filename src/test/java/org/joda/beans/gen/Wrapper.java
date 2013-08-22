@@ -263,12 +263,12 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         @Override
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
-            case 3575610:  // type
-                ((Wrapper<T>) bean).setType((String) newValue);
-                return;
-            case 951530617:  // content
-                ((Wrapper<T>) bean).setContent((T) newValue);
-                return;
+                case 3575610:  // type
+                    ((Wrapper<T>) bean).setType((String) newValue);
+                    return;
+                case 951530617:  // content
+                    ((Wrapper<T>) bean).setContent((T) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }
