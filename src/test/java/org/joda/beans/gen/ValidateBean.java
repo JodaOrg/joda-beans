@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -348,7 +349,7 @@ public class ValidateBean extends DirectBean {
         }
 
         @Override
-        protected void validate(DirectBean bean) {
+        protected void validate(Bean bean) {
             JodaBeanUtils.notNull(((ValidateBean) bean).first, "first");
             JodaBeanUtils.notEmpty(((ValidateBean) bean).second, "second");
             TestValidateBean.checkInTest(((ValidateBean) bean).third, "third");

@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
@@ -656,9 +657,9 @@ class BeanGen {
     }
 
     private void generateMetaValidate() {
-        data.ensureImport(DirectBean.class);
+        data.ensureImport(Bean.class);
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tprotected void validate(DirectBean bean) {");
+        insertRegion.add("\t\tprotected void validate(Bean bean) {");
         if (data.isValidated()) {
             for (PropertyGen prop : properties) {
                 if (prop.getData().isValidated()) {

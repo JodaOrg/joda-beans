@@ -15,17 +15,18 @@
  */
 package org.joda.beans.impl.direct;
 
+import org.joda.beans.Bean;
 import org.joda.beans.impl.BasicBeanBuilder;
 
 /**
  * Implementation of {@code BeanBuilder} that validates the resulting bean.
  * <p>
- * This implementation ensures that all the setters are called.
+ * This implementation adds validation.
  * 
  * @author Stephen Colebourne
  * @param <T> the bean type
  */
-public class DirectBeanBuilder<T extends DirectBean> extends BasicBeanBuilder<T> {
+public class DirectBeanBuilder<T extends Bean> extends BasicBeanBuilder<T> {
 
     /**
      * Constructs the builder wrapping the target bean.

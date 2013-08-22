@@ -15,6 +15,7 @@
  */
 package org.joda.beans.impl.direct;
 
+import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.BasicMetaBean;
 
@@ -46,7 +47,7 @@ public abstract class DirectMetaBean extends BasicMetaBean {
      * @param bean  the bean to validate, not null
      * @throws RuntimeException if a property is invalid
      */
-    protected void validate(DirectBean bean) {
+    protected void validate(Bean bean) {
     }
 
 }
