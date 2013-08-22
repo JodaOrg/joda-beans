@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-import org.joda.beans.Property;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Documentation;
 import org.joda.beans.gen.Person;
