@@ -205,8 +205,16 @@ class GeneratableBean {
      * Checks if this bean is a superclass.
      * @param true if this is a subclass of another bean
      */
-    public boolean isSubclass() {
+    public boolean isSubClass() {
         return superTypeFull.equals("DirectBean") == false;
+    }
+
+    /**
+     * Checks if this bean is the root class in a hierarchy.
+     * @param true if this is the root class with no bean superclasses
+     */
+    public boolean isRootClass() {
+        return isSubClass() == false;
     }
 
     //-----------------------------------------------------------------------

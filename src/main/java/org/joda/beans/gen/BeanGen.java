@@ -113,7 +113,7 @@ class BeanGen {
     void process() {
         if (insertRegion != null) {
             removeOld();
-            if (data.isSubclass() == false) {
+            if (data.isRootClass()) {
                 data.ensureImport(DirectBean.class);
             }
             insertRegion.add("\t///CLOVER:OFF");
@@ -420,7 +420,7 @@ class BeanGen {
         insertRegion.add("\t\t}");
         insertRegion.add("\t\tif (obj != null && obj.getClass() == this.getClass()) {");
         if (properties.size() == 0) {
-            if (data.isSubclass()) {
+            if (data.isSubClass()) {
                 insertRegion.add("\t\t\treturn super.equals(obj);");
             } else {
                 insertRegion.add("\t\t\treturn true;");
@@ -436,9 +436,9 @@ class BeanGen {
                 }
                 insertRegion.add(
                         (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +
-                        (data.isSubclass() || i < properties.size() - 1 ? " &&" : ";"));
+                        (data.isSubClass() || i < properties.size() - 1 ? " &&" : ";"));
             }
-            if (data.isSubclass()) {
+            if (data.isSubClass()) {
                 insertRegion.add("\t\t\t\t\tsuper.equals(obj);");
             }
         }
@@ -452,7 +452,7 @@ class BeanGen {
         data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic int hashCode() {");
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             insertRegion.add("\t\tint hash = 7;");
         } else {
             insertRegion.add("\t\tint hash = getClass().hashCode();");
@@ -462,7 +462,7 @@ class BeanGen {
             String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
             insertRegion.add("\t\thash += hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             insertRegion.add("\t\treturn hash ^ super.hashCode();");
         } else {
             insertRegion.add("\t\treturn hash;");
@@ -472,7 +472,7 @@ class BeanGen {
     }
 
     private void generateToString() {
-        if (data.isSubclass() == false && data.isTypeFinal()) {
+        if (data.isRootClass() && data.isTypeFinal()) {
             insertRegion.add("\t@Override");
             insertRegion.add("\tpublic String toString() {");
             insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
@@ -511,11 +511,11 @@ class BeanGen {
         insertRegion.add("\t}");
         insertRegion.add("");
         
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             insertRegion.add("\t@Override");
         }
         insertRegion.add("\tprotected void toString(StringBuilder buf) {");
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             insertRegion.add("\t\tsuper.toString(buf);");
         }
         for (int i = 0; i < properties.size(); i++) {
@@ -535,7 +535,7 @@ class BeanGen {
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
         String superMeta;
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             superMeta = data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true);
         } else {
             data.ensureImport(DirectMetaBean.class);
@@ -588,7 +588,7 @@ class BeanGen {
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
         insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + prefix + "metaPropertyMap$ = new DirectMetaPropertyMap(");
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             insertRegion.add("\t\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
             insertRegion.add("\t\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
@@ -668,7 +668,7 @@ class BeanGen {
                 }
             }
         }
-        if (data.isSubclass()) {
+        if (data.isSubClass()) {
             insertRegion.add("\t\t\tsuper.validate(bean);");
         }
         insertRegion.add("\t\t}");
