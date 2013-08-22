@@ -88,52 +88,6 @@ public class ValidateBean extends DirectBean {
         return ValidateBean.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            ValidateBean other = (ValidateBean) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
-                    JodaBeanUtils.equal(getThird(), other.getThird()) &&
-                    JodaBeanUtils.equal(getFourth(), other.getFourth());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getThird());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFourth());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(160);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
-        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
-        buf.append("third").append('=').append(getThird()).append(',').append(' ');
-        buf.append("fourth").append('=').append(getFourth()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the non-null value.
@@ -236,6 +190,53 @@ public class ValidateBean extends DirectBean {
      */
     public final Property<String> fourth() {
         return metaBean().fourth().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            ValidateBean other = (ValidateBean) obj;
+            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
+                    JodaBeanUtils.equal(getThird(), other.getThird()) &&
+                    JodaBeanUtils.equal(getFourth(), other.getFourth());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getThird());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFourth());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(160);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
+        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
+        buf.append("third").append('=').append(getThird()).append(',').append(' ');
+        buf.append("fourth").append('=').append(getFourth()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

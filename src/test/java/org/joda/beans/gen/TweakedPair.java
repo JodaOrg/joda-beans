@@ -52,6 +52,7 @@ public class TweakedPair extends Pair {
         return TweakedPair.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

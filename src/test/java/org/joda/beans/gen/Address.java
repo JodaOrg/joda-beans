@@ -77,52 +77,6 @@ public class Address extends DirectBean {
         return Address.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            Address other = (Address) obj;
-            return (getNumber() == other.getNumber()) &&
-                    JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
-                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getOwner(), other.getOwner());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(160);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("street").append('=').append(getStreet()).append(',').append(' ');
-        buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the number.
@@ -224,6 +178,53 @@ public class Address extends DirectBean {
      */
     public final Property<Person> owner() {
         return metaBean().owner().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Address other = (Address) obj;
+            return (getNumber() == other.getNumber()) &&
+                    JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
+                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
+                    JodaBeanUtils.equal(getOwner(), other.getOwner());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(160);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
+        buf.append("street").append('=').append(getStreet()).append(',').append(' ');
+        buf.append("city").append('=').append(getCity()).append(',').append(' ');
+        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

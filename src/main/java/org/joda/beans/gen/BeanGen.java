@@ -127,14 +127,17 @@ class BeanGen {
                 generatePropertyByName();
                 generatePropertyNames();
             }
-            if (data.isManualEqualsHashCode() == false) {
-                generateEquals();
-                generateHashCode();
-            }
-            if (data.isManualToStringCode() == false) {
-                generateToString();
-            }
             generateGettersSetters();
+            if (data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false) {
+                generateSeparator();
+                if (data.isManualEqualsHashCode() == false) {
+                    generateEquals();
+                    generateHashCode();
+                }
+                if (data.isManualToStringCode() == false) {
+                    generateToString();
+                }
+            }
             generateMetaClass();
             insertRegion.add("\t///CLOVER:ON");
             resolveImports();

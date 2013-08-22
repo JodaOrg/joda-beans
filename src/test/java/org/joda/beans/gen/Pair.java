@@ -68,46 +68,6 @@ public class Pair extends DirectBean {
         return Pair.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            Pair other = (Pair) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(96);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
-        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the first value.
@@ -156,6 +116,47 @@ public class Pair extends DirectBean {
      */
     public final Property<Object> second() {
         return metaBean().second().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Pair other = (Pair) obj;
+            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(getSecond(), other.getSecond());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(96);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
+        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

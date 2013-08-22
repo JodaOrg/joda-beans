@@ -72,6 +72,32 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
         return GenericWrapperDocumentation.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the name.
+     * @return the value of the property
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     * @param name  the new value of the property
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the the {@code name} property.
+     * @return the property, not null
+     */
+    public final Property<String> name() {
+        return metaBean().name().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -110,31 +136,6 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     protected void toString(StringBuilder buf) {
         super.toString(buf);
         buf.append("name").append('=').append(getName()).append(',').append(' ');
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the name.
-     * @return the value of the property
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name.
-     * @param name  the new value of the property
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gets the the {@code name} property.
-     * @return the property, not null
-     */
-    public final Property<String> name() {
-        return metaBean().name().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

@@ -59,6 +59,32 @@ public class CompanyAddress extends Address {
         return CompanyAddress.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the company name.
+     * @return the value of the property
+     */
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    /**
+     * Sets the company name.
+     * @param companyName  the new value of the property
+     */
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    /**
+     * Gets the the {@code companyName} property.
+     * @return the property, not null
+     */
+    public final Property<String> companyName() {
+        return metaBean().companyName().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -97,31 +123,6 @@ public class CompanyAddress extends Address {
     protected void toString(StringBuilder buf) {
         super.toString(buf);
         buf.append("companyName").append('=').append(getCompanyName()).append(',').append(' ');
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the company name.
-     * @return the value of the property
-     */
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    /**
-     * Sets the company name.
-     * @param companyName  the new value of the property
-     */
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    /**
-     * Gets the the {@code companyName} property.
-     * @return the property, not null
-     */
-    public final Property<String> companyName() {
-        return metaBean().companyName().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

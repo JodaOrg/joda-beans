@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8" date="xxxx-xx-xx" description="v0.8">
       <action dev="scolebourne" type="update" >
+        Move location of equals/hashCode/toString methods in generation.
+        All existing beans will regenerate.
+      </action>
+      <action dev="scolebourne" type="update" >
         Allow generated beans to implement interface, rather than extend class.
         Move propertyGet/propertySet/validate into meta-bean
         All existing beans will regenerate.

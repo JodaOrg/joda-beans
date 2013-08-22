@@ -79,49 +79,6 @@ public class Documentation<T> extends DirectBean {
         return Documentation.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            Documentation<?> other = (Documentation<?>) obj;
-            return JodaBeanUtils.equal(getType(), other.getType()) &&
-                    JodaBeanUtils.equal(getContent(), other.getContent()) &&
-                    JodaBeanUtils.equal(getMap(), other.getMap());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMap());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(128);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("type").append('=').append(getType()).append(',').append(' ');
-        buf.append("content").append('=').append(getContent()).append(',').append(' ');
-        buf.append("map").append('=').append(getMap()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the type.
@@ -195,6 +152,50 @@ public class Documentation<T> extends DirectBean {
      */
     public final Property<Map<String, String>> map() {
         return metaBean().map().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Documentation<?> other = (Documentation<?>) obj;
+            return JodaBeanUtils.equal(getType(), other.getType()) &&
+                    JodaBeanUtils.equal(getContent(), other.getContent()) &&
+                    JodaBeanUtils.equal(getMap(), other.getMap());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getMap());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(128);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("type").append('=').append(getType()).append(',').append(' ');
+        buf.append("content").append('=').append(getContent()).append(',').append(' ');
+        buf.append("map").append('=').append(getMap()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

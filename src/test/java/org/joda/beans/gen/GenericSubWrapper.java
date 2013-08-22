@@ -72,6 +72,33 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         return GenericSubWrapper.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the name.
+     * @return the value of the property, not null
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     * @param name  the new value of the property, not null
+     */
+    public void setName(String name) {
+        JodaBeanUtils.notNull(name, "name");
+        this.name = name;
+    }
+
+    /**
+     * Gets the the {@code name} property.
+     * @return the property, not null
+     */
+    public final Property<String> name() {
+        return metaBean().name().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -110,32 +137,6 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     protected void toString(StringBuilder buf) {
         super.toString(buf);
         buf.append("name").append('=').append(getName()).append(',').append(' ');
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the name.
-     * @return the value of the property, not null
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name.
-     * @param name  the new value of the property, not null
-     */
-    public void setName(String name) {
-        JodaBeanUtils.notNull(name, "name");
-        this.name = name;
-    }
-
-    /**
-     * Gets the the {@code name} property.
-     * @return the property, not null
-     */
-    public final Property<String> name() {
-        return metaBean().name().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

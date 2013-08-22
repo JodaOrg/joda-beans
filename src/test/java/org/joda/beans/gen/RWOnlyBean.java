@@ -100,55 +100,6 @@ public class RWOnlyBean extends DirectBean {
         return RWOnlyBean.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            RWOnlyBean other = (RWOnlyBean) obj;
-            return JodaBeanUtils.equal(getRo(), other.getRo()) &&
-                    JodaBeanUtils.equal(wo, other.wo) &&
-                    JodaBeanUtils.equal(getFin(), other.getFin()) &&
-                    JodaBeanUtils.equal(getManualGet(), other.getManualGet()) &&
-                    JodaBeanUtils.equal(getDerived(), other.getDerived());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getRo());
-        hash += hash * 31 + JodaBeanUtils.hashCode(wo);
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFin());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getManualGet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDerived());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(192);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("ro").append('=').append(getRo()).append(',').append(' ');
-        buf.append("wo").append('=').append(wo).append(',').append(' ');
-        buf.append("fin").append('=').append(getFin()).append(',').append(' ');
-        buf.append("manualGet").append('=').append(getManualGet()).append(',').append(' ');
-        buf.append("derived").append('=').append(getDerived()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the read only property.
@@ -217,6 +168,56 @@ public class RWOnlyBean extends DirectBean {
      */
     public final Property<String> derived() {
         return metaBean().derived().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            RWOnlyBean other = (RWOnlyBean) obj;
+            return JodaBeanUtils.equal(getRo(), other.getRo()) &&
+                    JodaBeanUtils.equal(wo, other.wo) &&
+                    JodaBeanUtils.equal(getFin(), other.getFin()) &&
+                    JodaBeanUtils.equal(getManualGet(), other.getManualGet()) &&
+                    JodaBeanUtils.equal(getDerived(), other.getDerived());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getRo());
+        hash += hash * 31 + JodaBeanUtils.hashCode(wo);
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFin());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getManualGet());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getDerived());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(192);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("ro").append('=').append(getRo()).append(',').append(' ');
+        buf.append("wo").append('=').append(wo).append(',').append(' ');
+        buf.append("fin").append('=').append(getFin()).append(',').append(' ');
+        buf.append("manualGet").append('=').append(getManualGet()).append(',').append(' ');
+        buf.append("derived").append('=').append(getDerived()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

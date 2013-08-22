@@ -78,6 +78,41 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         return AbstractResult.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the docs.
+     * @return the value of the property
+     */
+    public List<T> getDocs() {
+        return docs;
+    }
+
+    /**
+     * Sets the docs.
+     * @param docs  the new value of the property
+     */
+    public void setDocs(List<T> docs) {
+        this.docs = docs;
+    }
+
+    /**
+     * Gets the the {@code docs} property.
+     * @return the property, not null
+     */
+    public final Property<List<T>> docs() {
+        return metaBean().docs().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the the {@code resultType} property.
+     * @return the property, not null
+     */
+    public final Property<String> resultType() {
+        return metaBean().resultType().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -116,40 +151,6 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     protected void toString(StringBuilder buf) {
         buf.append("docs").append('=').append(getDocs()).append(',').append(' ');
         buf.append("resultType").append('=').append(getResultType()).append(',').append(' ');
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the docs.
-     * @return the value of the property
-     */
-    public List<T> getDocs() {
-        return docs;
-    }
-
-    /**
-     * Sets the docs.
-     * @param docs  the new value of the property
-     */
-    public void setDocs(List<T> docs) {
-        this.docs = docs;
-    }
-
-    /**
-     * Gets the the {@code docs} property.
-     * @return the property, not null
-     */
-    public final Property<List<T>> docs() {
-        return metaBean().docs().createProperty(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the the {@code resultType} property.
-     * @return the property, not null
-     */
-    public final Property<String> resultType() {
-        return metaBean().resultType().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

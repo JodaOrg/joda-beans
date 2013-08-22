@@ -69,16 +69,6 @@ public final class NoGenEquals extends DirectBean {
         return NoGenEquals.Meta.INSTANCE;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(64);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        buf.append("value").append('=').append(getValue());
-        buf.append('}');
-        return buf.toString();
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value.
@@ -102,6 +92,17 @@ public final class NoGenEquals extends DirectBean {
      */
     public final Property<Object> value() {
         return metaBean().value().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(64);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        buf.append("value").append('=').append(getValue());
+        buf.append('}');
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------

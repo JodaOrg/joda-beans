@@ -66,6 +66,7 @@ public class SubPerson<T> extends DirectBean {
         return SubPerson.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

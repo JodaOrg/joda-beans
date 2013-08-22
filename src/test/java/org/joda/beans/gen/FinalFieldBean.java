@@ -102,55 +102,6 @@ public class FinalFieldBean extends DirectBean {
         return FinalFieldBean.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            FinalFieldBean other = (FinalFieldBean) obj;
-            return JodaBeanUtils.equal(getFieldFinal(), other.getFieldFinal()) &&
-                    JodaBeanUtils.equal(getFieldNonFinal(), other.getFieldNonFinal()) &&
-                    JodaBeanUtils.equal(getListFinal(), other.getListFinal()) &&
-                    JodaBeanUtils.equal(getFlexiFinal(), other.getFlexiFinal()) &&
-                    JodaBeanUtils.equal(getPersonFinal(), other.getPersonFinal());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFieldFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFieldNonFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFlexiFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getPersonFinal());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(192);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("fieldFinal").append('=').append(getFieldFinal()).append(',').append(' ');
-        buf.append("fieldNonFinal").append('=').append(getFieldNonFinal()).append(',').append(' ');
-        buf.append("listFinal").append('=').append(getListFinal()).append(',').append(' ');
-        buf.append("flexiFinal").append('=').append(getFlexiFinal()).append(',').append(' ');
-        buf.append("personFinal").append('=').append(getPersonFinal()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the field that is final.
@@ -260,6 +211,56 @@ public class FinalFieldBean extends DirectBean {
      */
     public final Property<Person> personFinal() {
         return metaBean().personFinal().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            FinalFieldBean other = (FinalFieldBean) obj;
+            return JodaBeanUtils.equal(getFieldFinal(), other.getFieldFinal()) &&
+                    JodaBeanUtils.equal(getFieldNonFinal(), other.getFieldNonFinal()) &&
+                    JodaBeanUtils.equal(getListFinal(), other.getListFinal()) &&
+                    JodaBeanUtils.equal(getFlexiFinal(), other.getFlexiFinal()) &&
+                    JodaBeanUtils.equal(getPersonFinal(), other.getPersonFinal());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFieldFinal());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFieldNonFinal());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getListFinal());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getFlexiFinal());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getPersonFinal());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(192);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("fieldFinal").append('=').append(getFieldFinal()).append(',').append(' ');
+        buf.append("fieldNonFinal").append('=').append(getFieldNonFinal()).append(',').append(' ');
+        buf.append("listFinal").append('=').append(getListFinal()).append(',').append(' ');
+        buf.append("flexiFinal").append('=').append(getFlexiFinal()).append(',').append(' ');
+        buf.append("personFinal").append('=').append(getPersonFinal()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

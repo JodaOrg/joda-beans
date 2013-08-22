@@ -63,6 +63,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
         return MidAbstractResult.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

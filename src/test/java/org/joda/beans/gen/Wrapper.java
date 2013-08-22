@@ -76,46 +76,6 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         return Wrapper.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            Wrapper<?> other = (Wrapper<?>) obj;
-            return JodaBeanUtils.equal(getType(), other.getType()) &&
-                    JodaBeanUtils.equal(getContent(), other.getContent());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(96);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        int len = buf.length();
-        toString(buf);
-        if (buf.length() > len) {
-            buf.setLength(buf.length() - 2);
-        }
-        buf.append('}');
-        return buf.toString();
-    }
-
-    protected void toString(StringBuilder buf) {
-        buf.append("type").append('=').append(getType()).append(',').append(' ');
-        buf.append("content").append('=').append(getContent()).append(',').append(' ');
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the type.
@@ -164,6 +124,47 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
      */
     public final Property<T> content() {
         return metaBean().content().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Wrapper<?> other = (Wrapper<?>) obj;
+            return JodaBeanUtils.equal(getType(), other.getType()) &&
+                    JodaBeanUtils.equal(getContent(), other.getContent());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(96);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("type").append('=').append(getType()).append(',').append(' ');
+        buf.append("content").append('=').append(getContent()).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

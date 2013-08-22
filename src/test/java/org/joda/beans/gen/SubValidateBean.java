@@ -64,6 +64,33 @@ public class SubValidateBean extends ValidateBean {
         return SubValidateBean.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the sub non-null value.
+     * @return the value of the property, not null
+     */
+    public String getSub() {
+        return sub;
+    }
+
+    /**
+     * Sets the sub non-null value.
+     * @param sub  the new value of the property, not null
+     */
+    public void setSub(String sub) {
+        JodaBeanUtils.notNull(sub, "sub");
+        this.sub = sub;
+    }
+
+    /**
+     * Gets the the {@code sub} property.
+     * @return the property, not null
+     */
+    public final Property<String> sub() {
+        return metaBean().sub().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -102,32 +129,6 @@ public class SubValidateBean extends ValidateBean {
     protected void toString(StringBuilder buf) {
         super.toString(buf);
         buf.append("sub").append('=').append(getSub()).append(',').append(' ');
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the sub non-null value.
-     * @return the value of the property, not null
-     */
-    public String getSub() {
-        return sub;
-    }
-
-    /**
-     * Sets the sub non-null value.
-     * @param sub  the new value of the property, not null
-     */
-    public void setSub(String sub) {
-        JodaBeanUtils.notNull(sub, "sub");
-        this.sub = sub;
-    }
-
-    /**
-     * Gets the the {@code sub} property.
-     * @return the property, not null
-     */
-    public final Property<String> sub() {
-        return metaBean().sub().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

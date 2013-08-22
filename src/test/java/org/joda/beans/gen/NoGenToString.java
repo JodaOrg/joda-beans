@@ -68,25 +68,6 @@ public class NoGenToString extends DirectBean {
         return NoGenToString.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            NoGenToString other = (NoGenToString) obj;
-            return JodaBeanUtils.equal(getValue(), other.getValue());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValue());
-        return hash;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value.
@@ -110,6 +91,26 @@ public class NoGenToString extends DirectBean {
      */
     public final Property<Object> value() {
         return metaBean().value().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            NoGenToString other = (NoGenToString) obj;
+            return JodaBeanUtils.equal(getValue(), other.getValue());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getValue());
+        return hash;
     }
 
     //-----------------------------------------------------------------------

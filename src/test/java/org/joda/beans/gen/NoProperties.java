@@ -53,6 +53,7 @@ public class NoProperties extends DirectBean {
         return NoProperties.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

@@ -62,6 +62,32 @@ public class DocumentationHolder extends DirectBean {
         return DocumentationHolder.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the documentation.
+     * @return the value of the property
+     */
+    public Documentation<?> getDocumentation() {
+        return documentation;
+    }
+
+    /**
+     * Sets the documentation.
+     * @param documentation  the new value of the property
+     */
+    public void setDocumentation(Documentation<?> documentation) {
+        this.documentation = documentation;
+    }
+
+    /**
+     * Gets the the {@code documentation} property.
+     * @return the property, not null
+     */
+    public final Property<Documentation<?>> documentation() {
+        return metaBean().documentation().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -97,31 +123,6 @@ public class DocumentationHolder extends DirectBean {
 
     protected void toString(StringBuilder buf) {
         buf.append("documentation").append('=').append(getDocumentation()).append(',').append(' ');
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the documentation.
-     * @return the value of the property
-     */
-    public Documentation<?> getDocumentation() {
-        return documentation;
-    }
-
-    /**
-     * Sets the documentation.
-     * @param documentation  the new value of the property
-     */
-    public void setDocumentation(Documentation<?> documentation) {
-        this.documentation = documentation;
-    }
-
-    /**
-     * Gets the the {@code documentation} property.
-     * @return the property, not null
-     */
-    public final Property<Documentation<?>> documentation() {
-        return metaBean().documentation().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

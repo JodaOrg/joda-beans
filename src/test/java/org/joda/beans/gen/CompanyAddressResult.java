@@ -56,6 +56,7 @@ public class CompanyAddressResult extends AbstractResult<CompanyAddress> {
         return CompanyAddressResult.Meta.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

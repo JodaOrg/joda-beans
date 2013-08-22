@@ -84,56 +84,6 @@ public final class Person extends DirectBean {
         return Person.Meta.INSTANCE;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && obj.getClass() == this.getClass()) {
-            Person other = (Person) obj;
-            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    (getNumberOfCars() == other.getNumberOfCars()) &&
-                    JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
-                    JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
-                    JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
-                    JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
-                    JodaBeanUtils.equal(getExtensions(), other.getExtensions());
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getExtensions());
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder(288);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
-        buf.append("forename").append('=').append(getForename()).append(',').append(' ');
-        buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
-        buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
-        buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
-        buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
-        buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
-        buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
-        buf.append("extensions").append('=').append(getExtensions());
-        buf.append('}');
-        return buf.toString();
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the forename.
@@ -336,6 +286,57 @@ public final class Person extends DirectBean {
      */
     public final Property<FlexiBean> extensions() {
         return metaBean().extensions().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Person other = (Person) obj;
+            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
+                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
+                    (getNumberOfCars() == other.getNumberOfCars()) &&
+                    JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
+                    JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
+                    JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
+                    JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
+                    JodaBeanUtils.equal(getExtensions(), other.getExtensions());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = getClass().hashCode();
+        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getExtensions());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(288);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        buf.append("forename").append('=').append(getForename()).append(',').append(' ');
+        buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
+        buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
+        buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
+        buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
+        buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
+        buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
+        buf.append("extensions").append('=').append(getExtensions());
+        buf.append('}');
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------
