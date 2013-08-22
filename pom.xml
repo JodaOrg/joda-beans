@@ -9,7 +9,7 @@
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Beans</name>
-  <version>0.7.2-SNAPSHOT</version>
+  <version>0.8-SNAPSHOT</version>
   <description>Beans and Properties</description>
   <url>http://www.joda.org/joda-beans/</url>
 
@@ -180,7 +180,7 @@
         </executions>
         <configuration>
           <message>Create website for ${project.artifactId} v${project.version}</message>
-          <path>joda-beans</path>
+          <path>${project.artifactId}</path>
           <merge>true</merge>
           <server>github</server>
           <repositoryOwner>JodaOrg</repositoryOwner>
