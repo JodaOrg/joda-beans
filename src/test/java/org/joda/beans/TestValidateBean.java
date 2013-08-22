@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import org.joda.beans.gen.SubValidateBean;
 import org.joda.beans.gen.ValidateBean;
 import org.testng.annotations.Test;
 
@@ -141,6 +142,17 @@ public class TestValidateBean {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_bean_create_notIncluded() {
         ValidateBean.meta().builder().set("first", "A").set("second", "B").set("third", "C").build();
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_subbean_create_notIncluded() {
+        try {
+            SubValidateBean.meta().builder().set("first", "A").set("second", "B").set("third", "C").set("fourth", "D").build();
+        } catch (IllegalArgumentException ex) {
+            assertEquals(ex.getMessage().contains("sub"), true);
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

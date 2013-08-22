@@ -121,9 +121,6 @@ class BeanGen {
             generateMetaBean();
             generatePropertyGet();
             generatePropertySet();
-            if (data.isValidated()) {
-                generateValidate();
-            }
             if (data.isManualEqualsHashCode() == false) {
                 generateEquals();
                 generateHashCode();
@@ -413,19 +410,6 @@ class BeanGen {
         insertRegion.add("");
     }
 
-    private void generateValidate() {
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tprotected void validate() {");
-        for (PropertyGen prop : properties) {
-            if (prop.getData().isValidated()) {
-                insertRegion.add("\t\t" + prop.getData().getValidationMethodName() + "(" + prop.getData().getFieldName() + ", \"" + prop.getData().getPropertyName() + "\");");
-            }
-        }
-        insertRegion.add("\t\tsuper.validate();");
-        insertRegion.add("\t}");
-        insertRegion.add("");
-    }
-
     //-----------------------------------------------------------------------
     private void generateEquals() {
         data.ensureImport(JodaBeanUtils.class);
@@ -582,6 +566,9 @@ class BeanGen {
         generateMetaBuilder();
         generateMetaBeanType();
         generateMetaPropertyMap();
+        if (data.isValidated()) {
+            generateMetaValidate();
+        }
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
         generateMetaPropertyMethods();
         insertRegion.add("\t}");
@@ -664,6 +651,26 @@ class BeanGen {
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<?>> metaPropertyMap() {");
         insertRegion.add("\t\t\treturn " + prefix + "metaPropertyMap$;");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateMetaValidate() {
+        data.ensureImport(DirectBean.class);
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tprotected void validate(DirectBean bean) {");
+        if (data.isValidated()) {
+            for (PropertyGen prop : properties) {
+                if (prop.getData().isValidated()) {
+                    insertRegion.add("\t\t\t" + prop.getData().getValidationMethodName() +
+                            "(((" + data.getTypeWildcard() + ") bean)." + prop.getData().getFieldName() +
+                            ", \"" + prop.getData().getPropertyName() + "\");");
+                }
+            }
+        }
+        if (data.isSubclass()) {
+            insertRegion.add("\t\t\tsuper.validate(bean);");
+        }
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }

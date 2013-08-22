@@ -40,4 +40,13 @@ public abstract class DirectMetaBean extends BasicMetaBean {
         return null;
     }
 
+    /**
+     * Validates the values of the properties.
+     * 
+     * @param bean  the bean to validate, not null
+     * @throws RuntimeException if a property is invalid
+     */
+    protected void validate(DirectBean bean) {
+    }
+
 }

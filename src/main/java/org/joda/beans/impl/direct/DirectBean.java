@@ -70,14 +70,6 @@ public abstract class DirectBean implements Bean {
         throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
-    /**
-     * Validates the values of the properties.
-     * 
-     * @throws RuntimeException if a property is invalid
-     */
-    protected void validate() {
-    }
-
     //-----------------------------------------------------------------------
     // generated code has an optimized version of these methods
     // these remain in case a manually written subclass method wants to call them

@@ -122,15 +122,6 @@ public class ValidateBean extends DirectBean {
     }
 
     @Override
-    protected void validate() {
-        JodaBeanUtils.notNull(first, "first");
-        JodaBeanUtils.notEmpty(second, "second");
-        TestValidateBean.checkInTest(third, "third");
-        checkInBean(fourth, "fourth");
-        super.validate();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -354,6 +345,14 @@ public class ValidateBean extends DirectBean {
         @Override
         public Map<String, MetaProperty<?>> metaPropertyMap() {
             return metaPropertyMap$;
+        }
+
+        @Override
+        protected void validate(DirectBean bean) {
+            JodaBeanUtils.notNull(((ValidateBean) bean).first, "first");
+            JodaBeanUtils.notEmpty(((ValidateBean) bean).second, "second");
+            TestValidateBean.checkInTest(((ValidateBean) bean).third, "third");
+            checkInBean(((ValidateBean) bean).fourth, "fourth");
         }
 
         //-----------------------------------------------------------------------

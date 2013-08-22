@@ -39,7 +39,7 @@ public class DirectBeanBuilder<T extends DirectBean> extends BasicBeanBuilder<T>
     //-----------------------------------------------------------------------
     @Override
     protected void validate(T bean) {
-        bean.validate();
+        ((DirectMetaBean) bean.metaBean()).validate(bean);
     }
 
 }
