@@ -99,6 +99,7 @@ class BeanGen {
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
             this.data.setManualEqualsHashCode(parseManualEqualsHashCode(beanDefIndex));
+            this.data.setManualToStringCode(parseManualToStringCode(beanDefIndex));
         } else {
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
@@ -126,6 +127,9 @@ class BeanGen {
             if (data.isManualEqualsHashCode() == false) {
                 generateEquals();
                 generateHashCode();
+            }
+            if (data.isManualToStringCode() == false) {
+                generateToString();
             }
             generateGettersSetters();
             generateMetaClass();
@@ -199,7 +203,9 @@ class BeanGen {
         for (int index = defLine; index < content.size(); index++) {
             matcher.reset(content.get(index));
             if (matcher.matches()) {
-                return new String[] {matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4)};
+                int startName = matcher.start(1);
+                String fnl = content.get(index).substring(0, startName).contains(" final ") ? " final " : null;
+                return new String[] {fnl, matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4)};
             }
         }
         throw new RuntimeException("Unable to locate bean class name");
@@ -280,6 +286,22 @@ class BeanGen {
         for (int index = autoEndIndex; index < content.size(); index++) {
             String line = content.get(index).trim();
             if (line.equals("public int hashCode() {") || (line.startsWith("public boolean equals(") && line.endsWith(") {"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean parseManualToStringCode(int defLine) {
+        for (int index = defLine; index < autoStartIndex; index++) {
+            String line = content.get(index).trim();
+            if (line.equals("public String toString() {")) {
+                return true;
+            }
+        }
+        for (int index = autoEndIndex; index < content.size(); index++) {
+            String line = content.get(index).trim();
+            if (line.equals("public String toString() {")) {
                 return true;
             }
         }
@@ -404,6 +426,7 @@ class BeanGen {
         insertRegion.add("");
     }
 
+    //-----------------------------------------------------------------------
     private void generateEquals() {
         data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
@@ -464,6 +487,64 @@ class BeanGen {
         insertRegion.add("");
     }
 
+    private void generateToString() {
+        if (data.isSubclass() == false && data.isTypeFinal()) {
+            insertRegion.add("\t@Override");
+            insertRegion.add("\tpublic String toString() {");
+            insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
+            insertRegion.add("\t\tbuf.append(getClass().getSimpleName());");
+            insertRegion.add("\t\tbuf.append('{');");
+            for (int i = 0; i < properties.size(); i++) {
+                PropertyGen prop = properties.get(i);
+                String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+                if (i < properties.size() - 1) {
+                    insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
+                            "\").append('=').append(" + getter + ").append(',').append(' ');");
+                } else {
+                    insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
+                            "\").append('=').append(" + getter + ");");
+                }
+            }
+            insertRegion.add("\t\tbuf.append('}');");
+            insertRegion.add("\t\treturn buf.toString();");
+            insertRegion.add("\t}");
+            insertRegion.add("");
+            return;
+        }
+        
+        insertRegion.add("\t@Override");
+        insertRegion.add("\tpublic String toString() {");
+        insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
+        insertRegion.add("\t\tbuf.append(getClass().getSimpleName());");
+        insertRegion.add("\t\tbuf.append('{');");
+        insertRegion.add("\t\tint len = buf.length();");
+        insertRegion.add("\t\ttoString(buf);");
+        insertRegion.add("\t\tif (buf.length() > len) {");
+        insertRegion.add("\t\t\tbuf.setLength(buf.length() - 2);");
+        insertRegion.add("\t\t}");
+        insertRegion.add("\t\tbuf.append('}');");
+        insertRegion.add("\t\treturn buf.toString();");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+        
+        if (data.isSubclass()) {
+            insertRegion.add("\t@Override");
+        }
+        insertRegion.add("\tprotected void toString(StringBuilder buf) {");
+        if (data.isSubclass()) {
+            insertRegion.add("\t\tsuper.toString(buf);");
+        }
+        for (int i = 0; i < properties.size(); i++) {
+            PropertyGen prop = properties.get(i);
+            String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+            insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
+                    "\").append('=').append(" + getter + ").append(',').append(' ');");
+        }
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    //-----------------------------------------------------------------------
     private void generateMetaClass() {
         generateSeparator();
         insertRegion.add("\t/**");

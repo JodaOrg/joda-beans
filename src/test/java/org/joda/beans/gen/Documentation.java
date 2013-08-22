@@ -131,6 +131,26 @@ public class Documentation<T> extends DirectBean {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(128);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("type").append('=').append(getType()).append(',').append(' ');
+        buf.append("content").append('=').append(getContent()).append(',').append(' ');
+        buf.append("map").append('=').append(getMap()).append(',').append(' ');
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the type.

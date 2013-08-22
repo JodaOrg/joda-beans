@@ -99,6 +99,24 @@ public class DocumentationHolder extends DirectBean {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(64);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("documentation").append('=').append(getDocumentation()).append(',').append(' ');
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the documentation.

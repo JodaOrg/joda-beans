@@ -83,6 +83,25 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
         return hash ^ super.hashCode();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(32);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    @Override
+    protected void toString(StringBuilder buf) {
+        super.toString(buf);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code CompanyAddressMidResult}.

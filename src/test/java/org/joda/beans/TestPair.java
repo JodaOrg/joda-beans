@@ -51,4 +51,11 @@ public class TestPair {
         assertEquals(b.equals(null), false);
     }
 
+    public void test_toString() {
+        Pair test = new Pair();
+        test.setFirst("A");
+        test.setSecond("B");
+        assertEquals(test.toString(), "Pair{first=A, second=B}");
+    }
+
 }

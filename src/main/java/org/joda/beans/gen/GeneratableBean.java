@@ -43,6 +43,8 @@ class GeneratableBean {
     private String typeGenericName;
     /** The extends clause of the generic. */
     private String typeGenericExtends;
+    /** Whether the type is final with no subclasses. */
+    private boolean typeFinal;
     /** The full name of the bean superclass. */
     private String superTypeFull;
     /** The simple name of the bean superclass. */
@@ -53,6 +55,8 @@ class GeneratableBean {
     private List<GeneratableProperty> properties = new ArrayList<GeneratableProperty>();
     /** Does the class have a manual equals or hash code. */
     private boolean manualEqualsHashCode;
+    /** Does the class have a manual toString. */
+    private boolean manualToStringCode;
 
     /**
      * Constructor.
@@ -135,14 +139,31 @@ class GeneratableBean {
     }
 
     /**
+     * Checks if the toString is manual.
+     * @return true if manual
+     */
+    public boolean isManualToStringCode() {
+        return manualToStringCode;
+    }
+
+    /**
+     * Sets if the toString is manual.
+     * @param manualToStringCode  true if manual
+     */
+    public void setManualToStringCode(boolean manualToStringCode) {
+        this.manualToStringCode = manualToStringCode;
+    }
+
+    /**
      * Sets the bean type.
      * @param parts  the type to set
      */
     public void setTypeParts(String[] parts) {
-        this.typeFull = parts[0];
-        this.typeRaw = parts[1];
-        this.typeGenericName = parts[2] != null ? parts[2] : "";
-        this.typeGenericExtends = parts[3] != null ? parts[3] : "";
+        this.typeFinal = parts[0] != null;
+        this.typeFull = parts[1];
+        this.typeRaw = parts[2];
+        this.typeGenericName = parts[3] != null ? parts[3] : "";
+        this.typeGenericExtends = parts[4] != null ? parts[4] : "";
     }
 
     /**
@@ -163,9 +184,25 @@ class GeneratableBean {
         return properties;
     }
 
+    /**
+     * Checks if the type is final.
+     * @return true if manual
+     */
+    public boolean isTypeFinal() {
+        return typeFinal;
+    }
+
+    /**
+     * Sets if the type is final.
+     * @param typeFinal  true if final, false if subclassable
+     */
+    public void setTypeFinal(boolean typeFinal) {
+        this.typeFinal = typeFinal;
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Checks if this bean has a bean superclass.
+     * Checks if this bean is a superclass.
      * @param true if this is a subclass of another bean
      */
     public boolean isSubclass() {

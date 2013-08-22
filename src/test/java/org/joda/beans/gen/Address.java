@@ -135,6 +135,27 @@ public class Address extends DirectBean {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(160);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
+        buf.append("street").append('=').append(getStreet()).append(',').append(' ');
+        buf.append("city").append('=').append(getCity()).append(',').append(' ');
+        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the number.

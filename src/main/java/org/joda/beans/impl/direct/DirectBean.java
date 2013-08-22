@@ -79,6 +79,8 @@ public abstract class DirectBean implements Bean {
     }
 
     //-----------------------------------------------------------------------
+    // generated code has an optimized version of these methods
+    // these remain in case a manually written subclass method wants to call them
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

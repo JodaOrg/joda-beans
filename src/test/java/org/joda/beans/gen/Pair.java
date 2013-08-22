@@ -112,6 +112,25 @@ public class Pair extends DirectBean {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(96);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
+        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the first value.

@@ -30,12 +30,12 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
- * Mock used for test equals.
+ * Mock used for test equals and final class.
  * 
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public class NoGenEquals extends DirectBean {
+public final class NoGenEquals extends DirectBean {
 
     /**
      * The value.
@@ -85,6 +85,16 @@ public class NoGenEquals extends DirectBean {
                 return;
         }
         super.propertySet(propertyName, newValue, quiet);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(64);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        buf.append("value").append('=').append(getValue());
+        buf.append('}');
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------

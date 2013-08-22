@@ -41,7 +41,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public class Person extends DirectBean {
+public final class Person extends DirectBean {
 
     /** The forename. */
     @PropertyDefinition
@@ -169,6 +169,23 @@ public class Person extends DirectBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
         hash += hash * 31 + JodaBeanUtils.hashCode(getExtensions());
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(288);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        buf.append("forename").append('=').append(getForename()).append(',').append(' ');
+        buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
+        buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
+        buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
+        buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
+        buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
+        buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
+        buf.append("extensions").append('=').append(getExtensions());
+        buf.append('}');
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------

@@ -110,6 +110,26 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         return hash ^ super.hashCode();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(64);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    @Override
+    protected void toString(StringBuilder buf) {
+        super.toString(buf);
+        buf.append("name").append('=').append(getName()).append(',').append(' ');
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the name.

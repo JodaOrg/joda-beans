@@ -172,6 +172,28 @@ public class FinalFieldBean extends DirectBean {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(192);
+        buf.append(getClass().getSimpleName());
+        buf.append('{');
+        int len = buf.length();
+        toString(buf);
+        if (buf.length() > len) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append('}');
+        return buf.toString();
+    }
+
+    protected void toString(StringBuilder buf) {
+        buf.append("fieldFinal").append('=').append(getFieldFinal()).append(',').append(' ');
+        buf.append("fieldNonFinal").append('=').append(getFieldNonFinal()).append(',').append(' ');
+        buf.append("listFinal").append('=').append(getListFinal()).append(',').append(' ');
+        buf.append("flexiFinal").append('=').append(getFlexiFinal()).append(',').append(' ');
+        buf.append("personFinal").append('=').append(getPersonFinal()).append(',').append(' ');
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the field that is final.
