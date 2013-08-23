@@ -29,6 +29,16 @@ import org.joda.beans.impl.BasicMetaBean;
 public abstract class DirectMetaBean extends BasicMetaBean {
     // overriding other methods has negligible effect considering DirectMetaPropertyMap
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> MetaProperty<R> metaProperty(String propertyName) {
+        MetaProperty<?> mp = metaPropertyGet(propertyName);
+        if (mp == null) {
+            throw new NoSuchElementException("Unknown property: " + propertyName);
+        }
+        return (MetaProperty<R>) mp;
+    }
+
     /**
      * Gets the meta-property by name.
      * <p>
