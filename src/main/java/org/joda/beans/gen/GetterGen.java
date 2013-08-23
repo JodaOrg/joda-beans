@@ -17,9 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A generator of get methods.
@@ -28,30 +26,6 @@ import java.util.Map;
  */
 abstract class GetterGen {
 
-    /** The known getter generators. */
-    static final Map<String, GetterGen> GETTERS = new HashMap<String, GetterGen>();
-    static {
-        GETTERS.put("", NoGetterGen.INSTANCE);
-        GETTERS.put("smart", SmartGetterGen.INSTANCE);
-        GETTERS.put("get", GetGetterGen.INSTANCE);
-        GETTERS.put("is", IsGetterGen.INSTANCE);
-        GETTERS.put("manual", ManualGetterGen.INSTANCE);
-    }
-
-    /**
-     * Generates the getter method.
-     * @param prop  the property data, not null
-     * @return the generated code, not null
-     */
-    static GetterGen of(GeneratableProperty prop) {
-        GetterGen gen = GETTERS.get(prop.getGetStyle());
-        if (gen == null) {
-            throw new RuntimeException("Unable to locate getter generator '" + prop.getGetStyle() + "'");
-        }
-        return gen;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Generates the getter method.
      * @param prop  the property data, not null
@@ -70,26 +44,6 @@ abstract class GetterGen {
     }
 
     //-----------------------------------------------------------------------
-    static class SmartGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new SmartGetterGen();
-        @Override
-        List<String> generateGetter(GeneratableProperty prop) {
-            if (prop.getType().equals("boolean")) {
-                return IsGetterGen.INSTANCE.generateGetter(prop);
-            } else {
-                return GetGetterGen.INSTANCE.generateGetter(prop);
-            }
-        }
-        @Override
-        String generateGetInvoke(GeneratableProperty prop) {
-            if (prop.getType().equals("boolean")) {
-                return IsGetterGen.INSTANCE.generateGetInvoke(prop);
-            } else {
-                return GetGetterGen.INSTANCE.generateGetInvoke(prop);
-            }
-        }
-    }
-
     static class GetGetterGen extends GetterGen {
         static final GetterGen INSTANCE = new GetGetterGen();
         @Override

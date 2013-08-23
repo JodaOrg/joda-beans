@@ -285,6 +285,9 @@ public final class JodaBeanUtils {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     public static <T extends Bean> T clone(T original) {
+        if (original instanceof ImmutableBean) {
+            return original;
+        }
         BeanBuilder<? extends Bean> builder = original.metaBean().builder();
         for (MetaProperty<?> mp : original.metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {

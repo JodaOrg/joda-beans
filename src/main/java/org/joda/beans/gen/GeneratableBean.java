@@ -33,7 +33,9 @@ class GeneratableBean {
     private final SortedSet<String> newImports = new TreeSet<String>();
     /** The last import line. */
     private int lastImportLine;
-    /** The flag as to whether the class can be constructed. */
+    /** Whether the class is immutable. */
+    private boolean immutable;
+    /** Whether the class can be constructed. */
     private boolean constructable;
     /** The full type of the bean class. */
     private String typeFull;
@@ -109,6 +111,30 @@ class GeneratableBean {
     }
 
     /**
+     * Gets whether the bean is immutable.
+     * @return the flag
+     */
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    /**
+     * Gets whether the bean is mutable.
+     * @return the flag
+     */
+    public boolean isMutable() {
+        return !immutable;
+    }
+
+    /**
+     * Sets whether the bean is immutable.
+     * @param immutable  the flag
+     */
+    public void setImmutable(boolean immutable) {
+        this.immutable = immutable;
+    }
+
+    /**
      * Sets whether the bean can be constructed.
      * @return the flag
      */
@@ -173,13 +199,15 @@ class GeneratableBean {
      * @param parts  the superclass to set
      */
     public void setSuperTypeParts(String[] parts) {
-        if (parts.length == 0) {
+        if (parts.length == 1) {
             this.root = true;
+            this.immutable = "ImmutableBean".equals(parts[0]);
             this.superTypeFull = "";
             this.superTypeRaw = "";
             this.superTypeGeneric = "";
         } else {
             this.root = "DirectBean".equals(parts[0]);
+            this.immutable = false;
             this.superTypeFull = parts[0];
             this.superTypeRaw = parts[1];
             this.superTypeGeneric = parts[2] != null ? parts[2] : "";

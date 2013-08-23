@@ -69,9 +69,65 @@ public @interface PropertyDefinition {
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
      * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
      * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
+     * <li>a pattern, see below
      * </ul>
+     * <p>
+     * A pattern can be used for special behaviour.
+     * The pattern is a complete piece of code.
+     * For example, 'new Foo($value)' or '$field = $value.clone()'.
+     * '$field' for the field to copy into.
+     * '$value' for the value to copy from.
+     * '\n' for a new line (all lines must then include semi-colons).
      */
     String set() default "smart";
+
+    /**
+     * The code used to create a copy of the property.
+     * <p>
+     * The style is used to control the code that creates a copy of the property value.
+     * This is used with immutable beans.
+     * <p>
+     * Standard style stings are:
+     * <ul>
+     * <li>'' - do not generate any form of copy
+     * <li>'smart' - process intelligently, see below
+     * <li>'bean' - uses JodaBeanUtils.clone()
+     * <li>'clone' - uses the clone() method on the target object which must return the correct type
+     * <li>a pattern, see below
+     * </ul>
+     * <p>
+     * The default 'smart' value will handle Guava immutable classes and the main
+     * JDK collection/map types, plus {@code FlexiBean}.
+     * Any class not recognised will simply be assigned.
+     * It is strongly recommended to use Guava collections where possible.
+     * <p>
+     * A pattern can be used for special behaviour.
+     * The pattern is a complete piece of code.
+     * For example, 'new Foo($value)'.
+     * '$field' for the field to copy into.
+     * '$value' for the value to copy from.
+     * '$type' for the type including generics.
+     * '$typeRaw' for the type excluding generics.
+     * '$generics' for the generics of the type including angle brackets.
+     * '\n' for a new line (all lines must then include semi-colons).
+     */
+    String copy() default "smart";
+
+    /**
+     * The exposed type of the property.
+     * <p>
+     * The style is used to control the exposed type of the property in
+     * getters and setters, or similar.
+     * <p>
+     * This is used when the type of the field is not the same as the type
+     * as should be used in public methods such as getters and setters.
+     * <p>
+     * By default, recognised collection types from the JDK and Guava will automatically
+     * be simplified to the matching interface. Thus, a field of type
+     * {@code ImmutableList} or {@code ArrayList} will be exposed as {@code List}.
+     * To avoid that behaviour, set the exposed type to a blank string
+     */
+    String type() default "smart";
 
     /**
      * The validator to use.
