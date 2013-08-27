@@ -28,6 +28,10 @@ import org.joda.beans.JodaBeanUtils;
  */
 abstract class CopyGen {
 
+    static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
+    static final CopyGen BEAN_CLONE = BeanCloneGen.INSTANCE;
+    static final CopyGen CLONE = new PatternCopyGen("$field = ($value != null ? $value.clone() : null);");
+
     /**
      * Checks if a copy is possible.
      * 
@@ -60,14 +64,20 @@ abstract class CopyGen {
             List<String> list = new ArrayList<String>();
             final String[] split = copyPattern.split("\n");
             for (String line : split) {
+                if (split.length == 1) {
+                    if (line.endsWith(";") == false) {
+                        line += ";";
+                    }
+                    if (line.startsWith("$field = ") == false) {
+                        line = "$field = " + line;
+                    }
+                }
                 line = line.replace("$field", "this." + prop.getFieldName());
                 line = line.replace("$value", prop.getPropertyName());
                 line = line.replace("$type", prop.getFieldType());
                 line = line.replace("$typeRaw", prop.getTypeRaw());
                 line = line.replace("$generics", prop.getTypeGenerics());
-                if (split.length == 1 && line.endsWith(";") == false) {
-                    line += ";";
-                }
+                line = line.replace("<>", prop.getTypeGenerics());
                 list.add(indent + line);
             }
             return list;

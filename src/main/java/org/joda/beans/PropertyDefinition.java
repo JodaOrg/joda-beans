@@ -74,10 +74,10 @@ public @interface PropertyDefinition {
      * <p>
      * A pattern can be used for special behaviour.
      * The pattern is a complete piece of code.
-     * For example, 'new Foo($value)' or '$field = $value.clone()'.
-     * '$field' for the field to copy into.
-     * '$value' for the value to copy from.
-     * '\n' for a new line (all lines must then include semi-colons).
+     * For example, 'new Foo($value)' or '$field = $value.clone()'.<br/>
+     * '$field' for the field to copy into.<br/>
+     * '$value' for the value to copy from.<br/>
+     * '\n' for a new line (all lines must then include semi-colons).<br/>
      */
     String set() default "smart";
 
@@ -91,6 +91,7 @@ public @interface PropertyDefinition {
      * <ul>
      * <li>'' - do not generate any form of copy
      * <li>'smart' - process intelligently, see below
+     * <li>'assign' - simply assigns the input, suitable for an immutable type
      * <li>'bean' - uses JodaBeanUtils.clone()
      * <li>'clone' - uses the clone() method on the target object which must return the correct type
      * <li>a pattern, see below
@@ -103,15 +104,39 @@ public @interface PropertyDefinition {
      * <p>
      * A pattern can be used for special behaviour.
      * The pattern is a complete piece of code.
-     * For example, 'new Foo($value)'.
-     * '$field' for the field to copy into.
-     * '$value' for the value to copy from.
-     * '$type' for the type including generics.
-     * '$typeRaw' for the type excluding generics.
-     * '$generics' for the generics of the type including angle brackets.
-     * '\n' for a new line (all lines must then include semi-colons).
+     * For example, 'new Foo($value)'.<br/>
+     * '$field' for the field to copy into.<br/>
+     * '$value' for the value to copy from.<br/>
+     * '$type' for the type including generics.<br/>
+     * '$typeRaw' for the type excluding generics.<br/>
+     * '<>' for the generics of the type including angle brackets.<br/>
+     * '\n' for a new line.<br/>
+     * The pattern must be either an expression (no new lines, no $field, no trailing semicolon)
+     * or a full statement (multiple lines, all lines with semicolons).
      */
     String copy() default "smart";
+
+    /**
+     * The initializer for an immutable builder.
+     * <p>
+     * The style is used to control the code in the immutable builder.
+     * This is used with immutable beans.
+     * <p>
+     * Standard style stings are:
+     * <ul>
+     * <li>'smart' - process intelligently, see below
+     * <li>a pattern, see below
+     * </ul>
+     * <p>
+     * The default 'smart' value will default the field to null.
+     * The configuration overrides this on a per-type basis.
+     * <p>
+     * A pattern can be used for special behaviour.
+     * The pattern consists of the exposed type, a colon and an initializing expression.
+     * For example, 'Map:new HashMap<>()'.<br/>
+     * '<>' for the generics of the type including angle brackets.<br/>
+     */
+    String builderInit() default "smart";
 
     /**
      * The exposed type of the property.
@@ -122,10 +147,7 @@ public @interface PropertyDefinition {
      * This is used when the type of the field is not the same as the type
      * as should be used in public methods such as getters and setters.
      * <p>
-     * By default, recognised collection types from the JDK and Guava will automatically
-     * be simplified to the matching interface. Thus, a field of type
-     * {@code ImmutableList} or {@code ArrayList} will be exposed as {@code List}.
-     * To avoid that behaviour, set the exposed type to a blank string
+     * By default, the declared type will be used as the exposed type.
      */
     String type() default "smart";
 

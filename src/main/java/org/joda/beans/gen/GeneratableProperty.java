@@ -17,10 +17,8 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.joda.beans.PropertyReadWrite;
@@ -46,76 +44,6 @@ class GeneratableProperty {
                     "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap",
                     "BiMap", "HashBiMap",
                     "ImmutableMap", "ImmutableSortedMap", "ImmutableBiMap"));
-    /** Collection types. */
-    private static final List<String> RESOLVE_TO_COLLECTION =
-            Arrays.asList("Collection", "ImmutableCollection");
-    /** List types. */
-    private static final List<String> RESOLVE_TO_LIST =
-            Arrays.asList("List", "ArrayList", "LinkedList", "ImmutableList");
-    /** Set types. */
-    private static final List<String> RESOLVE_TO_SET =
-            Arrays.asList("Set", "HashSet", "ImmutableSet");
-    /** Set types. */
-    private static final List<String> RESOLVE_TO_SORTED_SET =
-            Arrays.asList("SortedSet", "TreeSet", "ImmutableSortedSet");
-    /** Map types. */
-    private static final List<String> RESOLVE_TO_MAP =
-            Arrays.asList("Map", "HashMap", "LinkedHashMap", "ImmutableMap");
-    /** Map types. */
-    private static final List<String> RESOLVE_TO_SORTED_MAP =
-            Arrays.asList("SortedMap");
-    /** Map types. */
-    private static final List<String> RESOLVE_TO_NAVIGABLE_MAP =
-            Arrays.asList("NavigableMap", "TreeMap", "ImmutableSortedMap");
-    /** Map types. */
-    private static final List<String> RESOLVE_TO_CONCURRENT_MAP =
-            Arrays.asList("ConcurrentMap", "ConcurrentHashMap");
-    /** Map types. */
-    private static final List<String> RESOLVE_TO_CONCURRENT_NAVIGABLE_MAP =
-            Arrays.asList("ConcurrentNavigableMap", "ConcurrentSkipListMap");
-    /** Map types. */
-    private static final List<String> RESOLVE_TO_BIMAP =
-            Arrays.asList("BiMap", "HashBiMap", "ImmutableBiMap");
-    /** All types. */
-    @SuppressWarnings("unchecked")
-    private static final List<List<String>> RESOLVE =
-            Arrays.asList(RESOLVE_TO_COLLECTION, RESOLVE_TO_LIST, RESOLVE_TO_SET, RESOLVE_TO_SORTED_SET,
-                    RESOLVE_TO_MAP, RESOLVE_TO_SORTED_MAP, RESOLVE_TO_NAVIGABLE_MAP,
-                    RESOLVE_TO_CONCURRENT_MAP, RESOLVE_TO_CONCURRENT_NAVIGABLE_MAP, RESOLVE_TO_BIMAP);
-
-    /** Copy patterns. */
-    private static final Map<String, String> COPY_PATTERNS = new HashMap<String, String>();
-    static {
-        COPY_PATTERNS.put("FlexiBean", "$field = new FlexiBean($value);");
-        // JDK
-        COPY_PATTERNS.put("Collection", "$field = Collections.unmodifiableCollection(new ArrayList$generics($value));");
-        COPY_PATTERNS.put("List", "$field = Collections.unmodifiableList(new ArrayList$generics($value));");
-        COPY_PATTERNS.put("Set", "$field = Collections.unmodifiableSet(new HashSet$generics($value));");
-        COPY_PATTERNS.put("Map", "$field = Collections.unmodifiableMap(new HashMap$generics($value));");
-        COPY_PATTERNS.put("SortedMap", "$field = Collections.unmodifiableSortedMap(new TreeMap$generics($value));");
-        // require Guava
-        COPY_PATTERNS.put("NavigableMap", "$field = Maps.unmodifiableNavigableMap(new TreeMap$generics($value));");
-        COPY_PATTERNS.put("ImmutableCollection", "$field = ImmutableCollection.copyOf($value);");
-        COPY_PATTERNS.put("ImmutableList", "$field = ImmutableList.copyOf($value);");
-        COPY_PATTERNS.put("ImmutableSet", "$field = ImmutableSet.copyOf($value);");
-        COPY_PATTERNS.put("ImmutableSortedSet", "$field = ImmutableSortedSet.copyOf($value);");
-        COPY_PATTERNS.put("ImmutableMap", "$field = ImmutableMap.copyOf($value);");
-        COPY_PATTERNS.put("ImmutableSortedMap", "$field = ImmutableSortedMap.copyOf($value);");
-        COPY_PATTERNS.put("ImmutableBiMap", "$field = ImmutableBiMap.copyOf($value);");
-        // bad field types for immutable beans
-        COPY_PATTERNS.put("ConcurrentMap", null);
-        COPY_PATTERNS.put("ConcurrentNavigableMap", null);
-        COPY_PATTERNS.put("ArrayList", null);
-        COPY_PATTERNS.put("LinkedList", null);
-        COPY_PATTERNS.put("HashSet", null);
-        COPY_PATTERNS.put("SortedSet", null);
-        COPY_PATTERNS.put("NavigableSet", null);
-        COPY_PATTERNS.put("TreeSet", null);
-        COPY_PATTERNS.put("HashMap", null);
-        COPY_PATTERNS.put("TreeMap", null);
-        COPY_PATTERNS.put("ConcurrentHashMap", null);
-        COPY_PATTERNS.put("ConcurrentSkipListMap", null);
-    }
 
     /** Owning bean. */
     private final GeneratableBean bean;
@@ -137,6 +65,8 @@ class GeneratableProperty {
     private String setStyle;
     /** The copy style. */
     private String copyStyle;
+    /** The builder style. */
+    private String builderStyle;
     /** The type style. */
     private String typeStyle;
     /** The validation string. */
@@ -153,12 +83,17 @@ class GeneratableProperty {
     private SetterGen setterGen;
     /** The copy generator. */
     private CopyGen copyGen;
+    /** The builder generator. */
+    private BuilderGen builderGen;
+    /** The config. */
+    private BeanGenConfig config;
 
     /**
      * Constructor.
      */
-    GeneratableProperty(GeneratableBean bean) {
+    GeneratableProperty(GeneratableBean bean, BeanGenConfig config) {
         this.bean = bean;
+        this.config = config;
     }
 
     //-----------------------------------------------------------------------
@@ -259,7 +194,6 @@ class GeneratableProperty {
             setTypeStyle("");
         }
         final String fieldType = getFieldType();
-        setType(fieldType);
         String rawType = fieldType;
         String generics = "";
         if (rawType.contains("<")) {
@@ -267,14 +201,11 @@ class GeneratableProperty {
             generics = fieldType.substring(fieldType.indexOf('<'));
         }
         if (getTypeStyle().equals("smart")) {
-            for (List<String> resolve : RESOLVE) {
-                if (resolve.contains(rawType)) {
-                    setType(resolve.get(0) + generics);
-                    break;
-                }
-            }
+            setType(fieldType);
         } else if (getTypeStyle().length() > 0) {
             setType(getTypeStyle() + generics);
+        } else {
+            setType(fieldType);
         }
     }
 
@@ -324,6 +255,22 @@ class GeneratableProperty {
      */
     public void setCopyStyle(String copyStyle) {
         this.copyStyle = copyStyle;
+    }
+
+    /**
+     * Gets the builder style.
+     * @return the builder style
+     */
+    public String getBuilderStyle() {
+        return builderStyle;
+    }
+
+    /**
+     * Sets the builder style.
+     * @param builderStyle  the builder style to set
+     */
+    public void setBuilderStyle(String builderStyle) {
+        this.builderStyle = builderStyle;
     }
 
     /**
@@ -579,25 +526,27 @@ class GeneratableProperty {
         if (getBean().isMutable()) {
             return;  // no copying
         }
+        if (config.getInvalidImmutableTypes().contains(getFieldTypeRaw())) {
+            throw new RuntimeException("Invalid collection type for immutable bean: " + getFieldTypeRaw() +
+                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+        }
         if (style.equals("smart")) {
             if (isDerived()) {
                 copyGen = CopyGen.NoCopyGen.INSTANCE;
             } else {
-                String copyPattern = COPY_PATTERNS.get(getFieldTypeRaw());
+                CopyGen copyPattern = config.getCopyGenerators().get(getFieldTypeRaw());
                 if (copyPattern != null) {
-                    copyGen = new CopyGen.PatternCopyGen(copyPattern);
+                    copyGen = copyPattern;
                 } else {
-                    if (COPY_PATTERNS.containsKey(getFieldTypeRaw())) {
-                        throw new RuntimeException("Invalid collection type for immutable bean: " + getFieldTypeRaw() +
-                                " in " + getBean().getTypeRaw() + "." + getPropertyName());
-                    }
-                    copyGen = new CopyGen.PatternCopyGen("$field = $value;");
+                    copyGen = CopyGen.ASSIGN;
                 }
             }
+        } else if (style.equals("assign")) {
+            copyGen = CopyGen.ASSIGN;
         } else if (style.equals("bean")) {
-            copyGen = CopyGen.BeanCloneGen.INSTANCE;
+            copyGen = CopyGen.BEAN_CLONE;
         } else if (style.equals("clone")) {
-            copyGen = new CopyGen.PatternCopyGen("$field = $value.clone();");
+            copyGen = CopyGen.CLONE;
         } else if (style.equals("")) {
             copyGen = CopyGen.NoCopyGen.INSTANCE;
         } else if (style.contains("$field") || style.contains("$value") || style.contains("$type")) {
@@ -618,6 +567,40 @@ class GeneratableProperty {
      */
     public CopyGen getCopyGen() {
         return copyGen;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Resolves the copy generator.
+     */
+    public void resolveBuilderGen() {
+        if (getBuilderStyle() == null) {
+            setBuilderStyle("");
+        }
+        if (getBean().isMutable()) {
+            return;  // no copying
+        }
+        final String style = getBuilderStyle();
+        if (style.equals("smart")) {
+            builderGen = getConfig().getBuilderGenerators().get(getFieldTypeRaw());
+            if (builderGen == null) {
+                builderGen = BuilderGen.SimpleBuilderGen.INSTANCE;
+            }
+        } else if (style.contains(":")) {
+            int pos = style.indexOf(':');
+            builderGen = new BuilderGen.PatternBuilderGen(style.substring(0, pos).trim(), style.substring(pos + 1).trim());
+        } else {
+            throw new RuntimeException("Unable to locate builder generator '" + style + "'" +
+                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+        }
+    }
+
+    /**
+     * Gets the builder generator.
+     * @return the builder generator
+     */
+    public BuilderGen getBuilderGen() {
+        return builderGen;
     }
 
     //-----------------------------------------------------------------------
@@ -729,6 +712,15 @@ class GeneratableProperty {
             return type.substring(type.indexOf('<'));
         }
         return "";
+    }
+
+    /**
+     * Gets the configuration.
+     * 
+     * @return the configuration, not null
+     */
+    public BeanGenConfig getConfig() {
+        return config;
     }
 
 }

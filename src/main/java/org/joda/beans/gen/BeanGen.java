@@ -70,10 +70,8 @@ class BeanGen {
 
     /** The content to process. */
     private final List<String> content;
-    /** The indent. */
-    private final String indent;
-    /** The prefix. */
-    private final String prefix;
+    /** The config. */
+    private final BeanGenConfig config;
     /** The start position of auto-generation. */
     private final int autoStartIndex;
     /** The end position of auto-generation. */
@@ -88,13 +86,11 @@ class BeanGen {
     /**
      * Constructor.
      * @param content  the content to process, not null
-     * @param indent  the indent to use, not null
-     * @param prefix  the prefix to use, not null
+     * @param config  the config to use, not null
      */
-    BeanGen(List<String> content, String indent, String prefix) {
+    BeanGen(List<String> content, BeanGenConfig config) {
         this.content = content;
-        this.indent = indent;
-        this.prefix = prefix;
+        this.config = config;
         int beanDefIndex = parseBeanDefinition();
         if (beanDefIndex >= 0) {
             this.data = new GeneratableBean();
@@ -185,7 +181,7 @@ class BeanGen {
 
     private void resolveIndents() {
         for (ListIterator<String> it = content.listIterator(); it.hasNext(); ) {
-            it.set(it.next().replace("\t", indent));
+            it.set(it.next().replace("\t", config.getIndent()));
         }
     }
 
@@ -374,7 +370,7 @@ class BeanGen {
             insertRegion.add("\t\t\t" + data.getTypeRaw() + ".Builder builder,");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
-                insertRegion.add("\t\t\t" + prop.getData().getType() + " " + prop.getData().getFieldName() + (i < nonDerived.size() - 1 ? "," : ") {"));
+                insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getFieldName() + (i < nonDerived.size() - 1 ? "," : ") {"));
             }
             for (int i = 0; i < nonDerived.size(); i++) {
                 insertRegion.addAll(nonDerived.get(i).generateConstructorAssign());
@@ -653,7 +649,7 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + prefix + "metaPropertyMap$ = new DirectMetaPropertyMap(");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + config.getPrefix() + "metaPropertyMap$ = new DirectMetaPropertyMap(");
         if (data.isSubClass()) {
             insertRegion.add("\t\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
@@ -721,7 +717,7 @@ class BeanGen {
         data.ensureImport(Map.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<?>> metaPropertyMap() {");
-        insertRegion.add("\t\t\treturn " + prefix + "metaPropertyMap$;");
+        insertRegion.add("\t\t\treturn " + config.getPrefix() + "metaPropertyMap$;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }
@@ -897,8 +893,12 @@ class BeanGen {
         return data;
     }
 
+    BeanGenConfig getConfig() {
+        return config;
+    }
+
     String getFieldPrefix() {
-        return prefix;
+        return config.getPrefix();
     }
 
     private List<PropertyGen> nonDerivedProperties() {

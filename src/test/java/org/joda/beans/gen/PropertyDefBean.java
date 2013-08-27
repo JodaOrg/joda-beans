@@ -144,7 +144,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the arrayListSmart.
      * @return the value of the property
      */
-    public List<Address> getArrayListSmart() {
+    public ArrayList<Address> getArrayListSmart() {
         return arrayListSmart;
     }
 
@@ -152,7 +152,7 @@ public final class PropertyDefBean implements Bean {
      * Sets the arrayListSmart.
      * @param arrayListSmart  the new value of the property
      */
-    public void setArrayListSmart(List<Address> arrayListSmart) {
+    public void setArrayListSmart(ArrayList<Address> arrayListSmart) {
         this.arrayListSmart.clear();
         this.arrayListSmart.addAll(arrayListSmart);
     }
@@ -161,7 +161,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code arrayListSmart} property.
      * @return the property, not null
      */
-    public final Property<List<Address>> arrayListSmart() {
+    public final Property<ArrayList<Address>> arrayListSmart() {
         return metaBean().arrayListSmart().createProperty(this);
     }
 
@@ -222,7 +222,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the arrayList.
      * @return the value of the property
      */
-    public List<Address> getArrayList() {
+    public ArrayList<Address> getArrayList() {
         return arrayList;
     }
 
@@ -230,7 +230,7 @@ public final class PropertyDefBean implements Bean {
      * Sets the arrayList.
      * @param arrayList  the new value of the property
      */
-    public void setArrayList(List<Address> arrayList) {
+    public void setArrayList(ArrayList<Address> arrayList) {
         this.arrayList.clear();
         this.arrayList.addAll(arrayList);
     }
@@ -239,7 +239,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code arrayList} property.
      * @return the property, not null
      */
-    public final Property<List<Address>> arrayList() {
+    public final Property<ArrayList<Address>> arrayList() {
         return metaBean().arrayList().createProperty(this);
     }
 
@@ -368,8 +368,8 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayListSmart} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<Address>> arrayListSmart = DirectMetaProperty.ofReadWrite(
-                this, "arrayListSmart", PropertyDefBean.class, (Class) List.class);
+        private final MetaProperty<ArrayList<Address>> arrayListSmart = DirectMetaProperty.ofReadWrite(
+                this, "arrayListSmart", PropertyDefBean.class, (Class) ArrayList.class);
         /**
          * The meta-property for the {@code arrayListExposed} property.
          */
@@ -386,8 +386,8 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<Address>> arrayList = DirectMetaProperty.ofReadWrite(
-                this, "arrayList", PropertyDefBean.class, (Class) List.class);
+        private final MetaProperty<ArrayList<Address>> arrayList = DirectMetaProperty.ofReadWrite(
+                this, "arrayList", PropertyDefBean.class, (Class) ArrayList.class);
         /**
          * The meta-property for the {@code listAsIterable} property.
          */
@@ -479,7 +479,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayListSmart} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<List<Address>> arrayListSmart() {
+        public final MetaProperty<ArrayList<Address>> arrayListSmart() {
             return arrayListSmart;
         }
 
@@ -503,7 +503,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayList} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<List<Address>> arrayList() {
+        public final MetaProperty<ArrayList<Address>> arrayList() {
             return arrayList;
         }
 
@@ -558,7 +558,7 @@ public final class PropertyDefBean implements Bean {
                     ((PropertyDefBean) bean).setIntAsInteger((Integer) newValue);
                     return;
                 case 1202448754:  // arrayListSmart
-                    ((PropertyDefBean) bean).setArrayListSmart((List<Address>) newValue);
+                    ((PropertyDefBean) bean).setArrayListSmart((ArrayList<Address>) newValue);
                     return;
                 case 995586697:  // arrayListExposed
                     ((PropertyDefBean) bean).setArrayListExposed((ArrayList<Address>) newValue);
@@ -567,7 +567,7 @@ public final class PropertyDefBean implements Bean {
                     ((PropertyDefBean) bean).setArrayListAsCollection((Collection<Address>) newValue);
                     return;
                 case -1425161577:  // arrayList
-                    ((PropertyDefBean) bean).setArrayList((List<Address>) newValue);
+                    ((PropertyDefBean) bean).setArrayList((ArrayList<Address>) newValue);
                     return;
                 case -176766462:  // listAsIterable
                     ((PropertyDefBean) bean).setListAsIterable((Iterable<Address>) newValue);
