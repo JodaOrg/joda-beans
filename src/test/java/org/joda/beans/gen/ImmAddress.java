@@ -407,21 +407,41 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         //-----------------------------------------------------------------------
+        /**
+         * Sets the {@code number} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder number(int newValue) {
             this.number = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code street} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder street(String newValue) {
             this.street = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code city} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder city(String newValue) {
             this.city = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code owner} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder owner(ImmPerson newValue) {
             this.owner = newValue;
             return this;

@@ -57,29 +57,31 @@ abstract class BuilderGen {
         @Override
         List<String> generateField(String indent, GeneratableProperty prop) {
             List<String> list = new ArrayList<String>();
-            String type = this.type;
-            if (type == null) {
-                type = prop.getType();
-            }
-            type = type.replace("<>", prop.getTypeGenerics());
             String init = this.init;
             init = init.replace("<>", prop.getTypeGenerics());
-            list.add(indent + "private " + type + " " + prop.getConfig().getPrefix() + prop.getFieldName() + " = " + init + ";");
+            list.add(indent + "private " + generateType(prop) + " " + prop.getConfig().getPrefix() + prop.getFieldName() + " = " + init + ";");
             return list;
         }
         @Override
         String generateType(GeneratableProperty prop) {
-            return type + prop.getTypeGenerics();
+            return type.replace("<>", prop.getTypeGenerics());
         }
     }
 
     static class SimpleBuilderGen extends BuilderGen {
-        static final BuilderGen INSTANCE = new SimpleBuilderGen();
+        private final String type;
+        SimpleBuilderGen(String type) {
+            this.type = type;
+        }
         @Override
         List<String> generateField(String indent, GeneratableProperty prop) {
             List<String> list = new ArrayList<String>();
-            list.add(indent + "private " + prop.getType() + " " + prop.getConfig().getPrefix() + prop.getFieldName() + ";");
+            list.add(indent + "private " + generateType(prop) + " " + prop.getConfig().getPrefix() + prop.getFieldName() + ";");
             return list;
+        }
+        @Override
+        String generateType(GeneratableProperty prop) {
+            return type.replace("<>", prop.getTypeGenerics());
         }
     }
 

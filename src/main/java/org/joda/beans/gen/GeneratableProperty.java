@@ -66,7 +66,9 @@ class GeneratableProperty {
     /** The copy style. */
     private String copyStyle;
     /** The builder style. */
-    private String builderStyle;
+    private String builderTypeStyle;
+    /** The builder style. */
+    private String builderInitStyle;
     /** The type style. */
     private String typeStyle;
     /** The validation string. */
@@ -203,7 +205,11 @@ class GeneratableProperty {
         if (getTypeStyle().equals("smart")) {
             setType(fieldType);
         } else if (getTypeStyle().length() > 0) {
-            setType(getTypeStyle() + generics);
+            if (getTypeStyle().contains("<>")) {
+                setType(getTypeStyle().replace("<>", generics));
+            } else {
+                setType(getTypeStyle() + generics);
+            }
         } else {
             setType(fieldType);
         }
@@ -258,19 +264,35 @@ class GeneratableProperty {
     }
 
     /**
-     * Gets the builder style.
-     * @return the builder style
+     * Gets the builder type style.
+     * @return the builder type style
      */
-    public String getBuilderStyle() {
-        return builderStyle;
+    public String getBuilderTypeStyle() {
+        return builderTypeStyle;
     }
 
     /**
-     * Sets the builder style.
-     * @param builderStyle  the builder style to set
+     * Sets the builder type style.
+     * @param builderTypeStyle  the builder type style to set
      */
-    public void setBuilderStyle(String builderStyle) {
-        this.builderStyle = builderStyle;
+    public void setBuilderTypeStyle(String builderTypeStyle) {
+        this.builderTypeStyle = builderTypeStyle;
+    }
+
+    /**
+     * Gets the builder init style.
+     * @return the builder init style
+     */
+    public String getBuilderInitStyle() {
+        return builderInitStyle;
+    }
+
+    /**
+     * Sets the builder init style.
+     * @param builderInitStyle  the builder init style to set
+     */
+    public void setBuilderInitStyle(String builderInitStyle) {
+        this.builderInitStyle = builderInitStyle;
     }
 
     /**
@@ -574,23 +596,30 @@ class GeneratableProperty {
      * Resolves the copy generator.
      */
     public void resolveBuilderGen() {
-        if (getBuilderStyle() == null) {
-            setBuilderStyle("");
+        if (getBuilderTypeStyle() == null) {
+            setBuilderTypeStyle("");
+        }
+        if (getBuilderInitStyle() == null) {
+            setBuilderInitStyle("");
         }
         if (getBean().isMutable()) {
-            return;  // no copying
+            return;  // no builder
         }
-        final String style = getBuilderStyle();
-        if (style.equals("smart")) {
-            builderGen = getConfig().getBuilderGenerators().get(getFieldTypeRaw());
+        final String init = getBuilderInitStyle();
+        String type = getBuilderTypeStyle();
+        if (type.equals("smart")) {
+            type = getType();
+        }
+        if (init.equals("smart")) {
+            String typeRaw = (type.contains("<") ? type.substring(0, type.indexOf('<')) : type);
+            builderGen = getConfig().getBuilderGenerators().get(typeRaw);
             if (builderGen == null) {
-                builderGen = BuilderGen.SimpleBuilderGen.INSTANCE;
+                builderGen = new BuilderGen.SimpleBuilderGen(type);
             }
-        } else if (style.contains(":")) {
-            int pos = style.indexOf(':');
-            builderGen = new BuilderGen.PatternBuilderGen(style.substring(0, pos).trim(), style.substring(pos + 1).trim());
+        } else if (init.length() > 0) {
+            builderGen = new BuilderGen.PatternBuilderGen(type, init.trim());
         } else {
-            throw new RuntimeException("Unable to locate builder generator '" + style + "'" +
+            throw new RuntimeException("Unable to locate builder generator '" + init + "'" +
                     " in " + getBean().getTypeRaw() + "." + getPropertyName());
         }
     }

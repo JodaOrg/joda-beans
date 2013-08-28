@@ -54,14 +54,16 @@ public final class ImmPerson implements ImmutableBean {
     /** The number of cars. */
     @PropertyDefinition
     private transient final int numberOfCars;
+//    @PropertyDefinition(builderType = "Iterable<>", builderInit = "new ArrayList<>()")
+//    private final ImmutableList<CompanyAddress> companyAddressList;
     @PropertyDefinition
     private final ImmutableList<Address> addressList;
     @PropertyDefinition
     private final Map<String, Address> otherAddressMap;
     @PropertyDefinition
     private final List<List<Address>> addressesList;
-    @PropertyDefinition(copy = "bean")
-    private final Address mainAddress;
+    @PropertyDefinition
+    private final ImmAddress mainAddress;
 //    @PropertyDefinition
 //    @XmlID
 //    private final FlexiBean extensions;
@@ -97,14 +99,14 @@ public final class ImmPerson implements ImmutableBean {
             List<Address> addressList,
             Map<String, Address> otherAddressMap,
             List<List<Address>> addressesList,
-            Address mainAddress) {
+            ImmAddress mainAddress) {
         this.forename = forename;
         this.surname = surname;
         this.numberOfCars = numberOfCars;
         this.addressList = ImmutableList.copyOf(addressList);
         this.otherAddressMap = ImmutableMap.copyOf(otherAddressMap);
         this.addressesList = ImmutableList.copyOf(addressesList);
-        this.mainAddress = JodaBeanUtils.clone(mainAddress);
+        this.mainAddress = mainAddress;
     }
 
     @Override
@@ -229,7 +231,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the mainAddress.
      * @return the value of the property
      */
-    public Address getMainAddress() {
+    public ImmAddress getMainAddress() {
         return mainAddress;
     }
 
@@ -237,7 +239,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code mainAddress} property.
      * @return the property, not null
      */
-    public final Property<Address> mainAddress() {
+    public final Property<ImmAddress> mainAddress() {
         return metaBean().mainAddress().createProperty(this);
     }
 
@@ -335,8 +337,8 @@ public final class ImmPerson implements ImmutableBean {
         /**
          * The meta-property for the {@code mainAddress} property.
          */
-        private final MetaProperty<Address> mainAddress = DirectMetaProperty.ofReadOnly(
-                this, "mainAddress", ImmPerson.class, Address.class);
+        private final MetaProperty<ImmAddress> mainAddress = DirectMetaProperty.ofReadOnly(
+                this, "mainAddress", ImmPerson.class, ImmAddress.class);
         /**
          * The meta-properties.
          */
@@ -445,7 +447,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code mainAddress} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Address> mainAddress() {
+        public final MetaProperty<ImmAddress> mainAddress() {
             return mainAddress;
         }
 
@@ -494,7 +496,7 @@ public final class ImmPerson implements ImmutableBean {
         private List<Address> addressList = new ArrayList<Address>();
         private Map<String, Address> otherAddressMap = new HashMap<String, Address>();
         private List<List<Address>> addressesList = new ArrayList<List<Address>>();
-        private Address mainAddress;
+        private ImmAddress mainAddress;
 
         /**
          * Restricted constructor.
@@ -527,7 +529,7 @@ public final class ImmPerson implements ImmutableBean {
                     this.addressesList = (List<List<Address>>) newValue;
                     break;
                 case -2032731141:  // mainAddress
-                    this.mainAddress = (Address) newValue;
+                    this.mainAddress = (ImmAddress) newValue;
                     break;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
@@ -549,37 +551,72 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         //-----------------------------------------------------------------------
+        /**
+         * Sets the {@code forename} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder forename(String newValue) {
             this.forename = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code surname} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder surname(String newValue) {
             this.surname = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code numberOfCars} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder numberOfCars(int newValue) {
             this.numberOfCars = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code addressList} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder addressList(List<Address> newValue) {
             this.addressList = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code otherAddressMap} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder otherAddressMap(Map<String, Address> newValue) {
             this.otherAddressMap = newValue;
             return this;
         }
 
+        /**
+         * Sets the {@code addressesList} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
         public Builder addressesList(List<List<Address>> newValue) {
             this.addressesList = newValue;
             return this;
         }
 
-        public Builder mainAddress(Address newValue) {
+        /**
+         * Sets the {@code mainAddress} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder mainAddress(ImmAddress newValue) {
             this.mainAddress = newValue;
             return this;
         }

@@ -113,6 +113,7 @@ abstract class SetterGen {
             for (String line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());
                 line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("<>", prop.getTypeGenerics());
                 if (split.length == 1 && line.endsWith(";") == false) {
                     line += ";";
                 }

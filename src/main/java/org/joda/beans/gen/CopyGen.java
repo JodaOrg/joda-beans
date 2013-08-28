@@ -33,36 +33,62 @@ abstract class CopyGen {
     static final CopyGen CLONE = new PatternCopyGen("$field = ($value != null ? $value.clone() : null);");
 
     /**
-     * Checks if a copy is possible.
-     * 
-     * @param prop  the property data, not null
-     * @return true if a copy is possible
-     */
-    abstract boolean isCopyGenerated(GeneratableProperty prop);
-
-    /**
-     * Generates the copy method.
+     * Generates the copy to immutable lines.
      * 
      * @param indent  the indent to use, not null
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateCopy(String indent, GeneratableProperty prop);
+    abstract List<String> generateCopyToImmutable(String indent, GeneratableProperty prop);
+
+    /**
+     * Generates the copy to mutable lines.
+     * 
+     * @param indent  the indent to use, not null
+     * @param prop  the property data, not null
+     * @return the generated code, not null
+     */
+    abstract List<String> generateCopyToMutable(String indent, GeneratableProperty prop);
 
     //-----------------------------------------------------------------------
     static class PatternCopyGen extends CopyGen {
-        private final String copyPattern;
-        PatternCopyGen(String copyPattern) {
-            this.copyPattern = copyPattern;
+        private final String immutablePattern;
+        private final String mutablePattern;
+        PatternCopyGen(String pattern) {
+            this.immutablePattern = pattern;
+            this.mutablePattern = pattern;
+        }
+        PatternCopyGen(String immutablePattern, String mutablePattern) {
+            this.immutablePattern = immutablePattern;
+            this.mutablePattern = mutablePattern;
         }
         @Override
-        boolean isCopyGenerated(GeneratableProperty prop) {
-            return true;
-        }
-        @Override
-        List<String> generateCopy(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToImmutable(String indent, GeneratableProperty prop) {
             List<String> list = new ArrayList<String>();
-            final String[] split = copyPattern.split("\n");
+            final String[] split = immutablePattern.split("\n");
+            for (String line : split) {
+                if (split.length == 1) {
+                    if (line.endsWith(";") == false) {
+                        line += ";";
+                    }
+                    if (line.startsWith("$field = ") == false) {
+                        line = "$field = " + line;
+                    }
+                }
+                line = line.replace("$field", "this." + prop.getFieldName());
+                line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("$type", prop.getFieldType());
+                line = line.replace("$typeRaw", prop.getTypeRaw());
+                line = line.replace("$generics", prop.getTypeGenerics());
+                line = line.replace("<>", prop.getTypeGenerics());
+                list.add(indent + line);
+            }
+            return list;
+        }
+        @Override
+        List<String> generateCopyToMutable(String indent, GeneratableProperty prop) {
+            List<String> list = new ArrayList<String>();
+            final String[] split = mutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {
                     if (line.endsWith(";") == false) {
@@ -87,11 +113,14 @@ abstract class CopyGen {
     static class BeanCloneGen extends CopyGen {
         static final CopyGen INSTANCE = new BeanCloneGen();
         @Override
-        boolean isCopyGenerated(GeneratableProperty prop) {
-            return true;
+        List<String> generateCopyToImmutable(String indent, GeneratableProperty prop) {
+            prop.getBean().ensureImport(JodaBeanUtils.class);
+            List<String> list = new ArrayList<String>();
+            list.add(indent + "this." + prop.getFieldName() + " = JodaBeanUtils.clone(" + prop.getPropertyName() + ");");
+            return list;
         }
         @Override
-        List<String> generateCopy(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToMutable(String indent, GeneratableProperty prop) {
             prop.getBean().ensureImport(JodaBeanUtils.class);
             List<String> list = new ArrayList<String>();
             list.add(indent + "this." + prop.getFieldName() + " = JodaBeanUtils.clone(" + prop.getPropertyName() + ");");
@@ -102,11 +131,11 @@ abstract class CopyGen {
     static class NoCopyGen extends CopyGen {
         static final CopyGen INSTANCE = new NoCopyGen();
         @Override
-        boolean isCopyGenerated(GeneratableProperty prop) {
-            return false;
+        List<String> generateCopyToImmutable(String indent, GeneratableProperty prop) {
+            return Collections.emptyList();
         }
         @Override
-        List<String> generateCopy(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToMutable(String indent, GeneratableProperty prop) {
             return Collections.emptyList();
         }
     }

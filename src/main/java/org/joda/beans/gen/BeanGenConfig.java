@@ -105,13 +105,14 @@ public final class BeanGenConfig {
     }
 
     private static BeanGenConfig parse(List<String> lines) {
-        Map<String, CopyGen> copyGenerators = new HashMap<String, CopyGen>();
+        Map<String, String> immutableCopiers = new HashMap<String, String>();
+        Map<String, String> mutableCopiers = new HashMap<String, String>();
         Map<String, String> builderInits = new HashMap<String, String>();
         Map<String, String> builderTypes = new HashMap<String, String>();
         Set<String> invalidImmutableTypes = new HashSet<String>();
         for (ListIterator<String> iterator = lines.listIterator(); iterator.hasNext(); ) {
             String line = iterator.next().trim();
-            if (line.equals("[immutable.copy]")) {
+            if (line.equals("[immutable.builder.to.immutable]")) {
                 while (iterator.hasNext()) {
                     line = iterator.next().trim();
                     if (line.startsWith("[")) {
@@ -124,7 +125,22 @@ public final class BeanGenConfig {
                     }
                     String key = line.substring(0, pos).trim();
                     String value = line.substring(pos + 1).trim();
-                    copyGenerators.put(key, new CopyGen.PatternCopyGen(value));
+                    immutableCopiers.put(key, value);
+                }
+            } else if (line.equals("[immutable.builder.to.mutable]")) {
+                while (iterator.hasNext()) {
+                    line = iterator.next().trim();
+                    if (line.startsWith("[")) {
+                        iterator.previous();
+                        break;
+                    }
+                    int pos = line.indexOf('=');
+                    if (pos <= 0) {
+                        throw new IllegalArgumentException("Invalid ini file line: " + line);
+                    }
+                    String key = line.substring(0, pos).trim();
+                    String value = line.substring(pos + 1).trim();
+                    mutableCopiers.put(key, value);
                 }
             } else if (line.equals("[immutable.invalid.type]")) {
                 while (iterator.hasNext()) {
@@ -170,6 +186,7 @@ public final class BeanGenConfig {
                 throw new IllegalArgumentException("Invalid ini file section: " + line);
             }
         }
+        // adjust to results
         Map<String, BuilderGen> builderGenerators = new HashMap<String, BuilderGen>();
         for (Entry<String, String> entry : builderInits.entrySet()) {
             String type = builderTypes.get(entry.getKey());
@@ -177,6 +194,16 @@ public final class BeanGenConfig {
                 type = entry.getKey() + "<>";
             }
             builderGenerators.put(entry.getKey(), new BuilderGen.PatternBuilderGen(type, entry.getValue()));
+        }
+        Map<String, CopyGen> copyGenerators = new HashMap<String, CopyGen>();
+        for (Entry<String, String> entry : immutableCopiers.entrySet()) {
+            String fieldType = entry.getKey();
+            String immutableCopier = entry.getValue();
+            String mutableCopier = mutableCopiers.get(fieldType);
+            if (mutableCopier == null) {
+                throw new IllegalArgumentException("[immutable.builder.to.immutable] and [immutable.builder.to.mutable] entries must match: " + fieldType);
+            }
+            copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier));
         }
         return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes);
     }

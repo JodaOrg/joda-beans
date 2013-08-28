@@ -36,11 +36,13 @@ class PropertyGen {
     /** The setter pattern. */
     private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
     /** The copy pattern. */
-    private static final Pattern COPY_PATTERN = Pattern.compile(".*[ ,(]copy[ ]*[=][ ]*[\"]([a-zA-Z0-9()_.$-]*)[\"].*");
+    private static final Pattern COPY_PATTERN = Pattern.compile(".*[ ,(]copy[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
+    /** The builderType pattern. */
+    private static final Pattern BUILDER_TYPE_PATTERN = Pattern.compile(".*[ ,(]builderType[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
     /** The builderInit pattern. */
-    private static final Pattern BUILDER_INIT_PATTERN = Pattern.compile(".*[ ,(]builderInit[ ]*[=][ ]*[\"]([a-zA-Z0-9()_.$-]*)[\"].*");
+    private static final Pattern BUILDER_INIT_PATTERN = Pattern.compile(".*[ ,(]builderInit[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
     /** The type pattern. */
-    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_]*)[\"].*");
+    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
     /** The validation pattern. */
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(".*[ ,(]validate[ ]*[=][ ]*[\"]([a-zA-Z_.]*)[\"].*");
 
@@ -69,7 +71,8 @@ class PropertyGen {
             prop.setGetStyle("manual");
             prop.setSetStyle("");
             prop.setCopyStyle("");
-            prop.setBuilderStyle("");
+            prop.setBuilderTypeStyle("");
+            prop.setBuilderInitStyle("");
             prop.setTypeStyle("");
             prop.setDeprecated(parseDeprecated(content));
             prop.setPropertyName(parseMethodNameAsPropertyName(content));
@@ -79,7 +82,8 @@ class PropertyGen {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
             prop.setCopyStyle(parseCopyStyle(content));
-            prop.setBuilderStyle(parseBuilderInitStyle(content));
+            prop.setBuilderTypeStyle(parseBuilderTypeStyle(content));
+            prop.setBuilderInitStyle(parseBuilderInitStyle(content));
             prop.setTypeStyle(parseTypeStyle(content));
             prop.setValidation(parseValidation(content));
             prop.setDeprecated(parseDeprecated(content));
@@ -145,6 +149,15 @@ class PropertyGen {
     private String parseCopyStyle(List<String> content) {
         String line = content.get(annotationIndex).trim();
         Matcher matcher = COPY_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+
+    private String parseBuilderTypeStyle(List<String> content) {
+        String line = content.get(annotationIndex).trim();
+        Matcher matcher = BUILDER_TYPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -346,7 +359,7 @@ class PropertyGen {
 
     //-----------------------------------------------------------------------
     List<String> generateConstructorAssign() {
-        return data.getCopyGen().generateCopy("\t\t", data);
+        return data.getCopyGen().generateCopyToImmutable("\t\t", data);
     }
 
     //-----------------------------------------------------------------------
@@ -486,6 +499,11 @@ class PropertyGen {
 
     List<String> generateBuilderSetMethod() {
         List<String> list = new ArrayList<String>();
+        list.add("\t\t/**");
+        list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder.");
+        list.add("\t\t * @param newValue  the new value, not null");
+        list.add("\t\t * @return this, for chaining, not null");
+        list.add("\t\t */");
         list.add("\t\tpublic Builder" + data.getBean().getTypeGeneric(true) + " " + data.getPropertyName() +
                 "(" + getBuilderType() + " newValue) {");
         list.add("\t\t\tthis." + generateBuilderFieldName() + " = newValue;");
@@ -496,13 +514,7 @@ class PropertyGen {
     }
 
     String getBuilderType() {
-        String type = bean.getConfig().getBuilderTypes().get(data.getFieldTypeRaw());
-        if (type == null) {
-            type = data.getType();
-        } else {
-            type = type.replace("<>", data.getTypeGenerics());
-        }
-        return type;
+        return data.getBuilderGen().generateType(data);
     }
 
     //-----------------------------------------------------------------------

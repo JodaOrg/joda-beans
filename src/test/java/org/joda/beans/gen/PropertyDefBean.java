@@ -43,19 +43,21 @@ import com.google.common.collect.Lists;
 @BeanDefinition
 public final class PropertyDefBean implements Bean {
 
-    @PropertyDefinition(type = "CharSequence", set = "$field = $value.toString()")
+    @PropertyDefinition(type = "CharSequence", set = "$value.toString()")
     private String stringAsCharSequence;
     @PropertyDefinition(type = "Integer")
     private int intAsInteger;
+    @PropertyDefinition(type = "Collection<>", set = "new ArrayList<>($value)")
+    private List<Address> listCopyOfCollection = new ArrayList<Address>();
     @PropertyDefinition
     private final ArrayList<Address> arrayListSmart = new ArrayList<Address>();
     @PropertyDefinition(type = "")
     private final ArrayList<Address> arrayListExposed = new ArrayList<Address>();
-    @PropertyDefinition(type = "Collection")
+    @PropertyDefinition(type = "Collection<>")
     private final ArrayList<Address> arrayListAsCollection = new ArrayList<Address>();
     @PropertyDefinition
     private final ArrayList<Address> arrayList = new ArrayList<Address>();
-    @PropertyDefinition(type = "Iterable", set = "$field = Lists.newArrayList($value)")
+    @PropertyDefinition(type = "Iterable<>", set = "$field = Lists.newArrayList($value)")
     private List<Address> listAsIterable = new ArrayList<Address>();
     @PropertyDefinition(type = "Iterable", set = "Lists.newArrayList($value)")
     private List<Address> listAsIterableNoField = new ArrayList<Address>();
@@ -137,6 +139,31 @@ public final class PropertyDefBean implements Bean {
      */
     public final Property<Integer> intAsInteger() {
         return metaBean().intAsInteger().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the listCopyOfCollection.
+     * @return the value of the property
+     */
+    public Collection<Address> getListCopyOfCollection() {
+        return listCopyOfCollection;
+    }
+
+    /**
+     * Sets the listCopyOfCollection.
+     * @param listCopyOfCollection  the new value of the property
+     */
+    public void setListCopyOfCollection(Collection<Address> listCopyOfCollection) {
+        this.listCopyOfCollection = new ArrayList<Address>(listCopyOfCollection);
+    }
+
+    /**
+     * Gets the the {@code listCopyOfCollection} property.
+     * @return the property, not null
+     */
+    public final Property<Collection<Address>> listCopyOfCollection() {
+        return metaBean().listCopyOfCollection().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -303,6 +330,7 @@ public final class PropertyDefBean implements Bean {
             PropertyDefBean other = (PropertyDefBean) obj;
             return JodaBeanUtils.equal(getStringAsCharSequence(), other.getStringAsCharSequence()) &&
                     JodaBeanUtils.equal(getIntAsInteger(), other.getIntAsInteger()) &&
+                    JodaBeanUtils.equal(getListCopyOfCollection(), other.getListCopyOfCollection()) &&
                     JodaBeanUtils.equal(getArrayListSmart(), other.getArrayListSmart()) &&
                     JodaBeanUtils.equal(getArrayListExposed(), other.getArrayListExposed()) &&
                     JodaBeanUtils.equal(getArrayListAsCollection(), other.getArrayListAsCollection()) &&
@@ -318,6 +346,7 @@ public final class PropertyDefBean implements Bean {
         int hash = getClass().hashCode();
         hash += hash * 31 + JodaBeanUtils.hashCode(getStringAsCharSequence());
         hash += hash * 31 + JodaBeanUtils.hashCode(getIntAsInteger());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getListCopyOfCollection());
         hash += hash * 31 + JodaBeanUtils.hashCode(getArrayListSmart());
         hash += hash * 31 + JodaBeanUtils.hashCode(getArrayListExposed());
         hash += hash * 31 + JodaBeanUtils.hashCode(getArrayListAsCollection());
@@ -329,11 +358,12 @@ public final class PropertyDefBean implements Bean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(288);
+        StringBuilder buf = new StringBuilder(320);
         buf.append(getClass().getSimpleName());
         buf.append('{');
         buf.append("stringAsCharSequence").append('=').append(getStringAsCharSequence()).append(',').append(' ');
         buf.append("intAsInteger").append('=').append(getIntAsInteger()).append(',').append(' ');
+        buf.append("listCopyOfCollection").append('=').append(getListCopyOfCollection()).append(',').append(' ');
         buf.append("arrayListSmart").append('=').append(getArrayListSmart()).append(',').append(' ');
         buf.append("arrayListExposed").append('=').append(getArrayListExposed()).append(',').append(' ');
         buf.append("arrayListAsCollection").append('=').append(getArrayListAsCollection()).append(',').append(' ');
@@ -364,6 +394,12 @@ public final class PropertyDefBean implements Bean {
          */
         private final MetaProperty<Integer> intAsInteger = DirectMetaProperty.ofReadWrite(
                 this, "intAsInteger", PropertyDefBean.class, Integer.class);
+        /**
+         * The meta-property for the {@code listCopyOfCollection} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<Collection<Address>> listCopyOfCollection = DirectMetaProperty.ofReadWrite(
+                this, "listCopyOfCollection", PropertyDefBean.class, (Class) Collection.class);
         /**
          * The meta-property for the {@code arrayListSmart} property.
          */
@@ -407,6 +443,7 @@ public final class PropertyDefBean implements Bean {
                 this, null,
                 "stringAsCharSequence",
                 "intAsInteger",
+                "listCopyOfCollection",
                 "arrayListSmart",
                 "arrayListExposed",
                 "arrayListAsCollection",
@@ -427,6 +464,8 @@ public final class PropertyDefBean implements Bean {
                     return stringAsCharSequence;
                 case -86092419:  // intAsInteger
                     return intAsInteger;
+                case 1005120680:  // listCopyOfCollection
+                    return listCopyOfCollection;
                 case 1202448754:  // arrayListSmart
                     return arrayListSmart;
                 case 995586697:  // arrayListExposed
@@ -473,6 +512,14 @@ public final class PropertyDefBean implements Bean {
          */
         public final MetaProperty<Integer> intAsInteger() {
             return intAsInteger;
+        }
+
+        /**
+         * The meta-property for the {@code listCopyOfCollection} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<Collection<Address>> listCopyOfCollection() {
+            return listCopyOfCollection;
         }
 
         /**
@@ -531,6 +578,8 @@ public final class PropertyDefBean implements Bean {
                     return ((PropertyDefBean) bean).getStringAsCharSequence();
                 case -86092419:  // intAsInteger
                     return ((PropertyDefBean) bean).getIntAsInteger();
+                case 1005120680:  // listCopyOfCollection
+                    return ((PropertyDefBean) bean).getListCopyOfCollection();
                 case 1202448754:  // arrayListSmart
                     return ((PropertyDefBean) bean).getArrayListSmart();
                 case 995586697:  // arrayListExposed
@@ -556,6 +605,9 @@ public final class PropertyDefBean implements Bean {
                     return;
                 case -86092419:  // intAsInteger
                     ((PropertyDefBean) bean).setIntAsInteger((Integer) newValue);
+                    return;
+                case 1005120680:  // listCopyOfCollection
+                    ((PropertyDefBean) bean).setListCopyOfCollection((Collection<Address>) newValue);
                     return;
                 case 1202448754:  // arrayListSmart
                     ((PropertyDefBean) bean).setArrayListSmart((ArrayList<Address>) newValue);
