@@ -898,6 +898,8 @@ class BeanGen {
             insertRegion.add("\t\t//-----------------------------------------------------------------------");
             generateBuilderPropertySetMethods();
         }
+        insertRegion.add("\t\t//-----------------------------------------------------------------------");
+        generateBuilderToString();
         insertRegion.add("\t}");
         insertRegion.add("");
     }
@@ -983,6 +985,32 @@ class BeanGen {
                 insertRegion.addAll(prop.generateBuilderSetMethod());
             }
         }
+    }
+
+    private void generateBuilderToString() {
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic String toString() {");
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        if (nonDerived.size() == 0) {
+            insertRegion.add("\t\t\treturn " + data.getTypeRaw() + ".Builder{};");
+        } else {
+            insertRegion.add("\t\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
+            insertRegion.add("\t\t\tbuf.append(\"" + data.getTypeRaw() + ".Builder{\");");
+            for (int i = 0; i < nonDerived.size(); i++) {
+                PropertyGen prop = nonDerived.get(i);
+                String base = "\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
+                        "\").append('=').append(" + nonDerived.get(i).generateBuilderFieldName() + ")";
+                if (i < properties.size() - 1) {
+                    insertRegion.add(base + ".append(',').append(' ');");
+                } else {
+                    insertRegion.add(base + ";");
+                }
+            }
+            insertRegion.add("\t\t\tbuf.append('}');");
+            insertRegion.add("\t\t\treturn buf.toString();");
+        }
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
     }
 
     //-----------------------------------------------------------------------

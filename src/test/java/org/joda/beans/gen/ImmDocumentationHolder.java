@@ -302,6 +302,16 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
             return this;
         }
 
+        //-----------------------------------------------------------------------
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder(64);
+            buf.append("ImmDocumentationHolder.Builder{");
+            buf.append("documentation").append('=').append(documentation);
+            buf.append('}');
+            return buf.toString();
+        }
+
     }
 
     ///CLOVER:ON

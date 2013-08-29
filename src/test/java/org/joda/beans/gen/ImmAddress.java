@@ -478,6 +478,19 @@ public final class ImmAddress implements ImmutableBean {
             return this;
         }
 
+        //-----------------------------------------------------------------------
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder(160);
+            buf.append("ImmAddress.Builder{");
+            buf.append("number").append('=').append(number).append(',').append(' ');
+            buf.append("street").append('=').append(street).append(',').append(' ');
+            buf.append("city").append('=').append(city).append(',').append(' ');
+            buf.append("owner").append('=').append(owner);
+            buf.append('}');
+            return buf.toString();
+        }
+
     }
 
     ///CLOVER:ON
