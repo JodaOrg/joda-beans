@@ -223,6 +223,22 @@ Thus a validation attribute of "Validate.noNulls" could be used to connect up to
 </section>
 
 
+<section name="Immutable beans">
+<p>
+Code generated beans may also be immutable.
+</p>
+<p>
+Immutable beans must be final and all their fields must be final.
+The cannot extend another bean class.
+Instead, they directly implement <code>ImmutableBean</code>.
+</p>
+<p>
+Rather than set methods, a builder class will be generated.
+This supports code based manipulation, using the <code>toBuilder()</code> method.
+</p>
+</section>
+
+
 <section name="Integration">
 <p>
 Joda-Beans has so far been integrated with Freemarker and MongoDB.
