@@ -100,7 +100,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     private static Field findField(MetaBean metaBean, String propertyName) {
         Field field = null;
         Class<?> cls = metaBean.beanType();
-        while (cls != DirectBean.class) {
+        while (cls != DirectBean.class && cls != Object.class && cls != null) {
             try {
                 field = cls.getDeclaredField(propertyName);
                 break;
