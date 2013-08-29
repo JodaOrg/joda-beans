@@ -46,9 +46,10 @@ abstract class CopyGen {
      * 
      * @param indent  the indent to use, not null
      * @param prop  the property data, not null
+     * @param beanToCopyFrom  the variable name of the bean, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateCopyToMutable(String indent, GeneratableProperty prop);
+    abstract List<String> generateCopyToMutable(String indent, GeneratableProperty prop, String beanToCopyFrom);
 
     //-----------------------------------------------------------------------
     static class PatternCopyGen extends CopyGen {
@@ -86,7 +87,7 @@ abstract class CopyGen {
             return list;
         }
         @Override
-        List<String> generateCopyToMutable(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToMutable(String indent, GeneratableProperty prop, String beanToCopyFrom) {
             List<String> list = new ArrayList<String>();
             final String[] split = mutablePattern.split("\n");
             for (String line : split) {
@@ -99,7 +100,7 @@ abstract class CopyGen {
                     }
                 }
                 line = line.replace("$field", "this." + prop.getFieldName());
-                line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("$value", beanToCopyFrom + "." + prop.getGetterGen().generateGetInvoke(prop));
                 line = line.replace("$type", prop.getFieldType());
                 line = line.replace("$typeRaw", prop.getTypeRaw());
                 line = line.replace("$generics", prop.getTypeGenerics());
@@ -120,7 +121,7 @@ abstract class CopyGen {
             return list;
         }
         @Override
-        List<String> generateCopyToMutable(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToMutable(String indent, GeneratableProperty prop, String beanToCopyFrom) {
             prop.getBean().ensureImport(JodaBeanUtils.class);
             List<String> list = new ArrayList<String>();
             list.add(indent + "this." + prop.getFieldName() + " = JodaBeanUtils.clone(" + prop.getPropertyName() + ");");
@@ -135,7 +136,7 @@ abstract class CopyGen {
             return Collections.emptyList();
         }
         @Override
-        List<String> generateCopyToMutable(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToMutable(String indent, GeneratableProperty prop, String beanToCopyFrom) {
             return Collections.emptyList();
         }
     }

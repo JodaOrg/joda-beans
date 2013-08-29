@@ -51,4 +51,18 @@ public class TestImmutable {
         assertEquals(address.getStreet(), "Park Lane");
     }
 
+    public void test_with() {
+        ImmAddress address = ImmAddress.builder()
+                .set("number", 12)
+                .set("street", "Park Lane")
+                .set("city", "Smallville")
+                .set("owner", ImmPerson.builder().forename("John").surname("Doggett").build())
+                .build();
+        
+        address = address.with().street("Park Road").build();
+        
+        assertEquals(address.getCity(), "Smallville");
+        assertEquals(address.getStreet(), "Park Road");
+    }
+
 }

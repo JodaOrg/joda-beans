@@ -182,6 +182,14 @@ public final class ImmAddress implements ImmutableBean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a builder that allows this bean to be mutated.
+     * @return the mutable builder, not null
+     */
+    public Builder with() {
+        return new Builder(this);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -372,6 +380,18 @@ public final class ImmAddress implements ImmutableBean {
          */
         private Builder() {
             super(ImmAddress.Meta.INSTANCE);
+        }
+
+        /**
+         * Restricted copy constructor.
+         * @param beanToCopy  the bean to copy from, not null
+         */
+        private Builder(ImmAddress beanToCopy) {
+            super(ImmAddress.Meta.INSTANCE);
+            this.number = beanToCopy.getNumber();
+            this.street = beanToCopy.getStreet();
+            this.city = beanToCopy.getCity();
+            this.owner = beanToCopy.getOwner();
         }
 
         //-----------------------------------------------------------------------

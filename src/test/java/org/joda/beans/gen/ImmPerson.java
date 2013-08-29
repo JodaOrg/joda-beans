@@ -244,6 +244,14 @@ public final class ImmPerson implements ImmutableBean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a builder that allows this bean to be mutated.
+     * @return the mutable builder, not null
+     */
+    public Builder with() {
+        return new Builder(this);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -503,6 +511,21 @@ public final class ImmPerson implements ImmutableBean {
          */
         private Builder() {
             super(ImmPerson.Meta.INSTANCE);
+        }
+
+        /**
+         * Restricted copy constructor.
+         * @param beanToCopy  the bean to copy from, not null
+         */
+        private Builder(ImmPerson beanToCopy) {
+            super(ImmPerson.Meta.INSTANCE);
+            this.forename = beanToCopy.getForename();
+            this.surname = beanToCopy.getSurname();
+            this.numberOfCars = beanToCopy.getNumberOfCars();
+            this.addressList = new ArrayList<Address>(beanToCopy.getAddressList());
+            this.otherAddressMap = new HashMap<String, Address>(beanToCopy.getOtherAddressMap());
+            this.addressesList = new ArrayList<List<Address>>(beanToCopy.getAddressesList());
+            this.mainAddress = beanToCopy.getMainAddress();
         }
 
         //-----------------------------------------------------------------------
