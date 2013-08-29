@@ -58,7 +58,7 @@ class PropertyGen {
      */
     public PropertyGen(BeanGen bean, List<String> content, int lineIndex, boolean derived) {
         this.bean = bean;
-        this.annotationIndex = lineIndex;
+        this.annotationIndex = parseAnnotationStart(content, lineIndex);
         this.fieldIndex = parseCodeIndex(content);
         GeneratableProperty prop = new GeneratableProperty(bean.getData(), bean.getConfig());
         if (derived) {
@@ -104,6 +104,13 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
+    private int parseAnnotationStart(List<String> content, int lineIndex) {
+        while (lineIndex > 0 && content.get(lineIndex - 1).trim().startsWith("@")) {
+            lineIndex--;
+        }
+        return lineIndex;
+    }
+
     private int parseCodeIndex(List<String> content) {
         for (int index = annotationIndex; index < content.size(); index++) {
             if (content.get(index).trim().startsWith("@") == false) {
@@ -153,7 +160,7 @@ class PropertyGen {
     }
 
     private boolean parseDeprecated(List<String> content) {
-        for (int index = annotationIndex + 1; index < fieldIndex; index++) {
+        for (int index = annotationIndex; index < fieldIndex; index++) {
             String line = content.get(index).trim();
             if (line.equals("@Deprecated") || line.startsWith("@Deprecated ")) {
                 return true;
