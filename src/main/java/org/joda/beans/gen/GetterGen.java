@@ -17,9 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A generator of get methods.
@@ -28,30 +26,6 @@ import java.util.Map;
  */
 abstract class GetterGen {
 
-    /** The known getter generators. */
-    static final Map<String, GetterGen> GETTERS = new HashMap<String, GetterGen>();
-    static {
-        GETTERS.put("", NoGetterGen.INSTANCE);
-        GETTERS.put("smart", SmartGetterGen.INSTANCE);
-        GETTERS.put("get", GetGetterGen.INSTANCE);
-        GETTERS.put("is", IsGetterGen.INSTANCE);
-        GETTERS.put("manual", ManualGetterGen.INSTANCE);
-    }
-
-    /**
-     * Generates the getter method.
-     * @param prop  the property data, not null
-     * @return the generated code, not null
-     */
-    static GetterGen of(GeneratableProperty prop) {
-        GetterGen gen = GETTERS.get(prop.getGetStyle());
-        if (gen == null) {
-            throw new RuntimeException("Unable to locate getter generator '" + prop.getGetStyle() + "'");
-        }
-        return gen;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Generates the getter method.
      * @param prop  the property data, not null
@@ -70,31 +44,11 @@ abstract class GetterGen {
     }
 
     //-----------------------------------------------------------------------
-    static class SmartGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new SmartGetterGen();
-        @Override
-        List<String> generateGetter(GeneratableProperty prop) {
-            if (prop.getType().equals("boolean")) {
-                return IsGetterGen.INSTANCE.generateGetter(prop);
-            } else {
-                return GetGetterGen.INSTANCE.generateGetter(prop);
-            }
-        }
-        @Override
-        String generateGetInvoke(GeneratableProperty prop) {
-            if (prop.getType().equals("boolean")) {
-                return IsGetterGen.INSTANCE.generateGetInvoke(prop);
-            } else {
-                return GetGetterGen.INSTANCE.generateGetInvoke(prop);
-            }
-        }
-    }
-
     static class GetGetterGen extends GetterGen {
         static final GetterGen INSTANCE = new GetGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "get");
+            return doGenerateGetter(prop, "get", prop.getFieldName());
         }
     }
 
@@ -102,11 +56,27 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new IsGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "is");
+            return doGenerateGetter(prop, "is", prop.getFieldName());
         }
         @Override
         String generateGetInvoke(GeneratableProperty prop) {
             return "is" + prop.getUpperName() + "()";
+        }
+    }
+
+    static class CloneGetterGen extends GetterGen {
+        static final GetterGen INSTANCE = new CloneGetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            return doGenerateGetter(prop, "get", "(" + prop.getFieldName() + " != null ? " + prop.getFieldName() + ".clone() : null)");
+        }
+    }
+
+    static class CloneCastGetterGen extends GetterGen {
+        static final GetterGen INSTANCE = new CloneCastGetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            return doGenerateGetter(prop, "get", "(" + prop.getFieldName() + " != null ? (" + prop.getFieldType() + ") " + prop.getFieldName() + ".clone() : null)");
         }
     }
 
@@ -130,7 +100,7 @@ abstract class GetterGen {
         }
     }
 
-    private static List<String> doGenerateGetter(GeneratableProperty prop, String prefix) {
+    private static List<String> doGenerateGetter(GeneratableProperty prop, String prefix, String expression) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());
@@ -143,7 +113,7 @@ abstract class GetterGen {
             list.add("\t@Deprecated");
         }
         list.add("\tpublic " + prop.getType() + " " + prefix + prop.getUpperName() + "() {");
-        list.add("\t\treturn " + prop.getFieldName() + ";");
+        list.add("\t\treturn " + expression + ";");
         list.add("\t}");
         list.add("");
         return list;

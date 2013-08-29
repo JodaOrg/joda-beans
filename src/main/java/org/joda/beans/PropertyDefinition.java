@@ -46,6 +46,8 @@ public @interface PropertyDefinition {
      * <li>'smart' - process intelligently - 'is' for boolean and 'get' for other types
      * <li>'is' - generates isXxx()
      * <li>'get' - generates getXxx()
+     * <li>'clone' - generates getXxx() with a clone of the field (assumed to be of the correct type)
+     * <li>'cloneCast' - generates getXxx() with a clone of the field with a cast to the property type
      * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
      * </ul>
      */
@@ -69,9 +71,31 @@ public @interface PropertyDefinition {
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
      * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
      * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
+     * <li>a pattern, see below
      * </ul>
+     * <p>
+     * A pattern can be used for special behaviour.
+     * The pattern is a complete piece of code.
+     * For example, 'new Foo($value)' or '$field = $value.clone()'.<br/>
+     * '$field' for the field to copy into.<br/>
+     * '$value' for the value to copy from.<br/>
+     * '&gt;&lt;' for the generics of the type including angle brackets.<br/>
+     * '\n' for a new line (all lines must then include semi-colons).<br/>
      */
     String set() default "smart";
+
+    /**
+     * The exposed type of the property.
+     * <p>
+     * The style is used to control the exposed type of the property in
+     * getters and setters, or similar.
+     * <p>
+     * This is used when the type of the field is not the same as the type
+     * as should be used in public methods such as getters and setters.
+     * <p>
+     * By default, the declared type will be used as the exposed type.
+     */
+    String type() default "smart";
 
     /**
      * The validator to use.

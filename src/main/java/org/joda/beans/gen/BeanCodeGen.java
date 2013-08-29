@@ -50,6 +50,8 @@ public class BeanCodeGen {
         try {
             gen = createFromArgs(args);
         } catch (RuntimeException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("");
             System.out.println("Code generator");
             System.out.println("  Usage java org.joda.beans.gen.BeanCodeGen [file]");
             System.out.println("  Options");
@@ -57,6 +59,7 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
+            System.out.println("    -config=[f]       config file: jdk6/guava', default guava");
             System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
             System.out.println("    -nowrite          output messages rather than writing, default is to write");
             System.exit(0);
@@ -91,6 +94,7 @@ public class BeanCodeGen {
         int verbosity = 1;
         boolean write = true;
         File file = null;
+        BeanGenConfig config = null;
         if (args.length == 0) {
             throw new IllegalArgumentException("No arguments specified");
         }
@@ -107,6 +111,11 @@ public class BeanCodeGen {
                 prefix = arg.substring(8);
             } else if (arg.equals("-R")) {
                 recurse = true;
+            } else if (arg.equals("-config=")) {
+                if (config != null) {
+                    throw new IllegalArgumentException("Argument 'config' must not be specified twice: " + Arrays.toString(args));
+                }
+                config = BeanGenConfig.parse(arg.substring(8));
             } else if (arg.startsWith("-verbose=")) {
                 verbosity = Integer.parseInt(arg.substring(3));
             } else if (arg.startsWith("-v=")) {
@@ -119,9 +128,14 @@ public class BeanCodeGen {
             }
         }
         file = new File(args[args.length - 1]);
-        
         List<File> files = findFiles(file, recurse);
-        return new BeanCodeGen(files, indent, prefix, verbosity, write);
+        
+        if (config == null) {
+            config = BeanGenConfig.parse("guava");
+        }
+        config.setIndent(indent);
+        config.setPrefix(prefix);
+        return new BeanCodeGen(files, config, verbosity, write);
     }
 
     /**
@@ -158,10 +172,8 @@ public class BeanCodeGen {
     //-----------------------------------------------------------------------
     /** The files to process. */
     private final List<File> files;
-    /** The indent to use. */
-    private final String indent;
-    /** The prefix to use. */
-    private final String prefix;
+    /** The configuration to use. */
+    private final BeanGenConfig config;
     /** The verbosity level. */
     private final int verbosity;
     /** Whether to write or not. */
@@ -177,7 +189,9 @@ public class BeanCodeGen {
      * @param prefix  the prefix to use, which will be directly inserted in the output, not null
      * @param verbosity  the verbosity, from 0 to 3
      * @param write  whether to write or not
+     * @deprecated Use BeanGenConfig constructor
      */
+    @Deprecated
     public BeanCodeGen(List<File> files, String indent, String prefix, int verbosity, boolean write) {
         JodaBeanUtils.notNull(files, "files");
         JodaBeanUtils.notNull(indent, "indent");
@@ -186,8 +200,31 @@ public class BeanCodeGen {
             throw new IllegalArgumentException("Invalid verbosity: " + verbosity);
         }
         this.files = files;
-        this.indent = indent;
-        this.prefix = prefix;
+        config = BeanGenConfig.parse("guava");
+        config.setIndent(indent);
+        config.setPrefix(prefix);
+        this.verbosity = verbosity;
+        this.write = write;
+    }
+
+    /**
+     * Creates the generator for a single bean.
+     * <p>
+     * To generate, use {@link #process()}.
+     * 
+     * @param files  the files to process, not null
+     * @param config  the configuration to use, not null
+     * @param verbosity  the verbosity, from 0 to 3
+     * @param write  whether to write or not
+     */
+    public BeanCodeGen(List<File> files, BeanGenConfig config, int verbosity, boolean write) {
+        JodaBeanUtils.notNull(files, "files");
+        JodaBeanUtils.notNull(config, "config");
+        if (verbosity < 0 || verbosity > 3) {
+            throw new IllegalArgumentException("Invalid verbosity: " + verbosity);
+        }
+        this.files = files;
+        this.config = config;
         this.verbosity = verbosity;
         this.write = write;
     }
@@ -217,7 +254,7 @@ public class BeanCodeGen {
         List<String> content = new ArrayList<String>(original);
         BeanGen gen;
         try {
-            gen = new BeanGen(content, indent, prefix);
+            gen = new BeanGen(content, config);
         } catch (Exception ex) {
             throw new RuntimeException("Error in bean: " + file, ex);
         }

@@ -20,15 +20,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
+import org.joda.beans.BeanDefinition;
+import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
+import org.joda.beans.PropertyDefinition;
+import org.joda.beans.impl.BasicImmutableBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
@@ -50,7 +55,7 @@ class BeanGen {
     /** Pattern to find super type. */
     private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_<> ]*)>)?).*");
     /** Pattern to find root type. */
-    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements.*[ ,]Bean[ ,].*");
+    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements.*[ ,]((Immutable)?Bean)[ ,].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {
@@ -65,10 +70,8 @@ class BeanGen {
 
     /** The content to process. */
     private final List<String> content;
-    /** The indent. */
-    private final String indent;
-    /** The prefix. */
-    private final String prefix;
+    /** The config. */
+    private final BeanGenConfig config;
     /** The start position of auto-generation. */
     private final int autoStartIndex;
     /** The end position of auto-generation. */
@@ -83,13 +86,11 @@ class BeanGen {
     /**
      * Constructor.
      * @param content  the content to process, not null
-     * @param indent  the indent to use, not null
-     * @param prefix  the prefix to use, not null
+     * @param config  the config to use, not null
      */
-    BeanGen(List<String> content, String indent, String prefix) {
+    BeanGen(List<String> content, BeanGenConfig config) {
         this.content = content;
-        this.indent = indent;
-        this.prefix = prefix;
+        this.config = config;
         int beanDefIndex = parseBeanDefinition();
         if (beanDefIndex >= 0) {
             this.data = new GeneratableBean();
@@ -104,6 +105,16 @@ class BeanGen {
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
             this.data.setManualEqualsHashCode(parseManualEqualsHashCode(beanDefIndex));
             this.data.setManualToStringCode(parseManualToStringCode(beanDefIndex));
+            if (data.isImmutable()) {
+                if (data.isTypeFinal() == false) {
+                    throw new RuntimeException("ImmutableBean must be final: " + data.getTypeRaw());
+                }
+                for (PropertyGen prop : properties) {
+                    if (prop.getData().isDerived() == false && prop.getData().isFinal() == false) {
+                        throw new RuntimeException("ImmutableBean must be have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
+                    }
+                }
+            }
         } else {
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
@@ -116,20 +127,34 @@ class BeanGen {
     //-----------------------------------------------------------------------
     void process() {
         if (insertRegion != null) {
+            data.ensureImport(BeanDefinition.class);
+            if (data.isImmutable()) {
+                data.ensureImport(ImmutableBean.class);
+            }
+            if (properties.size() > 0) {
+                data.ensureImport(PropertyDefinition.class);
+            }
             removeOld();
             if (data.isRootClass() && data.isExtendsDirectBean()) {
                 data.ensureImport(DirectBean.class);
             }
             insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
+            if (data.isImmutable()) {
+                generateImmutableBuilderMethod();
+                generateImmutableConstructor();
+            }
             generateMetaBean();
             if (data.isRootClass() && data.isExtendsDirectBean() == false) {
                 generatePropertyByName();
                 generatePropertyNames();
             }
             generateGettersSetters();
-            if (data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false) {
+            if (data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false || data.isImmutable()) {
                 generateSeparator();
+                if (data.isImmutable()) {
+                    generateImmutableWith();
+                }
                 if (data.isManualEqualsHashCode() == false) {
                     generateEquals();
                     generateHashCode();
@@ -139,6 +164,9 @@ class BeanGen {
                 }
             }
             generateMetaClass();
+            if (data.isImmutable()) {
+                generateBuilderClass();
+            }
             insertRegion.add("\t///CLOVER:ON");
             resolveImports();
             resolveIndents();
@@ -156,7 +184,7 @@ class BeanGen {
 
     private void resolveIndents() {
         for (ListIterator<String> it = content.listIterator(); it.hasNext(); ) {
-            it.set(it.next().replace("\t", indent));
+            it.set(it.next().replace("\t", config.getIndent()));
         }
     }
 
@@ -223,7 +251,7 @@ class BeanGen {
         for (int index = defLine; index < content.size(); index++) {
             matcherImplements.reset(content.get(index));
             if (matcherImplements.matches()) {
-                return new String[0];
+                return new String[] {matcherImplements.group(1)};
             }
             matcherExtends.reset(content.get(index));
             if (matcherExtends.matches()) {
@@ -324,6 +352,42 @@ class BeanGen {
         insertRegion.add("\t//-----------------------------------------------------------------------");
     }
 
+    private void generateImmutableBuilderMethod() {
+        insertRegion.add("\t/**");
+        insertRegion.add("\t * Returns a builder used tp create an instance of the bean.");
+        insertRegion.add("\t *");
+        insertRegion.add("\t * @return the builder, not null");
+        insertRegion.add("\t */");
+        if (data.isTypeGeneric()) {
+            insertRegion.add("\tpublic static " + data.getTypeGeneric(true) + " " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
+        } else {
+            insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Builder builder() {");
+        }
+        insertRegion.add("\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    private void generateImmutableConstructor() {
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        if (nonDerived.size() == 0) {
+            insertRegion.add("\tprivate " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder) {");
+        } else {
+            insertRegion.add("\tprivate " + data.getTypeRaw() + "(");
+            insertRegion.add("\t\t\t" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder,");
+            for (int i = 0; i < nonDerived.size(); i++) {
+                PropertyGen prop = nonDerived.get(i);
+                insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getFieldName() + (i < nonDerived.size() - 1 ? "," : ") {"));
+            }
+            for (int i = 0; i < nonDerived.size(); i++) {
+                insertRegion.addAll(nonDerived.get(i).generateConstructorAssign());
+            }
+        }
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    //-----------------------------------------------------------------------
     private void generateMeta() {
         data.ensureImport(JodaBeanUtils.class);
         // this cannot be generified without either Eclipse or javac complaining
@@ -382,7 +446,9 @@ class BeanGen {
         for (PropertyGen prop : properties) {
             generateSeparator();
             insertRegion.addAll(prop.generateGetter());
-            insertRegion.addAll(prop.generateSetter());
+            if (data.isMutable()) {
+                insertRegion.addAll(prop.generateSetter());
+            }
             insertRegion.addAll(prop.generateProperty());
         }
     }
@@ -407,6 +473,17 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
+    private void generateImmutableWith() {
+        insertRegion.add("\t/**");
+        insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
+        insertRegion.add("\t * @return the mutable builder, not null");
+        insertRegion.add("\t */");
+        insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " with() {");
+        insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
     private void generateEquals() {
         data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
@@ -425,7 +502,7 @@ class BeanGen {
             insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
             for (int i = 0; i < properties.size(); i++) {
                 PropertyGen prop = properties.get(i);
-                String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+                String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
                 String equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
                     equals = "(" + getter + " == other." + getter + ")";
@@ -455,7 +532,7 @@ class BeanGen {
         }
         for (int i = 0; i < properties.size(); i++) {
             PropertyGen prop = properties.get(i);
-            String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+            String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
             insertRegion.add("\t\thash += hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }
         if (data.isSubClass()) {
@@ -476,7 +553,7 @@ class BeanGen {
             insertRegion.add("\t\tbuf.append('{');");
             for (int i = 0; i < properties.size(); i++) {
                 PropertyGen prop = properties.get(i);
-                String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+                String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
                 if (i < properties.size() - 1) {
                     insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(" + getter + ").append(',').append(' ');");
@@ -516,7 +593,7 @@ class BeanGen {
         }
         for (int i = 0; i < properties.size(); i++) {
             PropertyGen prop = properties.get(i);
-            String getter = GetterGen.of(prop.getData()).generateGetInvoke(prop.getData());
+            String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
             insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                     "\").append('=').append(" + getter + ").append(',').append(' ');");
         }
@@ -564,13 +641,13 @@ class BeanGen {
         generateMetaPropertyMap();
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
         generateMetaPropertyMethods();
-        if (properties.size() > 0 || data.isValidated()) {
+        if (properties.size() > 0 || (data.isValidated() && data.isMutable())) {
             insertRegion.add("\t\t//-----------------------------------------------------------------------");
             if (properties.size() > 0) {
                 generateMetaGetPropertyValue();
                 generateMetaSetPropertyValue();
             }
-            if (data.isValidated()) {
+            if (data.isValidated() && data.isMutable()) {
                 generateMetaValidate();
             }
         }
@@ -590,7 +667,7 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The meta-properties.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + prefix + "metaPropertyMap$ = new DirectMetaPropertyMap(");
+        insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + config.getPrefix() + "metaPropertyMap$ = new DirectMetaPropertyMap(");
         if (data.isSubClass()) {
             insertRegion.add("\t\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
@@ -605,14 +682,19 @@ class BeanGen {
     }
 
     private void generateMetaBuilder() {
-        data.ensureImport(BeanBuilder.class);
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
-        if (data.isConstructable()) {
-            data.ensureImport(DirectBeanBuilder.class);
-            insertRegion.add("\t\t\treturn new DirectBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
+        if (data.isImmutable()) {
+            insertRegion.add("\t\tpublic " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
         } else {
-            insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+            data.ensureImport(BeanBuilder.class);
+            insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
+            if (data.isConstructable()) {
+                data.ensureImport(DirectBeanBuilder.class);
+                insertRegion.add("\t\t\treturn new DirectBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
+            } else {
+                insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+            }
         }
         insertRegion.add("\t\t}");
         insertRegion.add("");
@@ -653,7 +735,7 @@ class BeanGen {
         data.ensureImport(Map.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Map<String, MetaProperty<?>> metaPropertyMap() {");
-        insertRegion.add("\t\t\treturn " + prefix + "metaPropertyMap$;");
+        insertRegion.add("\t\t\treturn " + config.getPrefix() + "metaPropertyMap$;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }
@@ -681,6 +763,19 @@ class BeanGen {
 
     private void generateMetaSetPropertyValue() {
         data.ensureImport(Bean.class);
+        if (data.isImmutable()) {
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tprotected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {");
+            insertRegion.add("\t\t\tmetaProperty(propertyName);");
+            insertRegion.add("\t\t\tif (quiet) {");
+            insertRegion.add("\t\t\t\treturn;");
+            insertRegion.add("\t\t\t}");
+            insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: \" + propertyName);");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+            return;
+        }
+        
         boolean generics = data.isTypeGeneric() && properties.size() > 0;
         for (GeneratableProperty prop : data.getProperties()) {
             generics |= (prop.getReadWrite().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
@@ -721,6 +816,112 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
+    private void generateBuilderClass() {
+        data.ensureImport(BasicImmutableBeanBuilder.class);
+        generateSeparator();
+        insertRegion.add("\t/**");
+        insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
+        insertRegion.add("\t */");
+        insertRegion.add("\tpublic static class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
+        insertRegion.add("");
+        generateBuilderProperties();
+        insertRegion.add("");
+        generateBuilderConstructor();
+        insertRegion.add("\t\t//-----------------------------------------------------------------------");
+        generateBuilderSet();
+        generateBuilderBuilder();
+        if (properties.size() > 0) {
+            insertRegion.add("\t\t//-----------------------------------------------------------------------");
+            generateBuilderPropertySetMethods();
+        }
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    private void generateBuilderConstructor() {
+        insertRegion.add("\t\t/**");
+        insertRegion.add("\t\t * Restricted constructor.");
+        insertRegion.add("\t\t */");
+        insertRegion.add("\t\tprivate Builder() {");
+        insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+        
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        if (nonDerived.size() > 0) {
+            insertRegion.add("\t\t/**");
+            insertRegion.add("\t\t * Restricted copy constructor.");
+            insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
+            insertRegion.add("\t\t */");
+            insertRegion.add("\t\tprivate Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
+            insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+            for (int i = 0; i < nonDerived.size(); i++) {
+                insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
+            }
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+        }
+    }
+
+    private void generateBuilderProperties() {
+        for (PropertyGen prop : properties) {
+            if (prop.getData().isDerived() == false) {
+                insertRegion.addAll(prop.generateBuilderField());
+            }
+        }
+    }
+
+    private void generateBuilderSet() {
+        data.ensureImport(NoSuchElementException.class);
+        boolean generics = data.isTypeGeneric() && properties.size() > 0;
+        for (GeneratableProperty prop : data.getProperties()) {
+            generics |= (prop.isGeneric() && prop.isGenericWildcardParamType() == false);
+        }
+        if (generics) {
+            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+        }
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGeneric(true) + " set(String propertyName, Object newValue) {");
+        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+        for (PropertyGen prop : properties) {
+            if (prop.getData().isDerived() == false) {
+                insertRegion.addAll(prop.generateBuilderFieldSet());
+            }
+        }
+        insertRegion.add("\t\t\t\tdefault:");
+        insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+        insertRegion.add("\t\t\t}");
+        insertRegion.add("\t\t\treturn this;");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateBuilderBuilder() {
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGeneric(true) + " build() {");
+        if (nonDerived.size() == 0) {
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "(this);");
+        } else {
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "(");
+            insertRegion.add("\t\t\t\t\tthis,");
+            for (int i = 0; i < nonDerived.size(); i++) {
+                insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
+            }
+        }
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateBuilderPropertySetMethods() {
+        for (PropertyGen prop : properties) {
+            if (prop.getData().isDerived() == false) {
+                insertRegion.addAll(prop.generateBuilderSetMethod());
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     boolean isBean() {
         return data != null;
     }
@@ -729,8 +930,22 @@ class BeanGen {
         return data;
     }
 
+    BeanGenConfig getConfig() {
+        return config;
+    }
+
     String getFieldPrefix() {
-        return prefix;
+        return config.getPrefix();
+    }
+
+    private List<PropertyGen> nonDerivedProperties() {
+        List<PropertyGen> nonDerived = new ArrayList<PropertyGen>();
+        for (PropertyGen prop : properties) {
+            if (prop.getData().isDerived() == false) {
+                nonDerived.add(prop);
+            }
+        }
+        return nonDerived;
     }
 
 }

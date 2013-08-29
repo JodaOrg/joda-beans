@@ -34,7 +34,9 @@ class PropertyGen {
     /** The getter pattern. */
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
     /** The setter pattern. */
-    private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
+    private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
+    /** The type pattern. */
+    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
     /** The validation pattern. */
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(".*[ ,(]validate[ ]*[=][ ]*[\"]([a-zA-Z_.]*)[\"].*");
 
@@ -58,25 +60,32 @@ class PropertyGen {
         this.bean = bean;
         this.annotationIndex = lineIndex;
         this.fieldIndex = parseCodeIndex(content);
-        GeneratableProperty prop = new GeneratableProperty(bean.getData());
+        GeneratableProperty prop = new GeneratableProperty(bean.getData(), bean.getConfig());
         if (derived) {
             prop.setGetStyle("manual");
             prop.setSetStyle("");
+            prop.setTypeStyle("");
             prop.setDeprecated(parseDeprecated(content));
             prop.setPropertyName(parseMethodNameAsPropertyName(content));
             prop.setUpperName(makeUpperName(prop.getPropertyName()));
-            prop.setType(parseMethodType(content));
+            prop.setFieldType(parseMethodType(content));
         } else {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
+            prop.setTypeStyle(parseTypeStyle(content));
             prop.setValidation(parseValidation(content));
             prop.setDeprecated(parseDeprecated(content));
             prop.setFieldName(parseFieldName(content));
             prop.setPropertyName(makePropertyName(bean, prop.getFieldName()));
             prop.setUpperName(makeUpperName(prop.getPropertyName()));
             prop.setFinal(parseFinal(content));
-            prop.setType(parseFieldType(content));
+            prop.setFieldType(parseFieldType(content));
         }
+        prop.resolveType();
+        prop.resolveGetterGen();
+        prop.resolveSetterGen();
+        prop.resolveCopyGen();
+        prop.resolveBuilderGen();
         List<String> comments = parseComment(content, prop.getPropertyName());
         prop.setFirstComment(comments.get(0));
         prop.getComments().addAll(comments.subList(1, comments.size()));
@@ -125,6 +134,15 @@ class PropertyGen {
         return "smart";
     }
 
+    private String parseTypeStyle(List<String> content) {
+        String line = content.get(annotationIndex).trim();
+        Matcher matcher = TYPE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+
     private String parseValidation(List<String> content) {
         String line = content.get(annotationIndex).trim();
         Matcher matcher = VALIDATION_PATTERN.matcher(line);
@@ -161,9 +179,8 @@ class PropertyGen {
         if (parts.length < 2) {
             throw new RuntimeException("Unable to locate field type at line " + annotationIndex);
         }
-        String first = parts[0];
-        String second = parts[1];
-        if (first.equals("final") || second.equals("final")) {
+        if (parts[0].equals("final") || parts[1].equals("final") ||
+                (parts.length >= 3 && parts[2].equals("final"))) {
             return true;
         }
         return false;
@@ -302,6 +319,11 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
+    List<String> generateConstructorAssign() {
+        return data.getCopyGen().generateCopyToImmutable("\t\t", data);
+    }
+
+    //-----------------------------------------------------------------------
     List<String> generateMetaPropertyConstant() {
         data.getBean().ensureImport(MetaProperty.class);
         data.getBean().ensureImport(DirectMetaProperty.class);
@@ -339,11 +361,11 @@ class PropertyGen {
     }
 
     List<String> generateGetter() {
-        return GetterGen.of(data).generateGetter(data);
+        return data.getGetterGen().generateGetter(data);
     }
 
     List<String> generateSetter() {
-        return SetterGen.of(data).generateSetter(data);
+        return data.getSetterGen().generateSetter("\t", data);
     }
 
     List<String> generateProperty() {
@@ -393,7 +415,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getReadWrite().isReadable()) {
-            list.add("\t\t\t\t\treturn ((" + data.getBean().getTypeWildcard() + ") bean)." + GetterGen.of(data).generateGetInvoke(data) + ";");
+            list.add("\t\t\t\t\treturn ((" + data.getBean().getTypeWildcard() + ") bean)." + data.getGetterGen().generateGetInvoke(data) + ";");
         } else {
             list.add("\t\t\t\t\tif (quiet) {");
             list.add("\t\t\t\t\t\treturn null;");
@@ -406,7 +428,7 @@ class PropertyGen {
     List<String> generatePropertySetCase() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
-        String setter = SetterGen.of(data).generateSetInvoke(data);
+        String setter = data.getSetterGen().generateSetInvoke(data);
         if (data.getReadWrite().isWritable() && setter != null) {
             list.add("\t\t\t\t\t((" + data.getBean().getTypeNoExtends() + ") bean)." + setter + "(" + castObject() + "newValue);");
             list.add("\t\t\t\t\treturn;");
@@ -417,6 +439,47 @@ class PropertyGen {
             list.add("\t\t\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: " + data.getPropertyName() + "\");");
         }
         return list;
+    }
+
+    //-----------------------------------------------------------------------
+    List<String> generateBuilderField() {
+        return data.getBuilderGen().generateField("\t\t", data);
+    }
+
+    List<String> generateBuilderConstructorAssign(String beanToCopyFrom) {
+        return data.getCopyGen().generateCopyToMutable("\t\t\t", data, beanToCopyFrom);
+    }
+
+    List<String> generateBuilderFieldSet() {
+        List<String> list = new ArrayList<String>();
+        list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        list.add("\t\t\t\t\tthis." + generateBuilderFieldName() + " = " + castObject() + "newValue;");
+        list.add("\t\t\t\t\tbreak;");
+        return list;
+    }
+
+    String generateBuilderFieldName() {
+        return bean.getFieldPrefix() + data.getFieldName();
+    }
+
+    List<String> generateBuilderSetMethod() {
+        List<String> list = new ArrayList<String>();
+        list.add("\t\t/**");
+        list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder.");
+        list.add("\t\t * @param newValue  the new value, not null");
+        list.add("\t\t * @return this, for chaining, not null");
+        list.add("\t\t */");
+        list.add("\t\tpublic Builder" + data.getBean().getTypeGeneric(true) + " " + data.getPropertyName() +
+                "(" + getBuilderType() + " newValue) {");
+        list.add("\t\t\tthis." + generateBuilderFieldName() + " = newValue;");
+        list.add("\t\t\treturn this;");
+        list.add("\t\t}");
+        list.add("");
+        return list;
+    }
+
+    String getBuilderType() {
+        return data.getBuilderGen().generateType(data);
     }
 
     //-----------------------------------------------------------------------
@@ -455,7 +518,6 @@ class PropertyGen {
             return "(" + pt + ") ";
         }
         return "(" + pt + ") ";
-//        return "(" + data.getType() + ") (" + pt + ") ";
     }
 
     private String propertyType() {

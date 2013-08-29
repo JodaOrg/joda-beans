@@ -76,6 +76,9 @@
   <build>
     <resources>
       <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
         <targetPath>META-INF</targetPath>
         <directory>${project.basedir}</directory>
         <includes>
@@ -328,6 +331,12 @@
       <artifactId>freemarker</artifactId>
       <version>2.3.15</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>14.0.1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

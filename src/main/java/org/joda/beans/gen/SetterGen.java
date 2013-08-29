@@ -17,9 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A generator of set methods.
@@ -28,31 +26,6 @@ import java.util.Map;
  */
 abstract class SetterGen {
 
-    /** The known setter generators. */
-    static final Map<String, SetterGen> SETTERS = new HashMap<String, SetterGen>();
-    static {
-        SETTERS.put("", NoSetterGen.INSTANCE);
-        SETTERS.put("smart", SmartSetterGen.INSTANCE);
-        SETTERS.put("set", SetSetterGen.INSTANCE);
-        SETTERS.put("setClearAddAll", SetClearAddAllSetterGen.INSTANCE);
-        SETTERS.put("setClearPutAll", SetClearPutAllSetterGen.INSTANCE);
-        SETTERS.put("manual", NoSetterGen.INSTANCE);
-    }
-
-    /**
-     * Generates the setter method.
-     * @param prop  the property data, not null
-     * @return the generated code, not null
-     */
-    static SetterGen of(GeneratableProperty prop) {
-        SetterGen gen = SETTERS.get(prop.getSetStyle());
-        if (gen == null) {
-            throw new RuntimeException("Unable to locate setter generator '" + prop.getSetStyle() + "'");
-        }
-        return gen;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Checks if a setter method is possible.
      * 
@@ -64,10 +37,11 @@ abstract class SetterGen {
     /**
      * Generates the setter method.
      * 
+     * @param indent  the indent to use, not null
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateSetter(GeneratableProperty prop);
+    abstract List<String> generateSetter(String indent, GeneratableProperty prop);
 
     /**
      * Generates the setter method invocation.
@@ -81,49 +55,6 @@ abstract class SetterGen {
     }
 
     //-----------------------------------------------------------------------
-    static class SmartSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new SmartSetterGen();
-        @Override
-        boolean isSetterGenerated(GeneratableProperty prop) {
-            if (prop.isFinal()) {
-                if (prop.isCollectionType() || prop.isMapType()) {
-                    return true;
-                }
-                return false;
-            } else {
-                return SetSetterGen.INSTANCE.isSetterGenerated(prop);
-            }
-        }
-        @Override
-        List<String> generateSetter(GeneratableProperty prop) {
-            if (prop.isFinal()) {
-                if (prop.isCollectionType()) {
-                    return SetClearAddAllSetterGen.INSTANCE.generateSetter(prop);
-                }
-                if (prop.isMapType()) {
-                    return SetClearPutAllSetterGen.INSTANCE.generateSetter(prop);
-                }
-                return Collections.emptyList();
-            } else {
-                return SetSetterGen.INSTANCE.generateSetter(prop);
-            }
-        }
-        @Override
-        String generateSetInvoke(GeneratableProperty prop) {
-            if (prop.isFinal()) {
-                if (prop.isCollectionType()) {
-                    return SetClearAddAllSetterGen.INSTANCE.generateSetInvoke(prop);
-                }
-                if (prop.isMapType()) {
-                    return SetClearPutAllSetterGen.INSTANCE.generateSetInvoke(prop);
-                }
-                return null;
-            } else {
-                return SetSetterGen.INSTANCE.generateSetInvoke(prop);
-            }
-        }
-    }
-
     static class SetSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new SetSetterGen();
         @Override
@@ -131,7 +62,7 @@ abstract class SetterGen {
             return true;
         }
         @Override
-        List<String> generateSetter(GeneratableProperty prop) {
+        List<String> generateSetter(String indent, GeneratableProperty prop) {
             List<String> list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Sets " + prop.getFirstComment());
@@ -155,27 +86,42 @@ abstract class SetterGen {
         }
     }
 
-    static class SetClearAddAllSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new SetClearAddAllSetterGen();
+    static class PatternSetterGen extends SetterGen {
+        private final String setPattern;
+        PatternSetterGen(String setPattern) {
+            this.setPattern = setPattern;
+        }
         @Override
         boolean isSetterGenerated(GeneratableProperty prop) {
             return true;
         }
         @Override
-        List<String> generateSetter(GeneratableProperty prop) {
-            return doGenerateBulkSetter(prop, "addAll");
-        }
-    }
-
-    static class SetClearPutAllSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new SetClearPutAllSetterGen();
-        @Override
-        boolean isSetterGenerated(GeneratableProperty prop) {
-            return true;
-        }
-        @Override
-        List<String> generateSetter(GeneratableProperty prop) {
-            return doGenerateBulkSetter(prop, "putAll");
+        List<String> generateSetter(String indent, GeneratableProperty prop) {
+            List<String> list = new ArrayList<String>();
+            list.add(indent + "/**");
+            list.add(indent + " * Sets " + prop.getFirstComment());
+            for (String comment : prop.getComments()) {
+                list.add(indent + " * " + comment);
+            }
+            list.add(indent + " * @param " + prop.getPropertyName() + "  the new value of the property");
+            list.add(indent + " */");
+            if (prop.isDeprecated()) {
+                list.add(indent + "@Deprecated");
+            }
+            list.add(indent + "public void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            final String[] split = setPattern.split("\n");
+            for (String line : split) {
+                line = line.replace("$field", "this." + prop.getFieldName());
+                line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("<>", prop.getTypeGenerics());
+                if (split.length == 1 && line.endsWith(";") == false) {
+                    line += ";";
+                }
+                list.add(indent + "\t" + line);
+            }
+            list.add(indent + "}");
+            list.add("");
+            return list;
         }
     }
 
@@ -186,28 +132,9 @@ abstract class SetterGen {
             return false;
         }
         @Override
-        List<String> generateSetter(GeneratableProperty prop) {
+        List<String> generateSetter(String indent, GeneratableProperty prop) {
             return Collections.emptyList();
         }
     }
 
-    private static List<String> doGenerateBulkSetter(GeneratableProperty prop, String alterMethod) {
-        List<String> list = new ArrayList<String>();
-        list.add("\t/**");
-        list.add("\t * Sets " + prop.getFirstComment());
-        for (String comment : prop.getComments()) {
-            list.add("\t * " + comment);
-        }
-        list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property");
-        list.add("\t */");
-        if (prop.isDeprecated()) {
-            list.add("\t@Deprecated");
-        }
-        list.add("\tpublic void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
-        list.add("\t\tthis." + prop.getFieldName() + ".clear();");
-        list.add("\t\tthis." + prop.getFieldName() + "." + alterMethod + "(" + prop.getPropertyName() + ");");
-        list.add("\t}");
-        list.add("");
-        return list;
-    }
 }
