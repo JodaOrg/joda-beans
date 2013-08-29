@@ -35,12 +35,6 @@ class PropertyGen {
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
     /** The setter pattern. */
     private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
-    /** The copy pattern. */
-    private static final Pattern COPY_PATTERN = Pattern.compile(".*[ ,(]copy[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
-    /** The builderType pattern. */
-    private static final Pattern BUILDER_TYPE_PATTERN = Pattern.compile(".*[ ,(]builderType[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
-    /** The builderInit pattern. */
-    private static final Pattern BUILDER_INIT_PATTERN = Pattern.compile(".*[ ,(]builderInit[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
     /** The type pattern. */
     private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
     /** The validation pattern. */
@@ -70,9 +64,6 @@ class PropertyGen {
         if (derived) {
             prop.setGetStyle("manual");
             prop.setSetStyle("");
-            prop.setCopyStyle("");
-            prop.setBuilderTypeStyle("");
-            prop.setBuilderInitStyle("");
             prop.setTypeStyle("");
             prop.setDeprecated(parseDeprecated(content));
             prop.setPropertyName(parseMethodNameAsPropertyName(content));
@@ -81,9 +72,6 @@ class PropertyGen {
         } else {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
-            prop.setCopyStyle(parseCopyStyle(content));
-            prop.setBuilderTypeStyle(parseBuilderTypeStyle(content));
-            prop.setBuilderInitStyle(parseBuilderInitStyle(content));
             prop.setTypeStyle(parseTypeStyle(content));
             prop.setValidation(parseValidation(content));
             prop.setDeprecated(parseDeprecated(content));
@@ -140,33 +128,6 @@ class PropertyGen {
     private String parseSetStyle(List<String> content) {
         String line = content.get(annotationIndex).trim();
         Matcher matcher = SETTER_PATTERN.matcher(line);
-        if (matcher.matches()) {
-            return matcher.group(1);
-        }
-        return "smart";
-    }
-
-    private String parseCopyStyle(List<String> content) {
-        String line = content.get(annotationIndex).trim();
-        Matcher matcher = COPY_PATTERN.matcher(line);
-        if (matcher.matches()) {
-            return matcher.group(1);
-        }
-        return "smart";
-    }
-
-    private String parseBuilderTypeStyle(List<String> content) {
-        String line = content.get(annotationIndex).trim();
-        Matcher matcher = BUILDER_TYPE_PATTERN.matcher(line);
-        if (matcher.matches()) {
-            return matcher.group(1);
-        }
-        return "smart";
-    }
-
-    private String parseBuilderInitStyle(List<String> content) {
-        String line = content.get(annotationIndex).trim();
-        Matcher matcher = BUILDER_INIT_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }

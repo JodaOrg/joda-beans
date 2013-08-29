@@ -70,12 +70,17 @@ public final class BeanGenConfig {
      * <p>
      * This loads the file as an ini file in this package.
      * 
-     * @param file  the configuration file, not null
+     * @param resourceLocator  the configuration resource locator, not null
      * @return the configuration
      */
-    public static BeanGenConfig parse(String file) {
-        String fullFile = "org/joda/beans/gen/" + file + ".ini";
-        URL url = BeanGenConfig.class.getClassLoader().getResource(fullFile);
+    public static BeanGenConfig parse(String resourceLocator) {
+        String fullFile;
+        if (resourceLocator.contains("/") || resourceLocator.endsWith(".ini")) {
+            fullFile = resourceLocator;
+        } else {
+            fullFile = "org/joda/beans/gen/" + resourceLocator + ".ini";
+        }
+        URL url = Thread.currentThread().getContextClassLoader().getResource(fullFile);
         if (url == null) {
             throw new IllegalArgumentException("Configuration file not found: " + fullFile);
         }

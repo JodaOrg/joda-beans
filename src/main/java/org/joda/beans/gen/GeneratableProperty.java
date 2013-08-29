@@ -63,12 +63,6 @@ class GeneratableProperty {
     private String getStyle;
     /** The setter style. */
     private String setStyle;
-    /** The copy style. */
-    private String copyStyle;
-    /** The builder style. */
-    private String builderTypeStyle;
-    /** The builder style. */
-    private String builderInitStyle;
     /** The type style. */
     private String typeStyle;
     /** The validation string. */
@@ -105,6 +99,24 @@ class GeneratableProperty {
      */
     public GeneratableBean getBean() {
         return bean;
+    }
+
+    /**
+     * Gets the configuration.
+     * 
+     * @return the configuration, not null
+     */
+    public BeanGenConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * Sets the configuration.
+     * 
+     * @param config  the new configuration, not null
+     */
+    public void setConfig(BeanGenConfig config) {
+        this.config = config;
     }
 
     //-----------------------------------------------------------------------
@@ -245,54 +257,6 @@ class GeneratableProperty {
      */
     public void setGetStyle(String getStyle) {
         this.getStyle = getStyle;
-    }
-
-    /**
-     * Gets the copy style.
-     * @return the copy style
-     */
-    public String getCopyStyle() {
-        return copyStyle;
-    }
-
-    /**
-     * Sets the copy style.
-     * @param copyStyle  the copy style to set
-     */
-    public void setCopyStyle(String copyStyle) {
-        this.copyStyle = copyStyle;
-    }
-
-    /**
-     * Gets the builder type style.
-     * @return the builder type style
-     */
-    public String getBuilderTypeStyle() {
-        return builderTypeStyle;
-    }
-
-    /**
-     * Sets the builder type style.
-     * @param builderTypeStyle  the builder type style to set
-     */
-    public void setBuilderTypeStyle(String builderTypeStyle) {
-        this.builderTypeStyle = builderTypeStyle;
-    }
-
-    /**
-     * Gets the builder init style.
-     * @return the builder init style
-     */
-    public String getBuilderInitStyle() {
-        return builderInitStyle;
-    }
-
-    /**
-     * Sets the builder init style.
-     * @param builderInitStyle  the builder init style to set
-     */
-    public void setBuilderInitStyle(String builderInitStyle) {
-        this.builderInitStyle = builderInitStyle;
     }
 
     /**
@@ -541,10 +505,6 @@ class GeneratableProperty {
      * Resolves the copy generator.
      */
     public void resolveCopyGen() {
-        if (getCopyStyle() == null) {
-            setCopyStyle("");
-        }
-        final String style = getCopyStyle().replace("\\n", "\n");
         if (getBean().isMutable()) {
             return;  // no copying
         }
@@ -552,34 +512,15 @@ class GeneratableProperty {
             throw new RuntimeException("Invalid collection type for immutable bean: " + getFieldTypeRaw() +
                     " in " + getBean().getTypeRaw() + "." + getPropertyName());
         }
-        if (style.equals("smart")) {
-            if (isDerived()) {
-                copyGen = CopyGen.NoCopyGen.INSTANCE;
-            } else {
-                CopyGen copyPattern = config.getCopyGenerators().get(getFieldTypeRaw());
-                if (copyPattern != null) {
-                    copyGen = copyPattern;
-                } else {
-                    copyGen = CopyGen.ASSIGN;
-                }
-            }
-        } else if (style.equals("assign")) {
-            copyGen = CopyGen.ASSIGN;
-        } else if (style.equals("bean")) {
-            copyGen = CopyGen.BEAN_CLONE;
-        } else if (style.equals("clone")) {
-            copyGen = CopyGen.CLONE;
-        } else if (style.equals("")) {
+        if (isDerived()) {
             copyGen = CopyGen.NoCopyGen.INSTANCE;
-        } else if (style.contains("$field") || style.contains("$value") || style.contains("$type")) {
-            if (style.contains("$field") || style.contains("\n")) {
-                copyGen = new CopyGen.PatternCopyGen(style);
-            } else {
-                copyGen = new CopyGen.PatternCopyGen("$field = " + style);
-            }
         } else {
-            throw new RuntimeException("Unable to locate copy generator '" + style + "'" +
-                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+            CopyGen copier = config.getCopyGenerators().get(getFieldTypeRaw());
+            if (copier != null) {
+                copyGen = copier;
+            } else {
+                copyGen = CopyGen.ASSIGN;
+            }
         }
     }
 
@@ -596,31 +537,18 @@ class GeneratableProperty {
      * Resolves the copy generator.
      */
     public void resolveBuilderGen() {
-        if (getBuilderTypeStyle() == null) {
-            setBuilderTypeStyle("");
-        }
-        if (getBuilderInitStyle() == null) {
-            setBuilderInitStyle("");
-        }
         if (getBean().isMutable()) {
             return;  // no builder
         }
-        final String init = getBuilderInitStyle();
-        String type = getBuilderTypeStyle();
-        if (type.equals("smart")) {
-            type = getType();
-        }
-        if (init.equals("smart")) {
-            String typeRaw = (type.contains("<") ? type.substring(0, type.indexOf('<')) : type);
-            builderGen = getConfig().getBuilderGenerators().get(typeRaw);
-            if (builderGen == null) {
-                builderGen = new BuilderGen.SimpleBuilderGen(type);
-            }
-        } else if (init.length() > 0) {
-            builderGen = new BuilderGen.PatternBuilderGen(type, init.trim());
+        if (isDerived()) {
+            builderGen = BuilderGen.NoBuilderGen.INSTANCE;
         } else {
-            throw new RuntimeException("Unable to locate builder generator '" + init + "'" +
-                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+            BuilderGen builder = config.getBuilderGenerators().get(getFieldTypeRaw());
+            if (builder != null) {
+                builderGen = builder;
+            } else {
+                builderGen = new BuilderGen.SimpleBuilderGen(getFieldType());
+            }
         }
     }
 
@@ -741,15 +669,6 @@ class GeneratableProperty {
             return type.substring(type.indexOf('<'));
         }
         return "";
-    }
-
-    /**
-     * Gets the configuration.
-     * 
-     * @return the configuration, not null
-     */
-    public BeanGenConfig getConfig() {
-        return config;
     }
 
 }

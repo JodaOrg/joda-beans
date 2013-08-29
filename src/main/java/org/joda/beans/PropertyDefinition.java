@@ -82,80 +82,6 @@ public @interface PropertyDefinition {
      */
     String set() default "smart";
 
-//    /**
-//     * The code used to create a copy of the property.
-//     * <p>
-//     * The style is used to control the code that creates a copy of the property value.
-//     * This is used with immutable beans.
-//     * <p>
-//     * Standard style stings are:
-//     * <ul>
-//     * <li>'' - do not generate any form of copy
-//     * <li>'smart' - process intelligently, see below
-//     * <li>'assign' - simply assigns the input, suitable for an immutable type
-//     * <li>'bean' - uses JodaBeanUtils.clone()
-//     * <li>'clone' - uses the clone() method on the target object which must return the correct type
-//     * <li>a pattern, see below
-//     * </ul>
-//     * <p>
-//     * The default 'smart' value will handle Guava immutable classes and the main
-//     * JDK collection/map types, plus {@code FlexiBean}.
-//     * Any class not recognised will simply be assigned.
-//     * It is strongly recommended to use Guava collections where possible.
-//     * <p>
-//     * A pattern can be used for special behaviour.
-//     * The pattern is a complete piece of code.
-//     * For example, 'new Foo($value)'.<br/>
-//     * '$field' for the field to copy into.<br/>
-//     * '$value' for the value to copy from.<br/>
-//     * '$type' for the type including generics.<br/>
-//     * '$typeRaw' for the type excluding generics.<br/>
-//     * '&gt;&lt;' for the generics of the type including angle brackets.<br/>
-//     * '\n' for a new line.<br/>
-//     * The pattern must be either an expression (no new lines, no $field, no trailing semicolon)
-//     * or a full statement (multiple lines, all lines with semicolons).
-//     */
-//    String copy() default "smart";
-//
-//    /**
-//     * The exposed type for an immutable builder.
-//     * <p>
-//     * The style is used to control the exposed type in the immutable builder.
-//     * This is used with immutable beans.
-//     * <p>
-//     * Standard style stings are:
-//     * <ul>
-//     * <li>'smart' - process intelligently, see below
-//     * <li>a type name - use '&gt;&lt;' to locate the generics
-//     * </ul>
-//     * <p>
-//     * The default 'smart' value will use the exposed type of the property.
-//     * The configuration overrides this on a per-type basis.
-//     */
-//    String builderType() default "smart";
-//
-//    /**
-//     * The initializer for an immutable builder.
-//     * <p>
-//     * The style is used to control the code in the immutable builder.
-//     * This is used with immutable beans.
-//     * <p>
-//     * Standard style stings are:
-//     * <ul>
-//     * <li>'smart' - process intelligently, see below
-//     * <li>a pattern, see below
-//     * </ul>
-//     * <p>
-//     * The default 'smart' value will default the field to null.
-//     * The configuration overrides this on a per-type basis.
-//     * <p>
-//     * A pattern can be used for special behaviour.
-//     * The pattern consists of the initializing expression.
-//     * For example, 'new HashMap<>()'.<br/>
-//     * '&gt;&lt;' for the generics of the type including angle brackets.<br/>
-//     */
-//    String builderInit() default "smart";
-
     /**
      * The exposed type of the property.
      * <p>
@@ -168,18 +94,6 @@ public @interface PropertyDefinition {
      * By default, the declared type will be used as the exposed type.
      */
     String type() default "smart";
-
-    /**
-     * The location of the config resource file for the property.
-     * <p>
-     * A property may specify a config ini file to be used instead of the default.
-     * The file specifies additional settings, including how the property will be code generated.
-     * By default, the standard configuration is used for all properties.
-     * <p>
-     * The location is used as a class loader resource lookup.
-     * For example, '/org/myproject/beanconfig.ini'.
-     */
-    String config() default "";
 
     /**
      * The validator to use.

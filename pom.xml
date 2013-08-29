@@ -76,6 +76,9 @@
   <build>
     <resources>
       <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
         <targetPath>META-INF</targetPath>
         <directory>${project.basedir}</directory>
         <includes>
