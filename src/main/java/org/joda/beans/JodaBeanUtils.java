@@ -288,7 +288,6 @@ public final class JodaBeanUtils {
      * <p>
      * This performs a deep clone. There is no protection against cycles in
      * the object graph beyond {@code StackOverflowError}.
-     * The clone uses knowledge encoded in the "copy" field of {@code PropertyDefinition}.
      * 
      * @param <T>  the type of the bean
      * @param original  the original bean to clone, null returns null

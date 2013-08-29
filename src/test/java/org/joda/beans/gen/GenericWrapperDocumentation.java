@@ -99,6 +99,22 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
 
     //-----------------------------------------------------------------------
     @Override
+    @SuppressWarnings("unchecked")
+    public GenericWrapperDocumentation<T> clone() {
+        BeanBuilder<?> builder = GenericWrapperDocumentation.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : GenericWrapperDocumentation.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return (GenericWrapperDocumentation<T>) builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

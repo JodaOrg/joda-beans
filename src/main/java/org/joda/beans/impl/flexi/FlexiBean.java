@@ -376,6 +376,16 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     //-----------------------------------------------------------------------
     /**
+     * Clones this bean, returning an independent copy.
+     * 
+     * @return the clone, not null
+     */
+    @Override
+    public FlexiBean clone() {
+        return new FlexiBean(this);
+    }
+
+    /**
      * Compares this bean to another based on the property names and content.
      * 
      * @param obj  the object to compare to, null returns false

@@ -54,4 +54,13 @@ public interface Bean {
      */
     Set<String> propertyNames();
 
+    /**
+     * Clones this bean, returning an independent copy.
+     * <p>
+     * Implementations should covariantly return their own type.
+     * 
+     * @return the clone, not null
+     */
+    Bean clone();
+
 }

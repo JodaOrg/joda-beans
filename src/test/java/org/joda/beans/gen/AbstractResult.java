@@ -114,6 +114,22 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    @SuppressWarnings("unchecked")
+    public AbstractResult<T> clone() {
+        BeanBuilder<?> builder = AbstractResult.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : AbstractResult.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return (AbstractResult<T>) builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

@@ -57,6 +57,8 @@ class GeneratableBean {
     private String superTypeGeneric;
     /** The list of properties, in the order they are declared. */
     private List<GeneratableProperty> properties = new ArrayList<GeneratableProperty>();
+    /** Does the class have a manual clone. */
+    private boolean manualClone;
     /** Does the class have a manual equals or hash code. */
     private boolean manualEqualsHashCode;
     /** Does the class have a manual toString. */
@@ -148,6 +150,22 @@ class GeneratableBean {
      */
     public void setConstructable(boolean constructable) {
         this.constructable = constructable;
+    }
+
+    /**
+     * Checks if the clone is manual.
+     * @return true if manual
+     */
+    public boolean isManualClone() {
+        return manualClone;
+    }
+
+    /**
+     * Sets if the clone is manual.
+     * @param manualClone  true if manual
+     */
+    public void setManualClone(boolean manualClone) {
+        this.manualClone = manualClone;
     }
 
     /**

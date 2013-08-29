@@ -296,6 +296,11 @@ public final class ImmPerson implements ImmutableBean {
     }
 
     @Override
+    public ImmPerson clone() {
+        return this;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

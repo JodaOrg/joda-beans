@@ -103,6 +103,7 @@ class BeanGen {
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
+            this.data.setManualClone(parseManualClone(beanDefIndex));
             this.data.setManualEqualsHashCode(parseManualEqualsHashCode(beanDefIndex));
             this.data.setManualToStringCode(parseManualToStringCode(beanDefIndex));
             if (data.isImmutable()) {
@@ -150,10 +151,13 @@ class BeanGen {
                 generatePropertyNames();
             }
             generateGettersSetters();
-            if (data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false || data.isImmutable()) {
+            if (data.isManualClone() == false || data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false || data.isImmutable()) {
                 generateSeparator();
                 if (data.isImmutable()) {
                     generateImmutableWith();
+                }
+                if (data.isManualClone() == false) {
+                    generateClone();
                 }
                 if (data.isManualEqualsHashCode() == false) {
                     generateEquals();
@@ -313,6 +317,22 @@ class BeanGen {
 
     private void removeOld() {
         insertRegion.clear();
+    }
+
+    private boolean parseManualClone(int defLine) {
+        for (int index = defLine; index < autoStartIndex; index++) {
+            String line = content.get(index).trim();
+            if (line.startsWith("public ") && line.endsWith(" clone() {")) {
+                return true;
+            }
+        }
+        for (int index = autoEndIndex; index < content.size(); index++) {
+            String line = content.get(index).trim();
+            if (line.startsWith("public ") && line.endsWith(" clone() {")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean parseManualEqualsHashCode(int defLine) {
@@ -480,6 +500,40 @@ class BeanGen {
         insertRegion.add("\t */");
         insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " with() {");
         insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
+        insertRegion.add("\t}");
+        insertRegion.add("");
+    }
+
+    private void generateClone() {
+        insertRegion.add("\t@Override");
+        if (data.isImmutable()) {
+            insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
+            insertRegion.add("\t\treturn this;");
+        } else {
+            data.ensureImport(Bean.class);
+            if (data.isTypeGeneric()) {
+                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
+                insertRegion.add("\t\tBeanBuilder<?> builder = " + data.getTypeRaw() + ".Meta.INSTANCE.builder();");
+            } else {
+                insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
+                insertRegion.add("\t\tBeanBuilder<? extends " + data.getType() + "> builder = " + data.getTypeRaw() + ".Meta.INSTANCE.builder();");
+            }
+            insertRegion.add("\t\tfor (MetaProperty<?> mp : " + data.getTypeRaw() + ".Meta.INSTANCE.metaPropertyIterable()) {");
+            insertRegion.add("\t\t\tif (mp.readWrite().isWritable()) {");
+            insertRegion.add("\t\t\t\tObject value = mp.get(this);");
+            insertRegion.add("\t\t\t\tif (value instanceof Bean) {");
+            insertRegion.add("\t\t\t\t\tvalue = ((Bean) value).clone();");
+            insertRegion.add("\t\t\t\t}");
+            insertRegion.add("\t\t\t\tbuilder.set(mp.name(), value);");
+            insertRegion.add("\t\t\t}");
+            insertRegion.add("\t\t}");
+            if (data.isTypeGeneric()) {
+                insertRegion.add("\t\treturn (" + data.getTypeNoExtends() + ") builder.build();");
+            } else {
+                insertRegion.add("\t\treturn builder.build();");
+            }
+        }
         insertRegion.add("\t}");
         insertRegion.add("");
     }

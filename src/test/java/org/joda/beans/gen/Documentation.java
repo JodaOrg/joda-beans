@@ -156,6 +156,22 @@ public class Documentation<T> extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    @SuppressWarnings("unchecked")
+    public Documentation<T> clone() {
+        BeanBuilder<?> builder = Documentation.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : Documentation.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return (Documentation<T>) builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

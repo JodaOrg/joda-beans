@@ -290,6 +290,21 @@ public final class Person extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    public Person clone() {
+        BeanBuilder<? extends Person> builder = Person.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : Person.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

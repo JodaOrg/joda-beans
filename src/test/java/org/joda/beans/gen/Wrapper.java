@@ -128,6 +128,22 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    @SuppressWarnings("unchecked")
+    public Wrapper<T> clone() {
+        BeanBuilder<?> builder = Wrapper.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : Wrapper.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return (Wrapper<T>) builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

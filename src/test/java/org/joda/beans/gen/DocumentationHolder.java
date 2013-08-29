@@ -89,6 +89,21 @@ public class DocumentationHolder extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    public DocumentationHolder clone() {
+        BeanBuilder<? extends DocumentationHolder> builder = DocumentationHolder.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : DocumentationHolder.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

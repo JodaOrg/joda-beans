@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
@@ -57,6 +58,21 @@ public class CompanyAddressResult extends AbstractResult<CompanyAddress> {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public CompanyAddressResult clone() {
+        BeanBuilder<? extends CompanyAddressResult> builder = CompanyAddressResult.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : CompanyAddressResult.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return builder.build();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

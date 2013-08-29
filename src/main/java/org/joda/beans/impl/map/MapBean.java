@@ -16,6 +16,7 @@
 package org.joda.beans.impl.map;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -37,6 +38,22 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates an instance.
+     */
+    public MapBean() {
+    }
+
+    /**
+     * Creates an instance.
+     * 
+     * @param map  the map to copy, not null
+     */
+    private MapBean(Map<String, Object> map) {
+        super(map);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public MetaBean metaBean() {
         return new MapMetaBean(this);
@@ -68,6 +85,11 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
     @Override
     public void propertyRemove(String propertyName) {
         remove(propertyName);
+    }
+
+    @Override
+    public MapBean clone() {
+        return new MapBean(this);
     }
 
     //-----------------------------------------------------------------------

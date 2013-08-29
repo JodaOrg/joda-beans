@@ -96,6 +96,21 @@ public final class NoGenEquals extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    public NoGenEquals clone() {
+        BeanBuilder<? extends NoGenEquals> builder = NoGenEquals.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : NoGenEquals.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append(getClass().getSimpleName());

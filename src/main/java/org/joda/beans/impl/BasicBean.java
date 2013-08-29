@@ -43,6 +43,16 @@ public abstract class BasicBean implements Bean {
 
     //-----------------------------------------------------------------------
     /**
+     * Clones this bean, returning an independent copy.
+     * 
+     * @return the clone, not null
+     */
+    @Override
+    public BasicBean clone() {
+        return JodaBeanUtils.clone(this);
+    }
+
+    /**
      * Checks if this bean equals another.
      * <p>
      * This compares the class and all the properties of the bean.

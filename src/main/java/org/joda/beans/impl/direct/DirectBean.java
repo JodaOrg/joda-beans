@@ -40,4 +40,7 @@ public abstract class DirectBean implements Bean {
         return metaBean().metaPropertyMap().keySet();
     }
 
+    @Override
+    public abstract DirectBean clone();
+
 }

@@ -95,6 +95,21 @@ public class NoGenToString extends DirectBean {
 
     //-----------------------------------------------------------------------
     @Override
+    public NoGenToString clone() {
+        BeanBuilder<? extends NoGenToString> builder = NoGenToString.Meta.INSTANCE.builder();
+        for (MetaProperty<?> mp : NoGenToString.Meta.INSTANCE.metaPropertyIterable()) {
+            if (mp.readWrite().isWritable()) {
+                Object value = mp.get(this);
+                if (value instanceof Bean) {
+                    value = ((Bean) value).clone();
+                }
+                builder.set(mp.name(), value);
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
