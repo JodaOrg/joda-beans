@@ -123,7 +123,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
      * Returns a builder that allows this bean to be mutated.
      * @return the mutable builder, not null
      */
-    public Builder<T> with() {
+    public Builder<T> toBuilder() {
         return new Builder<T>(this);
     }
 

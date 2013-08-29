@@ -59,7 +59,7 @@ public class TestImmutable {
                 .set("owner", ImmPerson.builder().forename("John").surname("Doggett").build())
                 .build();
         
-        address = address.with().street("Park Road").build();
+        address = address.toBuilder().street("Park Road").build();
         
         assertEquals(address.getCity(), "Smallville");
         assertEquals(address.getStreet(), "Park Road");

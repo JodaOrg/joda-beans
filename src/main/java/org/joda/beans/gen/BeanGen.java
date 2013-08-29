@@ -154,7 +154,7 @@ class BeanGen {
             if (data.isManualClone() == false || data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false || data.isImmutable()) {
                 generateSeparator();
                 if (data.isImmutable()) {
-                    generateImmutableWith();
+                    generateImmutableToBuilder();
                 }
                 if (data.isManualClone() == false) {
                     generateClone();
@@ -503,12 +503,12 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
-    private void generateImmutableWith() {
+    private void generateImmutableToBuilder() {
         insertRegion.add("\t/**");
         insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
         insertRegion.add("\t * @return the mutable builder, not null");
         insertRegion.add("\t */");
-        insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " with() {");
+        insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
         insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
         insertRegion.add("\t}");
         insertRegion.add("");
