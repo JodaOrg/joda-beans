@@ -70,9 +70,6 @@ public final class ImmPerson implements ImmutableBean {
     private final List<List<Address>> addressesList;
     @PropertyDefinition
     private final ImmAddress mainAddress;
-//    @PropertyDefinition
-//    @XmlID
-//    private final FlexiBean extensions;
 
     @DerivedProperty
     public int getAge() {
