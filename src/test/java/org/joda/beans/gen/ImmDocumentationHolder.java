@@ -71,7 +71,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     }
 
     /**
-     * Returns a builder used tp create an instance of the bean.
+     * Returns a builder used to create an instance of the bean.
      *
      * @return the builder, not null
      */
@@ -294,11 +294,11 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
         //-----------------------------------------------------------------------
         /**
          * Sets the {@code documentation} property in the builder.
-         * @param newValue  the new value, not null
+         * @param documentation  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> documentation(Documentation<T> newValue) {
-            this.documentation = newValue;
+        public Builder<T> documentation(Documentation<T> documentation) {
+            this.documentation = documentation;
             return this;
         }
 

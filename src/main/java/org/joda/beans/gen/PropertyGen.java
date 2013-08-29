@@ -466,12 +466,15 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t/**");
         list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder.");
-        list.add("\t\t * @param newValue  the new value, not null");
+        list.add("\t\t * @param " + data.getPropertyName() + "  the new value, not null");
         list.add("\t\t * @return this, for chaining, not null");
         list.add("\t\t */");
         list.add("\t\tpublic Builder" + data.getBean().getTypeGeneric(true) + " " + data.getPropertyName() +
-                "(" + getBuilderType() + " newValue) {");
-        list.add("\t\t\tthis." + generateBuilderFieldName() + " = newValue;");
+                "(" + getBuilderType() + " " + data.getPropertyName() + ") {");
+        if (data.isValidated()) {
+            list.add("\t\t\t" + data.getValidationMethodName() + "(" + data.getPropertyName() + ", \"" + data.getPropertyName() + "\");");
+        }
+        list.add("\t\t\tthis." + generateBuilderFieldName() + " = " + data.getPropertyName() + ";");
         list.add("\t\t\treturn this;");
         list.add("\t\t}");
         list.add("");

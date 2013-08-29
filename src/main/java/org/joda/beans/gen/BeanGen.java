@@ -374,7 +374,7 @@ class BeanGen {
 
     private void generateImmutableBuilderMethod() {
         insertRegion.add("\t/**");
-        insertRegion.add("\t * Returns a builder used tp create an instance of the bean.");
+        insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
         insertRegion.add("\t *");
         insertRegion.add("\t * @return the builder, not null");
         insertRegion.add("\t */");
@@ -393,12 +393,22 @@ class BeanGen {
         if (nonDerived.size() == 0) {
             insertRegion.add("\tprivate " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder) {");
         } else {
+            // signature
             insertRegion.add("\tprivate " + data.getTypeRaw() + "(");
             insertRegion.add("\t\t\t" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder,");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
                 insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getFieldName() + (i < nonDerived.size() - 1 ? "," : ") {"));
             }
+            // validate
+            for (PropertyGen prop : properties) {
+                if (prop.getData().isValidated()) {
+                    insertRegion.add("\t\t" + prop.getData().getValidationMethodName() +
+                            "(" + prop.getData().getFieldName() +
+                            ", \"" + prop.getData().getPropertyName() + "\");");
+                }
+            }
+            // assign
             for (int i = 0; i < nonDerived.size(); i++) {
                 insertRegion.addAll(nonDerived.get(i).generateConstructorAssign());
             }

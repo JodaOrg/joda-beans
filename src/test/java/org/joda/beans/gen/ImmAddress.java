@@ -76,7 +76,7 @@ public final class ImmAddress implements ImmutableBean {
     }
 
     /**
-     * Returns a builder used tp create an instance of the bean.
+     * Returns a builder used to create an instance of the bean.
      *
      * @return the builder, not null
      */
@@ -90,6 +90,9 @@ public final class ImmAddress implements ImmutableBean {
             String street,
             String city,
             ImmPerson owner) {
+        JodaBeanUtils.notNull(street, "street");
+        JodaBeanUtils.notNull(city, "city");
+        JodaBeanUtils.notNull(owner, "owner");
         this.number = number;
         this.street = street;
         this.city = city;
@@ -434,41 +437,44 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         /**
          * Sets the {@code number} property in the builder.
-         * @param newValue  the new value, not null
+         * @param number  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder number(int newValue) {
-            this.number = newValue;
+        public Builder number(int number) {
+            this.number = number;
             return this;
         }
 
         /**
          * Sets the {@code street} property in the builder.
-         * @param newValue  the new value, not null
+         * @param street  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder street(String newValue) {
-            this.street = newValue;
+        public Builder street(String street) {
+            JodaBeanUtils.notNull(street, "street");
+            this.street = street;
             return this;
         }
 
         /**
          * Sets the {@code city} property in the builder.
-         * @param newValue  the new value, not null
+         * @param city  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder city(String newValue) {
-            this.city = newValue;
+        public Builder city(String city) {
+            JodaBeanUtils.notNull(city, "city");
+            this.city = city;
             return this;
         }
 
         /**
          * Sets the {@code owner} property in the builder.
-         * @param newValue  the new value, not null
+         * @param owner  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder owner(ImmPerson newValue) {
-            this.owner = newValue;
+        public Builder owner(ImmPerson owner) {
+            JodaBeanUtils.notNull(owner, "owner");
+            this.owner = owner;
             return this;
         }
 

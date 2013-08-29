@@ -88,7 +88,7 @@ public final class ImmPerson implements ImmutableBean {
     }
 
     /**
-     * Returns a builder used tp create an instance of the bean.
+     * Returns a builder used to create an instance of the bean.
      *
      * @return the builder, not null
      */
@@ -678,91 +678,91 @@ public final class ImmPerson implements ImmutableBean {
         //-----------------------------------------------------------------------
         /**
          * Sets the {@code forename} property in the builder.
-         * @param newValue  the new value, not null
+         * @param forename  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder forename(String newValue) {
-            this.forename = newValue;
+        public Builder forename(String forename) {
+            this.forename = forename;
             return this;
         }
 
         /**
          * Sets the {@code surname} property in the builder.
-         * @param newValue  the new value, not null
+         * @param surname  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder surname(String newValue) {
-            this.surname = newValue;
+        public Builder surname(String surname) {
+            this.surname = surname;
             return this;
         }
 
         /**
          * Sets the {@code numberOfCars} property in the builder.
-         * @param newValue  the new value, not null
+         * @param numberOfCars  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder numberOfCars(int newValue) {
-            this.numberOfCars = newValue;
+        public Builder numberOfCars(int numberOfCars) {
+            this.numberOfCars = numberOfCars;
             return this;
         }
 
         /**
          * Sets the {@code dateOfBirth} property in the builder.
-         * @param newValue  the new value, not null
+         * @param dateOfBirth  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder dateOfBirth(Date newValue) {
-            this.dateOfBirth = newValue;
+        public Builder dateOfBirth(Date dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
             return this;
         }
 
         /**
          * Sets the {@code middleNames} property in the builder.
-         * @param newValue  the new value, not null
+         * @param middleNames  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder middleNames(String[] newValue) {
-            this.middleNames = newValue;
+        public Builder middleNames(String[] middleNames) {
+            this.middleNames = middleNames;
             return this;
         }
 
         /**
          * Sets the {@code addressList} property in the builder.
-         * @param newValue  the new value, not null
+         * @param addressList  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder addressList(List<Address> newValue) {
-            this.addressList = newValue;
+        public Builder addressList(List<Address> addressList) {
+            this.addressList = addressList;
             return this;
         }
 
         /**
          * Sets the {@code otherAddressMap} property in the builder.
-         * @param newValue  the new value, not null
+         * @param otherAddressMap  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder otherAddressMap(Map<String, Address> newValue) {
-            this.otherAddressMap = newValue;
+        public Builder otherAddressMap(Map<String, Address> otherAddressMap) {
+            this.otherAddressMap = otherAddressMap;
             return this;
         }
 
         /**
          * Sets the {@code addressesList} property in the builder.
-         * @param newValue  the new value, not null
+         * @param addressesList  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder addressesList(List<List<Address>> newValue) {
-            this.addressesList = newValue;
+        public Builder addressesList(List<List<Address>> addressesList) {
+            this.addressesList = addressesList;
             return this;
         }
 
         /**
          * Sets the {@code mainAddress} property in the builder.
-         * @param newValue  the new value, not null
+         * @param mainAddress  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder mainAddress(ImmAddress newValue) {
-            this.mainAddress = newValue;
+        public Builder mainAddress(ImmAddress mainAddress) {
+            this.mainAddress = mainAddress;
             return this;
         }
 
