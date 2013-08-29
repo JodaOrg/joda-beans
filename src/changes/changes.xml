@@ -14,11 +14,11 @@
         Some existing beans may regenerate.
       </action>
       <action dev="scolebourne" type="add" >
-        Add support for clone on beans.
+        Add support for clone on beans.. Fixes #12.
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="add" >
-        Add support for immutable beans.
+        Add support for immutable beans.. Fixes #11.
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="update" >
@@ -26,12 +26,12 @@
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="update" >
-        Allow generated beans to implement interface, rather than extend class.
+        Allow generated beans to implement interface, rather than extend class. Fixes #9.
         Move propertyGet/propertySet/validate into meta-bean
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="add" >
-        Generate toString() methods.
+        Generate toString() methods. Fixes #8.
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="update" >
