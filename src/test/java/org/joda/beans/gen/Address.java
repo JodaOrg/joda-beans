@@ -224,8 +224,7 @@ public class Address extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("Address{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

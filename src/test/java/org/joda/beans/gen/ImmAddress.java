@@ -226,8 +226,7 @@ public final class ImmAddress implements ImmutableBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
         buf.append("city").append('=').append(getCity()).append(',').append(' ');

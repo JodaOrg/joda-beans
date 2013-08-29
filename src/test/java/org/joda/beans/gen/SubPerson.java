@@ -104,8 +104,7 @@ public class SubPerson<T> extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(32);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("SubPerson{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

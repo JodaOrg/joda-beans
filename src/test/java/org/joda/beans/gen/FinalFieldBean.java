@@ -259,8 +259,7 @@ public class FinalFieldBean extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(192);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("FinalFieldBean{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

@@ -167,8 +167,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("Wrapper{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

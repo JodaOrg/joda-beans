@@ -158,8 +158,7 @@ public class Pair extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("Pair{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

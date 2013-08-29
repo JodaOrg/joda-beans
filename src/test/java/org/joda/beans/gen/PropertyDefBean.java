@@ -374,8 +374,7 @@ public final class PropertyDefBean implements Bean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(320);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("PropertyDefBean{");
         buf.append("stringAsCharSequence").append('=').append(getStringAsCharSequence()).append(',').append(' ');
         buf.append("intAsInteger").append('=').append(getIntAsInteger()).append(',').append(' ');
         buf.append("listCopyOfCollection").append('=').append(getListCopyOfCollection()).append(',').append(' ');

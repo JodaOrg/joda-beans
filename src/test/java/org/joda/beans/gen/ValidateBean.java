@@ -236,8 +236,7 @@ public class ValidateBean extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("ValidateBean{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

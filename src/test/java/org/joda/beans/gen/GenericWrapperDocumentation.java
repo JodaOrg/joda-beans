@@ -137,8 +137,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("GenericWrapperDocumentation{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

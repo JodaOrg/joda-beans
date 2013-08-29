@@ -354,7 +354,7 @@ public final class ImmPerson implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(352);
+        StringBuilder buf = new StringBuilder(320);
         buf.append("ImmPerson{");
         buf.append("forename").append('=').append(getForename()).append(',').append(' ');
         buf.append("surname").append('=').append(getSurname()).append(',').append(' ');

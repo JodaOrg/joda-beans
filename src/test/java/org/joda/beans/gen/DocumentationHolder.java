@@ -125,8 +125,7 @@ public class DocumentationHolder extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("DocumentationHolder{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

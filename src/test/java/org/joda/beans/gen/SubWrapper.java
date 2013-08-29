@@ -123,8 +123,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("SubWrapper{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

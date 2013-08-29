@@ -216,8 +216,7 @@ public class RWOnlyBean extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(192);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("RWOnlyBean{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

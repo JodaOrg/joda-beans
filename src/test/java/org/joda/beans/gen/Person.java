@@ -340,8 +340,7 @@ public final class Person extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(288);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("Person{");
         buf.append("forename").append('=').append(getForename()).append(',').append(' ');
         buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
         buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');

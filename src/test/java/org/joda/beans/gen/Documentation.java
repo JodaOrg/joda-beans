@@ -197,8 +197,7 @@ public class Documentation<T> extends DirectBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("Documentation{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

@@ -613,8 +613,7 @@ class BeanGen {
             insertRegion.add("\t@Override");
             insertRegion.add("\tpublic String toString() {");
             insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
-            insertRegion.add("\t\tbuf.append(getClass().getSimpleName());");
-            insertRegion.add("\t\tbuf.append('{');");
+            insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
             for (int i = 0; i < properties.size(); i++) {
                 PropertyGen prop = properties.get(i);
                 String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
@@ -636,8 +635,7 @@ class BeanGen {
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic String toString() {");
         insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
-        insertRegion.add("\t\tbuf.append(getClass().getSimpleName());");
-        insertRegion.add("\t\tbuf.append('{');");
+        insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
         insertRegion.add("\t\tint len = buf.length();");
         insertRegion.add("\t\ttoString(buf);");
         insertRegion.add("\t\tif (buf.length() > len) {");

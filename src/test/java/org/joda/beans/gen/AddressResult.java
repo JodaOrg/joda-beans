@@ -93,8 +93,7 @@ public class AddressResult extends AbstractResult<Address> {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(32);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("AddressResult{");
         int len = buf.length();
         toString(buf);
         if (buf.length() > len) {

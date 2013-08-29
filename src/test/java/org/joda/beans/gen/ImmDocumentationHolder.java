@@ -154,8 +154,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
-        buf.append(getClass().getSimpleName());
-        buf.append('{');
+        buf.append("ImmDocumentationHolder{");
         buf.append("documentation").append('=').append(getDocumentation());
         buf.append('}');
         return buf.toString();
