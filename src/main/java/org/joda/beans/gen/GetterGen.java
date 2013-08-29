@@ -48,7 +48,7 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new GetGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "get");
+            return doGenerateGetter(prop, "get", prop.getFieldName());
         }
     }
 
@@ -56,11 +56,27 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new IsGetterGen();
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "is");
+            return doGenerateGetter(prop, "is", prop.getFieldName());
         }
         @Override
         String generateGetInvoke(GeneratableProperty prop) {
             return "is" + prop.getUpperName() + "()";
+        }
+    }
+
+    static class CloneGetterGen extends GetterGen {
+        static final GetterGen INSTANCE = new CloneGetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            return doGenerateGetter(prop, "get", "(" + prop.getFieldName() + " != null ? " + prop.getFieldName() + ".clone() : null)");
+        }
+    }
+
+    static class CloneCastGetterGen extends GetterGen {
+        static final GetterGen INSTANCE = new CloneCastGetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            return doGenerateGetter(prop, "get", "(" + prop.getFieldName() + " != null ? (" + prop.getFieldType() + ") " + prop.getFieldName() + ".clone() : null)");
         }
     }
 
@@ -84,7 +100,7 @@ abstract class GetterGen {
         }
     }
 
-    private static List<String> doGenerateGetter(GeneratableProperty prop, String prefix) {
+    private static List<String> doGenerateGetter(GeneratableProperty prop, String prefix, String expression) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());
@@ -97,7 +113,7 @@ abstract class GetterGen {
             list.add("\t@Deprecated");
         }
         list.add("\tpublic " + prop.getType() + " " + prefix + prop.getUpperName() + "() {");
-        list.add("\t\treturn " + prop.getFieldName() + ";");
+        list.add("\t\treturn " + expression + ";");
         list.add("\t}");
         list.add("");
         return list;

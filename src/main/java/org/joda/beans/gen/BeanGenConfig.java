@@ -57,6 +57,10 @@ public final class BeanGenConfig {
      */
     private final Set<String> invalidImmutableTypes;
     /**
+     * The immutable get clones.
+     */
+    private final Map<String, String> immutableGetClones;
+    /**
      * The indent to use.
      */
     private String indent = "    ";
@@ -112,6 +116,7 @@ public final class BeanGenConfig {
     private static BeanGenConfig parse(List<String> lines) {
         Map<String, String> immutableCopiers = new HashMap<String, String>();
         Map<String, String> mutableCopiers = new HashMap<String, String>();
+        Map<String, String> immutableGetClones = new HashMap<String, String>();
         Map<String, String> builderInits = new HashMap<String, String>();
         Map<String, String> builderTypes = new HashMap<String, String>();
         Set<String> invalidImmutableTypes = new HashSet<String>();
@@ -156,6 +161,24 @@ public final class BeanGenConfig {
                     }
                     String key = line.substring(0, pos).trim();
                     invalidImmutableTypes.add(key);
+                }
+            } else if (line.equals("[immutable.get.clone]")) {
+                while (iterator.hasNext()) {
+                    line = iterator.next().trim();
+                    if (line.startsWith("[")) {
+                        iterator.previous();
+                        break;
+                    }
+                    int pos = line.indexOf('=');
+                    if (pos <= 0) {
+                        throw new IllegalArgumentException("Invalid ini file line: " + line);
+                    }
+                    String key = line.substring(0, pos).trim();
+                    String value = line.substring(pos + 1).trim();
+                    if (value.equals("clone") == false && value.equals("cloneCast") == false) {
+                        throw new IllegalArgumentException("Value for [immutable.get.clone] must be 'clone' or 'cloneCast'");
+                    }
+                    immutableGetClones.put(key, value);
                 }
             } else if (line.equals("[immutable.builder.type]")) {
                 while (iterator.hasNext()) {
@@ -210,7 +233,7 @@ public final class BeanGenConfig {
             }
             copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier));
         }
-        return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes);
+        return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes, immutableGetClones);
     }
 
     //-----------------------------------------------------------------------
@@ -226,11 +249,13 @@ public final class BeanGenConfig {
             Map<String, CopyGen> copyGenerators,
             Map<String, BuilderGen> builderGenerators,
             Map<String, String> builderTypes,
-            Set<String> invalidImmutableTypes) {
+            Set<String> invalidImmutableTypes,
+            Map<String, String> immutableGetClones) {
         this.copyGenerators = copyGenerators;
         this.builderGenerators = builderGenerators;
         this.builderTypes = builderTypes;
         this.invalidImmutableTypes = invalidImmutableTypes;
+        this.immutableGetClones = immutableGetClones;
     }
 
     //-----------------------------------------------------------------------
@@ -270,6 +295,16 @@ public final class BeanGenConfig {
         return invalidImmutableTypes;
     }
 
+    /**
+     * The builder types.
+     * 
+     * @return the types, not null
+     */
+    public Map<String, String> getImmutableGetClones() {
+        return immutableGetClones;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the indent to use.
      * 

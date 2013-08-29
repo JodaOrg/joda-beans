@@ -424,13 +424,22 @@ class GeneratableProperty {
         } else if (style.equals("is")) {
             getterGen = GetterGen.IsGetterGen.INSTANCE;
         } else if (style.equals("smart")) {
-            if (getType().equals("boolean")) {
+            String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
+            if ("clone".equals(clone)) {
+                getterGen = GetterGen.CloneGetterGen.INSTANCE;
+            } else if ("cloneCast".equals(clone)) {
+                getterGen = GetterGen.CloneCastGetterGen.INSTANCE;
+            } else if (getType().equals("boolean")) {
                 getterGen = GetterGen.IsGetterGen.INSTANCE;
             } else {
                 getterGen = GetterGen.GetGetterGen.INSTANCE;
             }
         } else if (style.equals("")) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
+        } else if (style.equals("clone")) {
+            getterGen = GetterGen.CloneGetterGen.INSTANCE;
+        } else if (style.equals("cloneCast")) {
+            getterGen = GetterGen.CloneCastGetterGen.INSTANCE;
         } else if (style.equals("manual")) {
             getterGen = GetterGen.ManualGetterGen.INSTANCE;
         } else {
@@ -519,7 +528,16 @@ class GeneratableProperty {
             if (copier != null) {
                 copyGen = copier;
             } else {
-                copyGen = CopyGen.ASSIGN;
+                String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
+                if (clone != null) {
+                    if (clone.equals("clone")) {
+                        copyGen = CopyGen.CLONE;
+                    } else {
+                        copyGen = CopyGen.CLONE_CAST;
+                    }
+                } else {
+                    copyGen = CopyGen.ASSIGN;
+                }
             }
         }
     }

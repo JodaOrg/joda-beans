@@ -46,6 +46,8 @@ public @interface PropertyDefinition {
      * <li>'smart' - process intelligently - 'is' for boolean and 'get' for other types
      * <li>'is' - generates isXxx()
      * <li>'get' - generates getXxx()
+     * <li>'clone' - generates getXxx() with a clone of the field (assumed to be of the correct type)
+     * <li>'cloneCast' - generates getXxx() with a clone of the field with a cast to the property type
      * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
      * </ul>
      */

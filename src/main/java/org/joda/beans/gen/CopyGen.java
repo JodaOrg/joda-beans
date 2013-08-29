@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.joda.beans.JodaBeanUtils;
-
 /**
  * A generator of copy code.
  * 
@@ -29,8 +27,8 @@ import org.joda.beans.JodaBeanUtils;
 abstract class CopyGen {
 
     static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
-    static final CopyGen BEAN_CLONE = BeanCloneGen.INSTANCE;
     static final CopyGen CLONE = new PatternCopyGen("$field = ($value != null ? $value.clone() : null);");
+    static final CopyGen CLONE_CAST = new PatternCopyGen("$field = ($value != null ? ($type) $value.clone() : null);");
 
     /**
      * Generates the copy to immutable lines.
@@ -107,24 +105,6 @@ abstract class CopyGen {
                 line = line.replace("<>", prop.getTypeGenerics());
                 list.add(indent + line);
             }
-            return list;
-        }
-    }
-
-    static class BeanCloneGen extends CopyGen {
-        static final CopyGen INSTANCE = new BeanCloneGen();
-        @Override
-        List<String> generateCopyToImmutable(String indent, GeneratableProperty prop) {
-            prop.getBean().ensureImport(JodaBeanUtils.class);
-            List<String> list = new ArrayList<String>();
-            list.add(indent + "this." + prop.getFieldName() + " = JodaBeanUtils.clone(" + prop.getPropertyName() + ");");
-            return list;
-        }
-        @Override
-        List<String> generateCopyToMutable(String indent, GeneratableProperty prop, String beanToCopyFrom) {
-            prop.getBean().ensureImport(JodaBeanUtils.class);
-            List<String> list = new ArrayList<String>();
-            list.add(indent + "this." + prop.getFieldName() + " = JodaBeanUtils.clone(" + prop.getPropertyName() + ");");
             return list;
         }
     }

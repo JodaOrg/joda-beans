@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +55,12 @@ public final class ImmPerson implements ImmutableBean {
     /** The number of cars. */
     @PropertyDefinition
     private transient final int numberOfCars;
-//    @PropertyDefinition(builderType = "Iterable<>", builderInit = "new ArrayList<>()")
-//    private final ImmutableList<CompanyAddress> companyAddressList;
+    /** The date of birth. */
+    @PropertyDefinition
+    private transient final Date dateOfBirth;
+    /** The middle names. */
+    @PropertyDefinition
+    private transient final String[] middleNames;
     @PropertyDefinition
     private final ImmutableList<Address> addressList;
     @PropertyDefinition
@@ -96,6 +101,8 @@ public final class ImmPerson implements ImmutableBean {
             String forename,
             String surname,
             int numberOfCars,
+            Date dateOfBirth,
+            String[] middleNames,
             List<Address> addressList,
             Map<String, Address> otherAddressMap,
             List<List<Address>> addressesList,
@@ -103,6 +110,8 @@ public final class ImmPerson implements ImmutableBean {
         this.forename = forename;
         this.surname = surname;
         this.numberOfCars = numberOfCars;
+        this.dateOfBirth = (dateOfBirth != null ? (Date) dateOfBirth.clone() : null);
+        this.middleNames = (middleNames != null ? middleNames.clone() : null);
         this.addressList = ImmutableList.copyOf(addressList);
         this.otherAddressMap = ImmutableMap.copyOf(otherAddressMap);
         this.addressesList = ImmutableList.copyOf(addressesList);
@@ -173,6 +182,40 @@ public final class ImmPerson implements ImmutableBean {
      */
     public final Property<Integer> numberOfCars() {
         return metaBean().numberOfCars().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the date of birth.
+     * @return the value of the property
+     */
+    public Date getDateOfBirth() {
+        return (dateOfBirth != null ? (Date) dateOfBirth.clone() : null);
+    }
+
+    /**
+     * Gets the the {@code dateOfBirth} property.
+     * @return the property, not null
+     */
+    public final Property<Date> dateOfBirth() {
+        return metaBean().dateOfBirth().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the middle names.
+     * @return the value of the property
+     */
+    public String[] getMiddleNames() {
+        return (middleNames != null ? middleNames.clone() : null);
+    }
+
+    /**
+     * Gets the the {@code middleNames} property.
+     * @return the property, not null
+     */
+    public final Property<String[]> middleNames() {
+        return metaBean().middleNames().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -262,6 +305,8 @@ public final class ImmPerson implements ImmutableBean {
             return JodaBeanUtils.equal(getForename(), other.getForename()) &&
                     JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
                     (getNumberOfCars() == other.getNumberOfCars()) &&
+                    JodaBeanUtils.equal(getDateOfBirth(), other.getDateOfBirth()) &&
+                    JodaBeanUtils.equal(getMiddleNames(), other.getMiddleNames()) &&
                     JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
                     JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
                     JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
@@ -276,6 +321,8 @@ public final class ImmPerson implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
         hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
         hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
         hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
         hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
@@ -285,12 +332,14 @@ public final class ImmPerson implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(256);
+        StringBuilder buf = new StringBuilder(320);
         buf.append(getClass().getSimpleName());
         buf.append('{');
         buf.append("forename").append('=').append(getForename()).append(',').append(' ');
         buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
         buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
+        buf.append("dateOfBirth").append('=').append(getDateOfBirth()).append(',').append(' ');
+        buf.append("middleNames").append('=').append(getMiddleNames()).append(',').append(' ');
         buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
         buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
         buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
@@ -325,6 +374,16 @@ public final class ImmPerson implements ImmutableBean {
         private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadOnly(
                 this, "numberOfCars", ImmPerson.class, Integer.TYPE);
         /**
+         * The meta-property for the {@code dateOfBirth} property.
+         */
+        private final MetaProperty<Date> dateOfBirth = DirectMetaProperty.ofReadOnly(
+                this, "dateOfBirth", ImmPerson.class, Date.class);
+        /**
+         * The meta-property for the {@code middleNames} property.
+         */
+        private final MetaProperty<String[]> middleNames = DirectMetaProperty.ofReadOnly(
+                this, "middleNames", ImmPerson.class, String[].class);
+        /**
          * The meta-property for the {@code addressList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -355,6 +414,8 @@ public final class ImmPerson implements ImmutableBean {
                 "forename",
                 "surname",
                 "numberOfCars",
+                "dateOfBirth",
+                "middleNames",
                 "addressList",
                 "otherAddressMap",
                 "addressesList",
@@ -375,6 +436,10 @@ public final class ImmPerson implements ImmutableBean {
                     return surname;
                 case 926656063:  // numberOfCars
                     return numberOfCars;
+                case -386871910:  // dateOfBirth
+                    return dateOfBirth;
+                case 404996787:  // middleNames
+                    return middleNames;
                 case -1377524046:  // addressList
                     return addressList;
                 case 1368089592:  // otherAddressMap
@@ -428,6 +493,22 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code dateOfBirth} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<Date> dateOfBirth() {
+            return dateOfBirth;
+        }
+
+        /**
+         * The meta-property for the {@code middleNames} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<String[]> middleNames() {
+            return middleNames;
+        }
+
+        /**
          * The meta-property for the {@code addressList} property.
          * @return the meta-property, not null
          */
@@ -469,6 +550,10 @@ public final class ImmPerson implements ImmutableBean {
                     return ((ImmPerson) bean).getSurname();
                 case 926656063:  // numberOfCars
                     return ((ImmPerson) bean).getNumberOfCars();
+                case -386871910:  // dateOfBirth
+                    return ((ImmPerson) bean).getDateOfBirth();
+                case 404996787:  // middleNames
+                    return ((ImmPerson) bean).getMiddleNames();
                 case -1377524046:  // addressList
                     return ((ImmPerson) bean).getAddressList();
                 case 1368089592:  // otherAddressMap
@@ -501,6 +586,8 @@ public final class ImmPerson implements ImmutableBean {
         private String forename;
         private String surname;
         private int numberOfCars;
+        private Date dateOfBirth;
+        private String[] middleNames;
         private List<Address> addressList = new ArrayList<Address>();
         private Map<String, Address> otherAddressMap = new HashMap<String, Address>();
         private List<List<Address>> addressesList = new ArrayList<List<Address>>();
@@ -522,6 +609,8 @@ public final class ImmPerson implements ImmutableBean {
             this.forename = beanToCopy.getForename();
             this.surname = beanToCopy.getSurname();
             this.numberOfCars = beanToCopy.getNumberOfCars();
+            this.dateOfBirth = (beanToCopy.getDateOfBirth() != null ? (Date) beanToCopy.getDateOfBirth().clone() : null);
+            this.middleNames = (beanToCopy.getMiddleNames() != null ? beanToCopy.getMiddleNames().clone() : null);
             this.addressList = new ArrayList<Address>(beanToCopy.getAddressList());
             this.otherAddressMap = new HashMap<String, Address>(beanToCopy.getOtherAddressMap());
             this.addressesList = new ArrayList<List<Address>>(beanToCopy.getAddressesList());
@@ -541,6 +630,12 @@ public final class ImmPerson implements ImmutableBean {
                     break;
                 case 926656063:  // numberOfCars
                     this.numberOfCars = (Integer) newValue;
+                    break;
+                case -386871910:  // dateOfBirth
+                    this.dateOfBirth = (Date) newValue;
+                    break;
+                case 404996787:  // middleNames
+                    this.middleNames = (String[]) newValue;
                     break;
                 case -1377524046:  // addressList
                     this.addressList = (ImmutableList<Address>) newValue;
@@ -567,6 +662,8 @@ public final class ImmPerson implements ImmutableBean {
                     forename,
                     surname,
                     numberOfCars,
+                    dateOfBirth,
+                    middleNames,
                     addressList,
                     otherAddressMap,
                     addressesList,
@@ -601,6 +698,26 @@ public final class ImmPerson implements ImmutableBean {
          */
         public Builder numberOfCars(int newValue) {
             this.numberOfCars = newValue;
+            return this;
+        }
+
+        /**
+         * Sets the {@code dateOfBirth} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder dateOfBirth(Date newValue) {
+            this.dateOfBirth = newValue;
+            return this;
+        }
+
+        /**
+         * Sets the {@code middleNames} property in the builder.
+         * @param newValue  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder middleNames(String[] newValue) {
+            this.middleNames = newValue;
             return this;
         }
 

@@ -59,7 +59,7 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
-            System.out.println("    -config=[f]       config file: jdk6/jdk6-unsafe/guava', default guava");
+            System.out.println("    -config=[f]       config file: jdk6/guava', default guava");
             System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
             System.out.println("    -nowrite          output messages rather than writing, default is to write");
             System.exit(0);
