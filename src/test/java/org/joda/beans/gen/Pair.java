@@ -121,8 +121,8 @@ public class Pair extends DirectBean {
     //-----------------------------------------------------------------------
     @Override
     public Pair clone() {
-        BeanBuilder<? extends Pair> builder = Pair.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : Pair.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends Pair> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

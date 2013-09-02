@@ -323,8 +323,8 @@ public final class PropertyDefBean implements Bean {
     //-----------------------------------------------------------------------
     @Override
     public PropertyDefBean clone() {
-        BeanBuilder<? extends PropertyDefBean> builder = PropertyDefBean.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : PropertyDefBean.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends PropertyDefBean> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

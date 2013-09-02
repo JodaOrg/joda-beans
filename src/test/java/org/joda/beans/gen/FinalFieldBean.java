@@ -216,8 +216,8 @@ public class FinalFieldBean extends DirectBean {
     //-----------------------------------------------------------------------
     @Override
     public FinalFieldBean clone() {
-        BeanBuilder<? extends FinalFieldBean> builder = FinalFieldBean.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : FinalFieldBean.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends FinalFieldBean> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

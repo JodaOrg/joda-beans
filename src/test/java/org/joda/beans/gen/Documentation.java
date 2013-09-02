@@ -158,8 +158,8 @@ public class Documentation<T> extends DirectBean {
     @Override
     @SuppressWarnings("unchecked")
     public Documentation<T> clone() {
-        BeanBuilder<?> builder = Documentation.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : Documentation.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<?> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

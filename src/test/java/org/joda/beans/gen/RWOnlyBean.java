@@ -173,8 +173,8 @@ public class RWOnlyBean extends DirectBean {
     //-----------------------------------------------------------------------
     @Override
     public RWOnlyBean clone() {
-        BeanBuilder<? extends RWOnlyBean> builder = RWOnlyBean.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : RWOnlyBean.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends RWOnlyBean> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

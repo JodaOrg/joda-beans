@@ -130,8 +130,8 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     @Override
     @SuppressWarnings("unchecked")
     public Wrapper<T> clone() {
-        BeanBuilder<?> builder = Wrapper.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : Wrapper.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<?> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

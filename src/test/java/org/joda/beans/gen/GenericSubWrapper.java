@@ -100,19 +100,8 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
 
     //-----------------------------------------------------------------------
     @Override
-    @SuppressWarnings("unchecked")
     public GenericSubWrapper<T> clone() {
-        BeanBuilder<?> builder = GenericSubWrapper.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : GenericSubWrapper.Meta.INSTANCE.metaPropertyIterable()) {
-            if (mp.readWrite().isWritable()) {
-                Object value = mp.get(this);
-                if (value instanceof Bean) {
-                    value = ((Bean) value).clone();
-                }
-                builder.set(mp.name(), value);
-            }
-        }
-        return (GenericSubWrapper<T>) builder.build();
+        return (GenericSubWrapper<T>) super.clone();
     }
 
     @Override

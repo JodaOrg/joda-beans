@@ -291,8 +291,8 @@ public final class Person extends DirectBean {
     //-----------------------------------------------------------------------
     @Override
     public Person clone() {
-        BeanBuilder<? extends Person> builder = Person.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : Person.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends Person> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

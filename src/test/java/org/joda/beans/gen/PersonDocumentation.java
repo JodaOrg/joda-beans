@@ -87,17 +87,7 @@ public class PersonDocumentation extends Documentation<Person> {
     //-----------------------------------------------------------------------
     @Override
     public PersonDocumentation clone() {
-        BeanBuilder<? extends PersonDocumentation> builder = PersonDocumentation.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : PersonDocumentation.Meta.INSTANCE.metaPropertyIterable()) {
-            if (mp.readWrite().isWritable()) {
-                Object value = mp.get(this);
-                if (value instanceof Bean) {
-                    value = ((Bean) value).clone();
-                }
-                builder.set(mp.name(), value);
-            }
-        }
-        return builder.build();
+        return (PersonDocumentation) super.clone();
     }
 
     @Override

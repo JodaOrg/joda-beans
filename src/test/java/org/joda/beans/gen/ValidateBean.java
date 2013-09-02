@@ -195,8 +195,8 @@ public class ValidateBean extends DirectBean {
     //-----------------------------------------------------------------------
     @Override
     public ValidateBean clone() {
-        BeanBuilder<? extends ValidateBean> builder = ValidateBean.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : ValidateBean.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends ValidateBean> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

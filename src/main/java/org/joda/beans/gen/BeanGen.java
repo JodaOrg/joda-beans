@@ -151,12 +151,15 @@ class BeanGen {
                 generatePropertyNames();
             }
             generateGettersSetters();
-            if (data.isManualClone() == false || data.isManualEqualsHashCode() == false || data.isManualToStringCode() == false || data.isImmutable()) {
+            if ((data.isManualClone() == false && (data.isRootClass() || data.isConstructable())) ||
+                    data.isManualEqualsHashCode() == false ||
+                    data.isManualToStringCode() == false ||
+                    data.isImmutable()) {
                 generateSeparator();
                 if (data.isImmutable()) {
                     generateImmutableToBuilder();
                 }
-                if (data.isManualClone() == false) {
+                if (data.isManualClone() == false && (data.isRootClass() || data.isConstructable())) {
                     generateClone();
                 }
                 if (data.isManualEqualsHashCode() == false) {
@@ -519,32 +522,44 @@ class BeanGen {
         if (data.isImmutable()) {
             insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
             insertRegion.add("\t\treturn this;");
-        } else if (data.isConstructable() == false) {
-            insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
-            insertRegion.add("\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
         } else {
-            data.ensureImport(Bean.class);
-            if (data.isTypeGeneric()) {
-                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+            if (data.isRootClass()) {
+                data.ensureImport(Bean.class);
+                if (data.isTypeGeneric()) {
+                    insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                }
                 insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
-                insertRegion.add("\t\tBeanBuilder<?> builder = " + data.getTypeRaw() + ".Meta.INSTANCE.builder();");
+                if (data.isTypeGeneric()) {
+                    insertRegion.add("\t\tBeanBuilder<?> builder = metaBean().builder();");
+                } else {
+                    insertRegion.add("\t\tBeanBuilder<? extends " + data.getType() + "> builder = metaBean().builder();");
+                }
+                insertRegion.add("\t\tfor (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {");
+                insertRegion.add("\t\t\tif (mp.readWrite().isWritable()) {");
+                insertRegion.add("\t\t\t\tObject value = mp.get(this);");
+                insertRegion.add("\t\t\t\tif (value instanceof Bean) {");
+                insertRegion.add("\t\t\t\t\tvalue = ((Bean) value).clone();");
+                insertRegion.add("\t\t\t\t}");
+                insertRegion.add("\t\t\t\tbuilder.set(mp.name(), value);");
+                insertRegion.add("\t\t\t}");
+                insertRegion.add("\t\t}");
+                if (data.isTypeGeneric()) {
+                    insertRegion.add("\t\treturn (" + data.getTypeNoExtends() + ") builder.build();");
+                } else {
+                    insertRegion.add("\t\treturn builder.build();");
+                }
             } else {
+                if (data.isTypeGeneric()) {
+                    if (data.isSuperTypeGeneric()) {
+                        if (data.getSuperType().contains(data.getTypeGenericName(true)) == false) {
+                            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                        }
+                    } else {
+                        insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                    }
+                }
                 insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
-                insertRegion.add("\t\tBeanBuilder<? extends " + data.getType() + "> builder = " + data.getTypeRaw() + ".Meta.INSTANCE.builder();");
-            }
-            insertRegion.add("\t\tfor (MetaProperty<?> mp : " + data.getTypeRaw() + ".Meta.INSTANCE.metaPropertyIterable()) {");
-            insertRegion.add("\t\t\tif (mp.readWrite().isWritable()) {");
-            insertRegion.add("\t\t\t\tObject value = mp.get(this);");
-            insertRegion.add("\t\t\t\tif (value instanceof Bean) {");
-            insertRegion.add("\t\t\t\t\tvalue = ((Bean) value).clone();");
-            insertRegion.add("\t\t\t\t}");
-            insertRegion.add("\t\t\t\tbuilder.set(mp.name(), value);");
-            insertRegion.add("\t\t\t}");
-            insertRegion.add("\t\t}");
-            if (data.isTypeGeneric()) {
-                insertRegion.add("\t\treturn (" + data.getTypeNoExtends() + ") builder.build();");
-            } else {
-                insertRegion.add("\t\treturn builder.build();");
+                insertRegion.add("\t\treturn (" + data.getTypeNoExtends() + ") super.clone();");
             }
         }
         insertRegion.add("\t}");

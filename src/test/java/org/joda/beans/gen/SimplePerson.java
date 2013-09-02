@@ -328,8 +328,8 @@ public final class SimplePerson implements Cloneable, Bean {
     //-----------------------------------------------------------------------
     @Override
     public SimplePerson clone() {
-        BeanBuilder<? extends SimplePerson> builder = SimplePerson.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : SimplePerson.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends SimplePerson> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

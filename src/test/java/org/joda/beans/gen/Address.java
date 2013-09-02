@@ -183,8 +183,8 @@ public class Address extends DirectBean {
     //-----------------------------------------------------------------------
     @Override
     public Address clone() {
-        BeanBuilder<? extends Address> builder = Address.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : Address.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<? extends Address> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {

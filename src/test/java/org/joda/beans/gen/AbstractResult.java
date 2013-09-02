@@ -116,8 +116,8 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     @Override
     @SuppressWarnings("unchecked")
     public AbstractResult<T> clone() {
-        BeanBuilder<?> builder = AbstractResult.Meta.INSTANCE.builder();
-        for (MetaProperty<?> mp : AbstractResult.Meta.INSTANCE.metaPropertyIterable()) {
+        BeanBuilder<?> builder = metaBean().builder();
+        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
             if (mp.readWrite().isWritable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {
