@@ -409,6 +409,13 @@ class PropertyGen {
         }
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
+        if (data.isDeprecated()) {
+            for (String comment : data.getComments()) {
+                if (comment.contains("@deprecated")) {
+                    list.add("\t\t * " + comment);
+                }
+            }
+        }
         list.add("\t\t * @return the meta-property, not null");
         list.add("\t\t */");
         if (data.isDeprecated()) {
@@ -478,7 +485,17 @@ class PropertyGen {
         list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder.");
         list.add("\t\t * @param " + data.getPropertyName() + "  the new value, not null");
         list.add("\t\t * @return this, for chaining, not null");
+        if (data.isDeprecated()) {
+            for (String comment : data.getComments()) {
+                if (comment.contains("@deprecated")) {
+                    list.add("\t\t * " + comment);
+                }
+            }
+        }
         list.add("\t\t */");
+        if (data.isDeprecated()) {
+            list.add("\t\t@Deprecated");
+        }
         list.add("\t\tpublic Builder" + data.getBean().getTypeGeneric(true) + " " + data.getPropertyName() +
                 "(" + getBuilderType() + " " + data.getPropertyName() + ") {");
         if (data.isValidated()) {
