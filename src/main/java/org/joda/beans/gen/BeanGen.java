@@ -519,6 +519,9 @@ class BeanGen {
         if (data.isImmutable()) {
             insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
             insertRegion.add("\t\treturn this;");
+        } else if (data.isConstructable() == false) {
+            insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
+            insertRegion.add("\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
         } else {
             data.ensureImport(Bean.class);
             if (data.isTypeGeneric()) {
