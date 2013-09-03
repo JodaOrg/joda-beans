@@ -149,7 +149,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code forename} property.
      * @return the property, not null
      */
-    public final Property<String> forename() {
+    public Property<String> forename() {
         return metaBean().forename().createProperty(this);
     }
 
@@ -166,7 +166,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code surname} property.
      * @return the property, not null
      */
-    public final Property<String> surname() {
+    public Property<String> surname() {
         return metaBean().surname().createProperty(this);
     }
 
@@ -183,7 +183,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code numberOfCars} property.
      * @return the property, not null
      */
-    public final Property<Integer> numberOfCars() {
+    public Property<Integer> numberOfCars() {
         return metaBean().numberOfCars().createProperty(this);
     }
 
@@ -200,7 +200,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code dateOfBirth} property.
      * @return the property, not null
      */
-    public final Property<Date> dateOfBirth() {
+    public Property<Date> dateOfBirth() {
         return metaBean().dateOfBirth().createProperty(this);
     }
 
@@ -217,7 +217,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code middleNames} property.
      * @return the property, not null
      */
-    public final Property<String[]> middleNames() {
+    public Property<String[]> middleNames() {
         return metaBean().middleNames().createProperty(this);
     }
 
@@ -234,7 +234,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code addressList} property.
      * @return the property, not null
      */
-    public final Property<ImmutableList<Address>> addressList() {
+    public Property<ImmutableList<Address>> addressList() {
         return metaBean().addressList().createProperty(this);
     }
 
@@ -251,7 +251,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code otherAddressMap} property.
      * @return the property, not null
      */
-    public final Property<Map<String, Address>> otherAddressMap() {
+    public Property<Map<String, Address>> otherAddressMap() {
         return metaBean().otherAddressMap().createProperty(this);
     }
 
@@ -268,7 +268,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code addressesList} property.
      * @return the property, not null
      */
-    public final Property<List<List<Address>>> addressesList() {
+    public Property<List<List<Address>>> addressesList() {
         return metaBean().addressesList().createProperty(this);
     }
 
@@ -285,7 +285,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code mainAddress} property.
      * @return the property, not null
      */
-    public final Property<ImmAddress> mainAddress() {
+    public Property<ImmAddress> mainAddress() {
         return metaBean().mainAddress().createProperty(this);
     }
 
@@ -294,7 +294,7 @@ public final class ImmPerson implements ImmutableBean {
      * Gets the the {@code age} property.
      * @return the property, not null
      */
-    public final Property<Integer> age() {
+    public Property<Integer> age() {
         return metaBean().age().createProperty(this);
     }
 
@@ -371,7 +371,7 @@ public final class ImmPerson implements ImmutableBean {
     /**
      * The meta-bean for {@code ImmPerson}.
      */
-    public static class Meta extends DirectMetaBean {
+    public static final class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -499,7 +499,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code forename} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String> forename() {
+        public MetaProperty<String> forename() {
             return forename;
         }
 
@@ -507,7 +507,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code surname} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String> surname() {
+        public MetaProperty<String> surname() {
             return surname;
         }
 
@@ -515,7 +515,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code numberOfCars} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Integer> numberOfCars() {
+        public MetaProperty<Integer> numberOfCars() {
             return numberOfCars;
         }
 
@@ -523,7 +523,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code dateOfBirth} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Date> dateOfBirth() {
+        public MetaProperty<Date> dateOfBirth() {
             return dateOfBirth;
         }
 
@@ -531,7 +531,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code middleNames} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String[]> middleNames() {
+        public MetaProperty<String[]> middleNames() {
             return middleNames;
         }
 
@@ -539,7 +539,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code addressList} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<ImmutableList<Address>> addressList() {
+        public MetaProperty<ImmutableList<Address>> addressList() {
             return addressList;
         }
 
@@ -547,7 +547,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code otherAddressMap} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Map<String, Address>> otherAddressMap() {
+        public MetaProperty<Map<String, Address>> otherAddressMap() {
             return otherAddressMap;
         }
 
@@ -555,7 +555,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code addressesList} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<List<List<Address>>> addressesList() {
+        public MetaProperty<List<List<Address>>> addressesList() {
             return addressesList;
         }
 
@@ -563,7 +563,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code mainAddress} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<ImmAddress> mainAddress() {
+        public MetaProperty<ImmAddress> mainAddress() {
             return mainAddress;
         }
 
@@ -571,7 +571,7 @@ public final class ImmPerson implements ImmutableBean {
          * The meta-property for the {@code age} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Integer> age() {
+        public MetaProperty<Integer> age() {
             return age;
         }
 
@@ -618,7 +618,7 @@ public final class ImmPerson implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmPerson}.
      */
-    public static class Builder extends BasicImmutableBeanBuilder<ImmPerson> {
+    public static final class Builder extends BasicImmutableBeanBuilder<ImmPerson> {
 
         private String forename;
         private String surname;

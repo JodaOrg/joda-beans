@@ -112,7 +112,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code stringAsCharSequence} property.
      * @return the property, not null
      */
-    public final Property<CharSequence> stringAsCharSequence() {
+    public Property<CharSequence> stringAsCharSequence() {
         return metaBean().stringAsCharSequence().createProperty(this);
     }
 
@@ -137,7 +137,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code intAsInteger} property.
      * @return the property, not null
      */
-    public final Property<Integer> intAsInteger() {
+    public Property<Integer> intAsInteger() {
         return metaBean().intAsInteger().createProperty(this);
     }
 
@@ -162,7 +162,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code listCopyOfCollection} property.
      * @return the property, not null
      */
-    public final Property<Collection<Address>> listCopyOfCollection() {
+    public Property<Collection<Address>> listCopyOfCollection() {
         return metaBean().listCopyOfCollection().createProperty(this);
     }
 
@@ -188,7 +188,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code arrayListSmart} property.
      * @return the property, not null
      */
-    public final Property<ArrayList<Address>> arrayListSmart() {
+    public Property<ArrayList<Address>> arrayListSmart() {
         return metaBean().arrayListSmart().createProperty(this);
     }
 
@@ -214,7 +214,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code arrayListExposed} property.
      * @return the property, not null
      */
-    public final Property<ArrayList<Address>> arrayListExposed() {
+    public Property<ArrayList<Address>> arrayListExposed() {
         return metaBean().arrayListExposed().createProperty(this);
     }
 
@@ -240,7 +240,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code arrayListAsCollection} property.
      * @return the property, not null
      */
-    public final Property<Collection<Address>> arrayListAsCollection() {
+    public Property<Collection<Address>> arrayListAsCollection() {
         return metaBean().arrayListAsCollection().createProperty(this);
     }
 
@@ -266,7 +266,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code arrayList} property.
      * @return the property, not null
      */
-    public final Property<ArrayList<Address>> arrayList() {
+    public Property<ArrayList<Address>> arrayList() {
         return metaBean().arrayList().createProperty(this);
     }
 
@@ -291,7 +291,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code listAsIterable} property.
      * @return the property, not null
      */
-    public final Property<Iterable<Address>> listAsIterable() {
+    public Property<Iterable<Address>> listAsIterable() {
         return metaBean().listAsIterable().createProperty(this);
     }
 
@@ -316,7 +316,7 @@ public final class PropertyDefBean implements Bean {
      * Gets the the {@code listAsIterableNoField} property.
      * @return the property, not null
      */
-    public final Property<Iterable<Address>> listAsIterableNoField() {
+    public Property<Iterable<Address>> listAsIterableNoField() {
         return metaBean().listAsIterableNoField().createProperty(this);
     }
 
@@ -392,7 +392,7 @@ public final class PropertyDefBean implements Bean {
     /**
      * The meta-bean for {@code PropertyDefBean}.
      */
-    public static class Meta extends DirectMetaBean {
+    public static final class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -516,7 +516,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code stringAsCharSequence} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<CharSequence> stringAsCharSequence() {
+        public MetaProperty<CharSequence> stringAsCharSequence() {
             return stringAsCharSequence;
         }
 
@@ -524,7 +524,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code intAsInteger} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Integer> intAsInteger() {
+        public MetaProperty<Integer> intAsInteger() {
             return intAsInteger;
         }
 
@@ -532,7 +532,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code listCopyOfCollection} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Collection<Address>> listCopyOfCollection() {
+        public MetaProperty<Collection<Address>> listCopyOfCollection() {
             return listCopyOfCollection;
         }
 
@@ -540,7 +540,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayListSmart} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<ArrayList<Address>> arrayListSmart() {
+        public MetaProperty<ArrayList<Address>> arrayListSmart() {
             return arrayListSmart;
         }
 
@@ -548,7 +548,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayListExposed} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<ArrayList<Address>> arrayListExposed() {
+        public MetaProperty<ArrayList<Address>> arrayListExposed() {
             return arrayListExposed;
         }
 
@@ -556,7 +556,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayListAsCollection} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Collection<Address>> arrayListAsCollection() {
+        public MetaProperty<Collection<Address>> arrayListAsCollection() {
             return arrayListAsCollection;
         }
 
@@ -564,7 +564,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code arrayList} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<ArrayList<Address>> arrayList() {
+        public MetaProperty<ArrayList<Address>> arrayList() {
             return arrayList;
         }
 
@@ -572,7 +572,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code listAsIterable} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Iterable<Address>> listAsIterable() {
+        public MetaProperty<Iterable<Address>> listAsIterable() {
             return listAsIterable;
         }
 
@@ -580,7 +580,7 @@ public final class PropertyDefBean implements Bean {
          * The meta-property for the {@code listAsIterableNoField} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Iterable<Address>> listAsIterableNoField() {
+        public MetaProperty<Iterable<Address>> listAsIterableNoField() {
             return listAsIterableNoField;
         }
 

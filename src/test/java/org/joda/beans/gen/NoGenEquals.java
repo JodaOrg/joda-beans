@@ -90,7 +90,7 @@ public final class NoGenEquals extends DirectBean {
      * Gets the the {@code value} property.
      * @return the property, not null
      */
-    public final Property<Object> value() {
+    public Property<Object> value() {
         return metaBean().value().createProperty(this);
     }
 
@@ -123,7 +123,7 @@ public final class NoGenEquals extends DirectBean {
     /**
      * The meta-bean for {@code NoGenEquals}.
      */
-    public static class Meta extends DirectMetaBean {
+    public static final class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -176,7 +176,7 @@ public final class NoGenEquals extends DirectBean {
          * The meta-property for the {@code value} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Object> value() {
+        public MetaProperty<Object> value() {
             return value;
         }
 

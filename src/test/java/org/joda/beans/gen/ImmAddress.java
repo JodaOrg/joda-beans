@@ -129,7 +129,7 @@ public final class ImmAddress implements ImmutableBean {
      * This will be the flat, house number or house name.
      * @return the property, not null
      */
-    public final Property<Integer> number() {
+    public Property<Integer> number() {
         return metaBean().number().createProperty(this);
     }
 
@@ -146,7 +146,7 @@ public final class ImmAddress implements ImmutableBean {
      * Gets the the {@code street} property.
      * @return the property, not null
      */
-    public final Property<String> street() {
+    public Property<String> street() {
         return metaBean().street().createProperty(this);
     }
 
@@ -163,7 +163,7 @@ public final class ImmAddress implements ImmutableBean {
      * Gets the the {@code city} property.
      * @return the property, not null
      */
-    public final Property<String> city() {
+    public Property<String> city() {
         return metaBean().city().createProperty(this);
     }
 
@@ -180,7 +180,7 @@ public final class ImmAddress implements ImmutableBean {
      * Gets the the {@code owner} property.
      * @return the property, not null
      */
-    public final Property<ImmPerson> owner() {
+    public Property<ImmPerson> owner() {
         return metaBean().owner().createProperty(this);
     }
 
@@ -239,7 +239,7 @@ public final class ImmAddress implements ImmutableBean {
     /**
      * The meta-bean for {@code ImmAddress}.
      */
-    public static class Meta extends DirectMetaBean {
+    public static final class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -316,7 +316,7 @@ public final class ImmAddress implements ImmutableBean {
          * The meta-property for the {@code number} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Integer> number() {
+        public MetaProperty<Integer> number() {
             return number;
         }
 
@@ -324,7 +324,7 @@ public final class ImmAddress implements ImmutableBean {
          * The meta-property for the {@code street} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String> street() {
+        public MetaProperty<String> street() {
             return street;
         }
 
@@ -332,7 +332,7 @@ public final class ImmAddress implements ImmutableBean {
          * The meta-property for the {@code city} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String> city() {
+        public MetaProperty<String> city() {
             return city;
         }
 
@@ -340,7 +340,7 @@ public final class ImmAddress implements ImmutableBean {
          * The meta-property for the {@code owner} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<ImmPerson> owner() {
+        public MetaProperty<ImmPerson> owner() {
             return owner;
         }
 
@@ -375,7 +375,7 @@ public final class ImmAddress implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmAddress}.
      */
-    public static class Builder extends BasicImmutableBeanBuilder<ImmAddress> {
+    public static final class Builder extends BasicImmutableBeanBuilder<ImmAddress> {
 
         private int number;
         private String street;

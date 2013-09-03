@@ -114,7 +114,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
      * Gets the the {@code documentation} property.
      * @return the property, not null
      */
-    public final Property<Documentation<T>> documentation() {
+    public Property<Documentation<T>> documentation() {
         return metaBean().documentation().createProperty(this);
     }
 
@@ -164,7 +164,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     /**
      * The meta-bean for {@code ImmDocumentationHolder}.
      */
-    public static class Meta<T> extends DirectMetaBean {
+    public static final class Meta<T> extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -220,7 +220,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
          * The meta-property for the {@code documentation} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Documentation<T>> documentation() {
+        public MetaProperty<Documentation<T>> documentation() {
             return documentation;
         }
 
@@ -249,7 +249,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmDocumentationHolder}.
      */
-    public static class Builder<T> extends BasicImmutableBeanBuilder<ImmDocumentationHolder<T>> {
+    public static final class Builder<T> extends BasicImmutableBeanBuilder<ImmDocumentationHolder<T>> {
 
         private Documentation<T> documentation;
 

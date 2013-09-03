@@ -694,10 +694,11 @@ class BeanGen {
             data.ensureImport(DirectMetaBean.class);
             superMeta = "DirectMetaBean";
         }
+        String finalType = data.isTypeFinal() ? "final " : "";
         if (data.isTypeGeneric()) {
-            insertRegion.add("\tpublic static class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
+            insertRegion.add("\tpublic static " + finalType + "class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
         } else {
-            insertRegion.add("\tpublic static class Meta extends " + superMeta + " {");
+            insertRegion.add("\tpublic static " + finalType + "class Meta extends " + superMeta + " {");
         }
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The singleton instance of the meta-bean.");
@@ -902,7 +903,8 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
-        insertRegion.add("\tpublic static class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
+        insertRegion.add("\tpublic static " + (data.isTypeFinal() ? "final " : "") +
+                "class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
         insertRegion.add("");
         generateBuilderProperties();
         insertRegion.add("");

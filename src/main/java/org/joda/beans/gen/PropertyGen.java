@@ -391,7 +391,7 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic final Property<" + propertyType() + "> " + data.getPropertyName() + "() {");
+        list.add("\tpublic " + (data.getBean().isTypeFinal() ? "" : "final ") + "Property<" + propertyType() + "> " + data.getPropertyName() + "() {");
         list.add("\t\treturn metaBean()." + data.getPropertyName() + "().createProperty(this);");
         list.add("\t}");
         list.add("");
@@ -421,7 +421,7 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        list.add("\t\tpublic final MetaProperty<" + propertyType + "> " + data.getPropertyName() + "() {");
+        list.add("\t\tpublic " + (data.getBean().isTypeFinal() ? "" : "final ") + "MetaProperty<" + propertyType + "> " + data.getPropertyName() + "() {");
         list.add("\t\t\treturn " + metaFieldName() + ";");
         list.add("\t\t}");
         list.add("");

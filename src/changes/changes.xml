@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8" date="xxxx-xx-xx" description="v0.8">
       <action dev="scolebourne" type="fix" >
+        Generate final classes for final beans. Fixes #13.
+        Some existing beans may regenerate.
+      </action>
+      <action dev="scolebourne" type="fix" >
         Parse annotations above @PropertyDefinition as well as those below. Fixes #10.
         Some existing beans may regenerate.
       </action>
@@ -18,7 +22,7 @@
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="add" >
-        Add support for immutable beans.. Fixes #11.
+        Add support for immutable beans. Fixes #11.
         All existing beans will regenerate.
       </action>
       <action dev="scolebourne" type="update" >

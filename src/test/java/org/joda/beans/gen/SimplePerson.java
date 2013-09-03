@@ -122,7 +122,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code forename} property.
      * @return the property, not null
      */
-    public final Property<String> forename() {
+    public Property<String> forename() {
         return metaBean().forename().createProperty(this);
     }
 
@@ -147,7 +147,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code surname} property.
      * @return the property, not null
      */
-    public final Property<String> surname() {
+    public Property<String> surname() {
         return metaBean().surname().createProperty(this);
     }
 
@@ -172,7 +172,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code numberOfCars} property.
      * @return the property, not null
      */
-    public final Property<Integer> numberOfCars() {
+    public Property<Integer> numberOfCars() {
         return metaBean().numberOfCars().createProperty(this);
     }
 
@@ -198,7 +198,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code addressList} property.
      * @return the property, not null
      */
-    public final Property<List<Address>> addressList() {
+    public Property<List<Address>> addressList() {
         return metaBean().addressList().createProperty(this);
     }
 
@@ -224,7 +224,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code otherAddressMap} property.
      * @return the property, not null
      */
-    public final Property<Map<String, Address>> otherAddressMap() {
+    public Property<Map<String, Address>> otherAddressMap() {
         return metaBean().otherAddressMap().createProperty(this);
     }
 
@@ -250,7 +250,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code addressesList} property.
      * @return the property, not null
      */
-    public final Property<List<List<Address>>> addressesList() {
+    public Property<List<List<Address>>> addressesList() {
         return metaBean().addressesList().createProperty(this);
     }
 
@@ -275,7 +275,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code mainAddress} property.
      * @return the property, not null
      */
-    public final Property<Address> mainAddress() {
+    public Property<Address> mainAddress() {
         return metaBean().mainAddress().createProperty(this);
     }
 
@@ -304,7 +304,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * @return the property, not null
      */
     @Deprecated
-    public final Property<FlexiBean> propDefAnnotationSecondDeprecated() {
+    public Property<FlexiBean> propDefAnnotationSecondDeprecated() {
         return metaBean().propDefAnnotationSecondDeprecated().createProperty(this);
     }
 
@@ -321,7 +321,7 @@ public final class SimplePerson implements Cloneable, Bean {
      * Gets the the {@code propDefAnnotationSecondManual} property.
      * @return the property, not null
      */
-    public final Property<Map<String, String>> propDefAnnotationSecondManual() {
+    public Property<Map<String, String>> propDefAnnotationSecondManual() {
         return metaBean().propDefAnnotationSecondManual().createProperty(this);
     }
 
@@ -397,7 +397,7 @@ public final class SimplePerson implements Cloneable, Bean {
     /**
      * The meta-bean for {@code SimplePerson}.
      */
-    public static class Meta extends DirectMetaBean {
+    public static final class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -518,7 +518,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code forename} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String> forename() {
+        public MetaProperty<String> forename() {
             return forename;
         }
 
@@ -526,7 +526,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code surname} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<String> surname() {
+        public MetaProperty<String> surname() {
             return surname;
         }
 
@@ -534,7 +534,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code numberOfCars} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Integer> numberOfCars() {
+        public MetaProperty<Integer> numberOfCars() {
             return numberOfCars;
         }
 
@@ -542,7 +542,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code addressList} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<List<Address>> addressList() {
+        public MetaProperty<List<Address>> addressList() {
             return addressList;
         }
 
@@ -550,7 +550,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code otherAddressMap} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Map<String, Address>> otherAddressMap() {
+        public MetaProperty<Map<String, Address>> otherAddressMap() {
             return otherAddressMap;
         }
 
@@ -558,7 +558,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code addressesList} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<List<List<Address>>> addressesList() {
+        public MetaProperty<List<List<Address>>> addressesList() {
             return addressesList;
         }
 
@@ -566,7 +566,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code mainAddress} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Address> mainAddress() {
+        public MetaProperty<Address> mainAddress() {
             return mainAddress;
         }
 
@@ -575,7 +575,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * @return the meta-property, not null
          */
         @Deprecated
-        public final MetaProperty<FlexiBean> propDefAnnotationSecondDeprecated() {
+        public MetaProperty<FlexiBean> propDefAnnotationSecondDeprecated() {
             return propDefAnnotationSecondDeprecated;
         }
 
@@ -583,7 +583,7 @@ public final class SimplePerson implements Cloneable, Bean {
          * The meta-property for the {@code propDefAnnotationSecondManual} property.
          * @return the meta-property, not null
          */
-        public final MetaProperty<Map<String, String>> propDefAnnotationSecondManual() {
+        public MetaProperty<Map<String, String>> propDefAnnotationSecondManual() {
             return propDefAnnotationSecondManual;
         }
 
