@@ -431,7 +431,7 @@ class PropertyGen {
     List<String> generatePropertyGetCase() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
-        if (data.getReadWrite().isReadable()) {
+        if (data.getStyle().isReadable()) {
             list.add("\t\t\t\t\treturn ((" + data.getBean().getTypeWildcard() + ") bean)." + data.getGetterGen().generateGetInvoke(data) + ";");
         } else {
             list.add("\t\t\t\t\tif (quiet) {");
@@ -446,7 +446,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         String setter = data.getSetterGen().generateSetInvoke(data);
-        if (data.getReadWrite().isWritable() && setter != null) {
+        if (data.getStyle().isWritable() && setter != null) {
             list.add("\t\t\t\t\t((" + data.getBean().getTypeNoExtends() + ") bean)." + setter + "(" + castObject() + "newValue);");
             list.add("\t\t\t\t\treturn;");
         } else {
@@ -514,17 +514,21 @@ class PropertyGen {
 
     //-----------------------------------------------------------------------
     private String readWrite() {
-        switch (data.getReadWrite()) {
+        switch (data.getStyle()) {
             case READ_WRITE:
                 return "ReadWrite";
             case READ_ONLY:
                 return "ReadOnly";
             case WRITE_ONLY:
                 return "WriteOnly";
+            case DERIVED:
+                return "Derived";
+            case IMMUTABLE:
+                return "Immutable";
             default:
                 break;
         }
-        throw new RuntimeException("Invalid read-write type");
+        throw new RuntimeException("Invalid style");
     }
 
     private String actualType() {

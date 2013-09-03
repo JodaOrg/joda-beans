@@ -300,7 +300,7 @@ public final class JodaBeanUtils {
         }
         BeanBuilder<? extends Bean> builder = original.metaBean().builder();
         for (MetaProperty<?> mp : original.metaBean().metaPropertyIterable()) {
-            if (mp.readWrite().isWritable()) {
+            if (mp.style().isBuildable()) {
                 Object value = mp.get(original);
                 if (value instanceof Bean) {
                     value = clone((Bean) value);

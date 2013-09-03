@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.PropertyStyle;
 
 /**
  * A bean that can be generated.
@@ -602,18 +602,21 @@ class GeneratableProperty {
      * 
      * @return the read write
      */
-    public PropertyReadWrite getReadWrite() {
+    public PropertyStyle getStyle() {
+        if (isDerived()) {
+            return PropertyStyle.DERIVED;
+        }
         if (getBean().isImmutable()) {
-            return PropertyReadWrite.READ_ONLY;
+            return PropertyStyle.IMMUTABLE;
         }
         if (getGetStyle().length() > 0 && getSetStyle().length() > 0 && (getSetterGen().isSetterGenerated(this) || getSetStyle().equals("manual"))) {
-            return PropertyReadWrite.READ_WRITE;
+            return PropertyStyle.READ_WRITE;
         }
         if (getGetStyle().length() > 0) {
-            return PropertyReadWrite.READ_ONLY;
+            return PropertyStyle.READ_ONLY;
         }
         if (getSetStyle().length() > 0) {
-            return PropertyReadWrite.WRITE_ONLY;
+            return PropertyStyle.WRITE_ONLY;
         }
         throw new RuntimeException("Property must have a getter or setter: " +
                 getBean().getTypeRaw() + "." + getPropertyName());

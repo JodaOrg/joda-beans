@@ -248,22 +248,22 @@ public final class ImmAddress implements ImmutableBean {
         /**
          * The meta-property for the {@code number} property.
          */
-        private final MetaProperty<Integer> number = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<Integer> number = DirectMetaProperty.ofImmutable(
                 this, "number", ImmAddress.class, Integer.TYPE);
         /**
          * The meta-property for the {@code street} property.
          */
-        private final MetaProperty<String> street = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> street = DirectMetaProperty.ofImmutable(
                 this, "street", ImmAddress.class, String.class);
         /**
          * The meta-property for the {@code city} property.
          */
-        private final MetaProperty<String> city = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> city = DirectMetaProperty.ofImmutable(
                 this, "city", ImmAddress.class, String.class);
         /**
          * The meta-property for the {@code owner} property.
          */
-        private final MetaProperty<ImmPerson> owner = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<ImmPerson> owner = DirectMetaProperty.ofImmutable(
                 this, "owner", ImmAddress.class, ImmPerson.class);
         /**
          * The meta-properties.

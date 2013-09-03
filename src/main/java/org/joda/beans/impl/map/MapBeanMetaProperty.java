@@ -22,7 +22,7 @@ import java.util.List;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
-import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.PropertyStyle;
 import org.joda.beans.impl.BasicMetaProperty;
 import org.joda.beans.impl.BasicProperty;
 
@@ -84,8 +84,8 @@ final class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     }
 
     @Override
-    public PropertyReadWrite readWrite() {
-        return PropertyReadWrite.READ_WRITE;
+    public PropertyStyle style() {
+        return PropertyStyle.READ_WRITE;
     }
 
     @Override

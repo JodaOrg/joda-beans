@@ -83,11 +83,11 @@ public interface MetaProperty<P> extends BeanQuery<P> {
     Type propertyGenericType();
 
     /**
-     * Gets whether the property is read-only, read-write or write-only.
+     * Gets the style of the property, such as read-only, read-write or write-only.
      * 
-     * @return the property read-write type, not null
+     * @return the property style, not null
      */
-    PropertyReadWrite readWrite();
+    PropertyStyle style();
 
     //-----------------------------------------------------------------------
     /**

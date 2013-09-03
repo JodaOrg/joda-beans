@@ -206,7 +206,7 @@ public class TestCompanyAddress {
         assertSame(test.metaBean().beanType(), CompanyAddress.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), STREET);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
         address.setStreet("A");
@@ -224,7 +224,7 @@ public class TestCompanyAddress {
         assertSame(test.metaBean().beanType(), CompanyAddress.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), COMPANY_NAME);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
         address.setCompanyName("A");
@@ -243,7 +243,7 @@ public class TestCompanyAddress {
         assertSame(test.metaBean().beanType(), CompanyAddress.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), STREET);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
         address.setStreet("A");
@@ -261,7 +261,7 @@ public class TestCompanyAddress {
         assertSame(test.metaBean().beanType(), CompanyAddress.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), COMPANY_NAME);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
         address.setCompanyName("A");

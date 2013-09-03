@@ -174,7 +174,7 @@ public class TestPerson {
         assertSame(test.metaBean().beanType(), Person.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), FORENAME);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(person), null);
         person.setForename("A");
@@ -193,7 +193,7 @@ public class TestPerson {
         assertSame(test.metaBean().beanType(), Person.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), FORENAME);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(person), null);
         person.setForename("A");

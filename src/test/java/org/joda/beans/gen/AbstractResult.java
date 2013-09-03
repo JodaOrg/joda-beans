@@ -118,7 +118,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     public AbstractResult<T> clone() {
         BeanBuilder<?> builder = metaBean().builder();
         for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
-            if (mp.readWrite().isWritable()) {
+            if (mp.style().isBuildable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {
                     value = ((Bean) value).clone();
@@ -188,7 +188,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         /**
          * The meta-property for the {@code resultType} property.
          */
-        private final MetaProperty<String> resultType = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> resultType = DirectMetaProperty.ofDerived(
                 this, "resultType", AbstractResult.class, String.class);
         /**
          * The meta-properties.

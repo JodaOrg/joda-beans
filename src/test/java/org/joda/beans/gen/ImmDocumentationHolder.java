@@ -175,7 +175,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
          * The meta-property for the {@code documentation} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<Documentation<T>> documentation = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<Documentation<T>> documentation = DirectMetaProperty.ofImmutable(
                 this, "documentation", ImmDocumentationHolder.class, (Class) Documentation.class);
         /**
          * The meta-properties.

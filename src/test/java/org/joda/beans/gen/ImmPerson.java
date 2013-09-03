@@ -380,55 +380,55 @@ public final class ImmPerson implements ImmutableBean {
         /**
          * The meta-property for the {@code forename} property.
          */
-        private final MetaProperty<String> forename = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> forename = DirectMetaProperty.ofImmutable(
                 this, "forename", ImmPerson.class, String.class);
         /**
          * The meta-property for the {@code surname} property.
          */
-        private final MetaProperty<String> surname = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> surname = DirectMetaProperty.ofImmutable(
                 this, "surname", ImmPerson.class, String.class);
         /**
          * The meta-property for the {@code numberOfCars} property.
          */
-        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<Integer> numberOfCars = DirectMetaProperty.ofImmutable(
                 this, "numberOfCars", ImmPerson.class, Integer.TYPE);
         /**
          * The meta-property for the {@code dateOfBirth} property.
          */
-        private final MetaProperty<Date> dateOfBirth = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<Date> dateOfBirth = DirectMetaProperty.ofImmutable(
                 this, "dateOfBirth", ImmPerson.class, Date.class);
         /**
          * The meta-property for the {@code middleNames} property.
          */
-        private final MetaProperty<String[]> middleNames = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String[]> middleNames = DirectMetaProperty.ofImmutable(
                 this, "middleNames", ImmPerson.class, String[].class);
         /**
          * The meta-property for the {@code addressList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<ImmutableList<Address>> addressList = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<ImmutableList<Address>> addressList = DirectMetaProperty.ofImmutable(
                 this, "addressList", ImmPerson.class, (Class) ImmutableList.class);
         /**
          * The meta-property for the {@code otherAddressMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<Map<String, Address>> otherAddressMap = DirectMetaProperty.ofImmutable(
                 this, "otherAddressMap", ImmPerson.class, (Class) Map.class);
         /**
          * The meta-property for the {@code addressesList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<List<List<Address>>> addressesList = DirectMetaProperty.ofImmutable(
                 this, "addressesList", ImmPerson.class, (Class) List.class);
         /**
          * The meta-property for the {@code mainAddress} property.
          */
-        private final MetaProperty<ImmAddress> mainAddress = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<ImmAddress> mainAddress = DirectMetaProperty.ofImmutable(
                 this, "mainAddress", ImmPerson.class, ImmAddress.class);
         /**
          * The meta-property for the {@code age} property.
          */
-        private final MetaProperty<Integer> age = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<Integer> age = DirectMetaProperty.ofDerived(
                 this, "age", ImmPerson.class, Integer.TYPE);
         /**
          * The meta-properties.

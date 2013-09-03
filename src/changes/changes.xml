@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8" date="xxxx-xx-xx" description="v0.8">
       <action dev="scolebourne" type="fix" >
+        Identify Derived and Immutable properties at runtime. Fixes #14.
+        Rename readWrite() to style() and PropertyReadWrite to ProperyStyle.
+        Some existing beans may regenerate.
+      </action>
+      <action dev="scolebourne" type="fix" >
         Generate final classes for final beans. Fixes #13.
         Some existing beans may regenerate.
       </action>

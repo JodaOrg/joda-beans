@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
-import org.joda.beans.PropertyReadWrite;
+import org.joda.beans.PropertyStyle;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
@@ -46,8 +46,8 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     private final Class<?> declaringType;
     /** The field implementing the property. */
     private final Field field;
-    /** The read-write type. */
-    private final PropertyReadWrite readWrite;
+    /** The style. */
+    private final PropertyStyle style;
 
     /**
      * Factory to create a read-write meta-property avoiding duplicate generics.
@@ -62,7 +62,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofReadWrite(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyReadWrite.READ_WRITE, field);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_WRITE, field);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofReadOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyReadWrite.READ_ONLY, field);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY, field);
     }
 
     /**
@@ -94,7 +94,39 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofWriteOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyReadWrite.WRITE_ONLY, field);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.WRITE_ONLY, field);
+    }
+
+    /**
+     * Factory to create a derived read-only meta-property avoiding duplicate generics.
+     * 
+     * @param <P>  the property type
+     * @param metaBean  the meta-bean, not null
+     * @param propertyName  the property name, not empty
+     * @param declaringType  the type declaring the property, not null
+     * @param propertyType  the property type, not null
+     * @return the property, not null
+     */
+    public static <P> DirectMetaProperty<P> ofDerived(
+            MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
+        Field field = findField(metaBean, propertyName);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, field);
+    }
+
+    /**
+     * Factory to create an imutable meta-property avoiding duplicate generics.
+     * 
+     * @param <P>  the property type
+     * @param metaBean  the meta-bean, not null
+     * @param propertyName  the property name, not empty
+     * @param declaringType  the type declaring the property, not null
+     * @param propertyType  the property type, not null
+     * @return the property, not null
+     */
+    public static <P> DirectMetaProperty<P> ofImmutable(
+            MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
+        Field field = findField(metaBean, propertyName);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.IMMUTABLE, field);
     }
 
     private static Field findField(MetaBean metaBean, String propertyName) {
@@ -123,11 +155,11 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param propertyName  the property name, not empty
      * @param declaringType  the declaring type, not null
      * @param propertyType  the property type, not null
-     * @param readWrite  the read-write type, not null
+     * @param style  the style, not null
      * @param field  the reflected field, not null
      */
     private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<?> declaringType,
-            Class<P> propertyType, PropertyReadWrite readWrite, Field field) {
+            Class<P> propertyType, PropertyStyle style, Field field) {
         super(propertyName);
         if (metaBean == null) {
             throw new NullPointerException("MetaBean must not be null");
@@ -138,13 +170,13 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         if (propertyType == null) {
             throw new NullPointerException("Property type must not be null");
         }
-        if (readWrite == null) {
-            throw new NullPointerException("PropertyReadWrite must not be null");
+        if (style == null) {
+            throw new NullPointerException("PropertyStyle must not be null");
         }
         this.metaBean = metaBean;
         this.propertyType = propertyType;
         this.declaringType = declaringType;
-        this.readWrite = readWrite;
+        this.style = style;
         this.field = field;  // may be null
     }
 
@@ -173,8 +205,8 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     @Override
-    public PropertyReadWrite readWrite() {
-        return readWrite;
+    public PropertyStyle style() {
+        return style;
     }
 
     @Override

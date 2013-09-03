@@ -199,7 +199,7 @@ public class TestAddress {
         assertSame(test.metaBean().beanType(), Address.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), STREET);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
         address.setStreet("A");
@@ -218,7 +218,7 @@ public class TestAddress {
         assertSame(test.metaBean().beanType(), Address.class);
         assertSame(test.propertyType(), String.class);
         assertSame(test.name(), STREET);
-        assertEquals(test.readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
         address.setStreet("A");

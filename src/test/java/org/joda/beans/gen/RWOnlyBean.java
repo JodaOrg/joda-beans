@@ -175,7 +175,7 @@ public class RWOnlyBean extends DirectBean {
     public RWOnlyBean clone() {
         BeanBuilder<? extends RWOnlyBean> builder = metaBean().builder();
         for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
-            if (mp.readWrite().isWritable()) {
+            if (mp.style().isBuildable()) {
                 Object value = mp.get(this);
                 if (value instanceof Bean) {
                     value = ((Bean) value).clone();
@@ -267,7 +267,7 @@ public class RWOnlyBean extends DirectBean {
         /**
          * The meta-property for the {@code derived} property.
          */
-        private final MetaProperty<String> derived = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> derived = DirectMetaProperty.ofDerived(
                 this, "derived", RWOnlyBean.class, String.class);
         /**
          * The meta-properties.

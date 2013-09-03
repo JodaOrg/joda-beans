@@ -53,7 +53,7 @@ public class TestFinalFieldBean {
         assertEquals(bean.fieldFinal().metaProperty().getString(bean), "Hello");
         assertEquals(bean.fieldFinal().metaProperty().get(bean), "Hello");
         assertEquals(bean.fieldFinal().metaProperty().name(), "fieldFinal");
-        assertEquals(bean.fieldFinal().metaProperty().readWrite(), PropertyReadWrite.READ_ONLY);
+        assertEquals(bean.fieldFinal().metaProperty().style(), PropertyStyle.READ_ONLY);
         assertEquals(bean.fieldFinal().metaProperty().propertyType(), String.class);
         try {
             bean.fieldFinal().set("foo");
@@ -77,7 +77,7 @@ public class TestFinalFieldBean {
         assertEquals(bean.fieldNonFinal().metaProperty().getString(bean), "Hello");
         assertEquals(bean.fieldNonFinal().metaProperty().get(bean), "Hello");
         assertEquals(bean.fieldNonFinal().metaProperty().name(), "fieldNonFinal");
-        assertEquals(bean.fieldNonFinal().metaProperty().readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(bean.fieldNonFinal().metaProperty().style(), PropertyStyle.READ_WRITE);
         assertEquals(bean.fieldNonFinal().metaProperty().propertyType(), String.class);
         
         bean.fieldNonFinal().set("foo");
@@ -96,7 +96,7 @@ public class TestFinalFieldBean {
         assertEquals(bean.listFinal().metaProperty().declaringType(), FinalFieldBean.class);
         assertEquals(bean.listFinal().metaProperty().get(bean), list);
         assertEquals(bean.listFinal().metaProperty().name(), "listFinal");
-        assertEquals(bean.listFinal().metaProperty().readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(bean.listFinal().metaProperty().style(), PropertyStyle.READ_WRITE);
         assertEquals(bean.listFinal().metaProperty().propertyType(), List.class);
         
         list.add("foo");
@@ -119,7 +119,7 @@ public class TestFinalFieldBean {
         assertEquals(bean.flexiFinal().metaProperty().declaringType(), FinalFieldBean.class);
         assertEquals(bean.flexiFinal().metaProperty().get(bean), flexi);
         assertEquals(bean.flexiFinal().metaProperty().name(), "flexiFinal");
-        assertEquals(bean.flexiFinal().metaProperty().readWrite(), PropertyReadWrite.READ_WRITE);
+        assertEquals(bean.flexiFinal().metaProperty().style(), PropertyStyle.READ_WRITE);
         assertEquals(bean.flexiFinal().metaProperty().propertyType(), FlexiBean.class);
         
         flexi.append("foo", "foos");
@@ -142,7 +142,7 @@ public class TestFinalFieldBean {
         assertEquals(bean.personFinal().metaProperty().declaringType(), FinalFieldBean.class);
         assertEquals(bean.personFinal().metaProperty().get(bean), person);
         assertEquals(bean.personFinal().metaProperty().name(), "personFinal");
-        assertEquals(bean.personFinal().metaProperty().readWrite(), PropertyReadWrite.READ_ONLY);
+        assertEquals(bean.personFinal().metaProperty().style(), PropertyStyle.READ_ONLY);
         assertEquals(bean.personFinal().metaProperty().propertyType(), Person.class);
         try {
             bean.personFinal().set(new Person());

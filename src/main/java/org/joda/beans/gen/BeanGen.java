@@ -535,7 +535,7 @@ class BeanGen {
                     insertRegion.add("\t\tBeanBuilder<? extends " + data.getType() + "> builder = metaBean().builder();");
                 }
                 insertRegion.add("\t\tfor (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {");
-                insertRegion.add("\t\t\tif (mp.readWrite().isWritable()) {");
+                insertRegion.add("\t\t\tif (mp.style().isBuildable()) {");
                 insertRegion.add("\t\t\t\tObject value = mp.get(this);");
                 insertRegion.add("\t\t\t\tif (value instanceof Bean) {");
                 insertRegion.add("\t\t\t\t\tvalue = ((Bean) value).clone();");
@@ -859,7 +859,7 @@ class BeanGen {
         
         boolean generics = data.isTypeGeneric() && properties.size() > 0;
         for (GeneratableProperty prop : data.getProperties()) {
-            generics |= (prop.getReadWrite().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
+            generics |= (prop.getStyle().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
         }
         if (generics) {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
