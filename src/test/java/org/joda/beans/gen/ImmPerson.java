@@ -675,7 +675,7 @@ public final class ImmPerson implements ImmutableBean {
                     this.middleNames = (String[]) newValue;
                     break;
                 case -1377524046:  // addressList
-                    this.addressList = (ImmutableList<Address>) newValue;
+                    this.addressList = (List<Address>) newValue;
                     break;
                 case 1368089592:  // otherAddressMap
                     this.otherAddressMap = (Map<String, Address>) newValue;

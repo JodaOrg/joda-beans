@@ -470,7 +470,7 @@ class PropertyGen {
     List<String> generateBuilderFieldSet() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
-        list.add("\t\t\t\t\tthis." + generateBuilderFieldName() + " = " + castObject() + "newValue;");
+        list.add("\t\t\t\t\tthis." + generateBuilderFieldName() + " = (" + propertyType(getBuilderType()) + ") newValue;");
         list.add("\t\t\t\t\tbreak;");
         return list;
     }
@@ -555,31 +555,35 @@ class PropertyGen {
     }
 
     private String propertyType() {
-        if (data.getType().equals("boolean")) {
+        return propertyType(data.getType());
+    }
+
+    private String propertyType(String type) {
+        if (type.equals("boolean")) {
             return "Boolean";
         }
-        if (data.getType().equals("byte")) {
+        if (type.equals("byte")) {
             return "Byte";
         }
-        if (data.getType().equals("short")) {
+        if (type.equals("short")) {
             return "Short";
         }
-        if (data.getType().equals("char")) {
+        if (type.equals("char")) {
             return "Character";
         }
-        if (data.getType().equals("int")) {
+        if (type.equals("int")) {
             return "Integer";
         }
-        if (data.getType().equals("long")) {
+        if (type.equals("long")) {
             return "Long";
         }
-        if (data.getType().equals("float")) {
+        if (type.equals("float")) {
             return "Float";
         }
-        if (data.getType().equals("double")) {
+        if (type.equals("double")) {
             return "Double";
         }
-        return data.getType();
+        return type;
     }
 
     private String metaFieldName() {
