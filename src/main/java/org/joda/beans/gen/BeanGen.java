@@ -401,13 +401,13 @@ class BeanGen {
             insertRegion.add("\t\t\t" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder,");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
-                insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getFieldName() + (i < nonDerived.size() - 1 ? "," : ") {"));
+                insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
             }
             // validate
             for (PropertyGen prop : properties) {
                 if (prop.getData().isValidated()) {
                     insertRegion.add("\t\t" + prop.getData().getValidationMethodName() +
-                            "(" + prop.getData().getFieldName() +
+                            "(" + prop.getData().getPropertyName() +
                             ", \"" + prop.getData().getPropertyName() + "\");");
                 }
             }

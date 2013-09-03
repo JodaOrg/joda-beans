@@ -476,7 +476,7 @@ class PropertyGen {
     }
 
     String generateBuilderFieldName() {
-        return bean.getFieldPrefix() + data.getFieldName();
+        return data.getFieldName();
     }
 
     List<String> generateBuilderSetMethod() {
