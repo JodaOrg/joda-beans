@@ -145,14 +145,6 @@ public final class ImmPerson implements ImmutableBean {
         return forename;
     }
 
-    /**
-     * Gets the the {@code forename} property.
-     * @return the property, not null
-     */
-    public Property<String> forename() {
-        return metaBean().forename().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the surname.
@@ -160,14 +152,6 @@ public final class ImmPerson implements ImmutableBean {
      */
     public String getSurname() {
         return surname;
-    }
-
-    /**
-     * Gets the the {@code surname} property.
-     * @return the property, not null
-     */
-    public Property<String> surname() {
-        return metaBean().surname().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -179,14 +163,6 @@ public final class ImmPerson implements ImmutableBean {
         return numberOfCars;
     }
 
-    /**
-     * Gets the the {@code numberOfCars} property.
-     * @return the property, not null
-     */
-    public Property<Integer> numberOfCars() {
-        return metaBean().numberOfCars().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the date of birth.
@@ -194,14 +170,6 @@ public final class ImmPerson implements ImmutableBean {
      */
     public Date getDateOfBirth() {
         return (dateOfBirth != null ? (Date) dateOfBirth.clone() : null);
-    }
-
-    /**
-     * Gets the the {@code dateOfBirth} property.
-     * @return the property, not null
-     */
-    public Property<Date> dateOfBirth() {
-        return metaBean().dateOfBirth().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -213,14 +181,6 @@ public final class ImmPerson implements ImmutableBean {
         return (middleNames != null ? middleNames.clone() : null);
     }
 
-    /**
-     * Gets the the {@code middleNames} property.
-     * @return the property, not null
-     */
-    public Property<String[]> middleNames() {
-        return metaBean().middleNames().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the addressList.
@@ -228,14 +188,6 @@ public final class ImmPerson implements ImmutableBean {
      */
     public ImmutableList<Address> getAddressList() {
         return addressList;
-    }
-
-    /**
-     * Gets the the {@code addressList} property.
-     * @return the property, not null
-     */
-    public Property<ImmutableList<Address>> addressList() {
-        return metaBean().addressList().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -247,14 +199,6 @@ public final class ImmPerson implements ImmutableBean {
         return otherAddressMap;
     }
 
-    /**
-     * Gets the the {@code otherAddressMap} property.
-     * @return the property, not null
-     */
-    public Property<Map<String, Address>> otherAddressMap() {
-        return metaBean().otherAddressMap().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the addressesList.
@@ -262,14 +206,6 @@ public final class ImmPerson implements ImmutableBean {
      */
     public List<List<Address>> getAddressesList() {
         return addressesList;
-    }
-
-    /**
-     * Gets the the {@code addressesList} property.
-     * @return the property, not null
-     */
-    public Property<List<List<Address>>> addressesList() {
-        return metaBean().addressesList().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -281,23 +217,7 @@ public final class ImmPerson implements ImmutableBean {
         return mainAddress;
     }
 
-    /**
-     * Gets the the {@code mainAddress} property.
-     * @return the property, not null
-     */
-    public Property<ImmAddress> mainAddress() {
-        return metaBean().mainAddress().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
-    /**
-     * Gets the the {@code age} property.
-     * @return the property, not null
-     */
-    public Property<Integer> age() {
-        return metaBean().age().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a builder that allows this bean to be mutated.

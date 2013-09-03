@@ -124,15 +124,6 @@ public final class ImmAddress implements ImmutableBean {
         return number;
     }
 
-    /**
-     * Gets the the {@code number} property.
-     * This will be the flat, house number or house name.
-     * @return the property, not null
-     */
-    public Property<Integer> number() {
-        return metaBean().number().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the street.
@@ -140,14 +131,6 @@ public final class ImmAddress implements ImmutableBean {
      */
     public String getStreet() {
         return street;
-    }
-
-    /**
-     * Gets the the {@code street} property.
-     * @return the property, not null
-     */
-    public Property<String> street() {
-        return metaBean().street().createProperty(this);
     }
 
     //-----------------------------------------------------------------------
@@ -159,14 +142,6 @@ public final class ImmAddress implements ImmutableBean {
         return city;
     }
 
-    /**
-     * Gets the the {@code city} property.
-     * @return the property, not null
-     */
-    public Property<String> city() {
-        return metaBean().city().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the owner.
@@ -174,14 +149,6 @@ public final class ImmAddress implements ImmutableBean {
      */
     public ImmPerson getOwner() {
         return owner;
-    }
-
-    /**
-     * Gets the the {@code owner} property.
-     * @return the property, not null
-     */
-    public Property<ImmPerson> owner() {
-        return metaBean().owner().createProperty(this);
     }
 
     //-----------------------------------------------------------------------

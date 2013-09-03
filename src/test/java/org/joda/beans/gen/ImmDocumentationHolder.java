@@ -110,14 +110,6 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
         return documentation;
     }
 
-    /**
-     * Gets the the {@code documentation} property.
-     * @return the property, not null
-     */
-    public Property<Documentation<T>> documentation() {
-        return metaBean().documentation().createProperty(this);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a builder that allows this bean to be mutated.

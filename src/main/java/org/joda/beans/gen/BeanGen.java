@@ -56,6 +56,8 @@ class BeanGen {
     private static final Pattern SUPER_TYPE = Pattern.compile(".* extends (([A-Z][A-Za-z0-9_]+)(?:<([A-Z][A-Za-z0-9_<> ]*)>)?).*");
     /** Pattern to find root type. */
     private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements.*[ ,]((Immutable)?Bean)[ ,].*");
+    /** The style pattern. */
+    private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {
@@ -96,6 +98,10 @@ class BeanGen {
             this.data = new GeneratableBean();
             this.data.getCurrentImports().addAll(parseImports(beanDefIndex));
             this.data.setImportInsertLocation(parseImportLocation(beanDefIndex));
+            this.data.setBeanStyle(parseBeanStyle(beanDefIndex));
+            if (data.isBeanStyleValid() == false) {
+                throw new RuntimeException("Invalid bean style: " + data.getBeanStyle());
+            }
             this.data.setConstructable(parseConstructable(beanDefIndex));
             this.data.setTypeParts(parseBeanType(beanDefIndex));
             this.data.setSuperTypeParts(parseBeanSuperType(beanDefIndex));
@@ -228,6 +234,15 @@ class BeanGen {
             }
         }
         return location;
+    }
+
+    private String parseBeanStyle(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = STYLE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
     }
 
     private boolean parseConstructable(int defLine) {
@@ -482,7 +497,9 @@ class BeanGen {
             if (data.isMutable()) {
                 insertRegion.addAll(prop.generateSetter());
             }
-            insertRegion.addAll(prop.generateProperty());
+            if (data.isBeanStyleGenerateProperties()) {
+                insertRegion.addAll(prop.generateProperty());
+            }
         }
     }
 
@@ -720,8 +737,10 @@ class BeanGen {
         generateMetaBuilder();
         generateMetaBeanType();
         generateMetaPropertyMap();
-        insertRegion.add("\t\t//-----------------------------------------------------------------------");
-        generateMetaPropertyMethods();
+        if (data.isBeanStyleGenerateMetaProperties()) {
+            insertRegion.add("\t\t//-----------------------------------------------------------------------");
+            generateMetaPropertyMethods();
+        }
         if (properties.size() > 0 || (data.isValidated() && data.isMutable())) {
             insertRegion.add("\t\t//-----------------------------------------------------------------------");
             if (properties.size() > 0) {

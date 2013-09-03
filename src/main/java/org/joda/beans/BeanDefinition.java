@@ -31,4 +31,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface BeanDefinition {
 
+    /**
+     * The style of bean generation.
+     * <p>
+     * By default, this follows 'smart' rules.
+     * Set to 'minimal' to generate a minimal amount of code.
+     * Set to 'full' to generate the full code.
+     */
+    String style() default "smart";
+
 }

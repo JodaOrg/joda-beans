@@ -33,6 +33,8 @@ class GeneratableBean {
     private final SortedSet<String> newImports = new TreeSet<String>();
     /** The last import line. */
     private int lastImportLine;
+    /** The bean style. */
+    private String beanStyle;
     /** Whether the class is immutable. */
     private boolean immutable;
     /** Whether the class can be constructed. */
@@ -112,6 +114,47 @@ class GeneratableBean {
         lastImportLine = location;
     }
 
+    /**
+     * Gets the bean style.
+     * @return the flag
+     */
+    public String getBeanStyle() {
+        return beanStyle;
+    }
+
+    /**
+     * Sets the bean style.
+     * @param beanStyle  the flag
+     */
+    public void setBeanStyle(String beanStyle) {
+        this.beanStyle = beanStyle;
+    }
+
+    /**
+     * Is the bean style indicating that properties should be generated.
+     * @return the flag
+     */
+    public boolean isBeanStyleValid() {
+        return "full".equals(beanStyle) || "smart".equals(beanStyle) || "minimal".equals(beanStyle);
+    }
+
+    /**
+     * Is the bean style indicating that properties should be generated.
+     * @return the flag
+     */
+    public boolean isBeanStyleGenerateProperties() {
+        return "full".equals(beanStyle) || ("smart".equals(beanStyle) && isImmutable() == false);
+    }
+
+    /**
+     * Is the bean style indicating that properties should be generated.
+     * @return the flag
+     */
+    public boolean isBeanStyleGenerateMetaProperties() {
+        return "full".equals(beanStyle) || "smart".equals(beanStyle);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets whether the bean is immutable.
      * @return the flag
