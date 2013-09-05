@@ -175,7 +175,31 @@ public final class JodaBeanUtils {
      * @return the hash code
      */
     public static int hashCode(Object obj) {
-        return obj == null ? 0 : obj.hashCode();
+        if (obj == null) {
+            return 0;
+        }
+        if (obj.getClass().isArray()) {
+            if (obj instanceof Object[]) {
+                return Arrays.deepHashCode((Object[]) obj);
+            } else if (obj instanceof int[]) {
+                return Arrays.hashCode((int[]) obj);
+            } else if (obj instanceof long[]) {
+                return Arrays.hashCode((long[]) obj);
+            } else if (obj instanceof byte[]) {
+                return Arrays.hashCode((byte[]) obj);
+            } else if (obj instanceof double[]) {
+                return Arrays.hashCode((double[]) obj);
+            } else if (obj instanceof float[]) {
+                return Arrays.hashCode((float[]) obj);
+            } else if (obj instanceof char[]) {
+                return Arrays.hashCode((char[]) obj);
+            } else if (obj instanceof short[]) {
+                return Arrays.hashCode((short[]) obj);
+            } else if (obj instanceof boolean[]) {
+                return Arrays.hashCode((boolean[]) obj);
+            }
+        }
+        return obj.hashCode();
     }
 
     /**
