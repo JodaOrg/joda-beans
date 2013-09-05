@@ -143,6 +143,32 @@ public final class JodaBeanUtils {
     }
 
     /**
+     * Checks if two floats are equal based on identity.
+     * <p>
+     * This performs the same check as {@link Float#equals(Object)}.
+     * 
+     * @param val1  the first value, may be null
+     * @param val2  the second value, may be null
+     * @return true if equal
+     */
+    public static boolean equal(float val1, float val2) {
+        return Float.floatToIntBits(val1) == Float.floatToIntBits(val2);
+    }
+
+    /**
+     * Checks if two doubles are equal based on identity.
+     * <p>
+     * This performs the same check as {@link Double#equals(Object)}.
+     * 
+     * @param val1  the first value, may be null
+     * @param val2  the second value, may be null
+     * @return true if equal
+     */
+    public static boolean equal(double val1, double val2) {
+        return Double.doubleToLongBits(val1) == Double.doubleToLongBits(val2);
+    }
+
+    /**
      * Returns a hash code for an object handling null.
      * 
      * @param obj  the object, may be null
