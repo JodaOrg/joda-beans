@@ -39,6 +39,8 @@ class GeneratableBean {
     private boolean immutable;
     /** Whether the class can be constructed. */
     private boolean constructable;
+    /** Whether the class has a manual construcor for immutable beans. */
+    private boolean immutableConstructor;
     /** The full type of the bean class. */
     private String typeFull;
     /** The simple name of the bean class. */
@@ -180,7 +182,7 @@ class GeneratableBean {
     }
 
     /**
-     * Sets whether the bean can be constructed.
+     * Checks whether the bean can be constructed.
      * @return the flag
      */
     public boolean isConstructable() {
@@ -193,6 +195,22 @@ class GeneratableBean {
      */
     public void setConstructable(boolean constructable) {
         this.constructable = constructable;
+    }
+
+    /**
+     * Checks whether the bean has a manual constructor to use.
+     * @return the flag
+     */
+    public boolean isImmutableConstructor() {
+        return immutableConstructor;
+    }
+
+    /**
+     * Sets whether the bean has a manual constructor to use.
+     * @param constructable  the flag
+     */
+    public void setImmutableConstructor(boolean manualConstructor) {
+        this.immutableConstructor = manualConstructor;
     }
 
     /**

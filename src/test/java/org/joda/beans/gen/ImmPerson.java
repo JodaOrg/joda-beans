@@ -100,7 +100,6 @@ public final class ImmPerson implements ImmutableBean {
     }
 
     private ImmPerson(
-            ImmPerson.Builder builder,
             String forename,
             String surname,
             int numberOfCars,
@@ -615,7 +614,6 @@ public final class ImmPerson implements ImmutableBean {
         @Override
         public ImmPerson build() {
             return new ImmPerson(
-                    this,
                     forename,
                     surname,
                     numberOfCars,

@@ -102,6 +102,7 @@ class BeanGen {
             if (data.isBeanStyleValid() == false) {
                 throw new RuntimeException("Invalid bean style: " + data.getBeanStyle());
             }
+            this.data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
             this.data.setConstructable(parseConstructable(beanDefIndex));
             this.data.setTypeParts(parseBeanType(beanDefIndex));
             this.data.setSuperTypeParts(parseBeanSuperType(beanDefIndex));
@@ -121,6 +122,8 @@ class BeanGen {
                         throw new RuntimeException("ImmutableBean must be have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
                     }
                 }
+            } else if (data.isImmutableConstructor()) {
+                throw new RuntimeException("Mutable beans must not specify @ImmutableConstructor: " + data.getTypeRaw());
             }
         } else {
             this.autoStartIndex = -1;
@@ -149,7 +152,9 @@ class BeanGen {
             generateMeta();
             if (data.isImmutable()) {
                 generateImmutableBuilderMethod();
-                generateImmutableConstructor();
+                if (data.isImmutableConstructor() == false) {
+                    generateImmutableConstructor();
+                }
             }
             generateMetaBean();
             if (data.isRootClass() && data.isExtendsDirectBean() == false) {
@@ -283,6 +288,19 @@ class BeanGen {
         throw new RuntimeException("Unable to locate bean superclass");
     }
 
+    private boolean parseImmutableConstructor(int defLine) {
+        boolean found = false;
+        for (int index = defLine; index < content.size(); index++) {
+            if (content.get(index).trim().equals("@ImmutableConstructor")) {
+                if (found) {
+                    throw new RuntimeException("Only one @ImmutableConstructor mau be specified");
+                }
+                found = true;
+            }
+        }
+        return found;
+    }
+
     private List<PropertyGen> parseProperties(GeneratableBean data) {
         List<PropertyGen> props = new ArrayList<PropertyGen>();
         for (int index = 0; index < content.size(); index++) {
@@ -409,11 +427,10 @@ class BeanGen {
     private void generateImmutableConstructor() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         if (nonDerived.size() == 0) {
-            insertRegion.add("\tprivate " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder) {");
+            insertRegion.add("\tprivate " + data.getTypeRaw() + "() {");
         } else {
             // signature
             insertRegion.add("\tprivate " + data.getTypeRaw() + "(");
-            insertRegion.add("\t\t\t" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder,");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
                 insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
@@ -1004,10 +1021,9 @@ class BeanGen {
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGeneric(true) + " build() {");
         if (nonDerived.size() == 0) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "(this);");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "();");
         } else {
             insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "(");
-            insertRegion.add("\t\t\t\t\tthis,");
             for (int i = 0; i < nonDerived.size(); i++) {
                 insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
             }

@@ -85,7 +85,6 @@ public final class ImmAddress implements ImmutableBean {
     }
 
     private ImmAddress(
-            ImmAddress.Builder builder,
             int number,
             String street,
             String city,
@@ -393,7 +392,6 @@ public final class ImmAddress implements ImmutableBean {
         @Override
         public ImmAddress build() {
             return new ImmAddress(
-                    this,
                     number,
                     street,
                     city,
