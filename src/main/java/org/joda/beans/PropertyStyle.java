@@ -78,4 +78,22 @@ public enum PropertyStyle {
         return this == READ_WRITE || this == WRITE_ONLY || this == IMMUTABLE;
     }
 
+    /**
+     * Checks whether the property is derived.
+     * 
+     * @return true if the property is derived
+     */
+    public boolean isDerived() {
+        return this == DERIVED;
+    }
+
+    /**
+     * Checks whether the property can be serialized in a round-trip.
+     * 
+     * @return true if the property is serializable
+     */
+    public boolean isSerializable() {
+        return this == READ_WRITE || this == IMMUTABLE;
+    }
+
 }

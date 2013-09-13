@@ -1,0 +1,255 @@
+/*
+ *  Copyright 2001-2013 Stephen Colebourne
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.joda.beans.ser.xml;
+
+import org.joda.beans.Bean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerIterator;
+import org.joda.convert.StringConverter;
+
+/**
+ * Provides the ability for a Joda-Bean to be written to XML.
+ * <p>
+ * This class contains mutable state and cannot be used from multiple threads.
+ *
+ * @author Stephen Colebourne
+ */
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class JodaBeanXmlWriter {
+
+    /**
+     * The settings to use.
+     */
+    private final JodaBeanSer settings;
+    /**
+     * The root bean.
+     */
+    private final Bean rootBean;
+    /**
+     * The base package.
+     */
+    private final String basePackage;
+    /**
+     * The string builder.
+     */
+    private final StringBuilder builder;
+
+    /**
+     * Creates an instance.
+     * 
+     * @param settings  the settings to use, not null
+     * @param bean  the bean to output, not null
+     */
+    public JodaBeanXmlWriter(JodaBeanSer settings, Bean bean) {
+        this(settings, bean, new StringBuilder(1024));
+    }
+
+    /**
+     * Creates an instance.
+     * 
+     * @param settings  the settings to use, not null
+     * @param bean  the bean to output, not null
+     * @param builder  the builder to output to, not null
+     */
+    public JodaBeanXmlWriter(JodaBeanSer settings, Bean bean, StringBuilder builder) {
+        this.settings = settings;
+        this.rootBean = bean;
+        this.basePackage = bean.getClass().getPackage().getName() + ".";
+        this.builder = builder;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Writes the bean to a string.
+     * 
+     * @return the XML, not null
+     */
+    public String write() {
+        return writeToBuilder().toString();
+    }
+
+    /**
+     * Writes the bean to the {@code StringBuilder}.
+     * 
+     * @return the builder, not null
+     */
+    public StringBuilder writeToBuilder() {
+        writeHeader();
+        builder.append("<bean type=\"").append(rootBean.getClass().getName()).append("\">").append(settings.getNewLine());
+        writeBean(rootBean, settings.getIndent());
+        builder.append("</bean>").append(settings.getNewLine());
+        return builder;
+    }
+
+    private void writeHeader() {
+        builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(settings.getNewLine());
+    }
+
+    //-----------------------------------------------------------------------
+    private boolean writeBean(Bean bean, String currentIndent) {
+        boolean output = false;
+        for (MetaProperty prop : bean.metaBean().metaPropertyIterable()) {
+            if (prop.style().isSerializable()) {
+                output = true;
+                Object value = prop.get(bean);
+                if (value != null) {
+                    String propName = prop.name();
+                    Class propType = prop.propertyType();
+                    if (value instanceof Bean) {
+                        writeBean(currentIndent, propName, "", propType, (Bean) value);
+                    } else {
+                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        if (itemIterator != null) {
+                            writeElements(currentIndent, propName, "", itemIterator);
+                        } else {
+                            writeSimple(currentIndent, propName, "", propType, value);
+                        }
+                    }
+                }
+            }
+        }
+        return output;
+    }
+
+    //-----------------------------------------------------------------------
+    private void writeBean(String currentIndent, String tagName, String attr, Class propType, Bean value) {
+        builder.append(currentIndent).append('<').append(tagName).append(attr);
+        if (value.getClass() != propType) {
+            String type = value.getClass().getName();
+            if (type.startsWith(basePackage)) {
+                type = "." + type.substring(basePackage.length());
+            }
+            builder.append(" type=\"").append(type).append('\"');
+        }
+        builder.append('>').append(settings.getNewLine());
+        if (writeBean(value, currentIndent + settings.getIndent())) {
+            builder.append(currentIndent).append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
+        } else {
+            builder.insert(builder.length() - 2, '/');
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    private void writeElements(String currentIndent, String tagName, String attr, SerIterator itemIterator) {
+        if (itemIterator.size() == 0) {
+            builder.append(currentIndent).append('<').append(tagName).append(attr).append('/').append('>').append(settings.getNewLine());
+        } else {
+            builder.append(currentIndent).append('<').append(tagName).append(attr).append('>').append(settings.getNewLine());
+            writeElements(currentIndent + settings.getIndent(), itemIterator);
+            builder.append(currentIndent).append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
+        }
+    }
+
+    private void writeElements(String currentIndent, SerIterator itemIterator) {
+        StringConverter converter = null;
+        if (itemIterator.keyType() != null) {
+            converter = settings.getConverter().findConverter(itemIterator.keyType());
+        }
+        while (itemIterator.hasNext()) {
+            itemIterator.next();
+            String attr = "";
+            if (converter != null) {
+                String keyStr = encodeAttribute(converter.convertToString(itemIterator.key()));
+                attr += " key=\"" + keyStr + "\"";
+            }
+            if (itemIterator.count() != 1) {
+                attr = " count=\"" + itemIterator.count() + "\"";
+            }
+            Object value = itemIterator.value();
+            writeElement(currentIndent, attr, itemIterator.valueType(), value);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    private void writeElement(String currentIndent, String attr, Class valueType, Object value) {
+        if (value == null) {
+            builder.append(currentIndent).append("<item").append(attr).append(" null=\"true\"/>").append(settings.getNewLine());
+        } else if (value instanceof Bean) {
+            writeBean(currentIndent, "item", attr, valueType, (Bean) value);
+        } else {
+            SerIterator itemIterator = settings.getIteratorFactory().create(value);
+            if (itemIterator != null) {
+                attr += " collection=\"" + itemIterator.simpleType() + "\"";
+                writeElements(currentIndent, "item", attr, itemIterator);
+            } else {
+                writeSimple(currentIndent, "item", attr, valueType, value);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    private void writeSimple(String currentIndent, String tagName, String attr, Class propType, Object value) {
+        // TODO arrays including byte-array
+        String converted = settings.getConverter().convertToString(propType, value);
+        builder.append(currentIndent).append('<').append(tagName).append(attr).append('>');
+        appendEncoded(converted);
+        builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
+    }
+
+    private StringBuilder appendEncoded(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+            switch (ch) {
+                case '&':
+                    builder.append("&amp;");
+                    break;
+                case '<':
+                    builder.append("&lt;");
+                    break;
+                case '>':
+                    builder.append("&gt;");
+                    break;
+                default:
+                    builder.append(ch);
+                    break;
+            }
+        }
+        return builder;
+    }
+
+    private String encodeAttribute(String text) {
+        return appendEncodedAttribute(new StringBuilder(text.length() + 16), text).toString();
+    }
+
+    private StringBuilder appendEncodedAttribute(StringBuilder builder, String text) {
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+            switch (ch) {
+                case '&':
+                    builder.append("&amp;");
+                    break;
+                case '<':
+                    builder.append("&lt;");
+                    break;
+                case '>':
+                    builder.append("&gt;");
+                    break;
+                case '"':
+                    builder.append("&quot;");
+                    break;
+                case '\'':
+                    builder.append("&apos;");
+                    break;
+                default:
+                    builder.append(ch);
+                    break;
+            }
+        }
+        return builder;
+    }
+
+}

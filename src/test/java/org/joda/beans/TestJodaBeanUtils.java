@@ -24,11 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.gen.Address;
+import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.query.ChainedBeanQuery;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableMultiset;
 
 /**
  * Test utils.
@@ -240,6 +243,12 @@ public class TestJodaBeanUtils {
         
         assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), String.class);
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), Address.class);
+    }
+
+    public void test_multisetType_Person_otherAddressMap() {
+        MetaProperty<ImmutableMultiset<String>> test = ImmPerson.meta().codeCounts();
+        
+        assertEquals(JodaBeanUtils.collectionType(test, Person.class), String.class);
     }
 
     //-------------------------------------------------------------------------
