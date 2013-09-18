@@ -17,6 +17,7 @@ package org.joda.beans.ser;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
 import org.joda.convert.StringConvert;
 
@@ -163,6 +164,15 @@ public final class JodaBeanSer {
      */
     public JodaBeanXmlWriter xmlWriter(Bean bean) {
         return new JodaBeanXmlWriter(this, bean);
+    }
+
+    /**
+     * Creates an XML reader.
+     * 
+     * @return the XML reader, not null
+     */
+    public JodaBeanXmlReader xmlReader() {
+        return new JodaBeanXmlReader(this);
     }
 
 }

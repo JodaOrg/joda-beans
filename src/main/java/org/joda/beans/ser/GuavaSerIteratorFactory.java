@@ -21,6 +21,9 @@ import java.util.Map;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
@@ -39,6 +42,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param value  the possible collection-like object, not null
      * @return the iterator, null if not a collection-like type
      */
+    @Override
     public SerIterator create(final Object value) {
         if (value instanceof Multimap) {
             return multimap((Multimap<?, ?>) value, Object.class, Object.class);
@@ -57,6 +61,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
      * @return the iterator, null if not a collection-like type
      */
+    @Override
     public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
         if (value instanceof Multiset) {
             Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
@@ -71,6 +76,96 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param metaTypeDescription  the description of the collection type, not null
+     * @return the iterator, null if not a collection-like type
+     */
+    @Override
+    public SerIterable createIterable(final String metaTypeDescription) {
+        if (metaTypeDescription.equals("SetMultimap")) {
+            return setMultimap(Object.class, Object.class);
+        }
+        if (metaTypeDescription.equals("ListMultimap")) {
+            return listMultimap(Object.class, Object.class);
+        }
+        if (metaTypeDescription.equals("Multimap")) {
+            return listMultimap(Object.class, Object.class);
+        }
+        if (metaTypeDescription.equals("Multiset")) {
+            return multiset(Object.class);
+        }
+        return super.createIterable(metaTypeDescription);
+    }
+
+    /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param prop  the meta-property defining the value, not null
+     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @return the iterator, null if not a collection-like type
+     */
+    @Override
+    public SerIterable createIterable(final MetaProperty<?> prop, Class<?> beanClass) {
+        if (Multiset.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            return multiset(valueType);
+        }
+        if (SetMultimap.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            return setMultimap(keyType, valueType);
+        }
+        if (ListMultimap.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            return listMultimap(keyType, valueType);
+        }
+        if (Multimap.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            return listMultimap(keyType, valueType);
+        }
+        return super.createIterable(prop, beanClass);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an iterable wrapper for {@code Multiset}.
+     * 
+     * @param valueType  the value type, not null
+     * @return the iterable, not null
+     */
+    public static final SerIterable multiset(final Class<?> valueType) {
+        final Multiset<Object> coll = HashMultiset.create();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return multiset(coll, valueType);
+            }
+            @Override
+            public void add(Object key, Object value, int count) {
+                if (key != null) {
+                    throw new IllegalArgumentException("Unexpected key");
+                }
+                coll.add(value, count);
+            }
+            @Override
+            public Object build() {
+                return coll;
+            }
+            @Override
+            public Class<?> keyType() {
+                return null;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+        };
+    }
+
     /**
      * Gets an iterator wrapper for {@code Multiset}.
      * 
@@ -123,12 +218,91 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         };
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an iterable wrapper for {@code ListMultimap}.
+     * 
+     * @param keyType  the value type, not null
+     * @param valueType  the value type, not null
+     * @return the iterable, not null
+     */
+    public static final SerIterable listMultimap(final Class<?> keyType, final Class<?> valueType) {
+        final ListMultimap<Object, Object> map = ArrayListMultimap.create();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return multimap(map, keyType, valueType);
+            }
+            @Override
+            public void add(Object key, Object value, int count) {
+                if (key == null) {
+                    throw new IllegalArgumentException("Missing key");
+                }
+                if (count != 1) {
+                    throw new IllegalArgumentException("Unexpected count");
+                }
+                map.put(key, value);
+            }
+            @Override
+            public Object build() {
+                return map;
+            }
+            @Override
+            public Class<?> keyType() {
+                return null;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterable wrapper for {@code SetMultimap}.
+     * 
+     * @param keyType  the value type, not null
+     * @param valueType  the value type, not null
+     * @return the iterable, not null
+     */
+    public static final SerIterable setMultimap(final Class<?> keyType, final Class<?> valueType) {
+        final SetMultimap<Object, Object> map = HashMultimap.create();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return multimap(map, keyType, valueType);
+            }
+            @Override
+            public void add(Object key, Object value, int count) {
+                if (key == null) {
+                    throw new IllegalArgumentException("Missing key");
+                }
+                if (count != 1) {
+                    throw new IllegalArgumentException("Unexpected count");
+                }
+                map.put(key, value);
+            }
+            @Override
+            public Object build() {
+                return map;
+            }
+            @Override
+            public Class<?> keyType() {
+                return null;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+        };
+    }
+
     /**
      * Gets an iterator wrapper for {@code Multimap}.
      * 
      * @param map  the collection, not null
-     * @param valueType  the value type, not null
      * @param keyType  the value type, not null
+     * @param valueType  the value type, not null
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
@@ -139,11 +313,11 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
 
             @Override
             public String simpleTypeName() {
-                if (map instanceof ListMultimap) {
-                    return "ListMultimap";
-                }
                 if (map instanceof SetMultimap) {
                     return "SetMultimap";
+                }
+                if (map instanceof ListMultimap) {
+                    return "ListMultimap";
                 }
                 return "Multimap";
             }

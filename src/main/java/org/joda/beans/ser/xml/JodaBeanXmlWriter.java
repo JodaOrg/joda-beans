@@ -19,6 +19,7 @@ import static org.joda.beans.ser.xml.JodaBeanXml.BEAN;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT;
 import static org.joda.beans.ser.xml.JodaBeanXml.KEY;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
+import static org.joda.beans.ser.xml.JodaBeanXml.NULL;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 
 import org.joda.beans.Bean;
@@ -188,7 +189,8 @@ public class JodaBeanXmlWriter {
     //-----------------------------------------------------------------------
     private void writeElement(String currentIndent, StringBuilder attrs, Class<?> valueType, Object value) {
         if (value == null) {
-            builder.append(currentIndent).append("<item").append(attrs).append(" null=\"true\"/>").append(settings.getNewLine());
+            appendAttribute(attrs, NULL, "true");
+            builder.append(currentIndent).append("<item").append(attrs).append("/>").append(settings.getNewLine());
         } else if (value instanceof Bean) {
             writeBean(currentIndent, "item", attrs, valueType, (Bean) value);
         } else {

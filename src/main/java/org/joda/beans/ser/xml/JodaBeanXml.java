@@ -15,6 +15,8 @@
  */
 package org.joda.beans.ser.xml;
 
+import javax.xml.namespace.QName;
+
 /**
  * Constants used in XML.
  *
@@ -27,25 +29,57 @@ public final class JodaBeanXml {
      */
     public static final String BEAN = "bean";
     /**
+     * XML bean QName.
+     */
+    public static final QName BEAN_QNAME = new QName(null, BEAN);
+    /**
      * XML item tag.
      */
     public static final String ITEM = "item";
+    /**
+     * XML item QName.
+     */
+    public static final QName ITEM_QNAME = new QName(null, ITEM);
     /**
      * XML type attribute.
      */
     public static final String TYPE = "type";
     /**
+     * XML type QName.
+     */
+    public static final QName TYPE_QNAME = new QName(null, TYPE);
+    /**
      * XML key attribute.
      */
     public static final String KEY = "key";
+    /**
+     * XML key QName.
+     */
+    public static final QName KEY_QNAME = new QName(null, KEY);
     /**
      * XML count attribute.
      */
     public static final String COUNT = "count";
     /**
+     * XML count QName.
+     */
+    public static final QName COUNT_QNAME = new QName(null, COUNT);
+    /**
      * XML meta-type attribute.
      */
     public static final String METATYPE = "metatype";
+    /**
+     * XML meta-type QName.
+     */
+    public static final QName METATYPE_QNAME = new QName(null, METATYPE);
+    /**
+     * XML null attribute.
+     */
+    public static final String NULL = "null";
+    /**
+     * XML null QName.
+     */
+    public static final QName NULL_QNAME = new QName(null, NULL);
 
     /**
      * Restricted constructor.

@@ -15,6 +15,9 @@
  */
 package org.joda.beans.ser.xml;
 
+import static org.testng.Assert.assertEquals;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +68,10 @@ public class TestAddressXml {
         String xml = JodaBeanSer.PRETTY.xmlWriter(address).write();
         System.out.println(xml);
         System.out.println(xml.length());
+        
+        Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
+        System.out.println(bean);
+        assertEquals(bean, address);
     }
 
     public void test_writeImmAddress() {
@@ -73,18 +80,26 @@ public class TestAddressXml {
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
             .surname("Colebourne")
+            .addressList(Arrays.asList(new Address()))
             .codeCounts(ImmutableMultiset.of("A", "A", "B"))
             . build();
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
             .street("Park Street")
-            .city("London & Capital of the World <!>")
-            .arraysInMap(map)
+            .city("London & Capital of the World <!>\n")
+//            .arraysInMap(map)
             .build();
         
-        String xml = JodaBeanSer.COMPACT.xmlWriter(address).write();
+        String xml = JodaBeanSer.PRETTY.xmlWriter(address).write();
+        
+        xml = xml.replace("185", "18<!-- comment -->5");
         System.out.println(xml);
+        
+        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
+        System.out.println(bean);
+//        assertEquals(Arrays.asList(bean.getArraysInMap().get("A")), Arrays.asList(address.getArraysInMap().get("A")));
+        assertEquals(bean, address);
     }
 
 }
