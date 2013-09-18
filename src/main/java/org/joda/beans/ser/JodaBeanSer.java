@@ -33,11 +33,11 @@ public final class JodaBeanSer {
     /**
      * Obtains the singleton compact instance.
      */
-    public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.INSTANCE, SerIteratorFactory.INSTANCE);
+    public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(), SerIteratorFactory.INSTANCE);
     /**
      * Obtains the singleton pretty-printing instance.
      */
-    public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.INSTANCE, SerIteratorFactory.INSTANCE);
+    public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(), SerIteratorFactory.INSTANCE);
 
     /**
      * The indent to use.
@@ -80,7 +80,7 @@ public final class JodaBeanSer {
     }
 
     /**
-     * Gets the pretty print indent.
+     * Returns a copy of this serializer with the specified pretty print indent.
      * 
      * @param indent  the indent, not null
      * @return a copy of this object with the indent changed, not null
@@ -100,7 +100,7 @@ public final class JodaBeanSer {
     }
 
     /**
-     * Gets the pretty print new line.
+     * Returns a copy of this serializer with the specified pretty print new line.
      * 
      * @param newLine  the new line, not null
      * @return a copy of this object with the new line changed, not null
@@ -112,6 +112,8 @@ public final class JodaBeanSer {
 
     /**
      * Gets the string converter.
+     * <p>
+     * The default converter can be modified.
      * 
      * @return the converter, not null
      */
@@ -120,7 +122,9 @@ public final class JodaBeanSer {
     }
 
     /**
-     * Gets the string converter.
+     * Returns a copy of this serializer with the specified string converter.
+     * <p>
+     * The default converter can be modified.
      * 
      * @param converter  the converter, not null
      * @return a copy of this object with the converter changed, not null
@@ -140,7 +144,7 @@ public final class JodaBeanSer {
     }
 
     /**
-     * Gets the iterator factory.
+     * Returns a copy of this serializer with the specified iterator factory.
      * 
      * @param iteratorFactory  the iterator factory, not null
      * @return a copy of this object with the iterator factory changed, not null

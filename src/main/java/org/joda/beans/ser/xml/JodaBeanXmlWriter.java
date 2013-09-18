@@ -15,6 +15,12 @@
  */
 package org.joda.beans.ser.xml;
 
+import static org.joda.beans.ser.xml.JodaBeanXml.BEAN;
+import static org.joda.beans.ser.xml.JodaBeanXml.COUNT;
+import static org.joda.beans.ser.xml.JodaBeanXml.KEY;
+import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
+import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
@@ -28,7 +34,6 @@ import org.joda.convert.StringConverter;
  *
  * @author Stephen Colebourne
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JodaBeanXmlWriter {
 
     /**
@@ -88,10 +93,13 @@ public class JodaBeanXmlWriter {
      * @return the builder, not null
      */
     public StringBuilder writeToBuilder() {
+        String type = rootBean.getClass().getName();
         writeHeader();
-        builder.append("<bean type=\"").append(rootBean.getClass().getName()).append("\">").append(settings.getNewLine());
+        builder.append('<').append(BEAN);
+        appendAttribute(builder, TYPE, type);
+        builder.append('>').append(settings.getNewLine());
         writeBean(rootBean, settings.getIndent());
-        builder.append("</bean>").append(settings.getNewLine());
+        builder.append('<').append('/').append(BEAN).append('>').append(settings.getNewLine());
         return builder;
     }
 
@@ -102,21 +110,21 @@ public class JodaBeanXmlWriter {
     //-----------------------------------------------------------------------
     private boolean writeBean(Bean bean, String currentIndent) {
         boolean output = false;
-        for (MetaProperty prop : bean.metaBean().metaPropertyIterable()) {
+        for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable()) {
                 output = true;
                 Object value = prop.get(bean);
                 if (value != null) {
                     String propName = prop.name();
-                    Class propType = prop.propertyType();
+                    Class<?> propType = prop.propertyType();
                     if (value instanceof Bean) {
-                        writeBean(currentIndent, propName, "", propType, (Bean) value);
+                        writeBean(currentIndent, propName, new StringBuilder(), propType, (Bean) value);
                     } else {
                         SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                         if (itemIterator != null) {
-                            writeElements(currentIndent, propName, "", itemIterator);
+                            writeElements(currentIndent, propName, new StringBuilder(), itemIterator);
                         } else {
-                            writeSimple(currentIndent, propName, "", propType, value);
+                            writeSimple(currentIndent, propName, new StringBuilder(), propType, value);
                         }
                     }
                 }
@@ -126,14 +134,14 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeBean(String currentIndent, String tagName, String attr, Class propType, Bean value) {
-        builder.append(currentIndent).append('<').append(tagName).append(attr);
+    private void writeBean(String currentIndent, String tagName, StringBuilder attrs, Class<?> propType, Bean value) {
+        builder.append(currentIndent).append('<').append(tagName).append(attrs);
         if (value.getClass() != propType) {
             String type = value.getClass().getName();
             if (type.startsWith(basePackage)) {
                 type = "." + type.substring(basePackage.length());
             }
-            builder.append(" type=\"").append(type).append('\"');
+            appendAttribute(attrs, TYPE, type);
         }
         builder.append('>').append(settings.getNewLine());
         if (writeBean(value, currentIndent + settings.getIndent())) {
@@ -144,30 +152,33 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeElements(String currentIndent, String tagName, String attr, SerIterator itemIterator) {
+    private void writeElements(String currentIndent, String tagName, StringBuilder attrs, SerIterator itemIterator) {
         if (itemIterator.size() == 0) {
-            builder.append(currentIndent).append('<').append(tagName).append(attr).append('/').append('>').append(settings.getNewLine());
+            builder.append(currentIndent).append('<').append(tagName).append(attrs).append('/').append('>').append(settings.getNewLine());
         } else {
-            builder.append(currentIndent).append('<').append(tagName).append(attr).append('>').append(settings.getNewLine());
+            builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>').append(settings.getNewLine());
             writeElements(currentIndent + settings.getIndent(), itemIterator);
             builder.append(currentIndent).append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
         }
     }
 
     private void writeElements(String currentIndent, SerIterator itemIterator) {
-        StringConverter converter = null;
+        StringConverter<Object> converter = null;
         if (itemIterator.keyType() != null) {
-            converter = settings.getConverter().findConverter(itemIterator.keyType());
+            converter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         }
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            String attr = "";
+            StringBuilder attr = new StringBuilder(32);
             if (converter != null) {
                 String keyStr = encodeAttribute(converter.convertToString(itemIterator.key()));
-                attr += " key=\"" + keyStr + "\"";
+                if (keyStr == null) {
+                    throw new IllegalArgumentException("Unable to embed map key as it cannot be represented as a string: " + itemIterator.key());
+                }
+                appendAttribute(attr, KEY, keyStr);
             }
             if (itemIterator.count() != 1) {
-                attr = " count=\"" + itemIterator.count() + "\"";
+                appendAttribute(attr, COUNT, Integer.toString(itemIterator.count()));
             }
             Object value = itemIterator.value();
             writeElement(currentIndent, attr, itemIterator.valueType(), value);
@@ -175,27 +186,26 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeElement(String currentIndent, String attr, Class valueType, Object value) {
+    private void writeElement(String currentIndent, StringBuilder attrs, Class<?> valueType, Object value) {
         if (value == null) {
-            builder.append(currentIndent).append("<item").append(attr).append(" null=\"true\"/>").append(settings.getNewLine());
+            builder.append(currentIndent).append("<item").append(attrs).append(" null=\"true\"/>").append(settings.getNewLine());
         } else if (value instanceof Bean) {
-            writeBean(currentIndent, "item", attr, valueType, (Bean) value);
+            writeBean(currentIndent, "item", attrs, valueType, (Bean) value);
         } else {
             SerIterator itemIterator = settings.getIteratorFactory().create(value);
             if (itemIterator != null) {
-                attr += " collection=\"" + itemIterator.simpleType() + "\"";
-                writeElements(currentIndent, "item", attr, itemIterator);
+                appendAttribute(attrs, METATYPE, itemIterator.simpleTypeName());
+                writeElements(currentIndent, "item", attrs, itemIterator);
             } else {
-                writeSimple(currentIndent, "item", attr, valueType, value);
+                writeSimple(currentIndent, "item", attrs, valueType, value);
             }
         }
     }
 
     //-----------------------------------------------------------------------
-    private void writeSimple(String currentIndent, String tagName, String attr, Class propType, Object value) {
-        // TODO arrays including byte-array
+    private void writeSimple(String currentIndent, String tagName, StringBuilder attrs, Class<?> propType, Object value) {
         String converted = settings.getConverter().convertToString(propType, value);
-        builder.append(currentIndent).append('<').append(tagName).append(attr).append('>');
+        builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>');
         appendEncoded(converted);
         builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
     }
@@ -213,12 +223,29 @@ public class JodaBeanXmlWriter {
                 case '>':
                     builder.append("&gt;");
                     break;
+                case '\t':
+                    builder.append("&#9;");
+                    break;
+                case '\n':
+                    builder.append("&#xA;");
+                    break;
+                case '\r':
+                    builder.append("&#xD;");
+                    break;
                 default:
+                    if ((int) ch < 32) {
+                        throw new IllegalArgumentException("Invalid character for XML: " + ((int) ch));
+                    }
                     builder.append(ch);
                     break;
             }
         }
         return builder;
+    }
+
+    //-----------------------------------------------------------------------
+    private StringBuilder appendAttribute(StringBuilder buf, String attrName, String encodedValue) {
+        return buf.append(' ').append(attrName).append('=').append('\"').append(encodedValue).append('\"');
     }
 
     private String encodeAttribute(String text) {
@@ -244,7 +271,19 @@ public class JodaBeanXmlWriter {
                 case '\'':
                     builder.append("&apos;");
                     break;
+                case '\t':
+                    builder.append("&#09;");
+                    break;
+                case '\n':
+                    builder.append("&#0A;");
+                    break;
+                case '\r':
+                    builder.append("&#0D;");
+                    break;
                 default:
+                    if ((int) ch < 32) {
+                        throw new IllegalArgumentException("Invalid character for XML: " + ((int) ch));
+                    }
                     builder.append(ch);
                     break;
             }

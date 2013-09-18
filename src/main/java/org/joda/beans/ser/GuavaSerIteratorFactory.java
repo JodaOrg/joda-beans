@@ -85,7 +85,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             private Multiset.Entry current;
 
             @Override
-            public String simpleType() {
+            public String simpleTypeName() {
                 return "Multiset";
             }
             @Override
@@ -138,7 +138,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             private Map.Entry current;
 
             @Override
-            public String simpleType() {
+            public String simpleTypeName() {
                 if (map instanceof ListMultimap) {
                     return "ListMultimap";
                 }

@@ -15,6 +15,9 @@
  */
 package org.joda.beans.ser.xml;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
@@ -65,6 +68,8 @@ public class TestAddressXml {
     }
 
     public void test_writeImmAddress() {
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("A", new String[] {"B", "b"});
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
             .surname("Colebourne")
@@ -75,6 +80,7 @@ public class TestAddressXml {
             .number(185)
             .street("Park Street")
             .city("London & Capital of the World <!>")
+            .arraysInMap(map)
             .build();
         
         String xml = JodaBeanSer.COMPACT.xmlWriter(address).write();

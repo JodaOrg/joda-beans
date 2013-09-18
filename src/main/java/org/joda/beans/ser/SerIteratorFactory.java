@@ -59,7 +59,7 @@ public class SerIteratorFactory {
         if (value instanceof Map) {
             return map((Map<?, ?>) value, Object.class, Object.class);
         }
-        if (value instanceof Object[] && value.getClass().getComponentType().isPrimitive() == false) {
+        if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
             return array((Object[]) value);
         }
         return null;
@@ -83,7 +83,7 @@ public class SerIteratorFactory {
             Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
             return map((Map<?, ?>) value, keyType, valueType);
         }
-        if (value instanceof Object[] && value.getClass().getComponentType().isPrimitive() == false) {
+        if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
             return array((Object[]) value);
         }
         return null;
@@ -104,7 +104,7 @@ public class SerIteratorFactory {
             private Object current;
 
             @Override
-            public String simpleType() {
+            public String simpleTypeName() {
                 if (coll instanceof List) {
                     return "List";
                 }
@@ -163,7 +163,7 @@ public class SerIteratorFactory {
             private Entry current;
 
             @Override
-            public String simpleType() {
+            public String simpleTypeName() {
                 return "Map";
             }
             @Override
@@ -213,8 +213,14 @@ public class SerIteratorFactory {
             private int index = -1;
 
             @Override
-            public String simpleType() {
-                return "Array";
+            public String simpleTypeName() {
+                if (valueType == Object.class) {
+                    return "Object[]";
+                }
+                if (valueType == String.class) {
+                    return "String[]";
+                }
+                return valueType.getName() + "[]";
             }
             @Override
             public int size() {
@@ -222,7 +228,7 @@ public class SerIteratorFactory {
             }
             @Override
             public boolean hasNext() {
-                return index < array.length;
+                return (index + 1) < array.length;
             }
             @Override
             public void next() {

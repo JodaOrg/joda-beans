@@ -29,7 +29,7 @@ public interface SerIterator {
      * 
      * @return the type, such as 'List' or 'Map'
      */
-    String simpleType();
+    String simpleTypeName();
 
     /**
      * Gets the size of the wrapped collection.
