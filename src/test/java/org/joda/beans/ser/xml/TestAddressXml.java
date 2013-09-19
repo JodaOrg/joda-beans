@@ -19,9 +19,11 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.gen.Address;
+import org.joda.beans.gen.Company;
 import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmPerson;
@@ -42,6 +44,9 @@ public class TestAddressXml {
         Person person = new Person();
         person.setForename("Etienne");
         person.setSurname("Colebourne");
+        person.getExtensions().set("interests", "joda");
+        person.getExtensions().set("conferenceCount", 21);
+        person.getExtensions().set("company", new Company("OpenGamma"));
         Address address = new Address();
         address.setOwner(person);
         address.setNumber(251);
@@ -75,8 +80,10 @@ public class TestAddressXml {
     }
 
     public void test_writeImmAddress() {
-        Map<String, String[]> map = new HashMap<String, String[]>();
-        map.put("A", new String[] {"B", "b"});
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        map.put("A", Arrays.asList("B", "b"));
+        Map<String, List<Integer>> map2 = new HashMap<String, List<Integer>>();
+        map2.put("A", Arrays.asList(3, 2, 1));
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
             .surname("Colebourne")
@@ -88,7 +95,8 @@ public class TestAddressXml {
             .number(185)
             .street("Park Street")
             .city("London & Capital of the World <!>\n")
-//            .arraysInMap(map)
+            .listInMap(map)
+            .listNumericInMap(map2)
             .build();
         
         String xml = JodaBeanSer.PRETTY.xmlWriter(address).write();
@@ -98,7 +106,6 @@ public class TestAddressXml {
         
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
         System.out.println(bean);
-//        assertEquals(Arrays.asList(bean.getArraysInMap().get("A")), Arrays.asList(address.getArraysInMap().get("A")));
         assertEquals(bean, address);
     }
 

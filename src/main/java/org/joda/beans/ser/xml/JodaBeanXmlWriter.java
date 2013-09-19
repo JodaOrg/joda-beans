@@ -22,6 +22,8 @@ import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 
+import java.util.regex.Pattern;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
@@ -36,6 +38,11 @@ import org.joda.convert.StringConverter;
  * @author Stephen Colebourne
  */
 public class JodaBeanXmlWriter {
+
+    /**
+     * Pattern matching java lang simple classes.
+     */
+    private static final Pattern JAVA_LANG = Pattern.compile("java[.]lang[.][a-zA-Z]+");
 
     /**
      * The settings to use.
@@ -138,11 +145,11 @@ public class JodaBeanXmlWriter {
     private void writeBean(String currentIndent, String tagName, StringBuilder attrs, Class<?> propType, Bean value) {
         builder.append(currentIndent).append('<').append(tagName).append(attrs);
         if (value.getClass() != propType) {
-            String type = value.getClass().getName();
-            if (type.startsWith(basePackage)) {
-                type = "." + type.substring(basePackage.length());
+            String typeStr = value.getClass().getName();
+            if (typeStr.startsWith(basePackage) && Character.isUpperCase(typeStr.charAt(basePackage.length()))) {
+                typeStr = typeStr.substring(basePackage.length());
             }
-            appendAttribute(attrs, TYPE, type);
+            appendAttribute(builder, TYPE, typeStr);
         }
         builder.append('>').append(settings.getNewLine());
         if (writeBean(value, currentIndent + settings.getIndent())) {
@@ -206,6 +213,16 @@ public class JodaBeanXmlWriter {
 
     //-----------------------------------------------------------------------
     private void writeSimple(String currentIndent, String tagName, StringBuilder attrs, Class<?> propType, Object value) {
+        if (propType == Object.class) {
+            propType = value.getClass();
+            if (propType != String.class) {
+                String typeName = value.getClass().getName();
+                if (JAVA_LANG.matcher(propType.getName()).matches()) {
+                    typeName = propType.getSimpleName();
+                }
+                appendAttribute(attrs, TYPE, typeName);
+            }
+        }
         String converted = settings.getConverter().convertToString(propType, value);
         builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>');
         appendEncoded(converted);

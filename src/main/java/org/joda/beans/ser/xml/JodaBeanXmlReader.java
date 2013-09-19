@@ -133,7 +133,7 @@ public class JodaBeanXmlReader {
      * @param beanType  the bean type, not null
      * @return the bean, not null
      */
-    public Bean parseBean(MetaBean metaBean, Class<?> beanType) throws Exception {
+    private Bean parseBean(MetaBean metaBean, Class<?> beanType) throws Exception {
         try {
             BeanBuilder<? extends Bean> builder = metaBean.builder();
             XMLEvent event = reader.nextEvent();
@@ -142,33 +142,21 @@ public class JodaBeanXmlReader {
                     StartElement start = event.asStartElement();
                     String name = start.getName().getLocalPart();
                     MetaProperty<?> metaProp = metaBean.metaProperty(name);
-                    if (Bean.class.isAssignableFrom(metaProp.propertyType())) {
-                        Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
-                        Class<?> childType = metaProp.propertyType();
-                        if (typeAttr != null) {
-                            String childTypeStr = typeAttr.getValue();
-                            if (childTypeStr.startsWith(".")) {
-                                childTypeStr = basePackage + childTypeStr;
-                            }
-                            childType = Thread.currentThread().getContextClassLoader().loadClass(childTypeStr);
-                        }
+                    Class<?> childType = parseTypeAttribute(start, metaProp.propertyType());
+                    Object value;
+                    if (Bean.class.isAssignableFrom(childType)) {
                         MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
-                        Bean childBean = parseBean(childMetaBean, childType);
-                        builder.set(metaProp, childBean);
+                        value = parseBean(childMetaBean, childType);
                     } else {
-                        if (start.getAttributes().hasNext()) {
-                            throw new IllegalArgumentException("Unexpected attribute");
-                        }
                         SerIterable iterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
                         if (iterable != null) {
-                            Object collection = parseIterable(iterable);
-                            builder.set(metaProp, collection);
+                            value = parseIterable(iterable);
                         } else {
                             String text = advanceAndParseText();
-                            Object converted = settings.getConverter().convertFromString(metaProp.propertyType(), text);
-                            builder.set(metaProp, converted);
+                            value = settings.getConverter().convertFromString(childType, text);
                         }
                     }
+                    builder.set(metaProp, value);
                 }
                 event = reader.nextEvent();
             }
@@ -184,7 +172,7 @@ public class JodaBeanXmlReader {
      * @param iterable  the iterable builder, not null
      * @return the iterable, not null
      */
-    public Object parseIterable(SerIterable iterable) throws Exception {
+    private Object parseIterable(SerIterable iterable) throws Exception {
         XMLEvent event = reader.nextEvent();
         while (event.isEndElement() == false) {
             if (event.isStartElement()) {
@@ -213,22 +201,19 @@ public class JodaBeanXmlReader {
                 Object value;
                 Attribute nullAttr = start.getAttributeByName(NULL_QNAME);
                 if (nullAttr != null) {
+                    if (nullAttr.getValue().equals("true") == false) {
+                        throw new IllegalArgumentException("Unexpected value for null attribute");
+                    }
+                    advanceAndParseText();  // move to end tag and ignore any text
                     value = null;
                 } else {
                     // type
-                    Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
-                    Class<?> valueType = iterable.valueType();
-                    if (typeAttr != null) {
-                        String valueTypeStr = typeAttr.getValue();
-                        if (valueTypeStr.startsWith(".")) {
-                            valueTypeStr = basePackage + valueTypeStr;
-                        }
-                        valueType = Thread.currentThread().getContextClassLoader().loadClass(valueTypeStr);
-                    }
-                    if (Bean.class.isAssignableFrom(valueType)) {
-                        MetaBean childMetaBean = JodaBeanUtils.metaBean(valueType);
-                        value = parseBean(childMetaBean, valueType);
+                    Class<?> childType = parseTypeAttribute(start, iterable.valueType());
+                    if (Bean.class.isAssignableFrom(childType)) {
+                        MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
+                        value = parseBean(childMetaBean, childType);
                     } else {
+                        // metatype
                         Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                         if (metaTypeAttr != null) {
                             SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue());
@@ -238,7 +223,7 @@ public class JodaBeanXmlReader {
                             value = parseIterable(childIterable);
                         } else {
                             String text = advanceAndParseText();
-                            value = settings.getConverter().convertFromString(valueType, text);
+                            value = settings.getConverter().convertFromString(childType, text);
                         }
                     }
                 }
@@ -247,6 +232,35 @@ public class JodaBeanXmlReader {
             event = reader.nextEvent();
         }
         return iterable.build();
+    }
+
+    private Class<?> parseTypeAttribute(StartElement start, Class<?> defaultType) throws ClassNotFoundException {
+        Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
+        if (typeAttr == null) {
+            return (defaultType == Object.class ? String.class : defaultType);
+        }
+        String childTypeStr = typeAttr.getValue();
+        if (childTypeStr.length() > 0) {
+            if (Character.isUpperCase(childTypeStr.charAt(0))) {
+                childTypeStr = basePackage + "." + childTypeStr;
+            }
+            if (childTypeStr.startsWith(".")) {
+                childTypeStr = basePackage + childTypeStr;
+            }
+        }
+        try {
+            return Thread.currentThread().getContextClassLoader().loadClass(childTypeStr);
+        } catch (ClassNotFoundException ex) {
+            if (typeAttr.getValue().contains(".") == false) {
+                childTypeStr = "java.lang." + typeAttr.getValue();
+                try {
+                    return Thread.currentThread().getContextClassLoader().loadClass(childTypeStr);
+                } catch (ClassNotFoundException ex2) {
+                    // ignore
+                }
+            }
+            throw ex;
+        }
     }
 
     // reader can be anywhere, but normally at StartDocument
