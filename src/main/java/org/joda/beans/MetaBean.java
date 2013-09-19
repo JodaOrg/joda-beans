@@ -75,9 +75,12 @@ public interface MetaBean {
 
     /**
      * Gets a meta-property by name.
+     * <p>
+     * The base interface throws an exception if the name is not recognised.
+     * By contrast, the {@code DynamicMetaBean} subinterface creates the property on demand.
      * 
      * @param <R>  the property type, optional, enabling auto-casting
-     * @param propertyName  the property name to retrieve, null throws NoSuchElementException
+     * @param propertyName  the property name to retrieve, not null
      * @return the meta property, not null
      * @throws NoSuchElementException if the property name is invalid
      */

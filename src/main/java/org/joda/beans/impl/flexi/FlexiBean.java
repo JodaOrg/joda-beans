@@ -21,9 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.joda.beans.DynamicBean;
-import org.joda.beans.MetaBean;
+import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.impl.BasicBean;
 import org.joda.beans.impl.BasicProperty;
@@ -34,6 +35,11 @@ import org.joda.beans.impl.BasicProperty;
  * Properties are dynamic, and can be added and removed at will from the map.
  * The internal storage is created lazily to allow a flexi-bean to be used as
  * a lightweight extension to another bean.
+ * <p>
+ * Each flexi-bean has a different set of properties.
+ * As such, there is one instance of meta-bean for each flexi-bean.
+ * <p>
+ * The keys of a flexi-bean must be simple identifiers as per '[a-zA-z_][a-zA-z0-9_]*'.
  * 
  * @author Stephen Colebourne
  */
@@ -43,12 +49,27 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
+    /** Valid regex for keys. */
+    private static final Pattern VALID_KEY = Pattern.compile("[a-zA-z_][a-zA-z0-9_]*");
 
     /** The meta-bean. */
     final FlexiMetaBean metaBean = new FlexiMetaBean(this);  // CSIGNORE
     /** The underlying data. */
     volatile Map<String, Object> data = Collections.emptyMap();// CSIGNORE
 
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a standalone meta-bean.
+     * <p>
+     * This creates a new instance each time in line with dynamic bean principles.
+     * 
+     * @return the meta-bean, not null
+     */
+    public static DynamicMetaBean meta() {
+        return new FlexiBean().metaBean();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Constructor.
      */
@@ -99,6 +120,8 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property.
+     * <p>
+     * This returns null if the property does not exist.
      * 
      * @param propertyName  the property name, not empty
      * @return the value of the property, may be null
@@ -109,20 +132,24 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Gets the value of the property cast to a specific type.
+     * <p>
+     * This returns null if the property does not exist.
      * 
      * @param <T>  the value type
      * @param propertyName  the property name, not empty
      * @param type  the type to cast to, not null
      * @return the value of the property, may be null
+     * @throws ClassCastException if the type is incorrect
      */
-    @SuppressWarnings("unchecked")
     public <T> T get(String propertyName, Class<T> type) {
-        return (T) get(propertyName);
+        return type.cast(get(propertyName));
     }
 
     /**
      * Gets the value of the property as a {@code String}.
      * This will use {@link Object#toString()}.
+     * <p>
+     * This returns null if the property does not exist.
      * 
      * @param propertyName  the property name, not empty
      * @return the value of the property, may be null
@@ -138,6 +165,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
+     * @throws NullPointerException if the property does not exist or is null
      */
     public boolean getBoolean(String propertyName) {
         return (Boolean) get(propertyName);
@@ -149,6 +177,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
+     * @throws NullPointerException if the property does not exist or is null
      */
     public int getInt(String propertyName) {
         return ((Number) get(propertyName)).intValue();
@@ -158,7 +187,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * Gets the value of the property as a {@code int} using a default value.
      * 
      * @param propertyName  the property name, not empty
-     * @param defaultValue  the default value for null
+     * @param defaultValue  the default value for null or invalid property
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
      */
@@ -173,6 +202,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
+     * @throws NullPointerException if the property does not exist or is null
      */
     public long getLong(String propertyName) {
         return ((Number) get(propertyName)).longValue();
@@ -182,7 +212,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * Gets the value of the property as a {@code long} using a default value.
      * 
      * @param propertyName  the property name, not empty
-     * @param defaultValue  the default value for null
+     * @param defaultValue  the default value for null or invalid property
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
      */
@@ -197,6 +227,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * @param propertyName  the property name, not empty
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
+     * @throws NullPointerException if the property does not exist or is null
      */
     public double getDouble(String propertyName) {
         return ((Number) get(propertyName)).doubleValue();
@@ -206,7 +237,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * Gets the value of the property as a {@code double} using a default value.
      * 
      * @param propertyName  the property name, not empty
-     * @param defaultValue  the default value for null
+     * @param defaultValue  the default value for null or invalid property
      * @return the value of the property
      * @throws ClassCastException if the value is not compatible
      */
@@ -217,45 +248,61 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Adds or updates a property returning {@code this} for chaining.
+     * Sets a property in this bean to the specified value.
+     * <p>
+     * This creates a property if one does not exist.
      * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      * @return {@code this} for chaining, not null
      */
     public FlexiBean append(String propertyName, Object newValue) {
-        dataWritable().put(propertyName, newValue);
+        put(propertyName, newValue);
         return this;
     }
 
     /**
-     * Adds or updates a property.
+     * Sets a property in this bean to the specified value.
+     * <p>
+     * This creates a property if one does not exist.
      * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      */
     public void set(String propertyName, Object newValue) {
-        dataWritable().put(propertyName, newValue);
+        put(propertyName, newValue);
     }
 
     /**
-     * Puts the property into this bean.
+     * Sets a property in this bean to the specified value.
+     * <p>
+     * This creates a property if one does not exist.
      * 
      * @param propertyName  the property name, not empty
      * @param newValue  the new value, may be null
      * @return the old value of the property, may be null
      */
     public Object put(String propertyName, Object newValue) {
+        if (VALID_KEY.matcher(propertyName).matches() == false) {
+            throw new IllegalArgumentException("Invalid key for FlexiBean: " + propertyName);
+        }
         return dataWritable().put(propertyName, newValue);
     }
 
     /**
      * Puts the properties in the specified map into this bean.
+     * <p>
+     * This creates properties if they do not exist.
      * 
      * @param map  the map of properties to add, not null
      */
     public void putAll(Map<String, Object> map) {
         if (map.size() > 0) {
+            for (String key : map.keySet()) {
+                if (VALID_KEY.matcher(key).matches() == false) {
+                    throw new IllegalArgumentException("Invalid key for FlexiBean: " + key);
+                }
+            }
             if (data == Collections.EMPTY_MAP) {
                 data = new HashMap<String, Object>(map);
             } else {
@@ -266,6 +313,8 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Puts the properties in the specified bean into this bean.
+     * <p>
+     * This creates properties if they do not exist.
      * 
      * @param other  the map of properties to add, not null
      */
@@ -281,6 +330,9 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     /**
      * Removes a property.
+     * <p>
+     * No error occurs if the property does not exist.
+     * 
      * @param propertyName  the property name, not empty
      */
     public void remove(String propertyName) {
@@ -327,20 +379,17 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * @param newValue  the new value of the property, may be null
      */
     public void propertySet(String propertyName, Object newValue) {
-        dataWritable().put(propertyName, newValue);
+        put(propertyName, newValue);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public MetaBean metaBean() {
+    public DynamicMetaBean metaBean() {
         return metaBean;
     }
 
     @Override
     public Property<Object> property(String name) {
-        if (propertyExists(name) == false) {
-            throw new NoSuchElementException("Unknown property: " + name);
-        }
         return BasicProperty.of(this, FlexiMetaProperty.of(metaBean, name));
     }
 
@@ -351,7 +400,9 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
 
     @Override
     public void propertyDefine(String propertyName, Class<?> propertyType) {
-        // no need to define
+        if (propertyExists(propertyName) == false) {
+            put(propertyName, null);
+        }
     }
 
     @Override

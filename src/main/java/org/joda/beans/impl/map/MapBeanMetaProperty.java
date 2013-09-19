@@ -33,28 +33,28 @@ import org.joda.beans.impl.BasicProperty;
  */
 final class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
-    /** The bean. */
-    private MapBean bean;
+    /** The meta-bean. */
+    private final MetaBean metaBean;
 
     /**
      * Factory to create a meta-property.
      * 
-     * @param mapBean  the {@code MapBean}, not null
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      */
-    public static MapBeanMetaProperty of(MapBean mapBean, String propertyName) {
-        return new MapBeanMetaProperty(mapBean, propertyName);
+    static MapBeanMetaProperty of(MetaBean metaBean, String propertyName) {
+        return new MapBeanMetaProperty(metaBean, propertyName);
     }
 
     /**
      * Constructor.
      * 
-     * @param mapBean  the {@code MapBean}, not null
+     * @param metaBean  the meta-bean, not null
      * @param propertyName  the property name, not empty
      */
-    private MapBeanMetaProperty(MapBean mapBean, String propertyName) {
+    private MapBeanMetaProperty(MetaBean metaBean, String propertyName) {
         super(propertyName);
-        this.bean = mapBean;
+        this.metaBean = metaBean;
     }
 
     //-----------------------------------------------------------------------
@@ -65,7 +65,7 @@ final class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 
     @Override
     public MetaBean metaBean() {
-        return bean.metaBean();
+        return metaBean;
     }
 
     @Override
@@ -96,18 +96,12 @@ final class MapBeanMetaProperty extends BasicMetaProperty<Object> {
     //-----------------------------------------------------------------------
     @Override
     public Object get(Bean bean) {
-        if (bean != this.bean) {
-            throw new ClassCastException("Bean is a MapBean, but not the correct MapBean");
-        }
-        return this.bean.get(name());
+        return ((MapBean) bean).get(name());
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        if (bean != this.bean) {
-            throw new ClassCastException("Bean is a MapBean, but not the correct MapBean");
-        }
-        this.bean.put(name(), value);
+        ((MapBean) bean).put(name(), value);
     }
 
 }

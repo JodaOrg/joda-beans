@@ -9,6 +9,12 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8" date="xxxx-xx-xx" description="v0.8">
+      <action dev="scolebourne" type="update" >
+        Enhance FlexiBean and MapBean. Fixes #15.
+        These now work more like the original intention.
+        Properties are always created on demand.
+        FlexiBean property names are now validated to a minimal format.
+      </action>
       <action dev="scolebourne" type="fix" >
         Identify Derived and Immutable properties at runtime. Fixes #14.
         Rename readWrite() to style() and PropertyReadWrite to ProperyStyle.

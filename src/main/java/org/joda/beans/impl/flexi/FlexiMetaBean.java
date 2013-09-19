@@ -19,21 +19,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.MetaBean;
+import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.BasicBeanBuilder;
 
 /**
  * Implementation of a meta-bean for {@code FlexiBean}.
  * 
  * @author Stephen Colebourne
  */
-class FlexiMetaBean implements MetaBean {
+class FlexiMetaBean implements DynamicMetaBean {
 
     /**
      * The bean itself.
@@ -43,15 +41,16 @@ class FlexiMetaBean implements MetaBean {
     /**
      * Creates the meta-bean.
      * 
-     * @param flexiBean  the underlying bean, not null
+     * @param bean  the underlying bean, not null
      */
-    FlexiMetaBean(FlexiBean flexiBean) {
-        bean = flexiBean;
+    FlexiMetaBean(FlexiBean bean) {
+        this.bean = bean;
     }
 
+    //-----------------------------------------------------------------------
     @Override
     public BeanBuilder<FlexiBean> builder() {
-        return new BasicBeanBuilder<FlexiBean>(new FlexiBean());
+        return new FlexiBeanBuilder(bean);
     }
 
     @Override
@@ -81,11 +80,8 @@ class FlexiMetaBean implements MetaBean {
 
     @Override
     public MetaProperty<Object> metaProperty(String name) {
-        Object obj = bean.get(name);
-        if (obj == null) {
-            throw new NoSuchElementException("Unknown property: " + name);
-        }
-        return FlexiMetaProperty.of(bean.metaBean, name);
+        // do not check if exists
+        return FlexiMetaProperty.of(this, name);
     }
 
     @Override
@@ -94,7 +90,7 @@ class FlexiMetaBean implements MetaBean {
             return Collections.emptySet();
         }
         return new Iterable<MetaProperty<?>>() {
-            private final Iterator<String> it = FlexiMetaBean.this.bean.data.keySet().iterator();
+            private final Iterator<String> it = bean.data.keySet().iterator();
             @Override
             public Iterator<MetaProperty<?>> iterator() {
                 return new Iterator<MetaProperty<?>>() {
@@ -104,7 +100,7 @@ class FlexiMetaBean implements MetaBean {
                     }
                     @Override
                     public MetaProperty<?> next() {
-                        return FlexiMetaProperty.of(FlexiMetaBean.this.bean.metaBean, it.next());
+                        return FlexiMetaProperty.of(FlexiMetaBean.this, it.next());
                     }
                     @Override
                     public void remove() {
@@ -123,9 +119,20 @@ class FlexiMetaBean implements MetaBean {
         }
         Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
         for (String name : bean.data.keySet()) {
-            map.put(name, FlexiMetaProperty.of(bean.metaBean, name));
+            map.put(name, FlexiMetaProperty.of(this, name));
         }
         return Collections.unmodifiableMap(map);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public void metaPropertyDefine(String propertyName, Class<?> propertyType) {
+        bean.propertyDefine(propertyName, propertyType);
+    }
+
+    @Override
+    public void metaPropertyRemove(String propertyName) {
+        bean.propertyRemove(propertyName);
     }
 
 }

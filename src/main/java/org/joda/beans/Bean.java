@@ -39,9 +39,12 @@ public interface Bean {
 
     /**
      * Gets a property by name.
+     * <p>
+     * The base interface throws an exception if the name is not recognised.
+     * By contrast, the {@code DynamicBean} subinterface creates the property on demand.
      * 
      * @param <R>  the property type, optional, enabling auto-casting
-     * @param propertyName  the property name to retrieve, null throws NoSuchElementException
+     * @param propertyName  the property name to retrieve, not null
      * @return the property, not null
      * @throws NoSuchElementException if the property name is invalid
      */

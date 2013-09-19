@@ -27,6 +27,7 @@ import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.query.ChainedBeanQuery;
 import org.testng.annotations.Test;
 
@@ -38,6 +39,14 @@ public class TestJodaBeanUtils {
 
     public void test_metaBean() {
         assertEquals(JodaBeanUtils.metaBean(Person.class), Person.meta());
+    }
+
+    public void test_metaBean_FlexiBean() {
+        assertEquals(JodaBeanUtils.metaBean(FlexiBean.class).builder().build().getClass(), FlexiBean.class);
+    }
+
+    public void test_metaBean_MapBean() {
+        assertEquals(JodaBeanUtils.metaBean(MapBean.class).builder().build().getClass(), MapBean.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

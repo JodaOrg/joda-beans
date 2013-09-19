@@ -15,6 +15,7 @@
  */
 package org.joda.beans;
 
+
 /**
  * A dynamic bean that allows properties to be added and removed.
  * <p>
@@ -25,6 +26,26 @@ package org.joda.beans;
  * @author Stephen Colebourne
  */
 public interface DynamicBean extends Bean {
+
+    /**
+     * Gets the meta-bean representing the parts of the bean that are
+     * common across all instances, such as the set of meta-properties.
+     * 
+     * @return the meta-bean, not null
+     */
+    DynamicMetaBean metaBean();
+
+    /**
+     * Gets a property by name.
+     * <p>
+     * This will not throw an exception if the property name does not exist.
+     * Whether a property is immediately created or not is implementation dependent.
+     * 
+     * @param <R>  the property type, optional, enabling auto-casting
+     * @param propertyName  the property name to retrieve, not null
+     * @return the property, not null
+     */
+    <R> Property<R> property(String propertyName);
 
     /**
      * Adds a property to those allowed to be stored in the bean.
