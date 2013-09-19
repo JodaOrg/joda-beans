@@ -16,6 +16,7 @@
 package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
@@ -46,6 +47,37 @@ public class TestFlexiBean {
         
         assertEquals(b.equals("Weird type"), false);
         assertEquals(b.equals(null), false);
+    }
+
+    public void test_propertyDefine_propertyRemove() {
+        FlexiBean flexi = new FlexiBean();
+        assertEquals(flexi.propertyNames().size(), 0);
+        flexi.propertyDefine("name", String.class);
+        assertEquals(flexi.propertyNames().size(), 1);
+        Property<Object> prop = flexi.property("name");
+        assertEquals(prop.name(), "name");
+        assertEquals(prop.get(), null);
+        flexi.propertyRemove("name");
+        assertEquals(flexi.propertyNames().size(), 0);
+    }
+
+    public void test_metaBean() {
+        FlexiBean flexi = new FlexiBean();
+        DynamicMetaBean meta = flexi.metaBean();
+        assertEquals(meta.metaPropertyCount(), 0);
+        
+        meta.metaPropertyDefine("name", String.class);
+        assertEquals(meta.metaPropertyCount(), 1);
+        MetaProperty<Object> prop = meta.metaProperty("name");
+        assertEquals(prop.name(), "name");
+        assertEquals(prop.get(flexi), null);
+        
+        meta.metaPropertyDefine("name", String.class);
+        assertEquals(meta.metaPropertyCount(), 1);
+        
+        MetaProperty<Object> prop2 = meta.metaProperty("address");
+        assertNotNull(prop2);
+        assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
     }
 
 }

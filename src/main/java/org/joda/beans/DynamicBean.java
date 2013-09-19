@@ -27,6 +27,14 @@ package org.joda.beans;
 public interface DynamicBean extends Bean {
 
     /**
+     * Gets the meta-bean representing the parts of the bean that are
+     * common across all instances, such as the set of meta-properties.
+     * 
+     * @return the meta-bean, not null
+     */
+    DynamicMetaBean metaBean();
+
+    /**
      * Adds a property to those allowed to be stored in the bean.
      * <p>
      * Some implementations will automatically add properties, in which case this

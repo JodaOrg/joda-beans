@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.impl.map.MapBean;
 import org.joda.convert.StringConvert;
 
 /**
@@ -66,8 +67,22 @@ public final class JodaBeanUtils {
      * @throws IllegalArgumentException if unable to obtain the meta-bean
      */
     public static MetaBean metaBean(Class<?> cls) {
+        if (cls == FlexiBean.class) {
+            return new FlexiBean().metaBean();
+        } else if (cls == MapBean.class) {
+            return new MapBean().metaBean();
+        }
         MetaBean meta = metaBeans.get(cls);
         if (meta == null) {
+            if (DynamicBean.class.isAssignableFrom(cls)) {
+                try {
+                    return cls.asSubclass(DynamicBean.class).newInstance().metaBean();
+                } catch (InstantiationException ex) {
+                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+                } catch (IllegalAccessException ex) {
+                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+                }
+            }
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
         }
         return meta;

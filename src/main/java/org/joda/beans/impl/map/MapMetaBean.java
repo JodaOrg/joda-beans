@@ -15,15 +15,16 @@
  */
 package org.joda.beans.impl.map;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
+import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.BasicMetaBean;
 
 /**
@@ -31,7 +32,7 @@ import org.joda.beans.impl.BasicMetaBean;
  * 
  * @author Stephen Colebourne
  */
-class MapMetaBean extends BasicMetaBean {
+class MapMetaBean extends BasicMetaBean implements DynamicMetaBean {
 
     /**
      * The bean itself.
@@ -50,7 +51,7 @@ class MapMetaBean extends BasicMetaBean {
     //-----------------------------------------------------------------------
     @Override
     public BeanBuilder<MapBean> builder() {
-        return new BasicBeanBuilder<MapBean>(new MapBean());
+        return new MapBeanBuilder(bean);
     }
 
     @Override
@@ -78,10 +79,10 @@ class MapMetaBean extends BasicMetaBean {
         return bean.containsKey(name);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <R> MetaProperty<R> metaProperty(String name) {
-        return (MetaProperty<R>) bean.metaProperty(name);
+    public MetaProperty<Object> metaProperty(String name) {
+        // do not check if exists
+        return MapBeanMetaProperty.of(this, name);
     }
 
     @Override
@@ -97,7 +98,7 @@ class MapMetaBean extends BasicMetaBean {
                     }
                     @Override
                     public MetaProperty<?> next() {
-                        return MapBeanMetaProperty.of(bean, it.next());
+                        return MapBeanMetaProperty.of(MapMetaBean.this, it.next());
                     }
                     @Override
                     public void remove() {
@@ -113,9 +114,20 @@ class MapMetaBean extends BasicMetaBean {
     public Map<String, MetaProperty<?>> metaPropertyMap() {
         Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
         for (String name : bean.keySet()) {
-            map.put(name, MapBeanMetaProperty.of(bean, name));
+            map.put(name, MapBeanMetaProperty.of(this, name));
         }
-        return map;
+        return Collections.unmodifiableMap(map);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public void metaPropertyDefine(String propertyName, Class<?> propertyType) {
+        bean.propertyDefine(propertyName, propertyType);
+    }
+
+    @Override
+    public void metaPropertyRemove(String propertyName) {
+        bean.propertyRemove(propertyName);
     }
 
 }

@@ -16,6 +16,7 @@
 package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import org.joda.beans.impl.map.MapBean;
 import org.testng.annotations.Test;
@@ -65,6 +66,37 @@ public class TestMapBean {
         
         assertEquals(b.equals("Weird type"), false);
         assertEquals(b.equals(null), false);
+    }
+
+    public void test_propertyDefine_propertyRemove() {
+        MapBean mapBean = new MapBean();
+        assertEquals(mapBean.propertyNames().size(), 0);
+        mapBean.propertyDefine("name", String.class);
+        assertEquals(mapBean.propertyNames().size(), 1);
+        Property<Object> prop = mapBean.property("name");
+        assertEquals(prop.name(), "name");
+        assertEquals(prop.get(), null);
+        mapBean.propertyRemove("name");
+        assertEquals(mapBean.propertyNames().size(), 0);
+    }
+
+    public void test_metaBean() {
+        MapBean mapBean = new MapBean();
+        DynamicMetaBean meta = mapBean.metaBean();
+        assertEquals(meta.metaPropertyCount(), 0);
+        
+        meta.metaPropertyDefine("name", String.class);
+        assertEquals(meta.metaPropertyCount(), 1);
+        MetaProperty<Object> prop = meta.metaProperty("name");
+        assertEquals(prop.name(), "name");
+        assertEquals(prop.get(mapBean), null);
+        
+        meta.metaPropertyDefine("name", String.class);
+        assertEquals(meta.metaPropertyCount(), 1);
+        
+        MetaProperty<Object> prop2 = meta.metaProperty("address");
+        assertNotNull(prop2);
+        assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
     }
 
 }

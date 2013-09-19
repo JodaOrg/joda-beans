@@ -17,12 +17,10 @@ package org.joda.beans.impl.map;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.joda.beans.DynamicBean;
-import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
+import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.impl.BasicProperty;
 
@@ -38,6 +36,19 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a standalone meta-bean.
+     * <p>
+     * This creates a new instance each time in line with dynamic bean principles.
+     * 
+     * @return the meta-bean, not null
+     */
+    public static DynamicMetaBean meta() {
+        return new MapBean().metaBean();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      */
@@ -55,21 +66,13 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
 
     //-----------------------------------------------------------------------
     @Override
-    public MetaBean metaBean() {
+    public DynamicMetaBean metaBean() {
         return new MapMetaBean(this);
     }
 
     @Override
     public Property<Object> property(String name) {
-        return BasicProperty.of(this, metaProperty(name));
-    }
-
-    MetaProperty<Object> metaProperty(String name) {
-        Object obj = get(name);
-        if (obj == null) {
-            throw new NoSuchElementException("Property not found: " + name);
-        }
-        return MapBeanMetaProperty.of(MapBean.this, name);
+        return BasicProperty.of(this, MapBeanMetaProperty.of(metaBean(), name));
     }
 
     @Override
@@ -79,7 +82,9 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
 
     @Override
     public void propertyDefine(String propertyName, Class<?> propertyType) {
-        // no need to define
+        if (containsKey(propertyName) == false) {
+            put(propertyName, null);
+        }
     }
 
     @Override

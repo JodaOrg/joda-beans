@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
 import org.joda.beans.impl.BasicProperty;
@@ -32,7 +33,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public final class MapBeanPropertyMap
+final class MapBeanPropertyMap
         extends AbstractMap<String, Property<?>> implements PropertyMap {
 
     /** The bean. */
@@ -83,6 +84,7 @@ public final class MapBeanPropertyMap
 
     @Override
     public Set<Entry<String, Property<?>>> entrySet() {
+        final MetaBean metaBean = bean.metaBean();
         return new AbstractSet<Entry<String, Property<?>>>() {
             // TODO: possibly override contains()
             @Override
@@ -100,7 +102,7 @@ public final class MapBeanPropertyMap
                     @Override
                     public Entry<String, Property<?>> next() {
                         String name = it.next();
-                        Property<?> prop = BasicProperty.of(bean, MapBeanMetaProperty.of(bean, name));
+                        Property<?> prop = BasicProperty.of(bean, MapBeanMetaProperty.of(metaBean, name));
                         return new SimpleImmutableEntry<String, Property<?>>(name, prop);
                     }
                     @Override

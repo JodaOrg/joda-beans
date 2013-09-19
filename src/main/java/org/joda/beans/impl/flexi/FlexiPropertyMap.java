@@ -41,7 +41,8 @@ final class FlexiPropertyMap
     /**
      * Factory to create a property map avoiding duplicate generics.
      * 
-     * @param bean  the bean
+     * @param bean  the bean, not null
+     * @return the property map, not null
      */
     static FlexiPropertyMap of(FlexiBean bean) {
         return new FlexiPropertyMap(bean);
