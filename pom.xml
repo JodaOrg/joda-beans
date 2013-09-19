@@ -318,7 +318,7 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>1.2</version>
+      <version>1.5</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
@@ -336,7 +336,7 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>14.0.1</version>
-      <scope>test</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

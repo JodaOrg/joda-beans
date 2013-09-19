@@ -36,8 +36,11 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.Multiset;
 
 /**
  * Mock immutable person JavaBean, used for testing.
@@ -70,6 +73,8 @@ public final class ImmPerson implements ImmutableBean {
     private final List<List<Address>> addressesList;
     @PropertyDefinition
     private final ImmAddress mainAddress;
+    @PropertyDefinition
+    private final ImmutableMultiset<String> codeCounts;
 
     @DerivedProperty
     public int getAge() {
@@ -108,7 +113,8 @@ public final class ImmPerson implements ImmutableBean {
             List<Address> addressList,
             Map<String, Address> otherAddressMap,
             List<List<Address>> addressesList,
-            ImmAddress mainAddress) {
+            ImmAddress mainAddress,
+            Multiset<String> codeCounts) {
         this.forename = forename;
         this.surname = surname;
         this.numberOfCars = numberOfCars;
@@ -118,6 +124,7 @@ public final class ImmPerson implements ImmutableBean {
         this.otherAddressMap = ImmutableMap.copyOf(otherAddressMap);
         this.addressesList = ImmutableList.copyOf(addressesList);
         this.mainAddress = mainAddress;
+        this.codeCounts = ImmutableMultiset.copyOf(codeCounts);
     }
 
     @Override
@@ -217,6 +224,15 @@ public final class ImmPerson implements ImmutableBean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the codeCounts.
+     * @return the value of the property
+     */
+    public ImmutableMultiset<String> getCodeCounts() {
+        return codeCounts;
+    }
+
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     /**
      * Returns a builder that allows this bean to be mutated.
@@ -247,6 +263,7 @@ public final class ImmPerson implements ImmutableBean {
                     JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
                     JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
                     JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
+                    JodaBeanUtils.equal(getCodeCounts(), other.getCodeCounts()) &&
                     (getAge() == other.getAge());
         }
         return false;
@@ -264,13 +281,14 @@ public final class ImmPerson implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
         hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
         hash += hash * 31 + JodaBeanUtils.hashCode(getAge());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(352);
+        StringBuilder buf = new StringBuilder(384);
         buf.append("ImmPerson{");
         buf.append("forename").append('=').append(getForename()).append(',').append(' ');
         buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
@@ -281,6 +299,7 @@ public final class ImmPerson implements ImmutableBean {
         buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
         buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
         buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
+        buf.append("codeCounts").append('=').append(getCodeCounts()).append(',').append(' ');
         buf.append("age").append('=').append(getAge());
         buf.append('}');
         return buf.toString();
@@ -345,6 +364,12 @@ public final class ImmPerson implements ImmutableBean {
         private final MetaProperty<ImmAddress> mainAddress = DirectMetaProperty.ofImmutable(
                 this, "mainAddress", ImmPerson.class, ImmAddress.class);
         /**
+         * The meta-property for the {@code codeCounts} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableMultiset<String>> codeCounts = DirectMetaProperty.ofImmutable(
+                this, "codeCounts", ImmPerson.class, (Class) ImmutableMultiset.class);
+        /**
          * The meta-property for the {@code age} property.
          */
         private final MetaProperty<Integer> age = DirectMetaProperty.ofDerived(
@@ -363,6 +388,7 @@ public final class ImmPerson implements ImmutableBean {
                 "otherAddressMap",
                 "addressesList",
                 "mainAddress",
+                "codeCounts",
                 "age");
 
         /**
@@ -392,6 +418,8 @@ public final class ImmPerson implements ImmutableBean {
                     return addressesList;
                 case -2032731141:  // mainAddress
                     return mainAddress;
+                case -1383758447:  // codeCounts
+                    return codeCounts;
                 case 96511:  // age
                     return age;
             }
@@ -487,6 +515,14 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code codeCounts} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableMultiset<String>> codeCounts() {
+            return codeCounts;
+        }
+
+        /**
          * The meta-property for the {@code age} property.
          * @return the meta-property, not null
          */
@@ -516,6 +552,8 @@ public final class ImmPerson implements ImmutableBean {
                     return ((ImmPerson) bean).getAddressesList();
                 case -2032731141:  // mainAddress
                     return ((ImmPerson) bean).getMainAddress();
+                case -1383758447:  // codeCounts
+                    return ((ImmPerson) bean).getCodeCounts();
                 case 96511:  // age
                     return ((ImmPerson) bean).getAge();
             }
@@ -548,6 +586,7 @@ public final class ImmPerson implements ImmutableBean {
         private Map<String, Address> otherAddressMap = new HashMap<String, Address>();
         private List<List<Address>> addressesList = new ArrayList<List<Address>>();
         private ImmAddress mainAddress;
+        private Multiset<String> codeCounts = HashMultiset.create();
 
         /**
          * Restricted constructor.
@@ -571,6 +610,7 @@ public final class ImmPerson implements ImmutableBean {
             this.otherAddressMap = new HashMap<String, Address>(beanToCopy.getOtherAddressMap());
             this.addressesList = new ArrayList<List<Address>>(beanToCopy.getAddressesList());
             this.mainAddress = beanToCopy.getMainAddress();
+            this.codeCounts = HashMultiset.create(beanToCopy.getCodeCounts());
         }
 
         //-----------------------------------------------------------------------
@@ -605,6 +645,9 @@ public final class ImmPerson implements ImmutableBean {
                 case -2032731141:  // mainAddress
                     this.mainAddress = (ImmAddress) newValue;
                     break;
+                case -1383758447:  // codeCounts
+                    this.codeCounts = (Multiset<String>) newValue;
+                    break;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
@@ -622,7 +665,8 @@ public final class ImmPerson implements ImmutableBean {
                     addressList,
                     otherAddressMap,
                     addressesList,
-                    mainAddress);
+                    mainAddress,
+                    codeCounts);
         }
 
         //-----------------------------------------------------------------------
@@ -716,10 +760,20 @@ public final class ImmPerson implements ImmutableBean {
             return this;
         }
 
+        /**
+         * Sets the {@code codeCounts} property in the builder.
+         * @param codeCounts  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder codeCounts(Multiset<String> codeCounts) {
+            this.codeCounts = codeCounts;
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(352);
+            StringBuilder buf = new StringBuilder(384);
             buf.append("ImmPerson.Builder{");
             buf.append("forename").append('=').append(forename).append(',').append(' ');
             buf.append("surname").append('=').append(surname).append(',').append(' ');
@@ -730,6 +784,7 @@ public final class ImmPerson implements ImmutableBean {
             buf.append("otherAddressMap").append('=').append(otherAddressMap).append(',').append(' ');
             buf.append("addressesList").append('=').append(addressesList).append(',').append(' ');
             buf.append("mainAddress").append('=').append(mainAddress).append(',').append(' ');
+            buf.append("codeCounts").append('=').append(codeCounts).append(',').append(' ');
             buf.append('}');
             return buf.toString();
         }

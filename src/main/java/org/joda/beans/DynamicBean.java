@@ -15,7 +15,6 @@
  */
 package org.joda.beans;
 
-
 /**
  * A dynamic bean that allows properties to be added and removed.
  * <p>

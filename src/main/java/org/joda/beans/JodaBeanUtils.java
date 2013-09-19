@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -428,9 +427,6 @@ public final class JodaBeanUtils {
      * @throws IllegalArgumentException if the property is not a collection
      */
     public static Class<?> collectionType(MetaProperty<?> prop, Class<?> targetClass) {
-        if (Collection.class.isAssignableFrom(prop.propertyType()) == false) {
-            throw new IllegalArgumentException("Property is not a Collection");
-        }
         return extractType(targetClass, prop, 1, 0);
     }
 
@@ -456,9 +452,6 @@ public final class JodaBeanUtils {
      * @throws IllegalArgumentException if the property is not a map
      */
     public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> targetClass) {
-        if (Map.class.isAssignableFrom(prop.propertyType()) == false) {
-            throw new IllegalArgumentException("Property is not a Map");
-        }
         return extractType(targetClass, prop, 2, 0);
     }
 
@@ -484,9 +477,6 @@ public final class JodaBeanUtils {
      * @throws IllegalArgumentException if the property is not a map
      */
     public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> targetClass) {
-        if (Map.class.isAssignableFrom(prop.propertyType()) == false) {
-            throw new IllegalArgumentException("Property is not a Map");
-        }
         return extractType(targetClass, prop, 2, 1);
     }
 

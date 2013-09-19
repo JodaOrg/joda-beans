@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8" date="xxxx-xx-xx" description="v0.8">
       <action dev="scolebourne" type="update" >
+        Add XML round-trip serialization. Fixes #16.
+        Allows the bean to be converted to and from XML in a human readable format.
+      </action>
+      <action dev="scolebourne" type="update" >
         Enhance FlexiBean and MapBean. Fixes #15.
         These now work more like the original intention.
         Properties are always created on demand.
