@@ -28,9 +28,9 @@ to be effectively queried.
 A key point is that the code generator may be run again and again on the Java file, and is non-destructive.
 
 See these sample classes used for testing -
-[basic Person class](https://github.com/JodaOrg/joda-beans/blob/v0.7.1/src/test/java/org/joda/beans/gen/Person.java#L43),
-[example usage](https://github.com/JodaOrg/joda-beans/blob/v0.7.1/src/test/java/org/joda/beans/Examples.java#L25),
-[example of validation](https://github.com/JodaOrg/joda-beans/blob/v0.7.1/src/test/java/org/joda/beans/gen/ValidateBean.java#L38).
+[basic Person class](https://github.com/JodaOrg/joda-beans/blob/v0.8/src/test/java/org/joda/beans/gen/Person.java#L43),
+[example usage](https://github.com/JodaOrg/joda-beans/blob/v0.8/src/test/java/org/joda/beans/Examples.java#L25),
+[example of validation](https://github.com/JodaOrg/joda-beans/blob/v0.8/src/test/java/org/joda/beans/gen/ValidateBean.java#L38).
 
 
 ### Documentation
@@ -44,14 +44,14 @@ Various documentation is available:
 
 ### Releases
 There are no full releases yet!
-[Release 0.7.1](http://www.joda.org/joda-beans/download.html) is the current latest release.
+[Release 0.8](http://www.joda.org/joda-beans/download.html) is the current latest release.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 
 Joda-Beans runs on JDK 1.6 or later and requires [Joda-Convert](https://github.com/JodaOrg/joda-convert/)
 There are a number of [optional dependencies](http://www.joda.org/joda-convert/dependencies.html) which help with integration.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.7.1|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.8|jar)
 
 
 ### Support
