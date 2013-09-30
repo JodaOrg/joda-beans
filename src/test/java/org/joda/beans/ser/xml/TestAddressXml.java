@@ -46,6 +46,7 @@ public class TestAddressXml {
         person.setSurname("Colebourne");
         person.getExtensions().set("interests", "joda");
         person.getExtensions().set("conferenceCount", 21);
+        person.getExtensions().set("quality", 'B');
         person.getExtensions().set("company", new Company("OpenGamma"));
         Address address = new Address();
         address.setOwner(person);

@@ -25,11 +25,11 @@ package org.joda.beans.ser;
 public interface SerIterator {
 
     /**
-     * Gets the exposed type of the underlying.
+     * Gets the meta type of the underlying.
      * 
      * @return the type, such as 'List' or 'Map'
      */
-    String simpleTypeName();
+    String metaTypeName();
 
     /**
      * Gets the size of the wrapped collection.

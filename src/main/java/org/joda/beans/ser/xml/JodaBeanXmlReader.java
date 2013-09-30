@@ -72,7 +72,7 @@ public class JodaBeanXmlReader {
      */
     private XMLEventReader reader;
     /**
-     * The base package.
+     * The base package including the trailing dot.
      */
     private String basePackage;
 
@@ -81,7 +81,7 @@ public class JodaBeanXmlReader {
      * 
      * @param settings  the settings, not null
      */
-    public JodaBeanXmlReader(JodaBeanSer settings) {
+    public JodaBeanXmlReader(final JodaBeanSer settings) {
         this.settings = settings;
     }
 
@@ -92,7 +92,7 @@ public class JodaBeanXmlReader {
      * @param input  the input string, not null
      * @return the bean, not null
      */
-    public Bean read(String input) {
+    public Bean read(final String input) {
         return read(new StringReader(input));
     }
 
@@ -102,7 +102,7 @@ public class JodaBeanXmlReader {
      * @param input  the input reader, not null
      * @return the bean, not null
      */
-    public Bean read(InputStream input) {
+    public Bean read(final InputStream input) {
         try {
             reader = FACTORY.createXMLEventReader(input);
             return read();
@@ -119,7 +119,7 @@ public class JodaBeanXmlReader {
      * @param input  the input reader, not null
      * @return the bean, not null
      */
-    public Bean read(Reader input) {
+    public Bean read(final Reader input) {
         try {
             reader = FACTORY.createXMLEventReader(input);
             return read();
@@ -140,9 +140,10 @@ public class JodaBeanXmlReader {
             throw new IllegalArgumentException("Root element attribute must specify '" + TYPE + "'");
         }
         String typeStr = attr.getValue();
-        Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(typeStr);
+        
+        Class<?> type = settings.decodeClass(typeStr, null);
         MetaBean metaBean = JodaBeanUtils.metaBean(type);
-        basePackage = type.getPackage().getName();
+        basePackage = type.getPackage().getName() + ".";
         Bean bean = parseBean(metaBean, type);
         reader.close();
         return bean;
@@ -155,7 +156,7 @@ public class JodaBeanXmlReader {
      * @param beanType  the bean type, not null
      * @return the bean, not null
      */
-    private Bean parseBean(MetaBean metaBean, Class<?> beanType) throws Exception {
+    private Bean parseBean(final MetaBean metaBean, final Class<?> beanType) throws Exception {
         try {
             BeanBuilder<? extends Bean> builder = metaBean.builder();
             XMLEvent event = reader.nextEvent();
@@ -194,7 +195,7 @@ public class JodaBeanXmlReader {
      * @param iterable  the iterable builder, not null
      * @return the iterable, not null
      */
-    private Object parseIterable(SerIterable iterable) throws Exception {
+    private Object parseIterable(final SerIterable iterable) throws Exception {
         XMLEvent event = reader.nextEvent();
         while (event.isEndElement() == false) {
             if (event.isStartElement()) {
@@ -238,7 +239,7 @@ public class JodaBeanXmlReader {
                         // metatype
                         Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                         if (metaTypeAttr != null) {
-                            SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue());
+                            SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings);
                             if (childIterable == null) {
                                 throw new IllegalArgumentException("Invalid metaType");
                             }
@@ -256,33 +257,13 @@ public class JodaBeanXmlReader {
         return iterable.build();
     }
 
-    private Class<?> parseTypeAttribute(StartElement start, Class<?> defaultType) throws ClassNotFoundException {
+    private Class<?> parseTypeAttribute(final StartElement start, final Class<?> defaultType) throws ClassNotFoundException {
         Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
         if (typeAttr == null) {
             return (defaultType == Object.class ? String.class : defaultType);
         }
         String childTypeStr = typeAttr.getValue();
-        if (childTypeStr.length() > 0) {
-            if (Character.isUpperCase(childTypeStr.charAt(0))) {
-                childTypeStr = basePackage + "." + childTypeStr;
-            }
-            if (childTypeStr.startsWith(".")) {
-                childTypeStr = basePackage + childTypeStr;
-            }
-        }
-        try {
-            return Thread.currentThread().getContextClassLoader().loadClass(childTypeStr);
-        } catch (ClassNotFoundException ex) {
-            if (typeAttr.getValue().contains(".") == false) {
-                childTypeStr = "java.lang." + typeAttr.getValue();
-                try {
-                    return Thread.currentThread().getContextClassLoader().loadClass(childTypeStr);
-                } catch (ClassNotFoundException ex2) {
-                    // ignore
-                }
-            }
-            throw ex;
-        }
+        return settings.decodeClass(childTypeStr, basePackage);
     }
 
     // reader can be anywhere, but normally at StartDocument

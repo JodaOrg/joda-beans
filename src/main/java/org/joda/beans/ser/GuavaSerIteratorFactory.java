@@ -83,10 +83,11 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * Creates an iterator wrapper for a meta-property value.
      * 
      * @param metaTypeDescription  the description of the collection type, not null
+     * @param settings  the settings object, not null
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterable createIterable(final String metaTypeDescription) {
+    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings) {
         if (metaTypeDescription.equals("SetMultimap")) {
             return setMultimap(Object.class, Object.class);
         }
@@ -99,7 +100,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         if (metaTypeDescription.equals("Multiset")) {
             return multiset(Object.class);
         }
-        return super.createIterable(metaTypeDescription);
+        return super.createIterable(metaTypeDescription, settings);
     }
 
     /**
@@ -204,7 +205,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             private Multiset.Entry current;
 
             @Override
-            public String simpleTypeName() {
+            public String metaTypeName() {
                 return "Multiset";
             }
             @Override
@@ -336,7 +337,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             private Map.Entry current;
 
             @Override
-            public String simpleTypeName() {
+            public String metaTypeName() {
                 if (map instanceof SetMultimap) {
                     return "SetMultimap";
                 }

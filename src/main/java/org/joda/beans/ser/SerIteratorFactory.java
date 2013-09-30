@@ -106,9 +106,10 @@ public class SerIteratorFactory {
      * Creates an iterator wrapper for a meta-property value.
      * 
      * @param metaTypeDescription  the description of the collection type, not null
+     * @param settings  the settings object, not null
      * @return the iterator, null if not a collection-like type
      */
-    public SerIterable createIterable(final String metaTypeDescription) {
+    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings) {
         if (metaTypeDescription.equals("Set")) {
             return set(Object.class);
         }
@@ -124,13 +125,10 @@ public class SerIteratorFactory {
         if (metaTypeDescription.equals("Object[]")) {
             return array(Object.class);
         }
-        if (metaTypeDescription.equals("String[]")) {
-            return array(String.class);
-        }
         if (metaTypeDescription.endsWith("[]")) {
             String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
             try {
-                Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(clsStr);
+                Class<?> cls = settings.decodeClass(clsStr, null);
                 return array(cls);
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
@@ -146,7 +144,7 @@ public class SerIteratorFactory {
      * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
      * @return the iterator, null if not a collection-like type
      */
-    public SerIterable createIterable(final MetaProperty<?> prop, Class<?> beanClass) {
+    public SerIterable createIterable(final MetaProperty<?> prop, final Class<?> beanClass) {
         if (NavigableSet.class.isAssignableFrom(prop.propertyType())) {
             Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
             return navigableSet(valueType);
@@ -299,7 +297,7 @@ public class SerIteratorFactory {
             private Object current;
 
             @Override
-            public String simpleTypeName() {
+            public String metaTypeName() {
                 if (coll instanceof Set) {
                     return "Set";
                 }
@@ -426,7 +424,7 @@ public class SerIteratorFactory {
             private Entry current;
 
             @Override
-            public String simpleTypeName() {
+            public String metaTypeName() {
                 return "Map";
             }
             @Override
@@ -518,7 +516,7 @@ public class SerIteratorFactory {
             private int index = -1;
 
             @Override
-            public String simpleTypeName() {
+            public String metaTypeName() {
                 if (valueType == Object.class) {
                     return "Object[]";
                 }

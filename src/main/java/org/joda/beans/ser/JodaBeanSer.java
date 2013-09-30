@@ -15,6 +15,18 @@
  */
 package org.joda.beans.ser;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
@@ -38,6 +50,41 @@ public final class JodaBeanSer {
      * Obtains the singleton pretty-printing instance.
      */
     public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(), SerIteratorFactory.INSTANCE);
+    /**
+     * Known simple classes.
+     */
+    private static final Map<Class<?>, String> BASIC_TYPES;
+    /**
+     * Known simple classes.
+     */
+    private static final Map<String, Class<?>> BASIC_TYPES_REVERSED;
+    static {
+        Map<Class<?>, String> map = new HashMap<Class<?>, String>();
+        map.put(String.class, "String");
+        map.put(Boolean.class, "Boolean");
+        map.put(Character.class, "Character");
+        map.put(Byte.class, "Byte");
+        map.put(Short.class, "Short");
+        map.put(Integer.class, "Integer");
+        map.put(Long.class, "Long");
+        map.put(Float.class, "Float");
+        map.put(Double.class, "Double");
+        map.put(BigInteger.class, "BigInteger");
+        map.put(BigDecimal.class, "BigDecimal");
+        map.put(Class.class, "Class");
+        map.put(Package.class, "Package");
+        map.put(File.class, "File");
+        map.put(Locale.class, "Locale");
+        map.put(URL.class, "URL");
+        map.put(URI.class, "URI");
+        map.put(UUID.class, "UUID");
+        Map<String, Class<?>> reversed = new HashMap<String, Class<?>>();
+        for (Entry<Class<?>, String> entry : map.entrySet()) {
+            reversed.put(entry.getValue(), entry.getKey());
+        }
+        BASIC_TYPES = Collections.unmodifiableMap(map);
+        BASIC_TYPES_REVERSED = Collections.unmodifiableMap(reversed);
+    }
 
     /**
      * The indent to use.
@@ -152,6 +199,65 @@ public final class JodaBeanSer {
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(converter, "converter");
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Encodes a basic class.
+     * <p>
+     * This handles known simple types, like String, Integer or File,
+     * and prefixing.
+     * 
+     * @param cls  the class to encode, not null
+     * @param basePackage  the base package to use with trailing dot, null if none
+     * @return the class object, null if not a basic type
+     */
+    public String encodeClass(Class<?> cls, String basePackage) {
+        String result = BASIC_TYPES.get(cls);
+        if (result == null) {
+            result = cls.getName();
+            if (basePackage != null &&
+                    result.startsWith(basePackage) &&
+                    Character.isUpperCase(result.charAt(basePackage.length())) &&
+                    BASIC_TYPES.containsKey(result.substring(basePackage.length())) == false) {
+                result = result.substring(basePackage.length());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Decodes a class.
+     * <p>
+     * This uses the context class loader.
+     * 
+     * @param className  the class name, not null
+     * @param basePackage  the base package to use with trailing dot, null if none
+     * @return the class object, not null
+     * @throws ClassNotFoundException if not found
+     */
+    public Class<?> decodeClass(String className, String basePackage) throws ClassNotFoundException {
+        Class<?> result = BASIC_TYPES_REVERSED.get(className);
+        if (result != null) {
+            return result;
+        }
+        String fullName = className;
+        if (basePackage != null && className.length() > 0 && Character.isUpperCase(className.charAt(0))) {
+            fullName = basePackage + className;
+        }
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+        } catch (ClassNotFoundException ex) {
+            // handle pathological case of package name starting with upper case
+            if (fullName.equals(className) == false) {
+                try {
+                    return loader != null ? loader.loadClass(className) : Class.forName(className);
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

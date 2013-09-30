@@ -22,8 +22,6 @@ import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 
-import java.util.regex.Pattern;
-
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
@@ -34,15 +32,27 @@ import org.joda.convert.StringConverter;
  * Provides the ability for a Joda-Bean to be written to XML.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
+ * <p>
+ * The XML consists of a root level 'bean' element with a 'type' attribute.
+ * At each subsequent level, a bean is output using the property name.
+ * Where necessary, the 'type' attribute is used to clarify a type.
+ * <p>
+ * Simple types, defined by Joda-Convert, are output as strings.
+ * Beans are output recursively within the parent property element.
+ * Collections are output using 'item' elements within the property element.
+ * The 'item' elements will use 'key' for map keys, 'count' for multiset counts
+ * and 'null=true' for null entries. Note that map keys must be simple types.
+ * <p>
+ * If a collection contains a collection then more information is written.
+ * A 'metatype' attribute is added to define the high level type, such as List.
+ * At this level, the data read back may not be identical to that written.
+ * <p>
+ * Type names are shortened by the package of the root type if possible.
+ * Certain basic types are also handled, such as String, Integer, File and URI.
  *
  * @author Stephen Colebourne
  */
 public class JodaBeanXmlWriter {
-
-    /**
-     * Pattern matching java lang simple classes.
-     */
-    private static final Pattern JAVA_LANG = Pattern.compile("java[.]lang[.][a-zA-Z]+");
 
     /**
      * The settings to use.
@@ -57,7 +67,7 @@ public class JodaBeanXmlWriter {
      */
     private Bean rootBean;
     /**
-     * The base package.
+     * The base package including the trailing dot.
      */
     private String basePackage;
 
@@ -66,7 +76,7 @@ public class JodaBeanXmlWriter {
      * 
      * @param settings  the settings to use, not null
      */
-    public JodaBeanXmlWriter(JodaBeanSer settings) {
+    public JodaBeanXmlWriter(final JodaBeanSer settings) {
         this(settings, new StringBuilder(1024));
     }
 
@@ -76,7 +86,7 @@ public class JodaBeanXmlWriter {
      * @param settings  the settings to use, not null
      * @param builder  the builder to output to, not null
      */
-    public JodaBeanXmlWriter(JodaBeanSer settings, StringBuilder builder) {
+    public JodaBeanXmlWriter(final JodaBeanSer settings, final StringBuilder builder) {
         this.settings = settings;
         this.builder = builder;
     }
@@ -88,7 +98,7 @@ public class JodaBeanXmlWriter {
      * @param bean  the bean to output, not null
      * @return the XML, not null
      */
-    public String write(Bean bean) {
+    public String write(final Bean bean) {
         return writeToBuilder(bean).toString();
     }
 
@@ -98,7 +108,7 @@ public class JodaBeanXmlWriter {
      * @param bean  the bean to output, not null
      * @return the builder, not null
      */
-    public StringBuilder writeToBuilder(Bean bean) {
+    public StringBuilder writeToBuilder(final Bean bean) {
         if (bean == null) {
             throw new NullPointerException("bean");
         }
@@ -120,7 +130,7 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private boolean writeBean(Bean bean, String currentIndent) {
+    private boolean writeBean(final Bean bean, final String currentIndent) {
         boolean output = false;
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable()) {
@@ -146,13 +156,10 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeBean(String currentIndent, String tagName, StringBuilder attrs, Class<?> propType, Bean value) {
+    private void writeBean(final String currentIndent, final String tagName, final StringBuilder attrs, final Class<?> propType, final Bean value) {
         builder.append(currentIndent).append('<').append(tagName).append(attrs);
         if (value.getClass() != propType) {
-            String typeStr = value.getClass().getName();
-            if (typeStr.startsWith(basePackage) && Character.isUpperCase(typeStr.charAt(basePackage.length()))) {
-                typeStr = typeStr.substring(basePackage.length());
-            }
+            String typeStr = settings.encodeClass(value.getClass(), basePackage);
             appendAttribute(builder, TYPE, typeStr);
         }
         builder.append('>').append(settings.getNewLine());
@@ -164,7 +171,7 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeElements(String currentIndent, String tagName, StringBuilder attrs, SerIterator itemIterator) {
+    private void writeElements(final String currentIndent, final String tagName, final StringBuilder attrs, final SerIterator itemIterator) {
         if (itemIterator.size() == 0) {
             builder.append(currentIndent).append('<').append(tagName).append(attrs).append('/').append('>').append(settings.getNewLine());
         } else {
@@ -174,7 +181,7 @@ public class JodaBeanXmlWriter {
         }
     }
 
-    private void writeElements(String currentIndent, SerIterator itemIterator) {
+    private void writeElements(final String currentIndent, final SerIterator itemIterator) {
         StringConverter<Object> converter = null;
         if (itemIterator.keyType() != null) {
             converter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
@@ -198,7 +205,7 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeElement(String currentIndent, StringBuilder attrs, Class<?> valueType, Object value) {
+    private void writeElement(final String currentIndent, final StringBuilder attrs, final Class<?> valueType, final Object value) {
         if (value == null) {
             appendAttribute(attrs, NULL, "true");
             builder.append(currentIndent).append("<item").append(attrs).append("/>").append(settings.getNewLine());
@@ -207,7 +214,7 @@ public class JodaBeanXmlWriter {
         } else {
             SerIterator itemIterator = settings.getIteratorFactory().create(value);
             if (itemIterator != null) {
-                appendAttribute(attrs, METATYPE, itemIterator.simpleTypeName());
+                appendAttribute(attrs, METATYPE, itemIterator.metaTypeName());
                 writeElements(currentIndent, "item", attrs, itemIterator);
             } else {
                 writeSimple(currentIndent, "item", attrs, valueType, value);
@@ -216,15 +223,12 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeSimple(String currentIndent, String tagName, StringBuilder attrs, Class<?> propType, Object value) {
+    private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, Class<?> propType, final Object value) {
         if (propType == Object.class) {
             propType = value.getClass();
             if (propType != String.class) {
-                String typeName = value.getClass().getName();
-                if (JAVA_LANG.matcher(propType.getName()).matches()) {
-                    typeName = propType.getSimpleName();
-                }
-                appendAttribute(attrs, TYPE, typeName);
+                String typeStr = settings.encodeClass(propType, basePackage);
+                appendAttribute(attrs, TYPE, typeStr);
             }
         }
         String converted = settings.getConverter().convertToString(propType, value);
@@ -233,7 +237,7 @@ public class JodaBeanXmlWriter {
         builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
     }
 
-    private StringBuilder appendEncoded(String text) {
+    private StringBuilder appendEncoded(final String text) {
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
             switch (ch) {
@@ -267,15 +271,15 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private StringBuilder appendAttribute(StringBuilder buf, String attrName, String encodedValue) {
+    private StringBuilder appendAttribute(final StringBuilder buf, final String attrName, final String encodedValue) {
         return buf.append(' ').append(attrName).append('=').append('\"').append(encodedValue).append('\"');
     }
 
-    private String encodeAttribute(String text) {
+    private String encodeAttribute(final String text) {
         return appendEncodedAttribute(new StringBuilder(text.length() + 16), text).toString();
     }
 
-    private StringBuilder appendEncodedAttribute(StringBuilder builder, String text) {
+    private StringBuilder appendEncodedAttribute(final StringBuilder builder, final String text) {
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
             switch (ch) {
