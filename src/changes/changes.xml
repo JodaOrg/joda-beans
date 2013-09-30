@@ -8,7 +8,10 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.8" date="xxxx-xx-xx" description="v0.8">
+    <release version="0.8" date="2013-09-30" description="v0.8">
+      <action dev="scolebourne" type="update" >
+        Move to OSGi generation via Maven plugin.
+      </action>
       <action dev="scolebourne" type="update" >
         Add XML round-trip serialization. Fixes #16.
         Allows the bean to be converted to and from XML in a human readable format.
