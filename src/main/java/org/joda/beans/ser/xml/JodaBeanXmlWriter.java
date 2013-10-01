@@ -140,7 +140,11 @@ public class JodaBeanXmlWriter {
                     String propName = prop.name();
                     Class<?> propType = prop.propertyType();
                     if (value instanceof Bean) {
-                        writeBean(currentIndent, propName, new StringBuilder(), propType, (Bean) value);
+                        if (settings.getConverter().isConvertible(value.getClass())) {
+                            writeSimple(currentIndent, propName, new StringBuilder(), propType, value);
+                        } else {
+                            writeBean(currentIndent, propName, new StringBuilder(), propType, (Bean) value);
+                        }
                     } else {
                         SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                         if (itemIterator != null) {
@@ -210,7 +214,11 @@ public class JodaBeanXmlWriter {
             appendAttribute(attrs, NULL, "true");
             builder.append(currentIndent).append("<item").append(attrs).append("/>").append(settings.getNewLine());
         } else if (value instanceof Bean) {
-            writeBean(currentIndent, "item", attrs, valueType, (Bean) value);
+            if (settings.getConverter().isConvertible(value.getClass())) {
+                writeSimple(currentIndent, "item", attrs, valueType, value);
+            } else {
+                writeBean(currentIndent, "item", attrs, valueType, (Bean) value);
+            }
         } else {
             SerIterator itemIterator = settings.getIteratorFactory().create(value);
             if (itemIterator != null) {
@@ -223,15 +231,15 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, Class<?> propType, final Object value) {
-        if (propType == Object.class) {
-            propType = value.getClass();
-            if (propType != String.class) {
-                String typeStr = settings.encodeClass(propType, basePackage);
+    private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, Class<?> type, final Object value) {
+        if (type == Object.class) {
+            type = value.getClass();
+            if (type != String.class) {
+                String typeStr = settings.encodeClass(type, basePackage);
                 appendAttribute(attrs, TYPE, typeStr);
             }
         }
-        String converted = settings.getConverter().convertToString(propType, value);
+        String converted = settings.getConverter().convertToString(type, value);
         builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>');
         appendEncoded(converted);
         builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());

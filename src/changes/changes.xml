@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.8.1" date="2013-10-01" description="v0.8.1">
+      <action dev="scolebourne" type="update" >
+        Output Joda-Convert data whenever available.
+      </action>
+    </release>
     <release version="0.8" date="2013-09-30" description="v0.8">
       <action dev="scolebourne" type="update" >
         Move to OSGi generation via Maven plugin.

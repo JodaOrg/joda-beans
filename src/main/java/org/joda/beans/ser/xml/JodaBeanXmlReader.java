@@ -168,8 +168,13 @@ public class JodaBeanXmlReader {
                     Class<?> childType = parseTypeAttribute(start, metaProp.propertyType());
                     Object value;
                     if (Bean.class.isAssignableFrom(childType)) {
-                        MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
-                        value = parseBean(childMetaBean, childType);
+                        if (settings.getConverter().isConvertible(childType)) {
+                            String text = advanceAndParseText();
+                            value = settings.getConverter().convertFromString(childType, text);
+                        } else {
+                            MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
+                            value = parseBean(childMetaBean, childType);
+                        }
                     } else {
                         SerIterable iterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
                         if (iterable != null) {
@@ -233,8 +238,13 @@ public class JodaBeanXmlReader {
                     // type
                     Class<?> childType = parseTypeAttribute(start, iterable.valueType());
                     if (Bean.class.isAssignableFrom(childType)) {
-                        MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
-                        value = parseBean(childMetaBean, childType);
+                        if (settings.getConverter().isConvertible(childType)) {
+                            String text = advanceAndParseText();
+                            value = settings.getConverter().convertFromString(childType, text);
+                        } else {
+                            MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
+                            value = parseBean(childMetaBean, childType);
+                        }
                     } else {
                         // metatype
                         Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
