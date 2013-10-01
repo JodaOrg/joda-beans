@@ -28,6 +28,8 @@ import static org.joda.beans.ser.xml.JodaBeanXml.TYPE_QNAME;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -75,6 +77,10 @@ public class JodaBeanXmlReader {
      * The base package including the trailing dot.
      */
     private String basePackage;
+    /**
+     * The known types.
+     */
+    private Map<String, Class<?>> knownTypes = new HashMap<String, Class<?>>();
 
     /**
      * Creates an instance.
@@ -178,7 +184,7 @@ public class JodaBeanXmlReader {
         Class<?> type;
         if (attr != null) {
             String typeStr = attr.getValue();
-            type = settings.decodeClass(typeStr, null);
+            type = settings.decodeClass(typeStr, null, knownTypes);
             if (rootType.isAssignableFrom(type) == false) {
                 throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + type.getName());
             }
@@ -294,7 +300,7 @@ public class JodaBeanXmlReader {
                         // metatype
                         Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                         if (metaTypeAttr != null) {
-                            SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings);
+                            SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
                             if (childIterable == null) {
                                 throw new IllegalArgumentException("Invalid metaType");
                             }
@@ -318,7 +324,7 @@ public class JodaBeanXmlReader {
             return (defaultType == Object.class ? String.class : defaultType);
         }
         String childTypeStr = typeAttr.getValue();
-        return settings.decodeClass(childTypeStr, basePackage);
+        return settings.decodeClass(childTypeStr, basePackage, knownTypes);
     }
 
     // reader can be anywhere, but normally at StartDocument

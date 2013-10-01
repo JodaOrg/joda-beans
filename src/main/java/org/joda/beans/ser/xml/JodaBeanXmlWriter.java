@@ -22,6 +22,9 @@ import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
@@ -70,6 +73,10 @@ public class JodaBeanXmlWriter {
      * The base package including the trailing dot.
      */
     private String basePackage;
+    /**
+     * The known types.
+     */
+    private Map<Class<?>, String> knownTypes = new HashMap<Class<?>, String>();
 
     /**
      * Creates an instance.
@@ -187,7 +194,7 @@ public class JodaBeanXmlWriter {
     private void writeBean(final String currentIndent, final String tagName, final StringBuilder attrs, final Class<?> propType, final Bean value) {
         builder.append(currentIndent).append('<').append(tagName).append(attrs);
         if (value.getClass() != propType) {
-            String typeStr = settings.encodeClass(value.getClass(), basePackage);
+            String typeStr = settings.encodeClass(value.getClass(), basePackage, knownTypes);
             appendAttribute(builder, TYPE, typeStr);
         }
         builder.append('>').append(settings.getNewLine());
@@ -259,7 +266,7 @@ public class JodaBeanXmlWriter {
         if (type == Object.class) {
             type = value.getClass();
             if (type != String.class) {
-                String typeStr = settings.encodeClass(type, basePackage);
+                String typeStr = settings.encodeClass(type, basePackage, knownTypes);
                 appendAttribute(attrs, TYPE, typeStr);
             }
         }

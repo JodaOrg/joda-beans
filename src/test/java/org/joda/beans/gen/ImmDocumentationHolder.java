@@ -80,6 +80,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     /**
      * Returns a builder used to create an instance of the bean.
      *
+     * @param <T>  the type
      * @return the builder, not null
      */
     public static <T> ImmDocumentationHolder.Builder<T> builder() {

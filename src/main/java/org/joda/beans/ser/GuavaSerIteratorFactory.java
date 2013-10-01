@@ -84,10 +84,11 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * 
      * @param metaTypeDescription  the description of the collection type, not null
      * @param settings  the settings object, not null
+     * @param knownTypes  the known types map, null if not using known type shortening
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings) {
+    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings, final Map<String, Class<?>> knownTypes) {
         if (metaTypeDescription.equals("SetMultimap")) {
             return setMultimap(Object.class, Object.class);
         }
@@ -100,7 +101,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         if (metaTypeDescription.equals("Multiset")) {
             return multiset(Object.class);
         }
-        return super.createIterable(metaTypeDescription, settings);
+        return super.createIterable(metaTypeDescription, settings, knownTypes);
     }
 
     /**

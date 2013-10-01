@@ -107,9 +107,10 @@ public class SerIteratorFactory {
      * 
      * @param metaTypeDescription  the description of the collection type, not null
      * @param settings  the settings object, not null
+     * @param knownTypes  the known types map, null if not using known type shortening
      * @return the iterator, null if not a collection-like type
      */
-    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings) {
+    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings, final Map<String, Class<?>> knownTypes) {
         if (metaTypeDescription.equals("Set")) {
             return set(Object.class);
         }
@@ -128,7 +129,7 @@ public class SerIteratorFactory {
         if (metaTypeDescription.endsWith("[]")) {
             String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
             try {
-                Class<?> cls = settings.decodeClass(clsStr, null);
+                Class<?> cls = settings.decodeClass(clsStr, null, knownTypes);
                 return array(cls);
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);

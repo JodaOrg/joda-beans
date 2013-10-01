@@ -205,22 +205,46 @@ public final class JodaBeanSer {
     /**
      * Encodes a basic class.
      * <p>
-     * This handles known simple types, like String, Integer or File,
-     * and prefixing.
+     * This handles known simple types, like String, Integer or File, and prefixing.
+     * It also allows a map of message specific shorter forms.
      * 
      * @param cls  the class to encode, not null
      * @param basePackage  the base package to use with trailing dot, null if none
+     * @param knownTypes  the known types map, null if not using known type shortening
      * @return the class object, null if not a basic type
      */
-    public String encodeClass(Class<?> cls, String basePackage) {
+    public String encodeClass(final Class<?> cls, final String basePackage, final Map<Class<?>, String> knownTypes) {
         String result = BASIC_TYPES.get(cls);
-        if (result == null) {
-            result = cls.getName();
-            if (basePackage != null &&
-                    result.startsWith(basePackage) &&
-                    Character.isUpperCase(result.charAt(basePackage.length())) &&
-                    BASIC_TYPES.containsKey(result.substring(basePackage.length())) == false) {
-                result = result.substring(basePackage.length());
+        if (result != null) {
+            return result;
+        }
+        if (knownTypes != null) {
+            result = knownTypes.get(cls);
+            if (result != null) {
+                return result;
+            }
+        }
+        result = cls.getName();
+        if (basePackage != null &&
+                result.startsWith(basePackage) &&
+                Character.isUpperCase(result.charAt(basePackage.length())) &&
+                BASIC_TYPES.containsKey(result.substring(basePackage.length())) == false) {
+            // use short format
+            result = result.substring(basePackage.length());
+            if (knownTypes != null) {
+                knownTypes.put(cls, result);
+            }
+        } else {
+            // use long format, short next time if possible
+            if (knownTypes != null) {
+                String simpleName = cls.getSimpleName();
+                if (Character.isUpperCase(simpleName.charAt(0)) &&
+                        BASIC_TYPES.containsKey(simpleName) == false &&
+                        knownTypes.containsKey(simpleName) == false) {
+                    knownTypes.put(cls, simpleName);
+                } else {
+                    knownTypes.put(cls, result);
+                }
             }
         }
         return result;
@@ -230,29 +254,58 @@ public final class JodaBeanSer {
      * Decodes a class.
      * <p>
      * This uses the context class loader.
+     * This handles known simple types, like String, Integer or File, and prefixing.
+     * It also allows a map of message specific shorter forms.
      * 
      * @param className  the class name, not null
      * @param basePackage  the base package to use with trailing dot, null if none
+     * @param knownTypes  the known types map, null if not using known type shortening
      * @return the class object, not null
      * @throws ClassNotFoundException if not found
      */
-    public Class<?> decodeClass(String className, String basePackage) throws ClassNotFoundException {
+    public Class<?> decodeClass(final String className, final String basePackage, final Map<String, Class<?>> knownTypes) throws ClassNotFoundException {
         Class<?> result = BASIC_TYPES_REVERSED.get(className);
         if (result != null) {
             return result;
         }
+        if (knownTypes != null) {
+            result = knownTypes.get(className);
+            if (result != null) {
+                return result;
+            }
+        }
         String fullName = className;
+        boolean expanded = false;
         if (basePackage != null && className.length() > 0 && Character.isUpperCase(className.charAt(0))) {
             fullName = basePackage + className;
+            expanded = true;
         }
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+            result = loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+            if (knownTypes != null) {
+                knownTypes.put(fullName, result);
+                if (expanded) {
+                    knownTypes.put(className, result);
+                } else {
+                    String simpleName = result.getSimpleName();
+                    if (Character.isUpperCase(simpleName.charAt(0)) &&
+                            BASIC_TYPES.containsKey(simpleName) == false &&
+                            knownTypes.containsKey(simpleName) == false) {
+                        knownTypes.put(simpleName, result);
+                    }
+                }
+            }
+            return result;
         } catch (ClassNotFoundException ex) {
             // handle pathological case of package name starting with upper case
             if (fullName.equals(className) == false) {
                 try {
-                    return loader != null ? loader.loadClass(className) : Class.forName(className);
+                    result = loader != null ? loader.loadClass(className) : Class.forName(className);
+                    if (knownTypes != null) {
+                        knownTypes.put(className, result);
+                    }
+                    return result;
                 } catch (ClassNotFoundException ignored) {
                 }
             }
