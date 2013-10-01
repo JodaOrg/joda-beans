@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="2013-10-01" description="v0.8.1">
+      <action dev="scolebourne" type="fix" >
+        Generate correct Javadoc for builder static method with generics.
+      </action>
       <action dev="scolebourne" type="add" >
         Allow known types to be built up during serialization.
       </action>
