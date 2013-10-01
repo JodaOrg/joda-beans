@@ -99,7 +99,18 @@ public class JodaBeanXmlWriter {
      * @return the XML, not null
      */
     public String write(final Bean bean) {
-        return writeToBuilder(bean).toString();
+        return write(bean, true);
+    }
+
+    /**
+     * Writes the bean to a string.
+     * 
+     * @param bean  the bean to output, not null
+     * @param rootType  true to output the root type
+     * @return the XML, not null
+     */
+    public String write(final Bean bean, final boolean rootType) {
+        return writeToBuilder(bean, rootType).toString();
     }
 
     /**
@@ -109,16 +120,29 @@ public class JodaBeanXmlWriter {
      * @return the builder, not null
      */
     public StringBuilder writeToBuilder(final Bean bean) {
+        return writeToBuilder(bean, true);
+    }
+
+    /**
+     * Writes the bean to the {@code StringBuilder}.
+     * 
+     * @param bean  the bean to output, not null
+     * @param rootType  true to output the root type
+     * @return the builder, not null
+     */
+    public StringBuilder writeToBuilder(final Bean bean, final boolean rootType) {
         if (bean == null) {
             throw new NullPointerException("bean");
         }
         this.rootBean = bean;
-        this.basePackage = bean.getClass().getPackage().getName() + ".";
+        this.basePackage = (rootType ? bean.getClass().getPackage().getName() + "." : null);
         
         String type = rootBean.getClass().getName();
         writeHeader();
         builder.append('<').append(BEAN);
-        appendAttribute(builder, TYPE, type);
+        if (rootType) {
+            appendAttribute(builder, TYPE, type);
+        }
         builder.append('>').append(settings.getNewLine());
         writeBean(rootBean, settings.getIndent());
         builder.append('<').append('/').append(BEAN).append('>').append(settings.getNewLine());

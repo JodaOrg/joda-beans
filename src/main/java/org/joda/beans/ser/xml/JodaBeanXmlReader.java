@@ -93,7 +93,19 @@ public class JodaBeanXmlReader {
      * @return the bean, not null
      */
     public Bean read(final String input) {
-        return read(new StringReader(input));
+        return read(input, Bean.class);
+    }
+
+    /**
+     * Reads and parses to a bean.
+     * 
+     * @param <T>  the root type
+     * @param input  the input string, not null
+     * @param rootType  the root type, not null
+     * @return the bean, not null
+     */
+    public <T extends Bean> T read(final String input, Class<T> rootType) {
+        return read(new StringReader(input), rootType);
     }
 
     /**
@@ -103,9 +115,21 @@ public class JodaBeanXmlReader {
      * @return the bean, not null
      */
     public Bean read(final InputStream input) {
+        return read(input, Bean.class);
+    }
+
+    /**
+     * Reads and parses to a bean.
+     * 
+     * @param <T>  the root type
+     * @param input  the input stream, not null
+     * @param rootType  the root type, not null
+     * @return the bean, not null
+     */
+    public <T extends Bean> T read(final InputStream input, Class<T> rootType) {
         try {
             reader = FACTORY.createXMLEventReader(input);
-            return read();
+            return read(rootType);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -120,9 +144,21 @@ public class JodaBeanXmlReader {
      * @return the bean, not null
      */
     public Bean read(final Reader input) {
+        return read(input, Bean.class);
+    }
+
+    /**
+     * Reads and parses to a bean.
+     * 
+     * @param <T>  the root type
+     * @param input  the input reader, not null
+     * @param rootType  the root type, not null
+     * @return the bean, not null
+     */
+    public <T extends Bean> T read(final Reader input, Class<T> rootType) {
         try {
             reader = FACTORY.createXMLEventReader(input);
-            return read();
+            return read(rootType);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -130,23 +166,32 @@ public class JodaBeanXmlReader {
         }
     }
 
-    private Bean read() throws Exception {
+    private <T extends Bean> T read(final Class<T> rootType) throws Exception {
         StartElement start = advanceToStartElement();
         if (start.getName().equals(BEAN_QNAME) == false) {
             throw new IllegalArgumentException("Root element must be '" + BEAN + "'");
         }
         Attribute attr = start.getAttributeByName(TYPE_QNAME);
-        if (attr == null) {
+        if (attr == null && rootType == Bean.class) {
             throw new IllegalArgumentException("Root element attribute must specify '" + TYPE + "'");
         }
-        String typeStr = attr.getValue();
-        
-        Class<?> type = settings.decodeClass(typeStr, null);
+        Class<?> type;
+        if (attr != null) {
+            String typeStr = attr.getValue();
+            type = settings.decodeClass(typeStr, null);
+            if (rootType.isAssignableFrom(type) == false) {
+                throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + type.getName());
+            }
+        } else {
+            type = rootType;
+        }
         MetaBean metaBean = JodaBeanUtils.metaBean(type);
         basePackage = type.getPackage().getName() + ".";
         Bean bean = parseBean(metaBean, type);
         reader.close();
-        return bean;
+        @SuppressWarnings("unchecked")
+        T result = (T) bean;
+        return result;
     }
 
     /**
