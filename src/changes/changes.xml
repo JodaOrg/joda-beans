@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="2013-10-01" description="v0.8.1">
       <action dev="scolebourne" type="fix" >
+        Handle simple types better when defined by unknown interface.
+      </action>
+      <action dev="scolebourne" type="fix" >
         Generate correct Javadoc for builder static method with generics.
       </action>
       <action dev="scolebourne" type="add" >

@@ -262,18 +262,27 @@ public class JodaBeanXmlWriter {
     }
 
     //-----------------------------------------------------------------------
-    private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, Class<?> type, final Object value) {
+    private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, final Class<?> declaredType, final Object value) {
+        Class<?> type = declaredType;
         if (type == Object.class) {
             type = value.getClass();
             if (type != String.class) {
                 String typeStr = settings.encodeClass(type, basePackage, knownTypes);
                 appendAttribute(attrs, TYPE, typeStr);
             }
+        } else if (settings.getConverter().isConvertible(type) == false) {
+            type = value.getClass();
+            String typeStr = settings.encodeClass(type, basePackage, knownTypes);
+            appendAttribute(attrs, TYPE, typeStr);
         }
-        String converted = settings.getConverter().convertToString(type, value);
-        builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>');
-        appendEncoded(converted);
-        builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
+        try {
+            String converted = settings.getConverter().convertToString(type, value);
+            builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>');
+            appendEncoded(converted);
+            builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
+        } catch (IllegalStateException ex) {
+            throw new IllegalArgumentException("Unable to convert type " + type.getName() + " declared as " + declaredType.getName(), ex);
+        }
     }
 
     private StringBuilder appendEncoded(final String text) {
