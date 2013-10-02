@@ -172,6 +172,14 @@ public class JodaBeanXmlReader {
         }
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Parses the root bean.
+     * 
+     * @param rootType  the root type, not null
+     * @return the bean, not null
+     * @throws Exception if an error occurs
+     */
     private <T> T read(final Class<T> rootType) throws Exception {
         StartElement start = advanceToStartElement();
         if (start.getName().equals(BEAN_QNAME) == false) {
@@ -262,57 +270,53 @@ public class JodaBeanXmlReader {
                 if (start.getName().equals(ITEM_QNAME) == false) {
                     throw new IllegalArgumentException("Expected item");
                 }
-                // key
-                Object key = null;
-                Attribute keyAttr = start.getAttributeByName(KEY_QNAME);
-                if (keyAttr != null) {
-                    String keyStr = keyAttr.getValue();
-                    if (iterable.keyType() != null) {
-                        key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
-                    } else {
-                        key = keyStr;
-                    }
-                }
                 // count
                 int count = 1;
                 Attribute countAttr = start.getAttributeByName(COUNT_QNAME);
                 if (countAttr != null) {
                     count = Integer.parseInt(countAttr.getValue());
                 }
-                // null
-                Object value;
-                Attribute nullAttr = start.getAttributeByName(NULL_QNAME);
-                if (nullAttr != null) {
-                    if (nullAttr.getValue().equals("true") == false) {
-                        throw new IllegalArgumentException("Unexpected value for null attribute");
-                    }
-                    advanceAndParseText();  // move to end tag and ignore any text
-                    value = null;
-                } else {
-                    // type
-                    Class<?> childType = parseTypeAttribute(start, iterable.valueType());
-                    if (Bean.class.isAssignableFrom(childType)) {
-                        if (settings.getConverter().isConvertible(childType)) {
-                            String text = advanceAndParseText();
-                            value = settings.getConverter().convertFromString(childType, text);
-                        } else {
-                            MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
-                            value = parseBean(childMetaBean, childType);
-                        }
+                // key and value
+                Object key = null;
+                Object value = null;
+                Attribute keyAttr = start.getAttributeByName(KEY_QNAME);
+                if (keyAttr != null) {
+                    // item is value with a key attribute
+                    String keyStr = keyAttr.getValue();
+                    if (iterable.keyType() != null) {
+                        key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
                     } else {
-                        // metatype
-                        Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
-                        if (metaTypeAttr != null) {
-                            SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
-                            if (childIterable == null) {
-                                throw new IllegalArgumentException("Invalid metaType");
-                            }
-                            value = parseIterable(childIterable);
-                        } else {
-                            String text = advanceAndParseText();
-                            value = settings.getConverter().convertFromString(childType, text);
-                        }
+                        key = keyStr;
                     }
+                    value = parseValue(iterable, start);
+                    
+                } else if (iterable.keyType() != null) {
+                    // two items nested in this item
+                    if (Bean.class.isAssignableFrom(iterable.keyType()) == false) {
+                        throw new IllegalArgumentException("Unable to read map as declared key type is neither a bean nor a simple type: " + iterable.keyType().getName());
+                    }
+                    event = reader.nextEvent();
+                    int loop = 0;
+                    while (event.isEndElement() == false && loop < 2) {
+                        if (event.isStartElement()) {
+                            start = event.asStartElement();
+                            if (start.getName().equals(ITEM_QNAME) == false) {
+                                throw new IllegalArgumentException("Expected item");
+                            }
+                            if (loop == 0) {
+                                key = parseKey(iterable, start);
+                                loop = 1;
+                            } else {
+                                value = parseValue(iterable, start);
+                                loop = 2;
+                            }
+                        }
+                        event = reader.nextEvent();
+                    }
+                    
+                } else {
+                    // item is value
+                    value = parseValue(iterable, start);
                 }
                 iterable.add(key, value, count);
             }
@@ -321,6 +325,57 @@ public class JodaBeanXmlReader {
         return iterable.build();
     }
 
+    private Object parseKey(final SerIterable iterable, StartElement start) throws Exception {
+        // type
+        Class<?> childType = parseTypeAttribute(start, iterable.keyType());
+        if (Bean.class.isAssignableFrom(childType)) {
+            MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
+            return parseBean(childMetaBean, childType);
+        } else {
+            throw new IllegalArgumentException("Unable to read map as parsed key type is not a bean: " + childType.getName());
+        }
+    }
+
+    private Object parseValue(final SerIterable iterable, StartElement start) throws Exception {
+        // null
+        Object value;
+        Attribute nullAttr = start.getAttributeByName(NULL_QNAME);
+        if (nullAttr != null) {
+            if (nullAttr.getValue().equals("true") == false) {
+                throw new IllegalArgumentException("Unexpected value for null attribute");
+            }
+            advanceAndParseText();  // move to end tag and ignore any text
+            value = null;
+        } else {
+            // type
+            Class<?> childType = parseTypeAttribute(start, iterable.valueType());
+            if (Bean.class.isAssignableFrom(childType)) {
+                if (settings.getConverter().isConvertible(childType)) {
+                    String text = advanceAndParseText();
+                    value = settings.getConverter().convertFromString(childType, text);
+                } else {
+                    MetaBean childMetaBean = JodaBeanUtils.metaBean(childType);
+                    value = parseBean(childMetaBean, childType);
+                }
+            } else {
+                // metatype
+                Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
+                if (metaTypeAttr != null) {
+                    SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
+                    if (childIterable == null) {
+                        throw new IllegalArgumentException("Invalid metaType");
+                    }
+                    value = parseIterable(childIterable);
+                } else {
+                    String text = advanceAndParseText();
+                    value = settings.getConverter().convertFromString(childType, text);
+                }
+            }
+        }
+        return value;
+    }
+
+    //-----------------------------------------------------------------------
     private Class<?> parseTypeAttribute(final StartElement start, final Class<?> defaultType) throws ClassNotFoundException {
         Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
         if (typeAttr == null) {

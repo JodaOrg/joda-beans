@@ -32,6 +32,7 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 
 /**
@@ -90,6 +91,16 @@ public class TestAddressXml {
             .addressList(Arrays.asList(new Address()))
             .codeCounts(ImmutableMultiset.of("A", "A", "B"))
             . build();
+        ImmPerson child = ImmPerson.builder()
+                .forename("Etiennette")
+                .surname("Colebourne")
+                . build();
+        ImmAddress childAddress = ImmAddress.builder()
+                .owner(child)
+                .number(185)
+                .street("Park Street")
+                .city("London")
+                . build();
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
@@ -97,6 +108,7 @@ public class TestAddressXml {
             .city("London & Capital of the World <!>\n")
             .listInMap(map)
             .listNumericInMap(map2)
+            .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);

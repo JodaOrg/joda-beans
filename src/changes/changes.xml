@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="2013-10-02" description="v0.8.1">
       <action dev="scolebourne" type="add" >
+        Allow map keys to be beans.
+      </action>
+      <action dev="scolebourne" type="add" >
         Allow short types to be switched off.
       </action>
       <action dev="scolebourne" type="fix" >
