@@ -219,6 +219,9 @@ public class JodaBeanXmlWriter {
     private void writeElements(final String currentIndent, final SerIterator itemIterator) {
         StringConverter<Object> converter = null;
         if (itemIterator.keyType() != null) {
+            if (settings.getConverter().isConvertible(itemIterator.keyType()) == false) {
+                throw new IllegalArgumentException("Unable to embed map key as it cannot be represented as a string: " + itemIterator.keyType().getName());
+            }
             converter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         }
         while (itemIterator.hasNext()) {
@@ -227,7 +230,7 @@ public class JodaBeanXmlWriter {
             if (converter != null) {
                 String keyStr = encodeAttribute(converter.convertToString(itemIterator.key()));
                 if (keyStr == null) {
-                    throw new IllegalArgumentException("Unable to embed map key as it cannot be represented as a string: " + itemIterator.key());
+                    throw new IllegalArgumentException("Unable to embed map key as it cannot be a null string: " + itemIterator.key());
                 }
                 appendAttribute(attr, KEY, keyStr);
             }
