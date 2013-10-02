@@ -45,11 +45,11 @@ public final class JodaBeanSer {
     /**
      * Obtains the singleton compact instance.
      */
-    public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(), SerIteratorFactory.INSTANCE);
+    public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(), SerIteratorFactory.INSTANCE, true);
     /**
      * Obtains the singleton pretty-printing instance.
      */
-    public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(), SerIteratorFactory.INSTANCE);
+    public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(), SerIteratorFactory.INSTANCE, true);
     /**
      * Known simple classes.
      */
@@ -102,14 +102,21 @@ public final class JodaBeanSer {
      * The iterator factory to use.
      */
     private final SerIteratorFactory iteratorFactory;
+    /**
+     * Whether to use short types.
+     */
+    private final boolean shortTypes = true;
 
     /**
      * Creates an instance.
      * 
      * @param indent  the indent, not null
      * @param newLine  the new line, not null
+     * @param converter  the converter, not null
+     * @param iteratorFactory  the iterator factory, not null
+     * @param shortTypes  whether to use short types
      */
-    private JodaBeanSer(String indent, String newLine, StringConvert converter, SerIteratorFactory iteratorFactory) {
+    private JodaBeanSer(String indent, String newLine, StringConvert converter, SerIteratorFactory iteratorFactory, boolean shortTypes) {
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
@@ -134,7 +141,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIndent(String indent) {
         JodaBeanUtils.notNull(indent, "indent");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
     }
 
     /**
@@ -154,7 +161,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withNewLine(String newLine) {
         JodaBeanUtils.notNull(newLine, "newLine");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
     }
 
     /**
@@ -178,7 +185,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withConverter(StringConvert converter) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
     }
 
     /**
@@ -198,7 +205,26 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
+    }
+
+    /**
+     * Gets whether to use short types.
+     * 
+     * @return the short types flag, not null
+     */
+    public SerIteratorFactory isShortTypes() {
+        return iteratorFactory;
+    }
+
+    /**
+     * Returns a copy of this serializer with the short types flag set.
+     * 
+     * @param shortTypes  whether to use short types, not null
+     * @return a copy of this object with the short types flag changed, not null
+     */
+    public JodaBeanSer withShortTypes(boolean shortTypes) {
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
     }
 
     //-----------------------------------------------------------------------
@@ -218,34 +244,38 @@ public final class JodaBeanSer {
         if (result != null) {
             return result;
         }
-        if (knownTypes != null) {
-            result = knownTypes.get(cls);
-            if (result != null) {
-                return result;
-            }
-        }
-        result = cls.getName();
-        if (basePackage != null &&
-                result.startsWith(basePackage) &&
-                Character.isUpperCase(result.charAt(basePackage.length())) &&
-                BASIC_TYPES.containsKey(result.substring(basePackage.length())) == false) {
-            // use short format
-            result = result.substring(basePackage.length());
+        if (shortTypes) {
             if (knownTypes != null) {
-                knownTypes.put(cls, result);
-            }
-        } else {
-            // use long format, short next time if possible
-            if (knownTypes != null) {
-                String simpleName = cls.getSimpleName();
-                if (Character.isUpperCase(simpleName.charAt(0)) &&
-                        BASIC_TYPES.containsKey(simpleName) == false &&
-                        knownTypes.containsKey(simpleName) == false) {
-                    knownTypes.put(cls, simpleName);
-                } else {
-                    knownTypes.put(cls, result);
+                result = knownTypes.get(cls);
+                if (result != null) {
+                    return result;
                 }
             }
+            result = cls.getName();
+            if (basePackage != null &&
+                    result.startsWith(basePackage) &&
+                    Character.isUpperCase(result.charAt(basePackage.length())) &&
+                    BASIC_TYPES.containsKey(result.substring(basePackage.length())) == false) {
+                // use short format
+                result = result.substring(basePackage.length());
+                if (knownTypes != null) {
+                    knownTypes.put(cls, result);
+                }
+            } else {
+                // use long format, short next time if possible
+                if (knownTypes != null) {
+                    String simpleName = cls.getSimpleName();
+                    if (Character.isUpperCase(simpleName.charAt(0)) &&
+                            BASIC_TYPES.containsKey(simpleName) == false &&
+                            knownTypes.containsKey(simpleName) == false) {
+                        knownTypes.put(cls, simpleName);
+                    } else {
+                        knownTypes.put(cls, result);
+                    }
+                }
+            }
+        } else {
+            result = cls.getName();
         }
         return result;
     }
