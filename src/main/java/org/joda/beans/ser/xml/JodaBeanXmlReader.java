@@ -110,7 +110,7 @@ public class JodaBeanXmlReader {
      * @param rootType  the root type, not null
      * @return the bean, not null
      */
-    public <T extends Bean> T read(final String input, Class<T> rootType) {
+    public <T> T read(final String input, Class<T> rootType) {
         return read(new StringReader(input), rootType);
     }
 
@@ -132,7 +132,7 @@ public class JodaBeanXmlReader {
      * @param rootType  the root type, not null
      * @return the bean, not null
      */
-    public <T extends Bean> T read(final InputStream input, Class<T> rootType) {
+    public <T> T read(final InputStream input, Class<T> rootType) {
         try {
             reader = FACTORY.createXMLEventReader(input);
             return read(rootType);
@@ -161,7 +161,7 @@ public class JodaBeanXmlReader {
      * @param rootType  the root type, not null
      * @return the bean, not null
      */
-    public <T extends Bean> T read(final Reader input, Class<T> rootType) {
+    public <T> T read(final Reader input, Class<T> rootType) {
         try {
             reader = FACTORY.createXMLEventReader(input);
             return read(rootType);
@@ -172,7 +172,7 @@ public class JodaBeanXmlReader {
         }
     }
 
-    private <T extends Bean> T read(final Class<T> rootType) throws Exception {
+    private <T> T read(final Class<T> rootType) throws Exception {
         StartElement start = advanceToStartElement();
         if (start.getName().equals(BEAN_QNAME) == false) {
             throw new IllegalArgumentException("Root element must be '" + BEAN + "'");
@@ -190,6 +190,9 @@ public class JodaBeanXmlReader {
             }
         } else {
             type = rootType;
+        }
+        if (Bean.class.isAssignableFrom(type) == false) {
+            throw new IllegalArgumentException("Root type is not a Joda-Bean: " + type.getName());
         }
         MetaBean metaBean = JodaBeanUtils.metaBean(type);
         basePackage = type.getPackage().getName() + ".";
