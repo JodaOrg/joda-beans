@@ -48,6 +48,13 @@ public interface SerIterable {
     Object build();
 
     /**
+     * Is the iterable map-like, as opposed to collection-like.
+     * 
+     * @return true if map-like, false if collection-like
+     */
+    boolean isMapLike();
+
+    /**
      * Gets the type of the key.
      * 
      * @return the key type, null if no key

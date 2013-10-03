@@ -182,6 +182,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return coll;
             }
             @Override
+            public boolean isMapLike() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -208,6 +212,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public String metaTypeName() {
                 return "Multiset";
+            }
+            @Override
+            public boolean isMapLike() {
+                return false;
             }
             @Override
             public int size() {
@@ -274,8 +282,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return map;
             }
             @Override
+            public boolean isMapLike() {
+                return true;
+            }
+            @Override
             public Class<?> keyType() {
-                return null;
+                return keyType;
             }
             @Override
             public Class<?> valueType() {
@@ -313,8 +325,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return map;
             }
             @Override
+            public boolean isMapLike() {
+                return true;
+            }
+            @Override
             public Class<?> keyType() {
-                return null;
+                return keyType;
             }
             @Override
             public Class<?> valueType() {
@@ -346,6 +362,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                     return "ListMultimap";
                 }
                 return "Multimap";
+            }
+            @Override
+            public boolean isMapLike() {
+                return true;
             }
             @Override
             public int size() {

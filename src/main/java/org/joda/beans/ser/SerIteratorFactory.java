@@ -211,6 +211,10 @@ public class SerIteratorFactory {
                 return coll;
             }
             @Override
+            public boolean isMapLike() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -274,6 +278,10 @@ public class SerIteratorFactory {
                 return coll;
             }
             @Override
+            public boolean isMapLike() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -306,6 +314,10 @@ public class SerIteratorFactory {
                     return "List";
                 }
                 return "Collection";
+            }
+            @Override
+            public boolean isMapLike() {
+                return false;
             }
             @Override
             public int size() {
@@ -400,6 +412,10 @@ public class SerIteratorFactory {
                 return map;
             }
             @Override
+            public boolean isMapLike() {
+                return true;
+            }
+            @Override
             public Class<?> keyType() {
                 return keyType;
             }
@@ -427,6 +443,10 @@ public class SerIteratorFactory {
             @Override
             public String metaTypeName() {
                 return "Map";
+            }
+            @Override
+            public boolean isMapLike() {
+                return true;
             }
             @Override
             public int size() {
@@ -495,6 +515,10 @@ public class SerIteratorFactory {
                 return list.toArray(array);
             }
             @Override
+            public boolean isMapLike() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -525,6 +549,10 @@ public class SerIteratorFactory {
                     return "String[]";
                 }
                 return valueType.getName() + "[]";
+            }
+            @Override
+            public boolean isMapLike() {
+                return false;
             }
             @Override
             public int size() {

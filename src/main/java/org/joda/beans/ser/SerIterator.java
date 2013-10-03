@@ -39,6 +39,13 @@ public interface SerIterator {
     int size();
 
     /**
+     * Is the iterator map-like, as opposed to collection-like.
+     * 
+     * @return true if map-like, false if collection-like
+     */
+    boolean isMapLike();
+
+    /**
      * Checks if there is a next item.
      * 
      * @return true if there is another item
