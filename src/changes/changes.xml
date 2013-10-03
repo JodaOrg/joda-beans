@@ -10,10 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="2013-10-02" description="v0.8.1">
       <action dev="scolebourne" type="add" >
-        Extend analysis of collection/map generic types.
+        Rename XML format map items to 'entry'.
+        Allow map keys to be beans, using two 'item' elements beneath 'entry'.
       </action>
       <action dev="scolebourne" type="add" >
-        Allow map keys to be beans.
+        Extend analysis of collection/map generic types.
       </action>
       <action dev="scolebourne" type="add" >
         Allow short types to be switched off.

@@ -15,9 +15,9 @@
  */
 package org.joda.beans.ser.xml;
 
-import static org.joda.beans.ser.xml.JodaBeanXml.BEAN;
 import static org.joda.beans.ser.xml.JodaBeanXml.BEAN_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT_QNAME;
+import static org.joda.beans.ser.xml.JodaBeanXml.ENTRY_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.ITEM_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.KEY_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE_QNAME;
@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.Attribute;
@@ -183,7 +184,7 @@ public class JodaBeanXmlReader {
     private <T> T read(final Class<T> rootType) throws Exception {
         StartElement start = advanceToStartElement();
         if (start.getName().equals(BEAN_QNAME) == false) {
-            throw new IllegalArgumentException("Root element must be '" + BEAN + "'");
+            throw new IllegalArgumentException("Expected root element 'bean' but found '" + start.getName() + "'");
         }
         Attribute attr = start.getAttributeByName(TYPE_QNAME);
         if (attr == null && rootType == Bean.class) {
@@ -267,8 +268,9 @@ public class JodaBeanXmlReader {
         while (event.isEndElement() == false) {
             if (event.isStartElement()) {
                 StartElement start = event.asStartElement();
-                if (start.getName().equals(ITEM_QNAME) == false) {
-                    throw new IllegalArgumentException("Expected item");
+                QName expectedType = iterable.isMapLike() ? ENTRY_QNAME : ITEM_QNAME;
+                if (start.getName().equals(expectedType) == false) {
+                    throw new IllegalArgumentException("Expected '" + expectedType.getLocalPart() + "' but found '" + start.getName() + "'");
                 }
                 // count
                 int count = 1;
@@ -291,7 +293,7 @@ public class JodaBeanXmlReader {
                     value = parseValue(iterable, start);
                     
                 } else if (iterable.keyType() != null) {
-                    // two items nested in this item
+                    // two items nested in this entry
                     if (Bean.class.isAssignableFrom(iterable.keyType()) == false) {
                         throw new IllegalArgumentException("Unable to read map as declared key type is neither a bean nor a simple type: " + iterable.keyType().getName());
                     }
@@ -301,7 +303,7 @@ public class JodaBeanXmlReader {
                         if (event.isStartElement()) {
                             start = event.asStartElement();
                             if (start.getName().equals(ITEM_QNAME) == false) {
-                                throw new IllegalArgumentException("Expected item");
+                                throw new IllegalArgumentException("Expected 'item' but found '" + start.getName() + "'");
                             }
                             if (loop == 0) {
                                 key = parseKey(iterable, start);

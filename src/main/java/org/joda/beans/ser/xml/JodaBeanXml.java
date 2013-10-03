@@ -41,6 +41,14 @@ public final class JodaBeanXml {
      */
     public static final QName ITEM_QNAME = new QName(null, ITEM);
     /**
+     * XML entry tag.
+     */
+    public static final String ENTRY = "entry";
+    /**
+     * XML entry QName.
+     */
+    public static final QName ENTRY_QNAME = new QName(null, ENTRY);
+    /**
      * XML type attribute.
      */
     public static final String TYPE = "type";

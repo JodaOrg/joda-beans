@@ -17,6 +17,7 @@ package org.joda.beans.ser.xml;
 
 import static org.joda.beans.ser.xml.JodaBeanXml.BEAN;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT;
+import static org.joda.beans.ser.xml.JodaBeanXml.ENTRY;
 import static org.joda.beans.ser.xml.JodaBeanXml.ITEM;
 import static org.joda.beans.ser.xml.JodaBeanXml.KEY;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
@@ -248,12 +249,12 @@ public class JodaBeanXmlWriter {
                 appendAttribute(attr, COUNT, Integer.toString(itemIterator.count()));
             }
             if (keyBean) {
-                builder.append(currentIndent).append('<').append(ITEM).append(attr).append('>').append(settings.getNewLine());
+                builder.append(currentIndent).append('<').append(ENTRY).append(attr).append('>').append(settings.getNewLine());
                 writeKeyValueElement(currentIndent + settings.getIndent(), itemIterator);
-                builder.append(currentIndent).append('<').append('/').append(ITEM).append('>').append(settings.getNewLine());
+                builder.append(currentIndent).append('<').append('/').append(ENTRY).append('>').append(settings.getNewLine());
             } else {
-                Object value = itemIterator.value();
-                writeValueElement(currentIndent, attr, itemIterator.valueType(), value);
+                String tagName = itemIterator.isMapLike() ? ENTRY : ITEM;
+                writeValueElement(currentIndent, tagName, attr, itemIterator);
             }
         }
     }
@@ -261,27 +262,28 @@ public class JodaBeanXmlWriter {
     private void writeKeyValueElement(final String currentIndent, final SerIterator itemIterator) {
         Object key = itemIterator.key();
         writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), (Bean) key);
-        Object value = itemIterator.value();
-        writeValueElement(currentIndent, new StringBuilder(), itemIterator.valueType(), value);
+        writeValueElement(currentIndent, ITEM, new StringBuilder(), itemIterator);
     }
 
-    private void writeValueElement(final String currentIndent, final StringBuilder attrs, final Class<?> valueType, final Object value) {
+    private void writeValueElement(final String currentIndent, final String tagName, final StringBuilder attrs, final SerIterator itemIterator) {
+        Object value = itemIterator.value();
+        Class<?> valueType = itemIterator.valueType();
         if (value == null) {
             appendAttribute(attrs, NULL, "true");
-            builder.append(currentIndent).append('<').append(ITEM).append(attrs).append("/>").append(settings.getNewLine());
+            builder.append(currentIndent).append('<').append(tagName).append(attrs).append("/>").append(settings.getNewLine());
         } else if (value instanceof Bean) {
             if (settings.getConverter().isConvertible(value.getClass())) {
-                writeSimple(currentIndent, ITEM, attrs, valueType, value);
+                writeSimple(currentIndent, tagName, attrs, valueType, value);
             } else {
-                writeBean(currentIndent, ITEM, attrs, valueType, (Bean) value);
+                writeBean(currentIndent, tagName, attrs, valueType, (Bean) value);
             }
         } else {
-            SerIterator itemIterator = settings.getIteratorFactory().create(value);
-            if (itemIterator != null) {
-                appendAttribute(attrs, METATYPE, itemIterator.metaTypeName());
-                writeElements(currentIndent, ITEM, attrs, itemIterator);
+            SerIterator childIterator = settings.getIteratorFactory().create(value);
+            if (childIterator != null) {
+                appendAttribute(attrs, METATYPE, childIterator.metaTypeName());
+                writeElements(currentIndent, tagName, attrs, childIterator);
             } else {
-                writeSimple(currentIndent, ITEM, attrs, valueType, value);
+                writeSimple(currentIndent, tagName, attrs, valueType, value);
             }
         }
     }
