@@ -409,8 +409,7 @@ public final class JodaBeanUtils {
      * This method allows the resolution of generics in certain cases.
      * 
      * @param prop  the property to examine, not null
-     * @return the collection content type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a collection
+     * @return the collection content type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> collectionType(Property<?> prop) {
         return collectionType(prop.metaProperty(), prop.bean().getClass());
@@ -423,8 +422,7 @@ public final class JodaBeanUtils {
      * 
      * @param prop  the property to examine, not null
      * @param targetClass  the target type to evaluate against, not null
-     * @return the collection content type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a collection
+     * @return the collection content type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> collectionType(MetaProperty<?> prop, Class<?> targetClass) {
         return extractType(targetClass, prop, 1, 0);
@@ -434,8 +432,7 @@ public final class JodaBeanUtils {
      * Extracts the map key type as a {@code Class} from a meta-property.
      * 
      * @param prop  the property to examine, not null
-     * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a map
+     * @return the map key type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapKeyType(Property<?> prop) {
         return mapKeyType(prop.metaProperty(), prop.bean().getClass());
@@ -448,33 +445,30 @@ public final class JodaBeanUtils {
      * 
      * @param prop  the property to examine, not null
      * @param targetClass  the target type to evaluate against, not null
-     * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a map
+     * @return the map key type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> targetClass) {
         return extractType(targetClass, prop, 2, 0);
     }
 
     /**
-     * Extracts the map key type as a {@code Class} from a meta-property.
+     * Extracts the map value type as a {@code Class} from a meta-property.
      * 
      * @param prop  the property to examine, not null
-     * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a map
+     * @return the map value type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapValueType(Property<?> prop) {
         return mapValueType(prop.metaProperty(), prop.bean().getClass());
     }
 
     /**
-     * Extracts the map key type as a {@code Class} from a meta-property.
+     * Extracts the map value type as a {@code Class} from a meta-property.
      * <p>
      * The target type is the type of the object, not the declaring type of the meta-property.
      * 
      * @param prop  the property to examine, not null
      * @param targetClass  the target type to evaluate against, not null
-     * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a map
+     * @return the map value type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> targetClass) {
         return extractType(targetClass, prop, 2, 1);

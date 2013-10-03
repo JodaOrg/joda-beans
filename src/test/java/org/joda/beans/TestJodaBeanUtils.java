@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.gen.Address;
+import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
@@ -32,6 +33,7 @@ import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.query.ChainedBeanQuery;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 
 /**
@@ -247,6 +249,19 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.collectionType(test, Person.class), List.class);
     }
 
+    public void test_multisetType_Person_otherAddressMap() {
+        MetaProperty<ImmutableMultiset<String>> test = ImmPerson.meta().codeCounts();
+        
+        assertEquals(JodaBeanUtils.collectionType(test, Person.class), String.class);
+    }
+
+    public void test_integerType_Person_collectionTypeInvalid() {
+        MetaProperty<Integer> test = ImmPerson.meta().age();
+        
+        assertEquals(JodaBeanUtils.collectionType(test, Person.class), null);
+    }
+
+    //-------------------------------------------------------------------------
     public void test_mapType_Person_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
@@ -254,10 +269,18 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), Address.class);
     }
 
-    public void test_multisetType_Person_otherAddressMap() {
-        MetaProperty<ImmutableMultiset<String>> test = ImmPerson.meta().codeCounts();
+    public void test_integerType_Person_mapKeyTypeInvalid() {
+        MetaProperty<Integer> test = ImmPerson.meta().age();
         
-        assertEquals(JodaBeanUtils.collectionType(test, Person.class), String.class);
+        assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), null);
+        assertEquals(JodaBeanUtils.mapValueType(test, Person.class), null);
+    }
+
+    public void test_collectionType_Person_mapKeyTypeInvalid() {
+        MetaProperty<List<Address>> test = Person.meta().addressList();
+        
+        assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), null);
+        assertEquals(JodaBeanUtils.mapValueType(test, Person.class), null);
     }
 
     //-------------------------------------------------------------------------
