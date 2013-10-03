@@ -2,6 +2,7 @@ bin/
 target/
 *.log
 /tests/
+/test-output/
 .checkstyle
 .classpath
 .project
