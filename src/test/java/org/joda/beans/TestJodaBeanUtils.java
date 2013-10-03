@@ -19,6 +19,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotSame;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.query.ChainedBeanQuery;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 
@@ -262,6 +264,28 @@ public class TestJodaBeanUtils {
     }
 
     //-------------------------------------------------------------------------
+    public void test_collectionTypeTypes_valid() {
+        MetaProperty<List<List<Address>>> test = Person.meta().addressesList();
+        
+        List<Class<?>> expected = ImmutableList.<Class<?>>of(Address.class);
+        assertEquals(JodaBeanUtils.collectionTypeTypes(test, Person.class), expected);
+    }
+
+    public void test_collectionTypeTypes_invalidNoGenerics() {
+        MetaProperty<List<Address>> test = Person.meta().addressList();
+        
+        List<Class<?>> expected = Collections.emptyList();
+        assertEquals(JodaBeanUtils.collectionTypeTypes(test, Person.class), expected);
+    }
+
+    public void test_collectionTypeTypes_invalidNotCollection() {
+        MetaProperty<ImmutableMap<String, List<Integer>>> test = ImmAddress.meta().listNumericInMap();
+        
+        List<Class<?>> expected = Collections.emptyList();
+        assertEquals(JodaBeanUtils.collectionTypeTypes(test, ImmAddress.class), expected);
+    }
+
+    //-------------------------------------------------------------------------
     public void test_mapType_Person_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
@@ -281,6 +305,28 @@ public class TestJodaBeanUtils {
         
         assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), null);
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), null);
+    }
+
+    //-------------------------------------------------------------------------
+    public void test_mapValueTypeTypes_valid() {
+        MetaProperty<ImmutableMap<String, List<Integer>>> test = ImmAddress.meta().listNumericInMap();
+        
+        List<Class<?>> expected = ImmutableList.<Class<?>>of(Integer.class);
+        assertEquals(JodaBeanUtils.mapValueTypeTypes(test, ImmAddress.class), expected);
+    }
+
+    public void test_mapValueTypeTypes_invalidNoGenerics() {
+        MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
+        
+        List<Class<?>> expected = Collections.emptyList();
+        assertEquals(JodaBeanUtils.mapValueTypeTypes(test, Person.class), expected);
+    }
+
+    public void test_mapValueTypeTypes_invalidNotMap() {
+        MetaProperty<List<Address>> test = Person.meta().addressList();
+        
+        List<Class<?>> expected = Collections.emptyList();
+        assertEquals(JodaBeanUtils.mapValueTypeTypes(test, Person.class), expected);
     }
 
     //-------------------------------------------------------------------------

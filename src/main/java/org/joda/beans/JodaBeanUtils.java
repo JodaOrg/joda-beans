@@ -20,10 +20,12 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -425,7 +427,24 @@ public final class JodaBeanUtils {
      * @return the collection content type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> collectionType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractType(targetClass, prop, 1, 0);
+        return extractTypeClass(targetClass, prop, 1, 0);
+    }
+
+    /**
+     * Extracts the map value type generic type parameters as a {@code Class} from a meta-property.
+     * <p>
+     * The target type is the type of the object, not the declaring type of the meta-property.
+     * <p>
+     * This is used when the collection generic parameter is a map or collection.
+     * 
+     * @param prop  the property to examine, not null
+     * @param targetClass  the target type to evaluate against, not null
+     * @return the map key type, null if unable to determine
+     * @throws IllegalArgumentException if the property is not a map
+     */
+    public static List<Class<?>> collectionTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
+        Type type = extractType(targetClass, prop, 1, 0);
+        return extractTypeClasses(targetClass, type);
     }
 
     /**
@@ -448,7 +467,7 @@ public final class JodaBeanUtils {
      * @return the map key type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractType(targetClass, prop, 2, 0);
+        return extractTypeClass(targetClass, prop, 2, 0);
     }
 
     /**
@@ -471,10 +490,31 @@ public final class JodaBeanUtils {
      * @return the map value type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractType(targetClass, prop, 2, 1);
+        return extractTypeClass(targetClass, prop, 2, 1);
     }
 
-    private static Class<?> extractType(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
+    /**
+     * Extracts the map value type generic type parameters as a {@code Class} from a meta-property.
+     * <p>
+     * The target type is the type of the object, not the declaring type of the meta-property.
+     * <p>
+     * This is used when the map value generic parameter is a map or collection.
+     * 
+     * @param prop  the property to examine, not null
+     * @param targetClass  the target type to evaluate against, not null
+     * @return the map key type, null if unable to determine
+     * @throws IllegalArgumentException if the property is not a map
+     */
+    public static List<Class<?>> mapValueTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
+        Type type = extractType(targetClass, prop, 2, 1);
+        return extractTypeClasses(targetClass, type);
+    }
+
+    private static Class<?> extractTypeClass(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
+        return eraseToClass(extractType(targetClass, prop, size, index));
+    }
+
+    private static Type extractType(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
         Type genType = prop.propertyGenericType();
         if (genType instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) genType;
@@ -484,10 +524,27 @@ public final class JodaBeanUtils {
                 if (type instanceof TypeVariable) {
                     type = resolveGenerics(targetClass, (TypeVariable<?>) type);
                 }
-                return eraseToClass(type);
+                return type;
             }
         }
         return null;
+    }
+
+    private static List<Class<?>> extractTypeClasses(Class<?> targetClass, Type type) {
+        List<Class<?>> result = new ArrayList<Class<?>>();
+        if (type != null) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) type;
+                Type[] actualTypes = pt.getActualTypeArguments();
+                for (Type actualType : actualTypes) {
+                    if (actualType instanceof TypeVariable) {
+                        actualType = resolveGenerics(targetClass, (TypeVariable<?>) actualType);
+                    }
+                    result.add(eraseToClass(actualType));
+                }
+            }
+        }
+        return result;
     }
 
     private static Type resolveGenerics(Class<?> targetClass, TypeVariable<?> typevar) {
