@@ -15,8 +15,6 @@
  */
 package org.joda.beans.ser.xml;
 
-import static org.testng.Assert.assertEquals;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +27,7 @@ import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Person;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -77,7 +76,7 @@ public class TestAddressXml {
         
         Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
-        assertEquals(bean, address);
+        BeanAssert.assertBeanEquals(bean, address);
     }
 
     public void test_writeImmAddress() {
@@ -118,7 +117,7 @@ public class TestAddressXml {
         
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
 ///        System.out.println(bean);
-        assertEquals(bean, address);
+        BeanAssert.assertBeanEquals(bean, address);
     }
 
 }
