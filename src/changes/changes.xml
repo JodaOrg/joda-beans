@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="2013-10-02" description="v0.8.1">
       <action dev="scolebourne" type="add" >
+        Allow private getters/setters using PropertyDefinition.
+      </action>
+      <action dev="scolebourne" type="add" >
         Rename XML format map items to 'entry'.
         Allow map keys to be beans, using two 'item' elements beneath 'entry'.
       </action>

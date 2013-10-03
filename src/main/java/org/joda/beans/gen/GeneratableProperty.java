@@ -418,28 +418,33 @@ class GeneratableProperty {
         if (getGetStyle() == null) {
             setGetStyle("");
         }
-        final String style = getGetStyle();
+        String style = getGetStyle();
+        String access = "public";
+        if (style.equals("private")) {
+            style = "smart";
+            access = "private";
+        }
         if (style.equals("get")) {
-            getterGen = GetterGen.GetGetterGen.INSTANCE;
+            getterGen = GetterGen.GetGetterGen.PUBLIC;
         } else if (style.equals("is")) {
-            getterGen = GetterGen.IsGetterGen.INSTANCE;
+            getterGen = GetterGen.IsGetterGen.PUBLIC;
         } else if (style.equals("smart")) {
             String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
             if ("clone".equals(clone)) {
-                getterGen = GetterGen.CloneGetterGen.INSTANCE;
+                getterGen = GetterGen.CloneGetterGen.of(access);
             } else if ("cloneCast".equals(clone)) {
-                getterGen = GetterGen.CloneCastGetterGen.INSTANCE;
+                getterGen = GetterGen.CloneCastGetterGen.of(access);
             } else if (getType().equals("boolean")) {
-                getterGen = GetterGen.IsGetterGen.INSTANCE;
+                getterGen = GetterGen.IsGetterGen.of(access);
             } else {
-                getterGen = GetterGen.GetGetterGen.INSTANCE;
+                getterGen = GetterGen.GetGetterGen.of(access);
             }
         } else if (style.equals("")) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
         } else if (style.equals("clone")) {
-            getterGen = GetterGen.CloneGetterGen.INSTANCE;
+            getterGen = GetterGen.CloneGetterGen.PUBLIC;
         } else if (style.equals("cloneCast")) {
-            getterGen = GetterGen.CloneCastGetterGen.INSTANCE;
+            getterGen = GetterGen.CloneCastGetterGen.PUBLIC;
         } else if (style.equals("manual")) {
             getterGen = GetterGen.ManualGetterGen.INSTANCE;
         } else {
@@ -464,9 +469,14 @@ class GeneratableProperty {
         if (getSetStyle() == null) {
             setSetStyle("");
         }
-        final String style = getSetStyle().replace("\\n", "\n");
+        String style = getSetStyle().replace("\\n", "\n");
+        String access = "public";
+        if (style.equals("private")) {
+            style = "smart";
+            access = "private";
+        }
         if (style.equals("set")) {
-            setterGen = SetterGen.SetSetterGen.INSTANCE;
+            setterGen = SetterGen.SetSetterGen.PUBLIC;
         } else if (style.equals("setClearAddAll")) {
             setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.addAll($value);");
         } else if (style.equals("setClearPutAll")) {
@@ -476,14 +486,14 @@ class GeneratableProperty {
                 setterGen = SetterGen.NoSetterGen.INSTANCE;
             } else if (isFinal()) {
                 if (isCollectionType()) {
-                    setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.addAll($value);");
+                    setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.addAll($value);", access);
                 } else if (isMapType()) {
-                    setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.putAll($value);");
+                    setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.putAll($value);", access);
                 } else {
                     setterGen = SetterGen.NoSetterGen.INSTANCE;
                 }
             } else {
-                setterGen = SetterGen.SetSetterGen.INSTANCE;
+                setterGen = SetterGen.SetSetterGen.of(access);
             }
         } else if (style.equals("")) {
             setterGen = SetterGen.NoSetterGen.INSTANCE;
@@ -507,6 +517,17 @@ class GeneratableProperty {
      */
     public SetterGen getSetterGen() {
         return setterGen;
+    }
+
+    /**
+     * Gets the setter scope.
+     * @return the setter scope
+     */
+    public String getSetterScope() {
+        if (getSetStyle().equals("private")) {
+            return "private";
+        }
+        return "public";
     }
 
     //-----------------------------------------------------------------------

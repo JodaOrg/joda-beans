@@ -55,8 +55,16 @@ abstract class SetterGen {
     }
 
     //-----------------------------------------------------------------------
-    static class SetSetterGen extends SetterGen {
-        static final SetterGen INSTANCE = new SetSetterGen();
+    static final class SetSetterGen extends SetterGen {
+        static final SetSetterGen PUBLIC = new SetSetterGen("public");
+        static final SetSetterGen PRIVATE = new SetSetterGen("private");
+        private final String access;
+        static SetSetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE : PUBLIC);
+        }
+        private SetSetterGen(String access) {
+            this.access = access;
+        }
         @Override
         boolean isSetterGenerated(GeneratableProperty prop) {
             return true;
@@ -75,7 +83,7 @@ abstract class SetterGen {
             if (prop.isDeprecated()) {
                 list.add("\t@Deprecated");
             }
-            list.add("\tpublic void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            list.add("\t" + access + " void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
             if (prop.isValidated()) {
                 list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
             }
@@ -88,8 +96,13 @@ abstract class SetterGen {
 
     static class PatternSetterGen extends SetterGen {
         private final String setPattern;
+        private final String access;
         PatternSetterGen(String setPattern) {
+            this(setPattern, "public");
+        }
+        PatternSetterGen(String setPattern, String access) {
             this.setPattern = setPattern;
+            this.access = access;
         }
         @Override
         boolean isSetterGenerated(GeneratableProperty prop) {
@@ -108,7 +121,7 @@ abstract class SetterGen {
             if (prop.isDeprecated()) {
                 list.add(indent + "@Deprecated");
             }
-            list.add(indent + "public void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            list.add(indent + access + " void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
             final String[] split = setPattern.split("\n");
             for (String line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());

@@ -44,19 +44,35 @@ abstract class GetterGen {
     }
 
     //-----------------------------------------------------------------------
-    static class GetGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new GetGetterGen();
+    static final class GetGetterGen extends GetterGen {
+        static final GetGetterGen PUBLIC = new GetGetterGen("public");
+        static final GetGetterGen PRIVATE = new GetGetterGen("private");
+        private final String access;
+        static GetGetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE : PUBLIC);
+        }
+        private GetGetterGen(String access) {
+            this.access = access;
+        }
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "get", prop.getFieldName());
+            return doGenerateGetter(prop, access, "get", prop.getFieldName());
         }
     }
 
-    static class IsGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new IsGetterGen();
+    static final class IsGetterGen extends GetterGen {
+        static final IsGetterGen PUBLIC = new IsGetterGen("public");
+        static final IsGetterGen PRIVATE = new IsGetterGen("private");
+        private final String access;
+        static IsGetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE : PUBLIC);
+        }
+        private IsGetterGen(String access) {
+            this.access = access;
+        }
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "is", prop.getFieldName());
+            return doGenerateGetter(prop, access, "is", prop.getFieldName());
         }
         @Override
         String generateGetInvoke(GeneratableProperty prop) {
@@ -64,19 +80,35 @@ abstract class GetterGen {
         }
     }
 
-    static class CloneGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new CloneGetterGen();
+    static final class CloneGetterGen extends GetterGen {
+        static final CloneGetterGen PUBLIC = new CloneGetterGen("public");
+        static final CloneGetterGen PRIVATE = new CloneGetterGen("private");
+        private final String access;
+        static CloneGetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE : PUBLIC);
+        }
+        private CloneGetterGen(String access) {
+            this.access = access;
+        }
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "get", "(" + prop.getFieldName() + " != null ? " + prop.getFieldName() + ".clone() : null)");
+            return doGenerateGetter(prop, access, "get", "(" + prop.getFieldName() + " != null ? " + prop.getFieldName() + ".clone() : null)");
         }
     }
 
-    static class CloneCastGetterGen extends GetterGen {
-        static final GetterGen INSTANCE = new CloneCastGetterGen();
+    static final class CloneCastGetterGen extends GetterGen {
+        static final CloneCastGetterGen PUBLIC = new CloneCastGetterGen("public");
+        static final CloneCastGetterGen PRIVATE = new CloneCastGetterGen("private");
+        private final String access;
+        static CloneCastGetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE : PUBLIC);
+        }
+        private CloneCastGetterGen(String access) {
+            this.access = access;
+        }
         @Override
         List<String> generateGetter(GeneratableProperty prop) {
-            return doGenerateGetter(prop, "get", "(" + prop.getFieldName() + " != null ? (" + prop.getFieldType() + ") " + prop.getFieldName() + ".clone() : null)");
+            return doGenerateGetter(prop, access, "get", "(" + prop.getFieldName() + " != null ? (" + prop.getFieldType() + ") " + prop.getFieldName() + ".clone() : null)");
         }
     }
 
@@ -100,7 +132,7 @@ abstract class GetterGen {
         }
     }
 
-    private static List<String> doGenerateGetter(GeneratableProperty prop, String prefix, String expression) {
+    private static List<String> doGenerateGetter(GeneratableProperty prop, String access, String prefix, String expression) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());
@@ -112,7 +144,7 @@ abstract class GetterGen {
         if (prop.isDeprecated()) {
             list.add("\t@Deprecated");
         }
-        list.add("\tpublic " + prop.getType() + " " + prefix + prop.getUpperName() + "() {");
+        list.add("\t" + access + " " + prop.getType() + " " + prefix + prop.getUpperName() + "() {");
         list.add("\t\treturn " + expression + ";");
         list.add("\t}");
         list.add("");

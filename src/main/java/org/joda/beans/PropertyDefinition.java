@@ -44,6 +44,7 @@ public @interface PropertyDefinition {
      * <ul>
      * <li>'' - do not generate any form of getter
      * <li>'smart' - process intelligently - 'is' for boolean and 'get' for other types
+     * <li>'private' - process as per 'smart' but set scope as private
      * <li>'is' - generates isXxx()
      * <li>'get' - generates getXxx()
      * <li>'clone' - generates getXxx() with a clone of the field (assumed to be of the correct type)
@@ -66,6 +67,7 @@ public @interface PropertyDefinition {
      * <ul>
      * <li>'' - do not generate any form of setter
      * <li>'smart' - process intelligently - uses 'set' unless final, when it will use 'setClearAddAll'
+     * <li>'private' - process as per 'smart' but set scope as private
      *  for common list types or 'setClearPutAll' for common map types and FlexiBean
      * <li>'set' - generates setXxx()
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
