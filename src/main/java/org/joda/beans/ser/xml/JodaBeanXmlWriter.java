@@ -328,13 +328,9 @@ public class JodaBeanXmlWriter {
                     builder.append("&gt;");
                     break;
                 case '\t':
-                    builder.append("&#9;");
-                    break;
                 case '\n':
-                    builder.append("&#xA;");
-                    break;
                 case '\r':
-                    builder.append("&#xD;");
+                    builder.append(ch);
                     break;
                 default:
                     if ((int) ch < 32) {

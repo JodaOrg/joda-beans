@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="2013-10-02" description="v0.8.1">
       <action dev="scolebourne" type="add" >
+        XML format no longer encodes tabs and newlines in elements.
+      </action>
+      <action dev="scolebourne" type="add" >
         Allow private getters/setters using PropertyDefinition.
       </action>
       <action dev="scolebourne" type="add" >
