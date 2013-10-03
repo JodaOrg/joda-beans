@@ -60,6 +60,11 @@ public final class ImmAddress implements ImmutableBean {
     @PropertyDefinition(validate = "notNull")
     private final String city;
     /**
+     * The extra data.
+     */
+    @PropertyDefinition
+    private final byte[] data;
+    /**
      * The owner.
      */
     @PropertyDefinition(validate = "notNull")
@@ -107,6 +112,7 @@ public final class ImmAddress implements ImmutableBean {
             int number,
             String street,
             String city,
+            byte[] data,
             ImmPerson owner,
             Map<String, List<String>> listInMap,
             Map<String, List<Integer>> listNumericInMap,
@@ -120,6 +126,7 @@ public final class ImmAddress implements ImmutableBean {
         this.number = number;
         this.street = street;
         this.city = city;
+        this.data = (data != null ? data.clone() : null);
         this.owner = owner;
         this.listInMap = ImmutableMap.copyOf(listInMap);
         this.listNumericInMap = ImmutableMap.copyOf(listNumericInMap);
@@ -167,6 +174,15 @@ public final class ImmAddress implements ImmutableBean {
      */
     public String getCity() {
         return city;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the extra data.
+     * @return the value of the property
+     */
+    public byte[] getData() {
+        return (data != null ? data.clone() : null);
     }
 
     //-----------------------------------------------------------------------
@@ -229,6 +245,7 @@ public final class ImmAddress implements ImmutableBean {
             return (getNumber() == other.getNumber()) &&
                     JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
                     JodaBeanUtils.equal(getCity(), other.getCity()) &&
+                    JodaBeanUtils.equal(getData(), other.getData()) &&
                     JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
                     JodaBeanUtils.equal(getListInMap(), other.getListInMap()) &&
                     JodaBeanUtils.equal(getListNumericInMap(), other.getListNumericInMap()) &&
@@ -243,6 +260,7 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
         hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
         hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getData());
         hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
@@ -252,11 +270,12 @@ public final class ImmAddress implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(256);
+        StringBuilder buf = new StringBuilder(288);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
         buf.append("city").append('=').append(getCity()).append(',').append(' ');
+        buf.append("data").append('=').append(getData()).append(',').append(' ');
         buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
         buf.append("listInMap").append('=').append(getListInMap()).append(',').append(' ');
         buf.append("listNumericInMap").append('=').append(getListNumericInMap()).append(',').append(' ');
@@ -291,6 +310,11 @@ public final class ImmAddress implements ImmutableBean {
         private final MetaProperty<String> city = DirectMetaProperty.ofImmutable(
                 this, "city", ImmAddress.class, String.class);
         /**
+         * The meta-property for the {@code data} property.
+         */
+        private final MetaProperty<byte[]> data = DirectMetaProperty.ofImmutable(
+                this, "data", ImmAddress.class, byte[].class);
+        /**
          * The meta-property for the {@code owner} property.
          */
         private final MetaProperty<ImmPerson> owner = DirectMetaProperty.ofImmutable(
@@ -321,6 +345,7 @@ public final class ImmAddress implements ImmutableBean {
                 "number",
                 "street",
                 "city",
+                "data",
                 "owner",
                 "listInMap",
                 "listNumericInMap",
@@ -341,6 +366,8 @@ public final class ImmAddress implements ImmutableBean {
                     return street;
                 case 3053931:  // city
                     return city;
+                case 3076010:  // data
+                    return data;
                 case 106164915:  // owner
                     return owner;
                 case -1244601351:  // listInMap
@@ -394,6 +421,14 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code data} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<byte[]> data() {
+            return data;
+        }
+
+        /**
          * The meta-property for the {@code owner} property.
          * @return the meta-property, not null
          */
@@ -435,6 +470,8 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getStreet();
                 case 3053931:  // city
                     return ((ImmAddress) bean).getCity();
+                case 3076010:  // data
+                    return ((ImmAddress) bean).getData();
                 case 106164915:  // owner
                     return ((ImmAddress) bean).getOwner();
                 case -1244601351:  // listInMap
@@ -467,6 +504,7 @@ public final class ImmAddress implements ImmutableBean {
         private int number;
         private String street;
         private String city;
+        private byte[] data;
         private ImmPerson owner;
         private Map<String, List<String>> listInMap = new HashMap<String, List<String>>();
         private Map<String, List<Integer>> listNumericInMap = new HashMap<String, List<Integer>>();
@@ -488,6 +526,7 @@ public final class ImmAddress implements ImmutableBean {
             this.number = beanToCopy.getNumber();
             this.street = beanToCopy.getStreet();
             this.city = beanToCopy.getCity();
+            this.data = (beanToCopy.getData() != null ? beanToCopy.getData().clone() : null);
             this.owner = beanToCopy.getOwner();
             this.listInMap = new HashMap<String, List<String>>(beanToCopy.getListInMap());
             this.listNumericInMap = new HashMap<String, List<Integer>>(beanToCopy.getListNumericInMap());
@@ -507,6 +546,9 @@ public final class ImmAddress implements ImmutableBean {
                     break;
                 case 3053931:  // city
                     this.city = (String) newValue;
+                    break;
+                case 3076010:  // data
+                    this.data = (byte[]) newValue;
                     break;
                 case 106164915:  // owner
                     this.owner = (ImmPerson) newValue;
@@ -532,6 +574,7 @@ public final class ImmAddress implements ImmutableBean {
                     number,
                     street,
                     city,
+                    data,
                     owner,
                     listInMap,
                     listNumericInMap,
@@ -568,6 +611,16 @@ public final class ImmAddress implements ImmutableBean {
         public Builder city(String city) {
             JodaBeanUtils.notNull(city, "city");
             this.city = city;
+            return this;
+        }
+
+        /**
+         * Sets the {@code data} property in the builder.
+         * @param data  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder data(byte[] data) {
+            this.data = data;
             return this;
         }
 
@@ -618,11 +671,12 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(256);
+            StringBuilder buf = new StringBuilder(288);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(number).append(',').append(' ');
             buf.append("street").append('=').append(street).append(',').append(' ');
             buf.append("city").append('=').append(city).append(',').append(' ');
+            buf.append("data").append('=').append(data).append(',').append(' ');
             buf.append("owner").append('=').append(owner).append(',').append(' ');
             buf.append("listInMap").append('=').append(listInMap).append(',').append(' ');
             buf.append("listNumericInMap").append('=').append(listNumericInMap).append(',').append(' ');

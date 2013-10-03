@@ -99,7 +99,8 @@ public class TestAddressXml {
                 .number(185)
                 .street("Park Street")
                 .city("London")
-                . build();
+                .data(new byte[] {64, 65, 66})
+                .build();
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
