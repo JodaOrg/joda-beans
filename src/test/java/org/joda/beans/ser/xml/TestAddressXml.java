@@ -79,11 +79,14 @@ public class TestAddressXml {
         BeanAssert.assertBeanEquals(bean, address);
     }
 
+    @SuppressWarnings("unchecked")
     public void test_writeImmAddress() {
         Map<String, List<String>> map = new HashMap<String, List<String>>();
         map.put("A", Arrays.asList("B", "b"));
         Map<String, List<Integer>> map2 = new HashMap<String, List<Integer>>();
         map2.put("A", Arrays.asList(3, 2, 1));
+        Map<String, List<List<Integer>>> map3 = new HashMap<String, List<List<Integer>>>();
+        map3.put("A", Arrays.asList(Arrays.asList(3, 2, 1)));
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
             .surname("Colebourne")
@@ -108,13 +111,14 @@ public class TestAddressXml {
             .city("London & Capital of the World <!>\n")
             .listInMap(map)
             .listNumericInMap(map2)
+            .listInListInMap(map3)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
         
         xml = xml.replace("185", "18<!-- comment -->5");
-//        System.out.println(xml);
+        System.out.println(xml);
         
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
 ///        System.out.println(bean);

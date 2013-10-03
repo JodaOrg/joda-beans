@@ -360,17 +360,23 @@ public class JodaBeanXmlReader {
                     value = parseBean(childMetaBean, childType);
                 }
             } else {
-                // metatype
-                Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
-                if (metaTypeAttr != null) {
-                    SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
-                    if (childIterable == null) {
-                        throw new IllegalArgumentException("Invalid metaType");
-                    }
+                // try deep generic parameters
+                SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(iterable);
+                if (childIterable != null) {
                     value = parseIterable(childIterable);
                 } else {
-                    String text = advanceAndParseText();
-                    value = settings.getConverter().convertFromString(childType, text);
+                    // metatype
+                    Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
+                    if (metaTypeAttr != null) {
+                        childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
+                        if (childIterable == null) {
+                            throw new IllegalArgumentException("Invalid metaType");
+                        }
+                        value = parseIterable(childIterable);
+                    } else {
+                        String text = advanceAndParseText();
+                        value = settings.getConverter().convertFromString(childType, text);
+                    }
                 }
             }
         }

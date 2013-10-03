@@ -278,9 +278,11 @@ public class JodaBeanXmlWriter {
                 writeBean(currentIndent, tagName, attrs, valueType, (Bean) value);
             }
         } else {
-            SerIterator childIterator = settings.getIteratorFactory().create(value);
+            SerIterator childIterator = settings.getIteratorFactory().create(value, itemIterator.valueTypeTypes());
             if (childIterator != null) {
-                appendAttribute(attrs, METATYPE, childIterator.metaTypeName());
+                if (itemIterator.valueTypeTypes().size() == 0) {
+                    appendAttribute(attrs, METATYPE, childIterator.metaTypeName());
+                }
                 writeElements(currentIndent, tagName, attrs, childIterator);
             } else {
                 writeSimple(currentIndent, tagName, attrs, valueType, value);
