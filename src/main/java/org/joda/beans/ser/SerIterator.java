@@ -15,6 +15,8 @@
  */
 package org.joda.beans.ser;
 
+import java.util.List;
+
 /**
  * An abstraction of collections, lists, sets and maps.
  * <p>
@@ -84,6 +86,13 @@ public interface SerIterator {
      * @return the value type, not null
      */
     Class<?> valueType();
+
+    /**
+     * Gets the generic parameters of the value type.
+     * 
+     * @return the generic parameters of the value type, not null
+     */
+    List<Class<?>> valueTypeTypes();
 
     /**
      * The value.

@@ -439,8 +439,7 @@ public final class JodaBeanUtils {
      * 
      * @param prop  the property to examine, not null
      * @param targetClass  the target type to evaluate against, not null
-     * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a map
+     * @return the collection content type generic parameters, empty if unable to determine, no nulls
      */
     public static List<Class<?>> collectionTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
         Type type = extractType(targetClass, prop, 1, 0);
@@ -502,8 +501,7 @@ public final class JodaBeanUtils {
      * 
      * @param prop  the property to examine, not null
      * @param targetClass  the target type to evaluate against, not null
-     * @return the map key type, null if unable to determine
-     * @throws IllegalArgumentException if the property is not a map
+     * @return the map value type generic parameters, empty if unable to determine, no nulls
      */
     public static List<Class<?>> mapValueTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
         Type type = extractType(targetClass, prop, 2, 1);
@@ -540,7 +538,8 @@ public final class JodaBeanUtils {
                     if (actualType instanceof TypeVariable) {
                         actualType = resolveGenerics(targetClass, (TypeVariable<?>) actualType);
                     }
-                    result.add(eraseToClass(actualType));
+                    Class<?> cls = eraseToClass(actualType);
+                    result.add(cls != null ? cls : Object.class);
                 }
             }
         }
