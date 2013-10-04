@@ -222,7 +222,7 @@ public class JodaBeanXmlReader {
     private Bean parseBean(final MetaBean metaBean, final Class<?> beanType) throws Exception {
         try {
             BeanBuilder<? extends Bean> builder = metaBean.builder();
-            XMLEvent event = reader.nextEvent();
+            XMLEvent event = nextEvent(">bean ");
             while (event.isEndElement() == false) {
                 if (event.isStartElement()) {
                     StartElement start = event.asStartElement();
@@ -249,7 +249,7 @@ public class JodaBeanXmlReader {
                     }
                     builder.set(metaProp, value);
                 }
-                event = reader.nextEvent();
+                event = nextEvent(".bean ");
             }
             return builder.build();
         } catch (Exception ex) {
@@ -264,7 +264,7 @@ public class JodaBeanXmlReader {
      * @return the iterable, not null
      */
     private Object parseIterable(final SerIterable iterable) throws Exception {
-        XMLEvent event = reader.nextEvent();
+        XMLEvent event = nextEvent(">iter ");
         while (event.isEndElement() == false) {
             if (event.isStartElement()) {
                 StartElement start = event.asStartElement();
@@ -297,7 +297,7 @@ public class JodaBeanXmlReader {
                     if (Bean.class.isAssignableFrom(iterable.keyType()) == false) {
                         throw new IllegalArgumentException("Unable to read map as declared key type is neither a bean nor a simple type: " + iterable.keyType().getName());
                     }
-                    event = reader.nextEvent();
+                    event = nextEvent(">>map ");
                     int loop = 0;
                     while (event.isEndElement() == false && loop < 2) {
                         if (event.isStartElement()) {
@@ -313,7 +313,7 @@ public class JodaBeanXmlReader {
                                 loop = 2;
                             }
                         }
-                        event = reader.nextEvent();
+                        event = nextEvent("..map ");
                     }
                     
                 } else {
@@ -322,7 +322,7 @@ public class JodaBeanXmlReader {
                 }
                 iterable.add(key, value, count);
             }
-            event = reader.nextEvent();
+            event = nextEvent(".iter ");
         }
         return iterable.build();
     }
@@ -396,7 +396,7 @@ public class JodaBeanXmlReader {
     // reader can be anywhere, but normally at StartDocument
     private StartElement advanceToStartElement() throws Exception {
         while (reader.hasNext()) {
-            XMLEvent event = reader.nextEvent();
+            XMLEvent event = nextEvent("advnc ");
             if (event.isStartElement()) {
                 return event.asStartElement();
             }
@@ -408,7 +408,7 @@ public class JodaBeanXmlReader {
     private String advanceAndParseText() throws Exception {
         StringBuilder buf = new StringBuilder();
         while (reader.hasNext()) {
-            XMLEvent event = reader.nextEvent();
+            XMLEvent event = nextEvent("text  ");
             if (event.isEndElement()) {
                 return buf.toString();
             }
@@ -417,6 +417,13 @@ public class JodaBeanXmlReader {
             }
         }
         throw new IllegalArgumentException("Unexpected end of document");
+    }
+
+    // provide for debugging
+    private XMLEvent nextEvent(String location) throws Exception {
+        XMLEvent event = reader.nextEvent();
+//        System.out.println(location + event.toString().replace('\n', ' ') + " " + event.getClass().getSimpleName());
+        return event;
     }
 
 }
