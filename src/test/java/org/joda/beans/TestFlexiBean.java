@@ -18,6 +18,11 @@ package org.joda.beans;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 
@@ -26,6 +31,23 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestFlexiBean {
+
+    public void test_serialization() throws Exception {
+        FlexiBean test = new FlexiBean();
+        test.put("name", "Etienne");
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(test);
+        oos.close();
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object obj = ois.readObject();
+        ois.close();
+        
+        assertEquals(test, obj);
+    }
 
     public void test_equalsHashCode() {
         FlexiBean a1 = new FlexiBean();

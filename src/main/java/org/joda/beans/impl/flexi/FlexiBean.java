@@ -15,6 +15,7 @@
  */
 package org.joda.beans.impl.flexi;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     private static final Pattern VALID_KEY = Pattern.compile("[a-zA-z_][a-zA-z0-9_]*");
 
     /** The meta-bean. */
-    final FlexiMetaBean metaBean = new FlexiMetaBean(this);  // CSIGNORE
+    private final transient FlexiMetaBean metaBean = new FlexiMetaBean(this);  // CSIGNORE
     /** The underlying data. */
     volatile Map<String, Object> data = Collections.emptyMap();// CSIGNORE
 
@@ -83,6 +84,11 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      */
     public FlexiBean(FlexiBean copyFrom) {
         putAll(copyFrom.data);
+    }
+
+    // resolve to setup transient field
+    private Object readResolve() throws ObjectStreamException {
+        return new FlexiBean(this);
     }
 
     //-----------------------------------------------------------------------

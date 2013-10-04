@@ -9,7 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8.2" date="2013-10-04" description="v0.8.2">
-      <action dev="scolebourne" type="add" >
+      <action dev="scolebourne" type="fix" >
+        Fix FlexiBean serialization. Fixes #18.
+      </action>
+      <action dev="scolebourne" type="fix" >
         SerIteratorFactory off by one bug.
       </action>
     </release>
