@@ -87,7 +87,7 @@ public class SerIteratorFactory {
         }
         if (value instanceof Map) {
             if (types.size() == 2) {
-                return map((Map<?, ?>) value, types.get(0), types.get(2), EMPTY_VALUE_TYPES);
+                return map((Map<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
             }
             return map((Map<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
