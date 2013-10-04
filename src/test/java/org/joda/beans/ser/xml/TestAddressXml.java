@@ -87,6 +87,7 @@ public class TestAddressXml {
         map2.put("A", Arrays.asList(3, 2, 1));
         Map<String, List<List<Integer>>> map3 = new HashMap<String, List<List<Integer>>>();
         map3.put("A", Arrays.asList(Arrays.asList(3, 2, 1)));
+        Map<ImmPerson, Map<String, ImmPerson>> map4 = new HashMap<ImmPerson, Map<String, ImmPerson>>();
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
             .surname("Colebourne")
@@ -97,6 +98,10 @@ public class TestAddressXml {
                 .forename("Etiennette")
                 .surname("Colebourne")
                 . build();
+        ImmPerson child2 = ImmPerson.builder()
+                .forename("Kylie")
+                .surname("Colebourne")
+                . build();
         ImmAddress childAddress = ImmAddress.builder()
                 .owner(child)
                 .number(185)
@@ -104,6 +109,7 @@ public class TestAddressXml {
                 .city("London")
                 .data(new byte[] {64, 65, 66})
                 .build();
+        map4.put(child, ImmutableMap.of("sibling", child2));
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
@@ -112,16 +118,17 @@ public class TestAddressXml {
             .listInMap(map)
             .listNumericInMap(map2)
             .listInListInMap(map3)
+            .mapInMap(map4)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
         
         xml = xml.replace("185", "18<!-- comment -->5");
-        System.out.println(xml);
+//        System.out.println(xml);
         
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
-///        System.out.println(bean);
+//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, address);
     }
 

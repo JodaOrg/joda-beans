@@ -85,6 +85,11 @@ public final class ImmAddress implements ImmutableBean {
     @PropertyDefinition(validate = "notNull")
     private final ImmutableMap<String, List<List<Integer>>> listInListInMap;
     /**
+     * The map in map field.
+     */
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableMap<ImmPerson, Map<String, ImmPerson>> mapInMap;
+    /**
      * The bean key and bean value field.
      */
     @PropertyDefinition(validate = "notNull")
@@ -122,6 +127,7 @@ public final class ImmAddress implements ImmutableBean {
             Map<String, List<String>> listInMap,
             Map<String, List<Integer>> listNumericInMap,
             Map<String, List<List<Integer>>> listInListInMap,
+            Map<ImmPerson, Map<String, ImmPerson>> mapInMap,
             Map<ImmPerson, ImmAddress> beanBeanMap) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
@@ -129,6 +135,7 @@ public final class ImmAddress implements ImmutableBean {
         JodaBeanUtils.notNull(listInMap, "listInMap");
         JodaBeanUtils.notNull(listNumericInMap, "listNumericInMap");
         JodaBeanUtils.notNull(listInListInMap, "listInListInMap");
+        JodaBeanUtils.notNull(mapInMap, "mapInMap");
         JodaBeanUtils.notNull(beanBeanMap, "beanBeanMap");
         this.number = number;
         this.street = street;
@@ -138,6 +145,7 @@ public final class ImmAddress implements ImmutableBean {
         this.listInMap = ImmutableMap.copyOf(listInMap);
         this.listNumericInMap = ImmutableMap.copyOf(listNumericInMap);
         this.listInListInMap = ImmutableMap.copyOf(listInListInMap);
+        this.mapInMap = ImmutableMap.copyOf(mapInMap);
         this.beanBeanMap = ImmutableMap.copyOf(beanBeanMap);
     }
 
@@ -231,6 +239,15 @@ public final class ImmAddress implements ImmutableBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the map in map field.
+     * @return the value of the property, not null
+     */
+    public ImmutableMap<ImmPerson, Map<String, ImmPerson>> getMapInMap() {
+        return mapInMap;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the bean key and bean value field.
      * @return the value of the property, not null
      */
@@ -267,6 +284,7 @@ public final class ImmAddress implements ImmutableBean {
                     JodaBeanUtils.equal(getListInMap(), other.getListInMap()) &&
                     JodaBeanUtils.equal(getListNumericInMap(), other.getListNumericInMap()) &&
                     JodaBeanUtils.equal(getListInListInMap(), other.getListInListInMap()) &&
+                    JodaBeanUtils.equal(getMapInMap(), other.getMapInMap()) &&
                     JodaBeanUtils.equal(getBeanBeanMap(), other.getBeanBeanMap());
         }
         return false;
@@ -283,13 +301,14 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInListInMap());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getMapInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getBeanBeanMap());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(320);
+        StringBuilder buf = new StringBuilder(352);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
@@ -299,6 +318,7 @@ public final class ImmAddress implements ImmutableBean {
         buf.append("listInMap").append('=').append(getListInMap()).append(',').append(' ');
         buf.append("listNumericInMap").append('=').append(getListNumericInMap()).append(',').append(' ');
         buf.append("listInListInMap").append('=').append(getListInListInMap()).append(',').append(' ');
+        buf.append("mapInMap").append('=').append(getMapInMap()).append(',').append(' ');
         buf.append("beanBeanMap").append('=').append(getBeanBeanMap());
         buf.append('}');
         return buf.toString();
@@ -358,6 +378,12 @@ public final class ImmAddress implements ImmutableBean {
         private final MetaProperty<ImmutableMap<String, List<List<Integer>>>> listInListInMap = DirectMetaProperty.ofImmutable(
                 this, "listInListInMap", ImmAddress.class, (Class) ImmutableMap.class);
         /**
+         * The meta-property for the {@code mapInMap} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableMap<ImmPerson, Map<String, ImmPerson>>> mapInMap = DirectMetaProperty.ofImmutable(
+                this, "mapInMap", ImmAddress.class, (Class) ImmutableMap.class);
+        /**
          * The meta-property for the {@code beanBeanMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -376,6 +402,7 @@ public final class ImmAddress implements ImmutableBean {
                 "listInMap",
                 "listNumericInMap",
                 "listInListInMap",
+                "mapInMap",
                 "beanBeanMap");
 
         /**
@@ -403,6 +430,8 @@ public final class ImmAddress implements ImmutableBean {
                     return listNumericInMap;
                 case -940836650:  // listInListInMap
                     return listInListInMap;
+                case 158545403:  // mapInMap
+                    return mapInMap;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
             }
@@ -490,6 +519,14 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code mapInMap} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableMap<ImmPerson, Map<String, ImmPerson>>> mapInMap() {
+            return mapInMap;
+        }
+
+        /**
          * The meta-property for the {@code beanBeanMap} property.
          * @return the meta-property, not null
          */
@@ -517,6 +554,8 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getListNumericInMap();
                 case -940836650:  // listInListInMap
                     return ((ImmAddress) bean).getListInListInMap();
+                case 158545403:  // mapInMap
+                    return ((ImmAddress) bean).getMapInMap();
                 case -2039203396:  // beanBeanMap
                     return ((ImmAddress) bean).getBeanBeanMap();
             }
@@ -548,6 +587,7 @@ public final class ImmAddress implements ImmutableBean {
         private Map<String, List<String>> listInMap = new HashMap<String, List<String>>();
         private Map<String, List<Integer>> listNumericInMap = new HashMap<String, List<Integer>>();
         private Map<String, List<List<Integer>>> listInListInMap = new HashMap<String, List<List<Integer>>>();
+        private Map<ImmPerson, Map<String, ImmPerson>> mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>();
         private Map<ImmPerson, ImmAddress> beanBeanMap = new HashMap<ImmPerson, ImmAddress>();
 
         /**
@@ -571,6 +611,7 @@ public final class ImmAddress implements ImmutableBean {
             this.listInMap = new HashMap<String, List<String>>(beanToCopy.getListInMap());
             this.listNumericInMap = new HashMap<String, List<Integer>>(beanToCopy.getListNumericInMap());
             this.listInListInMap = new HashMap<String, List<List<Integer>>>(beanToCopy.getListInListInMap());
+            this.mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>(beanToCopy.getMapInMap());
             this.beanBeanMap = new HashMap<ImmPerson, ImmAddress>(beanToCopy.getBeanBeanMap());
         }
 
@@ -603,6 +644,9 @@ public final class ImmAddress implements ImmutableBean {
                 case -940836650:  // listInListInMap
                     this.listInListInMap = (Map<String, List<List<Integer>>>) newValue;
                     break;
+                case 158545403:  // mapInMap
+                    this.mapInMap = (Map<ImmPerson, Map<String, ImmPerson>>) newValue;
+                    break;
                 case -2039203396:  // beanBeanMap
                     this.beanBeanMap = (Map<ImmPerson, ImmAddress>) newValue;
                     break;
@@ -623,6 +667,7 @@ public final class ImmAddress implements ImmutableBean {
                     listInMap,
                     listNumericInMap,
                     listInListInMap,
+                    mapInMap,
                     beanBeanMap);
         }
 
@@ -714,6 +759,17 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code mapInMap} property in the builder.
+         * @param mapInMap  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder mapInMap(Map<ImmPerson, Map<String, ImmPerson>> mapInMap) {
+            JodaBeanUtils.notNull(mapInMap, "mapInMap");
+            this.mapInMap = mapInMap;
+            return this;
+        }
+
+        /**
          * Sets the {@code beanBeanMap} property in the builder.
          * @param beanBeanMap  the new value, not null
          * @return this, for chaining, not null
@@ -727,7 +783,7 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(320);
+            StringBuilder buf = new StringBuilder(352);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(number).append(',').append(' ');
             buf.append("street").append('=').append(street).append(',').append(' ');
@@ -737,6 +793,7 @@ public final class ImmAddress implements ImmutableBean {
             buf.append("listInMap").append('=').append(listInMap).append(',').append(' ');
             buf.append("listNumericInMap").append('=').append(listNumericInMap).append(',').append(' ');
             buf.append("listInListInMap").append('=').append(listInListInMap).append(',').append(' ');
+            buf.append("mapInMap").append('=').append(mapInMap).append(',').append(' ');
             buf.append("beanBeanMap").append('=').append(beanBeanMap);
             buf.append('}');
             return buf.toString();

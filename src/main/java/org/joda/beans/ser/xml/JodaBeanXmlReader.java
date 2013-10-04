@@ -299,21 +299,23 @@ public class JodaBeanXmlReader {
                     }
                     event = nextEvent(">>map ");
                     int loop = 0;
-                    while (event.isEndElement() == false && loop < 2) {
+                    while (event.isEndElement() == false) {
                         if (event.isStartElement()) {
                             start = event.asStartElement();
                             if (start.getName().equals(ITEM_QNAME) == false) {
                                 throw new IllegalArgumentException("Expected 'item' but found '" + start.getName() + "'");
                             }
-                            if (loop == 0) {
+                            if (key == null) {
                                 key = parseKey(iterable, start);
-                                loop = 1;
                             } else {
                                 value = parseValue(iterable, start);
-                                loop = 2;
                             }
+                            loop++;
                         }
                         event = nextEvent("..map ");
+                    }
+                    if (loop != 2) {
+                        throw new IllegalArgumentException("Expected 2 'item's but found " + loop);
                     }
                     
                 } else {
