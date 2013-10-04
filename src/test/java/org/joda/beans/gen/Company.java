@@ -36,7 +36,8 @@ import org.joda.beans.impl.direct.DirectMetaBean;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public class Company implements Bean {
+public class Company
+        implements Bean {
 
     /** The company name. */
     @PropertyDefinition

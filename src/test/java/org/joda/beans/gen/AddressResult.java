@@ -30,7 +30,8 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public class AddressResult extends AbstractResult<Address> {
+public class AddressResult
+        extends AbstractResult<Address> {
 
     @Override
     public String getResultType() {
