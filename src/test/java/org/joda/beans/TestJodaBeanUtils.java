@@ -17,6 +17,7 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 
 import java.util.Collections;
@@ -27,6 +28,7 @@ import java.util.Map;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmPerson;
+import org.joda.beans.gen.MetaBeanLoad;
 import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -45,7 +47,9 @@ import com.google.common.collect.ImmutableMultiset;
 public class TestJodaBeanUtils {
 
     public void test_metaBean() {
-        assertEquals(JodaBeanUtils.metaBean(Person.class), Person.meta());
+        MetaBean metaBean = JodaBeanUtils.metaBean(MetaBeanLoad.class);
+        assertNotNull(metaBean);
+        assertEquals(metaBean, MetaBeanLoad.meta());
     }
 
     public void test_metaBean_FlexiBean() {

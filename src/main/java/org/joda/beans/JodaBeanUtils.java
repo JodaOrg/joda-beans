@@ -59,33 +59,52 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the meta-bean given a class.
+     * Gets the meta-bean for a class.
      * <p>
      * This only works for those beans that have registered their meta-beans.
      * See {@link #registerMetaBean(MetaBean)}.
+     * <p>
+     * A {@code Class} may use a static initializer block to call {@code registerMetaBean}.
+     * The edge case where the class is loaded but not initialized is handled
+     * by forcing the class to be initialized if necessary.
      * 
      * @param cls  the class to get the meta-bean for, not null
      * @return the meta-bean, not null
      * @throws IllegalArgumentException if unable to obtain the meta-bean
      */
     public static MetaBean metaBean(Class<?> cls) {
-        if (cls == FlexiBean.class) {
-            return new FlexiBean().metaBean();
-        } else if (cls == MapBean.class) {
-            return new MapBean().metaBean();
-        }
         MetaBean meta = metaBeans.get(cls);
         if (meta == null) {
-            if (DynamicBean.class.isAssignableFrom(cls)) {
+            // handle dynamic beans
+            if (cls == FlexiBean.class) {
+                return new FlexiBean().metaBean();
+            } else if (cls == MapBean.class) {
+                return new MapBean().metaBean();
+            } else if (DynamicBean.class.isAssignableFrom(cls)) {
                 try {
                     return cls.asSubclass(DynamicBean.class).newInstance().metaBean();
                 } catch (InstantiationException ex) {
-                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+                    throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
                 } catch (IllegalAccessException ex) {
-                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+                    throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
                 }
             }
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+            // a Class can be loaded without being initialized
+            // in this state, the static initializers have not run, and thus the metabean not registered
+            // here initialization is forced to handle that scenario
+            try {
+                cls = Class.forName(cls.getName(), true, cls.getClassLoader());
+            } catch (ClassNotFoundException ex) {
+                // should be impossible
+                throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+            } catch (Error ex) {
+                // should be impossible
+                throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+            }
+            meta = metaBeans.get(cls);
+            if (meta == null) {
+                throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+            }
         }
         return meta;
     }
