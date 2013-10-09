@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.3" date="2013-10-04" description="v0.8.3">
       <action dev="scolebourne" type="fix" >
+        Generate an immutable bean with no properties correctly.
+      </action>
+      <action dev="scolebourne" type="fix" >
         Handle classes that are loaded but not initialized. Fixes #19.
       </action>
     </release>

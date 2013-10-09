@@ -773,7 +773,7 @@ public final class ImmPerson implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(384);
+            StringBuilder buf = new StringBuilder(352);
             buf.append("ImmPerson.Builder{");
             buf.append("forename").append('=').append(forename).append(',').append(' ');
             buf.append("surname").append('=').append(surname).append(',').append(' ');
@@ -784,7 +784,7 @@ public final class ImmPerson implements ImmutableBean {
             buf.append("otherAddressMap").append('=').append(otherAddressMap).append(',').append(' ');
             buf.append("addressesList").append('=').append(addressesList).append(',').append(' ');
             buf.append("mainAddress").append('=').append(mainAddress).append(',').append(' ');
-            buf.append("codeCounts").append('=').append(codeCounts).append(',').append(' ');
+            buf.append("codeCounts").append('=').append(codeCounts);
             buf.append('}');
             return buf.toString();
         }

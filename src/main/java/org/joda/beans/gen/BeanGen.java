@@ -554,14 +554,17 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateImmutableToBuilder() {
-        insertRegion.add("\t/**");
-        insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
-        insertRegion.add("\t * @return the mutable builder, not null");
-        insertRegion.add("\t */");
-        insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
-        insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        if (nonDerived.size() > 0) {
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
+            insertRegion.add("\t * @return the mutable builder, not null");
+            insertRegion.add("\t */");
+            insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
+            insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
+            insertRegion.add("\t}");
+            insertRegion.add("");
+        }
     }
 
     private void generateClone() {
@@ -947,6 +950,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateBuilderClass() {
+        List<PropertyGen> nonDerived = nonDerivedProperties();
         data.ensureImport(BasicImmutableBeanBuilder.class);
         generateSeparator();
         insertRegion.add("\t/**");
@@ -954,14 +958,16 @@ class BeanGen {
         insertRegion.add("\t */");
         insertRegion.add("\tpublic static " + (data.isTypeFinal() ? "final " : "") +
                 "class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
-        insertRegion.add("");
-        generateBuilderProperties();
+        if (nonDerived.size() > 0) {
+            insertRegion.add("");
+            generateBuilderProperties();
+        }
         insertRegion.add("");
         generateBuilderConstructor();
         insertRegion.add("\t\t//-----------------------------------------------------------------------");
         generateBuilderSet();
         generateBuilderBuilder();
-        if (properties.size() > 0) {
+        if (nonDerived.size() > 0) {
             insertRegion.add("\t\t//-----------------------------------------------------------------------");
             generateBuilderPropertySetMethods();
         }
@@ -997,16 +1003,15 @@ class BeanGen {
     }
 
     private void generateBuilderProperties() {
-        for (PropertyGen prop : properties) {
-            if (prop.getData().isDerived() == false) {
-                insertRegion.addAll(prop.generateBuilderField());
-            }
+        for (PropertyGen prop : nonDerivedProperties()) {
+            insertRegion.addAll(prop.generateBuilderField());
         }
     }
 
     private void generateBuilderSet() {
+        List<PropertyGen> nonDerived = nonDerivedProperties();
         data.ensureImport(NoSuchElementException.class);
-        boolean generics = data.isTypeGeneric() && properties.size() > 0;
+        boolean generics = data.isTypeGeneric() && nonDerived.size() > 0;
         for (GeneratableProperty prop : data.getProperties()) {
             generics |= (prop.isGeneric() && prop.isGenericWildcardParamType() == false);
         }
@@ -1015,16 +1020,18 @@ class BeanGen {
         }
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Builder" + data.getTypeGeneric(true) + " set(String propertyName, Object newValue) {");
-        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
-        for (PropertyGen prop : properties) {
-            if (prop.getData().isDerived() == false) {
+        if (nonDerived.size() > 0) {
+            insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+            for (PropertyGen prop : nonDerived) {
                 insertRegion.addAll(prop.generateBuilderFieldSet());
             }
+            insertRegion.add("\t\t\t\tdefault:");
+            insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            insertRegion.add("\t\t\t}");
+            insertRegion.add("\t\t\treturn this;");
+        } else {
+            insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
         }
-        insertRegion.add("\t\t\t\tdefault:");
-        insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
-        insertRegion.add("\t\t\t}");
-        insertRegion.add("\t\t\treturn this;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }
@@ -1046,10 +1053,8 @@ class BeanGen {
     }
 
     private void generateBuilderPropertySetMethods() {
-        for (PropertyGen prop : properties) {
-            if (prop.getData().isDerived() == false) {
-                insertRegion.addAll(prop.generateBuilderSetMethod());
-            }
+        for (PropertyGen prop : nonDerivedProperties()) {
+            insertRegion.addAll(prop.generateBuilderSetMethod());
         }
     }
 
@@ -1058,15 +1063,15 @@ class BeanGen {
         insertRegion.add("\t\tpublic String toString() {");
         List<PropertyGen> nonDerived = nonDerivedProperties();
         if (nonDerived.size() == 0) {
-            insertRegion.add("\t\t\treturn " + data.getTypeRaw() + ".Builder{};");
+            insertRegion.add("\t\t\treturn \"" + data.getTypeRaw() + ".Builder{}\";");
         } else {
-            insertRegion.add("\t\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
+            insertRegion.add("\t\t\tStringBuilder buf = new StringBuilder(" + (nonDerived.size() * 32 + 32) + ");");
             insertRegion.add("\t\t\tbuf.append(\"" + data.getTypeRaw() + ".Builder{\");");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
                 String base = "\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                         "\").append('=').append(" + nonDerived.get(i).generateBuilderFieldName() + ")";
-                if (i < properties.size() - 1) {
+                if (i < nonDerived.size() - 1) {
                     insertRegion.add(base + ".append(',').append(' ');");
                 } else {
                     insertRegion.add(base + ";");
