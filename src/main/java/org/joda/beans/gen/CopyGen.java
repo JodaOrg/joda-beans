@@ -67,8 +67,8 @@ abstract class CopyGen {
             final String[] split = immutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {
-                    if (line.endsWith(";") == false) {
-                        line += ";";
+                    if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
+                        line = "$field = ($value != null ? " + line + " : null);";
                     }
                     if (line.startsWith("$field = ") == false) {
                         line = "$field = " + line;

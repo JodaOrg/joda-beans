@@ -120,11 +120,11 @@ public final class ImmPerson implements ImmutableBean {
         this.numberOfCars = numberOfCars;
         this.dateOfBirth = (dateOfBirth != null ? (Date) dateOfBirth.clone() : null);
         this.middleNames = (middleNames != null ? middleNames.clone() : null);
-        this.addressList = ImmutableList.copyOf(addressList);
-        this.otherAddressMap = ImmutableMap.copyOf(otherAddressMap);
-        this.addressesList = ImmutableList.copyOf(addressesList);
+        this.addressList = (addressList != null ? ImmutableList.copyOf(addressList) : null);
+        this.otherAddressMap = (otherAddressMap != null ? ImmutableMap.copyOf(otherAddressMap) : null);
+        this.addressesList = (addressesList != null ? ImmutableList.copyOf(addressesList) : null);
         this.mainAddress = mainAddress;
-        this.codeCounts = ImmutableMultiset.copyOf(codeCounts);
+        this.codeCounts = (codeCounts != null ? ImmutableMultiset.copyOf(codeCounts) : null);
     }
 
     @Override

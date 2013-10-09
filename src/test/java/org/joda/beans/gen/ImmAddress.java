@@ -142,11 +142,11 @@ public final class ImmAddress implements ImmutableBean {
         this.city = city;
         this.data = (data != null ? data.clone() : null);
         this.owner = owner;
-        this.listInMap = ImmutableMap.copyOf(listInMap);
-        this.listNumericInMap = ImmutableMap.copyOf(listNumericInMap);
-        this.listInListInMap = ImmutableMap.copyOf(listInListInMap);
-        this.mapInMap = ImmutableMap.copyOf(mapInMap);
-        this.beanBeanMap = ImmutableMap.copyOf(beanBeanMap);
+        this.listInMap = (listInMap != null ? ImmutableMap.copyOf(listInMap) : null);
+        this.listNumericInMap = (listNumericInMap != null ? ImmutableMap.copyOf(listNumericInMap) : null);
+        this.listInListInMap = (listInListInMap != null ? ImmutableMap.copyOf(listInListInMap) : null);
+        this.mapInMap = (mapInMap != null ? ImmutableMap.copyOf(mapInMap) : null);
+        this.beanBeanMap = (beanBeanMap != null ? ImmutableMap.copyOf(beanBeanMap) : null);
     }
 
     @Override
