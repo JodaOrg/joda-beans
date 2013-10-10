@@ -117,7 +117,7 @@ public class ValidateBean extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the non-empty value.
-     * @return the value of the property, not null
+     * @return the value of the property, not empty
      */
     public String getSecond() {
         return second;
@@ -125,7 +125,7 @@ public class ValidateBean extends DirectBean {
 
     /**
      * Sets the non-empty value.
-     * @param second  the new value of the property, not null
+     * @param second  the new value of the property, not empty
      */
     public void setSecond(String second) {
         JodaBeanUtils.notEmpty(second, "second");

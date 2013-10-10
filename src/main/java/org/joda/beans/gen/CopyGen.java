@@ -27,8 +27,8 @@ import java.util.List;
 abstract class CopyGen {
 
     static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
-    static final CopyGen CLONE = new PatternCopyGen("$field = ($value != null ? $value.clone() : null);");
-    static final CopyGen CLONE_CAST = new PatternCopyGen("$field = ($value != null ? ($type) $value.clone() : null);");
+    static final CopyGen CLONE = new PatternCopyGen("$value.clone()");
+    static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()");
 
     /**
      * Generates the copy to immutable lines.
@@ -68,7 +68,11 @@ abstract class CopyGen {
             for (String line : split) {
                 if (split.length == 1) {
                     if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
-                        line = "$field = ($value != null ? " + line + " : null);";
+                        if (prop.isNotNull()) {
+                            line = "$field = " + line + ";";
+                        } else {
+                            line = "$field = ($value != null ? " + line + " : null);";
+                        }
                     }
                     if (line.startsWith("$field = ") == false) {
                         line = "$field = " + line;
@@ -90,8 +94,12 @@ abstract class CopyGen {
             final String[] split = mutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {
-                    if (line.endsWith(";") == false) {
-                        line += ";";
+                    if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
+                        if (prop.isNotNull()) {
+                            line = "$field = " + line + ";";
+                        } else {
+                            line = "$field = ($value != null ? " + line + " : null);";
+                        }
                     }
                     if (line.startsWith("$field = ") == false) {
                         line = "$field = " + line;

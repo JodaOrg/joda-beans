@@ -661,6 +661,20 @@ class GeneratableProperty {
     }
 
     /**
+     * Gets the validation non-null Javadoc.
+     * @return the non-null text
+     */
+    public String getNotNullJavadoc() {
+        if (getValidation().equals("notNull")) {
+            return ", not null";
+        }
+        if (getValidation().equals("notEmpty")) {
+            return ", not empty";
+        }
+        return "";
+    }
+
+    /**
      * Gets the validation method name.
      * @return the method name
      */

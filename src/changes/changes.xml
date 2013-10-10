@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.8.4" date="2013-10-xx" description="v0.8.4">
+      <action dev="scolebourne" type="fix" >
+        Enhance handling of non-null and non-empty fields especially in immutable beans. See #20.
+      </action>
+    </release>
     <release version="0.8.3" date="2013-10-09" description="v0.8.3">
       <action dev="scolebourne" type="fix" >
         Immutable beans should handle nullable fields. Fixes #20.

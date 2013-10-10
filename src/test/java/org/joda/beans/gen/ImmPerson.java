@@ -582,11 +582,11 @@ public final class ImmPerson implements ImmutableBean {
         private int numberOfCars;
         private Date dateOfBirth;
         private String[] middleNames;
-        private List<Address> addressList = new ArrayList<Address>();
-        private Map<String, Address> otherAddressMap = new HashMap<String, Address>();
-        private List<List<Address>> addressesList = new ArrayList<List<Address>>();
+        private List<Address> addressList;
+        private Map<String, Address> otherAddressMap;
+        private List<List<Address>> addressesList;
         private ImmAddress mainAddress;
-        private Multiset<String> codeCounts = HashMultiset.create();
+        private Multiset<String> codeCounts;
 
         /**
          * Restricted constructor.
@@ -606,11 +606,11 @@ public final class ImmPerson implements ImmutableBean {
             this.numberOfCars = beanToCopy.getNumberOfCars();
             this.dateOfBirth = (beanToCopy.getDateOfBirth() != null ? (Date) beanToCopy.getDateOfBirth().clone() : null);
             this.middleNames = (beanToCopy.getMiddleNames() != null ? beanToCopy.getMiddleNames().clone() : null);
-            this.addressList = new ArrayList<Address>(beanToCopy.getAddressList());
-            this.otherAddressMap = new HashMap<String, Address>(beanToCopy.getOtherAddressMap());
-            this.addressesList = new ArrayList<List<Address>>(beanToCopy.getAddressesList());
+            this.addressList = (beanToCopy.getAddressList() != null ? new ArrayList<Address>(beanToCopy.getAddressList()) : null);
+            this.otherAddressMap = (beanToCopy.getOtherAddressMap() != null ? new HashMap<String, Address>(beanToCopy.getOtherAddressMap()) : null);
+            this.addressesList = (beanToCopy.getAddressesList() != null ? new ArrayList<List<Address>>(beanToCopy.getAddressesList()) : null);
             this.mainAddress = beanToCopy.getMainAddress();
-            this.codeCounts = HashMultiset.create(beanToCopy.getCodeCounts());
+            this.codeCounts = (beanToCopy.getCodeCounts() != null ? HashMultiset.create(beanToCopy.getCodeCounts()) : null);
         }
 
         //-----------------------------------------------------------------------
@@ -672,7 +672,7 @@ public final class ImmPerson implements ImmutableBean {
         //-----------------------------------------------------------------------
         /**
          * Sets the {@code forename} property in the builder.
-         * @param forename  the new value, not null
+         * @param forename  the new value
          * @return this, for chaining, not null
          */
         public Builder forename(String forename) {
@@ -682,7 +682,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code surname} property in the builder.
-         * @param surname  the new value, not null
+         * @param surname  the new value
          * @return this, for chaining, not null
          */
         public Builder surname(String surname) {
@@ -692,7 +692,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code numberOfCars} property in the builder.
-         * @param numberOfCars  the new value, not null
+         * @param numberOfCars  the new value
          * @return this, for chaining, not null
          */
         public Builder numberOfCars(int numberOfCars) {
@@ -702,7 +702,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code dateOfBirth} property in the builder.
-         * @param dateOfBirth  the new value, not null
+         * @param dateOfBirth  the new value
          * @return this, for chaining, not null
          */
         public Builder dateOfBirth(Date dateOfBirth) {
@@ -712,7 +712,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code middleNames} property in the builder.
-         * @param middleNames  the new value, not null
+         * @param middleNames  the new value
          * @return this, for chaining, not null
          */
         public Builder middleNames(String[] middleNames) {
@@ -722,7 +722,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code addressList} property in the builder.
-         * @param addressList  the new value, not null
+         * @param addressList  the new value
          * @return this, for chaining, not null
          */
         public Builder addressList(List<Address> addressList) {
@@ -732,7 +732,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code otherAddressMap} property in the builder.
-         * @param otherAddressMap  the new value, not null
+         * @param otherAddressMap  the new value
          * @return this, for chaining, not null
          */
         public Builder otherAddressMap(Map<String, Address> otherAddressMap) {
@@ -742,7 +742,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code addressesList} property in the builder.
-         * @param addressesList  the new value, not null
+         * @param addressesList  the new value
          * @return this, for chaining, not null
          */
         public Builder addressesList(List<List<Address>> addressesList) {
@@ -752,7 +752,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code mainAddress} property in the builder.
-         * @param mainAddress  the new value, not null
+         * @param mainAddress  the new value
          * @return this, for chaining, not null
          */
         public Builder mainAddress(ImmAddress mainAddress) {
@@ -762,7 +762,7 @@ public final class ImmPerson implements ImmutableBean {
 
         /**
          * Sets the {@code codeCounts} property in the builder.
-         * @param codeCounts  the new value, not null
+         * @param codeCounts  the new value
          * @return this, for chaining, not null
          */
         public Builder codeCounts(Multiset<String> codeCounts) {

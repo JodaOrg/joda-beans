@@ -77,8 +77,7 @@ abstract class SetterGen {
             for (String comment : prop.getComments()) {
                 list.add("\t * " + comment);
             }
-            list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" +
-                    (prop.isNotNull() ? ", not null" : ""));
+            list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
             list.add("\t */");
             if (prop.isDeprecated()) {
                 list.add("\t@Deprecated");

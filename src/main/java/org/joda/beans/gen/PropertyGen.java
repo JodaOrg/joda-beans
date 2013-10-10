@@ -483,7 +483,7 @@ class PropertyGen {
         List<String> list = new ArrayList<String>();
         list.add("\t\t/**");
         list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder.");
-        list.add("\t\t * @param " + data.getPropertyName() + "  the new value, not null");
+        list.add("\t\t * @param " + data.getPropertyName() + "  the new value" + data.getNotNullJavadoc());
         list.add("\t\t * @return this, for chaining, not null");
         if (data.isDeprecated()) {
             for (String comment : data.getComments()) {

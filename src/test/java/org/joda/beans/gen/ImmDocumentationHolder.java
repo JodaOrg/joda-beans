@@ -286,7 +286,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
         //-----------------------------------------------------------------------
         /**
          * Sets the {@code documentation} property in the builder.
-         * @param documentation  the new value, not null
+         * @param documentation  the new value
          * @return this, for chaining, not null
          */
         public Builder<T> documentation(Documentation<T> documentation) {
