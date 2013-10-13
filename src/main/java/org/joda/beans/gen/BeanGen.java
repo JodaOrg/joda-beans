@@ -1019,7 +1019,7 @@ class BeanGen {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGeneric(true) + " set(String propertyName, Object newValue) {");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(String propertyName, Object newValue) {");
         if (nonDerived.size() > 0) {
             insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
             for (PropertyGen prop : nonDerived) {
@@ -1039,11 +1039,11 @@ class BeanGen {
     private void generateBuilderBuilder() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGeneric(true) + " build() {");
+        insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGenericName(true) + " build() {");
         if (nonDerived.size() == 0) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "();");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "();");
         } else {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "(");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "(");
             for (int i = 0; i < nonDerived.size(); i++) {
                 insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
             }
