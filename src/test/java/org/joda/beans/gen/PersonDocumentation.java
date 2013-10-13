@@ -126,7 +126,7 @@ public class PersonDocumentation extends Documentation<Person> {
     @Override
     protected void toString(StringBuilder buf) {
         super.toString(buf);
-        buf.append("name").append('=').append(getName()).append(',').append(' ');
+        buf.append("name").append('=').append(JodaBeanUtils.toString(getName())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

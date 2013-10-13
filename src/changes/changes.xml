@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.8.4" date="2013-10-xx" description="v0.8.4">
+      <action dev="scolebourne" type="fix" >
+        Bean toString should process arrays correctly. Fixes #23.
+      </action>
+    </release>
     <release version="0.8.3" date="2013-10-09" description="v0.8.3">
       <action dev="scolebourne" type="fix" >
         Immutable beans should handle nullable fields. Fixes #20.

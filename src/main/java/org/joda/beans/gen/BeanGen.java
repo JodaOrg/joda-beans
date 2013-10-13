@@ -690,7 +690,7 @@ class BeanGen {
                             "\").append('=').append(" + getter + ").append(',').append(' ');");
                 } else {
                     insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
-                            "\").append('=').append(" + getter + ");");
+                            "\").append('=').append(JodaBeanUtils.toString(" + getter + "));");
                 }
             }
             insertRegion.add("\t\tbuf.append('}');");
@@ -725,7 +725,7 @@ class BeanGen {
             PropertyGen prop = properties.get(i);
             String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
             insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
-                    "\").append('=').append(" + getter + ").append(',').append(' ');");
+                    "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }
         insertRegion.add("\t}");
         insertRegion.add("");

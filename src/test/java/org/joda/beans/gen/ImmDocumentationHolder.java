@@ -149,7 +149,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmDocumentationHolder{");
-        buf.append("documentation").append('=').append(getDocumentation());
+        buf.append("documentation").append('=').append(JodaBeanUtils.toString(getDocumentation()));
         buf.append('}');
         return buf.toString();
     }

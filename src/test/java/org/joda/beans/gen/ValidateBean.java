@@ -247,10 +247,10 @@ public class ValidateBean extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
-        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
-        buf.append("third").append('=').append(getThird()).append(',').append(' ');
-        buf.append("fourth").append('=').append(getFourth()).append(',').append(' ');
+        buf.append("first").append('=').append(JodaBeanUtils.toString(getFirst())).append(',').append(' ');
+        buf.append("second").append('=').append(JodaBeanUtils.toString(getSecond())).append(',').append(' ');
+        buf.append("third").append('=').append(JodaBeanUtils.toString(getThird())).append(',').append(' ');
+        buf.append("fourth").append('=').append(JodaBeanUtils.toString(getFourth())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

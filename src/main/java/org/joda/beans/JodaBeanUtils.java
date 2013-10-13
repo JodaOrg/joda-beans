@@ -289,6 +289,41 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns the {@code toString} value handling arrays.
+     * 
+     * @param obj  the object, may be null
+     * @return the string, not null
+     */
+    public static String toString(Object obj) {
+        if (obj == null) {
+            return "null";
+        }
+        if (obj.getClass().isArray()) {
+            if (obj instanceof Object[]) {
+                return Arrays.deepToString((Object[]) obj);
+            } else if (obj instanceof int[]) {
+                return Arrays.toString((int[]) obj);
+            } else if (obj instanceof long[]) {
+                return Arrays.toString((long[]) obj);
+            } else if (obj instanceof byte[]) {
+                return Arrays.toString((byte[]) obj);
+            } else if (obj instanceof double[]) {
+                return Arrays.toString((double[]) obj);
+            } else if (obj instanceof float[]) {
+                return Arrays.toString((float[]) obj);
+            } else if (obj instanceof char[]) {
+                return Arrays.toString((char[]) obj);
+            } else if (obj instanceof short[]) {
+                return Arrays.toString((short[]) obj);
+            } else if (obj instanceof boolean[]) {
+                return Arrays.toString((boolean[]) obj);
+            }
+        }
+        return obj.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if the two beans have the same set of properties.
      * <p>
      * This comparison checks that both beans have the same set of property names

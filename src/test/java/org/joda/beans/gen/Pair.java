@@ -169,8 +169,8 @@ public class Pair extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
-        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
+        buf.append("first").append('=').append(JodaBeanUtils.toString(getFirst())).append(',').append(' ');
+        buf.append("second").append('=').append(JodaBeanUtils.toString(getSecond())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

@@ -270,11 +270,11 @@ public class FinalFieldBean extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("fieldFinal").append('=').append(getFieldFinal()).append(',').append(' ');
-        buf.append("fieldNonFinal").append('=').append(getFieldNonFinal()).append(',').append(' ');
-        buf.append("listFinal").append('=').append(getListFinal()).append(',').append(' ');
-        buf.append("flexiFinal").append('=').append(getFlexiFinal()).append(',').append(' ');
-        buf.append("personFinal").append('=').append(getPersonFinal()).append(',').append(' ');
+        buf.append("fieldFinal").append('=').append(JodaBeanUtils.toString(getFieldFinal())).append(',').append(' ');
+        buf.append("fieldNonFinal").append('=').append(JodaBeanUtils.toString(getFieldNonFinal())).append(',').append(' ');
+        buf.append("listFinal").append('=').append(JodaBeanUtils.toString(getListFinal())).append(',').append(' ');
+        buf.append("flexiFinal").append('=').append(JodaBeanUtils.toString(getFlexiFinal())).append(',').append(' ');
+        buf.append("personFinal").append('=').append(JodaBeanUtils.toString(getPersonFinal())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

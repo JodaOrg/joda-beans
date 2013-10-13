@@ -178,8 +178,8 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("type").append('=').append(getType()).append(',').append(' ');
-        buf.append("content").append('=').append(getContent()).append(',').append(' ');
+        buf.append("type").append('=').append(JodaBeanUtils.toString(getType())).append(',').append(' ');
+        buf.append("content").append('=').append(JodaBeanUtils.toString(getContent())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

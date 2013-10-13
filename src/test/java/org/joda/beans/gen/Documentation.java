@@ -208,9 +208,9 @@ public class Documentation<T> extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("type").append('=').append(getType()).append(',').append(' ');
-        buf.append("content").append('=').append(getContent()).append(',').append(' ');
-        buf.append("map").append('=').append(getMap()).append(',').append(' ');
+        buf.append("type").append('=').append(JodaBeanUtils.toString(getType())).append(',').append(' ');
+        buf.append("content").append('=').append(JodaBeanUtils.toString(getContent())).append(',').append(' ');
+        buf.append("map").append('=').append(JodaBeanUtils.toString(getMap())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

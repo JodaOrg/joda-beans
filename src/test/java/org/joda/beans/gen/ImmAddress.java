@@ -319,7 +319,7 @@ public final class ImmAddress implements ImmutableBean {
         buf.append("listNumericInMap").append('=').append(getListNumericInMap()).append(',').append(' ');
         buf.append("listInListInMap").append('=').append(getListInListInMap()).append(',').append(' ');
         buf.append("mapInMap").append('=').append(getMapInMap()).append(',').append(' ');
-        buf.append("beanBeanMap").append('=').append(getBeanBeanMap());
+        buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(getBeanBeanMap()));
         buf.append('}');
         return buf.toString();
     }

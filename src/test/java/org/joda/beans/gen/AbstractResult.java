@@ -164,8 +164,8 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("docs").append('=').append(getDocs()).append(',').append(' ');
-        buf.append("resultType").append('=').append(getResultType()).append(',').append(' ');
+        buf.append("docs").append('=').append(JodaBeanUtils.toString(getDocs())).append(',').append(' ');
+        buf.append("resultType").append('=').append(JodaBeanUtils.toString(getResultType())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

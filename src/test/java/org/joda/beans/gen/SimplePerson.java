@@ -388,7 +388,7 @@ public final class SimplePerson implements Cloneable, Bean {
         buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
         buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
         buf.append("propDefAnnotationSecondDeprecated").append('=').append(getPropDefAnnotationSecondDeprecated()).append(',').append(' ');
-        buf.append("propDefAnnotationSecondManual").append('=').append(getPropDefAnnotationSecondManual());
+        buf.append("propDefAnnotationSecondManual").append('=').append(JodaBeanUtils.toString(getPropDefAnnotationSecondManual()));
         buf.append('}');
         return buf.toString();
     }
