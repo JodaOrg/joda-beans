@@ -121,7 +121,7 @@ class BeanGen {
                 }
                 for (PropertyGen prop : properties) {
                     if (prop.getData().isDerived() == false && prop.getData().isFinal() == false) {
-                        throw new RuntimeException("ImmutableBean must be have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
+                        throw new RuntimeException("ImmutableBean must have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
                     }
                 }
             } else if (data.isImmutableConstructor()) {
