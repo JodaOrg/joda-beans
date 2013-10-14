@@ -999,7 +999,8 @@ class BeanGen {
             generateBuilderProperties();
         }
         insertRegion.add("");
-        generateBuilderConstructor();
+        generateBuilderConstructorNoArgs();
+        generateBuilderConstructorCopy();
         generateIndentedSeparator();
         generateBuilderSet();
         generateBuilderBuilder();
@@ -1011,7 +1012,7 @@ class BeanGen {
         insertRegion.add("");
     }
 
-    private void generateBuilderConstructor() {
+    private void generateBuilderConstructorNoArgs() {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
@@ -1019,20 +1020,24 @@ class BeanGen {
         insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t\t}");
         insertRegion.add("");
-        
-        List<PropertyGen> nonDerived = nonDerivedProperties();
-        if (nonDerived.size() > 0) {
-            insertRegion.add("\t\t/**");
-            insertRegion.add("\t\t * Restricted copy constructor.");
-            insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
-            insertRegion.add("\t\t */");
-            insertRegion.add("\t\tprivate Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
-            insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
-            for (int i = 0; i < nonDerived.size(); i++) {
-                insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
+    }
+
+    private void generateBuilderConstructorCopy() {
+        if (data.isEffectiveBuilderScopePublic()) {
+            List<PropertyGen> nonDerived = nonDerivedProperties();
+            if (nonDerived.size() > 0) {
+                insertRegion.add("\t\t/**");
+                insertRegion.add("\t\t * Restricted copy constructor.");
+                insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
+                insertRegion.add("\t\t */");
+                insertRegion.add("\t\tprivate Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
+                insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+                for (int i = 0; i < nonDerived.size(); i++) {
+                    insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
+                }
+                insertRegion.add("\t\t}");
+                insertRegion.add("");
             }
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
         }
     }
 

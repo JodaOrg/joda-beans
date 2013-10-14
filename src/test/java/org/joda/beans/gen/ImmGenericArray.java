@@ -234,15 +234,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
             super(ImmGenericArray.Meta.INSTANCE);
         }
 
-        /**
-         * Restricted copy constructor.
-         * @param beanToCopy  the bean to copy from, not null
-         */
-        private Builder(ImmGenericArray<T> beanToCopy) {
-            super(ImmGenericArray.Meta.INSTANCE);
-            this.values = beanToCopy.getValues();
-        }
-
         //-----------------------------------------------------------------------
         @SuppressWarnings("unchecked")
         @Override
