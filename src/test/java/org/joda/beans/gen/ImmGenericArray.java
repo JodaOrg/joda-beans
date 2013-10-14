@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(builderScope = "private")
 public final class ImmGenericArray<T extends Address> implements ImmutableBean {
 
     /** The name. */
@@ -67,16 +67,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
 
     static {
         JodaBeanUtils.registerMetaBean(ImmGenericArray.Meta.INSTANCE);
-    }
-
-    /**
-     * Returns a builder used to create an instance of the bean.
-     *
-     * @param <T>  the type
-     * @return the builder, not null
-     */
-    public static <T extends Address> ImmGenericArray.Builder<T> builder() {
-        return new ImmGenericArray.Builder<T>();
     }
 
     private ImmGenericArray(
@@ -111,14 +101,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns a builder that allows this bean to be mutated.
-     * @return the mutable builder, not null
-     */
-    public Builder<T> toBuilder() {
-        return new Builder<T>(this);
-    }
-
     @Override
     public ImmGenericArray<T> clone() {
         return this;
@@ -241,7 +223,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmGenericArray}.
      */
-    public static final class Builder<T extends Address> extends BasicImmutableBeanBuilder<ImmGenericArray<T>> {
+    private static final class Builder<T extends Address> extends BasicImmutableBeanBuilder<ImmGenericArray<T>> {
 
         private T[] values;
 
@@ -279,18 +261,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         public ImmGenericArray<T> build() {
             return new ImmGenericArray<T>(
                     values);
-        }
-
-        //-----------------------------------------------------------------------
-        /**
-         * Sets the {@code values} property in the builder.
-         * @param values  the new value, not null
-         * @return this, for chaining, not null
-         */
-        public Builder<T> values(T[] values) {
-            JodaBeanUtils.notNull(values, "values");
-            this.values = values;
-            return this;
         }
 
         //-----------------------------------------------------------------------

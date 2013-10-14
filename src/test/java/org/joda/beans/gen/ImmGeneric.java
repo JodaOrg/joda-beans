@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(builderScope = "public")
 public final class ImmGeneric<T extends Address> implements ImmutableBean {
 
     /** The name. */

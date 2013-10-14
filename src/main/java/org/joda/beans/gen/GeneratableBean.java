@@ -35,6 +35,8 @@ class GeneratableBean {
     private int lastImportLine;
     /** The bean style. */
     private String beanStyle;
+    /** The bean builder scope. */
+    private String beanBuilderScope;
     /** Whether the class is immutable. */
     private boolean immutable;
     /** Whether the class can be constructed. */
@@ -116,6 +118,7 @@ class GeneratableBean {
         lastImportLine = location;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the bean style.
      * @return the flag
@@ -154,6 +157,47 @@ class GeneratableBean {
      */
     public boolean isBeanStyleGenerateMetaProperties() {
         return "full".equals(beanStyle) || "smart".equals(beanStyle);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the bean builder scope.
+     * @return the scope
+     */
+    public String getBeanBuilderScope() {
+        return beanBuilderScope;
+    }
+
+    /**
+     * Sets the bean builder scope.
+     * @param builderScope  the scope
+     */
+    public void setBeanBuilderScope(String builderScope) {
+        this.beanBuilderScope = builderScope;
+    }
+
+    /**
+     * Is the bean style indicating that properties should be generated.
+     * @return the flag
+     */
+    public boolean isBeanBuilderScopeValid() {
+        return "smart".equals(beanBuilderScope) || "private".equals(beanBuilderScope) || "public".equals(beanBuilderScope);
+    }
+
+    /**
+     * Gets the effective scope to use in the builder.
+     * @return the scope
+     */
+    public String getEffectiveBuilderScope() {
+        return "smart".equals(beanBuilderScope) ? "public" : beanBuilderScope;
+    }
+
+    /**
+     * Is the effective scope to use in the builder public.
+     * @return the scope
+     */
+    public boolean isEffectiveBuilderScopePublic() {
+        return "smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope);
     }
 
     //-----------------------------------------------------------------------

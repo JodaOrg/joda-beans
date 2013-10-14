@@ -64,6 +64,8 @@ class BeanGen {
     private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".* implements.*[ ,]((Immutable)?Bean)[ ,].*");
     /** The style pattern. */
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The style pattern. */
+    private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {
@@ -107,6 +109,10 @@ class BeanGen {
             this.data.setBeanStyle(parseBeanStyle(beanDefIndex));
             if (data.isBeanStyleValid() == false) {
                 throw new RuntimeException("Invalid bean style: " + data.getBeanStyle());
+            }
+            this.data.setBeanBuilderScope(parseBeanBuilderScope(beanDefIndex));
+            if (data.isBeanBuilderScopeValid() == false) {
+                throw new RuntimeException("Invalid bean builder scope: " + data.getBeanStyle());
             }
             this.data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
             this.data.setConstructable(parseConstructable(beanDefIndex));
@@ -229,6 +235,15 @@ class BeanGen {
     private String parseBeanStyle(int defLine) {
         String line = content.get(defLine).trim();
         Matcher matcher = STYLE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+
+    private String parseBeanBuilderScope(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = BUILDER_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -412,7 +427,7 @@ class BeanGen {
     }
 
     private void generateImmutableBuilderMethod() {
-        if (data.isImmutable()) {
+        if (data.isImmutable() && data.isEffectiveBuilderScopePublic()) {
             insertRegion.add("\t/**");
             insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
             insertRegion.add("\t *");
@@ -555,7 +570,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateImmutableToBuilder() {
-        if (data.isImmutable()) {
+        if (data.isImmutable() && data.isEffectiveBuilderScopePublic()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (nonDerived.size() > 0) {
                 insertRegion.add("\t/**");
@@ -977,7 +992,7 @@ class BeanGen {
         insertRegion.add("\t/**");
         insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
-        insertRegion.add("\tpublic static " + (data.isTypeFinal() ? "final " : "") +
+        insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + (data.isTypeFinal() ? "final " : "") +
                 "class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
         if (nonDerived.size() > 0) {
             insertRegion.add("");
@@ -1072,8 +1087,10 @@ class BeanGen {
     }
 
     private void generateBuilderPropertySetMethods() {
-        for (PropertyGen prop : nonDerivedProperties()) {
-            insertRegion.addAll(prop.generateBuilderSetMethod());
+        if (data.isEffectiveBuilderScopePublic()) {
+            for (PropertyGen prop : nonDerivedProperties()) {
+                insertRegion.addAll(prop.generateBuilderSetMethod());
+            }
         }
     }
 
