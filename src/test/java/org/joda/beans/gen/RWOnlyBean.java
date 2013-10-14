@@ -43,12 +43,12 @@ public class RWOnlyBean extends DirectBean {
      * The read only property.
      */
     @PropertyDefinition(set = "")
-    private Object ro;
+    private Object ro = null;  // trailing comment
     /**
      * The write only property.
      */
     @PropertyDefinition(get = "")
-    private Object wo;
+    private Object wo;  // trailing comment
     /**
      * The final read only property.
      */

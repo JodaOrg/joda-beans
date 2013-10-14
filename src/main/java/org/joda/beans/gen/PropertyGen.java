@@ -118,12 +118,12 @@ class PropertyGen {
         for (int index = propertyIndex; index < content.size(); index++) {
             if (content.get(index).trim().startsWith("@") == false) {
                 if (content.get(index).trim().length() == 0) {
-                    throw new RuntimeException("Unable to locate field for property at line " + propertyIndex + ", found blank line");
+                    throw new RuntimeException("Unable to locate field for property at line " + (propertyIndex + 1) + ", found blank line");
                 }
                 return index;
             }
         }
-        throw new RuntimeException("Unable to locate field for property at line " + propertyIndex);
+        throw new RuntimeException("Unable to locate field for property at line " + (propertyIndex + 1));
     }
 
     private String parseGetStyle(List<String> content) {
@@ -180,14 +180,14 @@ class PropertyGen {
         if (last.endsWith(";") && last.length() > 1) {
             return last.substring(0, last.length() - 1);
         }
-        throw new RuntimeException("Unable to locate field name at line " + propertyIndex);
+        throw new RuntimeException("Unable to locate field name at line " + (propertyIndex + 1));
     }
 
     private boolean parseFinal(List<String> content) {
         String line = parseFieldDefinition(content);
         String[] parts = line.split(" ");
         if (parts.length < 2) {
-            throw new RuntimeException("Unable to locate field type at line " + propertyIndex);
+            throw new RuntimeException("Unable to locate field type at line " + (propertyIndex + 1));
         }
         if (parts[0].equals("final") || parts[1].equals("final") ||
                 (parts.length >= 3 && parts[2].equals("final"))) {
@@ -200,7 +200,7 @@ class PropertyGen {
         String line = parseFieldDefinition(content);
         String[] parts = line.split(" ");
         if (parts.length < 2) {
-            throw new RuntimeException("Unable to locate field type at line " + propertyIndex);
+            throw new RuntimeException("Unable to locate field type at line " + (propertyIndex + 1));
         }
         int partsPos = parts.length - 2;
         String type = parts[partsPos];
@@ -218,7 +218,7 @@ class PropertyGen {
                 break;
             }
             if (partsPos == 0) {
-                throw new RuntimeException("Unable to locate field type at line " + propertyIndex + ", mismatched generics");
+                throw new RuntimeException("Unable to locate field type at line " + (propertyIndex + 1) + ", mismatched generics");
             }
             partsPos--;
             type = parts[partsPos] + " " + type;
@@ -228,6 +228,9 @@ class PropertyGen {
 
     private String parseFieldDefinition(List<String> content) {
         String line = content.get(fieldIndex).trim();
+        if (line.contains("//")) {
+            line = line.substring(0, line.indexOf("//")).trim();
+        }
         if (line.contains(" = ")) {
             line = line.substring(0, line.indexOf(" = ")).trim() + ";";
         }
