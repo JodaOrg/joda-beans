@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.8.4" date="2013-10-xx" description="v0.8.4">
+    <release version="0.8.4" date="2013-10-14" description="v0.8.4">
       <action dev="scolebourne" type="add">
         Add setting to allow immutable builders to be private. Fixes #26.
       </action>
