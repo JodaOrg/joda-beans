@@ -235,10 +235,10 @@ public class Address extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("street").append('=').append(getStreet()).append(',').append(' ');
-        buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(getNumber())).append(',').append(' ');
+        buf.append("street").append('=').append(JodaBeanUtils.toString(getStreet())).append(',').append(' ');
+        buf.append("city").append('=').append(JodaBeanUtils.toString(getCity())).append(',').append(' ');
+        buf.append("owner").append('=').append(JodaBeanUtils.toString(getOwner())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

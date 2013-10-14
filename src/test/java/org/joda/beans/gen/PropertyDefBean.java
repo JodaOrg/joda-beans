@@ -383,7 +383,7 @@ public final class PropertyDefBean implements Bean {
         buf.append("arrayListAsCollection").append('=').append(getArrayListAsCollection()).append(',').append(' ');
         buf.append("arrayList").append('=').append(getArrayList()).append(',').append(' ');
         buf.append("listAsIterable").append('=').append(getListAsIterable()).append(',').append(' ');
-        buf.append("listAsIterableNoField").append('=').append(getListAsIterableNoField());
+        buf.append("listAsIterableNoField").append('=').append(JodaBeanUtils.toString(getListAsIterableNoField()));
         buf.append('}');
         return buf.toString();
     }

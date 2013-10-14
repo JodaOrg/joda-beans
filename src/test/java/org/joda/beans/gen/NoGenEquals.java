@@ -114,7 +114,7 @@ public final class NoGenEquals extends DirectBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("NoGenEquals{");
-        buf.append("value").append('=').append(getValue());
+        buf.append("value").append('=').append(JodaBeanUtils.toString(getValue()));
         buf.append('}');
         return buf.toString();
     }

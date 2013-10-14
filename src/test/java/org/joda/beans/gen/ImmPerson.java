@@ -300,7 +300,7 @@ public final class ImmPerson implements ImmutableBean {
         buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
         buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
         buf.append("codeCounts").append('=').append(getCodeCounts()).append(',').append(' ');
-        buf.append("age").append('=').append(getAge());
+        buf.append("age").append('=').append(JodaBeanUtils.toString(getAge()));
         buf.append('}');
         return buf.toString();
     }

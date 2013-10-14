@@ -132,7 +132,7 @@ public class SubValidateBean extends ValidateBean {
     @Override
     protected void toString(StringBuilder buf) {
         super.toString(buf);
-        buf.append("sub").append('=').append(getSub()).append(',').append(' ');
+        buf.append("sub").append('=').append(JodaBeanUtils.toString(getSub())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

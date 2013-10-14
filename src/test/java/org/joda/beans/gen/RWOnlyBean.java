@@ -257,12 +257,12 @@ public class RWOnlyBean extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("ro").append('=').append(getRo()).append(',').append(' ');
-        buf.append("wo").append('=').append(wo).append(',').append(' ');
-        buf.append("fin").append('=').append(getFin()).append(',').append(' ');
-        buf.append("priv").append('=').append(getPriv()).append(',').append(' ');
-        buf.append("manualGet").append('=').append(getManualGet()).append(',').append(' ');
-        buf.append("derived").append('=').append(getDerived()).append(',').append(' ');
+        buf.append("ro").append('=').append(JodaBeanUtils.toString(getRo())).append(',').append(' ');
+        buf.append("wo").append('=').append(JodaBeanUtils.toString(wo)).append(',').append(' ');
+        buf.append("fin").append('=').append(JodaBeanUtils.toString(getFin())).append(',').append(' ');
+        buf.append("priv").append('=').append(JodaBeanUtils.toString(getPriv())).append(',').append(' ');
+        buf.append("manualGet").append('=').append(JodaBeanUtils.toString(getManualGet())).append(',').append(' ');
+        buf.append("derived").append('=').append(JodaBeanUtils.toString(getDerived())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

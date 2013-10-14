@@ -161,7 +161,7 @@ public class Company
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("companyName").append('=').append(getCompanyName()).append(',').append(' ');
+        buf.append("companyName").append('=').append(JodaBeanUtils.toString(getCompanyName())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

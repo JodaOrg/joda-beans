@@ -136,7 +136,7 @@ public class DocumentationHolder extends DirectBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("documentation").append('=').append(getDocumentation()).append(',').append(' ');
+        buf.append("documentation").append('=').append(JodaBeanUtils.toString(getDocumentation())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

@@ -121,7 +121,7 @@ class BeanGen {
                 }
                 for (PropertyGen prop : properties) {
                     if (prop.getData().isDerived() == false && prop.getData().isFinal() == false) {
-                        throw new RuntimeException("ImmutableBean must be have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
+                        throw new RuntimeException("ImmutableBean must have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
                     }
                 }
             } else if (data.isImmutableConstructor()) {
@@ -690,7 +690,7 @@ class BeanGen {
                             "\").append('=').append(" + getter + ").append(',').append(' ');");
                 } else {
                     insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
-                            "\").append('=').append(" + getter + ");");
+                            "\").append('=').append(JodaBeanUtils.toString(" + getter + "));");
                 }
             }
             insertRegion.add("\t\tbuf.append('}');");
@@ -725,7 +725,7 @@ class BeanGen {
             PropertyGen prop = properties.get(i);
             String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
             insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
-                    "\").append('=').append(" + getter + ").append(',').append(' ');");
+                    "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }
         insertRegion.add("\t}");
         insertRegion.add("");
@@ -1019,7 +1019,7 @@ class BeanGen {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         }
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGeneric(true) + " set(String propertyName, Object newValue) {");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(String propertyName, Object newValue) {");
         if (nonDerived.size() > 0) {
             insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
             for (PropertyGen prop : nonDerived) {
@@ -1039,11 +1039,11 @@ class BeanGen {
     private void generateBuilderBuilder() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGeneric(true) + " build() {");
+        insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGenericName(true) + " build() {");
         if (nonDerived.size() == 0) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "();");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "();");
         } else {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGeneric(true) + "(");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "(");
             for (int i = 0; i < nonDerived.size(); i++) {
                 insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
             }

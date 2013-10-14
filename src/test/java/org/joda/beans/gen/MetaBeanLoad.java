@@ -161,7 +161,7 @@ public class MetaBeanLoad
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("name").append('=').append(getName()).append(',').append(' ');
+        buf.append("name").append('=').append(JodaBeanUtils.toString(getName())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

@@ -352,7 +352,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the bean type, such as {@code Foo<T extends Bar>}
+     * Gets the bean type, such as '{@code Foo<T extends Bar>}'.
      * @return the type
      */
     public String getType() {
@@ -360,7 +360,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the parameterisation of the bean including extends clause, such as {@code <T extends Bar>}
+     * Gets the parameterisation of the bean including extends clause, such as '{@code <T extends Bar>}'.
      * @param includeBrackets  whether to include the brackets
      * @return the generic type, or a blank string if not generic, not null
      */
@@ -370,7 +370,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the name of the parameterisation of the bean, such as {@code T}
+     * Gets the name of the parameterisation of the bean, such as '{@code <T>}'.
      * @param includeBrackets  whether to include the brackets
      * @return the generic type name, or a blank string if not generic, not null
      */
@@ -379,7 +379,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the extends clause of the parameterisation of the bean, such as {@code  extends Foo}
+     * Gets the extends clause of the parameterisation of the bean, such as '{@code  extends Foo}'.
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
     public String getTypeGenericExtends() {
@@ -387,7 +387,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the extends clause of the parameterisation of the bean, such as {@code Foo<T>}
+     * Gets the full type of the bean with simple parameterization, such as '{@code Foo<T>}'.
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
     public String getTypeNoExtends() {
@@ -395,7 +395,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the raw type of the bean without generics.
+     * Gets the raw type of the bean without generics, such as '{@code Foo}'.
      * @return the raw type, not null
      */
     public String getTypeRaw() {

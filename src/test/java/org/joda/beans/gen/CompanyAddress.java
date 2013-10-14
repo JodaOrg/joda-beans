@@ -126,7 +126,7 @@ public class CompanyAddress extends Address {
     @Override
     protected void toString(StringBuilder buf) {
         super.toString(buf);
-        buf.append("companyName").append('=').append(getCompanyName()).append(',').append(' ');
+        buf.append("companyName").append('=').append(JodaBeanUtils.toString(getCompanyName())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

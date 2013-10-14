@@ -387,11 +387,15 @@ class GeneratableProperty {
 
     /**
      * Checks if the type is the generic type of the bean.
-     * For example, if the property is of type T in a bean of Foo[T].
+     * For example, if the property is of type T or T[] in a bean of Foo[T].
      * @return true if matches
      */
     public boolean isBeanGenericType() {
-        return type.equals(bean.getTypeGenericName(false));
+        String stripped = type;
+        if (isArrayType()) {
+            stripped = type.substring(0, type.length() - 2);
+        }
+        return stripped.equals(bean.getTypeGenericName(false));
     }
 
     /**
@@ -600,6 +604,24 @@ class GeneratableProperty {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if this property is an array type.
+     * 
+     * @return true if it is an array type
+     */
+    public boolean isArrayType() {
+        return getType().endsWith("[]");
+    }
+
+    /**
+     * Checks if this property is an array type.
+     * 
+     * @return true if it is an array type
+     */
+    public boolean isGenericArrayType() {
+        return getType().endsWith("[]") && getType().length() == 3;
+    }
+
     /**
      * Checks if this property is a known collection type.
      * 

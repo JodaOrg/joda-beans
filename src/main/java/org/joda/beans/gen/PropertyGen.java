@@ -343,7 +343,7 @@ class PropertyGen {
         list.add("\t\t */");
         if (data.isBeanGenericType()) {
             list.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
-            list.add("\t\tprivate final MetaProperty<" + data.getBean().getTypeGenericName(false) + "> " + metaFieldName() +
+            list.add("\t\tprivate final MetaProperty<" + propertyType() + "> " + metaFieldName() +
                 " = (DirectMetaProperty) DirectMetaProperty.of" + readWrite() + "(");
             list.add("\t\t\t\tthis, \"" + data.getPropertyName() + "\", " +
                 data.getBean().getTypeRaw() + ".class, " + actualType() + ");");
@@ -401,12 +401,6 @@ class PropertyGen {
     List<String> generateMetaProperty() {
         List<String> list = new ArrayList<String>();
         String propertyType = propertyType();
-        if (propertyType.length() == 1) {
-            propertyType = "Object";
-        }
-        if (data.isBeanGenericType()) {
-            propertyType = data.getBean().getTypeGenericName(false);
-        }
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         if (data.isDeprecated()) {
@@ -496,7 +490,7 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        list.add("\t\tpublic Builder" + data.getBean().getTypeGeneric(true) + " " + data.getPropertyName() +
+        list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
                 "(" + getBuilderType() + " " + data.getPropertyName() + ") {");
         if (data.isValidated()) {
             list.add("\t\t\t" + data.getValidationMethodName() + "(" + data.getPropertyName() + ", \"" + data.getPropertyName() + "\");");
@@ -540,6 +534,9 @@ class PropertyGen {
             }
             if (data.getType().length() == 1) {
                 return "Object.class";
+            }
+            if (data.isGenericArrayType()) {
+                return "Object[].class";
             }
             return pt + ".class";
         }

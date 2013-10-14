@@ -348,7 +348,7 @@ public final class Person extends DirectBean {
         buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
         buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
         buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
-        buf.append("extensions").append('=').append(getExtensions());
+        buf.append("extensions").append('=').append(JodaBeanUtils.toString(getExtensions()));
         buf.append('}');
         return buf.toString();
     }
