@@ -36,7 +36,8 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public class Pair extends DirectBean {
+public class Pair  extends  DirectBean {
+    // extra spaces in definition
 
     /**
      * The first value.

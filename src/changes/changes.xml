@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.4" date="2013-10-xx" description="v0.8.4">
       <action dev="scolebourne" type="fix">
+        Handle extra spaces in class/extends definitions. Fixes #25.
+      </action>
+      <action dev="scolebourne" type="fix">
         Fix code generation for properties of generic type array.
         Where bean is Foo&lt;T&gt; and property is T[].
         Also where immutable bean and property is T.
