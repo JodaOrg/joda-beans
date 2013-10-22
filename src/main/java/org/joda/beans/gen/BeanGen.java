@@ -994,9 +994,10 @@ class BeanGen {
             return;
         }
         
-        boolean generics = data.isTypeGeneric() && properties.size() > 0;
+        boolean generics = false;
         for (GeneratableProperty prop : data.getProperties()) {
-            generics |= (prop.getStyle().isWritable() && prop.isGeneric() && prop.isGenericWildcardParamType() == false);
+            generics |= (prop.getStyle().isWritable() &&
+                    ((prop.isGeneric() && prop.isGenericWildcardParamType() == false) || data.isTypeGeneric()));
         }
         if (generics) {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");

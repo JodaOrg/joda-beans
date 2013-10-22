@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8.5" date="2013-10-xx" description="v0.8.5">
+      <action dev="scolebourne" type="fix">
+        Fix code generation unchecked annotation when no writable properties.
+      </action>
       <action dev="scolebourne" type="add">
         Allow beans to have two generic type parameters. Fixes #21.
       </action>
