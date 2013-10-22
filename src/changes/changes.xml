@@ -9,8 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8.5" date="2013-10-xx" description="v0.8.5">
+      <action dev="scolebourne" type="add">
+        Allow beans to have two generic type parameters. Fixes #21.
+      </action>
       <action dev="scolebourne" type="fix">
-        Fix code generation or private immutable builders. Fixes #26.
+        Fix code generation of private immutable builders. Fixes #26.
       </action>
       <action dev="scolebourne" type="fix">
         Parse trailing comments on property definitions. Fixes #27.

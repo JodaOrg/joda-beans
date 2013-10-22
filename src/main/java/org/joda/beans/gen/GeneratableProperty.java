@@ -395,7 +395,7 @@ class GeneratableProperty {
         if (isArrayType()) {
             stripped = type.substring(0, type.length() - 2);
         }
-        return stripped.equals(bean.getTypeGenericName(false));
+        return bean.isTypeGenerifiedBy(stripped);
     }
 
     /**

@@ -48,9 +48,9 @@ class GeneratableBean {
     /** The simple name of the bean class. */
     private String typeRaw;
     /** The name clause of the generic. */
-    private String typeGenericName;
+    private String[] typeGenericName;
     /** The extends clause of the generic. */
-    private String typeGenericExtends;
+    private String[] typeGenericExtends;
     /** Whether the type is final with no subclasses. */
     private boolean typeFinal;
     /** Whether the type is a root with no bean super-classes. */
@@ -313,8 +313,19 @@ class GeneratableBean {
         this.typeFinal = parts[0] != null;
         this.typeFull = parts[1];
         this.typeRaw = parts[2];
-        this.typeGenericName = parts[3] != null ? parts[3] : "";
-        this.typeGenericExtends = parts[4] != null ? parts[4] : "";
+        if (parts[5] != null) {
+            this.typeGenericName = new String[] {parts[3], parts[5]};
+            this.typeGenericExtends = new String[2];
+            this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
+            this.typeGenericExtends[1] = parts[6] != null ? parts[6] : "";
+        } else if (parts[3] != null) {
+            this.typeGenericName = new String[] {parts[3]};
+            this.typeGenericExtends = new String[1];
+            this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
+        } else {
+            this.typeGenericName = new String[0];
+            this.typeGenericExtends = new String[0];
+        }
     }
 
     /**
@@ -333,7 +344,13 @@ class GeneratableBean {
             this.immutable = false;
             this.superTypeFull = parts[0];
             this.superTypeRaw = parts[1];
-            this.superTypeGeneric = parts[2] != null ? parts[2] : "";
+            if (parts[3] != null) {
+                this.superTypeGeneric = parts[2] + ", " + parts[3];
+            } else if (parts[2] != null) {
+                this.superTypeGeneric = parts[2];
+            } else {
+                this.superTypeGeneric = "";
+            }
         }
     }
 
@@ -392,7 +409,15 @@ class GeneratableBean {
      * @return true if generified
      */
     public boolean isTypeGeneric() {
-        return typeGenericName.length() > 0;
+        return typeGenericName.length > 0;
+    }
+
+    /**
+     * Gets the number of generic type parameters.
+     * @return zero if no type parameters, one or two if it has type parameters
+     */
+    public int getTypeGenericCount() {
+        return typeGenericName.length;
     }
 
     /**
@@ -409,7 +434,13 @@ class GeneratableBean {
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getTypeGeneric(boolean includeBrackets) {
-        String result = typeGenericName + typeGenericExtends;
+        if (isTypeGeneric() == false) {
+            return "";
+        }
+        String result = typeGenericName[0] + typeGenericExtends[0];
+        if (typeGenericExtends.length > 1) {
+            result += ", " + typeGenericName[1] + typeGenericExtends[1];
+        }
         return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
     }
 
@@ -419,15 +450,33 @@ class GeneratableBean {
      * @return the generic type name, or a blank string if not generic, not null
      */
     public String getTypeGenericName(boolean includeBrackets) {
-        return includeBrackets && typeGenericName.length() > 0 ? '<' + typeGenericName + '>' : typeGenericName;
+        if (isTypeGeneric() == false) {
+            return "";
+        }
+        String result = typeGenericName[0];
+        if (typeGenericExtends.length > 1) {
+            result += ", " + typeGenericName[1];
+        }
+        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
     }
 
     /**
      * Gets the extends clause of the parameterisation of the bean, such as '{@code  extends Foo}'.
+     * @param typeParamIndex  the zero-based index of the type parameter
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
-    public String getTypeGenericExtends() {
-        return typeGenericExtends;
+    public String getTypeGenericExtends(int typeParamIndex) {
+        return typeGenericExtends[typeParamIndex];
+    }
+
+    /**
+     * Gets the extends clause of the parameterisation of the bean, such as '{@code  extends Foo}'.
+     * @param typeParamIndex  the zero-based index of the type parameter
+     * @return the generic type extends clause, or a blank string if not generic or no extends, not null
+     */
+    public String getTypeGenericExtends(int typeParamIndex, String typeParamName) {
+        String genericClause = typeGenericExtends[typeParamIndex];
+        return genericClause.replace("<" + typeGenericName[typeParamIndex] + ">", "<" + typeParamName + ">");
     }
 
     /**
@@ -435,7 +484,7 @@ class GeneratableBean {
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
     public String getTypeNoExtends() {
-        return typeFull.replace(typeGenericExtends, "");
+        return typeRaw + getTypeGenericName(true);
     }
 
     /**
@@ -447,11 +496,32 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the wildcarded type.
+     * Gets the full type of the bean with wildcarded parameterization, such as '{@code Foo<?>}'.
      * @return the wildcarded type, not null
      */
     public String getTypeWildcard() {
-        return typeRaw + (isTypeGeneric() ? "<?>" : "");
+        if (isTypeGeneric() == false) {
+            return typeRaw;
+        }
+        String result = "?";
+        if (typeGenericExtends.length > 1) {
+            result += ", ?";
+        }
+        return typeRaw + '<' + result + '>';
+    }
+
+    /**
+     * Checks if the type specified is one of the bean's type parameters.
+     * @return true if a type parameter of this bean
+     */
+    public boolean isTypeGenerifiedBy(String type) {
+        if (typeGenericName.length > 1 && typeGenericName[1].equals(type)) {
+            return true;
+        }
+        if (typeGenericName.length > 0 && typeGenericName[0].equals(type)) {
+            return true;
+        }
+        return false;
     }
 
     //-----------------------------------------------------------------------
