@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.8.5" date="xx" description="v0.8.6">
+    <release version="0.8.6" date="2013-11-06" description="v0.8.6">
       <action dev="scolebourne" type="fix">
         XML generation of beans with no fields broken.
         Affected COMPACT mode, not PRETTY mode.
