@@ -202,11 +202,12 @@ public class JodaBeanXmlWriter {
             String typeStr = settings.encodeClass(value.getClass(), basePackage, knownTypes);
             appendAttribute(builder, TYPE, typeStr);
         }
+        int insertPoint = builder.length();
         builder.append('>').append(settings.getNewLine());
         if (writeBean(value, currentIndent + settings.getIndent())) {
             builder.append(currentIndent).append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
         } else {
-            builder.insert(builder.length() - 2, '/');
+            builder.insert(insertPoint, '/');
         }
     }
 

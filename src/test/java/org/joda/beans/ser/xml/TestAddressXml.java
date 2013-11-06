@@ -15,6 +15,8 @@
  */
 package org.joda.beans.ser.xml;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +26,10 @@ import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Company;
 import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
+import org.joda.beans.gen.ImmEmpty;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Person;
+import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.Test;
@@ -130,6 +134,26 @@ public class TestAddressXml {
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, address);
+    }
+
+    public void test_readWriteBeanEmptyChild_pretty() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("element", "Test");
+        bean.set("child", ImmEmpty.builder().build());
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
+        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bean type=\"org.joda.beans.impl.flexi.FlexiBean\">\n <element>Test</element>\n <child type=\"org.joda.beans.gen.ImmEmpty\"/>\n</bean>\n");
+        FlexiBean parsed = JodaBeanSer.PRETTY.xmlReader().read(xml, FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_readWriteBeanEmptyChild_compact() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("element", "Test");
+        bean.set("child", ImmEmpty.builder().build());
+        String xml = JodaBeanSer.COMPACT.xmlWriter().write(bean);
+        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.impl.flexi.FlexiBean\"><element>Test</element><child type=\"org.joda.beans.gen.ImmEmpty\"/></bean>");
+        FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
 }
