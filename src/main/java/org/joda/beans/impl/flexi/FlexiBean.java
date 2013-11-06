@@ -18,7 +18,7 @@ package org.joda.beans.impl.flexi;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -99,7 +99,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      */
     private Map<String, Object> dataWritable() {
         if (data == Collections.EMPTY_MAP) {
-            data = new HashMap<String, Object>();
+            data = new LinkedHashMap<String, Object>();
         }
         return data;
     }
@@ -310,7 +310,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
                 }
             }
             if (data == Collections.EMPTY_MAP) {
-                data = new HashMap<String, Object>(map);
+                data = new LinkedHashMap<String, Object>(map);
             } else {
                 data.putAll(map);
             }
@@ -327,7 +327,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     public void putAll(FlexiBean other) {
         if (other.size() > 0) {
             if (data == Collections.EMPTY_MAP) {
-                data = new HashMap<String, Object>(other.data);
+                data = new LinkedHashMap<String, Object>(other.data);
             } else {
                 data.putAll(other.data);
             }
@@ -428,7 +428,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
         if (size() == 0) {
             return Collections.emptyMap();
         }
-        return Collections.unmodifiableMap(new HashMap<String, Object>(data));
+        return Collections.unmodifiableMap(new LinkedHashMap<String, Object>(data));
     }
 
     //-----------------------------------------------------------------------

@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.8.5" date="xx" description="v0.8.6">
+      <action dev="scolebourne" type="fix">
+        FlexiMap should retain the order of properties.
+        Use LinkedHashMap not HashMap. 
+        Fixes #31.
+      </action>
+    </release>
     <release version="0.8.5" date="2013-10-22" description="v0.8.5">
       <action dev="scolebourne" type="fix">
         Fix code generation unchecked annotation when no writable properties.
