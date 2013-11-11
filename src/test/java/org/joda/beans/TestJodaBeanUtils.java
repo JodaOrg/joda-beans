@@ -19,6 +19,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -331,6 +332,54 @@ public class TestJodaBeanUtils {
         
         List<Class<?>> expected = Collections.emptyList();
         assertEquals(JodaBeanUtils.mapValueTypeTypes(test, Person.class), expected);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void equalIgnoring() {
+        Bean bean1 = createBean("123", "321", "name1");
+        Bean bean2 = createBean("124", "321", "name1");
+        // first not ignored
+        assertFalse(JodaBeanUtils.equalIgnoring(bean1, bean2));
+        assertFalse(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("second")));
+        assertFalse(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("second"), bean1.metaBean().metaProperty("name")));
+        // first is ignored
+        assertTrue(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("first")));
+        assertTrue(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("first"), bean1.metaBean().metaProperty("second")));
+    }
+
+    @Test
+    public void equalIgnoring_same() {
+        Bean bean1 = createBean("123", "321", "name1");
+        Bean bean2 = createBean("124", "321", "name1");
+        assertTrue(JodaBeanUtils.equalIgnoring(bean1, bean1));
+        assertTrue(JodaBeanUtils.equalIgnoring(bean2, bean2));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void equalIgnoring_nullFirst() {
+        Bean bean = createBean("124", "321", "name1");
+        JodaBeanUtils.equalIgnoring(null, bean);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void equalIgnoring_nullSecond() {
+        Bean bean = createBean("124", "321", "name1");
+        JodaBeanUtils.equalIgnoring(bean, null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void equalIgnoring_nullArray() {
+        Bean bean = createBean("124", "321", "name1");
+        JodaBeanUtils.equalIgnoring(bean, bean, (MetaProperty<?>[]) null);
+    }
+
+    private static Bean createBean(String first, String second, String name) {
+        FlexiBean bean = new FlexiBean();
+        bean.propertySet("first", first);
+        bean.propertySet("second", second);
+        bean.propertySet("name", name);
+        return bean;
     }
 
     //-------------------------------------------------------------------------

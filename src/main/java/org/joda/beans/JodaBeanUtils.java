@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -648,6 +649,54 @@ public final class JodaBeanUtils {
             }
         }
         return null;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if two beans are equal ignoring one or more properties.
+     * <p>
+     * This version of {@code equalIgnoring} only checks properties at the top level.
+     * For example, if a {@code Person} bean contains an {@code Address} bean then
+     * only properties on the {@code Person} bean will be checked against the ignore list.
+     * 
+     * @param bean1  the first bean, not null
+     * @param bean2  the second bean, not null
+     * @param properties  the properties to ignore, not null
+     * @return true if equal
+     * @throws IllegalArgumentException if inputs are null
+     */
+    public static boolean equalIgnoring(Bean bean1, Bean bean2, MetaProperty<?>... properties) {
+        JodaBeanUtils.notNull(bean1, "bean1");
+        JodaBeanUtils.notNull(bean2, "bean2");
+        JodaBeanUtils.notNull(properties, "properties");
+        if (bean1 == bean2) {
+            return true;
+        }
+        if (bean1.getClass() != bean2.getClass()) {
+            return false;
+        }
+        switch (properties.length) {
+            case 0:
+                return bean1.equals(bean2);
+            case 1: {
+                MetaProperty<?> ignored = properties[0];
+                for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
+                    if (ignored.equals(mp) == false && JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2)) == false) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            default:
+                Set<MetaProperty<?>> ignored = new HashSet<MetaProperty<?>>(Arrays.asList(properties));
+                for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
+                    if (ignored.contains(mp) == false
+                            && JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2)) == false) {
+                        return false;
+                    }
+                }
+                return true;
+        }
     }
 
     //-------------------------------------------------------------------------
