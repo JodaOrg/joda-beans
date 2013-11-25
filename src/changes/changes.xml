@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8.7" date="2013-11-xx" description="v0.8.7">
+      <action dev="scolebourne" type="update">
+        Enhance PropertyStyle. Add isReadOnly().
+        Fixes #33.
+      </action>
       <action dev="scolebourne" type="add">
         Add 'equalIgnoring' utility to compare two beans ignoring one or more properties.
         Fixes #32.

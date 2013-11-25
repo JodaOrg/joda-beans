@@ -29,30 +29,45 @@ public class TestPropertyStyle {
         assertEquals(PropertyStyle.READ_ONLY.isReadable(), true);
         assertEquals(PropertyStyle.READ_ONLY.isWritable(), false);
         assertEquals(PropertyStyle.READ_ONLY.isBuildable(), false);
+        assertEquals(PropertyStyle.READ_ONLY.isReadOnly(), true);
+        assertEquals(PropertyStyle.READ_ONLY.isDerived(), false);
+        assertEquals(PropertyStyle.READ_ONLY.isSerializable(), false);
     }
 
     public void test_READ_WRITE() {
         assertEquals(PropertyStyle.READ_WRITE.isReadable(), true);
         assertEquals(PropertyStyle.READ_WRITE.isWritable(), true);
         assertEquals(PropertyStyle.READ_WRITE.isBuildable(), true);
+        assertEquals(PropertyStyle.READ_WRITE.isReadOnly(), false);
+        assertEquals(PropertyStyle.READ_WRITE.isDerived(), false);
+        assertEquals(PropertyStyle.READ_WRITE.isSerializable(), true);
     }
 
     public void test_WRITE_ONLY() {
         assertEquals(PropertyStyle.WRITE_ONLY.isReadable(), false);
         assertEquals(PropertyStyle.WRITE_ONLY.isWritable(), true);
         assertEquals(PropertyStyle.WRITE_ONLY.isBuildable(), true);
+        assertEquals(PropertyStyle.WRITE_ONLY.isReadOnly(), false);
+        assertEquals(PropertyStyle.WRITE_ONLY.isDerived(), false);
+        assertEquals(PropertyStyle.WRITE_ONLY.isSerializable(), false);
     }
 
     public void test_DERIVED() {
         assertEquals(PropertyStyle.DERIVED.isReadable(), true);
         assertEquals(PropertyStyle.DERIVED.isWritable(), false);
         assertEquals(PropertyStyle.DERIVED.isBuildable(), false);
+        assertEquals(PropertyStyle.DERIVED.isReadOnly(), true);
+        assertEquals(PropertyStyle.DERIVED.isDerived(), true);
+        assertEquals(PropertyStyle.DERIVED.isSerializable(), false);
     }
 
     public void test_IMMUTABLE() {
         assertEquals(PropertyStyle.IMMUTABLE.isReadable(), true);
         assertEquals(PropertyStyle.IMMUTABLE.isWritable(), false);
         assertEquals(PropertyStyle.IMMUTABLE.isBuildable(), true);
+        assertEquals(PropertyStyle.IMMUTABLE.isReadOnly(), true);
+        assertEquals(PropertyStyle.IMMUTABLE.isDerived(), false);
+        assertEquals(PropertyStyle.IMMUTABLE.isSerializable(), true);
     }
 
 }

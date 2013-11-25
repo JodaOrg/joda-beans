@@ -53,6 +53,8 @@ public enum PropertyStyle {
     //-----------------------------------------------------------------------
     /**
      * Checks whether the property is readable.
+     * <p>
+     * This checks if the property get method will succeed.
      * 
      * @return true if the property can be read
      */
@@ -62,6 +64,8 @@ public enum PropertyStyle {
 
     /**
      * Checks whether the property is writable.
+     * <p>
+     * This checks if the property set method will succeed.
      * 
      * @return true if the property can be written
      */
@@ -70,7 +74,22 @@ public enum PropertyStyle {
     }
 
     /**
+     * Checks whether the property is read-only.
+     * <p>
+     * This checks if the property get method will succeed and the set method fail.
+     * Read-only, derived and immutable properties will return true.
+     * Note that an immutable property can be written via the builder.
+     * 
+     * @return true if the property is derived
+     */
+    public boolean isReadOnly() {
+        return this == READ_ONLY || this == DERIVED || this == IMMUTABLE;
+    }
+
+    /**
      * Checks whether the property can be used in the builder.
+     * <p>
+     * To check for round-trip behavior, use {@link #isSerializable()}.
      * 
      * @return true if the property can be used in the builder
      */
@@ -80,6 +99,8 @@ public enum PropertyStyle {
 
     /**
      * Checks whether the property is derived.
+     * <p>
+     * A derived property has no instance variable.
      * 
      * @return true if the property is derived
      */
@@ -89,6 +110,8 @@ public enum PropertyStyle {
 
     /**
      * Checks whether the property can be serialized in a round-trip.
+     * <p>
+     * A property that is read-write or immutable can be round-trip serialized.
      * 
      * @return true if the property is serializable
      */
