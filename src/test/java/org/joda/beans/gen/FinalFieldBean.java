@@ -147,7 +147,7 @@ public class FinalFieldBean extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the list that is final.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public List<String> getListFinal() {
         return listFinal;
@@ -155,9 +155,10 @@ public class FinalFieldBean extends DirectBean {
 
     /**
      * Sets the list that is final.
-     * @param listFinal  the new value of the property
+     * @param listFinal  the new value of the property, not null
      */
     public void setListFinal(List<String> listFinal) {
+        JodaBeanUtils.notNull(listFinal, "listFinal");
         this.listFinal.clear();
         this.listFinal.addAll(listFinal);
     }
@@ -173,7 +174,7 @@ public class FinalFieldBean extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the flexi that is final.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public FlexiBean getFlexiFinal() {
         return flexiFinal;
@@ -181,9 +182,10 @@ public class FinalFieldBean extends DirectBean {
 
     /**
      * Sets the flexi that is final.
-     * @param flexiFinal  the new value of the property
+     * @param flexiFinal  the new value of the property, not null
      */
     public void setFlexiFinal(FlexiBean flexiFinal) {
+        JodaBeanUtils.notNull(flexiFinal, "flexiFinal");
         this.flexiFinal.clear();
         this.flexiFinal.putAll(flexiFinal);
     }
@@ -199,7 +201,7 @@ public class FinalFieldBean extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the person that is final.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public Person getPersonFinal() {
         return personFinal;
@@ -446,6 +448,13 @@ public class FinalFieldBean extends DirectBean {
                     throw new UnsupportedOperationException("Property cannot be written: personFinal");
             }
             super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((FinalFieldBean) bean).listFinal, "listFinal");
+            JodaBeanUtils.notNull(((FinalFieldBean) bean).flexiFinal, "flexiFinal");
+            JodaBeanUtils.notNull(((FinalFieldBean) bean).personFinal, "personFinal");
         }
 
     }

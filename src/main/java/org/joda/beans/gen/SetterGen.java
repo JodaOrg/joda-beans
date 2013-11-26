@@ -115,12 +115,15 @@ abstract class SetterGen {
             for (String comment : prop.getComments()) {
                 list.add(indent + " * " + comment);
             }
-            list.add(indent + " * @param " + prop.getPropertyName() + "  the new value of the property");
+            list.add(indent + " * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
             list.add(indent + " */");
             if (prop.isDeprecated()) {
                 list.add(indent + "@Deprecated");
             }
             list.add(indent + access + " void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            if (prop.isValidated()) {
+                list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
+            }
             final String[] split = setPattern.split("\n");
             for (String line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());

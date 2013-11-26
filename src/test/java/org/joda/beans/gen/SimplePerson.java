@@ -179,7 +179,7 @@ public final class SimplePerson implements Cloneable, Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the addressList.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public List<Address> getAddressList() {
         return addressList;
@@ -187,9 +187,10 @@ public final class SimplePerson implements Cloneable, Bean {
 
     /**
      * Sets the addressList.
-     * @param addressList  the new value of the property
+     * @param addressList  the new value of the property, not null
      */
     public void setAddressList(List<Address> addressList) {
+        JodaBeanUtils.notNull(addressList, "addressList");
         this.addressList.clear();
         this.addressList.addAll(addressList);
     }
@@ -205,7 +206,7 @@ public final class SimplePerson implements Cloneable, Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the otherAddressMap.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public Map<String, Address> getOtherAddressMap() {
         return otherAddressMap;
@@ -213,9 +214,10 @@ public final class SimplePerson implements Cloneable, Bean {
 
     /**
      * Sets the otherAddressMap.
-     * @param otherAddressMap  the new value of the property
+     * @param otherAddressMap  the new value of the property, not null
      */
     public void setOtherAddressMap(Map<String, Address> otherAddressMap) {
+        JodaBeanUtils.notNull(otherAddressMap, "otherAddressMap");
         this.otherAddressMap.clear();
         this.otherAddressMap.putAll(otherAddressMap);
     }
@@ -231,7 +233,7 @@ public final class SimplePerson implements Cloneable, Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the addressesList.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public List<List<Address>> getAddressesList() {
         return addressesList;
@@ -239,9 +241,10 @@ public final class SimplePerson implements Cloneable, Bean {
 
     /**
      * Sets the addressesList.
-     * @param addressesList  the new value of the property
+     * @param addressesList  the new value of the property, not null
      */
     public void setAddressesList(List<List<Address>> addressesList) {
+        JodaBeanUtils.notNull(addressesList, "addressesList");
         this.addressesList.clear();
         this.addressesList.addAll(addressesList);
     }
@@ -282,7 +285,7 @@ public final class SimplePerson implements Cloneable, Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the propDefAnnotationSecondDeprecated.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     @Deprecated
     public FlexiBean getPropDefAnnotationSecondDeprecated() {
@@ -291,10 +294,11 @@ public final class SimplePerson implements Cloneable, Bean {
 
     /**
      * Sets the propDefAnnotationSecondDeprecated.
-     * @param propDefAnnotationSecondDeprecated  the new value of the property
+     * @param propDefAnnotationSecondDeprecated  the new value of the property, not null
      */
     @Deprecated
     public void setPropDefAnnotationSecondDeprecated(FlexiBean propDefAnnotationSecondDeprecated) {
+        JodaBeanUtils.notNull(propDefAnnotationSecondDeprecated, "propDefAnnotationSecondDeprecated");
         this.propDefAnnotationSecondDeprecated.clear();
         this.propDefAnnotationSecondDeprecated.putAll(propDefAnnotationSecondDeprecated);
     }
@@ -646,6 +650,14 @@ public final class SimplePerson implements Cloneable, Bean {
                     return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((SimplePerson) bean).addressList, "addressList");
+            JodaBeanUtils.notNull(((SimplePerson) bean).otherAddressMap, "otherAddressMap");
+            JodaBeanUtils.notNull(((SimplePerson) bean).addressesList, "addressesList");
+            JodaBeanUtils.notNull(((SimplePerson) bean).propDefAnnotationSecondDeprecated, "propDefAnnotationSecondDeprecated");
         }
 
     }

@@ -162,7 +162,7 @@ public final class Person extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the addressList.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public List<Address> getAddressList() {
         return addressList;
@@ -170,9 +170,10 @@ public final class Person extends DirectBean {
 
     /**
      * Sets the addressList.
-     * @param addressList  the new value of the property
+     * @param addressList  the new value of the property, not null
      */
     public void setAddressList(List<Address> addressList) {
+        JodaBeanUtils.notNull(addressList, "addressList");
         this.addressList.clear();
         this.addressList.addAll(addressList);
     }
@@ -188,7 +189,7 @@ public final class Person extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the otherAddressMap.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public Map<String, Address> getOtherAddressMap() {
         return otherAddressMap;
@@ -196,9 +197,10 @@ public final class Person extends DirectBean {
 
     /**
      * Sets the otherAddressMap.
-     * @param otherAddressMap  the new value of the property
+     * @param otherAddressMap  the new value of the property, not null
      */
     public void setOtherAddressMap(Map<String, Address> otherAddressMap) {
+        JodaBeanUtils.notNull(otherAddressMap, "otherAddressMap");
         this.otherAddressMap.clear();
         this.otherAddressMap.putAll(otherAddressMap);
     }
@@ -214,7 +216,7 @@ public final class Person extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the addressesList.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public List<List<Address>> getAddressesList() {
         return addressesList;
@@ -222,9 +224,10 @@ public final class Person extends DirectBean {
 
     /**
      * Sets the addressesList.
-     * @param addressesList  the new value of the property
+     * @param addressesList  the new value of the property, not null
      */
     public void setAddressesList(List<List<Address>> addressesList) {
+        JodaBeanUtils.notNull(addressesList, "addressesList");
         this.addressesList.clear();
         this.addressesList.addAll(addressesList);
     }
@@ -265,7 +268,7 @@ public final class Person extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * Gets the extensions.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public FlexiBean getExtensions() {
         return extensions;
@@ -273,9 +276,10 @@ public final class Person extends DirectBean {
 
     /**
      * Sets the extensions.
-     * @param extensions  the new value of the property
+     * @param extensions  the new value of the property, not null
      */
     public void setExtensions(FlexiBean extensions) {
+        JodaBeanUtils.notNull(extensions, "extensions");
         this.extensions.clear();
         this.extensions.putAll(extensions);
     }
@@ -583,6 +587,14 @@ public final class Person extends DirectBean {
                     return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((Person) bean).addressList, "addressList");
+            JodaBeanUtils.notNull(((Person) bean).otherAddressMap, "otherAddressMap");
+            JodaBeanUtils.notNull(((Person) bean).addressesList, "addressesList");
+            JodaBeanUtils.notNull(((Person) bean).extensions, "extensions");
         }
 
     }

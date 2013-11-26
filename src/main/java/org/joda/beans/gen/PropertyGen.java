@@ -72,6 +72,7 @@ class PropertyGen {
             prop.setPropertyName(parseMethodNameAsPropertyName(content));
             prop.setUpperName(makeUpperName(prop.getPropertyName()));
             prop.setFieldType(parseMethodType(content));
+            prop.setInitializer(parseFieldInitializer(content));
         } else {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
@@ -83,12 +84,14 @@ class PropertyGen {
             prop.setUpperName(makeUpperName(prop.getPropertyName()));
             prop.setFinal(parseFinal(content));
             prop.setFieldType(parseFieldType(content));
+            prop.setInitializer(parseFieldInitializer(content));
         }
         prop.resolveType();
         prop.resolveGetterGen();
         prop.resolveSetterGen();
         prop.resolveCopyGen();
         prop.resolveBuilderGen();
+        prop.resolveValidation();
         List<String> comments = parseComment(content, prop.getPropertyName());
         prop.setFirstComment(comments.get(0));
         prop.getComments().addAll(comments.subList(1, comments.size()));
@@ -235,6 +238,21 @@ class PropertyGen {
             line = line.substring(0, line.indexOf(" = ")).trim() + ";";
         }
         return line;
+    }
+
+    private String parseFieldInitializer(List<String> content) {
+        String line = content.get(fieldIndex).trim();
+        if (line.contains("//")) {
+            line = line.substring(0, line.indexOf("//")).trim();
+        }
+        if (line.contains(" = ")) {
+            line = line.substring(line.indexOf(" = ") + 3).trim();
+            if (line.endsWith(";") == false) {
+                throw new RuntimeException("Field line does not end with semi-colon");
+            }
+            return line.substring(0, line.length() - 1).trim();
+        }
+        return "";
     }
 
     //-----------------------------------------------------------------------

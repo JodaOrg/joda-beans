@@ -59,6 +59,8 @@ class GeneratableProperty {
     private String fieldType;
     /** Whether the field is declared final. */
     private boolean isFinal;
+    /** The field initializer. */
+    private String initializer;
     /** The getter style. */
     private String getStyle;
     /** The setter style. */
@@ -244,6 +246,22 @@ class GeneratableProperty {
     }
 
     /**
+     * Gets the field initializer.
+     * @return the initializer
+     */
+    public String getInitializer() {
+        return initializer;
+    }
+
+    /**
+     * Sets the field initializer.
+     * @param type  the field initializer
+     */
+    public void setInitializer(String initializer) {
+        this.initializer = initializer;
+    }
+
+    /**
      * Gets the getter style.
      * @return the getter style
      */
@@ -305,6 +323,15 @@ class GeneratableProperty {
      */
     public void setValidation(String validation) {
         this.validation = validation;
+    }
+
+    /**
+     * Resolves validation.
+     */
+    public void resolveValidation() {
+        if (isFinal() && getInitializer().length() > 0 &&  getValidation().length() == 0) {
+            setValidation("notNull");
+        }
     }
 
     /**

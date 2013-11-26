@@ -169,7 +169,7 @@ public final class PropertyDefBean implements Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the arrayListSmart.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public ArrayList<Address> getArrayListSmart() {
         return arrayListSmart;
@@ -177,9 +177,10 @@ public final class PropertyDefBean implements Bean {
 
     /**
      * Sets the arrayListSmart.
-     * @param arrayListSmart  the new value of the property
+     * @param arrayListSmart  the new value of the property, not null
      */
     public void setArrayListSmart(ArrayList<Address> arrayListSmart) {
+        JodaBeanUtils.notNull(arrayListSmart, "arrayListSmart");
         this.arrayListSmart.clear();
         this.arrayListSmart.addAll(arrayListSmart);
     }
@@ -195,7 +196,7 @@ public final class PropertyDefBean implements Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the arrayListExposed.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public ArrayList<Address> getArrayListExposed() {
         return arrayListExposed;
@@ -203,9 +204,10 @@ public final class PropertyDefBean implements Bean {
 
     /**
      * Sets the arrayListExposed.
-     * @param arrayListExposed  the new value of the property
+     * @param arrayListExposed  the new value of the property, not null
      */
     public void setArrayListExposed(ArrayList<Address> arrayListExposed) {
+        JodaBeanUtils.notNull(arrayListExposed, "arrayListExposed");
         this.arrayListExposed.clear();
         this.arrayListExposed.addAll(arrayListExposed);
     }
@@ -221,7 +223,7 @@ public final class PropertyDefBean implements Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the arrayListAsCollection.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public Collection<Address> getArrayListAsCollection() {
         return arrayListAsCollection;
@@ -229,9 +231,10 @@ public final class PropertyDefBean implements Bean {
 
     /**
      * Sets the arrayListAsCollection.
-     * @param arrayListAsCollection  the new value of the property
+     * @param arrayListAsCollection  the new value of the property, not null
      */
     public void setArrayListAsCollection(Collection<Address> arrayListAsCollection) {
+        JodaBeanUtils.notNull(arrayListAsCollection, "arrayListAsCollection");
         this.arrayListAsCollection.clear();
         this.arrayListAsCollection.addAll(arrayListAsCollection);
     }
@@ -247,7 +250,7 @@ public final class PropertyDefBean implements Bean {
     //-----------------------------------------------------------------------
     /**
      * Gets the arrayList.
-     * @return the value of the property
+     * @return the value of the property, not null
      */
     public ArrayList<Address> getArrayList() {
         return arrayList;
@@ -255,9 +258,10 @@ public final class PropertyDefBean implements Bean {
 
     /**
      * Sets the arrayList.
-     * @param arrayList  the new value of the property
+     * @param arrayList  the new value of the property, not null
      */
     public void setArrayList(ArrayList<Address> arrayList) {
+        JodaBeanUtils.notNull(arrayList, "arrayList");
         this.arrayList.clear();
         this.arrayList.addAll(arrayList);
     }
@@ -643,6 +647,14 @@ public final class PropertyDefBean implements Bean {
                     return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+        @Override
+        protected void validate(Bean bean) {
+            JodaBeanUtils.notNull(((PropertyDefBean) bean).arrayListSmart, "arrayListSmart");
+            JodaBeanUtils.notNull(((PropertyDefBean) bean).arrayListExposed, "arrayListExposed");
+            JodaBeanUtils.notNull(((PropertyDefBean) bean).arrayListAsCollection, "arrayListAsCollection");
+            JodaBeanUtils.notNull(((PropertyDefBean) bean).arrayList, "arrayList");
         }
 
     }
