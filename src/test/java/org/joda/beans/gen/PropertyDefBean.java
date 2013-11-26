@@ -472,7 +472,7 @@ public final class PropertyDefBean implements Bean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

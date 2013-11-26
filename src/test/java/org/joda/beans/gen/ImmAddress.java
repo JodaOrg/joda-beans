@@ -111,7 +111,6 @@ public final class ImmAddress implements ImmutableBean {
 
     /**
      * Returns a builder used to create an instance of the bean.
-     *
      * @return the builder, not null
      */
     public static ImmAddress.Builder builder() {
@@ -408,7 +407,7 @@ public final class ImmAddress implements ImmutableBean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

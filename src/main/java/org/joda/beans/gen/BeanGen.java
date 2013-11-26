@@ -472,7 +472,6 @@ class BeanGen {
         if (data.isImmutable() && data.isEffectiveBuilderScopePublic()) {
             insertRegion.add("\t/**");
             insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
-            insertRegion.add("\t *");
             if (data.isTypeGeneric()) {
                 insertRegion.add("\t * @param " + data.getTypeGenericName(true) + "  the type");
             }
@@ -848,7 +847,7 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprotected Meta() {");
+        insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Meta() {");
         insertRegion.add("\t\t}");
         insertRegion.add("");
         generateMetaPropertyGet();
@@ -1045,10 +1044,11 @@ class BeanGen {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         data.ensureImport(BasicImmutableBeanBuilder.class);
         generateSeparator();
+        String finalType = data.isTypeFinal() ? "final " : "";
         insertRegion.add("\t/**");
         insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
-        insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + (data.isTypeFinal() ? "final " : "") +
+        insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + finalType +
                 "class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
         if (nonDerived.size() > 0) {
             insertRegion.add("");
@@ -1072,7 +1072,7 @@ class BeanGen {
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate Builder() {");
+        insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder() {");
         insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t\t}");
         insertRegion.add("");
@@ -1086,7 +1086,7 @@ class BeanGen {
                 insertRegion.add("\t\t * Restricted copy constructor.");
                 insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
                 insertRegion.add("\t\t */");
-                insertRegion.add("\t\tprivate Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
+                insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
                 insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));

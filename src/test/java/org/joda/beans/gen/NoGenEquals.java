@@ -144,7 +144,7 @@ public final class NoGenEquals extends DirectBean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

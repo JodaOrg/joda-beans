@@ -474,7 +474,7 @@ public final class SimplePerson implements Cloneable, Bean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

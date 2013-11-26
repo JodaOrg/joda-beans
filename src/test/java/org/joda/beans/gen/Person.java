@@ -427,7 +427,7 @@ public final class Person extends DirectBean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

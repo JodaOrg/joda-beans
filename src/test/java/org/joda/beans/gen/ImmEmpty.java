@@ -52,7 +52,6 @@ public final class ImmEmpty implements ImmutableBean {
 
     /**
      * Returns a builder used to create an instance of the bean.
-     *
      * @return the builder, not null
      */
     public static ImmEmpty.Builder builder() {
@@ -127,7 +126,7 @@ public final class ImmEmpty implements ImmutableBean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

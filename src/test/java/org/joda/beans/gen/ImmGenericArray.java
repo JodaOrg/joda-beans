@@ -161,7 +161,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         /**
          * Restricted constructor.
          */
-        protected Meta() {
+        private Meta() {
         }
 
         @Override

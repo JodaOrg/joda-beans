@@ -571,4 +571,12 @@ class GeneratableBean {
         return false;
     }
 
+    /**
+     * Gets the scope of nested Meta and Builder classes.
+     * @return the scope, not null
+     */
+    public String getNestedClassConstructorScope() {
+        return (isTypeFinal() ? "private" : "protected");
+    }
+
 }
