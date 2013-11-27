@@ -25,15 +25,16 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 
 /**
- * Basic implementation of {@code BeanBuilder} that wraps a real bean.
+ * Basic implementation of {@code BeanBuilder} that wraps a {@code MetaBean}.
  * <p>
- * This approach saves creating a temporary map, but is only suitable if the
- * bean has a no-arg constructor and allows properties to be set.
+ * The subclass implementation generally has concrete fields for each property.
+ * This class has effectively been replaced by {@link AbstractBeanBuilder}.
  * 
  * @author Stephen Colebourne
  * @param <T>  the bean type
  */
-public abstract class BasicImmutableBeanBuilder<T extends Bean> implements BeanBuilder<T> {
+public abstract class BasicImmutableBeanBuilder<T extends Bean>
+        implements BeanBuilder<T> {
 
     /**
      * The meta bean.

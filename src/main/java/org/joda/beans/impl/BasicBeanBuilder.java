@@ -31,7 +31,8 @@ import org.joda.beans.MetaProperty;
  * @author Stephen Colebourne
  * @param <T>  the bean type
  */
-public class BasicBeanBuilder<T extends Bean> implements BeanBuilder<T> {
+public class BasicBeanBuilder<T extends Bean>
+        implements BeanBuilder<T> {
 
     /**
      * The actual target bean.
