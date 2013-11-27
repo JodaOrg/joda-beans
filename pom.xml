@@ -182,7 +182,7 @@
       <plugin><!-- invoke with mvn site-deploy -->
         <groupId>com.github.github</groupId>
         <artifactId>site-maven-plugin</artifactId>
-        <version>0.8</version>
+        <version>0.9</version>
         <executions>
           <execution>
             <id>github-site</id>
@@ -538,13 +538,13 @@
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
     <maven-changes-plugin.version>2.9</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>2.10</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>2.11</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>2.5</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
+    <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
     <maven-gpg-plugin.version>1.4</maven-gpg-plugin.version>
-    <maven-install-plugin.version>2.5</maven-install-plugin.version>
+    <maven-install-plugin.version>2.5.1</maven-install-plugin.version>
     <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
