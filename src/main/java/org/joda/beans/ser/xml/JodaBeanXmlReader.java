@@ -59,14 +59,6 @@ import org.joda.beans.ser.SerIteratorFactory;
 public class JodaBeanXmlReader {
 
     /**
-     * Factory for parsing.
-     */
-    private static final XMLInputFactory FACTORY = XMLInputFactory.newFactory();
-    static {
-        FACTORY.setProperty("javax.xml.stream.isCoalescing", Boolean.TRUE);
-    }
-
-    /**
      * Settings.
      */
     private final JodaBeanSer settings;
@@ -135,7 +127,7 @@ public class JodaBeanXmlReader {
      */
     public <T> T read(final InputStream input, Class<T> rootType) {
         try {
-            reader = FACTORY.createXMLEventReader(input);
+            reader = factory().createXMLEventReader(input);
             return read(rootType);
         } catch (RuntimeException ex) {
             throw ex;
@@ -164,13 +156,24 @@ public class JodaBeanXmlReader {
      */
     public <T> T read(final Reader input, Class<T> rootType) {
         try {
-            reader = FACTORY.createXMLEventReader(input);
+            reader = factory().createXMLEventReader(input);
             return read(rootType);
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    /**
+     * Creates the factory.
+     * <p>
+     * Recreated each time to avoid JDK-8028111.
+     * 
+     * @return the factory, not null
+     */
+    private XMLInputFactory factory() {
+        return XMLInputFactory.newFactory();
     }
 
     //-----------------------------------------------------------------------

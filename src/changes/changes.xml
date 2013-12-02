@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.8.7" date="2013-11-xx" description="v0.8.7">
       <action dev="scolebourne" type="fix">
+        Recreate XMLInputFactory each time due to JDK bug JDK-8028111.
+        Fixes #36.
+      </action>
+      <action dev="scolebourne" type="fix">
         Fix to ensure nested class constructors are private if the type is final.
         May cause beans to regenerate.
         Fixes #35.
