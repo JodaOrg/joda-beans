@@ -33,9 +33,9 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
-import org.joda.beans.impl.BasicImmutableBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
+import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
@@ -1042,14 +1042,14 @@ class BeanGen {
             return;
         }
         List<PropertyGen> nonDerived = nonDerivedProperties();
-        data.ensureImport(BasicImmutableBeanBuilder.class);
+        data.ensureImport(DirectFieldsBeanBuilder.class);
         generateSeparator();
         String finalType = data.isTypeFinal() ? "final " : "";
         insertRegion.add("\t/**");
         insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
         insertRegion.add("\t */");
         insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + finalType +
-                "class Builder" + data.getTypeGeneric(true) + " extends BasicImmutableBeanBuilder<" + data.getTypeNoExtends() + "> {");
+                "class Builder" + data.getTypeGeneric(true) + " extends DirectFieldsBeanBuilder<" + data.getTypeNoExtends() + "> {");
         if (nonDerived.size() > 0) {
             insertRegion.add("");
             generateBuilderProperties();
@@ -1059,6 +1059,7 @@ class BeanGen {
         generateBuilderConstructorCopy();
         generateIndentedSeparator();
         generateBuilderSet();
+        generateBuilderOtherSets();
         generateBuilderBuilder();
         generateIndentedSeparator();
         generateBuilderPropertySetMethods();
@@ -1073,7 +1074,6 @@ class BeanGen {
         insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
         insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder() {");
-        insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }
@@ -1087,7 +1087,6 @@ class BeanGen {
                 insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
                 insertRegion.add("\t\t */");
                 insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
-                insertRegion.add("\t\t\tsuper(" + data.getTypeRaw() + ".Meta.INSTANCE);");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
                 }
@@ -1127,6 +1126,33 @@ class BeanGen {
         } else {
             insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
         }
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+    }
+
+    private void generateBuilderOtherSets() {
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(MetaProperty<?> property, Object value) {");
+        insertRegion.add("\t\t\tsuper.set(property, value);");
+        insertRegion.add("\t\t\treturn this;");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(String propertyName, String value) {");
+        insertRegion.add("\t\t\tsetString(meta().metaProperty(propertyName), value);");
+        insertRegion.add("\t\t\treturn this;");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(MetaProperty<?> property, String value) {");
+        insertRegion.add("\t\t\tsuper.set(property, value);");
+        insertRegion.add("\t\t\treturn this;");
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setAll(Map<String, ? extends Object> propertyValueMap) {");
+        insertRegion.add("\t\t\tsuper.setAll(propertyValueMap);");
+        insertRegion.add("\t\t\treturn this;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
     }

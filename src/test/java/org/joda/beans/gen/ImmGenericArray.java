@@ -26,7 +26,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
-import org.joda.beans.impl.BasicImmutableBeanBuilder;
+import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
@@ -223,7 +223,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmGenericArray}.
      */
-    private static final class Builder<T extends Address> extends BasicImmutableBeanBuilder<ImmGenericArray<T>> {
+    private static final class Builder<T extends Address> extends DirectFieldsBeanBuilder<ImmGenericArray<T>> {
 
         private T[] values;
 
@@ -231,7 +231,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
          * Restricted constructor.
          */
         private Builder() {
-            super(ImmGenericArray.Meta.INSTANCE);
         }
 
         //-----------------------------------------------------------------------
@@ -245,6 +244,30 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
+            return this;
+        }
+
+        @Override
+        public Builder<T> set(MetaProperty<?> property, Object value) {
+            super.set(property, value);
+            return this;
+        }
+
+        @Override
+        public Builder<T> setString(String propertyName, String value) {
+            setString(meta().metaProperty(propertyName), value);
+            return this;
+        }
+
+        @Override
+        public Builder<T> setString(MetaProperty<?> property, String value) {
+            super.set(property, value);
+            return this;
+        }
+
+        @Override
+        public Builder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
+            super.setAll(propertyValueMap);
             return this;
         }
 
