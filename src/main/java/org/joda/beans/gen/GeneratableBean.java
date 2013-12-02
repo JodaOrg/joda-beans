@@ -200,6 +200,14 @@ class GeneratableBean {
         return "smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope);
     }
 
+    /**
+     * Is the scope to use in the builder public.
+     * @return the scope
+     */
+    public boolean isBuilderScopePublic() {
+        return "public".equals(beanBuilderScope);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets whether the bean is immutable.

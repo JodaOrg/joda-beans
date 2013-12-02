@@ -282,7 +282,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         public String toString() {
             StringBuilder buf = new StringBuilder(64);
             buf.append("ImmGenericArray.Builder{");
-            buf.append("values").append('=').append(values);
+            buf.append("values").append('=').append(JodaBeanUtils.toString(values));
             buf.append('}');
             return buf.toString();
         }

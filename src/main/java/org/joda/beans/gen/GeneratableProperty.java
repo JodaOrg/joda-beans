@@ -566,7 +566,7 @@ class GeneratableProperty {
      * Resolves the copy generator.
      */
     public void resolveCopyGen() {
-        if (getBean().isMutable()) {
+        if (getBean().isMutable() && getBean().isBuilderScopePublic() == false) {
             return;  // no copying
         }
         if (config.getInvalidImmutableTypes().contains(getFieldTypeRaw())) {
@@ -607,7 +607,7 @@ class GeneratableProperty {
      * Resolves the copy generator.
      */
     public void resolveBuilderGen() {
-        if (getBean().isMutable()) {
+        if (getBean().isMutable() && getBean().isBuilderScopePublic() == false) {
             return;  // no builder
         }
         if (isDerived()) {

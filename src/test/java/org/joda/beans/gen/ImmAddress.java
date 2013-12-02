@@ -806,16 +806,16 @@ public final class ImmAddress implements ImmutableBean {
         public String toString() {
             StringBuilder buf = new StringBuilder(352);
             buf.append("ImmAddress.Builder{");
-            buf.append("number").append('=').append(number).append(',').append(' ');
-            buf.append("street").append('=').append(street).append(',').append(' ');
-            buf.append("city").append('=').append(city).append(',').append(' ');
-            buf.append("data").append('=').append(data).append(',').append(' ');
-            buf.append("owner").append('=').append(owner).append(',').append(' ');
-            buf.append("listInMap").append('=').append(listInMap).append(',').append(' ');
-            buf.append("listNumericInMap").append('=').append(listNumericInMap).append(',').append(' ');
-            buf.append("listInListInMap").append('=').append(listInListInMap).append(',').append(' ');
-            buf.append("mapInMap").append('=').append(mapInMap).append(',').append(' ');
-            buf.append("beanBeanMap").append('=').append(beanBeanMap);
+            buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
+            buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
+            buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
+            buf.append("data").append('=').append(JodaBeanUtils.toString(data)).append(',').append(' ');
+            buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
+            buf.append("listInMap").append('=').append(JodaBeanUtils.toString(listInMap)).append(',').append(' ');
+            buf.append("listNumericInMap").append('=').append(JodaBeanUtils.toString(listNumericInMap)).append(',').append(' ');
+            buf.append("listInListInMap").append('=').append(JodaBeanUtils.toString(listInListInMap)).append(',').append(' ');
+            buf.append("mapInMap").append('=').append(JodaBeanUtils.toString(mapInMap)).append(',').append(' ');
+            buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(beanBeanMap));
             buf.append('}');
             return buf.toString();
         }
