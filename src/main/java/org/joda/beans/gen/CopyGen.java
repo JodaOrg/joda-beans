@@ -34,10 +34,11 @@ abstract class CopyGen {
      * Generates the copy to immutable lines.
      * 
      * @param indent  the indent to use, not null
+     * @param fromBean  the source code for the bean to copy from, not null
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateCopyToImmutable(String indent, GeneratableProperty prop);
+    abstract List<String> generateCopyToImmutable(String indent, String fromBean, GeneratableProperty prop);
 
     /**
      * Generates the copy to mutable lines.
@@ -62,7 +63,7 @@ abstract class CopyGen {
             this.mutablePattern = mutablePattern;
         }
         @Override
-        List<String> generateCopyToImmutable(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToImmutable(String indent, String fromBean, GeneratableProperty prop) {
             List<String> list = new ArrayList<String>();
             final String[] split = immutablePattern.split("\n");
             for (String line : split) {
@@ -79,7 +80,7 @@ abstract class CopyGen {
                     }
                 }
                 line = line.replace("$field", "this." + prop.getFieldName());
-                line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("$value", fromBean + prop.getPropertyName());
                 line = line.replace("$type", prop.getFieldType());
                 line = line.replace("$typeRaw", prop.getTypeRaw());
                 line = line.replace("$generics", prop.getTypeGenerics());
@@ -120,7 +121,7 @@ abstract class CopyGen {
     static class NoCopyGen extends CopyGen {
         static final CopyGen INSTANCE = new NoCopyGen();
         @Override
-        List<String> generateCopyToImmutable(String indent, GeneratableProperty prop) {
+        List<String> generateCopyToImmutable(String indent, String fromBean, GeneratableProperty prop) {
             return Collections.emptyList();
         }
         @Override

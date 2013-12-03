@@ -49,4 +49,12 @@ public @interface BeanDefinition {
      */
     String builderScope() default "smart";
 
+    /**
+     * Information about the bean hierarchy.
+     * <p>
+     * This is needed to add information that cannot be derived.
+     * Set to 'immutable' for a subclass of an immutable bean.
+     */
+    String hierarchy() default "";
+
 }

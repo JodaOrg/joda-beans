@@ -350,8 +350,8 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
-    List<String> generateConstructorAssign() {
-        return data.getCopyGen().generateCopyToImmutable("\t\t", data);
+    List<String> generateConstructorAssign(String fromBean) {
+        return data.getCopyGen().generateCopyToImmutable("\t\t", fromBean, data);
     }
 
     //-----------------------------------------------------------------------

@@ -82,6 +82,8 @@ class BeanGen {
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The style pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The root pattern. */
+    private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {
@@ -134,6 +136,9 @@ class BeanGen {
             this.data.setConstructable(parseConstructable(beanDefIndex));
             this.data.setTypeParts(parseBeanType(beanDefIndex));
             this.data.setSuperTypeParts(parseBeanSuperType(beanDefIndex));
+            if (parseBeanHierarchy(beanDefIndex).equals("immutable")) {
+                this.data.setImmutable(true);
+            }
             this.properties = parseProperties(data);
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
@@ -177,7 +182,7 @@ class BeanGen {
             generateMeta();
             generateImmutableBuilderMethod();
             generateImmutableConstructor();
-            generateMutableConstructor();
+            generateBuilderBasedConstructor();
             generateMetaBean();
             generatePropertyByName();
             generatePropertyNames();
@@ -262,6 +267,15 @@ class BeanGen {
             return matcher.group(1);
         }
         return "smart";
+    }
+
+    private String parseBeanHierarchy(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = HIERARCHY_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private boolean parseConstructable(int defLine) {
@@ -486,7 +500,7 @@ class BeanGen {
         }
     }
 
-    private void generateMutableConstructor() {
+    private void generateBuilderBasedConstructor() {
         if ((data.isMutable() && data.isBuilderScopePublic()) || (data.isImmutable() && data.isImmutableConstructor() == false && data.isTypeFinal() == false)) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             String scope = (data.isTypeFinal() ? "private" : "protected");
@@ -509,27 +523,34 @@ class BeanGen {
                 }
             }
             // assign
-            for (int i = 0; i < nonDerived.size(); i++) {
-                PropertyGen propGen = nonDerived.get(i);
-                GeneratableProperty prop = propGen.getData();
-                if (prop.isCollectionType()) {
-                    if (prop.isNotNull()) {
-                        insertRegion.add("\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
+            if (data.isImmutable()) {
+                // assign
+                for (int i = 0; i < nonDerived.size(); i++) {
+                    insertRegion.addAll(nonDerived.get(i).generateConstructorAssign("builder."));
+                }
+            } else {
+                for (int i = 0; i < nonDerived.size(); i++) {
+                    PropertyGen propGen = nonDerived.get(i);
+                    GeneratableProperty prop = propGen.getData();
+                    if (prop.isCollectionType()) {
+                        if (prop.isNotNull()) {
+                            insertRegion.add("\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
+                        } else {
+                            insertRegion.add("\t\tif (" + prop.getPropertyName() + " != null) {");
+                            insertRegion.add("\t\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
+                            insertRegion.add("\t\t}");
+                        }
+                    } else if (prop.isMapType()) {
+                        if (prop.isNotNull()) {
+                            insertRegion.add("\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
+                        } else {
+                            insertRegion.add("\t\tif (" + prop.getPropertyName() + " != null) {");
+                            insertRegion.add("\t\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
+                            insertRegion.add("\t\t}");
+                        }
                     } else {
-                        insertRegion.add("\t\tif (" + prop.getPropertyName() + " != null) {");
-                        insertRegion.add("\t\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
-                        insertRegion.add("\t\t}");
+                        insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                     }
-                } else if (prop.isMapType()) {
-                    if (prop.isNotNull()) {
-                        insertRegion.add("\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
-                    } else {
-                        insertRegion.add("\t\tif (" + prop.getPropertyName() + " != null) {");
-                        insertRegion.add("\t\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
-                        insertRegion.add("\t\t}");
-                    }
-                } else {
-                    insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                 }
             }
             insertRegion.add("\t}");
@@ -559,7 +580,7 @@ class BeanGen {
                 }
                 // assign
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.addAll(nonDerived.get(i).generateConstructorAssign());
+                    insertRegion.addAll(nonDerived.get(i).generateConstructorAssign(""));
                 }
             }
             insertRegion.add("\t}");
