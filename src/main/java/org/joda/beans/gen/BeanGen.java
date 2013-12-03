@@ -495,7 +495,7 @@ class BeanGen {
             insertRegion.add("\t * Restricted constructor.");
             insertRegion.add("\t * @param builder  the builder to copy from, not null");
             insertRegion.add("\t */");
-            insertRegion.add("\t" + scope + " " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGeneric(true) + " builder) {");
+            insertRegion.add("\t" + scope + " " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder) {");
             // super
             if (data.isSubClass()) {
                 insertRegion.add("\t\tsuper(builder);");
