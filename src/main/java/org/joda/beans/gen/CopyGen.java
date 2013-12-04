@@ -80,7 +80,7 @@ abstract class CopyGen {
                     }
                 }
                 line = line.replace("$field", "this." + prop.getFieldName());
-                line = line.replace("$value", fromBean + prop.getPropertyName());
+                line = line.replace("$value", fromBean + (fromBean.isEmpty() ? prop.getPropertyName() : prop.getFieldName()));
                 line = line.replace("$type", prop.getFieldType());
                 line = line.replace("$typeRaw", prop.getTypeRaw());
                 line = line.replace("$generics", prop.getTypeGenerics());

@@ -29,7 +29,6 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
-import org.joda.beans.ImmutableBean;
 
 /**
  * Mock immutable person JavaBean, used for testing.

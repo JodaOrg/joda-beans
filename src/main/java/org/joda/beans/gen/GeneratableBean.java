@@ -41,8 +41,10 @@ class GeneratableBean {
     private boolean immutable;
     /** Whether the class can be constructed. */
     private boolean constructable;
-    /** Whether the class has a manual construcor for immutable beans. */
-    private boolean immutableConstructor;
+    /** Whether the class has a manual constructor for immutable beans. */
+    private int immutableConstructor;
+    /** The style of constructor to generate. */
+    private int constructorStyle;
     /** The full type of the bean class. */
     private String typeFull;
     /** The simple name of the bean class. */
@@ -250,10 +252,10 @@ class GeneratableBean {
     }
 
     /**
-     * Checks whether the bean has a manual constructor to use.
-     * @return the flag
+     * Gets whether the bean has a manual constructor to use.
+     * @return the flag, zero for none, one for builder based, two for argument based
      */
-    public boolean isImmutableConstructor() {
+    public int getImmutableConstructor() {
         return immutableConstructor;
     }
 
@@ -261,8 +263,24 @@ class GeneratableBean {
      * Sets whether the bean has a manual constructor to use.
      * @param constructable  the flag
      */
-    public void setImmutableConstructor(boolean manualConstructor) {
+    public void setImmutableConstructor(int manualConstructor) {
         this.immutableConstructor = manualConstructor;
+    }
+
+    /**
+     * Gets the constructor style to generate.
+     * @return the flag, zero for none, one for builder based, two for argument based
+     */
+    public int getConstructorStyle() {
+        return constructorStyle;
+    }
+
+    /**
+     * Sets the constructor style to generate.
+     * @param constructorStyle  the constructor style
+     */
+    public void setConstructorStyle(int constructorStyle) {
+        this.constructorStyle = constructorStyle;
     }
 
     /**

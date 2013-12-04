@@ -228,13 +228,29 @@ Thus a validation attribute of "Validate.noNulls" could be used to connect up to
 Code generated beans may also be immutable.
 </p>
 <p>
-Immutable beans must be final and all their fields must be final.
-The cannot extend another bean class.
-Instead, they directly implement <code>ImmutableBean</code>.
+All fields in an immutable bean must be final.
+It is recommended that immutable beans are final,
+do not extend any bean class and directly implement <code>ImmutableBean</code>.
+</p>
+<p>
+It is possible for an immutable bean to be non-final.
+Any subclass should logically also be immutable, but must set the
+<code>BeanDefinition</code> annotation value <code>hierarchy</code> to "immutable".
 </p>
 <p>
 Rather than set methods, a builder class will be generated.
 This supports code based manipulation, using the <code>toBuilder()</code> method.
+</p>
+<p>
+It is also possible for an bean to be partially final.
+In this case, the bean will implement <code>Bean</code> rather than <code>ImmutableBean</code>.
+To get the correct behaviour, the <code>BeanDefinition</code> annotation value
+<code>builderScope</code> must be set to "public".
+Partially final beans can extend one another, but must all declare the builder scope.
+</p>
+<p>
+The rules as to what works and what does not are complex.
+It is recommended to keep is simple, and only have normal mutable beans or final immutable beans.
 </p>
 </section>
 
