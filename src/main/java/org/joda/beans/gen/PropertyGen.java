@@ -538,6 +538,8 @@ class PropertyGen {
                 return "WriteOnly";
             case DERIVED:
                 return "Derived";
+            case READ_ONLY_BUILDABLE:
+                return "ReadOnlyBuildable";
             case IMMUTABLE:
                 return "Immutable";
             default:

@@ -66,7 +66,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     /**
-     * Factory to create a read-write meta-property avoiding duplicate generics.
+     * Factory to create a read-only meta-property avoiding duplicate generics.
      * 
      * @param <P>  the property type
      * @param metaBean  the meta-bean, not null
@@ -82,7 +82,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     /**
-     * Factory to create a read-write meta-property avoiding duplicate generics.
+     * Factory to create a write-only meta-property avoiding duplicate generics.
      * 
      * @param <P>  the property type
      * @param metaBean  the meta-bean, not null
@@ -95,6 +95,22 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
         return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.WRITE_ONLY, field);
+    }
+
+    /**
+     * Factory to create a buildable read-only meta-property avoiding duplicate generics.
+     * 
+     * @param <P>  the property type
+     * @param metaBean  the meta-bean, not null
+     * @param propertyName  the property name, not empty
+     * @param declaringType  the type declaring the property, not null
+     * @param propertyType  the property type, not null
+     * @return the property, not null
+     */
+    public static <P> DirectMetaProperty<P> ofReadOnlyBuildable(
+            MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
+        Field field = findField(metaBean, propertyName);
+        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY_BUILDABLE, field);
     }
 
     /**

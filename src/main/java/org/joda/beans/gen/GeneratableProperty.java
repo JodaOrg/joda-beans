@@ -683,7 +683,11 @@ class GeneratableProperty {
             return PropertyStyle.READ_WRITE;
         }
         if (getGetStyle().length() > 0) {
-            return PropertyStyle.READ_ONLY;
+            if (bean.isBuilderScopePublic()) {
+                return PropertyStyle.READ_ONLY_BUILDABLE;
+            } else {
+                return PropertyStyle.READ_ONLY;
+            }
         }
         if (getSetStyle().length() > 0) {
             return PropertyStyle.WRITE_ONLY;

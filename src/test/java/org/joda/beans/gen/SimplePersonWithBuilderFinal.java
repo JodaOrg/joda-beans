@@ -399,7 +399,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         /**
          * The meta-property for the {@code surname} property.
          */
-        private final MetaProperty<String> surname = DirectMetaProperty.ofReadOnly(
+        private final MetaProperty<String> surname = DirectMetaProperty.ofReadOnlyBuildable(
                 this, "surname", SimplePersonWithBuilderFinal.class, String.class);
         /**
          * The meta-property for the {@code numberOfCars} property.

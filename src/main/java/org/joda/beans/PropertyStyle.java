@@ -40,6 +40,10 @@ public enum PropertyStyle {
      */
     WRITE_ONLY,
     /**
+     * The property is read-only but can be written via the builder.
+     */
+    READ_ONLY_BUILDABLE,
+    /**
      * The property is derived.
      * It is read-only.
      */
@@ -59,7 +63,7 @@ public enum PropertyStyle {
      * @return true if the property can be read
      */
     public boolean isReadable() {
-        return this == READ_WRITE || this == READ_ONLY || this == DERIVED || this == IMMUTABLE;
+        return this == READ_WRITE || this == READ_ONLY || this == READ_ONLY_BUILDABLE || this == DERIVED || this == IMMUTABLE;
     }
 
     /**
@@ -83,7 +87,7 @@ public enum PropertyStyle {
      * @return true if the property is derived
      */
     public boolean isReadOnly() {
-        return this == READ_ONLY || this == DERIVED || this == IMMUTABLE;
+        return this == READ_ONLY || this == READ_ONLY_BUILDABLE || this == DERIVED || this == IMMUTABLE;
     }
 
     /**
@@ -94,7 +98,7 @@ public enum PropertyStyle {
      * @return true if the property can be used in the builder
      */
     public boolean isBuildable() {
-        return this == READ_WRITE || this == WRITE_ONLY || this == IMMUTABLE;
+        return this == READ_WRITE || this == WRITE_ONLY || this == READ_ONLY_BUILDABLE || this == IMMUTABLE;
     }
 
     /**
@@ -116,7 +120,7 @@ public enum PropertyStyle {
      * @return true if the property is serializable
      */
     public boolean isSerializable() {
-        return this == READ_WRITE || this == IMMUTABLE;
+        return this == READ_WRITE || this == READ_ONLY_BUILDABLE || this == IMMUTABLE;
     }
 
 }
