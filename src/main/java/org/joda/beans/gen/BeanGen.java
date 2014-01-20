@@ -1204,7 +1204,7 @@ class BeanGen {
     private void generateBuilderSet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         data.ensureImport(NoSuchElementException.class);
-        boolean generics = data.isTypeGeneric() && nonDerived.size() > 0;
+        boolean generics = false;
         for (GeneratableProperty prop : data.getProperties()) {
             generics |= (prop.isGeneric() && prop.isGenericWildcardParamType() == false);
         }

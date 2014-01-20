@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    Extra suppress unchecked in immutable generic beans
+    <release version="0.9.1" date="2014-01-20" description="v0.9.1">
+      <action dev="scolebourne" type="fix">
+        Remove incorrect suppress unchecked in immutable generic beans.
+        Fixes #38.
+      </action>
+    </release>
     <release version="0.9.0" date="2013-12-14" description="v0.9.0">
       <action dev="scolebourne" type="fix">
         Support partially final beans and immutable subclasses.
