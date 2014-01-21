@@ -105,7 +105,7 @@ public final class JodaBeanSer {
     /**
      * Whether to use short types.
      */
-    private final boolean shortTypes = true;
+    private final boolean shortTypes;
 
     /**
      * Creates an instance.
@@ -121,6 +121,7 @@ public final class JodaBeanSer {
         this.newLine = newLine;
         this.converter = converter;
         this.iteratorFactory = iteratorFactory;
+        this.shortTypes = shortTypes;
     }
 
     //-----------------------------------------------------------------------
@@ -240,10 +241,12 @@ public final class JodaBeanSer {
      * @return the class object, null if not a basic type
      */
     public String encodeClass(final Class<?> cls, final String basePackage, final Map<Class<?>, String> knownTypes) {
+        // basic type
         String result = BASIC_TYPES.get(cls);
         if (result != null) {
             return result;
         }
+        // calculate
         if (shortTypes) {
             if (knownTypes != null) {
                 result = knownTypes.get(cls);
@@ -255,7 +258,7 @@ public final class JodaBeanSer {
             if (basePackage != null &&
                     result.startsWith(basePackage) &&
                     Character.isUpperCase(result.charAt(basePackage.length())) &&
-                    BASIC_TYPES.containsKey(result.substring(basePackage.length())) == false) {
+                    BASIC_TYPES_REVERSED.containsKey(result.substring(basePackage.length())) == false) {
                 // use short format
                 result = result.substring(basePackage.length());
                 if (knownTypes != null) {
@@ -266,8 +269,8 @@ public final class JodaBeanSer {
                 if (knownTypes != null) {
                     String simpleName = cls.getSimpleName();
                     if (Character.isUpperCase(simpleName.charAt(0)) &&
-                            BASIC_TYPES.containsKey(simpleName) == false &&
-                            knownTypes.containsKey(simpleName) == false) {
+                            BASIC_TYPES_REVERSED.containsKey(simpleName) == false &&
+                            knownTypes.containsValue(simpleName) == false) {
                         knownTypes.put(cls, simpleName);
                     } else {
                         knownTypes.put(cls, result);
@@ -294,25 +297,27 @@ public final class JodaBeanSer {
      * @throws ClassNotFoundException if not found
      */
     public Class<?> decodeClass(final String className, final String basePackage, final Map<String, Class<?>> knownTypes) throws ClassNotFoundException {
+        // basic type
         Class<?> result = BASIC_TYPES_REVERSED.get(className);
         if (result != null) {
             return result;
         }
+        // check cache
         if (knownTypes != null) {
             result = knownTypes.get(className);
             if (result != null) {
                 return result;
             }
         }
+        // calculate
         String fullName = className;
         boolean expanded = false;
         if (basePackage != null && className.length() > 0 && Character.isUpperCase(className.charAt(0))) {
             fullName = basePackage + className;
             expanded = true;
         }
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            result = loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+            result = loadClass(fullName);
             if (knownTypes != null) {
                 knownTypes.put(fullName, result);
                 if (expanded) {
@@ -320,7 +325,7 @@ public final class JodaBeanSer {
                 } else {
                     String simpleName = result.getSimpleName();
                     if (Character.isUpperCase(simpleName.charAt(0)) &&
-                            BASIC_TYPES.containsKey(simpleName) == false &&
+                            BASIC_TYPES_REVERSED.containsKey(simpleName) == false &&
                             knownTypes.containsKey(simpleName) == false) {
                         knownTypes.put(simpleName, result);
                     }
@@ -331,7 +336,7 @@ public final class JodaBeanSer {
             // handle pathological case of package name starting with upper case
             if (fullName.equals(className) == false) {
                 try {
-                    result = loader != null ? loader.loadClass(className) : Class.forName(className);
+                    result = loadClass(className);
                     if (knownTypes != null) {
                         knownTypes.put(className, result);
                     }
@@ -341,6 +346,11 @@ public final class JodaBeanSer {
             }
             throw ex;
         }
+    }
+
+    private Class<?> loadClass(String fullName) throws ClassNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
     }
 
     //-----------------------------------------------------------------------

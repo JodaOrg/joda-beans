@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.2" date="xxx" description="v0.9.2">
+      <action dev="scolebourne" type="fix">
+        Short types flag not being used in JodaBeanSer.
+        Fixes #39.
+      </action>
+    </release>
     <release version="0.9.1" date="2014-01-20" description="v0.9.1">
       <action dev="scolebourne" type="fix">
         Fix immutable collection copies to preserve comparators.

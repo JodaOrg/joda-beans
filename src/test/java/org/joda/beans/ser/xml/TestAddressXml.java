@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.beans.Bean;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Company;
 import org.joda.beans.gen.CompanyAddress;
@@ -29,6 +30,7 @@ import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmEmpty;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Person;
+import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.test.BeanAssert;
@@ -154,6 +156,36 @@ public class TestAddressXml {
         assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.impl.flexi.FlexiBean\"><element>Test</element><child type=\"org.joda.beans.gen.ImmEmpty\"/></bean>");
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_noBeanElementAtRoot() {
+        JodaBeanSer.COMPACT.xmlReader().read("<foo></foo>", Bean.class);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_noTypeAttributeAtRoot() {
+        JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", Bean.class);
+    }
+
+    public void test_read_noTypeAttributeAtRootButTypeSpecified() {
+        FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", FlexiBean.class);
+        BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_rootTypeAttributeNotBean() {
+        JodaBeanSer.COMPACT.xmlReader().read("<bean type=\"java.lang.Integer\"></bean>", Bean.class);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_rootTypeInvalid() {
+        JodaBeanSer.COMPACT.xmlReader().read("<bean type=\"org.joda.beans.impl.flexi.FlexiBean\"></bean>", SimplePerson.class);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_rootTypeArgumentInvalid() {
+        JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", Integer.class);
     }
 
 }
