@@ -50,9 +50,9 @@ class MapBeanBuilder implements BeanBuilder<MapBean> {
     }
 
     @Override
-    public MapBeanBuilder set(MetaProperty<?> property, Object value) {
+    public MapBeanBuilder set(MetaProperty<?> metaProperty, Object value) {
         // this approach allows meta-property from one bean to be used with another
-        bean.put(property.name(), value);
+        bean.put(metaProperty.name(), value);
         return this;
     }
 
@@ -64,10 +64,10 @@ class MapBeanBuilder implements BeanBuilder<MapBean> {
     }
 
     @Override
-    public MapBeanBuilder setString(MetaProperty<?> property, String value) {
+    public MapBeanBuilder setString(MetaProperty<?> metaProperty, String value) {
         // no type information to perform a conversion
         // this approach allows meta-property from one MapBean to be used with another
-        bean.put(property.name(), value);
+        bean.put(metaProperty.name(), value);
         return this;
     }
 

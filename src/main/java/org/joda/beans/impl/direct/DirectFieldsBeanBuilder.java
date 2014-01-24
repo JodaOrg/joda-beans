@@ -42,14 +42,14 @@ public abstract class DirectFieldsBeanBuilder<T extends Bean>
 
     //-----------------------------------------------------------------------
     @Override
-    public BeanBuilder<T> set(MetaProperty<?> property, Object value) {
-        set(property.name(), value);
+    public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
+        set(metaProperty.name(), value);
         return this;
     }
 
     @Override
-    public BeanBuilder<T> setString(MetaProperty<?> property, String value) {
-        set(property.name(), JodaBeanUtils.stringConverter().convertFromString(property.propertyType(), value));
+    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
+        set(metaProperty.name(), JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value));
         return this;
     }
 

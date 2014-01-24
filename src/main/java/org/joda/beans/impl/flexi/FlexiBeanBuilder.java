@@ -50,9 +50,9 @@ class FlexiBeanBuilder implements BeanBuilder<FlexiBean> {
     }
 
     @Override
-    public FlexiBeanBuilder set(MetaProperty<?> property, Object value) {
+    public FlexiBeanBuilder set(MetaProperty<?> metaProperty, Object value) {
         // this approach allows meta-property from one bean to be used with another
-        bean.put(property.name(), value);
+        bean.put(metaProperty.name(), value);
         return this;
     }
 
@@ -64,10 +64,10 @@ class FlexiBeanBuilder implements BeanBuilder<FlexiBean> {
     }
 
     @Override
-    public FlexiBeanBuilder setString(MetaProperty<?> property, String value) {
+    public FlexiBeanBuilder setString(MetaProperty<?> metaProperty, String value) {
         // no type information to perform a conversion
         // this approach allows meta-property from one FlexiBean to be used with another
-        bean.put(property.name(), value);
+        bean.put(metaProperty.name(), value);
         return this;
     }
 

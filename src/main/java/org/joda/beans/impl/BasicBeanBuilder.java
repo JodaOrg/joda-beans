@@ -79,8 +79,8 @@ public class BasicBeanBuilder<T extends Bean>
     }
 
     @Override
-    public BeanBuilder<T> set(MetaProperty<?> property, Object value) {
-        property.set(bean, value);
+    public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
+        metaProperty.set(bean, value);
         return this;
     }
 
@@ -90,8 +90,8 @@ public class BasicBeanBuilder<T extends Bean>
     }
 
     @Override
-    public BeanBuilder<T> setString(MetaProperty<?> property, String value) {
-        property.setString(bean, value);
+    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
+        metaProperty.setString(bean, value);
         return this;
     }
 
