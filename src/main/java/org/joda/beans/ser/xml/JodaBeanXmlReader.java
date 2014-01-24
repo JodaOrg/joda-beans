@@ -127,8 +127,12 @@ public class JodaBeanXmlReader {
      */
     public <T> T read(final InputStream input, Class<T> rootType) {
         try {
-            reader = factory().createXMLEventReader(input);
-            return read(rootType);
+            try {
+                reader = factory().createXMLEventReader(input);
+                return read(rootType);
+            } finally {
+                reader.close();
+            }
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -156,8 +160,12 @@ public class JodaBeanXmlReader {
      */
     public <T> T read(final Reader input, Class<T> rootType) {
         try {
-            reader = factory().createXMLEventReader(input);
-            return read(rootType);
+            try {
+                reader = factory().createXMLEventReader(input);
+                return read(rootType);
+            } finally {
+                reader.close();
+            }
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -207,20 +215,19 @@ public class JodaBeanXmlReader {
             throw new IllegalArgumentException("Root type is not a Joda-Bean: " + type.getName());
         }
         basePackage = type.getPackage().getName() + ".";
-        Bean bean = parseBean(type);
-        reader.close();
-        @SuppressWarnings("unchecked")
-        T result = (T) bean;
-        return result;
+        Object parsed = parseBean(type);
+        return rootType.cast(parsed);
     }
 
     /**
-     * Parses to a bean.
+     * Parses a logical bean in the input XML.
+     * <p>
+     * Return type allows for a non-bean to be returned.
      * 
      * @param beanType  the bean type, not null
      * @return the bean, not null
      */
-    private Bean parseBean(final Class<?> beanType) throws Exception {
+    private Object parseBean(final Class<?> beanType) throws Exception {
         try {
             MetaBean metaBean = JodaBeanUtils.metaBean(beanType);
             BeanBuilder<? extends Bean> builder = metaBean.builder();
