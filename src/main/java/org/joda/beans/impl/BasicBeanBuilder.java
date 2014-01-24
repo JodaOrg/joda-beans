@@ -67,9 +67,8 @@ public class BasicBeanBuilder<T extends Bean>
      * @param propertyName  the property name, not null
      * @return the current value in the builder, null if not found or value is null
      */
-    protected BeanBuilder<T> get(String propertyName) {
-        bean.property(propertyName).get();
-        return this;
+    protected Object get(String propertyName) {
+        return bean.property(propertyName).get();
     }
 
     //-----------------------------------------------------------------------
