@@ -46,11 +46,13 @@ public final class JodaBeanSer {
     /**
      * Obtains the singleton compact instance.
      */
-    public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(), SerIteratorFactory.INSTANCE, true);
+    public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(),
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE);
     /**
      * Obtains the singleton pretty-printing instance.
      */
-    public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(), SerIteratorFactory.INSTANCE, true);
+    public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(),
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE);
     /**
      * Known simple classes.
      */
@@ -107,6 +109,10 @@ public final class JodaBeanSer {
      * Whether to use short types.
      */
     private final boolean shortTypes;
+    /**
+     * The deserializers.
+     */
+    private final SerDeserializers deserializers;
 
     /**
      * Creates an instance.
@@ -116,13 +122,16 @@ public final class JodaBeanSer {
      * @param converter  the converter, not null
      * @param iteratorFactory  the iterator factory, not null
      * @param shortTypes  whether to use short types
+     * @param deserializers  the deserializers to use, not null
      */
-    private JodaBeanSer(String indent, String newLine, StringConvert converter, SerIteratorFactory iteratorFactory, boolean shortTypes) {
+    private JodaBeanSer(String indent, String newLine, StringConvert converter,
+                SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers) {
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
         this.iteratorFactory = iteratorFactory;
         this.shortTypes = shortTypes;
+        this.deserializers = deserializers;
     }
 
     //-----------------------------------------------------------------------
@@ -143,7 +152,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIndent(String indent) {
         JodaBeanUtils.notNull(indent, "indent");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
     }
 
     /**
@@ -163,7 +172,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withNewLine(String newLine) {
         JodaBeanUtils.notNull(newLine, "newLine");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
     }
 
     /**
@@ -187,7 +196,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withConverter(StringConvert converter) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
     }
 
     /**
@@ -207,7 +216,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
     }
 
     /**
@@ -226,7 +235,31 @@ public final class JodaBeanSer {
      * @return a copy of this object with the short types flag changed, not null
      */
     public JodaBeanSer withShortTypes(boolean shortTypes) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+    }
+
+    /**
+     * Gets the deserializers.
+     * <p>
+     * The default deserializers can be modified.
+     * 
+     * @return the converter, not null
+     */
+    public SerDeserializers getDeserializers() {
+        return deserializers;
+    }
+
+    /**
+     * Returns a copy of this serializer with the specified deserializers.
+     * <p>
+     * The default deserializers can be modified.
+     * 
+     * @param deserializers  the deserializers, not null
+     * @return a copy of this object with the converter changed, not null
+     */
+    public JodaBeanSer withDeserializers(SerDeserializers deserializers) {
+        JodaBeanUtils.notNull(deserializers, "deserializers");
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
     }
 
     //-----------------------------------------------------------------------
@@ -375,6 +408,12 @@ public final class JodaBeanSer {
      */
     public JodaBeanXmlReader xmlReader() {
         return new JodaBeanXmlReader(this);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 
 }

@@ -40,10 +40,10 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
 
@@ -229,37 +229,52 @@ public class JodaBeanXmlReader {
      */
     private Object parseBean(final Class<?> beanType) throws Exception {
         try {
-            MetaBean metaBean = JodaBeanUtils.metaBean(beanType);
-            BeanBuilder<? extends Bean> builder = metaBean.builder();
+            SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
+            MetaBean metaBean = deser.findMetaBean(beanType);
+            BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
             XMLEvent event = nextEvent(">bean ");
             while (event.isEndElement() == false) {
                 if (event.isStartElement()) {
                     StartElement start = event.asStartElement();
                     String name = start.getName().getLocalPart();
-                    MetaProperty<?> metaProp = metaBean.metaProperty(name);
-                    Class<?> childType = parseTypeAttribute(start, metaProp.propertyType());
-                    Object value;
-                    if (Bean.class.isAssignableFrom(childType)) {
-                        if (settings.getConverter().isConvertible(childType)) {
-                            String text = advanceAndParseText();
-                            value = settings.getConverter().convertFromString(childType, text);
-                        } else {
-                            value = parseBean(childType);
+                    MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, name);
+                    if (metaProp == null) {
+                        int depth = 0;
+                        event = nextEvent(" skip ");
+                        while (event.isEndElement() == false || depth > 0) {
+                            if (event.isStartElement()) {
+                                depth++;
+                            } else if (event.isEndElement()) {
+                                depth--;
+                            }
+                            event = nextEvent(" skip ");
                         }
+                        // skip elements
                     } else {
-                        SerIterable iterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
-                        if (iterable != null) {
-                            value = parseIterable(iterable);
+                        Class<?> childType = parseTypeAttribute(start, metaProp.propertyType());
+                        Object value;
+                        if (Bean.class.isAssignableFrom(childType)) {
+                            if (settings.getConverter().isConvertible(childType)) {
+                                String text = advanceAndParseText();
+                                value = settings.getConverter().convertFromString(childType, text);
+                            } else {
+                                value = parseBean(childType);
+                            }
                         } else {
-                            String text = advanceAndParseText();
-                            value = settings.getConverter().convertFromString(childType, text);
+                            SerIterable iterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
+                            if (iterable != null) {
+                                value = parseIterable(iterable);
+                            } else {
+                                String text = advanceAndParseText();
+                                value = settings.getConverter().convertFromString(childType, text);
+                            }
                         }
+                        deser.setValue(builder, metaProp, value);
                     }
-                    builder.set(metaProp, value);
                 }
                 event = nextEvent(".bean ");
             }
-            return builder.build();
+            return deser.build(beanType, builder);
         } catch (Exception ex) {
             throw new RuntimeException("Error parsing bean: " + beanType.getName(), ex);
         }

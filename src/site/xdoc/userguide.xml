@@ -255,6 +255,43 @@ It is recommended to keep is simple, and only have normal mutable beans or final
 </section>
 
 
+<section name="Serialization">
+<p>
+The <code>org.joda.beans.ser</code> package provides support for serializing Joda-Beans via XML.
+The main class is <a href="apidocs/org/joda/beans/ser/JodaBeanSer.html">JodaBeanSer</a>.
+It contains the relevant settings and methods to access the serialization and deserialization.
+</p>
+<pre>
+ // write to XML
+ JodaBeanSer.COMPACT.xmlWriter().write(bean);
+ // read from XML
+ MyBean bean = JodaBeanSer.COMPACT.xmlReader().read(xmlStr, MyBean.class);
+</pre>
+<p>
+Two standard layouts are provided - COMPACT and PRETTY.
+The compact layout has no whitespace, whereas the pretty layout uses indentation and new-lines.
+Methods on <code>JodaBeanSer</code> allow for further customization.
+</p>
+<p>
+The serializer makes use the meta-data in the bean to minimize the output size.
+When deserializing, the same meta-data is used to parse the XML.
+However, this causes a problem if the bean is refactored between serialization and deserialization.
+To handle this, two mechanisms are provided.
+</p>
+<p>
+Firstly, the <code>RenameHandler</code> class from Joda-Convert allows type renames and
+enum constant renames to be handled. The class is a singleton into which renames are stored.
+</p>
+<p>
+Secondly, Joda-Beans provides the <code>SerDeserializer</code> mechanism.
+A <code>SerDeserializer</code> class can be written for each refactored bean.
+It supports multiple kinds of change, including property rename, property type change and
+complex semantic changes. It is registered with <code>SerDeserializers</code> and called
+directly as part of the parsing process.
+</p>
+</section>
+
+
 <section name="Integration">
 <p>
 Joda-Beans has so far been integrated with Freemarker and MongoDB.
