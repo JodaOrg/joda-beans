@@ -30,6 +30,7 @@ import java.util.UUID;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
+import org.joda.convert.RenameHandler;
 import org.joda.convert.StringConvert;
 
 /**
@@ -317,13 +318,22 @@ public final class JodaBeanSer {
             expanded = true;
         }
         try {
-            result = loadClass(fullName);
+            result = RenameHandler.INSTANCE.lookupType(fullName);
             if (knownTypes != null) {
+                // cache full name
                 knownTypes.put(fullName, result);
                 if (expanded) {
+                    // cache short name
                     knownTypes.put(className, result);
                 } else {
+                    // derive and cache short name
                     String simpleName = result.getSimpleName();
+                    // handle renames
+                    if (fullName.equals(result.getName()) == false &&
+                            RenameHandler.INSTANCE.getTypeRenames().containsKey(fullName) &&
+                            result.getEnclosingClass() == null) {
+                        simpleName = fullName.substring(fullName.lastIndexOf(".") + 1);
+                    }
                     if (Character.isUpperCase(simpleName.charAt(0)) &&
                             BASIC_TYPES_REVERSED.containsKey(simpleName) == false &&
                             knownTypes.containsKey(simpleName) == false) {
@@ -336,7 +346,7 @@ public final class JodaBeanSer {
             // handle pathological case of package name starting with upper case
             if (fullName.equals(className) == false) {
                 try {
-                    result = loadClass(className);
+                    result = RenameHandler.INSTANCE.lookupType(className);
                     if (knownTypes != null) {
                         knownTypes.put(className, result);
                     }
@@ -346,11 +356,6 @@ public final class JodaBeanSer {
             }
             throw ex;
         }
-    }
-
-    private Class<?> loadClass(String fullName) throws ClassNotFoundException {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
     }
 
     //-----------------------------------------------------------------------
