@@ -153,7 +153,7 @@ public class SerIteratorFactory {
         if (metaTypeDescription.endsWith("[]")) {
             String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
             try {
-                Class<?> cls = settings.decodeClass(clsStr, null, knownTypes);
+                Class<?> cls = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
                 return array(cls);
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);

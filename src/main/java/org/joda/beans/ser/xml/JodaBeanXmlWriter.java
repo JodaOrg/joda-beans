@@ -30,6 +30,7 @@ import java.util.Map;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.SerIterator;
 import org.joda.convert.StringConverter;
 
@@ -199,7 +200,7 @@ public class JodaBeanXmlWriter {
         }
         builder.append(currentIndent).append('<').append(tagName).append(attrs);
         if (value.getClass() != propType) {
-            String typeStr = settings.encodeClass(value.getClass(), basePackage, knownTypes);
+            String typeStr = SerTypeMapper.encodeType(value.getClass(), settings, basePackage, knownTypes);
             appendAttribute(builder, TYPE, typeStr);
         }
         int insertPoint = builder.length();
@@ -297,12 +298,12 @@ public class JodaBeanXmlWriter {
         if (type == Object.class) {
             type = value.getClass();
             if (type != String.class) {
-                String typeStr = settings.encodeClass(type, basePackage, knownTypes);
+                String typeStr = SerTypeMapper.encodeType(type, settings, basePackage, knownTypes);
                 appendAttribute(attrs, TYPE, typeStr);
             }
         } else if (settings.getConverter().isConvertible(type) == false) {
             type = value.getClass();
-            String typeStr = settings.encodeClass(type, basePackage, knownTypes);
+            String typeStr = SerTypeMapper.encodeType(type, settings, basePackage, knownTypes);
             appendAttribute(attrs, TYPE, typeStr);
         }
         try {

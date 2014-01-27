@@ -43,6 +43,7 @@ import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
@@ -204,7 +205,7 @@ public class JodaBeanXmlReader {
         Class<?> type;
         if (attr != null) {
             String typeStr = attr.getValue();
-            type = settings.decodeClass(typeStr, null, knownTypes);
+            type = SerTypeMapper.decodeType(typeStr, settings, null, knownTypes);
             if (rootType.isAssignableFrom(type) == false) {
                 throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + type.getName());
             }
@@ -413,7 +414,7 @@ public class JodaBeanXmlReader {
             return (defaultType == Object.class ? String.class : defaultType);
         }
         String childTypeStr = typeAttr.getValue();
-        return settings.decodeClass(childTypeStr, basePackage, knownTypes);
+        return SerTypeMapper.decodeType(childTypeStr, settings, basePackage, knownTypes);
     }
 
     // reader can be anywhere, but normally at StartDocument
