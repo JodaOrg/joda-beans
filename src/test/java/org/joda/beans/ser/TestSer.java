@@ -21,8 +21,8 @@ import java.io.File;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.testng.annotations.Test;
 
@@ -41,20 +41,20 @@ public class TestSer {
         assertEquals(JodaBeanSer.PRETTY.encodeClass(File.class, "java.util.", cache), "File");
         assertEquals(cache.containsKey(File.class), false);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicInteger.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicInteger");
-        assertEquals(cache.get(AtomicInteger.class), "AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicReference.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicReference");
+        assertEquals(cache.get(AtomicReference.class), "AtomicReference");
         // user type - second occurrence
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicInteger.class, "java.util.", cache), "AtomicInteger");
-        assertEquals(cache.get(AtomicInteger.class), "AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicReference.class, "java.util.", cache), "AtomicReference");
+        assertEquals(cache.get(AtomicReference.class), "AtomicReference");
         // user type - already cached name
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(org.joda.beans.ser.AtomicInteger.class, "java.util.", cache), "org.joda.beans.ser.AtomicInteger");
-        assertEquals(cache.get(org.joda.beans.ser.AtomicInteger.class), "org.joda.beans.ser.AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(org.joda.beans.ser.AtomicReference.class, "java.util.", cache), "org.joda.beans.ser.AtomicReference");
+        assertEquals(cache.get(org.joda.beans.ser.AtomicReference.class), "org.joda.beans.ser.AtomicReference");
         // user type
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicLong.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicLong");
-        assertEquals(cache.get(AtomicLong.class), "AtomicLong");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicIntegerArray.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicIntegerArray");
+        assertEquals(cache.get(AtomicIntegerArray.class), "AtomicIntegerArray");
         // user type - second occurrence
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicLong.class, "java.util.", cache), "AtomicLong");
-        assertEquals(cache.get(AtomicLong.class), "AtomicLong");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicIntegerArray.class, "java.util.", cache), "AtomicIntegerArray");
+        assertEquals(cache.get(AtomicIntegerArray.class), "AtomicIntegerArray");
         // user type - silly name
         assertEquals(JodaBeanSer.PRETTY.encodeClass(BigDecimal.class, "java.util.", cache), "org.joda.beans.ser.BigDecimal");
         assertEquals(cache.get(BigDecimal.class), "org.joda.beans.ser.BigDecimal");
@@ -75,9 +75,9 @@ public class TestSer {
 
     public void test_encodeClass_noCache() {
         // user type
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicLong.class, "java.util.", null), "java.util.concurrent.atomic.AtomicLong");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicIntegerArray.class, "java.util.", null), "java.util.concurrent.atomic.AtomicIntegerArray");
         // user type - second occurrence
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicLong.class, "java.util.", null), "java.util.concurrent.atomic.AtomicLong");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicIntegerArray.class, "java.util.", null), "java.util.concurrent.atomic.AtomicIntegerArray");
         // user type - normal
         assertEquals(JodaBeanSer.PRETTY.encodeClass(Normal.class, "org.joda.beans.ser.", null), "Normal");
         // user type - silly name
@@ -92,11 +92,11 @@ public class TestSer {
         assertEquals(JodaBeanSer.PRETTY.encodeClass(File.class, null, cache), "File");
         assertEquals(cache.containsKey(File.class), false);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicInteger.class, null, cache), "java.util.concurrent.atomic.AtomicInteger");
-        assertEquals(cache.get(AtomicInteger.class), "AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicReference.class, null, cache), "java.util.concurrent.atomic.AtomicReference");
+        assertEquals(cache.get(AtomicReference.class), "AtomicReference");
         // user type - second occurrence
-        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicInteger.class, null, cache), "AtomicInteger");
-        assertEquals(cache.get(AtomicInteger.class), "AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.encodeClass(AtomicReference.class, null, cache), "AtomicReference");
+        assertEquals(cache.get(AtomicReference.class), "AtomicReference");
     }
 
     public void test_encodeClass_noShortTypes() {
@@ -106,9 +106,9 @@ public class TestSer {
         // basic type
         assertEquals(JodaBeanSer.PRETTY.withShortTypes(false).encodeClass(File.class, "java.util.", cache), "File");
         // user type
-        assertEquals(JodaBeanSer.PRETTY.withShortTypes(false).encodeClass(AtomicInteger.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.withShortTypes(false).encodeClass(AtomicReference.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicReference");
         // user type - second occurrence
-        assertEquals(JodaBeanSer.PRETTY.withShortTypes(false).encodeClass(AtomicInteger.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicInteger");
+        assertEquals(JodaBeanSer.PRETTY.withShortTypes(false).encodeClass(AtomicReference.class, "java.util.", cache), "java.util.concurrent.atomic.AtomicReference");
         assertEquals(cache.isEmpty(), true);
     }
 
@@ -122,21 +122,21 @@ public class TestSer {
         assertEquals(JodaBeanSer.PRETTY.decodeClass("File", "java.util.", cache), File.class);
         assertEquals(cache.containsKey("File"), false);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicInteger", "java.util.", cache), AtomicInteger.class);
-        assertEquals(cache.get("java.util.concurrent.atomic.AtomicInteger"), AtomicInteger.class);
-        assertEquals(cache.get("AtomicInteger"), AtomicInteger.class);
+        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicReference", "java.util.", cache), AtomicReference.class);
+        assertEquals(cache.get("java.util.concurrent.atomic.AtomicReference"), AtomicReference.class);
+        assertEquals(cache.get("AtomicReference"), AtomicReference.class);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.decodeClass("AtomicInteger", "java.util.", cache), AtomicInteger.class);
-        assertEquals(cache.get("java.util.concurrent.atomic.AtomicInteger"), AtomicInteger.class);
-        assertEquals(cache.get("AtomicInteger"), AtomicInteger.class);
+        assertEquals(JodaBeanSer.PRETTY.decodeClass("AtomicReference", "java.util.", cache), AtomicReference.class);
+        assertEquals(cache.get("java.util.concurrent.atomic.AtomicReference"), AtomicReference.class);
+        assertEquals(cache.get("AtomicReference"), AtomicReference.class);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicLong", "java.util.", cache), AtomicLong.class);
-        assertEquals(cache.get("java.util.concurrent.atomic.AtomicLong"), AtomicLong.class);
-        assertEquals(cache.get("AtomicLong"), AtomicLong.class);
+        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicIntegerArray", "java.util.", cache), AtomicIntegerArray.class);
+        assertEquals(cache.get("java.util.concurrent.atomic.AtomicIntegerArray"), AtomicIntegerArray.class);
+        assertEquals(cache.get("AtomicIntegerArray"), AtomicIntegerArray.class);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.decodeClass("AtomicLong", "java.util.", cache), AtomicLong.class);
-        assertEquals(cache.get("java.util.concurrent.atomic.AtomicLong"), AtomicLong.class);
-        assertEquals(cache.get("AtomicLong"), AtomicLong.class);
+        assertEquals(JodaBeanSer.PRETTY.decodeClass("AtomicIntegerArray", "java.util.", cache), AtomicIntegerArray.class);
+        assertEquals(cache.get("java.util.concurrent.atomic.AtomicIntegerArray"), AtomicIntegerArray.class);
+        assertEquals(cache.get("AtomicIntegerArray"), AtomicIntegerArray.class);
     }
 
     public void test_decodeClass_noCache() throws Exception {
@@ -145,7 +145,7 @@ public class TestSer {
         // basic type
         assertEquals(JodaBeanSer.PRETTY.decodeClass("File", "java.util.", null), File.class);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicInteger", "java.util.", null), AtomicInteger.class);
+        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicReference", "java.util.", null), AtomicReference.class);
     }
 
     public void test_decodeClass_noBasePackage() throws Exception {
@@ -153,7 +153,7 @@ public class TestSer {
         // basic type
         assertEquals(JodaBeanSer.PRETTY.decodeClass("File", null, cache), File.class);
         // user type
-        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicInteger", null, cache), AtomicInteger.class);
+        assertEquals(JodaBeanSer.PRETTY.decodeClass("java.util.concurrent.atomic.AtomicReference", null, cache), AtomicReference.class);
     }
 
     @Test(expectedExceptions = ClassNotFoundException.class)
