@@ -67,7 +67,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="download.html">Release 0.9.1</a>
+<a href="download.html">Release 0.9.2</a>
 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
@@ -77,7 +77,7 @@ The project runs on JDK 1.6 and requires <a href="http://www.joda.org/joda-conve
 There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.9.1|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.9.2|jar">Maven Central</a>.
 </p>
 </section>
 
