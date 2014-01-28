@@ -18,18 +18,13 @@ package org.joda.beans.ser;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.joda.convert.RenameHandler;
 
@@ -52,33 +47,23 @@ public final class SerTypeMapper {
         Map<Class<?>, String> map = new HashMap<Class<?>, String>();
         
         map.put(String.class, "String");
-        map.put(CharSequence.class, "CharSequence");
-        map.put(StringBuffer.class, "StringBuffer");
-        map.put(StringBuilder.class, "StringBuilder");
         map.put(Long.class, "Long");
         map.put(Integer.class, "Integer");
         map.put(Short.class, "Short");
         map.put(Byte.class, "Byte");
-        map.put(byte[].class, "byte[]");
         map.put(Character.class, "Character");
-        map.put(char[].class, "char[]");
         map.put(Boolean.class, "Boolean");
         map.put(Double.class, "Double");
         map.put(Float.class, "Float");
         map.put(BigInteger.class, "BigInteger");
         map.put(BigDecimal.class, "BigDecimal");
-        map.put(AtomicLong.class, "AtomicLong");
-        map.put(AtomicInteger.class, "AtomicInteger");
-        map.put(AtomicBoolean.class, "AtomicBoolean");
         map.put(Locale.class, "Locale");
         map.put(Class.class, "Class");
-        map.put(Package.class, "Package");
         map.put(UUID.class, "UUID");
-        map.put(URL.class, "URL");
         map.put(URI.class, "URI");
-        map.put(InetAddress.class, "InetAddress");
         map.put(File.class, "File");
-        // do not include Currency, TimeZone, Date, Calendar, Enum from Joda-Convert
+        // selection of types are the most common types suitable for reduction
+        // and suitable for simple interpretation on non-Java systems
         
         Map<String, Class<?>> reversed = new HashMap<String, Class<?>>();
         for (Entry<Class<?>, String> entry : map.entrySet()) {
