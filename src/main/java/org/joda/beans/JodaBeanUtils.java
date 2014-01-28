@@ -175,6 +175,8 @@ public final class JodaBeanUtils {
                 return Arrays.equals((boolean[]) obj1, (boolean[]) obj2);
             }
         }
+        // this does not handle arrays embedded in objects, such as in lists/maps
+        // but you shouldn't use arrays like that, should you?
         return obj1.equals(obj2);
     }
 

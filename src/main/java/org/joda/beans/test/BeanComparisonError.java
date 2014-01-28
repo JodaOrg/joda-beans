@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.Bean;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 
 /**
@@ -94,10 +95,6 @@ class BeanComparisonError extends AssertionError {
             diffs.add(prefix + ": Was null, but expected " + buildSummary(expected, true));
             return;
         }
-        if (expected.getClass() != actual.getClass()) {
-            diffs.add(prefix + ": Class differs, expected " + buildSummary(expected, true) + " but was " + buildSummary(actual, true));
-            return;
-        }
         if (expected instanceof List && actual instanceof List) {
             List<?> expectedList = (List<?>) expected;
             List<?> actualList = (List<?>) actual;
@@ -136,7 +133,7 @@ class BeanComparisonError extends AssertionError {
             }
             return;
         }
-        if (expected.equals(actual) == false) {
+        if (JodaBeanUtils.equal(expected, actual) == false) {
             diffs.add(prefix + ": Content differs, expected " + buildSummary(expected, true) + " but was " + buildSummary(actual, false));
             return;
         }
