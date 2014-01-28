@@ -94,8 +94,14 @@ public class TestAddressXml {
         Map<String, List<List<Integer>>> map3 = new HashMap<String, List<List<Integer>>>();
         map3.put("A", Arrays.asList(Arrays.asList(3, 2, 1)));
         Map<ImmPerson, Map<String, ImmPerson>> map4 = new HashMap<ImmPerson, Map<String, ImmPerson>>();
+        Map<String, List<List<Object>>> map5 = new HashMap<String, List<List<Object>>>();
+        List<Object> objects1 = Arrays.<Object>asList((Object[]) new String[] {"Str", "Arr"}, Integer.valueOf(3));
+        List<Object> objects2 = Arrays.<Object>asList((Object[]) new Double[] {1.2d, 3.4d}, "Hello");
+        map5.put("A", Arrays.asList(objects1));
+        map5.put("B", Arrays.asList(objects2));
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
+            .middleNames(new String[] {"K", "T"})
             .surname("Colebourne")
             .addressList(Arrays.asList(new Address()))
             .codeCounts(ImmutableMultiset.of("A", "A", "B"))
@@ -124,6 +130,7 @@ public class TestAddressXml {
             .listInMap(map)
             .listNumericInMap(map2)
             .listInListInMap(map3)
+//            .objectListInListInMap(map5)  // XML OK, but bean equals fails
             .mapInMap(map4)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
