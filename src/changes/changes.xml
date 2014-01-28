@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9.3" date="xxx" description="v0.9.3">
+    <release version="0.9.3" date="2014-01-28" description="v0.9.3">
       <action dev="scolebourne" type="fix">
         Fix BeanComparisonError.
         Fixes #45.

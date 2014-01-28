@@ -16,7 +16,7 @@ The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 </p>
 <p>
-Version 0.9.1 is the latest version - <a href="download.html">Download now</a>
+Version 0.9.3 is the latest version - <a href="download.html">Download now</a>
 </p>
 <p>
 Joda-Beans is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
@@ -67,7 +67,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="download.html">Release 0.9.2</a>
+<a href="download.html">Release 0.9.3</a>
 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
@@ -77,7 +77,7 @@ The project runs on JDK 1.6 and requires <a href="http://www.joda.org/joda-conve
 There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.9.2|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.9.3|jar">Maven Central</a>.
 </p>
 </section>
 
