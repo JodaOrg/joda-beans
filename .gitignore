@@ -1,5 +1,5 @@
-bin/
-target/
+/bin/
+/target/
 *.log
 /tests/
 /test-output/
