@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.4" date="xxx" description="v0.9.4">
+      <action dev="scolebourne" type="fix">
+        Guava MultiSet serialized incorrectly.
+        Was serializing using the set size, not the unique elements size.
+        Fixes #47.
+      </action>
+    </release>
     <release version="0.9.3" date="2014-01-28" description="v0.9.3">
       <action dev="scolebourne" type="fix">
         Choose known types in serialization carefully.

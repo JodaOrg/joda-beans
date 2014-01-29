@@ -241,7 +241,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             }
             @Override
             public int size() {
-                return multiset.size();
+                return multiset.entrySet().size();
             }
             @Override
             public boolean hasNext() {
