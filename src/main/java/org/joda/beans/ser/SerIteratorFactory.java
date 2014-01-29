@@ -294,6 +294,10 @@ public class SerIteratorFactory {
                 return false;
             }
             @Override
+            public boolean isCounted() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -368,6 +372,10 @@ public class SerIteratorFactory {
                 return false;
             }
             @Override
+            public boolean isCounted() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -408,6 +416,10 @@ public class SerIteratorFactory {
             }
             @Override
             public boolean isMapLike() {
+                return false;
+            }
+            @Override
+            public boolean isCounted() {
                 return false;
             }
             @Override
@@ -514,6 +526,10 @@ public class SerIteratorFactory {
                 return true;
             }
             @Override
+            public boolean isCounted() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return keyType;
             }
@@ -550,6 +566,10 @@ public class SerIteratorFactory {
             @Override
             public boolean isMapLike() {
                 return true;
+            }
+            @Override
+            public boolean isCounted() {
+                return false;
             }
             @Override
             public int size() {
@@ -626,6 +646,10 @@ public class SerIteratorFactory {
                 return false;
             }
             @Override
+            public boolean isCounted() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -663,6 +687,10 @@ public class SerIteratorFactory {
             }
             @Override
             public boolean isMapLike() {
+                return false;
+            }
+            @Override
+            public boolean isCounted() {
                 return false;
             }
             @Override

@@ -57,6 +57,13 @@ public interface SerIterable {
     boolean isMapLike();
 
     /**
+     * Is the iterator count-based, where each element has a count.
+     * 
+     * @return true if count-based, false if not
+     */
+    boolean isCounted();
+
+    /**
      * Gets the type of the key.
      * 
      * @return the key type, null if no key

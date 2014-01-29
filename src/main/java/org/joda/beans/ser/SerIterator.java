@@ -48,6 +48,13 @@ public interface SerIterator {
     boolean isMapLike();
 
     /**
+     * Is the iterator count-based, where each element has a count.
+     * 
+     * @return true if count-based, false if not
+     */
+    boolean isCounted();
+
+    /**
      * Checks if there is a next item.
      * 
      * @return true if there is another item

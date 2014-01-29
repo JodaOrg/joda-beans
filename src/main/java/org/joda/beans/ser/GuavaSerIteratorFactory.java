@@ -203,6 +203,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return false;
             }
             @Override
+            public boolean isCounted() {
+                return true;
+            }
+            @Override
             public Class<?> keyType() {
                 return null;
             }
@@ -238,6 +242,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public boolean isMapLike() {
                 return false;
+            }
+            @Override
+            public boolean isCounted() {
+                return true;
             }
             @Override
             public int size() {
@@ -313,6 +321,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return true;
             }
             @Override
+            public boolean isCounted() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return keyType;
             }
@@ -361,6 +373,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return true;
             }
             @Override
+            public boolean isCounted() {
+                return false;
+            }
+            @Override
             public Class<?> keyType() {
                 return keyType;
             }
@@ -403,6 +419,10 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public boolean isMapLike() {
                 return true;
+            }
+            @Override
+            public boolean isCounted() {
+                return false;
             }
             @Override
             public int size() {
