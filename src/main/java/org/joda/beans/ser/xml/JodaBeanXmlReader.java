@@ -202,21 +202,19 @@ public class JodaBeanXmlReader {
         if (attr == null && rootType == Bean.class) {
             throw new IllegalArgumentException("Root element attribute must specify '" + TYPE + "'");
         }
-        Class<?> type;
+        Class<?> effectiveType = rootType;
         if (attr != null) {
             String typeStr = attr.getValue();
-            type = SerTypeMapper.decodeType(typeStr, settings, null, knownTypes);
-            if (rootType.isAssignableFrom(type) == false) {
-                throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + type.getName());
+            effectiveType = SerTypeMapper.decodeType(typeStr, settings, null, knownTypes);
+            if (rootType.isAssignableFrom(effectiveType) == false) {
+                throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + effectiveType.getName());
             }
-        } else {
-            type = rootType;
         }
-        if (Bean.class.isAssignableFrom(type) == false) {
-            throw new IllegalArgumentException("Root type is not a Joda-Bean: " + type.getName());
+        if (Bean.class.isAssignableFrom(effectiveType) == false) {
+            throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
         }
-        basePackage = type.getPackage().getName() + ".";
-        Object parsed = parseBean(type);
+        basePackage = effectiveType.getPackage().getName() + ".";
+        Object parsed = parseBean(effectiveType);
         return rootType.cast(parsed);
     }
 
@@ -229,6 +227,7 @@ public class JodaBeanXmlReader {
      * @return the bean, not null
      */
     private Object parseBean(final Class<?> beanType) throws Exception {
+        String propName = "";
         try {
             SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
             MetaBean metaBean = deser.findMetaBean(beanType);
@@ -237,8 +236,8 @@ public class JodaBeanXmlReader {
             while (event.isEndElement() == false) {
                 if (event.isStartElement()) {
                     StartElement start = event.asStartElement();
-                    String name = start.getName().getLocalPart();
-                    MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, name);
+                    propName = start.getName().getLocalPart();
+                    MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                     if (metaProp == null) {
                         int depth = 0;
                         event = nextEvent(" skip ");
@@ -272,12 +271,13 @@ public class JodaBeanXmlReader {
                         }
                         deser.setValue(builder, metaProp, value);
                     }
+                    propName = "";
                 }
                 event = nextEvent(".bean ");
             }
             return deser.build(beanType, builder);
         } catch (Exception ex) {
-            throw new RuntimeException("Error parsing bean: " + beanType.getName(), ex);
+            throw new RuntimeException("Error parsing bean: " + beanType.getName() + "::" + propName + ", " + ex.getMessage(), ex);
         }
     }
 

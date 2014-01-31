@@ -104,6 +104,8 @@ public class JodaBeanXmlWriter {
     //-----------------------------------------------------------------------
     /**
      * Writes the bean to a string.
+     * <p>
+     * The type of the bean will be set in the message.
      * 
      * @param bean  the bean to output, not null
      * @return the XML, not null
@@ -125,6 +127,8 @@ public class JodaBeanXmlWriter {
 
     /**
      * Writes the bean to the {@code StringBuilder}.
+     * <p>
+     * The type of the bean will be set in the message.
      * 
      * @param bean  the bean to output, not null
      * @return the builder, not null
@@ -241,9 +245,13 @@ public class JodaBeanXmlWriter {
             itemIterator.next();
             StringBuilder attr = new StringBuilder(32);
             if (converter != null) {
-                String keyStr = encodeAttribute(converter.convertToString(itemIterator.key()));
+                Object key = itemIterator.key();
+                if (key == null) {
+                    throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
+                }
+                String keyStr = encodeAttribute(converter.convertToString(key));
                 if (keyStr == null) {
-                    throw new IllegalArgumentException("Unable to embed map key as it cannot be a null string: " + itemIterator.key());
+                    throw new IllegalArgumentException("Unable to write map key as it cannot be a null string: " + key);
                 }
                 appendAttribute(attr, KEY, keyStr);
             }
@@ -251,8 +259,12 @@ public class JodaBeanXmlWriter {
                 appendAttribute(attr, COUNT, Integer.toString(itemIterator.count()));
             }
             if (keyBean) {
+                Object key = itemIterator.key();
+                if (key == null) {
+                    throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
+                }
                 builder.append(currentIndent).append('<').append(ENTRY).append(attr).append('>').append(settings.getNewLine());
-                writeKeyValueElement(currentIndent + settings.getIndent(), itemIterator);
+                writeKeyValueElement(currentIndent + settings.getIndent(), key, itemIterator);
                 builder.append(currentIndent).append('<').append('/').append(ENTRY).append('>').append(settings.getNewLine());
             } else {
                 String tagName = itemIterator.isMapLike() ? ENTRY : ITEM;
@@ -261,8 +273,7 @@ public class JodaBeanXmlWriter {
         }
     }
 
-    private void writeKeyValueElement(final String currentIndent, final SerIterator itemIterator) {
-        Object key = itemIterator.key();
+    private void writeKeyValueElement(final String currentIndent, Object key, final SerIterator itemIterator) {
         writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), (Bean) key);
         writeValueElement(currentIndent, ITEM, new StringBuilder(), itemIterator);
     }
@@ -294,25 +305,28 @@ public class JodaBeanXmlWriter {
 
     //-----------------------------------------------------------------------
     private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, final Class<?> declaredType, final Object value) {
-        Class<?> type = declaredType;
-        if (type == Object.class) {
-            type = value.getClass();
-            if (type != String.class) {
-                String typeStr = SerTypeMapper.encodeType(type, settings, basePackage, knownTypes);
+        Class<?> effectiveType = declaredType;
+        if (effectiveType == Object.class) {
+            effectiveType = value.getClass();
+            if (effectiveType != String.class) {
+                String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 appendAttribute(attrs, TYPE, typeStr);
             }
-        } else if (settings.getConverter().isConvertible(type) == false) {
-            type = value.getClass();
-            String typeStr = SerTypeMapper.encodeType(type, settings, basePackage, knownTypes);
+        } else if (settings.getConverter().isConvertible(effectiveType) == false) {
+            effectiveType = value.getClass();
+            String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             appendAttribute(attrs, TYPE, typeStr);
         }
         try {
-            String converted = settings.getConverter().convertToString(type, value);
+            String converted = settings.getConverter().convertToString(effectiveType, value);
+            if (converted == null) {
+                throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
+            }
             builder.append(currentIndent).append('<').append(tagName).append(attrs).append('>');
             appendEncoded(converted);
             builder.append('<').append('/').append(tagName).append('>').append(settings.getNewLine());
-        } catch (IllegalStateException ex) {
-            throw new IllegalArgumentException("Unable to convert type " + type.getName() + " declared as " + declaredType.getName(), ex);
+        } catch (RuntimeException ex) {
+            throw new IllegalArgumentException("Unable to convert type " + effectiveType.getName() + " declared as " + declaredType.getName(), ex);
         }
     }
 
