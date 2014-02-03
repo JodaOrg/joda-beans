@@ -16,6 +16,8 @@
 package org.joda.beans.ser;
 
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.ser.bin.JodaBeanBinReader;
+import org.joda.beans.ser.bin.JodaBeanBinWriter;
 import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
 import org.joda.convert.StringConvert;
@@ -212,6 +214,25 @@ public final class JodaBeanSer {
     public JodaBeanSer withDeserializers(SerDeserializers deserializers) {
         JodaBeanUtils.notNull(deserializers, "deserializers");
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a binary writer.
+     * 
+     * @return the binary writer, not null
+     */
+    public JodaBeanBinWriter binWriter() {
+        return new JodaBeanBinWriter(this);
+    }
+
+    /**
+     * Creates a binary reader.
+     * 
+     * @return the binary reader, not null
+     */
+    public JodaBeanBinReader binReader() {
+        return new JodaBeanBinReader(this);
     }
 
     //-----------------------------------------------------------------------

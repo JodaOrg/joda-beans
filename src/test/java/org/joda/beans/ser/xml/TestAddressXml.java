@@ -18,9 +18,12 @@ package org.joda.beans.ser.xml;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.joda.beans.Bean;
 import org.joda.beans.gen.Address;
@@ -97,8 +100,10 @@ public class TestAddressXml {
         map3.put("A", Arrays.asList(Arrays.asList(3, 2, 1)));
         Map<ImmPerson, Map<String, ImmPerson>> map4 = new HashMap<ImmPerson, Map<String, ImmPerson>>();
         Map<String, List<List<Object>>> map5 = new HashMap<String, List<List<Object>>>();
-        List<Object> objects1 = Arrays.<Object>asList((Object[]) new String[] {"Str", "Arr"}, Integer.valueOf(3));
-        List<Object> objects2 = Arrays.<Object>asList((Object[]) new Double[] {1.2d, 3.4d}, "Hello");
+        List<Object> objects1 = Arrays.<Object>asList(Currency.getInstance("GBP"), TimeZone.getTimeZone("Europe/London"));
+        List<Object> objects2 = Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2));
+//        List<Object> objects1 = Arrays.<Object>asList((Object[]) new String[] {"Str", "Arr"}, Integer.valueOf(3));
+//        List<Object> objects2 = Arrays.<Object>asList((Object[]) new Double[] {1.2d, 3.4d}, "Hello");
         map5.put("A", Arrays.asList(objects1));
         map5.put("B", Arrays.asList(objects2));
         ImmPerson person = ImmPerson.builder()
@@ -132,7 +137,7 @@ public class TestAddressXml {
             .listInMap(map)
             .listNumericInMap(map2)
             .listInListInMap(map3)
-//            .objectListInListInMap(map5)  // XML OK, but bean equals fails
+            .objectListInListInMap(map5)
             .mapInMap(map4)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
@@ -250,6 +255,14 @@ public class TestAddressXml {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_read_rootTypeArgumentInvalid() {
         JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", Integer.class);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_write_nullKeyInMap() {
+        Address address = new Address();
+        Person bean = new Person();
+        bean.getOtherAddressMap().put(null, address);
+        JodaBeanSer.COMPACT.xmlWriter().write(bean);
     }
 
 }
