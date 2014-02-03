@@ -502,7 +502,8 @@ class BeanGen {
     }
 
     private void generateImmutableBuilderMethod() {
-        if ((data.isImmutable() && data.isEffectiveBuilderScopePublic()) || (data.isMutable() && data.isBuilderScopePublic())) {
+        if (data.isConstructable() &&
+                ((data.isImmutable() && data.isEffectiveBuilderScopePublic()) || (data.isMutable() && data.isBuilderScopePublic()))) {
             insertRegion.add("\t/**");
             insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
             if (data.isTypeGeneric()) {
@@ -718,15 +719,24 @@ class BeanGen {
     //-----------------------------------------------------------------------
     private void generateImmutableToBuilder() {
         if (data.isImmutable() && data.isEffectiveBuilderScopePublic()) {
-            List<PropertyGen> nonDerived = nonDerivedProperties();
-            if (nonDerived.size() > 0) {
+            if (data.isConstructable()) {
+                List<PropertyGen> nonDerived = nonDerivedProperties();
+                if (nonDerived.size() > 0) {
+                    insertRegion.add("\t/**");
+                    insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
+                    insertRegion.add("\t * @return the mutable builder, not null");
+                    insertRegion.add("\t */");
+                    insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
+                    insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
+                    insertRegion.add("\t}");
+                    insertRegion.add("");
+                }
+            } else {
                 insertRegion.add("\t/**");
                 insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
                 insertRegion.add("\t * @return the mutable builder, not null");
                 insertRegion.add("\t */");
-                insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
-                insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
-                insertRegion.add("\t}");
+                insertRegion.add("\tpublic abstract Builder" + data.getTypeGenericName(true) + " toBuilder();");
                 insertRegion.add("");
             }
         }
@@ -987,7 +997,11 @@ class BeanGen {
         insertRegion.add("\t\t@Override");
         if (data.isImmutable() || (data.isMutable() && data.isBuilderScopePublic())) {
             insertRegion.add("\t\tpublic " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+            if (data.isConstructable()) {
+                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+            } else {
+                insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+            }
         } else {
             data.ensureImport(BeanBuilder.class);
             insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
@@ -1147,8 +1161,13 @@ class BeanGen {
             data.ensureImport(DirectFieldsBeanBuilder.class);
             superBuilder = "DirectFieldsBeanBuilder<" + data.getTypeNoExtends() + ">";
         }
-        insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + finalType +
-                "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
+        if (data.isConstructable()) {
+            insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + finalType +
+                    "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
+        } else {
+            insertRegion.add("\t" + data.getEffectiveBuilderScope() + " abstract static " + finalType +
+                    "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
+        }
         if (nonDerived.size() > 0) {
             insertRegion.add("");
             generateBuilderProperties();
@@ -1159,7 +1178,9 @@ class BeanGen {
         generateIndentedSeparator();
         generateBuilderSet();
         generateBuilderOtherSets();
-        generateBuilderBuilder();
+        if (data.isConstructable()) {
+            generateBuilderBuilder();
+        }
         generateIndentedSeparator();
         generateBuilderPropertySetMethods();
         generateIndentedSeparator();

@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.4" date="xxx" description="v0.9.4">
       <action dev="scolebourne" type="fix">
+       Invalid code generated for an abstract @ImmutableBean.
+       Fixes #48.
+      </action>
+      <action dev="scolebourne" type="fix">
         Guava MultiSet serialized incorrectly.
         Was serializing using the set size, not the unique elements size.
         Fixes #47.
