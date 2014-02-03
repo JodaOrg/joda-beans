@@ -29,6 +29,8 @@ import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmEmpty;
 import org.joda.beans.gen.ImmPerson;
+import org.joda.beans.gen.JodaConvertBean;
+import org.joda.beans.gen.JodaConvertWrapper;
 import org.joda.beans.gen.Person;
 import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -145,6 +147,7 @@ public class TestAddressXml {
         BeanAssert.assertBeanEquals(bean, address);
     }
 
+    //-----------------------------------------------------------------------
     public void test_readWriteBeanEmptyChild_pretty() {
         FlexiBean bean = new FlexiBean();
         bean.set("element", "Test");
@@ -165,6 +168,60 @@ public class TestAddressXml {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    public void test_readWriteJodaConvertWrapper() {
+        JodaConvertWrapper wrapper = new JodaConvertWrapper();
+        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+        wrapper.setBean(bean);
+        wrapper.setDescription("Weird");
+        String xml = JodaBeanSer.COMPACT.xmlWriter().write(wrapper);
+        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertWrapper\"><bean>Hello:9</bean><description>Weird</description></bean>");
+        Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
+        BeanAssert.assertBeanEquals(wrapper, parsed);
+    }
+
+    public void test_readWriteJodaConvertBean() {
+        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+        String xml = JodaBeanSer.COMPACT.xmlWriter().write(bean);
+        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertBean\"><base>Hello</base><extra>9</extra></bean>");
+        Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_read_nonStandard_JodaConvertWrapper_expanded() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertWrapper\"><bean><base>Hello</base><extra>9</extra></bean><description>Weird</description></bean>";
+        Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
+        JodaConvertWrapper wrapper = new JodaConvertWrapper();
+        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+        wrapper.setBean(bean);
+        wrapper.setDescription("Weird");
+        BeanAssert.assertBeanEquals(wrapper, parsed);
+    }
+
+    public void test_read_nonStandard_JodaConvertBean_flattened() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertBean\">Hello:9</bean>";
+        Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
+        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_read_nonStandard_withCommentBeanRoot() {
+        String xml = "<bean><!-- comment --><element>Test</element></bean>";
+        FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
+        FlexiBean bean = new FlexiBean();
+        bean.set("element", "Test");
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_read_nonStandard_withCommentInProperty() {
+        String xml = "<bean><element><!-- comment -->Test</element></bean>";
+        FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
+        FlexiBean bean = new FlexiBean();
+        bean.set("element", "Test");
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-----------------------------------------------------------------------
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_read_noBeanElementAtRoot() {
         JodaBeanSer.COMPACT.xmlReader().read("<foo></foo>", Bean.class);

@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.4" date="xxx" description="v0.9.4">
       <action dev="scolebourne" type="fix">
+       More flexible XML parsing wrt Joda-Convert.
+       Handle a bean that has Joda-Convert annotations added, or vice versa.
+       Fixes #50.
+      </action>
+      <action dev="scolebourne" type="fix">
        Invalid code generated for an abstract @ImmutableBean.
        Fixes #48.
       </action>
