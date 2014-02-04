@@ -159,7 +159,7 @@ public final class MsgPackVisualizer extends MsgPackInput {
     }
 
     @Override
-    protected void handleExtension(int type, byte[] bytes) {
+    protected void handleExtension(int type, byte[] bytes) throws IOException {
         if (type == JODA_TYPE_BEAN || type == JODA_TYPE_DATA || type == JODA_TYPE_META) {
             String str = new String(bytes, UTF_8);
             System.out.println("ext type=" + type + " '" + str + "'");
