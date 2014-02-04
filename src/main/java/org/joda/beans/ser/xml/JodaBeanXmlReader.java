@@ -229,17 +229,33 @@ public class JodaBeanXmlReader {
     private Object parseBean(final Class<?> beanType) throws Exception {
         String propName = "";
         try {
+            XMLEvent event = null;
+            // handle case where whole bean is Joda-Convert string
+            if (settings.getConverter().isConvertible(beanType)) {
+                StringBuilder buf = new StringBuilder();
+                while (reader.hasNext()) {
+                    event = nextEvent(">btxt ");
+                    if (event.isCharacters()) {
+                        buf.append(event.asCharacters().getData());
+                    } else if (event.isEndElement()) {
+                        return settings.getConverter().convertFromString(beanType, buf.toString());
+                    } else if (event.isStartElement()) {
+                        break;  // not serialized via Joda-Convert
+                    } else if (event.isEndDocument()) {
+                        throw new IllegalArgumentException("Unexpected end of document");
+                    }
+                }
+            } else {
+                event = nextEvent(">bean ");
+            }
+            // handle structured bean
             SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
             MetaBean metaBean = deser.findMetaBean(beanType);
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
-            XMLEvent event = nextEvent(">bean ");
-            StringBuilder buf = new StringBuilder();
-            int startElementCount = 0;
             // handle beans with structure
             while (event.isEndElement() == false) {
                 if (event.isStartElement()) {
                     StartElement start = event.asStartElement();
-                    startElementCount++;
                     propName = start.getName().getLocalPart();
                     MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                     if (metaProp == null) {
@@ -271,14 +287,8 @@ public class JodaBeanXmlReader {
                         deser.setValue(builder, metaProp, value);
                     }
                     propName = "";
-                } else if (startElementCount == 0 && event.isCharacters()) {
-                    buf.append(event.asCharacters().getData());
                 }
                 event = nextEvent(".bean ");
-            }
-            // try handling Joda-Convert strings
-            if (startElementCount == 0 && settings.getConverter().isConvertible(beanType)) {
-                return settings.getConverter().convertFromString(beanType, buf.toString());
             }
             return deser.build(beanType, builder);
         } catch (Exception ex) {
