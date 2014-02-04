@@ -408,7 +408,17 @@ public class JodaBeanBinReader extends MsgPack {
     private String acceptStringBytes(int size) throws IOException {
         byte[] bytes = new byte[size];
         input.readFully(bytes);
-        return new String(bytes, UTF_8);
+        // inline common ASCII case for much better performance
+        char[] chars = new char[size];
+        for (int i = 0; i < size; i++) {
+            byte b = bytes[i];
+            if (b >= 0) {
+                chars[i] = (char) b;
+            } else {
+                return new String(bytes, UTF_8);
+            }
+        }
+        return new String(chars);
     }
 
     private byte[] acceptBinary(int typeByte) throws IOException {

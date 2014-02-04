@@ -203,7 +203,7 @@ public final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     public void writeString(String value) throws IOException {
-        byte[] bytes = value.getBytes(UTF_8);
+        byte[] bytes = toUTF8(value);
         int size = bytes.length;
         if (size < 32) {
             output.writeByte(MIN_FIX_STR + size);
@@ -218,6 +218,21 @@ public final class MsgPackOutput extends MsgPack {
             output.writeInt(size);
         }
         output.write(bytes);
+    }
+
+    private byte[] toUTF8(String value) {
+        // inline common ASCII case for much better performance
+        final int size = value.length();
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++) {
+            char ch = value.charAt(i);
+            if (ch < 128) {
+                bytes[i] = (byte) ch;
+            } else {
+                return value.getBytes(UTF_8);
+            }
+        }
+        return bytes;
     }
 
     /**
