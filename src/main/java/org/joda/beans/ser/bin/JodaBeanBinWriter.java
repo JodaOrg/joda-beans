@@ -287,9 +287,6 @@ public class JodaBeanBinWriter {
         } else if (realType == Boolean.class) {
             output.writeBoolean(((Boolean) value).booleanValue());
             return;
-        } else if (realType == byte[].class) {
-            output.writeBytes((byte[]) value);
-            return;
         }
         
         // handle no declared type and subclasses
@@ -317,6 +314,9 @@ public class JodaBeanBinWriter {
             return;
         } else if (realType == Byte.class) {
             output.writeInt(((Byte) value).byteValue());
+            return;
+        } else if (realType == byte[].class) {
+            output.writeBytes((byte[]) value);
             return;
         }
         
