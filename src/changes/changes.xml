@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9.4" date="xxx" description="v0.9.4">
+    <release version="0.9.4" date="2014-02-07" description="v0.9.4">
       <action dev="scolebourne" type="add">
        Add Joda-Bean binary serialization based on MessagePack.
        Fixes #49.
