@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.5" date="2014-02-11" description="v0.9.5">
+      <action dev="scolebourne" type="fix">
+       More secure XML parsing.
+      </action>
+    </release>
     <release version="0.9.4" date="2014-02-07" description="v0.9.4">
       <action dev="scolebourne" type="add">
        Add Joda-Bean binary serialization based on MessagePack.

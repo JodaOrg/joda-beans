@@ -182,7 +182,10 @@ public class JodaBeanXmlReader {
      * @return the factory, not null
      */
     private XMLInputFactory factory() {
-        return XMLInputFactory.newFactory();
+        XMLInputFactory factory = XMLInputFactory.newFactory();
+        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        return factory;
     }
 
     //-----------------------------------------------------------------------

@@ -134,4 +134,20 @@ public class TestDeserializer {
         BeanAssert.assertBeanEquals(expected, parsed);
     }
 
+    @Test(expectedExceptions = RuntimeException.class)
+    public void test_read_withBadEntity() {
+        SerDeserializers desers = new SerDeserializers();
+        desers.register(SimplePerson.class, MockTypeChangeDeserializer.INSTANCE);
+        String xml = "<?xml version=\"1.0\" encoding =\"UTF-8\"?>" +
+             "<!DOCTYPE foobar[<!ENTITY x100 \"foobar\">";
+        for (int i = 99; i > 0; i--) {
+            xml += "<!ENTITY  x" + i + " \"&x" + (i + 1) + ";&x" + (i + 1) + ";\">";
+        }
+        xml += "]><bean>" +
+                "<person1 type=\"org.joda.beans.gen.SimplePerson\"><numberOfCars>None</numberOfCars><surname>Smith &x1;</surname></person1>" +
+                "<person2 type=\"org.joda.beans.gen.SimplePerson\"><numberOfCars>Two</numberOfCars><surname>Colebourne</surname></person2>" +
+                "</bean>";
+        JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(xml, FlexiBean.class);
+    }
+
 }
