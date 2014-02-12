@@ -99,6 +99,7 @@ public class BufferingBeanBuilder<T extends Bean>
      * @param propertyName  the property name, not null
      * @return the current value in the builder, null if not found or value is null
      */
+    @Override
     public Object get(String propertyName) {
         return get(getMetaBean().metaProperty(propertyName));
     }
@@ -109,6 +110,7 @@ public class BufferingBeanBuilder<T extends Bean>
      * @param metaProperty  the meta-property, not null
      * @return the current value in the builder, null if not found or value is null
      */
+    @Override
     public Object get(MetaProperty<?> metaProperty) {
         return getBuffer().get(metaProperty);
     }

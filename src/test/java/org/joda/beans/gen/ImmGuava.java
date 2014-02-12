@@ -710,6 +710,38 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -1741312354:  // collection
+                    return collection;
+                case 3322014:  // list
+                    return list;
+                case 113762:  // set
+                    return set;
+                case -6890395:  // sortedSet
+                    return sortedSet;
+                case 107868:  // map
+                    return map;
+                case -6896289:  // sortedMap
+                    return sortedMap;
+                case 93710229:  // biMap
+                    return biMap;
+                case 653826435:  // multimap
+                    return multimap;
+                case 1737633857:  // listMultimap
+                    return listMultimap;
+                case -1651820539:  // setMultimap
+                    return setMultimap;
+                case 653832329:  // multiset
+                    return multiset;
+                case 1018567270:  // sortedMultiset
+                    return sortedMultiset;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder<T> set(String propertyName, Object newValue) {

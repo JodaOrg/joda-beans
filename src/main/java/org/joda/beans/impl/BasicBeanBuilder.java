@@ -61,14 +61,15 @@ public class BasicBeanBuilder<T extends Bean>
         return bean;
     }
 
-    /**
-     * Gets the current value of the property.
-     * 
-     * @param propertyName  the property name, not null
-     * @return the current value in the builder, null if not found or value is null
-     */
-    protected Object get(String propertyName) {
+    //-----------------------------------------------------------------------
+    @Override
+    public Object get(String propertyName) {
         return bean.property(propertyName).get();
+    }
+
+    @Override
+    public Object get(MetaProperty<?> metaProperty) {
+        return metaProperty.get(bean);
     }
 
     //-----------------------------------------------------------------------

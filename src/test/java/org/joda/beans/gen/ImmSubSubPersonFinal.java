@@ -245,6 +245,16 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -1383758447:  // codeCounts
+                    return codeCounts;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder set(String propertyName, Object newValue) {

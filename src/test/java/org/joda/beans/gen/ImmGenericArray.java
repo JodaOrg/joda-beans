@@ -234,6 +234,16 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -823812830:  // values
+                    return values;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder<T> set(String propertyName, Object newValue) {

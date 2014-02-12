@@ -482,6 +482,13 @@ class PropertyGen {
         return data.getCopyGen().generateCopyToMutable("\t\t\t", data, beanToCopyFrom);
     }
 
+    List<String> generateBuilderFieldGet() {
+        List<String> list = new ArrayList<String>();
+        list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        list.add("\t\t\t\t\treturn " + generateBuilderFieldName() + ";");
+        return list;
+    }
+
     List<String> generateBuilderFieldSet() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());

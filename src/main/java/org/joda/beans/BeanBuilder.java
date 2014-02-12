@@ -28,12 +28,30 @@ import java.util.Map;
 public interface BeanBuilder<T extends Bean> {
 
     /**
+     * Gets the value of a single property previously added to the builder.
+     * 
+     * @param propertyName  the property name to query, not null
+     * @return the previously set value, null if none
+     * @throws RuntimeException thrown if the property name is invalid
+     */
+    Object get(String propertyName);
+
+    /**
+     * Gets the value of a single property previously added to the builder.
+     * 
+     * @param metaProperty  the meta-property to query, not null
+     * @return the previously set value, null if none
+     * @throws RuntimeException thrown if the property is invalid
+     */
+    Object get(MetaProperty<?> metaProperty);
+
+    /**
      * Sets the value of a single property into the builder.
      * <p>
      * This will normally behave as per a {@code Map}, however it may not
      * and as a general rule callers should only set each property once.
      * 
-     * @param propertyName  the property name, not null
+     * @param propertyName  the property name to set, not null
      * @param value  the property value, may be null
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if the property name is invalid
@@ -46,10 +64,10 @@ public interface BeanBuilder<T extends Bean> {
      * This will normally behave as per a {@code Map}, however it may not
      * and as a general rule callers should only set each property once.
      * 
-     * @param metaProperty  the meta-property, not null
+     * @param metaProperty  the meta-property to set, not null
      * @param value  the property value, may be null
      * @return {@code this}, for chaining, not null
-     * @throws RuntimeException optionally thrown if the property name is invalid
+     * @throws RuntimeException optionally thrown if the property is invalid
      */
     BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value);
 
@@ -62,7 +80,7 @@ public interface BeanBuilder<T extends Bean> {
      * This will normally behave as per a {@code Map}, however it may not
      * and as a general rule callers should only set each property once.
      * 
-     * @param propertyName  the property name, not null
+     * @param propertyName  the property name to set, not null
      * @param value  the property value, may be null
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if the property name is invalid
@@ -78,10 +96,10 @@ public interface BeanBuilder<T extends Bean> {
      * This will normally behave as per a {@code Map}, however it may not
      * and as a general rule callers should only set each property once.
      * 
-     * @param metaProperty  the meta-property name, not null
+     * @param metaProperty  the meta-property name to set, not null
      * @param value  the property value, may be null
      * @return {@code this}, for chaining, not null
-     * @throws RuntimeException optionally thrown if the property name is invalid
+     * @throws RuntimeException optionally thrown if a property is invalid
      */
     BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value);
 

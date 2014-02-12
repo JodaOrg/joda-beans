@@ -654,6 +654,36 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -1034364087:  // number
+                    return number;
+                case -891990013:  // street
+                    return street;
+                case 3053931:  // city
+                    return city;
+                case 3076010:  // data
+                    return data;
+                case 106164915:  // owner
+                    return owner;
+                case -1244601351:  // listInMap
+                    return listInMap;
+                case 391098024:  // listNumericInMap
+                    return listNumericInMap;
+                case -940836650:  // listInListInMap
+                    return listInListInMap;
+                case -861321321:  // objectListInListInMap
+                    return objectListInListInMap;
+                case 158545403:  // mapInMap
+                    return mapInMap;
+                case -2039203396:  // beanBeanMap
+                    return beanBeanMap;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder set(String propertyName, Object newValue) {

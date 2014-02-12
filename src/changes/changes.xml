@@ -9,6 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.6" date="xxx" description="v0.9.6">
+      <action dev="scolebourne" type="add">
+       Bean builder should have getters.
+       Immutable and builder-based beans will regenerate.
+       Fixes #52.
+      </action>
       <action dev="scolebourne" type="fix">
        Deprecate BasicImmutableBeanBuilder.
       </action>

@@ -161,6 +161,11 @@ public final class ImmEmpty implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         @Override
+        public Object get(String propertyName) {
+            throw new NoSuchElementException("Unknown property: " + propertyName);
+        }
+
+        @Override
         public Builder set(String propertyName, Object newValue) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }

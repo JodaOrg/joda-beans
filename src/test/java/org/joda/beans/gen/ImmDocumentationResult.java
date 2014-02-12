@@ -260,6 +260,16 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 1587405498:  // documentation
+                    return documentation;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder<T> set(String propertyName, Object newValue) {

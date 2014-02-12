@@ -17,9 +17,15 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.NoSuchElementException;
+
 import org.joda.beans.gen.ImmAddress;
+import org.joda.beans.gen.ImmAddress.Builder;
 import org.joda.beans.gen.ImmPerson;
+import org.joda.beans.gen.ImmSubSubPersonFinal;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableMultiset;
 
 /**
  * Test property using Person.
@@ -40,12 +46,18 @@ public class TestImmutable {
     }
 
     public void test_builder() {
-        ImmAddress address = ImmAddress.builder()
+        Builder builder = ImmAddress.builder()
                 .set("number", 12)
-                .set("street", "Park Lane")
-                .set("city", "Smallville")
-                .set("owner", ImmPerson.builder().forename("John").surname("Doggett").build())
-                .build();
+                .set("street", "Park Lane");
+        assertEquals(builder.get("number"), 12);
+        assertEquals(builder.get("street"), "Park Lane");
+        assertEquals(builder.get("city"), null);
+        builder.set("city", "Smallville")
+                .set("owner", ImmPerson.builder().forename("John").surname("Doggett").build());
+        assertEquals(builder.get("number"), 12);
+        assertEquals(builder.get("street"), "Park Lane");
+        assertEquals(builder.get("city"), "Smallville");
+        ImmAddress address = builder.build();
         
         assertEquals(address.getCity(), "Smallville");
         assertEquals(address.getStreet(), "Park Lane");
@@ -63,6 +75,70 @@ public class TestImmutable {
         
         assertEquals(address.getCity(), "Smallville");
         assertEquals(address.getStreet(), "Park Road");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NoSuchElementException.class)
+    public void test_builder_getInvalidPropertyName() {
+        BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
+        try {
+            builder.get("Rubbish");
+        } catch (NoSuchElementException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NoSuchElementException.class)
+    public void test_builder_setInvalidPropertyName() {
+        BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
+        try {
+            builder.set("Rubbish", "");
+        } catch (NoSuchElementException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_builder_subclass() {
+        ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
+//        builder.set(ImmPersonNonFinal.meta().forename(), "Bobby");
+//        builder.set(ImmSubPersonNonFinal.meta().middleName(), "Joe");
+        builder.set(ImmSubSubPersonFinal.meta().codeCounts(), ImmutableMultiset.of());
+//        assertEquals(builder.get("forename"), "Bobby");
+//        assertEquals(builder.get("middleName"), "Joe");
+        assertEquals(builder.get("codeCounts"), ImmutableMultiset.of());
+//        assertEquals(builder.get(ImmPersonNonFinal.meta().forename()), "Bobby");
+//        assertEquals(builder.get(ImmSubPersonNonFinal.meta().middleName()), "Joe");
+        assertEquals(builder.get(ImmSubSubPersonFinal.meta().codeCounts()), ImmutableMultiset.of());
+        ImmSubSubPersonFinal result = builder.build();
+        
+//        assertEquals(result.getForename(), "Bobby");
+//        assertEquals(result.getMiddleName(), "Joe");
+        assertEquals(result.getCodeCounts(), ImmutableMultiset.of());
+    }
+
+    @Test(expectedExceptions=NoSuchElementException.class)
+    public void test_builder_subclass_getInvalidPropertyName() {
+        ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
+        try {
+            builder.get("Rubbish");
+        } catch (NoSuchElementException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NoSuchElementException.class)
+    public void test_builder_subclass_setInvalidPropertyName() {
+        ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
+        try {
+            builder.set("Rubbish", "");
+        } catch (NoSuchElementException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
 }

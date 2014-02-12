@@ -344,6 +344,20 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 97440432:  // first
+                    return first;
+                case -906279820:  // second
+                    return second;
+                case 110331239:  // third
+                    return third;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder<X, Y, Z> set(String propertyName, Object newValue) {

@@ -616,6 +616,28 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 467061063:  // forename
+                    return forename;
+                case -1852993317:  // surname
+                    return surname;
+                case 926656063:  // numberOfCars
+                    return numberOfCars;
+                case -1377524046:  // addressList
+                    return addressList;
+                case 1368089592:  // otherAddressMap
+                    return otherAddressMap;
+                case -226885792:  // addressesList
+                    return addressesList;
+                case -2032731141:  // mainAddress
+                    return mainAddress;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder set(String propertyName, Object newValue) {

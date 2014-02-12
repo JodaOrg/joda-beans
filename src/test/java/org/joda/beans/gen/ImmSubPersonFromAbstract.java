@@ -282,6 +282,18 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
         }
 
         //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -818219584:  // middleName
+                    return middleName;
+                case -1377524046:  // addressList
+                    return addressList;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         @Override
         public Builder set(String propertyName, Object newValue) {

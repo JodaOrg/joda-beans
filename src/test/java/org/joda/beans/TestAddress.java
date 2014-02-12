@@ -66,12 +66,17 @@ public class TestAddress {
         }
     }
 
-    public void test_bean_builder1() {
+    public void test_builder1() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
+        assertEquals(builder.get("street"), "Main Street");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("city", "London");
         builder.setAll(map);
+        assertEquals(builder.get("street"), "Main Street");
+        assertEquals(builder.get("city"), "London");
+        assertEquals(builder.get(Address.meta().street()), "Main Street");
+        assertEquals(builder.get(Address.meta().city()), "London");
         
         Address test = builder.build();
         Address expected = new Address();
@@ -81,7 +86,7 @@ public class TestAddress {
         assertEquals(test, expected);
     }
 
-    public void test_bean_builder2() {
+    public void test_builder2() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set(Address.meta().street(), "Main Street");
         builder.setString(Address.meta().number(), "12");
@@ -92,6 +97,28 @@ public class TestAddress {
         expected.setNumber(12);
         
         assertEquals(test, expected);
+    }
+
+    @Test(expectedExceptions=NoSuchElementException.class)
+    public void test_builder_getInvalidPropertyName() {
+        BeanBuilder<? extends Address> builder = Address.meta().builder();
+        try {
+            builder.get("Rubbish");
+        } catch (NoSuchElementException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NoSuchElementException.class)
+    public void test_builder_setInvalidPropertyName() {
+        BeanBuilder<? extends Address> builder = Address.meta().builder();
+        try {
+            builder.set("Rubbish", "");
+        } catch (NoSuchElementException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

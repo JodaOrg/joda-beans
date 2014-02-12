@@ -258,6 +258,16 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -900245826:  // _errorMessage
+                    return _errorMessage;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
+        @Override
         public Builder<T> set(String propertyName, Object newValue) {
             switch (propertyName.hashCode()) {
                 case -900245826:  // _errorMessage

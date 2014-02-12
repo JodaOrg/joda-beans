@@ -306,6 +306,18 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 467061063:  // forename
+                    return forename;
+                case -1852993317:  // surname
+                    return surname;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
+        @Override
         public Builder set(String propertyName, Object newValue) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename

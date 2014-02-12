@@ -44,6 +44,19 @@ class FlexiBeanBuilder implements BeanBuilder<FlexiBean> {
 
     //-----------------------------------------------------------------------
     @Override
+    public Object get(String propertyName) {
+        // lenient getter
+        return bean.get(propertyName);
+    }
+
+    @Override
+    public Object get(MetaProperty<?> metaProperty) {
+        // this approach allows meta-property from one bean to be used with another
+        return bean.get(metaProperty.name());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     public FlexiBeanBuilder set(String propertyName, Object value) {
         bean.put(propertyName, value);
         return this;

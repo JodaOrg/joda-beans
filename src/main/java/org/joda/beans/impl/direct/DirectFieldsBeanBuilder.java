@@ -42,6 +42,17 @@ public abstract class DirectFieldsBeanBuilder<T extends Bean>
 
     //-----------------------------------------------------------------------
     @Override
+    public Object get(String propertyName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object get(MetaProperty<?> metaProperty) {
+        return get(metaProperty.name());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
         set(metaProperty.name(), value);
         return this;

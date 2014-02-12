@@ -252,6 +252,16 @@ public class SimpleSubPersonWithBuilderNonFinal extends SimplePersonWithBuilderN
 
         //-----------------------------------------------------------------------
         @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case -818219584:  // middleName
+                    return middleName;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
+        @Override
         public Builder set(String propertyName, Object newValue) {
             switch (propertyName.hashCode()) {
                 case -818219584:  // middleName

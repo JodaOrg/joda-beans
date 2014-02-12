@@ -1196,6 +1196,7 @@ class BeanGen {
         generateBuilderConstructorOneMetaArg();
         generateBuilderConstructorCopy();
         generateIndentedSeparator();
+        generateBuilderGet();
         generateBuilderSet();
         generateBuilderOtherSets();
         if (data.isConstructable()) {
@@ -1240,6 +1241,26 @@ class BeanGen {
         for (PropertyGen prop : nonDerivedProperties()) {
             insertRegion.addAll(prop.generateBuilderField());
         }
+    }
+
+    private void generateBuilderGet() {
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        data.ensureImport(NoSuchElementException.class);
+        insertRegion.add("\t\t@Override");
+        insertRegion.add("\t\tpublic Object get(String propertyName) {");
+        if (nonDerived.size() > 0) {
+            insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+            for (PropertyGen prop : nonDerived) {
+                insertRegion.addAll(prop.generateBuilderFieldGet());
+            }
+            insertRegion.add("\t\t\t\tdefault:");
+            insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            insertRegion.add("\t\t\t}");
+        } else {
+            insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+        }
+        insertRegion.add("\t\t}");
+        insertRegion.add("");
     }
 
     private void generateBuilderSet() {
