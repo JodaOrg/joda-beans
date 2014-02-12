@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.6" date="xxx" description="v0.9.6">
+      <action dev="scolebourne" type="add">
+       Support three generic parameters.
+       Fixes #51.
+      </action>
+    </release>
     <release version="0.9.5" date="2014-02-11" description="v0.9.5">
       <action dev="scolebourne" type="fix">
        More secure XML parsing.

@@ -339,7 +339,13 @@ class GeneratableBean {
         this.typeFinal = parts[0] != null;
         this.typeFull = parts[1];
         this.typeRaw = parts[2];
-        if (parts[5] != null) {
+        if (parts[7] != null) {
+            this.typeGenericName = new String[] {parts[3], parts[5], parts[7]};
+            this.typeGenericExtends = new String[3];
+            this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
+            this.typeGenericExtends[1] = parts[6] != null ? parts[6] : "";
+            this.typeGenericExtends[2] = parts[8] != null ? parts[8] : "";
+        } else if (parts[5] != null) {
             this.typeGenericName = new String[] {parts[3], parts[5]};
             this.typeGenericExtends = new String[2];
             this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
@@ -370,7 +376,9 @@ class GeneratableBean {
             this.immutable = false;
             this.superTypeFull = parts[0];
             this.superTypeRaw = parts[1];
-            if (parts[3] != null) {
+            if (parts[4] != null) {
+                this.superTypeGeneric = parts[2] + ", " + parts[3] + ", " + parts[4];
+            } else if (parts[3] != null) {
                 this.superTypeGeneric = parts[2] + ", " + parts[3];
             } else if (parts[2] != null) {
                 this.superTypeGeneric = parts[2];
@@ -466,6 +474,9 @@ class GeneratableBean {
         String result = typeGenericName[0] + typeGenericExtends[0];
         if (typeGenericExtends.length > 1) {
             result += ", " + typeGenericName[1] + typeGenericExtends[1];
+            if (typeGenericExtends.length > 2) {
+                result += ", " + typeGenericName[2] + typeGenericExtends[2];
+            }
         }
         return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
     }
@@ -482,6 +493,9 @@ class GeneratableBean {
         String result = typeGenericName[0];
         if (typeGenericExtends.length > 1) {
             result += ", " + typeGenericName[1];
+            if (typeGenericExtends.length > 2) {
+                result += ", " + typeGenericName[2];
+            }
         }
         return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
     }
@@ -532,6 +546,9 @@ class GeneratableBean {
         String result = "?";
         if (typeGenericExtends.length > 1) {
             result += ", ?";
+            if (typeGenericExtends.length > 2) {
+                result += ", ?";
+            }
         }
         return typeRaw + '<' + result + '>';
     }
@@ -541,6 +558,9 @@ class GeneratableBean {
      * @return true if a type parameter of this bean
      */
     public boolean isTypeGenerifiedBy(String type) {
+        if (typeGenericName.length > 2 && typeGenericName[2].equals(type)) {
+            return true;
+        }
         if (typeGenericName.length > 1 && typeGenericName[1].equals(type)) {
             return true;
         }
