@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
@@ -257,7 +256,7 @@ public class SimpleSubPersonWithBuilderNonFinal extends SimplePersonWithBuilderN
                 case -818219584:  // middleName
                     return middleName;
                 default:
-                    throw new NoSuchElementException("Unknown property: " + propertyName);
+                    return super.get(propertyName);
             }
         }
 
@@ -268,7 +267,8 @@ public class SimpleSubPersonWithBuilderNonFinal extends SimplePersonWithBuilderN
                     this.middleName = (String) newValue;
                     break;
                 default:
-                    throw new NoSuchElementException("Unknown property: " + propertyName);
+                    super.set(propertyName, newValue);
+                    break;
             }
             return this;
         }

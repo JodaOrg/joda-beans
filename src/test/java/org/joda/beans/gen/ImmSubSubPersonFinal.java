@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
@@ -251,7 +250,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
                 case -1383758447:  // codeCounts
                     return codeCounts;
                 default:
-                    throw new NoSuchElementException("Unknown property: " + propertyName);
+                    return super.get(propertyName);
             }
         }
 
@@ -263,7 +262,8 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
                     this.codeCounts = (Multiset<String>) newValue;
                     break;
                 default:
-                    throw new NoSuchElementException("Unknown property: " + propertyName);
+                    super.set(propertyName, newValue);
+                    break;
             }
             return this;
         }

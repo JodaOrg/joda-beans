@@ -1245,7 +1245,6 @@ class BeanGen {
 
     private void generateBuilderGet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
-        data.ensureImport(NoSuchElementException.class);
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Object get(String propertyName) {");
         if (nonDerived.size() > 0) {
@@ -1254,9 +1253,15 @@ class BeanGen {
                 insertRegion.addAll(prop.generateBuilderFieldGet());
             }
             insertRegion.add("\t\t\t\tdefault:");
-            insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            if (data.isRootClass()) {
+                data.ensureImport(NoSuchElementException.class);
+                insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            } else {
+                insertRegion.add("\t\t\t\t\treturn super.get(propertyName);");
+            }
             insertRegion.add("\t\t\t}");
         } else {
+            data.ensureImport(NoSuchElementException.class);
             insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
         }
         insertRegion.add("\t\t}");
@@ -1265,7 +1270,6 @@ class BeanGen {
 
     private void generateBuilderSet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
-        data.ensureImport(NoSuchElementException.class);
         boolean generics = false;
         for (GeneratableProperty prop : data.getProperties()) {
             generics |= (prop.isGeneric() && prop.isGenericWildcardParamType() == false);
@@ -1281,10 +1285,17 @@ class BeanGen {
                 insertRegion.addAll(prop.generateBuilderFieldSet());
             }
             insertRegion.add("\t\t\t\tdefault:");
-            insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            if (data.isRootClass()) {
+                data.ensureImport(NoSuchElementException.class);
+                insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            } else {
+                insertRegion.add("\t\t\t\t\tsuper.set(propertyName, newValue);");
+                insertRegion.add("\t\t\t\t\tbreak;");
+            }
             insertRegion.add("\t\t\t}");
             insertRegion.add("\t\t\treturn this;");
         } else {
+            data.ensureImport(NoSuchElementException.class);
             insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
         }
         insertRegion.add("\t\t}");

@@ -18,7 +18,6 @@ package org.joda.beans.gen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
@@ -290,7 +289,7 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
                 case -1377524046:  // addressList
                     return addressList;
                 default:
-                    throw new NoSuchElementException("Unknown property: " + propertyName);
+                    return super.get(propertyName);
             }
         }
 
@@ -305,7 +304,8 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
                     this.addressList = (List<Address>) newValue;
                     break;
                 default:
-                    throw new NoSuchElementException("Unknown property: " + propertyName);
+                    super.set(propertyName, newValue);
+                    break;
             }
             return this;
         }
