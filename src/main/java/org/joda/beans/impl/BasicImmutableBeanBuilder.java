@@ -28,11 +28,13 @@ import org.joda.beans.MetaProperty;
  * Basic implementation of {@code BeanBuilder} that wraps a {@code MetaBean}.
  * <p>
  * The subclass implementation generally has concrete fields for each property.
- * This class has effectively been replaced by {@link AbstractBeanBuilder}.
+ * This class has effectively been replaced by {@link DirectFieldsBeanBuilder}.
  * 
  * @author Stephen Colebourne
  * @param <T>  the bean type
+ * @deprecated Use DirectFieldsBeanBuilder
  */
+@Deprecated
 public abstract class BasicImmutableBeanBuilder<T extends Bean>
         implements BeanBuilder<T> {
 

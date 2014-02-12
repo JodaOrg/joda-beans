@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.6" date="xxx" description="v0.9.6">
+      <action dev="scolebourne" type="fix">
+       Deprecate BasicImmutableBeanBuilder.
+      </action>
       <action dev="scolebourne" type="add">
        Support three generic parameters.
        Fixes #51.
