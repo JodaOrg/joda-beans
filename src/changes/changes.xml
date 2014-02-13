@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9.6" date="xxx" description="v0.9.6">
+    <release version="0.9.6" date="2014-02-13" description="v0.9.6">
       <action dev="scolebourne" type="add">
        Immutable subclass builders do not work.
        Immutable and builder-based beans will regenerate.
