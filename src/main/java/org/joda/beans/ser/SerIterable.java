@@ -37,10 +37,11 @@ public abstract class SerIterable {
      * Adds an item to the builder.
      * 
      * @param key  the key, such as for a map, null if no key
+     * @param column  the column, such as for a table, null if no column
      * @param value  the value, such as for a map or list value, may be null
      * @param count  the count, such as for a multiset, typically one or greater
      */
-    public abstract void add(Object key, Object value, int count);
+    public abstract void add(Object key, Object column, Object value, int count);
 
     /**
      * Builds the final collection.

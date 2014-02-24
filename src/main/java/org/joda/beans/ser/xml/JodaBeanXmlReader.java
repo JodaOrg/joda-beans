@@ -365,7 +365,7 @@ public class JodaBeanXmlReader {
                     // item is value
                     value = parseValue(iterable, start);
                 }
-                iterable.add(key, value, count);
+                iterable.add(key, null, value, count);
             }
             event = nextEvent(".iter ");
         }

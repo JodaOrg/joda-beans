@@ -23,6 +23,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
@@ -31,6 +32,8 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.SortedMultiset;
+import com.google.common.collect.Table;
+import com.google.common.collect.Table.Cell;
 import com.google.common.collect.TreeMultiset;
 
 /**
@@ -61,6 +64,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             }
             return multiset((Multiset<?>) value, Object.class, EMPTY_VALUE_TYPES);
         }
+        if (value instanceof Table) {
+            if (types.size() == 3) {
+                return table((Table<?, ?, ?>) value, types.get(0), types.get(1), types.get(2), EMPTY_VALUE_TYPES);
+            }
+            return table((Table<?, ?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
+        }
         return super.create(value, types);
     }
 
@@ -84,6 +93,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return multimap((Multimap<?, ?>) value, keyType, valueType, valueTypeTypes);
+        }
+        if (value instanceof Table) {
+            Class<?> rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
+            Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
+            Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
+            return table((Table<?, ?, ?>) value, rowType, colType, valueType, EMPTY_VALUE_TYPES);
         }
         return super.create(value, prop, beanClass);
     }
@@ -110,6 +125,9 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         }
         if (metaTypeDescription.equals("Multiset")) {
             return multiset(Object.class, EMPTY_VALUE_TYPES);
+        }
+        if (metaTypeDescription.equals("Table")) {
+            return table(Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         return super.createIterable(metaTypeDescription, settings, knownTypes);
     }
@@ -151,6 +169,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return listMultimap(keyType, valueType, valueTypeTypes);
         }
+        if (Table.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
+            Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
+            Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
+            return table(rowType, colType, valueType, EMPTY_VALUE_TYPES);
+        }
         return super.createIterable(prop, beanClass);
     }
 
@@ -188,7 +212,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return multiset(coll, valueType, valueTypeTypes);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
@@ -270,7 +294,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     /**
      * Gets an iterable wrapper for {@code ListMultimap}.
      * 
-     * @param keyType  the value type, not null
+     * @param keyType  the key type, not null
      * @param valueType  the value type, not null
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
@@ -283,7 +307,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return multimap(map, keyType, valueType, valueTypeTypes);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
                     throw new IllegalArgumentException("Missing key");
                 }
@@ -318,7 +342,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     /**
      * Gets an iterable wrapper for {@code SetMultimap}.
      * 
-     * @param keyType  the value type, not null
+     * @param keyType  the key type, not null
      * @param valueType  the value type, not null
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
@@ -331,7 +355,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return multimap(map, keyType, valueType, valueTypeTypes);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
                     throw new IllegalArgumentException("Missing key");
                 }
@@ -367,7 +391,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * Gets an iterator wrapper for {@code Multimap}.
      * 
      * @param map  the collection, not null
-     * @param keyType  the value type, not null
+     * @param keyType  the key type, not null
      * @param valueType  the value type, not null
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterator, not null
@@ -411,6 +435,129 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public Object key() {
                 return current.getKey();
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+            @Override
+            public Object value() {
+                return current.getValue();
+            }
+        };
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an iterable wrapper for {@code Table}.
+     * 
+     * @param rowType  the row type, not null
+     * @param colType  the column type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterable, not null
+     */
+    public static final SerIterable table(final Class<?> rowType, final Class<?> colType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        final Table<Object, Object, Object> table = HashBasedTable.create();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return table(table, rowType, colType, valueType, valueTypeTypes);
+            }
+            @Override
+            public void add(Object row, Object column, Object value, int count) {
+                if (row == null) {
+                    throw new IllegalArgumentException("Missing row");
+                }
+                if (column == null) {
+                    throw new IllegalArgumentException("Missing column");
+                }
+                if (count != 1) {
+                    throw new IllegalArgumentException("Unexpected count");
+                }
+                table.put(row, column, value);
+            }
+            @Override
+            public Object build() {
+                return table;
+            }
+            @Override
+            public SerCategory category() {
+                return SerCategory.TABLE;
+            }
+            @Override
+            public Class<?> keyType() {
+                return rowType;
+            }
+            @Override
+            public Class<?> columnType() {
+                return colType;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for {@code Table}.
+     * 
+     * @param table  the collection, not null
+     * @param rowType  the row type, not null
+     * @param colType  the col type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterator, not null
+     */
+    @SuppressWarnings("rawtypes")
+    public static final SerIterator table(final Table<?, ?, ?> table, final Class<?> rowType, final Class<?> colType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        return new SerIterator() {
+            private final Iterator it = table.cellSet().iterator();
+            private Cell current;
+
+            @Override
+            public String metaTypeName() {
+                return "Table";
+            }
+            @Override
+            public SerCategory category() {
+                return SerCategory.TABLE;
+            }
+            @Override
+            public int size() {
+                return table.size();
+            }
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            @Override
+            public void next() {
+                current = (Cell) it.next();
+            }
+            @Override
+            public Class<?> keyType() {
+                return rowType;
+            }
+            @Override
+            public Object key() {
+                return current.getRowKey();
+            }
+            @Override
+            public Class<?> columnType() {
+                return colType;
+            }
+            public Object column() {
+                return current.getColumnKey();
             }
             @Override
             public Class<?> valueType() {

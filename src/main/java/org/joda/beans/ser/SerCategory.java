@@ -31,6 +31,10 @@ public enum SerCategory {
     /**
      * Map.
      */
-    MAP;
+    MAP,
+    /**
+     * Table.
+     */
+    TABLE;
 
 }

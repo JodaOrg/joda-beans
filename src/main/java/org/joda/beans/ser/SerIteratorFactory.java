@@ -277,7 +277,7 @@ public class SerIteratorFactory {
                 return collection(coll, valueType, valueTypeTypes);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
@@ -343,7 +343,7 @@ public class SerIteratorFactory {
                 return collection(coll, valueType, valueTypeTypes);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
@@ -464,7 +464,7 @@ public class SerIteratorFactory {
                 return map(map, keyType, valueType, valueTypeTypes);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
                     throw new IllegalArgumentException("Missing key");
                 }
@@ -569,7 +569,7 @@ public class SerIteratorFactory {
                 return array(build(), valueType);
             }
             @Override
-            public void add(Object key, Object value, int count) {
+            public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }

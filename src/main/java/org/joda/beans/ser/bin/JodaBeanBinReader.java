@@ -280,7 +280,7 @@ public class JodaBeanBinReader extends MsgPack {
         for (int i = 0; i < size; i++) {
             Object key = parseObject(iterable.keyType(), null, null, null, false);
             Object value = parseObject(iterable.valueType(), null, null, iterable, false);
-            iterable.add(key, value, 1);
+            iterable.add(key, null, value, 1);
         }
         return iterable.build();
     }
@@ -290,7 +290,7 @@ public class JodaBeanBinReader extends MsgPack {
         for (int i = 0; i < size; i++) {
             Object value = parseObject(iterable.valueType(), null, null, iterable, false);
             int count = acceptInteger(input.readByte());
-            iterable.add(null, value, count);
+            iterable.add(null, null, value, count);
         }
         return iterable.build();
     }
@@ -298,7 +298,7 @@ public class JodaBeanBinReader extends MsgPack {
     private Object parseIterableArray(int typeByte, SerIterable iterable) throws Exception {
         int size = acceptArray(typeByte);
         for (int i = 0; i < size; i++) {
-            iterable.add(null, parseObject(iterable.valueType(), null, null, iterable, false), 1);
+            iterable.add(null, null, parseObject(iterable.valueType(), null, null, iterable, false), 1);
         }
         return iterable.build();
     }
