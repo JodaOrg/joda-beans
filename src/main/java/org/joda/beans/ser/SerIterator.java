@@ -24,88 +24,107 @@ import java.util.List;
  *
  * @author Stephen Colebourne
  */
-public interface SerIterator {
+public abstract class SerIterator {
 
     /**
      * Gets the meta type of the underlying.
      * 
      * @return the type, such as 'List' or 'Map'
      */
-    String metaTypeName();
+    public abstract String metaTypeName();
 
     /**
      * Gets the size of the wrapped collection.
      * 
      * @return the size, -1 if unknown
      */
-    int size();
+    public abstract int size();
 
     /**
-     * Is the iterator map-like, as opposed to collection-like.
+     * Gets the category of iterable.
      * 
-     * @return true if map-like, false if collection-like
+     * @return the category, not null
      */
-    boolean isMapLike();
-
-    /**
-     * Is the iterator count-based, where each element has a count.
-     * 
-     * @return true if count-based, false if not
-     */
-    boolean isCounted();
+    public SerCategory category() {
+        return SerCategory.COLLECTION;
+    }
 
     /**
      * Checks if there is a next item.
      * 
      * @return true if there is another item
      */
-    boolean hasNext();
+    public abstract boolean hasNext();
 
     /**
      * Advances to the next item.
      */
-    void next();
+    public abstract void next();
 
     /**
      * Gets the number of occurrences of this item.
      * 
      * @return the count
      */
-    int count();
+    public int count() {
+        return 1;
+    }
 
     /**
      * Gets the type of the key.
      * 
      * @return the key type, null if no key
      */
-    Class<?> keyType();
+    public Class<?> keyType() {
+        return null;
+    }
 
     /**
      * The key.
      * 
      * @return the key, may be null
      */
-    Object key();
+    public Object key() {
+        return null;
+    }
+
+    /**
+     * Gets the type of the column.
+     * 
+     * @return the column type, null if no column
+     */
+    public Class<?> columnType() {
+        return null;
+    }
+
+    /**
+     * The column.
+     * 
+     * @return the key, may be null
+     */
+    public Object column() {
+        return null;
+    }
 
     /**
      * Gets the type of the value.
      * 
      * @return the value type, not null
      */
-    Class<?> valueType();
+    public abstract Class<?> valueType();
 
     /**
      * Gets the generic parameters of the value type.
      * 
      * @return the generic parameters of the value type, not null
      */
-    List<Class<?>> valueTypeTypes();
+    public abstract List<Class<?>> valueTypeTypes();
 
     /**
      * The value.
      * 
      * @return the value, may be null
      */
-    Object value();
+    public abstract Object value();
 
 }

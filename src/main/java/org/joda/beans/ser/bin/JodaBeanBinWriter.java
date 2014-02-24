@@ -25,6 +25,7 @@ import java.util.Map;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -209,9 +210,9 @@ public class JodaBeanBinWriter {
 
     //-----------------------------------------------------------------------
     private void writeElements(final SerIterator itemIterator) throws IOException {
-        if (itemIterator.isMapLike()) {
+        if (itemIterator.category() == SerCategory.MAP) {
             writeMap(itemIterator);
-        } else if (itemIterator.isCounted()) {
+        } else if (itemIterator.category() == SerCategory.COUNTED) {
             writeCounted(itemIterator);
         } else {
             writeArray(itemIterator);

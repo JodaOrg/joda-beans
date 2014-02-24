@@ -50,7 +50,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     @Override
     public SerIterator create(final Object value, final List<Class<?>> types) {
         if (value instanceof Multimap) {
-            if (types.size() == 1) {
+            if (types.size() == 2) {
                 return multimap((Multimap<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
             }
             return multimap((Multimap<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
@@ -199,16 +199,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return coll;
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return true;
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
+            public SerCategory category() {
+                return SerCategory.COUNTED;
             }
             @Override
             public Class<?> valueType() {
@@ -240,12 +232,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return "Multiset";
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return true;
+            public SerCategory category() {
+                return SerCategory.COUNTED;
             }
             @Override
             public int size() {
@@ -258,14 +246,6 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public void next() {
                 current = (Multiset.Entry) it.next();
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
-            }
-            @Override
-            public Object key() {
-                return null;
             }
             @Override
             public int count() {
@@ -317,12 +297,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return map;
             }
             @Override
-            public boolean isMapLike() {
-                return true;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
+            public SerCategory category() {
+                return SerCategory.MAP;
             }
             @Override
             public Class<?> keyType() {
@@ -369,12 +345,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return map;
             }
             @Override
-            public boolean isMapLike() {
-                return true;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
+            public SerCategory category() {
+                return SerCategory.MAP;
             }
             @Override
             public Class<?> keyType() {
@@ -417,12 +389,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 return "Multimap";
             }
             @Override
-            public boolean isMapLike() {
-                return true;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
+            public SerCategory category() {
+                return SerCategory.MAP;
             }
             @Override
             public int size() {
@@ -443,10 +411,6 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public Object key() {
                 return current.getKey();
-            }
-            @Override
-            public int count() {
-                return 1;
             }
             @Override
             public Class<?> valueType() {

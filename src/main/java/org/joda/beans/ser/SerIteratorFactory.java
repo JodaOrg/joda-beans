@@ -290,18 +290,6 @@ public class SerIteratorFactory {
                 return coll;
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
-            }
-            @Override
             public Class<?> valueType() {
                 return valueType;
             }
@@ -368,18 +356,6 @@ public class SerIteratorFactory {
                 return coll;
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
-            }
-            @Override
             public Class<?> valueType() {
                 return valueType;
             }
@@ -415,14 +391,6 @@ public class SerIteratorFactory {
                 return "Collection";
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
-            }
-            @Override
             public int size() {
                 return coll.size();
             }
@@ -433,18 +401,6 @@ public class SerIteratorFactory {
             @Override
             public void next() {
                 current = it.next();
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
-            }
-            @Override
-            public Object key() {
-                return null;
-            }
-            @Override
-            public int count() {
-                return 1;
             }
             @Override
             public Class<?> valueType() {
@@ -522,12 +478,8 @@ public class SerIteratorFactory {
                 return map;
             }
             @Override
-            public boolean isMapLike() {
-                return true;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
+            public SerCategory category() {
+                return SerCategory.MAP;
             }
             @Override
             public Class<?> keyType() {
@@ -564,12 +516,8 @@ public class SerIteratorFactory {
                 return "Map";
             }
             @Override
-            public boolean isMapLike() {
-                return true;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
+            public SerCategory category() {
+                return SerCategory.MAP;
             }
             @Override
             public int size() {
@@ -590,10 +538,6 @@ public class SerIteratorFactory {
             @Override
             public Object key() {
                 return current.getKey();
-            }
-            @Override
-            public int count() {
-                return 1;
             }
             @Override
             public Class<?> valueType() {
@@ -642,18 +586,6 @@ public class SerIteratorFactory {
                 return list.toArray(array);
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
-            }
-            @Override
             public Class<?> valueType() {
                 return valueType;
             }
@@ -686,14 +618,6 @@ public class SerIteratorFactory {
                 return valueType.getName() + "[]";
             }
             @Override
-            public boolean isMapLike() {
-                return false;
-            }
-            @Override
-            public boolean isCounted() {
-                return false;
-            }
-            @Override
             public int size() {
                 return array.length;
             }
@@ -704,18 +628,6 @@ public class SerIteratorFactory {
             @Override
             public void next() {
                 index++;
-            }
-            @Override
-            public Class<?> keyType() {
-                return null;
-            }
-            @Override
-            public Object key() {
-                return null;
-            }
-            @Override
-            public int count() {
-                return 1;
             }
             @Override
             public Class<?> valueType() {

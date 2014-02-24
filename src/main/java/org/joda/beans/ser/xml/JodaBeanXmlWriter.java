@@ -30,6 +30,7 @@ import java.util.Map;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.SerIterator;
 import org.joda.convert.StringConverter;
@@ -267,7 +268,7 @@ public class JodaBeanXmlWriter {
                 writeKeyValueElement(currentIndent + settings.getIndent(), key, itemIterator);
                 builder.append(currentIndent).append('<').append('/').append(ENTRY).append('>').append(settings.getNewLine());
             } else {
-                String tagName = itemIterator.isMapLike() ? ENTRY : ITEM;
+                String tagName = itemIterator.category() == SerCategory.MAP ? ENTRY : ITEM;
                 writeValueElement(currentIndent, tagName, attr, itemIterator);
             }
         }

@@ -43,6 +43,7 @@ import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
@@ -310,7 +311,7 @@ public class JodaBeanXmlReader {
         while (event.isEndElement() == false) {
             if (event.isStartElement()) {
                 StartElement start = event.asStartElement();
-                QName expectedType = iterable.isMapLike() ? ENTRY_QNAME : ITEM_QNAME;
+                QName expectedType = iterable.category() == SerCategory.MAP ? ENTRY_QNAME : ITEM_QNAME;
                 if (start.getName().equals(expectedType) == false) {
                     throw new IllegalArgumentException("Expected '" + expectedType.getLocalPart() + "' but found '" + start.getName() + "'");
                 }

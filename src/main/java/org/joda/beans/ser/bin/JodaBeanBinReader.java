@@ -27,6 +27,7 @@ import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
@@ -265,9 +266,9 @@ public class JodaBeanBinReader extends MsgPack {
     }
 
     private Object parseIterable(int typeByte, SerIterable iterable) throws Exception {
-        if (iterable.isMapLike()) {
+        if (iterable.category() == SerCategory.MAP) {
             return parseIterableMap(typeByte, iterable);
-        } else if (iterable.isCounted()) {
+        } else if (iterable.category() == SerCategory.COUNTED) {
             return parseIterableCounted(typeByte, iterable);
         } else {
             return parseIterableArray(typeByte, iterable);

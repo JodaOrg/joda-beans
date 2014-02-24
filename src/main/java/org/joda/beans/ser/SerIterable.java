@@ -24,14 +24,14 @@ import java.util.List;
  *
  * @author Stephen Colebourne
  */
-public interface SerIterable {
+public abstract class SerIterable {
 
     /**
      * Obtains an iterator over the data.
      * 
      * @return the iterator, not null
      */
-    SerIterator iterator();
+    public abstract SerIterator iterator();
 
     /**
      * Adds an item to the builder.
@@ -40,48 +40,54 @@ public interface SerIterable {
      * @param value  the value, such as for a map or list value, may be null
      * @param count  the count, such as for a multiset, typically one or greater
      */
-    void add(Object key, Object value, int count);
+    public abstract void add(Object key, Object value, int count);
 
     /**
      * Builds the final collection.
      * 
      * @return the build collection, not null
      */
-    Object build();
+    public abstract Object build();
 
     /**
-     * Is the iterable map-like, as opposed to collection-like.
+     * Gets the category of iterable.
      * 
-     * @return true if map-like, false if collection-like
+     * @return the category, not null
      */
-    boolean isMapLike();
-
-    /**
-     * Is the iterator count-based, where each element has a count.
-     * 
-     * @return true if count-based, false if not
-     */
-    boolean isCounted();
+    public SerCategory category() {
+        return SerCategory.COLLECTION;
+    }
 
     /**
      * Gets the type of the key.
      * 
      * @return the key type, null if no key
      */
-    Class<?> keyType();
+    public Class<?> keyType() {
+        return null;
+    }
+
+    /**
+     * Gets the type of the column.
+     * 
+     * @return the column type, null if no column
+     */
+    public Class<?> columnType() {
+        return null;
+    }
 
     /**
      * Gets the type of the value.
      * 
      * @return the value type, not null
      */
-    Class<?> valueType();
+    public abstract Class<?> valueType();
 
     /**
      * Gets the generic parameters of the value type.
      * 
      * @return the generic parameters of the value type, not null
      */
-    List<Class<?>> valueTypeTypes();
+    public abstract List<Class<?>> valueTypeTypes();
 
 }
