@@ -484,7 +484,7 @@ public final class JodaBeanUtils {
      * @return the collection content type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> collectionType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractTypeClass(targetClass, prop, 1, 0);
+        return extractTypeClass(prop, targetClass, 1, 0);
     }
 
     /**
@@ -523,7 +523,7 @@ public final class JodaBeanUtils {
      * @return the map key type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractTypeClass(targetClass, prop, 2, 0);
+        return extractTypeClass(prop, targetClass, 2, 0);
     }
 
     /**
@@ -546,7 +546,7 @@ public final class JodaBeanUtils {
      * @return the map value type, null if unable to determine or type has no generic parameters
      */
     public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractTypeClass(targetClass, prop, 2, 1);
+        return extractTypeClass(prop, targetClass, 2, 1);
     }
 
     /**
@@ -565,7 +565,16 @@ public final class JodaBeanUtils {
         return extractTypeClasses(targetClass, type);
     }
 
-    private static Class<?> extractTypeClass(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
+    /**
+     * Low-level method to extract generic type information.
+     * 
+     * @param prop  the property to examine, not null
+     * @param targetClass  the target type to evaluate against, not null
+     * @param size  the number of generic parameters expected
+     * @param index  the index of the generic parameter
+     * @return the type, null if unable to determine or type has no generic parameters
+     */
+    public static Class<?> extractTypeClass(MetaProperty<?> prop, Class<?> targetClass, int size, int index) {
         return eraseToClass(extractType(targetClass, prop, size, index));
     }
 
