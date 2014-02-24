@@ -214,6 +214,8 @@ public class JodaBeanBinWriter {
             writeMap(itemIterator);
         } else if (itemIterator.category() == SerCategory.COUNTED) {
             writeCounted(itemIterator);
+        } else if (itemIterator.category() == SerCategory.TABLE) {
+            writeTable(itemIterator);
         } else {
             writeArray(itemIterator);
         }
@@ -236,6 +238,17 @@ public class JodaBeanBinWriter {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
             }
             writeObject(itemIterator.keyType(), key, null);
+            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+        }
+    }
+
+    private void writeTable(final SerIterator itemIterator) throws IOException {
+        output.writeArrayHeader(itemIterator.size());
+        while (itemIterator.hasNext()) {
+            itemIterator.next();
+            output.writeArrayHeader(3);
+            writeObject(itemIterator.keyType(), itemIterator.key(), itemIterator.valueTypeTypes());
+            writeObject(itemIterator.columnType(), itemIterator.column(), itemIterator.valueTypeTypes());
             writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
         }
     }

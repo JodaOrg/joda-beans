@@ -270,6 +270,8 @@ public class JodaBeanBinReader extends MsgPack {
             return parseIterableMap(typeByte, iterable);
         } else if (iterable.category() == SerCategory.COUNTED) {
             return parseIterableCounted(typeByte, iterable);
+        } else if (iterable.category() == SerCategory.TABLE) {
+            return parseIterableTable(typeByte, iterable);
         } else {
             return parseIterableArray(typeByte, iterable);
         }
@@ -281,6 +283,20 @@ public class JodaBeanBinReader extends MsgPack {
             Object key = parseObject(iterable.keyType(), null, null, null, false);
             Object value = parseObject(iterable.valueType(), null, null, iterable, false);
             iterable.add(key, null, value, 1);
+        }
+        return iterable.build();
+    }
+
+    private Object parseIterableTable(int typeByte, SerIterable iterable) throws Exception {
+        int size = acceptArray(typeByte);
+        for (int i = 0; i < size; i++) {
+            if (acceptArray(input.readByte()) != 3) {
+                throw new IllegalArgumentException("Table must have cell array size 3");
+            }
+            Object key = parseObject(iterable.keyType(), null, null, null, false);
+            Object column = parseObject(iterable.columnType(), null, null, null, false);
+            Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+            iterable.add(key, column, value, 1);
         }
         return iterable.build();
     }

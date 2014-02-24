@@ -41,9 +41,11 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.ImmutableTable;
 
 /**
  * Test property roundtrip using XML.
@@ -129,6 +131,10 @@ public class TestAddressXml {
                 .data(new byte[] {64, 65, 66})
                 .build();
         map4.put(child, ImmutableMap.of("sibling", child2));
+        HashBasedTable<Integer, Integer, ImmPerson> table = HashBasedTable.create();
+        table.put(1, 1, person);
+        table.put(1, 2, child);
+        table.put(2, 1, child2);
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
@@ -139,6 +145,8 @@ public class TestAddressXml {
             .listInListInMap(map3)
             .objectListInListInMap(map5)
             .mapInMap(map4)
+            .simpleTable(ImmutableTable.of(1, 1, "Hello"))
+            .compoundTable(table)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         

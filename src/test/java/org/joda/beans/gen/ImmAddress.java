@@ -33,7 +33,10 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -95,6 +98,16 @@ public final class ImmAddress implements ImmutableBean {
     @PropertyDefinition(validate = "notNull")
     private final ImmutableMap<ImmPerson, Map<String, ImmPerson>> mapInMap;
     /**
+     * The simple table.
+     */
+    @PropertyDefinition
+    private final ImmutableTable<Integer, Integer, String> simpleTable;
+    /**
+     * The compound table.
+     */
+    @PropertyDefinition
+    private final ImmutableTable<Integer, Integer, ImmPerson> compoundTable;
+    /**
      * The bean key and bean value field.
      */
     @PropertyDefinition(validate = "notNull")
@@ -133,6 +146,8 @@ public final class ImmAddress implements ImmutableBean {
             Map<String, List<List<Integer>>> listInListInMap,
             Map<String, List<List<Object>>> objectListInListInMap,
             Map<ImmPerson, Map<String, ImmPerson>> mapInMap,
+            Table<Integer, Integer, String> simpleTable,
+            Table<Integer, Integer, ImmPerson> compoundTable,
             Map<ImmPerson, ImmAddress> beanBeanMap) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
@@ -153,6 +168,8 @@ public final class ImmAddress implements ImmutableBean {
         this.listInListInMap = ImmutableMap.copyOf(listInListInMap);
         this.objectListInListInMap = ImmutableMap.copyOf(objectListInListInMap);
         this.mapInMap = ImmutableMap.copyOf(mapInMap);
+        this.simpleTable = (simpleTable != null ? ImmutableTable.copyOf(simpleTable) : null);
+        this.compoundTable = (compoundTable != null ? ImmutableTable.copyOf(compoundTable) : null);
         this.beanBeanMap = ImmutableMap.copyOf(beanBeanMap);
     }
 
@@ -264,6 +281,24 @@ public final class ImmAddress implements ImmutableBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the simple table.
+     * @return the value of the property
+     */
+    public ImmutableTable<Integer, Integer, String> getSimpleTable() {
+        return simpleTable;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the compound table.
+     * @return the value of the property
+     */
+    public ImmutableTable<Integer, Integer, ImmPerson> getCompoundTable() {
+        return compoundTable;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the bean key and bean value field.
      * @return the value of the property, not null
      */
@@ -302,6 +337,8 @@ public final class ImmAddress implements ImmutableBean {
                     JodaBeanUtils.equal(getListInListInMap(), other.getListInListInMap()) &&
                     JodaBeanUtils.equal(getObjectListInListInMap(), other.getObjectListInListInMap()) &&
                     JodaBeanUtils.equal(getMapInMap(), other.getMapInMap()) &&
+                    JodaBeanUtils.equal(getSimpleTable(), other.getSimpleTable()) &&
+                    JodaBeanUtils.equal(getCompoundTable(), other.getCompoundTable()) &&
                     JodaBeanUtils.equal(getBeanBeanMap(), other.getBeanBeanMap());
         }
         return false;
@@ -320,13 +357,15 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInListInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getObjectListInListInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getMapInMap());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSimpleTable());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getCompoundTable());
         hash += hash * 31 + JodaBeanUtils.hashCode(getBeanBeanMap());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(384);
+        StringBuilder buf = new StringBuilder(448);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
@@ -338,6 +377,8 @@ public final class ImmAddress implements ImmutableBean {
         buf.append("listInListInMap").append('=').append(getListInListInMap()).append(',').append(' ');
         buf.append("objectListInListInMap").append('=').append(getObjectListInListInMap()).append(',').append(' ');
         buf.append("mapInMap").append('=').append(getMapInMap()).append(',').append(' ');
+        buf.append("simpleTable").append('=').append(getSimpleTable()).append(',').append(' ');
+        buf.append("compoundTable").append('=').append(getCompoundTable()).append(',').append(' ');
         buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(getBeanBeanMap()));
         buf.append('}');
         return buf.toString();
@@ -409,6 +450,18 @@ public final class ImmAddress implements ImmutableBean {
         private final MetaProperty<ImmutableMap<ImmPerson, Map<String, ImmPerson>>> mapInMap = DirectMetaProperty.ofImmutable(
                 this, "mapInMap", ImmAddress.class, (Class) ImmutableMap.class);
         /**
+         * The meta-property for the {@code simpleTable} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableTable<Integer, Integer, String>> simpleTable = DirectMetaProperty.ofImmutable(
+                this, "simpleTable", ImmAddress.class, (Class) ImmutableTable.class);
+        /**
+         * The meta-property for the {@code compoundTable} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableTable<Integer, Integer, ImmPerson>> compoundTable = DirectMetaProperty.ofImmutable(
+                this, "compoundTable", ImmAddress.class, (Class) ImmutableTable.class);
+        /**
          * The meta-property for the {@code beanBeanMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -429,6 +482,8 @@ public final class ImmAddress implements ImmutableBean {
                 "listInListInMap",
                 "objectListInListInMap",
                 "mapInMap",
+                "simpleTable",
+                "compoundTable",
                 "beanBeanMap");
 
         /**
@@ -460,6 +515,10 @@ public final class ImmAddress implements ImmutableBean {
                     return objectListInListInMap;
                 case 158545403:  // mapInMap
                     return mapInMap;
+                case -1429579460:  // simpleTable
+                    return simpleTable;
+                case 103339235:  // compoundTable
+                    return compoundTable;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
             }
@@ -563,6 +622,22 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code simpleTable} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableTable<Integer, Integer, String>> simpleTable() {
+            return simpleTable;
+        }
+
+        /**
+         * The meta-property for the {@code compoundTable} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableTable<Integer, Integer, ImmPerson>> compoundTable() {
+            return compoundTable;
+        }
+
+        /**
          * The meta-property for the {@code beanBeanMap} property.
          * @return the meta-property, not null
          */
@@ -594,6 +669,10 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getObjectListInListInMap();
                 case 158545403:  // mapInMap
                     return ((ImmAddress) bean).getMapInMap();
+                case -1429579460:  // simpleTable
+                    return ((ImmAddress) bean).getSimpleTable();
+                case 103339235:  // compoundTable
+                    return ((ImmAddress) bean).getCompoundTable();
                 case -2039203396:  // beanBeanMap
                     return ((ImmAddress) bean).getBeanBeanMap();
             }
@@ -627,6 +706,8 @@ public final class ImmAddress implements ImmutableBean {
         private Map<String, List<List<Integer>>> listInListInMap = new HashMap<String, List<List<Integer>>>();
         private Map<String, List<List<Object>>> objectListInListInMap = new HashMap<String, List<List<Object>>>();
         private Map<ImmPerson, Map<String, ImmPerson>> mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>();
+        private Table<Integer, Integer, String> simpleTable;
+        private Table<Integer, Integer, ImmPerson> compoundTable;
         private Map<ImmPerson, ImmAddress> beanBeanMap = new HashMap<ImmPerson, ImmAddress>();
 
         /**
@@ -650,6 +731,8 @@ public final class ImmAddress implements ImmutableBean {
             this.listInListInMap = new HashMap<String, List<List<Integer>>>(beanToCopy.getListInListInMap());
             this.objectListInListInMap = new HashMap<String, List<List<Object>>>(beanToCopy.getObjectListInListInMap());
             this.mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>(beanToCopy.getMapInMap());
+            this.simpleTable = (beanToCopy.getSimpleTable() != null ? HashBasedTable.create(beanToCopy.getSimpleTable()) : null);
+            this.compoundTable = (beanToCopy.getCompoundTable() != null ? HashBasedTable.create(beanToCopy.getCompoundTable()) : null);
             this.beanBeanMap = new HashMap<ImmPerson, ImmAddress>(beanToCopy.getBeanBeanMap());
         }
 
@@ -677,6 +760,10 @@ public final class ImmAddress implements ImmutableBean {
                     return objectListInListInMap;
                 case 158545403:  // mapInMap
                     return mapInMap;
+                case -1429579460:  // simpleTable
+                    return simpleTable;
+                case 103339235:  // compoundTable
+                    return compoundTable;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
                 default:
@@ -717,6 +804,12 @@ public final class ImmAddress implements ImmutableBean {
                     break;
                 case 158545403:  // mapInMap
                     this.mapInMap = (Map<ImmPerson, Map<String, ImmPerson>>) newValue;
+                    break;
+                case -1429579460:  // simpleTable
+                    this.simpleTable = (Table<Integer, Integer, String>) newValue;
+                    break;
+                case 103339235:  // compoundTable
+                    this.compoundTable = (Table<Integer, Integer, ImmPerson>) newValue;
                     break;
                 case -2039203396:  // beanBeanMap
                     this.beanBeanMap = (Map<ImmPerson, ImmAddress>) newValue;
@@ -764,6 +857,8 @@ public final class ImmAddress implements ImmutableBean {
                     listInListInMap,
                     objectListInListInMap,
                     mapInMap,
+                    simpleTable,
+                    compoundTable,
                     beanBeanMap);
         }
 
@@ -877,6 +972,26 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code simpleTable} property in the builder.
+         * @param simpleTable  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder simpleTable(Table<Integer, Integer, String> simpleTable) {
+            this.simpleTable = simpleTable;
+            return this;
+        }
+
+        /**
+         * Sets the {@code compoundTable} property in the builder.
+         * @param compoundTable  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder compoundTable(Table<Integer, Integer, ImmPerson> compoundTable) {
+            this.compoundTable = compoundTable;
+            return this;
+        }
+
+        /**
          * Sets the {@code beanBeanMap} property in the builder.
          * @param beanBeanMap  the new value, not null
          * @return this, for chaining, not null
@@ -890,7 +1005,7 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(384);
+            StringBuilder buf = new StringBuilder(448);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
@@ -902,6 +1017,8 @@ public final class ImmAddress implements ImmutableBean {
             buf.append("listInListInMap").append('=').append(JodaBeanUtils.toString(listInListInMap)).append(',').append(' ');
             buf.append("objectListInListInMap").append('=').append(JodaBeanUtils.toString(objectListInListInMap)).append(',').append(' ');
             buf.append("mapInMap").append('=').append(JodaBeanUtils.toString(mapInMap)).append(',').append(' ');
+            buf.append("simpleTable").append('=').append(JodaBeanUtils.toString(simpleTable)).append(',').append(' ');
+            buf.append("compoundTable").append('=').append(JodaBeanUtils.toString(compoundTable)).append(',').append(' ');
             buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(beanBeanMap));
             buf.append('}');
             return buf.toString();

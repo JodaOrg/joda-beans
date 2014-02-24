@@ -16,12 +16,14 @@
 package org.joda.beans.ser.xml;
 
 import static org.joda.beans.ser.xml.JodaBeanXml.BEAN;
+import static org.joda.beans.ser.xml.JodaBeanXml.COL;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT;
 import static org.joda.beans.ser.xml.JodaBeanXml.ENTRY;
 import static org.joda.beans.ser.xml.JodaBeanXml.ITEM;
 import static org.joda.beans.ser.xml.JodaBeanXml.KEY;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL;
+import static org.joda.beans.ser.xml.JodaBeanXml.ROW;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 
 import java.util.HashMap;
@@ -31,8 +33,8 @@ import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerTypeMapper;
 import org.joda.convert.StringConverter;
 
 /**
@@ -230,11 +232,24 @@ public class JodaBeanXmlWriter {
 
     private void writeElements(final String currentIndent, final SerIterator itemIterator) {
         // find converter once for performance, and before checking if key is bean
-        StringConverter<Object> converter = null;
+        StringConverter<Object> keyConverter = null;
+        StringConverter<Object> rowConverter = null;
+        StringConverter<Object> columnConverter = null;
         boolean keyBean = false;
-        if (itemIterator.keyType() != null) {
+        if (itemIterator.category() == SerCategory.TABLE) {
+            try {
+                rowConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
+            } catch (RuntimeException ex) {
+                throw new IllegalArgumentException("Unable to write map as declared key type is neither a bean nor a simple type: " + itemIterator.keyType().getName(), ex);
+            }
+            try {
+                columnConverter = settings.getConverter().findConverterNoGenerics(itemIterator.columnType());
+            } catch (RuntimeException ex) {
+                throw new IllegalArgumentException("Unable to write map as declared column type is neither a bean nor a simple type: " + itemIterator.columnType().getName(), ex);
+            }
+        } else if (itemIterator.category() == SerCategory.MAP) {
             if (settings.getConverter().isConvertible(itemIterator.keyType())) {
-                converter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
+                keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
             } else if (Bean.class.isAssignableFrom(itemIterator.keyType())) {
                 keyBean = true;
             } else {
@@ -245,16 +260,15 @@ public class JodaBeanXmlWriter {
         while (itemIterator.hasNext()) {
             itemIterator.next();
             StringBuilder attr = new StringBuilder(32);
-            if (converter != null) {
-                Object key = itemIterator.key();
-                if (key == null) {
-                    throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
-                }
-                String keyStr = encodeAttribute(converter.convertToString(key));
-                if (keyStr == null) {
-                    throw new IllegalArgumentException("Unable to write map key as it cannot be a null string: " + key);
-                }
+            if (keyConverter != null) {
+                String keyStr = convertToString(keyConverter, itemIterator.key(), "map key");
                 appendAttribute(attr, KEY, keyStr);
+            }
+            if (rowConverter != null) {
+                String rowStr = convertToString(rowConverter, itemIterator.key(), "table row");
+                appendAttribute(attr, ROW, rowStr);
+                String colStr = convertToString(columnConverter, itemIterator.column(), "table column");
+                appendAttribute(attr, COL, colStr);
             }
             if (itemIterator.count() != 1) {
                 appendAttribute(attr, COUNT, Integer.toString(itemIterator.count()));
@@ -272,6 +286,17 @@ public class JodaBeanXmlWriter {
                 writeValueElement(currentIndent, tagName, attr, itemIterator);
             }
         }
+    }
+
+    private String convertToString(StringConverter<Object> converter, Object obj, String description) {
+        if (obj == null) {
+            throw new IllegalArgumentException("Unable to write " + description + " as it cannot be null: " + obj);
+        }
+        String str = encodeAttribute(converter.convertToString(obj));
+        if (str == null) {
+            throw new IllegalArgumentException("Unable to write " + description + " as it cannot be a null string: " + obj);
+        }
+        return str;
     }
 
     private void writeKeyValueElement(final String currentIndent, Object key, final SerIterator itemIterator) {

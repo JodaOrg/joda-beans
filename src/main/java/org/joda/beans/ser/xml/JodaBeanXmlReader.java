@@ -16,12 +16,14 @@
 package org.joda.beans.ser.xml;
 
 import static org.joda.beans.ser.xml.JodaBeanXml.BEAN_QNAME;
+import static org.joda.beans.ser.xml.JodaBeanXml.COL_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.ENTRY_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.ITEM_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.KEY_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL_QNAME;
+import static org.joda.beans.ser.xml.JodaBeanXml.ROW_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE_QNAME;
 
@@ -44,10 +46,10 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
+import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to read from XML.
@@ -315,57 +317,80 @@ public class JodaBeanXmlReader {
                 if (start.getName().equals(expectedType) == false) {
                     throw new IllegalArgumentException("Expected '" + expectedType.getLocalPart() + "' but found '" + start.getName() + "'");
                 }
-                // count
                 int count = 1;
-                Attribute countAttr = start.getAttributeByName(COUNT_QNAME);
-                if (countAttr != null) {
-                    count = Integer.parseInt(countAttr.getValue());
-                }
-                // key and value
                 Object key = null;
+                Object column = null;
                 Object value = null;
-                Attribute keyAttr = start.getAttributeByName(KEY_QNAME);
-                if (keyAttr != null) {
-                    // item is value with a key attribute
-                    String keyStr = keyAttr.getValue();
-                    if (iterable.keyType() != null) {
-                        key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
-                    } else {
-                        key = keyStr;
+                if (iterable.category() == SerCategory.COUNTED) {
+                    Attribute countAttr = start.getAttributeByName(COUNT_QNAME);
+                    if (countAttr != null) {
+                        count = Integer.parseInt(countAttr.getValue());
                     }
                     value = parseValue(iterable, start);
                     
-                } else if (iterable.keyType() != null) {
-                    // two items nested in this entry
-                    if (Bean.class.isAssignableFrom(iterable.keyType()) == false) {
-                        throw new IllegalArgumentException("Unable to read map as declared key type is neither a bean nor a simple type: " + iterable.keyType().getName());
+                } else if (iterable.category() == SerCategory.TABLE) {
+                    Attribute rowAttr = start.getAttributeByName(ROW_QNAME);
+                    Attribute colAttr = start.getAttributeByName(COL_QNAME);
+                    if (rowAttr == null || colAttr == null) {
+                        throw new IllegalArgumentException("Unable to read table as row/col attribute missing");
                     }
-                    event = nextEvent(">>map ");
-                    int loop = 0;
-                    while (event.isEndElement() == false) {
-                        if (event.isStartElement()) {
-                            start = event.asStartElement();
-                            if (start.getName().equals(ITEM_QNAME) == false) {
-                                throw new IllegalArgumentException("Expected 'item' but found '" + start.getName() + "'");
-                            }
-                            if (key == null) {
-                                key = parseKey(iterable, start);
-                            } else {
-                                value = parseValue(iterable, start);
-                            }
-                            loop++;
-                        }
-                        event = nextEvent("..map ");
+                    String rowStr = rowAttr.getValue();
+                    if (iterable.keyType() != null) {
+                        key = settings.getConverter().convertFromString(iterable.keyType(), rowStr);
+                    } else {
+                        key = rowStr;
                     }
-                    if (loop != 2) {
-                        throw new IllegalArgumentException("Expected 2 'item's but found " + loop);
+                    String colStr = colAttr.getValue();
+                    if (iterable.columnType() != null) {
+                        column = settings.getConverter().convertFromString(iterable.columnType(), colStr);
+                    } else {
+                        column = colStr;
                     }
+                    value = parseValue(iterable, start);
                     
-                } else {
-                    // item is value
+                } else if (iterable.category() == SerCategory.MAP) {
+                    Attribute keyAttr = start.getAttributeByName(KEY_QNAME);
+                    if (keyAttr != null) {
+                        // item is value with a key attribute
+                        String keyStr = keyAttr.getValue();
+                        if (iterable.keyType() != null) {
+                            key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
+                        } else {
+                            key = keyStr;
+                        }
+                        value = parseValue(iterable, start);
+                        
+                    } else {
+                        // two items nested in this entry
+                        if (Bean.class.isAssignableFrom(iterable.keyType()) == false) {
+                            throw new IllegalArgumentException("Unable to read map as declared key type is neither a bean nor a simple type: " + iterable.keyType().getName());
+                        }
+                        event = nextEvent(">>map ");
+                        int loop = 0;
+                        while (event.isEndElement() == false) {
+                            if (event.isStartElement()) {
+                                start = event.asStartElement();
+                                if (start.getName().equals(ITEM_QNAME) == false) {
+                                    throw new IllegalArgumentException("Expected 'item' but found '" + start.getName() + "'");
+                                }
+                                if (key == null) {
+                                    key = parseKey(iterable, start);
+                                } else {
+                                    value = parseValue(iterable, start);
+                                }
+                                loop++;
+                            }
+                            event = nextEvent("..map ");
+                        }
+                        if (loop != 2) {
+                            throw new IllegalArgumentException("Expected 2 'item's but found " + loop);
+                        }
+                    }                    
+                    
+                } else {  // COLLECTION
                     value = parseValue(iterable, start);
                 }
-                iterable.add(key, null, value, count);
+                iterable.add(key, column, value, count);
             }
             event = nextEvent(".iter ");
         }
