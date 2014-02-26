@@ -15,6 +15,8 @@
  */
 package org.joda.beans.collect;
 
+import java.util.Comparator;
+
 import org.joda.beans.collect.Grid.Cell;
 
 import com.google.common.base.Objects;
@@ -28,6 +30,35 @@ import com.google.common.base.Objects;
 abstract class AbstractCell<V> implements Cell<V> {
 
     /**
+     * Compare by row then column.
+     * 
+     * @param <R> the type of the value
+     * @return the comparator, not null
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    static final <R> Comparator<Cell<R>> comparator() {
+        return (Comparator<Cell<R>>) (Comparator) COMPARATOR;
+    }
+    /**
+     * Compare by row then column.
+     */
+    private static final Comparator<Cell<?>> COMPARATOR = new Comparator<Cell<?>>() {
+        @Override
+        public int compare(Cell<?> cell1, Cell<?> cell2) {
+            int thisRow = cell1.getRow();
+            int otherRow = cell2.getRow();
+            int cmp = (thisRow < otherRow ? -1 : (thisRow > otherRow ? 1 : 0));
+            if (cmp == 0) {
+                int thisCol = cell1.getColumn();
+                int otherCol = cell2.getColumn();
+                cmp = (thisCol < otherCol ? -1 : (thisCol > otherCol ? 1 : 0));
+            }
+            return cmp;
+        }
+    };
+
+    //-----------------------------------------------------------------------
+    /**
      * Restricted constructor.
      */
     AbstractCell() {
@@ -35,18 +66,16 @@ abstract class AbstractCell<V> implements Cell<V> {
 
     //-----------------------------------------------------------------------
     @Override
-    public int compareTo(Cell<V> other) {
-        int thisRow = getRow();
-        int otherRow = other.getRow();
-        int cmp = (thisRow < otherRow ? -1 : (thisRow > otherRow ? 1 : 0));
-        if (cmp == 0) {
-            int thisCol = getColumn();
-            int otherCol = other.getColumn();
-            cmp = (thisCol < otherCol ? -1 : (thisCol > otherCol ? 1 : 0));
-        }
-        return cmp;
+    public boolean equalRowColumn(int row, int column) {
+        return row == getRow() && column == getColumn();
     }
 
+    @Override
+    public boolean equalValue(Object value) {
+        return Objects.equal(value, getValue());
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -62,7 +91,7 @@ abstract class AbstractCell<V> implements Cell<V> {
 
     @Override
     public int hashCode() {
-        return getValue().hashCode() ^ getRow() ^ Integer.rotateLeft(getColumn(), 16);
+        return getRow() ^ Integer.rotateLeft(getColumn(), 16) ^ getValue().hashCode();
     }
 
     @Override

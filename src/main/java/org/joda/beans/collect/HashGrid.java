@@ -36,19 +36,29 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The row count.
+     */
+    private final int rowCount;
+    /**
+     * The column count.
+     */
+    private final int columnCount;
+    /**
      * The cells.
      */
     private final SortedSet<Cell<V>> cells;
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an empty {@code HashGrid}.
+     * Creates an empty {@code HashGrid} of the specified row-column count.
      * 
      * @param <R> the type of the value
+     * @param rowCount  the number of rows, zero or greater
+     * @param columnCount  the number of columns, zero or greater
      * @return the mutable grid, not null
      */
-    public static <R> HashGrid<R> create() {
-        return new HashGrid<R>(new TreeSet<Cell<R>>());
+    public static <R> HashGrid<R> create(int rowCount, int columnCount) {
+        return new HashGrid<R>(rowCount, columnCount, new TreeSet<Cell<R>>(AbstractCell.<R>comparator()));
     }
 
     /**
@@ -59,7 +69,10 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
      * @return the mutable grid, not null
      */
     public static <R> HashGrid<R> create(Grid<? extends R> grid) {
-        HashGrid<R> created = HashGrid.create();
+        if (grid == null) {
+            throw new IllegalArgumentException("Grid must not be null");
+        }
+        HashGrid<R> created = HashGrid.create(grid.rowCount(), grid.columnCount());
         created.putAll(grid);
         return created;
     }
@@ -68,8 +81,22 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
     /**
      * Restricted constructor.
      */
-    HashGrid(SortedSet<Cell<V>> data) {
+    HashGrid(int rowCount, int columnCount, SortedSet<Cell<V>> data) {
+        validateCounts(rowCount, columnCount);
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
         this.cells = data;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public int rowCount() {
+        return rowCount;
+    }
+
+    @Override
+    public int columnCount() {
+        return columnCount;
     }
 
     //-----------------------------------------------------------------------
@@ -80,12 +107,13 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
 
     @Override
     public boolean contains(int row, int column) {
-        Set<Cell<V>> tail = cells.tailSet(finder(row, column));
-        if (tail.size() > 0) {
-            Iterator<Cell<V>> it = tail.iterator();
-            Cell<V> cell = it.next();
-            if (cell.getRow() == row && cell.getColumn() == column) {
-                return true;
+        if (exists(row, column)) {
+            SortedSet<Cell<V>> tail = cells.tailSet(finder(row, column));
+            if (tail.size() > 0) {
+                Cell<V> cell = tail.first();
+                if (cell.getRow() == row && cell.getColumn() == column) {
+                    return true;
+                }
             }
         }
         return false;
@@ -93,12 +121,13 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
 
     @Override
     public V get(int row, int column) {
-        Set<Cell<V>> tail = cells.tailSet(finder(row, column));
-        if (tail.size() > 0) {
-            Iterator<Cell<V>> it = tail.iterator();
-            Cell<V> cell = it.next();
-            if (cell.getRow() == row && cell.getColumn() == column) {
-                return cell.getValue();
+        if (exists(row, column)) {
+            SortedSet<Cell<V>> tail = cells.tailSet(finder(row, column));
+            if (tail.size() > 0) {
+                Cell<V> cell = tail.first();
+                if (cell.getRow() == row && cell.getColumn() == column) {
+                    return cell.getValue();
+                }
             }
         }
         return null;
@@ -114,7 +143,7 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
             }
             @Override
             public boolean add(Cell<V> element) {
-                return super.add(ImmutableCell.of(element));
+                return super.add(ImmutableCell.copyOf(element));
             }
             @Override
             public boolean addAll(Collection<? extends Cell<V>> collection) {
@@ -131,26 +160,35 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
 
     @Override
     public void put(int row, int column, V value) {
-        Cell<V> cell = Grids.immutableCell(row, column, value);
+        if (exists(row, column) == false) {
+            throw new IndexOutOfBoundsException("Invalid row-column: " + row + "," + column);
+        }
+        Cell<V> cell = ImmutableCell.of(row, column, value);
+        cells.remove(cell);
         cells.add(cell);
     }
 
     @Override
     public void putAll(Grid<? extends V> grid) {
+        if (grid == null) {
+            throw new IllegalArgumentException("Grid must nor be null");
+        }
         for (Cell<? extends V> cell : grid.cells()) {
-            cells.add(ImmutableCell.of(cell));
+            cells.add(ImmutableCell.copyOf(cell));
         }
     }
 
     @Override
     public boolean remove(int row, int column) {
-        Set<Cell<V>> tail = cells.tailSet(finder(row, column));
-        if (tail.size() > 0) {
-            Iterator<Cell<V>> it = tail.iterator();
-            Cell<V> cell = it.next();
-            if (cell.getRow() == row && cell.getColumn() == column) {
-                it.remove();
-                return true;
+        if (exists(row, column)) {
+            Set<Cell<V>> tail = cells.tailSet(finder(row, column));
+            if (tail.size() > 0) {
+                Iterator<Cell<V>> it = tail.iterator();
+                Cell<V> cell = it.next();
+                if (cell.getRow() == row && cell.getColumn() == column) {
+                    it.remove();
+                    return true;
+                }
             }
         }
         return false;

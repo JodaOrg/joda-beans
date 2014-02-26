@@ -19,57 +19,59 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * Mock cell.
+ * Mock grid.
  */
-public class MockBadGrid extends AbstractGrid<String> {
+public class MockSingletonGrid extends AbstractGrid<String> {
     
+    private final int rowCount;
+    private final int columnCount;
     private final int row;
     private final int column;
     private final String value;
 
-    public MockBadGrid(int row, int column, String value) {
+    public MockSingletonGrid(int rowCount, int columnCount, int row, int column, String value) {
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
         this.row = row;
         this.column = column;
         this.value = value;
     }
 
     @Override
+    public int rowCount() {
+        return rowCount;
+    }
+
+    @Override
+    public int columnCount() {
+        return columnCount;
+    }
+
+    @Override
     public SortedSet<Cell<String>> cells() {
         TreeSet<Cell<String>> set = new TreeSet<Cell<String>>();
-        set.add(new AbstractCell<String>() {
-            @Override
-            public int getRow() {
-                return row;
-            }
-
-            @Override
-            public int getColumn() {
-                return column;
-            }
-
-            @Override
-            public String getValue() {
-                return value;
-            }
-        });
+        set.add(new MockCell(row, column, value));
         return set;
     }
 
     @Override
     public void clear() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void put(int row, int column, String value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void putAll(Grid<? extends String> grid) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean remove(int row, int column) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
 }

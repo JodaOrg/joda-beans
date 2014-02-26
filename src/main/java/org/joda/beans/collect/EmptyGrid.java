@@ -15,6 +15,8 @@
  */
 package org.joda.beans.collect;
 
+import java.io.Serializable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -24,18 +26,48 @@ import com.google.common.collect.ImmutableSortedSet;
  * @param <V> the type of the value
  * @author Stephen Colebourne
  */
-final class EmptyGrid<V> extends ImmutableGrid<V> {
+final class EmptyGrid<V> extends ImmutableGrid<V> implements Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
     /**
+     * The row count.
+     */
+    private final int rowCount;
+    /**
+     * The column count.
+     */
+    private final int columnCount;
+
+    /**
      * Restricted constructor.
      */
     EmptyGrid() {
+        this.rowCount = 0;
+        this.columnCount = 0;
+    }
+
+    /**
+     * Restricted constructor.
+     */
+    EmptyGrid(int rowCount, int columnCount) {
+        validateCounts(rowCount, columnCount);
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public int rowCount() {
+        return rowCount;
+    }
+
+    @Override
+    public int columnCount() {
+        return columnCount;
+    }
+
     @Override
     public int size() {
         return 0;

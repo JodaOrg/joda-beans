@@ -15,20 +15,59 @@
  */
 package org.joda.beans.collect;
 
-import java.util.SortedSet;
+import java.util.Set;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableCollection;
 
 /**
  * A data structure representing a grid keyed by {@code int} row and {@code int} column.
  * <p>
- * Implementations are provided for dense (fully populated) and sparse (only some cells present).
+ * A grid has a fixed number of rows and columns, but not all cells must be occupied.
+ * Dense and sparse implementations are provided that handle high and low numbers of cells
+ * relative to the potential capacity.
  * 
  * @param <V> the type of the value
  * @author Stephen Colebourne
  */
 public interface Grid<V> {
 
+    /**
+     * Gets the number of rows in the grid.
+     * <p>
+     * A grid has a fixed number of rows and columns, but not all cells must be occupied.
+     * This returns the row capacity, not the number of occupied rows.
+     * It is guaranteed that {@link #contains(int, int)} will return {@code false}
+     * for indices larger than the row count.
+     * 
+     * @return the number of rows, zero or greater
+     */
+    int rowCount();
+
+    /**
+     * Gets the number of columns in the grid.
+     * <p>
+     * A grid has a fixed number of rows and columns, but not all cells must be occupied.
+     * This returns the column capacity, not the number of occupied columns.
+     * It is guaranteed that {@link #contains(int, int)} will return {@code false}
+     * for indices larger than the column count.
+     * 
+     * @return the number of columns, zero or greater
+     */
+    int columnCount();
+
+    /**
+     * Checks if the specified row-column exists.
+     * <p>
+     * This simply checks that the row and column indices are between
+     * zero and the row and column counts.
+     * 
+     * @param row  the row
+     * @param column  the column
+     * @return true if the row-column exists
+     */
+    boolean exists(int row, int column);
+
+    //-----------------------------------------------------------------------
     /**
      * Checks if the grid is empty.
      * 
@@ -44,16 +83,18 @@ public interface Grid<V> {
     int size();
 
     /**
-     * Checks if the specified row-column exists.
+     * Checks if a value is present at the specified row-column.
+     * <p>
+     * If either index does not exist, false is returned.
      * 
-     * @param row  the row, negative returns false
-     * @param column  the column, negative returns false
-     * @return true if the row-column exists
+     * @param row  the row
+     * @param column  the column
+     * @return true if there is a value at the row-column
      */
     boolean contains(int row, int column);
 
     /**
-     * Checks if the specified row-column exists.
+     * Checks if the specified value is contained in the grid.
      * 
      * @param valueToFind  the value to find, null returns false
      * @return true if the grid contains the value
@@ -62,9 +103,11 @@ public interface Grid<V> {
 
     /**
      * Gets the value at the specified row-column.
+     * <p>
+     * If either index does not exist, null is returned.
      * 
-     * @param row  the row, negative returns null
-     * @param column  the column, negative returns null
+     * @param row  the row
+     * @param column  the column
      * @return the value at the row-column, null if not found
      */
     V get(int row, int column);
@@ -73,7 +116,7 @@ public interface Grid<V> {
     /**
      * Checks if this grid equals another grid.
      * <p>
-     * Two grids are equal if they contains the same data.
+     * Two grids are equal if they are the same size and contain the same set of cells.
      * 
      * @param obj  the object to compare to, null returns false
      * @return true if equal
@@ -84,7 +127,7 @@ public interface Grid<V> {
     /**
      * Gets a suitable hash code.
      * <p>
-     * The hash code is that returned by {@link #cells()}.
+     * The hash code is {@code rowCount ^ Integer.rotateLeft(columnCount, 16) ^ cells.hashCode()}.
      * 
      * @return the hash code
      */
@@ -106,17 +149,19 @@ public interface Grid<V> {
      * <p>
      * The value at the specified row-column is set.
      * Any previous value at the row-column is replaced.
+     * <p>
+     * If either index does not exist, {@code IndexOutOfBoundsException} is thrown.
      * 
      * @param row  the row, zero or greater
      * @param column  the column, zero or greater
      * @param value  the value to put into the grid, not null
-     * @throws IndexOutOfBoundsException if either index is less than zero or too large
+     * @throws IndexOutOfBoundsException if either index does not exist
      * @throws UnsupportedOperationException if read-only
      */
     void put(int row, int column, V value);
 
     /**
-     * Puts a value into this grid.
+     * Puts all cells from a grid into this grid.
      * <p>
      * The value at the specified row-column is set.
      * Any previous value at the row-column is replaced.
@@ -129,9 +174,11 @@ public interface Grid<V> {
 
     /**
      * Removes the value at the specified row-column.
+     * <p>
+     * If either index does not exist, no action occurs and false is returned.
      * 
-     * @param row  the row, negative returns null
-     * @param column  the column, negative returns null
+     * @param row  the row
+     * @param column  the column
      * @return true if the grid is altered
      * @throws UnsupportedOperationException if read-only
      */
@@ -141,21 +188,25 @@ public interface Grid<V> {
     /**
      * Gets the complete set of cells.
      * <p>
-     * Mutable implementations may use a {@code Cell} implementation that
-     * is updated during iteration.
+     * If the grid is mutable then cells may be added or removed from the set.
+     * The cells are returned in order, looping around rows, then columns.
+     * <p>
+     * The cell returned from the set iterator may be a mutable {@code Cell}
+     * implementation that cannot be stored beyond the lifetime of an iteration.
      * 
      * @return the set of all cells, not null
      */
-    SortedSet<Cell<V>> cells();
+    Set<Cell<V>> cells();
 
     /**
-     * Gets the list of values in order through rows, then columns.
+     * Gets the values in order through rows, then columns.
      * <p>
-     * Values may occur more than once.
+     * The returned data structure is an ordered collection.
+     * The values are returned in order, looping around rows, then columns.
      * 
-     * @return the list of all values, not null
+     * @return the collection of all values, not null
      */
-    ImmutableList<V> values();
+    ImmutableCollection<V> values();
 
 //    /**
 //     * Gets the data of a single row.
@@ -183,13 +234,11 @@ public interface Grid<V> {
 
     //-----------------------------------------------------------------------
     /**
-     * A cell within the grid.
-     * <p>
-     * Cells are sorted by row, then by column, with value ignored.
+     * A cell within the grid compared only using row and column.
      * 
      * @param <V> the type of the value
      */
-    public interface Cell<V> extends Comparable<Cell<V>> {
+    public interface Cell<V> {
 
         /**
          * Gets the row index.
@@ -213,9 +262,26 @@ public interface Grid<V> {
         V getValue();
 
         /**
+         * Checks if the row-column of this cell matches the specified row and column.
+         * 
+         * @param row  the row to check
+         * @param column  the column to check
+         * @return true if equal
+         */
+        boolean equalRowColumn(int row, int column);
+
+        /**
+         * Checks if the value of this cell matches the specified value.
+         * 
+         * @param value  the row to check, null returns false
+         * @return true if equal
+         */
+        boolean equalValue(Object value);
+
+        /**
          * Checks if this cell equals another cell.
          * <p>
-         * Two cells are equal if they contains the same value at the same index.
+         * Two cells are equal if they have equal row, column and value.
          * 
          * @param obj  the object to compare to, null returns false
          * @return true if equal
@@ -226,7 +292,7 @@ public interface Grid<V> {
         /**
          * Gets a suitable hash code.
          * <p>
-         * The hash code is {@code value.hashCode() ^ row ^ Integer.rotateLeft(column, 16)}.
+         * The hash code is {@code row ^ Integer.rotateLeft(column, 16) ^ value.hashCode()}.
          * 
          * @return the hash code
          */

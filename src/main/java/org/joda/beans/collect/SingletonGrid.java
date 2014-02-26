@@ -15,8 +15,10 @@
  */
 package org.joda.beans.collect;
 
+import java.io.Serializable;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Immutable implementation of the {@code Grid} data structure storing one cell.
@@ -24,35 +26,53 @@ import com.google.common.collect.ImmutableSortedSet;
  * @param <V> the type of the value
  * @author Stephen Colebourne
  */
-final class SingletonGrid<V> extends ImmutableGrid<V> {
+final class SingletonGrid<V> extends ImmutableGrid<V> implements Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
     /**
-     * The row.
+     * The row count.
      */
-    private final int row;
+    private final int rowCount;
     /**
-     * The column.
+     * The column count.
      */
-    private final int column;
-    /**
-     * The value.
-     */
-    private final V value;
+    private final int columnCount;
     /**
      * The cell.
      */
-    private transient ImmutableSortedSet<Cell<V>> cell;
+    private final ImmutableCell<V> cell;
 
     /**
      * Restricted constructor.
      */
-    SingletonGrid(int row, int column, V value) {
-        this.row = row;
-        this.column = column;
-        this.value = value;
+    SingletonGrid(int rowCount, int columnCount, Cell<V> cell) {
+        validateCounts(rowCount, columnCount);
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
+        this.cell = ImmutableCell.copyOf(cell).validateCounts(rowCount, columnCount);
+    }
+
+    /**
+     * Restricted constructor.
+     */
+    SingletonGrid(int rowCount, int columnCount, int row, int column, V value) {
+        validateCounts(rowCount, columnCount);
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
+        this.cell = ImmutableCell.of(row, column, value).validateCounts(rowCount, columnCount);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public int rowCount() {
+        return rowCount;
+    }
+
+    @Override
+    public int columnCount() {
+        return columnCount;
     }
 
     //-----------------------------------------------------------------------
@@ -63,32 +83,27 @@ final class SingletonGrid<V> extends ImmutableGrid<V> {
 
     @Override
     public boolean contains(int row, int column) {
-        return this.row == row && this.column == column;
+        return cell.equalRowColumn(row, column);
     }
 
     @Override
     public boolean containsValue(Object valueToFind) {
-        return value.equals(valueToFind);
+        return cell.equalValue(valueToFind);
     }
 
     @Override
     public V get(int row, int column) {
-        return contains(row, column) ? value : null;
+        return cell.equalRowColumn(row, column) ? cell.getValue() : null;
     }
 
     @Override
-    public ImmutableSortedSet<Cell<V>> cells() {
-        ImmutableSortedSet<Cell<V>> c = cell;
-        if (c == null) {
-            c = ImmutableSortedSet.<Cell<V>>of(new ImmutableCell<V>(row, column, value));
-            cell = c;
-        }
-        return c;
+    public ImmutableSet<Cell<V>> cells() {
+        return ImmutableSet.<Cell<V>>of(cell);
     }
 
     @Override
     public ImmutableList<V> values() {
-        return ImmutableList.of(value);
+        return ImmutableList.of(cell.getValue());
     }
 
 }

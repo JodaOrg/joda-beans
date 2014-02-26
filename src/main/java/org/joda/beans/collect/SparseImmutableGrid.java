@@ -15,11 +15,14 @@
  */
 package org.joda.beans.collect;
 
-import java.util.Set;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.ImmutableSortedSet.Builder;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * Immutable implementation of the {@code Grid} data structure.
@@ -27,70 +30,147 @@ import com.google.common.collect.ImmutableSortedSet.Builder;
  * @param <V> the type of the value
  * @author Stephen Colebourne
  */
-final class SparseImmutableGrid<V> extends ImmutableGrid<V> {
+final class SparseImmutableGrid<V> extends ImmutableGrid<V> implements Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
     /**
+     * The row count.
+     */
+    private final int rowCount;
+    /**
+     * The column count.
+     */
+    private final int columnCount;
+    /**
+     * The keys.
+     */
+    private final long[] keys;
+    /**
      * The cells.
      */
-    private final ImmutableSortedSet<Cell<V>> cells;
+    private final Cell<V>[] cells;
+    /**
+     * The cell set.
+     */
+    private transient ImmutableSet<Cell<V>> cellSet;
     /**
      * The values.
      */
-    private transient ImmutableList<V> values;
+    private transient ImmutableCollection<V> valueCollection;
 
     //-----------------------------------------------------------------------
     /**
      * Restricted constructor.
      */
-    SparseImmutableGrid(Iterable<Cell<V>> data) {
-        Builder<Cell<V>> builder = ImmutableSortedSet.naturalOrder();
-        for (Cell<V> cell : data) {
-            builder.add(ImmutableCell.of(cell));
+    @SuppressWarnings("unchecked")
+    SparseImmutableGrid(Grid<V> gridToCopy) {
+        if (gridToCopy == null) {
+            throw new IllegalArgumentException("Grid must not be null");
         }
-        this.cells = builder.build();
+        this.rowCount = gridToCopy.rowCount();
+        this.columnCount = gridToCopy.columnCount();
+        validateCounts(rowCount, columnCount);
+        
+        int size = gridToCopy.cells().size();
+        keys = new long[size];
+        cells = new Cell[size];
+        int i = 0;
+        for (Cell<V> cell : gridToCopy.cells()) {
+            keys[i] = key(cell.getRow(), cell.getColumn());
+            cells[i] = ImmutableCell.copyOf(cell).validateCounts(rowCount, columnCount);
+            i++;
+        }
+    }
+
+    private long key(int row, int column) {
+        return (((long) row) << 32) + column;
+    }
+
+    /**
+     * Restricted constructor.
+     */
+    @SuppressWarnings("unchecked")
+    SparseImmutableGrid(int rowCount, int columnCount, Iterable<? extends Cell<V>> cells) {
+        validateCounts(rowCount, columnCount);
+        if (cells == null) {
+            throw new IllegalArgumentException("Cells must not be null");
+        }
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
+        
+        Collection<Cell<V>> list;
+        if (cells instanceof Collection) {
+            list = (Collection<Cell<V>>) cells;
+        } else {
+            list = new ArrayList<Cell<V>>();
+            Iterables.addAll(list, cells);
+        }
+        int size = list.size();
+        this.keys = new long[size];
+        this.cells = new Cell[size];
+        int i = 0;
+        for (Cell<V> cell : list) {
+            this.keys[i] = key(cell.getRow(), cell.getColumn());
+            this.cells[i] = ImmutableCell.copyOf(cell).validateCounts(rowCount, columnCount);
+            i++;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public int rowCount() {
+        return rowCount;
+    }
+
+    @Override
+    public int columnCount() {
+        return columnCount;
     }
 
     //-----------------------------------------------------------------------
     @Override
     public int size() {
-        return cells.size();
+        return cells.length;
     }
 
     @Override
     public boolean contains(int row, int column) {
-        Cell<V> finder = finder(row, column);
-        Set<Cell<V>> tail = cells.subSet(finder, true, finder, true);
-        if (tail.size() > 0) {
-            return true;
+        if (exists(row, column)) {
+            return Arrays.binarySearch(keys, key(row, column)) >= 0;
         }
         return false;
     }
 
     @Override
     public V get(int row, int column) {
-        Cell<V> finder = finder(row, column);
-        Set<Cell<V>> tail = cells.subSet(finder, true, finder, true);
-        if (tail.size() > 0) {
-            return tail.iterator().next().getValue();
+        if (exists(row, column)) {
+            int index = Arrays.binarySearch(keys, key(row, column));
+            if (index >= 0) {
+                return cells[index].getValue();
+            }
         }
         return null;
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public ImmutableSortedSet<Cell<V>> cells() {
-        return cells;
+    public ImmutableSet<Cell<V>> cells() {
+        ImmutableSet<Cell<V>> c = cellSet;
+        if (c == null) {
+            c = ImmutableSet.copyOf(cells);
+            cellSet = c;
+        }
+        return c;
     }
 
     @Override
-    public ImmutableList<V> values() {
-        ImmutableList<V> v = values;
+    public ImmutableCollection<V> values() {
+        ImmutableCollection<V> v = valueCollection;
         if (v == null) {
             v = super.values();
-            values = v;
+            valueCollection = v;
         }
         return v;
     }

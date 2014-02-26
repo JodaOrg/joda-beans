@@ -18,7 +18,11 @@ package org.joda.beans.collect;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
+import org.joda.beans.collect.Grid.Cell;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Test ImmutableGrid factories.
@@ -26,24 +30,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestImmutableGrid {
 
-    @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void test_of_intIntObject_negativeRow() {
-        ImmutableGrid.of(-1, 2, "Hello");
-    }
-
-    @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void test_of_intIntObject_negativeColumn() {
-        ImmutableGrid.of(1, -2, "Hello");
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_of_intIntObject_nullValue() {
-        ImmutableGrid.of(1, 2, null);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_copyOf_Grid_alreadyImmutable() {
-        HashGrid<String> hash = HashGrid.create();
+        HashGrid<String> hash = HashGrid.create(2, 3);
         hash.put(0, 0, "Hello");
         hash.put(0, 1, "World");
         ImmutableGrid<String> base = ImmutableGrid.copyOf(hash);
@@ -52,41 +40,212 @@ public class TestImmutableGrid {
     }
 
     public void test_copyOf_Grid_size0() {
-        HashGrid<String> hash = HashGrid.create();
+        HashGrid<String> hash = HashGrid.create(2, 3);
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 3);
+        assertEquals(test.size(), 0);
         assertEquals(test instanceof EmptyGrid, true);
     }
 
     public void test_copyOf_Grid_size1() {
-        HashGrid<String> hash = HashGrid.create();
+        HashGrid<String> hash = HashGrid.create(2, 3);
         hash.put(0, 1, "Hello");
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 3);
+        assertEquals(test.size(), 1);
         assertEquals(test instanceof SingletonGrid, true);
-        assertEquals(test.cells().first().getRow(), 0);
-        assertEquals(test.cells().first().getColumn(), 1);
-        assertEquals(test.cells().first().getValue(), "Hello");
+        assertEquals(test.get(0, 1), "Hello");
     }
 
-    @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void test_copyOf_Grid_badCell_negativeRow() {
-        ImmutableGrid.copyOf(new MockBadGrid(-1, 0, "Hello"));
-    }
-
-    @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void test_copyOf_Grid_badCell_negativeColumn() {
-        ImmutableGrid.copyOf(new MockBadGrid(0, -1, "Hello"));
+    public void test_copyOf_Grid_userGridImplementationSize1() {
+        ImmutableGrid<String> test = ImmutableGrid.copyOf(new MockSingletonGrid(2, 3, 0, 1, "Hello"));
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 3);
+        assertEquals(test.size(), 1);
+        assertEquals(test instanceof SingletonGrid, true);
+        assertEquals(test.get(0, 1), "Hello");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_copyOf_Grid_badCell_nullValue() {
-        ImmutableGrid.copyOf(new MockBadGrid(0, 0, null));
+    public void test_copyOf_Grid_badGrid_negativeRowCount() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(-2, 3, 0, 1, "World"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_Grid_badGrid_negativeColumnCount() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(2, -3, 0, 1, "World"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_Grid_badGrid_negativeRow() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(2, 2, -1, 2, "Hello"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_Grid_badGrid_negativeColumn() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(2, 2, 1, -2, "Hello"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_Grid_badGrid_rowEqualRowCount() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(1, 1, 1, 0, "World"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_Grid_badGrid_columnEqualColumnCount() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(1, 1, 0, 1, "World"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_Grid_badGrid_nullValue() {
+        ImmutableGrid.copyOf(new MockSingletonGrid(2, 2, 1, 2, null));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_Grid_null() {
+        ImmutableGrid.copyOf((Grid<String>) null);
     }
 
     //-----------------------------------------------------------------------
-    public void test_copyOf_Cells_size0() {
-        HashGrid<String> hash = HashGrid.create();
-        ImmutableGrid<String> test = ImmutableGrid.copyOf(hash.cells());
+    public void test_copyOf_intIntCell() {
+        ImmutableGrid<String> test = ImmutableGrid.copyOf(2, 3, ImmutableCell.of(0, 1, "Hello"));
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 3);
+        assertEquals(test.size(), 1);
+        assertEquals(test instanceof SingletonGrid, true);
+        assertEquals(test.get(0, 1), "Hello");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCell_negativeRowCount() {
+        ImmutableGrid.copyOf(-2, 3, new MockCell(0, 1, "World"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCell_negativeColumnCount() {
+        ImmutableGrid.copyOf(2, -3, new MockCell(0, 1, "World"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCell_negativeRow() {
+        ImmutableGrid.copyOf(2, 2, new MockCell(-1, 2, "Hello"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCell_negativeColumn() {
+        ImmutableGrid.copyOf(2, 2, new MockCell(1, -2, "Hello"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCell_rowEqualRowCount() {
+        ImmutableGrid.copyOf(1, 1, new MockCell(1, 0, "World"));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCell_columnEqualColumnCount() {
+        ImmutableGrid.copyOf(1, 1, new MockCell(0, 1, "World"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCell_nullValue() {
+        ImmutableGrid.copyOf(2, 2, new MockCell(0, 1, null));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCell_null() {
+        ImmutableGrid.copyOf(2, 2, (Cell<String>) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_copyOf_intIntCells() {
+        ImmutableGrid<String> test = ImmutableGrid.copyOf(2, 3, ImmutableList.of(ImmutableCell.of(0, 1, "Hello"), ImmutableCell.of(0, 2, "World")));
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 3);
+        assertEquals(test.size(), 2);
+        assertEquals(test.get(0, 1), "Hello");
+        assertEquals(test.get(0, 2), "World");
+    }
+
+    public void test_copyOf_intIntCells_empty() {
+        ImmutableGrid<String> test = ImmutableGrid.copyOf(2, 3, ImmutableList.<Cell<String>>of());
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 3);
+        assertEquals(test.size(), 0);
         assertEquals(test instanceof EmptyGrid, true);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCells_negativeRowCount() {
+        ImmutableGrid.copyOf(-2, 3, ImmutableList.of(new MockCell(0, 1, "World")));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCells_negativeColumnCount() {
+        ImmutableGrid.copyOf(2, -3, ImmutableList.of(new MockCell(0, 1, "World")));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCells_negativeRow() {
+        ImmutableGrid.copyOf(2, 2, ImmutableList.of(new MockCell(-1, 2, "Hello")));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCells_negativeColumn() {
+        ImmutableGrid.copyOf(2, 2, ImmutableList.of(new MockCell(1, -2, "Hello")));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCells_rowEqualRowCount() {
+        ImmutableGrid.copyOf(1, 1, ImmutableList.of(new MockCell(1, 0, "World")));
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOf_intIntCells_columnEqualColumnCount() {
+        ImmutableGrid.copyOf(1, 1, ImmutableList.of(new MockCell(0, 1, "World")));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCells_nullValue() {
+        ImmutableGrid.copyOf(2, 2, ImmutableList.of(new MockCell(0, 1, null)));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOf_intIntCells_null() {
+        ImmutableGrid.copyOf(2, 2, (Iterable<Cell<String>>) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_copyOfDeriveCounts_Cells_size0() {
+        HashGrid<String> hash = HashGrid.create(2, 2);
+        ImmutableGrid<String> test = ImmutableGrid.copyOfDeriveCounts(hash.cells());
+        assertEquals(test.rowCount(), 0);
+        assertEquals(test.columnCount(), 0);
+        assertEquals(test instanceof EmptyGrid, true);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOfDeriveCounts_null() {
+        ImmutableGrid.copyOfDeriveCounts((Iterable<Cell<String>>) null);
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOfDeriveCounts_badGrid_negativeRow() {
+        ImmutableSet<MockCell> set = ImmutableSet.of(new MockCell(-1, 2, "Hello"));
+        ImmutableGrid.copyOfDeriveCounts(set);
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_copyOfDeriveCounts_badGrid_negativeColumn() {
+        ImmutableSet<MockCell> set = ImmutableSet.of(new MockCell(1, -2, "Hello"));
+        ImmutableGrid.copyOfDeriveCounts(set);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_copyOfDeriveCounts_badGrid_nullValue() {
+        ImmutableSet<MockCell> set = ImmutableSet.of(new MockCell(1, 2, null));
+        ImmutableGrid.copyOfDeriveCounts(set);
     }
 
 }

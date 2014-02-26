@@ -15,6 +15,7 @@
  */
 package org.joda.beans.collect;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
@@ -27,9 +28,31 @@ import com.google.common.collect.ImmutableList.Builder;
 abstract class AbstractGrid<V> implements Grid<V> {
 
     /**
+     * Validates the row and column counts.
+     * 
+     * @param rowCount  the row count
+     * @param columnCount  the column count
+     */
+    static void validateCounts(int rowCount, int columnCount) {
+        if (rowCount < 0) {
+            throw new IllegalArgumentException("Row count must not be negative: " + rowCount + " < 0");
+        }
+        if (columnCount < 0) {
+            throw new IllegalArgumentException("Column count must not be negative: " + columnCount + " < 0");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Restricted constructor.
      */
     AbstractGrid() {
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public boolean exists(int row, int column) {
+        return row >= 0 && row < rowCount() && column >= 0 && column < columnCount();
     }
 
     //-----------------------------------------------------------------------
@@ -67,7 +90,7 @@ abstract class AbstractGrid<V> implements Grid<V> {
 
     //-----------------------------------------------------------------------
     @Override
-    public ImmutableList<V> values() {
+    public ImmutableCollection<V> values() {
         Builder<V> builder = ImmutableList.builder();
         for (Cell<V> cell : cells()) {
             builder.add(cell.getValue());
@@ -90,27 +113,28 @@ abstract class AbstractGrid<V> implements Grid<V> {
         }
         if (obj instanceof Grid) {
             Grid<?> other = (Grid<?>) obj;
-            return cells().equals(other.cells());
+            return rowCount() == other.rowCount() &&
+                    columnCount() == other.columnCount() &&
+                    cells().equals(other.cells());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return cells().hashCode();
+        return rowCount() ^ Integer.rotateLeft(columnCount(), 16) ^ cells().hashCode();
     }
 
     @Override
     public String toString() {
-        if (size() == 0) {
-            return "[]";
-        }
         StringBuilder buf = new StringBuilder(size() * 16);
-        buf.append('[');
-        for (Cell<V> cell : cells()) {
-            buf.append(cell).append(',').append(' ');
+        buf.append('[').append(rowCount()).append('x').append(columnCount()).append(':');
+        if (size() > 0) {
+            for (Cell<V> cell : cells()) {
+                buf.append(cell).append(',').append(' ');
+            }
+            buf.setLength(buf.length() - 2);
         }
-        buf.setLength(buf.length() - 2);
         buf.append(']');
         return buf.toString();
     }
