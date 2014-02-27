@@ -15,6 +15,7 @@
  */
 package org.joda.beans.collect;
 
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableCollection;
@@ -112,6 +113,17 @@ public interface Grid<V> {
      */
     V get(int row, int column);
 
+    /**
+     * Gets the cell at the specified row-column.
+     * <p>
+     * If either index does not exist, null is returned.
+     * 
+     * @param row  the row
+     * @param column  the column
+     * @return the cell at the row-column, null if not found
+     */
+    Cell<V> cell(int row, int column);
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this grid equals another grid.
@@ -208,29 +220,63 @@ public interface Grid<V> {
      */
     ImmutableCollection<V> values();
 
-//    /**
-//     * Gets the data of a single row.
-//     * <p>
-//     * The list will contain all the columns of the specified row.
-//     * Where data is not present, the list will contain null.
-//     * 
-//     * @param row  the row, zero or greater
-//     * @return the columns of the specified row, not null
-//     * @throws IndexOutOfBoundsException if the row is invalid
-//     */
-//    List<V> rowColumns(int row);
-//
-//    /**
-//     * Gets the data of a single column.
-//     * <p>
-//     * The list will contain all the columns of the specified column.
-//     * Where data is not present, the list will contain null.
-//     * 
-//     * @param column  the column, zero or greater
-//     * @return the rows of the specified column, not null
-//     * @throws IndexOutOfBoundsException if the column is invalid
-//     */
-//    List<V> columnRows(int column);
+    /**
+     * Gets the columns of a single row.
+     * <p>
+     * The list will contain all columns from zero to {@code columnCount}.
+     * Where there is no value for a cell, the list will contain null.
+     * <p>
+     * The returned list is immutable, except for {@link List#set(int, Object)},
+     * which adds, updates or deletes from the underlying grid.
+     * 
+     * @param row  the row, zero or greater
+     * @return the columns of the specified row, not null
+     * @throws IndexOutOfBoundsException if the row is invalid
+     */
+    List<V> row(int row);
+
+    /**
+     * Gets the entire grid of values, by row then column.
+     * <p>
+     * The outer list contains all rows from zero to {@code rowCount}.
+     * Each inner list contains all columns from zero to {@code columnCount}.
+     * Where there is no value for a cell, the value is null.
+     * <p>
+     * The returned list is immutable, except for the {@link List#set(int, Object)}
+     * method on the inner list, which adds, updates or deletes from the underlying grid.
+     * 
+     * @return the entire grid, by row then column, not null
+     */
+    List<List<V>> rows();
+
+    /**
+     * Gets the rows of a single column.
+     * <p>
+     * The list will contain all rows from zero to {@code rowCount}.
+     * Where data is not present, the list will contain null.
+     * <p>
+     * The returned list is immutable, except for {@link List#set(int, Object)},
+     * which adds, updates or deletes from the underlying grid.
+     * 
+     * @param column  the column, zero or greater
+     * @return the rows of the specified column, not null
+     * @throws IndexOutOfBoundsException if the column is invalid
+     */
+    List<V> column(int column);
+
+    /**
+     * Gets the entire grid of values, by column then row.
+     * <p>
+     * The outer list contains all columns from zero to {@code columnCount}.
+     * Each inner list contains all rows from zero to {@code rowCount}.
+     * Where there is no value for a cell, the value is null.
+     * <p>
+     * The returned list is immutable, except for the {@link List#set(int, Object)}
+     * method on the inner list, which adds, updates or deletes from the underlying grid.
+     * 
+     * @return the entire grid, by row then column, not null
+     */
+    List<List<V>> columns();
 
     //-----------------------------------------------------------------------
     /**

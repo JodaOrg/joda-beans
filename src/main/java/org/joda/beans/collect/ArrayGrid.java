@@ -16,13 +16,16 @@
 package org.joda.beans.collect;
 
 import java.io.Serializable;
+import java.util.AbstractList;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
@@ -178,6 +181,12 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
         return null;
     }
 
+    @Override
+    public Cell<V> cell(int row, int column) {
+        V value = get(row, column);
+        return (value != null ? ImmutableCell.of(row, column, value) : null);
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public Set<Cell<V>> cells() {
@@ -249,6 +258,7 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
 
         @Override
         public boolean add(Cell<V> cell) {
+            Preconditions.checkArgument(cell != null, "Cell must not be null");
             int oldSize = grid.size;
             grid.put(cell.getRow(), cell.getColumn(), cell.getValue());
             return grid.size > oldSize;
@@ -266,6 +276,7 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
         }
     }
 
+    //-----------------------------------------------------------------------
     @Override
     @SuppressWarnings("unchecked")
     public ImmutableCollection<V> values() {
@@ -277,6 +288,98 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
             }
         }
         return ImmutableList.copyOf((V[]) array);
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public List<V> row(int row) {
+        Preconditions.checkElementIndex(row, rowCount(), "Row index");
+        int base = row * rowCount;
+        return new Inner<V>(this, base, columnCount, 1);
+    }
+
+    @Override
+    public List<List<V>> rows() {
+        return new Outer<V>(this, rowCount, columnCount, columnCount, 1);
+    }
+
+    @Override
+    public List<V> column(int column) {
+        Preconditions.checkElementIndex(column, columnCount(), "Column index");
+        return new Inner<V>(this, column, rowCount, columnCount);
+    }
+
+    @Override
+    public List<List<V>> columns() {
+        return new Outer<V>(this, columnCount, 1, rowCount, columnCount);
+    }
+
+    static class Outer<V> extends AbstractList<List<V>> {
+        private final ArrayGrid<V> grid;
+        private final int size;
+        private final int gap;
+        private final int innerSize;
+        private final int innerGap;
+
+        Outer(ArrayGrid<V> grid, int size, int gap, int innerSize, int innerGap) {
+            this.grid = grid;
+            this.size = size;
+            this.gap = gap;
+            this.innerSize = innerSize;
+            this.innerGap = innerGap;
+        }
+
+        @Override
+        public int size() {
+            return size;
+        }
+
+        @Override
+        public List<V> get(int index) {
+            Preconditions.checkElementIndex(index, size);
+            int base = index * gap;
+            return new Inner<V>(grid, base, innerSize, innerGap);
+        }
+    }
+
+    static class Inner<V> extends AbstractList<V> {
+        private final ArrayGrid<V> grid;
+        private final int size;
+        private final int offset;
+        private final int gap;
+
+        Inner(ArrayGrid<V> grid, int offset, int size, int gap) {
+            this.grid = grid;
+            this.size = size;
+            this.offset = offset;
+            this.gap = gap;
+        }
+
+        @Override
+        public int size() {
+            return size;
+        }
+
+        @Override
+        public V get(int index) {
+            Preconditions.checkElementIndex(index, size);
+            int arrayIndex = index * gap + offset;
+            return grid.values[arrayIndex];
+        }
+
+        @Override
+        public V set(int index, V newValue) {
+            Preconditions.checkElementIndex(index, size);
+            int arrayIndex = index * gap + offset;
+            V old = grid.values[arrayIndex];
+            grid.values[arrayIndex] = newValue;
+            if (old == null && newValue != null) {
+                grid.size++;
+            } else if (old != null && newValue == null) {
+                grid.size--;
+            }
+            return old;
+        }
     }
 
     //-----------------------------------------------------------------------

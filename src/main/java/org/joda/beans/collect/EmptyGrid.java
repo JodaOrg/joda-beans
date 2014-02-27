@@ -89,6 +89,12 @@ final class EmptyGrid<V> extends ImmutableGrid<V> implements Serializable {
     }
 
     @Override
+    public Cell<V> cell(int row, int column) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     public ImmutableSortedSet<Cell<V>> cells() {
         return ImmutableSortedSet.of();
     }

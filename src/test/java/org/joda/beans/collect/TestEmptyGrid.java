@@ -19,33 +19,17 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
-
 /**
  * Test EmptyGrid.
  */
 @Test
-public class TestEmptyGrid {
+public class TestEmptyGrid extends AbstractTestGrid {
 
     public void test_factory() {
         ImmutableGrid<String> test = ImmutableGrid.of();
         assertEquals(test.rowCount(), 0);
         assertEquals(test.columnCount(), 0);
-        assertEquals(test.exists(0, 0), false);
-        assertEquals(test.exists(-1, 0), false);
-        assertEquals(test.exists(0, -1), false);
-        assertEquals(test.exists(1, 0), false);
-        assertEquals(test.exists(0, 1), false);
-        assertEquals(test.exists(1, 1), false);
-        assertEquals(test.isEmpty(), true);
-        assertEquals(test.size(), 0);
-        assertEquals(test.contains(0, 0), false);
-        assertEquals(test.get(0, 0), null);
-        assertEquals(test.cells() instanceof ImmutableSortedSet, true);
-        assertEquals(test.cells().size(), 0);
-        assertEquals(test.values() instanceof ImmutableList, true);
-        assertEquals(test.values().size(), 0);
+        checkGrid(test);
         assertEquals(test.toString(), "[0x0:]");
     }
 

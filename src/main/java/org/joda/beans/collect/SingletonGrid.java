@@ -97,6 +97,12 @@ final class SingletonGrid<V> extends ImmutableGrid<V> implements Serializable {
     }
 
     @Override
+    public Cell<V> cell(int row, int column) {
+        return cell.equalRowColumn(row, column) ? cell : null;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     public ImmutableSet<Cell<V>> cells() {
         return ImmutableSet.<Cell<V>>of(cell);
     }

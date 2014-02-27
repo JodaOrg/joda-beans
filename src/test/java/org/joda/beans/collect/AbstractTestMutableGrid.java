@@ -25,14 +25,11 @@ import java.util.NoSuchElementException;
 import org.joda.beans.collect.Grid.Cell;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-
 /**
  * Test abstract Grid.
  */
 @Test
-public abstract class AbstractTestMutableGrid {
+public abstract class AbstractTestMutableGrid extends AbstractTestGrid {
 
     public void test_create_intInt() {
         Grid<String> test = create(2, 3);
@@ -40,59 +37,7 @@ public abstract class AbstractTestMutableGrid {
         test.put(0, 1, "World");
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.exists(0, -1), false);
-        assertEquals(test.exists(0, 0), true);
-        assertEquals(test.exists(0, 1), true);
-        assertEquals(test.exists(0, 2), true);
-        assertEquals(test.exists(0, 3), false);
-        assertEquals(test.exists(1, -1), false);
-        assertEquals(test.exists(1, 0), true);
-        assertEquals(test.exists(1, 1), true);
-        assertEquals(test.exists(1, 2), true);
-        assertEquals(test.exists(1, 3), false);
-        assertEquals(test.exists(-1, -1), false);
-        assertEquals(test.exists(-1, 0), false);
-        assertEquals(test.exists(-1, 4), false);
-        assertEquals(test.exists(0, -1), false);
-        assertEquals(test.exists(4, -1), false);
-        assertEquals(test.exists(4, 4), false);
-        
-        assertEquals(test.isEmpty(), false);
-        assertEquals(test.size(), 2);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.contains(0, 2), false);
-        assertEquals(test.contains(1, 0), false);
-        assertEquals(test.contains(1, 1), false);
-        assertEquals(test.contains(-1, -1), false);
-        assertEquals(test.contains(-1, 1), false);
-        assertEquals(test.contains(1, -1), false);
-        assertEquals(test.contains(0, 4), false);
-        assertEquals(test.contains(4, 4), false);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), "World");
-        assertEquals(test.get(0, 2), null);
-        assertEquals(test.get(1, 0), null);
-        assertEquals(test.get(1, 1), null);
-        assertEquals(test.get(-1, -1), null);
-        assertEquals(test.get(-1, 1), null);
-        assertEquals(test.get(1, -1), null);
-        assertEquals(test.get(0, 4), null);
-        assertEquals(test.get(4, 4), null);
-        assertEquals(test.cells().size(), 2);
-        Cell<String> first = Iterables.get(test.cells(), 0);
-        assertEquals(first.getRow(), 0);
-        assertEquals(first.getColumn(), 0);
-        assertEquals(first.getValue(), "Hello");
-        Cell<String> second = Iterables.get(test.cells(), 1);
-        assertEquals(second.getRow(), 0);
-        assertEquals(second.getColumn(), 1);
-        assertEquals(second.getValue(), "World");
-        assertEquals(test.values() instanceof ImmutableList, true);
-        assertEquals(test.values().size(), 2);
-        Iterator<String> it = test.values().iterator();
-        assertEquals(it.next(), "Hello");
-        assertEquals(it.next(), "World");
+        checkGrid(test, 0, 0, "Hello", 0, 1, "World");
         assertEquals(test.toString(), "[2x3:(0,0)=Hello, (0,1)=World]");
     }
 
@@ -100,36 +45,7 @@ public abstract class AbstractTestMutableGrid {
         Grid<String> test = create(2, 3);
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.exists(0, -1), false);
-        assertEquals(test.exists(0, 0), true);
-        assertEquals(test.exists(0, 1), true);
-        assertEquals(test.exists(0, 2), true);
-        assertEquals(test.exists(0, 3), false);
-        assertEquals(test.exists(1, -1), false);
-        assertEquals(test.exists(1, 0), true);
-        assertEquals(test.exists(1, 1), true);
-        assertEquals(test.exists(1, 2), true);
-        assertEquals(test.exists(1, 3), false);
-        assertEquals(test.exists(-1, -1), false);
-        assertEquals(test.exists(-1, 0), false);
-        assertEquals(test.exists(-1, 4), false);
-        assertEquals(test.exists(0, -1), false);
-        assertEquals(test.exists(4, -1), false);
-        assertEquals(test.exists(4, 4), false);
-        
-        assertEquals(test.isEmpty(), true);
-        assertEquals(test.size(), 0);
-        assertEquals(test.contains(1, 1), false);
-        assertEquals(test.contains(-1, -1), false);
-        assertEquals(test.contains(-1, 1), false);
-        assertEquals(test.contains(1, -1), false);
-        assertEquals(test.get(1, 1), null);
-        assertEquals(test.get(-1, -1), null);
-        assertEquals(test.get(-1, 1), null);
-        assertEquals(test.get(1, -1), null);
-        assertEquals(test.cells().size(), 0);
-        assertEquals(test.values() instanceof ImmutableList, true);
-        assertEquals(test.values().size(), 0);
+        checkGrid(test);
         assertEquals(test.toString(), "[2x3:]");
     }
 
@@ -154,9 +70,7 @@ public abstract class AbstractTestMutableGrid {
         Grid<String> test = create(new MockSingletonGrid(2, 3, 0, 1, "World"));
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.isEmpty(), false);
-        assertEquals(test.size(), 1);
-        assertEquals(test.get(0, 1), "World");
+        checkGrid(test, 0, 1, "World");
     }
 
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
@@ -187,90 +101,6 @@ public abstract class AbstractTestMutableGrid {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_create_intIntGrid_null() {
         create((Grid<String>) null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_contains_intInt() {
-        Grid<String> test = create3x3();
-        test.put(0, 0, "Hello");
-        test.put(2, 2, "World");
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.contains(0, 1), false);
-        assertEquals(test.contains(0, 2), false);
-        assertEquals(test.contains(1, 0), false);
-        assertEquals(test.contains(1, 1), false);
-        assertEquals(test.contains(1, 2), false);
-        assertEquals(test.contains(2, 0), false);
-        assertEquals(test.contains(2, 1), false);
-        assertEquals(test.contains(2, 2), true);
-    }
-
-    public void test_contains_invalidIndex_empty() {
-        Grid<String> test = create3x3();
-        assertEquals(test.contains(-1, -1), false);
-        assertEquals(test.contains(-1, 0), false);
-        assertEquals(test.contains(0, -1), false);
-        assertEquals(test.contains(4, -1), false);
-        assertEquals(test.contains(-1, 4), false);
-        assertEquals(test.contains(4, 0), false);
-        assertEquals(test.contains(0, 4), false);
-        assertEquals(test.contains(4, 4), false);
-    }
-
-    public void test_contains_invalidIndex_nonEmpty() {
-        Grid<String> test = create3x3();
-        test.put(0, 0, "Hello");
-        test.put(2, 2, "World");
-        assertEquals(test.contains(-1, -1), false);
-        assertEquals(test.contains(-1, 0), false);
-        assertEquals(test.contains(0, -1), false);
-        assertEquals(test.contains(4, -1), false);
-        assertEquals(test.contains(-1, 4), false);
-        assertEquals(test.contains(4, 0), false);
-        assertEquals(test.contains(0, 4), false);
-        assertEquals(test.contains(4, 4), false);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_get_intInt() {
-        Grid<String> test = create3x3();
-        test.put(0, 0, "Hello");
-        test.put(2, 2, "World");
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), null);
-        assertEquals(test.get(0, 2), null);
-        assertEquals(test.get(1, 0), null);
-        assertEquals(test.get(1, 1), null);
-        assertEquals(test.get(1, 2), null);
-        assertEquals(test.get(2, 0), null);
-        assertEquals(test.get(2, 1), null);
-        assertEquals(test.get(2, 2), "World");
-    }
-
-    public void test_get_invalidIndex_empty() {
-        Grid<String> test = create3x3();
-        assertEquals(test.get(-1, -1), null);
-        assertEquals(test.get(-1, 0), null);
-        assertEquals(test.get(0, -1), null);
-        assertEquals(test.get(4, -1), null);
-        assertEquals(test.get(-1, 4), null);
-        assertEquals(test.get(4, 0), null);
-        assertEquals(test.get(0, 4), null);
-        assertEquals(test.get(4, 4), null);
-    }
-
-    public void test_get_invalidIndex_nonEmpty() {
-        Grid<String> test = create3x3();
-        test.put(0, 0, "Hello");
-        test.put(2, 2, "World");
-        assertEquals(test.get(-1, -1), null);
-        assertEquals(test.get(-1, 0), null);
-        assertEquals(test.get(0, -1), null);
-        assertEquals(test.get(4, -1), null);
-        assertEquals(test.get(-1, 4), null);
-        assertEquals(test.get(4, 0), null);
-        assertEquals(test.get(0, 4), null);
-        assertEquals(test.get(4, 4), null);
     }
 
     //-----------------------------------------------------------------------
@@ -336,63 +166,25 @@ public abstract class AbstractTestMutableGrid {
     public void test_put_first() {
         Grid<String> test = create3x3();
         test.put(0, 0, "Hello");
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.contains(0, 1), false);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), null);
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("Hello"), true);
+        checkGrid(test, 0, 0, "Hello");
     }
 
     @Test
     public void test_put_second() {
         Grid<String> test = create3x3();
         test.put(0, 1, "World");
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.get(0, 1), "World");
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("World"), true);
-        
+        checkGrid(test, 0, 1, "World");
         test.put(0, 0, "Hello");
-        
-        assertEquals(test.size(), 2);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), "World");
-        assertEquals(test.cells().size(), 2);
-        assertEquals(test.values().size(), 2);
-        Iterator<String> it = test.values().iterator();
-        assertEquals(it.next(), "Hello");
-        assertEquals(it.next(), "World");
+        checkGrid(test, 0, 0, "Hello", 0, 1, "World");
     }
 
     @Test
     public void test_put_replace() {
         Grid<String> test = create3x3();
         test.put(0, 0, "Hello");
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("Hello"), true);
-        
+        checkGrid(test, 0, 0, "Hello");
         test.put(0, 0, "Update");
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.get(0, 0), "Update");
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("Update"), true);
+        checkGrid(test, 0, 0, "Update");
     }
 
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
@@ -418,38 +210,23 @@ public abstract class AbstractTestMutableGrid {
     public void test_putAll_emptyPlusNonEmpty() {
         Grid<String> test = create3x3();
         test.putAll(ImmutableGrid.of(2, 2, 0, 1, "Hello"));
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.get(0, 1), "Hello");
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("Hello"), true);
+        checkGrid(test, 0, 1, "Hello");
     }
 
     @Test
     public void test_putAll_nonEmptyPlusEmpty() {
         Grid<String> test = create3x3();
         test.put(0, 1, "Hello");
-        
-        assertEquals(test.size(), 1);
-        
+        checkGrid(test, 0, 1, "Hello");
         test.putAll(ImmutableGrid.<String>of());
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.get(0, 1), "Hello");
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("Hello"), true);
+        checkGrid(test, 0, 1, "Hello");
     }
 
     @Test
     public void test_putAll_emptyPlusEmpty() {
         Grid<String> test = create3x3();
         test.putAll(ImmutableGrid.<String>of());
-        
-        assertEquals(test.size(), 0);
+        checkGrid(test);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -464,20 +241,9 @@ public abstract class AbstractTestMutableGrid {
         Grid<String> test = create3x3();
         test.put(0, 0, "Hello");
         test.put(0, 1, "World");
-        assertEquals(test.size(), 2);
-        assertEquals(test.cells().size(), 2);
-        assertEquals(test.values().size(), 2);
-        
+        checkGrid(test, 0, 0, "Hello", 0, 1, "World");
         assertEquals(test.remove(0, 1), true);
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.contains(0, 1), false);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), null);
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("Hello"), true);
+        checkGrid(test, 0, 0, "Hello");
     }
 
     @Test
@@ -485,26 +251,17 @@ public abstract class AbstractTestMutableGrid {
         Grid<String> test = create3x3();
         test.put(0, 0, "Hello");
         test.put(0, 1, "World");
-        assertEquals(test.size(), 2);
-        assertEquals(test.cells().size(), 2);
-        assertEquals(test.values().size(), 2);
-        
+        checkGrid(test, 0, 0, "Hello", 0, 1, "World");
         assertEquals(test.remove(0, 0), true);
-        
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 0), false);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.get(0, 0), null);
-        assertEquals(test.get(0, 1), "World");
-        assertEquals(test.cells().size(), 1);
-        assertEquals(test.values().size(), 1);
-        assertEquals(test.values().contains("World"), true);
+        checkGrid(test, 0, 1, "World");
     }
 
     @Test
     public void test_remove_notPresent_empty() {
         Grid<String> test = create3x3();
+        checkGrid(test);
         assertEquals(test.remove(1, 2), false);
+        checkGrid(test);
     }
 
     @Test
@@ -512,30 +269,36 @@ public abstract class AbstractTestMutableGrid {
         Grid<String> test = create3x3();
         test.put(0, 0, "Hello");
         test.put(2, 2, "World");
+        checkGrid(test, 0, 0, "Hello", 2, 2, "World");
         assertEquals(test.remove(1, 1), false);
         assertEquals(test.remove(1, 2), false);
         assertEquals(test.remove(2, 1), false);
+        checkGrid(test, 0, 0, "Hello", 2, 2, "World");
     }
 
     @Test
     public void test_remove_largeIndex() {
         ArrayGrid<String> test = ArrayGrid.create(2, 2);
         assertEquals(test.remove(999, 1000), false);
+        checkGrid(test);
     }
 
     @Test
     public void test_remove_invalidIndex() {
         Grid<String> test = create3x3();
         test.put(0, 0, "Hello");
+        checkGrid(test, 0, 0, "Hello");
         assertEquals(test.remove(-1, -1), false);
         assertEquals(test.remove(1, -1), false);
         assertEquals(test.remove(-1, 1), false);
+        checkGrid(test, 0, 0, "Hello");
     }
 
     @Test
     public void test_remove_empty() {
         Grid<String> test = create3x3();
         assertEquals(test.remove(0, 0), false);
+        checkGrid(test);
     }
 
     //-----------------------------------------------------------------------

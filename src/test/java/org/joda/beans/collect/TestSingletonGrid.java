@@ -17,67 +17,19 @@ package org.joda.beans.collect;
 
 import static org.testng.Assert.assertEquals;
 
-import java.util.Iterator;
-
-import org.joda.beans.collect.Grid.Cell;
 import org.testng.annotations.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 /**
  * Test SingletonGrid.
  */
 @Test
-public class TestSingletonGrid {
+public class TestSingletonGrid extends AbstractTestGrid {
 
     public void test_factory_simple() {
         ImmutableGrid<String> test = ImmutableGrid.of("Hello");
         assertEquals(test.rowCount(), 1);
         assertEquals(test.columnCount(), 1);
-        assertEquals(test.exists(0, -1), false);
-        assertEquals(test.exists(0, 0), true);
-        assertEquals(test.exists(0, 1), false);
-        assertEquals(test.exists(1, -1), false);
-        assertEquals(test.exists(1, 0), false);
-        assertEquals(test.exists(1, 1), false);
-        assertEquals(test.exists(-1, -1), false);
-        assertEquals(test.exists(-1, 0), false);
-        assertEquals(test.exists(-1, 1), false);
-        
-        assertEquals(test.isEmpty(), false);
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, -1), false);
-        assertEquals(test.contains(0, 0), true);
-        assertEquals(test.contains(0, 1), false);
-        assertEquals(test.contains(1, -1), false);
-        assertEquals(test.contains(1, 0), false);
-        assertEquals(test.contains(1, 1), false);
-        assertEquals(test.contains(-1, -1), false);
-        assertEquals(test.contains(-1, 0), false);
-        assertEquals(test.contains(-1, 1), false);
-        assertEquals(test.get(0, -1), null);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), null);
-        assertEquals(test.get(1, -1), null);
-        assertEquals(test.get(1, 0), null);
-        assertEquals(test.get(1, 1), null);
-        assertEquals(test.get(-1, -1), null);
-        assertEquals(test.get(-1, 0), null);
-        assertEquals(test.get(-1, 1), null);
-        
-        assertEquals(test.cells() instanceof ImmutableSet, true);
-        assertEquals(test.cells().size(), 1);
-        Cell<String> first = Iterables.get(test.cells(), 0);
-        assertEquals(first.getRow(), 0);
-        assertEquals(first.getColumn(), 0);
-        assertEquals(first.getValue(), "Hello");
-        assertEquals(first instanceof ImmutableCell, true);
-        assertEquals(test.values() instanceof ImmutableList, true);
-        assertEquals(test.values().size(), 1);
-        Iterator<String> it = test.values().iterator();
-        assertEquals(it.next(), "Hello");
+        checkGrid(test, 0, 0, "Hello");
         assertEquals(test.toString(), "[1x1:(0,0)=Hello]");
     }
 
@@ -91,33 +43,7 @@ public class TestSingletonGrid {
         ImmutableGrid<String> test = ImmutableGrid.of(2, 2, 0, 1, "Hello");
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 2);
-        assertEquals(test.exists(0, 0), true);
-        assertEquals(test.exists(0, 1), true);
-        assertEquals(test.exists(1, 0), true);
-        assertEquals(test.exists(1, 1), true);
-        assertEquals(test.exists(1, 2), false);
-        assertEquals(test.exists(-1, -2), false);
-        
-        assertEquals(test.isEmpty(), false);
-        assertEquals(test.size(), 1);
-        assertEquals(test.contains(0, 0), false);
-        assertEquals(test.contains(0, 1), true);
-        assertEquals(test.contains(1, 0), false);
-        assertEquals(test.get(0, 0), null);
-        assertEquals(test.get(0, 1), "Hello");
-        assertEquals(test.get(1, 0), null);
-        
-        assertEquals(test.cells() instanceof ImmutableSet, true);
-        assertEquals(test.cells().size(), 1);
-        Cell<String> first = Iterables.get(test.cells(), 0);
-        assertEquals(first.getRow(), 0);
-        assertEquals(first.getColumn(), 1);
-        assertEquals(first.getValue(), "Hello");
-        assertEquals(first instanceof ImmutableCell, true);
-        assertEquals(test.values() instanceof ImmutableList, true);
-        assertEquals(test.values().size(), 1);
-        Iterator<String> it = test.values().iterator();
-        assertEquals(it.next(), "Hello");
+        checkGrid(test, 0, 1, "Hello");
         assertEquals(test.toString(), "[2x2:(0,1)=Hello]");
     }
 

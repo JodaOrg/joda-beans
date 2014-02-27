@@ -15,6 +15,10 @@
  */
 package org.joda.beans.collect;
 
+import java.util.AbstractList;
+import java.util.List;
+
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -68,7 +72,7 @@ abstract class AbstractGrid<V> implements Grid<V> {
 
     @Override
     public boolean contains(int row, int column) {
-        return get(row, column) != null;
+        return cell(row, column) != null;
     }
 
     @Override
@@ -78,10 +82,16 @@ abstract class AbstractGrid<V> implements Grid<V> {
 
     @Override
     public V get(int row, int column) {
-        if (row >= 0 && column >= 0) {
+        Cell<V> cell = cell(row, column);
+        return (cell != null ? cell.getValue() : null);
+    }
+
+    @Override
+    public Cell<V> cell(int row, int column) {
+        if (exists(row, column)) {
             for (Cell<V> cell : cells()) {
                 if (cell.getRow() == row && cell.getColumn() == column) {
-                    return cell.getValue();
+                    return cell;
                 }
             }
         }
@@ -96,6 +106,102 @@ abstract class AbstractGrid<V> implements Grid<V> {
             builder.add(cell.getValue());
         }
         return builder.build();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public List<V> row(int row) {
+        Preconditions.checkElementIndex(row, rowCount(), "Row index");
+        return new Inner<V>(this, columnCount(), row, true);
+    }
+
+    @Override
+    public List<List<V>> rows() {
+        return new Outer<V>(this, rowCount(), columnCount(), true);
+    }
+
+    @Override
+    public List<V> column(int column) {
+        Preconditions.checkElementIndex(column, columnCount(), "Column index");
+        return new Inner<V>(this, rowCount(), column, false);
+    }
+
+    @Override
+    public List<List<V>> columns() {
+        return new Outer<V>(this, columnCount(), rowCount(), false);
+    }
+
+    static class Outer<V> extends AbstractList<List<V>> {
+        private final Grid<V> grid;
+        private final int size;
+        private final int innerSize;
+        private final boolean rows;
+
+        Outer(Grid<V> grid, int size, int innerSize, boolean rows) {
+            this.grid = grid;
+            this.size = size;
+            this.innerSize = innerSize;
+            this.rows = rows;
+        }
+
+        @Override
+        public int size() {
+            return size;
+        }
+
+        @Override
+        public List<V> get(int index) {
+            Preconditions.checkElementIndex(index, size);
+            return new Inner<V>(grid, innerSize, index, rows);
+        }
+    }
+
+    static class Inner<V> extends AbstractList<V> {
+        private final Grid<V> grid;
+        private final int size;
+        private final int outerIndex;
+        private final boolean rows;
+
+        Inner(Grid<V> grid, int size, int outerIndex, boolean rows) {
+            this.grid = grid;
+            this.size = size;
+            this.outerIndex = outerIndex;
+            this.rows = rows;
+        }
+
+        @Override
+        public int size() {
+            return size;
+        }
+
+        @Override
+        public V get(int index) {
+            Preconditions.checkElementIndex(index, size);
+            if (rows) {
+                return grid.get(outerIndex, index);
+            } else {
+                return grid.get(index, outerIndex);
+            }
+        }
+
+        @Override
+        public V set(int index, V newValue) {
+            V old = get(index);
+            if (rows) {
+                if (newValue == null) {
+                    grid.remove(outerIndex, index);
+                } else {
+                    grid.put(outerIndex, index, newValue);
+                }
+            } else {
+                if (newValue == null) {
+                    grid.remove(index, outerIndex);
+                } else {
+                    grid.put(index, outerIndex, newValue);
+                }
+            }
+            return old;
+        }
     }
 
     //-----------------------------------------------------------------------

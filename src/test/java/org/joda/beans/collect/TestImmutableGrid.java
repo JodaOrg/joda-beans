@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableSet;
  * Test ImmutableGrid factories.
  */
 @Test
-public class TestImmutableGrid {
+public class TestImmutableGrid extends AbstractTestGrid {
 
     public void test_copyOf_Grid_alreadyImmutable() {
         HashGrid<String> hash = HashGrid.create(2, 3);
@@ -44,7 +44,7 @@ public class TestImmutableGrid {
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.size(), 0);
+        checkGrid(test);
         assertEquals(test instanceof EmptyGrid, true);
     }
 
@@ -54,18 +54,16 @@ public class TestImmutableGrid {
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.size(), 1);
+        checkGrid(test, 0, 1, "Hello");
         assertEquals(test instanceof SingletonGrid, true);
-        assertEquals(test.get(0, 1), "Hello");
     }
 
     public void test_copyOf_Grid_userGridImplementationSize1() {
         ImmutableGrid<String> test = ImmutableGrid.copyOf(new MockSingletonGrid(2, 3, 0, 1, "Hello"));
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.size(), 1);
+        checkGrid(test, 0, 1, "Hello");
         assertEquals(test instanceof SingletonGrid, true);
-        assertEquals(test.get(0, 1), "Hello");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -113,9 +111,8 @@ public class TestImmutableGrid {
         ImmutableGrid<String> test = ImmutableGrid.copyOf(2, 3, ImmutableCell.of(0, 1, "Hello"));
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.size(), 1);
+        checkGrid(test, 0, 1, "Hello");
         assertEquals(test instanceof SingletonGrid, true);
-        assertEquals(test.get(0, 1), "Hello");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -163,16 +160,14 @@ public class TestImmutableGrid {
         ImmutableGrid<String> test = ImmutableGrid.copyOf(2, 3, ImmutableList.of(ImmutableCell.of(0, 1, "Hello"), ImmutableCell.of(0, 2, "World")));
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.size(), 2);
-        assertEquals(test.get(0, 1), "Hello");
-        assertEquals(test.get(0, 2), "World");
+        checkGrid(test, 0, 1, "Hello", 0, 2, "World");
     }
 
     public void test_copyOf_intIntCells_empty() {
         ImmutableGrid<String> test = ImmutableGrid.copyOf(2, 3, ImmutableList.<Cell<String>>of());
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
-        assertEquals(test.size(), 0);
+        checkGrid(test);
         assertEquals(test instanceof EmptyGrid, true);
     }
 
@@ -222,6 +217,7 @@ public class TestImmutableGrid {
         ImmutableGrid<String> test = ImmutableGrid.copyOfDeriveCounts(hash.cells());
         assertEquals(test.rowCount(), 0);
         assertEquals(test.columnCount(), 0);
+        checkGrid(test);
         assertEquals(test instanceof EmptyGrid, true);
     }
 

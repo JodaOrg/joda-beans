@@ -154,6 +154,17 @@ final class SparseImmutableGrid<V> extends ImmutableGrid<V> implements Serializa
         return null;
     }
 
+    @Override
+    public Cell<V> cell(int row, int column) {
+        if (exists(row, column)) {
+            int index = Arrays.binarySearch(keys, key(row, column));
+            if (index >= 0) {
+                return cells[index];
+            }
+        }
+        return null;
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public ImmutableSet<Cell<V>> cells() {

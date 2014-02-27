@@ -106,27 +106,13 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
     }
 
     @Override
-    public boolean contains(int row, int column) {
+    public Cell<V> cell(int row, int column) {
         if (exists(row, column)) {
             SortedSet<Cell<V>> tail = cells.tailSet(finder(row, column));
             if (tail.size() > 0) {
                 Cell<V> cell = tail.first();
                 if (cell.getRow() == row && cell.getColumn() == column) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public V get(int row, int column) {
-        if (exists(row, column)) {
-            SortedSet<Cell<V>> tail = cells.tailSet(finder(row, column));
-            if (tail.size() > 0) {
-                Cell<V> cell = tail.first();
-                if (cell.getRow() == row && cell.getColumn() == column) {
-                    return cell.getValue();
+                    return cell;
                 }
             }
         }
