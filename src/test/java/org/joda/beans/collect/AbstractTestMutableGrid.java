@@ -121,8 +121,8 @@ public abstract class AbstractTestMutableGrid extends AbstractTestGrid {
         test.put(0, 0, "Hello");
         test.put(0, 1, "World");
         assertEquals(test.equals(test), true);
-        assertEquals(test.equals(HashGrid.create(test)), true);
-        assertEquals(test.equals(ArrayGrid.create(test)), true);
+        assertEquals(test.equals(SparseGrid.create(test)), true);
+        assertEquals(test.equals(DenseGrid.create(test)), true);
         assertEquals(test.equals(ImmutableGrid.copyOf(test)), true);
         assertEquals(test.equals(null), false);
         assertEquals(test.equals(""), false);
@@ -278,7 +278,7 @@ public abstract class AbstractTestMutableGrid extends AbstractTestGrid {
 
     @Test
     public void test_remove_largeIndex() {
-        ArrayGrid<String> test = ArrayGrid.create(2, 2);
+        DenseGrid<String> test = DenseGrid.create(2, 2);
         assertEquals(test.remove(999, 1000), false);
         checkGrid(test);
     }
@@ -465,6 +465,12 @@ public abstract class AbstractTestMutableGrid extends AbstractTestGrid {
     public void test_cells_add_nullValue() {
         Grid<String> test = create3x3();
         test.cells().add(new MockCell(1, 2, null));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_cells_add_null() {
+        Grid<String> test = create3x3();
+        test.cells().add(null);
     }
 
     //-----------------------------------------------------------------------

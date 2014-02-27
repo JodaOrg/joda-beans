@@ -30,7 +30,7 @@ import com.google.common.collect.ForwardingSortedSet;
  * @param <V> the type of the value
  * @author Stephen Colebourne
  */
-public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
+public final class SparseGrid<V> extends AbstractGrid<V> implements Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -50,29 +50,29 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an empty {@code HashGrid} of the specified row-column count.
+     * Creates an empty {@code SparseGrid} of the specified row-column count.
      * 
      * @param <R> the type of the value
      * @param rowCount  the number of rows, zero or greater
      * @param columnCount  the number of columns, zero or greater
      * @return the mutable grid, not null
      */
-    public static <R> HashGrid<R> create(int rowCount, int columnCount) {
-        return new HashGrid<R>(rowCount, columnCount, new TreeSet<Cell<R>>(AbstractCell.<R>comparator()));
+    public static <R> SparseGrid<R> create(int rowCount, int columnCount) {
+        return new SparseGrid<R>(rowCount, columnCount, new TreeSet<Cell<R>>(AbstractCell.<R>comparator()));
     }
 
     /**
-     * Creates a {@code HashGrid} copying from another grid.
+     * Creates a {@code SparseGrid} copying from another grid.
      *
      * @param <R> the type of the value
      * @param grid  the grid to copy, not null
      * @return the mutable grid, not null
      */
-    public static <R> HashGrid<R> create(Grid<? extends R> grid) {
+    public static <R> SparseGrid<R> create(Grid<? extends R> grid) {
         if (grid == null) {
             throw new IllegalArgumentException("Grid must not be null");
         }
-        HashGrid<R> created = HashGrid.create(grid.rowCount(), grid.columnCount());
+        SparseGrid<R> created = SparseGrid.create(grid.rowCount(), grid.columnCount());
         created.putAll(grid);
         return created;
     }
@@ -81,7 +81,7 @@ public final class HashGrid<V> extends AbstractGrid<V> implements Serializable {
     /**
      * Restricted constructor.
      */
-    HashGrid(int rowCount, int columnCount, SortedSet<Cell<V>> data) {
+    SparseGrid(int rowCount, int columnCount, SortedSet<Cell<V>> data) {
         validateCounts(rowCount, columnCount);
         this.rowCount = rowCount;
         this.columnCount = columnCount;

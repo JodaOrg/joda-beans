@@ -16,8 +16,10 @@
 package org.joda.beans.collect;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.joda.beans.collect.Grid.Cell;
 
@@ -47,6 +49,12 @@ public abstract class AbstractTestGrid {
                     assertEquals(test.rows().get(i).get(j), null);
                     assertEquals(test.column(j).get(i), null);
                     assertEquals(test.columns().get(j).get(i), null);
+                    assertEquals(test.row(i).size(), test.columnCount());
+                    assertEquals(test.rows().size(), test.rowCount());
+                    assertEquals(test.rows().get(i).size(), test.columnCount());
+                    assertEquals(test.column(j).size(), test.rowCount());
+                    assertEquals(test.columns().size(), test.columnCount());
+                    assertEquals(test.columns().get(j).size(), test.rowCount());
                 }
             }
         }
@@ -55,11 +63,11 @@ public abstract class AbstractTestGrid {
         
         assertEquals(test.cells().size(), 0);
         Iterator<Cell<R>> cellIt = test.cells().iterator();
-        assertEquals(cellIt.hasNext(), false);
+        assertIteratorEnd(cellIt);
         
         assertEquals(test.values().size(), 0);
         Iterator<R> valueIt = test.values().iterator();
-        assertEquals(valueIt.hasNext(), false);
+        assertIteratorEnd(valueIt);
     }
 
     protected <R> void checkGrid(Grid<R> test, int row1, int column1, R value1) {
@@ -90,6 +98,12 @@ public abstract class AbstractTestGrid {
                     assertEquals(test.rows().get(i).get(j), null);
                     assertEquals(test.column(j).get(i), null);
                     assertEquals(test.columns().get(j).get(i), null);
+                    assertEquals(test.row(i).size(), test.columnCount());
+                    assertEquals(test.rows().size(), test.rowCount());
+                    assertEquals(test.rows().get(i).size(), test.columnCount());
+                    assertEquals(test.column(j).size(), test.rowCount());
+                    assertEquals(test.columns().size(), test.columnCount());
+                    assertEquals(test.columns().get(j).size(), test.rowCount());
                 }
             }
         }
@@ -104,13 +118,13 @@ public abstract class AbstractTestGrid {
         assertEquals(cell.getRow(), row1);
         assertEquals(cell.getColumn(), column1);
         assertEquals(cell.getValue(), value1);
-        assertEquals(cellIt.hasNext(), false);
+        assertIteratorEnd(cellIt);
         
         assertEquals(test.values().size(), 1);
         Iterator<R> valueIt = test.values().iterator();
         assertEquals(valueIt.hasNext(), true);
         assertEquals(valueIt.next(), value1);
-        assertEquals(valueIt.hasNext(), false);
+        assertIteratorEnd(valueIt);
     }
 
     protected <R> void checkGrid(Grid<R> test, int row1, int column1, R value1, int row2, int column2, R value2) {
@@ -150,6 +164,12 @@ public abstract class AbstractTestGrid {
                     assertEquals(test.rows().get(i).get(j), null);
                     assertEquals(test.column(j).get(i), null);
                     assertEquals(test.columns().get(j).get(i), null);
+                    assertEquals(test.row(i).size(), test.columnCount());
+                    assertEquals(test.rows().size(), test.rowCount());
+                    assertEquals(test.rows().get(i).size(), test.columnCount());
+                    assertEquals(test.column(j).size(), test.rowCount());
+                    assertEquals(test.columns().size(), test.columnCount());
+                    assertEquals(test.columns().get(j).size(), test.rowCount());
                 }
             }
         }
@@ -170,7 +190,7 @@ public abstract class AbstractTestGrid {
         assertEquals(cell.getRow(), row2);
         assertEquals(cell.getColumn(), column2);
         assertEquals(cell.getValue(), value2);
-        assertEquals(cellIt.hasNext(), false);
+        assertIteratorEnd(cellIt);
         
         assertEquals(test.values().size(), 2);
         Iterator<R> valueIt = test.values().iterator();
@@ -178,7 +198,7 @@ public abstract class AbstractTestGrid {
         assertEquals(valueIt.next(), value1);
         assertEquals(valueIt.hasNext(), true);
         assertEquals(valueIt.next(), value2);
-        assertEquals(valueIt.hasNext(), false);
+        assertIteratorEnd(valueIt);
     }
 
     protected <R> void checkGrid(Grid<R> test, int row1, int column1, R value1, int row2, int column2, R value2, int row3, int column3, R value3) {
@@ -227,6 +247,12 @@ public abstract class AbstractTestGrid {
                     assertEquals(test.rows().get(i).get(j), null);
                     assertEquals(test.column(j).get(i), null);
                     assertEquals(test.columns().get(j).get(i), null);
+                    assertEquals(test.row(i).size(), test.columnCount());
+                    assertEquals(test.rows().size(), test.rowCount());
+                    assertEquals(test.rows().get(i).size(), test.columnCount());
+                    assertEquals(test.column(j).size(), test.rowCount());
+                    assertEquals(test.columns().size(), test.columnCount());
+                    assertEquals(test.columns().get(j).size(), test.rowCount());
                 }
             }
         }
@@ -253,7 +279,7 @@ public abstract class AbstractTestGrid {
         assertEquals(cell.getRow(), row3);
         assertEquals(cell.getColumn(), 1);
         assertEquals(cell.getValue(), value3);
-        assertEquals(cellIt.hasNext(), false);
+        assertIteratorEnd(cellIt);
         
         assertEquals(test.values().size(), 3);
         Iterator<R> valueIt = test.values().iterator();
@@ -263,7 +289,17 @@ public abstract class AbstractTestGrid {
         assertEquals(valueIt.next(), value2);
         assertEquals(valueIt.hasNext(), true);
         assertEquals(valueIt.next(), value3);
-        assertEquals(valueIt.hasNext(), false);
+        assertIteratorEnd(valueIt);
+    }
+
+    private void assertIteratorEnd(Iterator<?> it) {
+        assertEquals(it.hasNext(), false);
+        try {
+            it.next();
+            fail();
+        } catch (NoSuchElementException ex) {
+            // expected
+        }
     }
 
 }

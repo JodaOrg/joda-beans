@@ -15,9 +15,6 @@
  */
 package org.joda.beans.collect;
 
-
-
-
 /**
  * Immutable implementation of the {@code Grid} data structure.
  * 
@@ -166,6 +163,9 @@ public abstract class ImmutableGrid<V> extends AbstractGrid<V> {
         if (grid.size() == 1) {
             Cell<R> cell = grid.cells().iterator().next();
             return new SingletonGrid<R>(grid.rowCount(), grid.columnCount(), cell);
+        }
+        if (grid.size() >= (grid.rowCount() * grid.columnCount() / 2)) {
+            return DenseImmutableGrid.create(grid);
         }
         return new SparseImmutableGrid<R>(grid);
     }

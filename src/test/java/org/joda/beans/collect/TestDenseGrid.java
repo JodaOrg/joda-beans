@@ -20,51 +20,54 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
- * Test ArrayGrid.
+ * Test DenseGrid.
  */
 @Test
-public class TestArrayGrid extends AbstractTestMutableGrid {
+public class TestDenseGrid extends AbstractTestMutableGrid {
 
     @Override
     protected Grid<String> create3x3() {
-        return ArrayGrid.create(3, 3);
+        return DenseGrid.create(3, 3);
     }
 
     @Override
     protected Grid<String> create(int rowCount, int columnCount) {
-        return ArrayGrid.create(rowCount, columnCount);
+        return DenseGrid.create(rowCount, columnCount);
     }
 
     @Override
     protected Grid<String> create(Grid<String> grid) {
-        return ArrayGrid.create(grid);
+        return DenseGrid.create(grid);
     }
 
     //-----------------------------------------------------------------------
+    public void test_create_Grid_fromDenseImutable() {
+        SparseGrid<String> base = SparseGrid.create(2, 2);
+        base.put(0, 0, "Hello");
+        base.put(1, 0, "World");
+        ImmutableGrid<String> imm = ImmutableGrid.copyOf(base);
+        DenseGrid<String> test = DenseGrid.create(imm);
+        checkGrid(test, 0, 0, "Hello", 1, 0, "World");
+    }
+
     public void test_create_array2D() {
         String[][] array = new String[][] {
                 {"Hello", "World"},
                 {null},
         };
-        ArrayGrid<String> test = ArrayGrid.create(array);
-        assertEquals(test.isEmpty(), false);
-        assertEquals(test.size(), 2);
-        assertEquals(test.get(0, 0), "Hello");
-        assertEquals(test.get(0, 1), "World");
-        assertEquals(test.get(1, 0), null);
-        assertEquals(test.get(1, 1), null);
+        DenseGrid<String> test = DenseGrid.create(array);
+        checkGrid(test, 0, 0, "Hello", 0, 1, "World");
     }
 
     public void test_create_array2D_empty() {
         String[][] array = new String[][] {};
-        ArrayGrid<String> test = ArrayGrid.create(array);
-        assertEquals(test.isEmpty(), true);
-        assertEquals(test.size(), 0);
+        DenseGrid<String> test = DenseGrid.create(array);
+        checkGrid(test);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_create_array2D_null() {
-        ArrayGrid.create((String[][]) null);
+        DenseGrid.create((String[][]) null);
     }
 
     //-----------------------------------------------------------------------
@@ -85,13 +88,13 @@ public class TestArrayGrid extends AbstractTestMutableGrid {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void test_put_rowTooBig() {
-        ArrayGrid<String> test = ArrayGrid.create(2, 2);
+        DenseGrid<String> test = DenseGrid.create(2, 2);
         test.put(3, 1, "Hello");
     }
 
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void test_put_columnTooBig() {
-        ArrayGrid<String> test = ArrayGrid.create(2, 2);
+        DenseGrid<String> test = DenseGrid.create(2, 2);
         test.put(1, 3, "Hello");
     }
 

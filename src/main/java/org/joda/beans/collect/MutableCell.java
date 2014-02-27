@@ -48,19 +48,6 @@ final class MutableCell<V> extends AbstractCell<V> implements Serializable {
     }
 
 
-    /**
-     * Creates an instance.
-     * 
-     * @param row  the row index
-     * @param column  the column index
-     * @param value  the value
-     */
-    MutableCell(int row, int column, V value) {
-        this.row = row;
-        this.column = column;
-        this.value = value;
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public int getRow() {

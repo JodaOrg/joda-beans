@@ -66,9 +66,6 @@ final class SparseImmutableGrid<V> extends ImmutableGrid<V> implements Serializa
      */
     @SuppressWarnings("unchecked")
     SparseImmutableGrid(Grid<V> gridToCopy) {
-        if (gridToCopy == null) {
-            throw new IllegalArgumentException("Grid must not be null");
-        }
         this.rowCount = gridToCopy.rowCount();
         this.columnCount = gridToCopy.columnCount();
         validateCounts(rowCount, columnCount);
@@ -94,9 +91,6 @@ final class SparseImmutableGrid<V> extends ImmutableGrid<V> implements Serializa
     @SuppressWarnings("unchecked")
     SparseImmutableGrid(int rowCount, int columnCount, Iterable<? extends Cell<V>> cells) {
         validateCounts(rowCount, columnCount);
-        if (cells == null) {
-            throw new IllegalArgumentException("Cells must not be null");
-        }
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         

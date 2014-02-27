@@ -20,45 +20,45 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
- * Test SparseImmutableGrid.
+ * Test DenseImmutableGrid.
  */
 @Test
-public class TestSparseImmutableGrid extends AbstractTestImmutableGrid {
+public class TestDenseImmutableGrid extends AbstractTestImmutableGrid {
 
     @Override
     protected ImmutableGrid<String> createNonEmpty() {
-        DenseGrid<String> hash = DenseGrid.create(2, 3);
+        DenseGrid<String> hash = DenseGrid.create(2, 2);
         hash.put(0, 0, "Hello");
         hash.put(0, 1, "World");
         return ImmutableGrid.copyOf(hash);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_copyOf_Grid() {
-        SparseGrid<String> hash = SparseGrid.create(2, 3);
+    public void test_factory_copyOf_Grid_fromDense() {
+        DenseGrid<String> hash = DenseGrid.create(2, 2);
+        hash.put(0, 0, "Hello");
+        hash.put(1, 0, "World");
+        ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
+        assertEquals(test.rowCount(), 2);
+        assertEquals(test.columnCount(), 2);
+        checkGrid(test, 0, 0, "Hello", 1, 0, "World");
+        assertEquals(test.toString(), "[2x2:(0,0)=Hello, (1,0)=World]");
+    }
+
+    public void test_factory_copyOf_Grid_fromSparse() {
+        SparseGrid<String> hash = SparseGrid.create(2, 2);
         hash.put(0, 0, "Hello");
         hash.put(0, 1, "World");
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
         assertEquals(test.rowCount(), 2);
-        assertEquals(test.columnCount(), 3);
-        checkGrid(test, 0, 0, "Hello", 0, 1, "World");
-        assertEquals(test.toString(), "[2x3:(0,0)=Hello, (0,1)=World]");
-    }
-
-    public void test_factory_copyOfDeriveCounts() {
-        SparseGrid<String> hash = SparseGrid.create(2, 2);
-        hash.put(0, 0, "Hello");
-        hash.put(0, 1, "World");
-        ImmutableGrid<String> test = ImmutableGrid.copyOfDeriveCounts(hash.cells());
-        assertEquals(test.rowCount(), 1);
         assertEquals(test.columnCount(), 2);
         checkGrid(test, 0, 0, "Hello", 0, 1, "World");
-        assertEquals(test.toString(), "[1x2:(0,0)=Hello, (0,1)=World]");
+        assertEquals(test.toString(), "[2x2:(0,0)=Hello, (0,1)=World]");
     }
 
     //-----------------------------------------------------------------------
     public void test_containsValue_Object() {
-        SparseGrid<String> hash = SparseGrid.create(2, 3);
+        SparseGrid<String> hash = SparseGrid.create(2, 2);
         hash.put(0, 0, "Hello");
         hash.put(0, 1, "World");
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
@@ -71,7 +71,7 @@ public class TestSparseImmutableGrid extends AbstractTestImmutableGrid {
     }
 
     public void test_equalsHashCode() {
-        SparseGrid<String> hash = SparseGrid.create(2, 3);
+        SparseGrid<String> hash = SparseGrid.create(2, 2);
         hash.put(0, 0, "Hello");
         hash.put(0, 1, "World");
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
@@ -81,7 +81,7 @@ public class TestSparseImmutableGrid extends AbstractTestImmutableGrid {
         assertEquals(test.equals(null), false);
         assertEquals(test.equals(""), false);
         
-        assertEquals(test.hashCode(), 2 ^ Integer.rotateLeft(3, 16) ^ test.cells().hashCode());
+        assertEquals(test.hashCode(), 2 ^ Integer.rotateLeft(2, 16) ^ test.cells().hashCode());
     }
 
 }

@@ -30,15 +30,14 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Mutable implementation of the {@code Grid} data structure based on an array.
+ * Immutable implementation of the {@code Grid} data structure based on an array.
  * <p>
  * This uses one item of memory for each possible combination of row and column.
- * The row and column counts are fixed at creation.
  * 
  * @param <V> the type of the value
  * @author Stephen Colebourne
  */
-public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable {
+final class DenseImmutableGrid<V> extends ImmutableGrid<V> implements Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -54,7 +53,7 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
     /**
      * The size.
      */
-    private int size;
+    private final int size;
     /**
      * The values.
      */
@@ -62,79 +61,47 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an empty {@code ArrayGrid} of the specified size.
-     * 
-     * @param <V> the type of the value
-     * @param rowCount  the number of rows, zero or greater
-     * @param columnCount  the number of rows, zero or greater
-     * @return the mutable grid, not null
-     */
-    public static <V> ArrayGrid<V> create(int rowCount, int columnCount) {
-        return new ArrayGrid<V>(rowCount, columnCount);
-    }
-
-    /**
-     * Creates a {@code ArrayGrid} copying from another grid.
+     * Creates a {@code DenseImmutableGrid} copying from another grid.
      *
      * @param <V> the type of the value
      * @param grid  the grid to copy, not null
      * @return the mutable grid, not null
      */
-    public static <V> ArrayGrid<V> create(Grid<? extends V> grid) {
-        if (grid == null) {
-            throw new IllegalArgumentException("Grid must not be null");
+    @SuppressWarnings("unchecked")
+    static <V> DenseImmutableGrid<V> create(Grid<? extends V> grid) {
+        if (grid instanceof DenseGrid) {
+            return new DenseImmutableGrid<V>((DenseGrid<V>) grid);
         }
-        ArrayGrid<V> created = ArrayGrid.create(grid.rowCount(), grid.columnCount());
-        created.putAll(grid);
-        return created;
-    }
-
-    /**
-     * Creates a {@code ArrayGrid} copying from an array.
-     * <p>
-     * The row count and column count are derived from the maximum size of the array.
-     * The grid is initialized from the non-null values.
-     *
-     * @param <V> the type of the value
-     * @param array  the array, first by row, then by column
-     * @return the mutable grid, not null
-     */
-    public static <V> ArrayGrid<V> create(V[][] array) {
-        if (array == null) {
-            throw new IllegalArgumentException("Array must not be null");
+        int rowCount = grid.rowCount();
+        int columnCount = grid.columnCount();
+        validateCounts(rowCount, columnCount);
+        V[] values = (V[]) new Object[rowCount * columnCount];
+        for (Cell<? extends V> cell : grid.cells()) {
+            values[cell.getRow() * columnCount + cell.getColumn()] = cell.getValue();
         }
-        int rowCount = array.length;
-        if (rowCount == 0) {
-            return new ArrayGrid<V>(0, 0);
-        }
-        int columnCount = array[0].length;
-        for (int i = 1; i < rowCount; i++) {
-            columnCount = Math.max(columnCount, array[i].length);
-        }
-        ArrayGrid<V> created = ArrayGrid.create(rowCount, columnCount);
-        for (int row = 0; row < array.length; row++) {
-            V[] rowValues = array[row];
-            for (int column = 0; column < rowValues.length; column++) {
-                V cellValue = rowValues[column];
-                if (cellValue != null) {
-                    created.values[row * columnCount + column] = cellValue;
-                    created.size++;
-                }
-            }
-        }
-        return created;
+        return new DenseImmutableGrid<V>(rowCount, columnCount, grid.size(), values);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Restricted constructor.
      */
-    @SuppressWarnings("unchecked")
-    ArrayGrid(int rowCount, int columnCount) {
+    private DenseImmutableGrid(int rowCount, int columnCount, int size, V[] values) {
         validateCounts(rowCount, columnCount);
         this.rowCount = rowCount;
         this.columnCount = columnCount;
-        this.values = (V[]) new Object[rowCount * columnCount];
+        this.size = size;
+        this.values = values;
+    }
+
+    /**
+     * Restricted constructor.
+     */
+    DenseImmutableGrid(DenseGrid<V> grid) {
+        this.rowCount = grid.rowCount();
+        this.columnCount = grid.columnCount();
+        this.size = grid.size();
+        this.values = grid.valuesArray();
     }
 
     //-----------------------------------------------------------------------
@@ -197,9 +164,9 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
      * View onto the grid.
      */
     static class Cells<V> extends AbstractSet<Cell<V>> {
-        private final ArrayGrid<V> grid;
+        private final DenseImmutableGrid<V> grid;
 
-        public Cells(ArrayGrid<V> grid) {
+        public Cells(DenseImmutableGrid<V> grid) {
             this.grid = grid;
         }
 
@@ -243,36 +210,9 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
                 }
                 @Override
                 public void remove() {
-                    if (current < 0) {
-                        throw new IllegalStateException("Unable to remove, next() not called yet");
-                    }
-                    if (grid.values[current] == null) {
-                        throw new IllegalStateException("Unable to remove, element has been removed");
-                    }
-                    grid.values[current] = null;
-                    grid.size--;
-                    count--;
+                    throw new UnsupportedOperationException("Immutable");
                 }
             };
-        }
-
-        @Override
-        public boolean add(Cell<V> cell) {
-            Preconditions.checkArgument(cell != null, "Cell must not be null");
-            int oldSize = grid.size;
-            grid.put(cell.getRow(), cell.getColumn(), cell.getValue());
-            return grid.size > oldSize;
-        }
-
-        @Override
-        public boolean remove(Object obj) {
-            Cell<?> cell = (Cell<?>) obj;
-            return grid.remove(cell.getRow(), cell.getColumn());
-        }
-
-        @Override
-        public void clear() {
-            grid.clear();
         }
     }
 
@@ -315,13 +255,13 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
     }
 
     static class Outer<V> extends AbstractList<List<V>> {
-        private final ArrayGrid<V> grid;
+        private final DenseImmutableGrid<V> grid;
         private final int size;
         private final int gap;
         private final int innerSize;
         private final int innerGap;
 
-        Outer(ArrayGrid<V> grid, int size, int gap, int innerSize, int innerGap) {
+        Outer(DenseImmutableGrid<V> grid, int size, int gap, int innerSize, int innerGap) {
             this.grid = grid;
             this.size = size;
             this.gap = gap;
@@ -343,12 +283,12 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
     }
 
     static class Inner<V> extends AbstractList<V> {
-        private final ArrayGrid<V> grid;
+        private final DenseImmutableGrid<V> grid;
         private final int size;
         private final int offset;
         private final int gap;
 
-        Inner(ArrayGrid<V> grid, int offset, int size, int gap) {
+        Inner(DenseImmutableGrid<V> grid, int offset, int size, int gap) {
             this.grid = grid;
             this.size = size;
             this.offset = offset;
@@ -366,63 +306,16 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
             int arrayIndex = index * gap + offset;
             return grid.values[arrayIndex];
         }
-
-        @Override
-        public V set(int index, V newValue) {
-            Preconditions.checkElementIndex(index, size);
-            int arrayIndex = index * gap + offset;
-            V old = grid.values[arrayIndex];
-            grid.values[arrayIndex] = newValue;
-            if (old == null && newValue != null) {
-                grid.size++;
-            } else if (old != null && newValue == null) {
-                grid.size--;
-            }
-            return old;
-        }
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public void clear() {
-        Arrays.fill(values, null);
-        size = 0;
-    }
-
-    @Override
-    public void put(int row, int column, V value) {
-        if (exists(row, column) == false) {
-            throw new IndexOutOfBoundsException("Invalid row-column: " + row + "," + column);
-        }
-        if (value == null) {
-            throw new IllegalArgumentException("Value must not be null");
-        }
-        Object current = values[row * columnCount + column];
-        values[row * columnCount + column] = value;
-        if (current == null) {
-            size++;
-        }
-    }
-
-    @Override
-    public void putAll(Grid<? extends V> grid) {
-        if (grid == null) {
-            throw new IllegalArgumentException("Grid must nor be null");
-        }
-        for (Cell<? extends V> cell : grid.cells()) {
-            put(cell.getRow(), cell.getColumn(), cell.getValue());
-        }
-    }
-
-    @Override
-    public boolean remove(int row, int column) {
-        V current = get(row, column);
-        if (current != null) {
-            values[row * columnCount + column] = null;
-            size--;
-            return true;
-        }
-        return false;
+    /**
+     * Returns a clone of the internal array.
+     * 
+     * @return the array, not null
+     */
+    V[] valuesArray() {
+        return values.clone();
     }
 
     //-----------------------------------------------------------------------
@@ -431,8 +324,8 @@ public final class ArrayGrid<V> extends AbstractGrid<V> implements Serializable 
         if (obj == this) {
             return true;
         }
-        if (obj instanceof ArrayGrid) {
-            ArrayGrid<?> other = (ArrayGrid<?>) obj;
+        if (obj instanceof DenseImmutableGrid) {
+            DenseImmutableGrid<?> other = (DenseImmutableGrid<?>) obj;
             return Arrays.equals(values, other.values);
         }
         return super.equals(obj);

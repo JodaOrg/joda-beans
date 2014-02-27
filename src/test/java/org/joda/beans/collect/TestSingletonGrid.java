@@ -98,15 +98,15 @@ public class TestSingletonGrid extends AbstractTestGrid {
         assertEquals(test.equals(test), true);
         assertEquals(test.equals(create()), true);
         
-        HashGrid<String> hash = HashGrid.create(2, 3);
+        SparseGrid<String> hash = SparseGrid.create(2, 3);
         hash.put(0, 1, "Hello");
         assertEquals(test.equals(hash), true);
         
-        HashGrid<String> colCountDiff = HashGrid.create(2, 4);
+        SparseGrid<String> colCountDiff = SparseGrid.create(2, 4);
         colCountDiff.put(0, 1, "Hello");
         assertEquals(test.equals(colCountDiff), false);
         
-        HashGrid<String> valueDiff = HashGrid.create(2, 3);
+        SparseGrid<String> valueDiff = SparseGrid.create(2, 3);
         valueDiff.put(0, 1, "World");
         assertEquals(test.equals(valueDiff), false);
         

@@ -46,10 +46,10 @@ public class TestEmptyGrid extends AbstractTestGrid {
         ImmutableGrid<String> test = ImmutableGrid.of();
         assertEquals(test.equals(test), true);
         assertEquals(test.equals(ImmutableGrid.of()), true);
-        assertEquals(test.equals(HashGrid.create(0, 0)), true);
-        assertEquals(test.equals(HashGrid.create(1, 1)), false);
-        assertEquals(test.equals(ArrayGrid.create(0, 0)), true);
-        assertEquals(test.equals(ArrayGrid.create(1, 1)), false);
+        assertEquals(test.equals(SparseGrid.create(0, 0)), true);
+        assertEquals(test.equals(SparseGrid.create(1, 1)), false);
+        assertEquals(test.equals(DenseGrid.create(0, 0)), true);
+        assertEquals(test.equals(DenseGrid.create(1, 1)), false);
         assertEquals(test.equals(null), false);
         assertEquals(test.equals(""), false);
         
@@ -60,10 +60,10 @@ public class TestEmptyGrid extends AbstractTestGrid {
         ImmutableGrid<String> test = ImmutableGrid.of(1, 2);
         assertEquals(test.equals(test), true);
         assertEquals(test.equals(ImmutableGrid.of(1, 2)), true);
-        assertEquals(test.equals(HashGrid.create(1, 2)), true);
-        assertEquals(test.equals(HashGrid.create(1, 1)), false);
-        assertEquals(test.equals(ArrayGrid.create(1, 2)), true);
-        assertEquals(test.equals(ArrayGrid.create(1, 1)), false);
+        assertEquals(test.equals(SparseGrid.create(1, 2)), true);
+        assertEquals(test.equals(SparseGrid.create(1, 1)), false);
+        assertEquals(test.equals(DenseGrid.create(1, 2)), true);
+        assertEquals(test.equals(DenseGrid.create(1, 1)), false);
         assertEquals(test.equals(null), false);
         assertEquals(test.equals(""), false);
         

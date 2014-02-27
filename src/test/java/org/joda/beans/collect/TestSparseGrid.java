@@ -18,24 +18,24 @@ package org.joda.beans.collect;
 import org.testng.annotations.Test;
 
 /**
- * Test HashGrid.
+ * Test SparseGrid.
  */
 @Test
-public class TestHashGrid extends AbstractTestMutableGrid {
+public class TestSparseGrid extends AbstractTestMutableGrid {
 
     @Override
     protected Grid<String> create3x3() {
-        return HashGrid.create(3, 3);
+        return SparseGrid.create(3, 3);
     }
 
     @Override
     protected Grid<String> create(int rowCount, int columnCount) {
-        return HashGrid.create(rowCount, columnCount);
+        return SparseGrid.create(rowCount, columnCount);
     }
 
     @Override
     protected Grid<String> create(Grid<String> grid) {
-        return HashGrid.create(grid);
+        return SparseGrid.create(grid);
     }
 
 }

@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSet;
 public class TestImmutableGrid extends AbstractTestGrid {
 
     public void test_copyOf_Grid_alreadyImmutable() {
-        HashGrid<String> hash = HashGrid.create(2, 3);
+        SparseGrid<String> hash = SparseGrid.create(2, 3);
         hash.put(0, 0, "Hello");
         hash.put(0, 1, "World");
         ImmutableGrid<String> base = ImmutableGrid.copyOf(hash);
@@ -40,7 +40,7 @@ public class TestImmutableGrid extends AbstractTestGrid {
     }
 
     public void test_copyOf_Grid_size0() {
-        HashGrid<String> hash = HashGrid.create(2, 3);
+        SparseGrid<String> hash = SparseGrid.create(2, 3);
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
         assertEquals(test.rowCount(), 2);
         assertEquals(test.columnCount(), 3);
@@ -49,7 +49,7 @@ public class TestImmutableGrid extends AbstractTestGrid {
     }
 
     public void test_copyOf_Grid_size1() {
-        HashGrid<String> hash = HashGrid.create(2, 3);
+        SparseGrid<String> hash = SparseGrid.create(2, 3);
         hash.put(0, 1, "Hello");
         ImmutableGrid<String> test = ImmutableGrid.copyOf(hash);
         assertEquals(test.rowCount(), 2);
@@ -213,7 +213,7 @@ public class TestImmutableGrid extends AbstractTestGrid {
 
     //-----------------------------------------------------------------------
     public void test_copyOfDeriveCounts_Cells_size0() {
-        HashGrid<String> hash = HashGrid.create(2, 2);
+        SparseGrid<String> hash = SparseGrid.create(2, 2);
         ImmutableGrid<String> test = ImmutableGrid.copyOfDeriveCounts(hash.cells());
         assertEquals(test.rowCount(), 0);
         assertEquals(test.columnCount(), 0);
