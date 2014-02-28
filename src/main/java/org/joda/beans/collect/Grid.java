@@ -70,6 +70,15 @@ public interface Grid<V> {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the grid is full.
+     * <p>
+     * A full grid has a cell at every combination of row and column.
+     * 
+     * @return true if full
+     */
+    boolean isFull();
+
+    /**
      * Checks if the grid is empty.
      * 
      * @return true if empty

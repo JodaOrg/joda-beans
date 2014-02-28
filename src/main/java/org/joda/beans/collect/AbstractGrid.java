@@ -61,6 +61,11 @@ abstract class AbstractGrid<V> implements Grid<V> {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isFull() {
+        return size() == rowCount() * columnCount();
+    }
+
+    @Override
     public boolean isEmpty() {
         return size() == 0;
     }

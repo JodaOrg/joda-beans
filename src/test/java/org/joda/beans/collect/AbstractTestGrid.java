@@ -31,8 +31,9 @@ public abstract class AbstractTestGrid {
     private static final Object DUMMY = new Object() {};
 
     protected <R> void checkGrid(Grid<R> test) {
-        assertEquals(test.isEmpty(), true);
         assertEquals(test.size(), 0);
+        assertEquals(test.isEmpty(), true);
+        assertEquals(test.isFull(), test.rowCount() == 0 && test.columnCount() == 0);
         for (int i = -1; i < test.rowCount(); i++) {
             for (int j = -1; j < test.columnCount(); j++) {
                 if (i < 0 || j < 0 || i >= test.rowCount() || j >= test.columnCount()) {
@@ -71,8 +72,9 @@ public abstract class AbstractTestGrid {
     }
 
     protected <R> void checkGrid(Grid<R> test, int row1, int column1, R value1) {
-        assertEquals(test.isEmpty(), false);
         assertEquals(test.size(), 1);
+        assertEquals(test.isEmpty(), false);
+        assertEquals(test.isFull(), test.rowCount() * test.columnCount() == 1);
         for (int i = -1; i < test.rowCount(); i++) {
             for (int j = -1; j < test.columnCount(); j++) {
                 if (i < 0 || j < 0 || i >= test.rowCount() || j >= test.columnCount()) {
@@ -128,8 +130,9 @@ public abstract class AbstractTestGrid {
     }
 
     protected <R> void checkGrid(Grid<R> test, int row1, int column1, R value1, int row2, int column2, R value2) {
-        assertEquals(test.isEmpty(), false);
         assertEquals(test.size(), 2);
+        assertEquals(test.isEmpty(), false);
+        assertEquals(test.isFull(), test.rowCount() * test.columnCount() == 2);
         for (int i = -1; i < test.rowCount(); i++) {
             for (int j = -1; j < test.columnCount(); j++) {
                 if (i < 0 || j < 0 || i >= test.rowCount() || j >= test.columnCount()) {
@@ -202,8 +205,9 @@ public abstract class AbstractTestGrid {
     }
 
     protected <R> void checkGrid(Grid<R> test, int row1, int column1, R value1, int row2, int column2, R value2, int row3, int column3, R value3) {
-        assertEquals(test.isEmpty(), false);
         assertEquals(test.size(), 3);
+        assertEquals(test.isEmpty(), false);
+        assertEquals(test.isFull(), test.rowCount() * test.columnCount() == 3);
         for (int i = -1; i < test.rowCount(); i++) {
             for (int j = -1; j < test.columnCount(); j++) {
                 if (i < 0 || j < 0 || i >= test.rowCount() || j >= test.columnCount()) {
