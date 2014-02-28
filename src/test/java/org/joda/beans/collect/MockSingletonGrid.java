@@ -49,7 +49,7 @@ public class MockSingletonGrid extends AbstractGrid<String> {
 
     @Override
     public SortedSet<Cell<String>> cells() {
-        TreeSet<Cell<String>> set = new TreeSet<Cell<String>>();
+        TreeSet<Cell<String>> set = new TreeSet<Cell<String>>(AbstractCell.<String>comparator());
         set.add(new MockCell(row, column, value));
         return set;
     }
