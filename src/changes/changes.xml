@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.7" date="xxx" description="v0.9.7">
       <action dev="scolebourne" type="add">
+       Add mime types for serialized formats.
+       Fixes #56.
+      </action>
+      <action dev="scolebourne" type="add">
        Add support for Guava Table interface.
        Fixes #54.
       </action>
