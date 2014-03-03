@@ -460,11 +460,17 @@ class GeneratableProperty {
         } else if (style.equals("is")) {
             getterGen = GetterGen.IsGetterGen.PUBLIC;
         } else if (style.equals("smart")) {
-            String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
-            if ("clone".equals(clone)) {
-                getterGen = GetterGen.CloneGetterGen.of(access);
-            } else if ("cloneCast".equals(clone)) {
-                getterGen = GetterGen.CloneCastGetterGen.of(access);
+            if (bean.isImmutable()) {
+                String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
+                if ("clone".equals(clone)) {
+                    getterGen = GetterGen.CloneGetterGen.of(access);
+                } else if ("cloneCast".equals(clone)) {
+                    getterGen = GetterGen.CloneCastGetterGen.of(access);
+                } else if (getType().equals("boolean")) {
+                    getterGen = GetterGen.IsGetterGen.of(access);
+                } else {
+                    getterGen = GetterGen.GetGetterGen.of(access);
+                }
             } else if (getType().equals("boolean")) {
                 getterGen = GetterGen.IsGetterGen.of(access);
             } else {

@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.7" date="xxx" description="v0.9.7">
+      <action dev="scolebourne" type="fix">
+       Do not clone in getters of mutable beans for arrays and java.util.Date.
+       Fixes #57.
+      </action>
       <action dev="scolebourne" type="add">
        Add mime types for serialized formats.
        Fixes #56.

@@ -297,7 +297,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
      * @return the value of the property
      */
     public String[] getTags() {
-        return (tags != null ? tags.clone() : null);
+        return tags;
     }
 
     /**
