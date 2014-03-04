@@ -45,7 +45,9 @@ import org.joda.beans.impl.map.MapBean;
 import org.joda.convert.StringConvert;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -895,6 +897,7 @@ public final class JodaBeanUtils {
                 return value;
             } else if (value instanceof ImmutableMap ||
                     value instanceof ImmutableCollection ||
+                    value instanceof ImmutableMap ||
                     value instanceof ImmutableMultimap ||
                     value instanceof ImmutableTable) {
                 return value;
@@ -911,6 +914,8 @@ public final class JodaBeanUtils {
                 return cloneMultimap((Multimap) value, ArrayListMultimap.create());
             } else if (value instanceof Multimap) {
                 return cloneMultimap((Multimap) value, ArrayListMultimap.create());
+            } else if (value instanceof BiMap) {
+                return cloneMap((BiMap) value, HashBiMap.create());
             } else if (value instanceof Table) {
                 return cloneTable((Table) value, HashBasedTable.create());
             }

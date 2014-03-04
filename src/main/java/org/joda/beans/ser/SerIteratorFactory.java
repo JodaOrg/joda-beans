@@ -457,7 +457,7 @@ public class SerIteratorFactory {
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
-    private static SerIterable map(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Map<Object, Object> map) {
+    static SerIterable map(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Map<Object, Object> map) {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {

@@ -18,12 +18,15 @@ package org.joda.beans.ser;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
@@ -52,6 +55,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterator create(final Object value, final List<Class<?>> types) {
+        if (value instanceof BiMap) {
+            if (types.size() == 2) {
+                return biMap((BiMap<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
+            }
+            return biMap((BiMap<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
+        }
         if (value instanceof Multimap) {
             if (types.size() == 2) {
                 return multimap((Multimap<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
@@ -83,6 +92,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+        if (value instanceof BiMap) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return biMap((BiMap<?, ?>) value, keyType, valueType, valueTypeTypes);
+        }
         if (value instanceof Multiset) {
             Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
@@ -114,6 +129,9 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings, final Map<String, Class<?>> knownTypes) {
+        if (metaTypeDescription.equals("BiMap")) {
+            return biMap(Object.class, Object.class, EMPTY_VALUE_TYPES);
+        }
         if (metaTypeDescription.equals("SetMultimap")) {
             return setMultimap(Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
@@ -141,6 +159,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterable createIterable(final MetaProperty<?> prop, Class<?> beanClass) {
+        if (BiMap.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return biMap(keyType, valueType, valueTypeTypes);
+        }
         if (SortedMultiset.class.isAssignableFrom(prop.propertyType())) {
             Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
@@ -179,6 +203,19 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets an iterable wrapper for {@code BiMap}.
+     * 
+     * @param keyType  the value type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterable, not null
+     */
+    public static final SerIterable biMap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        final BiMap<Object, Object> map = HashBiMap.create();
+        return map(keyType, valueType, valueTypeTypes, map);
+    }
+
     /**
      * Gets an iterable wrapper for {@code Multiset}.
      * 
@@ -558,6 +595,64 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             }
             public Object column() {
                 return current.getColumnKey();
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+            @Override
+            public Object value() {
+                return current.getValue();
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for {@code BiMap}.
+     * 
+     * @param map  the collection, not null
+     * @param keyType  the value type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterator, not null
+     */
+    @SuppressWarnings("rawtypes")
+    public static final SerIterator biMap(final BiMap<?, ?> map, final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        return new SerIterator() {
+            private final Iterator it = map.entrySet().iterator();
+            private Entry current;
+
+            @Override
+            public String metaTypeName() {
+                return "BiMap";
+            }
+            @Override
+            public SerCategory category() {
+                return SerCategory.MAP;
+            }
+            @Override
+            public int size() {
+                return map.size();
+            }
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            @Override
+            public void next() {
+                current = (Entry) it.next();
+            }
+            @Override
+            public Class<?> keyType() {
+                return keyType;
+            }
+            @Override
+            public Object key() {
+                return current.getKey();
             }
             @Override
             public Class<?> valueType() {
