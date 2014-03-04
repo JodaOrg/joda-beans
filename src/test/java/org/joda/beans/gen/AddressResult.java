@@ -60,7 +60,7 @@ public class AddressResult
     //-----------------------------------------------------------------------
     @Override
     public AddressResult clone() {
-        return (AddressResult) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
     //-----------------------------------------------------------------------
     @Override
     public CompanyAddressMidResult clone() {
-        return (CompanyAddressMidResult) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

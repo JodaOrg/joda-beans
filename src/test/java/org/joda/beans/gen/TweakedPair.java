@@ -55,7 +55,7 @@ public class TweakedPair extends Pair {
     //-----------------------------------------------------------------------
     @Override
     public TweakedPair clone() {
-        return (TweakedPair) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

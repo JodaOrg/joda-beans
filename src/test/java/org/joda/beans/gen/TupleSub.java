@@ -103,7 +103,7 @@ public final class TupleSub<X extends Number, Y extends Number, Z> extends Tuple
     //-----------------------------------------------------------------------
     @Override
     public TupleSub<X, Y, Z> clone() {
-        return (TupleSub<X, Y, Z>) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

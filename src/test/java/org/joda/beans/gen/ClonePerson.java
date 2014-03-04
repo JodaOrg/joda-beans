@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,12 @@ public class ClonePerson
     private Date dateOfBirth;
     @PropertyDefinition
     private Date dateOfDeath;
+    @PropertyDefinition
+    private final List<Address> addresses = new ArrayList<Address>();
+    @PropertyDefinition
+    private Company[] companies;
+    @PropertyDefinition
+    private int[] amounts;
 
     /**
      * Creates an instance.
@@ -214,19 +221,86 @@ public class ClonePerson
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the addresses.
+     * @return the value of the property, not null
+     */
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    /**
+     * Sets the addresses.
+     * @param addresses  the new value of the property, not null
+     */
+    public void setAddresses(List<Address> addresses) {
+        JodaBeanUtils.notNull(addresses, "addresses");
+        this.addresses.clear();
+        this.addresses.addAll(addresses);
+    }
+
+    /**
+     * Gets the the {@code addresses} property.
+     * @return the property, not null
+     */
+    public final Property<List<Address>> addresses() {
+        return metaBean().addresses().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the companies.
+     * @return the value of the property
+     */
+    public Company[] getCompanies() {
+        return companies;
+    }
+
+    /**
+     * Sets the companies.
+     * @param companies  the new value of the property
+     */
+    public void setCompanies(Company[] companies) {
+        this.companies = companies;
+    }
+
+    /**
+     * Gets the the {@code companies} property.
+     * @return the property, not null
+     */
+    public final Property<Company[]> companies() {
+        return metaBean().companies().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the amounts.
+     * @return the value of the property
+     */
+    public int[] getAmounts() {
+        return amounts;
+    }
+
+    /**
+     * Sets the amounts.
+     * @param amounts  the new value of the property
+     */
+    public void setAmounts(int[] amounts) {
+        this.amounts = amounts;
+    }
+
+    /**
+     * Gets the the {@code amounts} property.
+     * @return the property, not null
+     */
+    public final Property<int[]> amounts() {
+        return metaBean().amounts().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public ClonePerson clone() {
-        BeanBuilder<? extends ClonePerson> builder = metaBean().builder();
-        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
-            if (mp.style().isBuildable()) {
-                Object value = mp.get(this);
-                if (value instanceof Bean) {
-                    value = ((Bean) value).clone();
-                }
-                builder.set(mp.name(), value);
-            }
-        }
-        return builder.build();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override
@@ -240,7 +314,10 @@ public class ClonePerson
                     JodaBeanUtils.equal(getMiddleNames(), other.getMiddleNames()) &&
                     JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
                     JodaBeanUtils.equal(getDateOfBirth(), other.getDateOfBirth()) &&
-                    JodaBeanUtils.equal(getDateOfDeath(), other.getDateOfDeath());
+                    JodaBeanUtils.equal(getDateOfDeath(), other.getDateOfDeath()) &&
+                    JodaBeanUtils.equal(getAddresses(), other.getAddresses()) &&
+                    JodaBeanUtils.equal(getCompanies(), other.getCompanies()) &&
+                    JodaBeanUtils.equal(getAmounts(), other.getAmounts());
         }
         return false;
     }
@@ -253,12 +330,15 @@ public class ClonePerson
         hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
         hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
         hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfDeath());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getAddresses());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getCompanies());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getAmounts());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(192);
+        StringBuilder buf = new StringBuilder(288);
         buf.append("ClonePerson{");
         int len = buf.length();
         toString(buf);
@@ -275,6 +355,9 @@ public class ClonePerson
         buf.append("surname").append('=').append(JodaBeanUtils.toString(getSurname())).append(',').append(' ');
         buf.append("dateOfBirth").append('=').append(JodaBeanUtils.toString(getDateOfBirth())).append(',').append(' ');
         buf.append("dateOfDeath").append('=').append(JodaBeanUtils.toString(getDateOfDeath())).append(',').append(' ');
+        buf.append("addresses").append('=').append(JodaBeanUtils.toString(getAddresses())).append(',').append(' ');
+        buf.append("companies").append('=').append(JodaBeanUtils.toString(getCompanies())).append(',').append(' ');
+        buf.append("amounts").append('=').append(JodaBeanUtils.toString(getAmounts())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------
@@ -314,6 +397,22 @@ public class ClonePerson
         private final MetaProperty<Date> dateOfDeath = DirectMetaProperty.ofReadWrite(
                 this, "dateOfDeath", ClonePerson.class, Date.class);
         /**
+         * The meta-property for the {@code addresses} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<List<Address>> addresses = DirectMetaProperty.ofReadWrite(
+                this, "addresses", ClonePerson.class, (Class) List.class);
+        /**
+         * The meta-property for the {@code companies} property.
+         */
+        private final MetaProperty<Company[]> companies = DirectMetaProperty.ofReadWrite(
+                this, "companies", ClonePerson.class, Company[].class);
+        /**
+         * The meta-property for the {@code amounts} property.
+         */
+        private final MetaProperty<int[]> amounts = DirectMetaProperty.ofReadWrite(
+                this, "amounts", ClonePerson.class, int[].class);
+        /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
@@ -322,7 +421,10 @@ public class ClonePerson
                 "middleNames",
                 "surname",
                 "dateOfBirth",
-                "dateOfDeath");
+                "dateOfDeath",
+                "addresses",
+                "companies",
+                "amounts");
 
         /**
          * Restricted constructor.
@@ -343,6 +445,12 @@ public class ClonePerson
                     return dateOfBirth;
                 case -385160369:  // dateOfDeath
                     return dateOfDeath;
+                case 874544034:  // addresses
+                    return addresses;
+                case -1412832805:  // companies
+                    return companies;
+                case -879772901:  // amounts
+                    return amounts;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -403,6 +511,30 @@ public class ClonePerson
             return dateOfDeath;
         }
 
+        /**
+         * The meta-property for the {@code addresses} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<List<Address>> addresses() {
+            return addresses;
+        }
+
+        /**
+         * The meta-property for the {@code companies} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<Company[]> companies() {
+            return companies;
+        }
+
+        /**
+         * The meta-property for the {@code amounts} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<int[]> amounts() {
+            return amounts;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
@@ -417,6 +549,12 @@ public class ClonePerson
                     return ((ClonePerson) bean).getDateOfBirth();
                 case -385160369:  // dateOfDeath
                     return ((ClonePerson) bean).getDateOfDeath();
+                case 874544034:  // addresses
+                    return ((ClonePerson) bean).getAddresses();
+                case -1412832805:  // companies
+                    return ((ClonePerson) bean).getCompanies();
+                case -879772901:  // amounts
+                    return ((ClonePerson) bean).getAmounts();
             }
             return super.propertyGet(bean, propertyName, quiet);
         }
@@ -440,6 +578,15 @@ public class ClonePerson
                 case -385160369:  // dateOfDeath
                     ((ClonePerson) bean).setDateOfDeath((Date) newValue);
                     return;
+                case 874544034:  // addresses
+                    ((ClonePerson) bean).setAddresses((List<Address>) newValue);
+                    return;
+                case -1412832805:  // companies
+                    ((ClonePerson) bean).setCompanies((Company[]) newValue);
+                    return;
+                case -879772901:  // amounts
+                    ((ClonePerson) bean).setAmounts((int[]) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }
@@ -447,6 +594,7 @@ public class ClonePerson
         @Override
         protected void validate(Bean bean) {
             JodaBeanUtils.notNull(((ClonePerson) bean).dateOfBirth, "dateOfBirth");
+            JodaBeanUtils.notNull(((ClonePerson) bean).addresses, "addresses");
         }
 
     }

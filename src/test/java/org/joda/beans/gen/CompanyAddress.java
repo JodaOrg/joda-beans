@@ -87,7 +87,7 @@ public class CompanyAddress extends Address {
     //-----------------------------------------------------------------------
     @Override
     public CompanyAddress clone() {
-        return (CompanyAddress) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

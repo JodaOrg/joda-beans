@@ -290,19 +290,8 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
 
     //-----------------------------------------------------------------------
     @Override
-    @SuppressWarnings("unchecked")
     public DoubleGenericsWithExtendsNoSuper<T, U> clone() {
-        BeanBuilder<?> builder = metaBean().builder();
-        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
-            if (mp.style().isBuildable()) {
-                Object value = mp.get(this);
-                if (value instanceof Bean) {
-                    value = ((Bean) value).clone();
-                }
-                builder.set(mp.name(), value);
-            }
-        }
-        return (DoubleGenericsWithExtendsNoSuper<T, U>) builder.build();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

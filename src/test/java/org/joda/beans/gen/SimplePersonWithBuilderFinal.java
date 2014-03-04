@@ -23,7 +23,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
@@ -319,17 +318,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
     //-----------------------------------------------------------------------
     @Override
     public SimplePersonWithBuilderFinal clone() {
-        BeanBuilder<? extends SimplePersonWithBuilderFinal> builder = metaBean().builder();
-        for (MetaProperty<?> mp : metaBean().metaPropertyIterable()) {
-            if (mp.style().isBuildable()) {
-                Object value = mp.get(this);
-                if (value instanceof Bean) {
-                    value = ((Bean) value).clone();
-                }
-                builder.set(mp.name(), value);
-            }
-        }
-        return builder.build();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

@@ -100,7 +100,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     //-----------------------------------------------------------------------
     @Override
     public GenericWrapperDocumentation<T> clone() {
-        return (GenericWrapperDocumentation<T>) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

@@ -278,9 +278,8 @@ public class DoubleGenericsWithExtendsSuperNoGenerics<T extends Serializable, U 
 
     //-----------------------------------------------------------------------
     @Override
-    @SuppressWarnings("unchecked")
     public DoubleGenericsWithExtendsSuperNoGenerics<T, U> clone() {
-        return (DoubleGenericsWithExtendsSuperNoGenerics<T, U>) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

@@ -101,7 +101,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     //-----------------------------------------------------------------------
     @Override
     public GenericSubWrapper<T> clone() {
-        return (GenericSubWrapper<T>) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

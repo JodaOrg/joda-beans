@@ -93,7 +93,7 @@ public class SubValidateBean extends ValidateBean {
     //-----------------------------------------------------------------------
     @Override
     public SubValidateBean clone() {
-        return (SubValidateBean) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

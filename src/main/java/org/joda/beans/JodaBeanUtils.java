@@ -22,19 +22,44 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
 import org.joda.convert.StringConvert;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.LinkedHashMultiset;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.SortedMultiset;
+import com.google.common.collect.Table;
+import com.google.common.collect.Table.Cell;
+import com.google.common.collect.TreeMultiset;
 
 /**
  * A set of utilities to assist when working with beans and properties.
@@ -416,22 +441,34 @@ public final class JodaBeanUtils {
      * @param original  the original bean to clone, null returns null
      * @return the cloned bean, null if null input
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Bean> T clone(T original) {
         if (original == null || original instanceof ImmutableBean) {
             return original;
         }
-        BeanBuilder<? extends Bean> builder = original.metaBean().builder();
+        return cloneAlways(original);
+    }
+
+    /**
+     * Clones a bean always.
+     * <p>
+     * This performs a deep clone. There is no protection against cycles in
+     * the object graph beyond {@code StackOverflowError}.
+     * This differs from {@link #clone()} in that immutable beans are also cloned.
+     * 
+     * @param <T>  the type of the bean
+     * @param original  the original bean to clone, not null
+     * @return the cloned bean, not null
+     */
+    public static <T extends Bean> T cloneAlways(T original) {
+        @SuppressWarnings("unchecked")
+        BeanBuilder<T> builder = (BeanBuilder<T>) original.metaBean().builder();
         for (MetaProperty<?> mp : original.metaBean().metaPropertyIterable()) {
             if (mp.style().isBuildable()) {
                 Object value = mp.get(original);
-                if (value instanceof Bean) {
-                    value = clone((Bean) value);
-                }
-                builder.set(mp.name(), value);
+                builder.set(mp.name(), Cloner.INSTANCE.clone(value));
             }
         }
-        return (T) builder.build();
+        return builder.build();
     }
 
     //-----------------------------------------------------------------------
@@ -771,6 +808,131 @@ public final class JodaBeanUtils {
             Comparable<Object> value1 = (Comparable<Object>) query.get(bean1);
             Object value2 = query.get(bean2);
             return value1.compareTo(value2);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Clones an object.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static class Cloner {
+        public static final Cloner INSTANCE = getInstance();
+        private static Cloner getInstance() {
+            try {
+                Class.forName("com.google.common.collect.Multimap");
+                return new GuavaCloner();
+            } catch (Throwable ex) {
+                return new Cloner();
+            }
+        }
+
+        Cloner() {
+        }
+
+        Object clone(Object value) {
+            if (value == null) {
+                return value;
+            } else if (value instanceof Bean) {
+                return cloneAlways((Bean) value);
+            } else if (value instanceof SortedSet) {
+                SortedSet set = (SortedSet) value;
+                return cloneIterable(set, new TreeSet(set.comparator()));
+            } else if (value instanceof Set) {
+                return cloneIterable((Set) value, new LinkedHashSet());
+            } else if (value instanceof Iterable) {
+                return cloneIterable((Iterable) value, new ArrayList());
+            } else if (value instanceof SortedMap) {
+                SortedMap map = (SortedMap) value;
+                return cloneMap(map, new TreeMap(map.comparator()));
+            } else if (value instanceof Map) {
+                return cloneMap((Map) value, new LinkedHashMap());
+            } else if (value.getClass().isArray()) {
+                return cloneArray(value);
+            } else if (value instanceof java.util.Date) {
+                return ((java.util.Date) value).clone();
+            }
+            return value;
+        }
+
+        Object cloneIterable(Iterable original, Collection cloned) {
+            for (Object item : original) {
+                cloned.add(clone(item));
+            }
+            return cloned;
+        }
+
+        Object cloneMap(Map original, Map cloned) {
+            for (Object item : original.entrySet()) {
+                Entry entry = (Entry) item;
+                cloned.put(clone(entry.getKey()), clone(entry.getValue()));
+            }
+            return cloned;
+        }
+
+        Object cloneArray(Object original) {
+            int len = Array.getLength(original);
+            Class<?> arrayType = original.getClass().getComponentType();
+            Object copy = Array.newInstance(arrayType, len);
+            for (int i = 0; i < len; i++) {
+                Array.set(copy, i, clone(Array.get(original, i)));
+            }
+            return copy;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Clones an object.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static class GuavaCloner extends Cloner {
+        GuavaCloner() {
+        }
+
+        Object clone(Object value) {
+            if (value == null) {
+                return value;
+            } else if (value instanceof ImmutableMap ||
+                    value instanceof ImmutableCollection ||
+                    value instanceof ImmutableMultimap ||
+                    value instanceof ImmutableTable) {
+                return value;
+            } else if (value instanceof Multiset) {
+                return cloneAlways((Bean) value);
+            } else if (value instanceof SortedMultiset) {
+                SortedMultiset set = (SortedMultiset) value;
+                return cloneIterable(set, TreeMultiset.create(set.comparator()));
+            } else if (value instanceof Multiset) {
+                return cloneIterable((Multiset) value, LinkedHashMultiset.create());
+            } else if (value instanceof SetMultimap) {
+                return cloneMultimap((Multimap) value, LinkedHashMultimap.create());
+            } else if (value instanceof ListMultimap) {
+                return cloneMultimap((Multimap) value, ArrayListMultimap.create());
+            } else if (value instanceof Multimap) {
+                return cloneMultimap((Multimap) value, ArrayListMultimap.create());
+            } else if (value instanceof Table) {
+                return cloneTable((Table) value, HashBasedTable.create());
+            }
+            return super.clone(value);
+        }
+
+        Object cloneMultimap(Multimap original, Multimap cloned) {
+            for (Object key : original.keySet()) {
+                Collection values = original.get(key);
+                for (Object value : values) {
+                    cloned.put(clone(key), clone(value));
+                }
+            }
+            return cloned;
+        }
+
+        Object cloneTable(Table original, Table cloned) {
+            for (Object item : original.cellSet()) {
+                Cell cell = (Cell) item;
+                cloned.put(clone(cell.getRowKey()), clone(cell.getColumnKey()), clone(cell.getValue()));
+            }
+            return cloned;
         }
     }
 

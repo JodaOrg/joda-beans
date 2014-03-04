@@ -102,7 +102,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
     //-----------------------------------------------------------------------
     @Override
     public SimpleSubPersonWithBuilderFinal clone() {
-        return (SimpleSubPersonWithBuilderFinal) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

@@ -277,7 +277,7 @@ public class DoubleGenericsComplexExtendsSuperTwoGenerics<T extends Comparable<T
     //-----------------------------------------------------------------------
     @Override
     public DoubleGenericsComplexExtendsSuperTwoGenerics<T, U> clone() {
-        return (DoubleGenericsComplexExtendsSuperTwoGenerics<T, U>) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

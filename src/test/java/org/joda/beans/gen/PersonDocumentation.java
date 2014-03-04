@@ -87,7 +87,7 @@ public class PersonDocumentation extends Documentation<Person> {
     //-----------------------------------------------------------------------
     @Override
     public PersonDocumentation clone() {
-        return (PersonDocumentation) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

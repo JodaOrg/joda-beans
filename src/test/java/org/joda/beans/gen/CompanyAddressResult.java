@@ -59,7 +59,7 @@ public class CompanyAddressResult extends AbstractResult<CompanyAddress> {
     //-----------------------------------------------------------------------
     @Override
     public CompanyAddressResult clone() {
-        return (CompanyAddressResult) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override

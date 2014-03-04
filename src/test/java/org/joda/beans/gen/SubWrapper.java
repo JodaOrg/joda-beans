@@ -87,7 +87,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
     //-----------------------------------------------------------------------
     @Override
     public SubWrapper clone() {
-        return (SubWrapper) super.clone();
+        return JodaBeanUtils.cloneAlways(this);
     }
 
     @Override
