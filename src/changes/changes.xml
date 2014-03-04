@@ -9,329 +9,329 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.7" date="xxx" description="v0.9.7">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Handle collections in clone().
        Fixes #55.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
        Do not clone in getters of mutable beans for arrays and java.util.Date.
        Fixes #57.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Add mime types for serialized formats.
        Fixes #56.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Add support for Guava Table interface.
        Fixes #54.
       </action>
     </release>
     <release version="0.9.6" date="2014-02-13" description="v0.9.6">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Immutable subclass builders do not work.
        Immutable and builder-based beans will regenerate.
        Fixes #53.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Bean builder should have getters.
        Immutable and builder-based beans will regenerate.
        Fixes #52.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
        Deprecate BasicImmutableBeanBuilder.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Support three generic parameters.
        Fixes #51.
       </action>
     </release>
     <release version="0.9.5" date="2014-02-11" description="v0.9.5">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
        More secure XML parsing.
       </action>
     </release>
     <release version="0.9.4" date="2014-02-07" description="v0.9.4">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
        Add Joda-Bean binary serialization based on MessagePack.
        Fixes #49.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
        More flexible XML parsing wrt Joda-Convert.
        Handle a bean that has Joda-Convert annotations added, or vice versa.
        Fixes #50.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
        Invalid code generated for an abstract @ImmutableBean.
        Fixes #48.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Guava MultiSet serialized incorrectly.
         Was serializing using the set size, not the unique elements size.
         Fixes #47.
       </action>
     </release>
     <release version="0.9.3" date="2014-01-28" description="v0.9.3">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Choose known types in serialization carefully.
         Reduce the set from v0.9.2 as that set of types was too large.
         Fixes #46.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix BeanComparisonError.
         Fixes #45.
       </action>
     </release>
     <release version="0.9.2" date="2014-01-27" description="v0.9.2">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Remove encodeClass/decodeClass from main serialization API.
         Fixes #44.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Handle refactored beans in deserialization.
         Fixes #43.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         BasicBeanBuilder get(String) returns builder rather than the requested data.
         Backwards incompatible, but the old code is useless so will never have been used.
         Fixes #42.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Ensure XML reader property closed.
         Fixes #41.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Handle type renames in deserialization.
         Fixes #40.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Short types flag not being used in JodaBeanSer.
         Fixes #39.
       </action>
     </release>
     <release version="0.9.1" date="2014-01-20" description="v0.9.1">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix immutable collection copies to preserve comparators.
         Affects SortedSet and SortedMap.
         Fixes #37.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Remove incorrect suppress unchecked in immutable generic beans.
         Fixes #38.
       </action>
     </release>
     <release version="0.9.0" date="2013-12-14" description="v0.9.0">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Support partially final beans and immutable subclasses.
         This support is complex and not recommended, but sometimes necessary.
         Fixes #24.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Recreate XMLInputFactory each time due to JDK bug JDK-8028111.
         Fixes #36.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix to ensure nested class constructors are private if the type is final.
         May cause beans to regenerate.
         Fixes #35.
       </action>
-      <action dev="scolebourne" type="update">
+      <action dev="jodastephen" type="update">
         Extend notNull validation to collection properties.
         May cause beans to regenerate.
         Fixes #34.
       </action>
-      <action dev="scolebourne" type="update">
+      <action dev="jodastephen" type="update">
         Enhance PropertyStyle. Add isReadOnly().
         Fixes #33.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Add 'equalIgnoring' utility to compare two beans ignoring one or more properties.
         Fixes #32.
       </action>
     </release>
     <release version="0.8.6" date="2013-11-06" description="v0.8.6">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         XML generation of beans with no fields broken.
         Affected COMPACT mode, not PRETTY mode.
         Fixes #30.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         FlexiMap should retain the order of properties.
         Use LinkedHashMap not HashMap. 
         Fixes #31.
       </action>
     </release>
     <release version="0.8.5" date="2013-10-22" description="v0.8.5">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix code generation unchecked annotation when no writable properties.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Allow beans to have two generic type parameters. Fixes #21.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix code generation of private immutable builders. Fixes #26.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Parse trailing comments on property definitions. Fixes #27.
       </action>
     </release>
     <release version="0.8.4" date="2013-10-14" description="v0.8.4">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Add setting to allow immutable builders to be private. Fixes #26.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Avoid code generating two lines next to one another.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Handle extra spaces in class/extends definitions. Fixes #25.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix code generation for properties of generic type array.
         Where bean is Foo&lt;T&gt; and property is T[].
         Also where immutable bean and property is T.
         Fixes #22.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Bean toString should process arrays correctly. Fixes #23.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Enhance handling of non-null and non-empty fields especially in immutable beans. See #20.
       </action>
     </release>
     <release version="0.8.3" date="2013-10-09" description="v0.8.3">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Immutable beans should handle nullable fields. Fixes #20.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Generate an immutable bean with no properties correctly.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Handle classes that are loaded but not initialized. Fixes #19.
       </action>
     </release>
     <release version="0.8.2" date="2013-10-04" description="v0.8.2">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Fix XML parsing of complex map entries.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Handle multi-line class definition. Fixes #17.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Fix FlexiBean serialization. Fixes #18.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         SerIteratorFactory off by one bug.
       </action>
     </release>
     <release version="0.8.1" date="2013-10-03" description="v0.8.1">
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         XML format no longer encodes tabs and newlines in elements.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Allow private getters/setters using PropertyDefinition.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Rename XML format map items to 'entry'.
         Allow map keys to be beans, using two 'item' elements beneath 'entry'.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Extend analysis of collection/map generic types.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Allow short types to be switched off.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Handle simple types better when defined by unknown interface.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Generate correct Javadoc for builder static method with generics.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Allow known types to be built up during serialization.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Permit XML format to omit root type.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Output Joda-Convert data whenever available.
       </action>
     </release>
     <release version="0.8" date="2013-09-30" description="v0.8">
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Move to OSGi generation via Maven plugin.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Add XML round-trip serialization. Fixes #16.
         Allows the bean to be converted to and from XML in a human readable format.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Enhance FlexiBean and MapBean. Fixes #15.
         These now work more like the original intention.
         Properties are always created on demand.
         FlexiBean property names are now validated to a minimal format.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Identify Derived and Immutable properties at runtime. Fixes #14.
         Rename readWrite() to style() and PropertyReadWrite to ProperyStyle.
         Some existing beans may regenerate.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Generate final classes for final beans. Fixes #13.
         Some existing beans may regenerate.
       </action>
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Parse annotations above @PropertyDefinition as well as those below. Fixes #10.
         Some existing beans may regenerate.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for clone on beans.. Fixes #12.
         All existing beans will regenerate.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for immutable beans. Fixes #11.
         All existing beans will regenerate.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Move location of equals/hashCode/toString methods in generation.
         All existing beans will regenerate.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Allow generated beans to implement interface, rather than extend class. Fixes #9.
         Move propertyGet/propertySet/validate into meta-bean
         All existing beans will regenerate.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Generate toString() methods. Fixes #8.
         All existing beans will regenerate.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Optimize performance of generated equals for primitive numbers.
         Some existing beans will regenerate.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Home page at GitHub.
       </action>
     </release>
     <release version="0.7.1" date="2013-07-22" description="v0.7.1">
-      <action dev="scolebourne" type="update">
+      <action dev="jodastephen" type="update">
         Adjust code generation so can reformat in Eclipse without changing generated code.
         Existing beans will regenerate, even though the only change is one blank line.
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Add checkstyle
       </action>
-      <action dev="scolebourne" type="update">
+      <action dev="jodastephen" type="update">
         Change to use m2e Maven Eclipse
       </action>
     </release>
     <release version="0.7" date="2013-02-20" description="v0.7">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix indentation issue in metaPropertyMap field.
         Existing beans will regenerate, even though the only change is indentation.
       </action>
-      <action dev="scolebourne" type="update">
+      <action dev="jodastephen" type="update">
         Refactor BeanCodeGen to allow it to be used from tools.
       </action>
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix command line arguments - -v -> -verbose.
       </action>
     </release>
