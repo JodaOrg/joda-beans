@@ -42,6 +42,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
+import org.joda.collect.grid.DenseGrid;
+import org.joda.collect.grid.Grid;
+import org.joda.collect.grid.ImmutableGrid;
+import org.joda.collect.grid.SparseGrid;
 import org.joda.convert.StringConvert;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -60,7 +64,6 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.SortedMultiset;
 import com.google.common.collect.Table;
-import com.google.common.collect.Table.Cell;
 import com.google.common.collect.TreeMultiset;
 
 /**
@@ -822,10 +825,15 @@ public final class JodaBeanUtils {
         public static final Cloner INSTANCE = getInstance();
         private static Cloner getInstance() {
             try {
-                Class.forName("com.google.common.collect.Multimap");
-                return new GuavaCloner();
+                Class.forName("org.joda.collect.grid.Grid");
+                return new CollectCloner();
             } catch (Throwable ex) {
-                return new Cloner();
+                try {
+                    Class.forName("com.google.common.collect.Multimap");
+                    return new GuavaCloner();
+                } catch (Throwable ex2) {
+                    return new Cloner();
+                }
             }
         }
 
@@ -934,8 +942,41 @@ public final class JodaBeanUtils {
 
         Object cloneTable(Table original, Table cloned) {
             for (Object item : original.cellSet()) {
-                Cell cell = (Cell) item;
+                Table.Cell cell = (Table.Cell) item;
                 cloned.put(clone(cell.getRowKey()), clone(cell.getColumnKey()), clone(cell.getValue()));
+            }
+            return cloned;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Clones an object.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static class CollectCloner extends GuavaCloner {
+        CollectCloner() {
+        }
+
+        Object clone(Object value) {
+            if (value == null) {
+                return value;
+            } else if (value instanceof ImmutableGrid) {
+                return value;
+            } else if (value instanceof DenseGrid) {
+                Grid grid = (Grid) value;
+                return cloneGrid(grid, DenseGrid.create(grid.rowCount(), grid.columnCount()));
+            } else if (value instanceof Grid) {
+                Grid grid = (Grid) value;
+                return cloneGrid(grid, SparseGrid.create(grid.rowCount(), grid.columnCount()));
+            }
+            return super.clone(value);
+        }
+
+        Object cloneGrid(Grid original, Grid cloned) {
+            for (Object item : original.cells()) {
+                Grid.Cell cell = (Grid.Cell) item;
+                cloned.put(cell.getRow(), cell.getColumn(), clone(cell.getValue()));
             }
             return cloned;
         }

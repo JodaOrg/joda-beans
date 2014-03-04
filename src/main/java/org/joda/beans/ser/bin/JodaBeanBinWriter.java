@@ -216,6 +216,8 @@ public class JodaBeanBinWriter {
             writeCounted(itemIterator);
         } else if (itemIterator.category() == SerCategory.TABLE) {
             writeTable(itemIterator);
+        } else if (itemIterator.category() == SerCategory.GRID) {
+            writeGrid(itemIterator);
         } else {
             writeArray(itemIterator);
         }
@@ -250,6 +252,35 @@ public class JodaBeanBinWriter {
             writeObject(itemIterator.keyType(), itemIterator.key(), itemIterator.valueTypeTypes());
             writeObject(itemIterator.columnType(), itemIterator.column(), itemIterator.valueTypeTypes());
             writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+        }
+    }
+
+    private void writeGrid(final SerIterator itemIterator) throws IOException {
+        int rows = itemIterator.dimensionSize(0);
+        int columns = itemIterator.dimensionSize(1);
+        int totalSize = rows * columns;
+        if (itemIterator.size() < (totalSize / 4)) {
+            // sparse
+            output.writeArrayHeader(itemIterator.size() + 2);
+            output.writeInt(rows);
+            output.writeInt(columns);
+            while (itemIterator.hasNext()) {
+                itemIterator.next();
+                output.writeArrayHeader(3);
+                output.writeInt((Integer) itemIterator.key());
+                output.writeInt((Integer) itemIterator.column());
+                writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+            }
+        } else {
+            // dense
+            output.writeArrayHeader(totalSize + 2);
+            output.writeInt(rows);
+            output.writeInt(columns);
+            for (int row = 0; row < rows; row++) {
+                for (int column = 0; column < columns; column++) {
+                    writeObject(itemIterator.valueType(), itemIterator.value(row, column), itemIterator.valueTypeTypes());
+                }
+            }
         }
     }
 

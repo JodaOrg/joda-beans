@@ -272,6 +272,8 @@ public class JodaBeanBinReader extends MsgPack {
             return parseIterableCounted(typeByte, iterable);
         } else if (iterable.category() == SerCategory.TABLE) {
             return parseIterableTable(typeByte, iterable);
+        } else if (iterable.category() == SerCategory.GRID) {
+            return parseIterableGrid(typeByte, iterable);
         } else {
             return parseIterableArray(typeByte, iterable);
         }
@@ -297,6 +299,34 @@ public class JodaBeanBinReader extends MsgPack {
             Object column = parseObject(iterable.columnType(), null, null, null, false);
             Object value = parseObject(iterable.valueType(), null, null, iterable, false);
             iterable.add(key, column, value, 1);
+        }
+        return iterable.build();
+    }
+
+    private Object parseIterableGrid(int typeByte, SerIterable iterable) throws Exception {
+        int size = acceptArray(typeByte);
+        int rows = acceptInteger(input.readByte());
+        int columns = acceptInteger(input.readByte());
+        iterable.dimensions(new int[] {rows, columns});
+        if ((rows * columns) != (size - 2)) {
+            // sparse
+            for (int i = 0; i < (size - 2); i++) {
+                if (acceptArray(input.readByte()) != 3) {
+                    throw new IllegalArgumentException("Grid must have cell array size 3");
+                }
+                int row = acceptInteger(input.readByte());
+                int column = acceptInteger(input.readByte());
+                Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+                iterable.add(row, column, value, 1);
+            }
+        } else {
+            // dense
+            for (int row = 0; row < rows; row++) {
+                for (int column = 0; column < columns; column++) {
+                    Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+                    iterable.add(row, column, value, 1);
+                }
+            }
         }
         return iterable.build();
     }

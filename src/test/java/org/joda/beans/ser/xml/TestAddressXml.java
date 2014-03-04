@@ -39,6 +39,7 @@ import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.test.BeanAssert;
+import org.joda.collect.grid.DenseGrid;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.HashBasedTable;
@@ -135,6 +136,9 @@ public class TestAddressXml {
         table.put(1, 1, person);
         table.put(1, 2, child);
         table.put(2, 1, child2);
+        DenseGrid<ImmPerson> denseGrid = DenseGrid.create(2, 3);
+        denseGrid.put(0, 0, child);
+        denseGrid.put(1, 1, child2);
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
@@ -147,6 +151,7 @@ public class TestAddressXml {
             .mapInMap(map4)
             .simpleTable(ImmutableTable.of(1, 1, "Hello"))
             .compoundTable(table)
+            .denseGrid(denseGrid)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         

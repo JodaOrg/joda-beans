@@ -32,6 +32,9 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.collect.grid.Grid;
+import org.joda.collect.grid.ImmutableGrid;
+import org.joda.collect.grid.SparseGrid;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
@@ -108,6 +111,16 @@ public final class ImmAddress implements ImmutableBean {
     @PropertyDefinition
     private final ImmutableTable<Integer, Integer, ImmPerson> compoundTable;
     /**
+     * The grid.
+     */
+    @PropertyDefinition
+    private final ImmutableGrid<ImmPerson> sparseGrid;
+    /**
+     * The grid.
+     */
+    @PropertyDefinition
+    private final ImmutableGrid<ImmPerson> denseGrid;
+    /**
      * The bean key and bean value field.
      */
     @PropertyDefinition(validate = "notNull")
@@ -148,6 +161,8 @@ public final class ImmAddress implements ImmutableBean {
             Map<ImmPerson, Map<String, ImmPerson>> mapInMap,
             Table<Integer, Integer, String> simpleTable,
             Table<Integer, Integer, ImmPerson> compoundTable,
+            Grid<ImmPerson> sparseGrid,
+            Grid<ImmPerson> denseGrid,
             Map<ImmPerson, ImmAddress> beanBeanMap) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
@@ -170,6 +185,8 @@ public final class ImmAddress implements ImmutableBean {
         this.mapInMap = ImmutableMap.copyOf(mapInMap);
         this.simpleTable = (simpleTable != null ? ImmutableTable.copyOf(simpleTable) : null);
         this.compoundTable = (compoundTable != null ? ImmutableTable.copyOf(compoundTable) : null);
+        this.sparseGrid = (sparseGrid != null ? ImmutableGrid.copyOf(sparseGrid) : null);
+        this.denseGrid = (denseGrid != null ? ImmutableGrid.copyOf(denseGrid) : null);
         this.beanBeanMap = ImmutableMap.copyOf(beanBeanMap);
     }
 
@@ -299,6 +316,24 @@ public final class ImmAddress implements ImmutableBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the grid.
+     * @return the value of the property
+     */
+    public ImmutableGrid<ImmPerson> getSparseGrid() {
+        return sparseGrid;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the grid.
+     * @return the value of the property
+     */
+    public ImmutableGrid<ImmPerson> getDenseGrid() {
+        return denseGrid;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the bean key and bean value field.
      * @return the value of the property, not null
      */
@@ -339,6 +374,8 @@ public final class ImmAddress implements ImmutableBean {
                     JodaBeanUtils.equal(getMapInMap(), other.getMapInMap()) &&
                     JodaBeanUtils.equal(getSimpleTable(), other.getSimpleTable()) &&
                     JodaBeanUtils.equal(getCompoundTable(), other.getCompoundTable()) &&
+                    JodaBeanUtils.equal(getSparseGrid(), other.getSparseGrid()) &&
+                    JodaBeanUtils.equal(getDenseGrid(), other.getDenseGrid()) &&
                     JodaBeanUtils.equal(getBeanBeanMap(), other.getBeanBeanMap());
         }
         return false;
@@ -359,13 +396,15 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getMapInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getSimpleTable());
         hash += hash * 31 + JodaBeanUtils.hashCode(getCompoundTable());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSparseGrid());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getDenseGrid());
         hash += hash * 31 + JodaBeanUtils.hashCode(getBeanBeanMap());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(448);
+        StringBuilder buf = new StringBuilder(512);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
@@ -379,6 +418,8 @@ public final class ImmAddress implements ImmutableBean {
         buf.append("mapInMap").append('=').append(getMapInMap()).append(',').append(' ');
         buf.append("simpleTable").append('=').append(getSimpleTable()).append(',').append(' ');
         buf.append("compoundTable").append('=').append(getCompoundTable()).append(',').append(' ');
+        buf.append("sparseGrid").append('=').append(getSparseGrid()).append(',').append(' ');
+        buf.append("denseGrid").append('=').append(getDenseGrid()).append(',').append(' ');
         buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(getBeanBeanMap()));
         buf.append('}');
         return buf.toString();
@@ -462,6 +503,18 @@ public final class ImmAddress implements ImmutableBean {
         private final MetaProperty<ImmutableTable<Integer, Integer, ImmPerson>> compoundTable = DirectMetaProperty.ofImmutable(
                 this, "compoundTable", ImmAddress.class, (Class) ImmutableTable.class);
         /**
+         * The meta-property for the {@code sparseGrid} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableGrid<ImmPerson>> sparseGrid = DirectMetaProperty.ofImmutable(
+                this, "sparseGrid", ImmAddress.class, (Class) ImmutableGrid.class);
+        /**
+         * The meta-property for the {@code denseGrid} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableGrid<ImmPerson>> denseGrid = DirectMetaProperty.ofImmutable(
+                this, "denseGrid", ImmAddress.class, (Class) ImmutableGrid.class);
+        /**
          * The meta-property for the {@code beanBeanMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -484,6 +537,8 @@ public final class ImmAddress implements ImmutableBean {
                 "mapInMap",
                 "simpleTable",
                 "compoundTable",
+                "sparseGrid",
+                "denseGrid",
                 "beanBeanMap");
 
         /**
@@ -519,6 +574,10 @@ public final class ImmAddress implements ImmutableBean {
                     return simpleTable;
                 case 103339235:  // compoundTable
                     return compoundTable;
+                case 1337284998:  // sparseGrid
+                    return sparseGrid;
+                case 1802377989:  // denseGrid
+                    return denseGrid;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
             }
@@ -638,6 +697,22 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code sparseGrid} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableGrid<ImmPerson>> sparseGrid() {
+            return sparseGrid;
+        }
+
+        /**
+         * The meta-property for the {@code denseGrid} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableGrid<ImmPerson>> denseGrid() {
+            return denseGrid;
+        }
+
+        /**
          * The meta-property for the {@code beanBeanMap} property.
          * @return the meta-property, not null
          */
@@ -673,6 +748,10 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getSimpleTable();
                 case 103339235:  // compoundTable
                     return ((ImmAddress) bean).getCompoundTable();
+                case 1337284998:  // sparseGrid
+                    return ((ImmAddress) bean).getSparseGrid();
+                case 1802377989:  // denseGrid
+                    return ((ImmAddress) bean).getDenseGrid();
                 case -2039203396:  // beanBeanMap
                     return ((ImmAddress) bean).getBeanBeanMap();
             }
@@ -708,6 +787,8 @@ public final class ImmAddress implements ImmutableBean {
         private Map<ImmPerson, Map<String, ImmPerson>> mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>();
         private Table<Integer, Integer, String> simpleTable;
         private Table<Integer, Integer, ImmPerson> compoundTable;
+        private Grid<ImmPerson> sparseGrid;
+        private Grid<ImmPerson> denseGrid;
         private Map<ImmPerson, ImmAddress> beanBeanMap = new HashMap<ImmPerson, ImmAddress>();
 
         /**
@@ -733,6 +814,8 @@ public final class ImmAddress implements ImmutableBean {
             this.mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>(beanToCopy.getMapInMap());
             this.simpleTable = (beanToCopy.getSimpleTable() != null ? HashBasedTable.create(beanToCopy.getSimpleTable()) : null);
             this.compoundTable = (beanToCopy.getCompoundTable() != null ? HashBasedTable.create(beanToCopy.getCompoundTable()) : null);
+            this.sparseGrid = (beanToCopy.getSparseGrid() != null ? SparseGrid.create(beanToCopy.getSparseGrid()) : null);
+            this.denseGrid = (beanToCopy.getDenseGrid() != null ? SparseGrid.create(beanToCopy.getDenseGrid()) : null);
             this.beanBeanMap = new HashMap<ImmPerson, ImmAddress>(beanToCopy.getBeanBeanMap());
         }
 
@@ -764,6 +847,10 @@ public final class ImmAddress implements ImmutableBean {
                     return simpleTable;
                 case 103339235:  // compoundTable
                     return compoundTable;
+                case 1337284998:  // sparseGrid
+                    return sparseGrid;
+                case 1802377989:  // denseGrid
+                    return denseGrid;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
                 default:
@@ -810,6 +897,12 @@ public final class ImmAddress implements ImmutableBean {
                     break;
                 case 103339235:  // compoundTable
                     this.compoundTable = (Table<Integer, Integer, ImmPerson>) newValue;
+                    break;
+                case 1337284998:  // sparseGrid
+                    this.sparseGrid = (Grid<ImmPerson>) newValue;
+                    break;
+                case 1802377989:  // denseGrid
+                    this.denseGrid = (Grid<ImmPerson>) newValue;
                     break;
                 case -2039203396:  // beanBeanMap
                     this.beanBeanMap = (Map<ImmPerson, ImmAddress>) newValue;
@@ -859,6 +952,8 @@ public final class ImmAddress implements ImmutableBean {
                     mapInMap,
                     simpleTable,
                     compoundTable,
+                    sparseGrid,
+                    denseGrid,
                     beanBeanMap);
         }
 
@@ -992,6 +1087,26 @@ public final class ImmAddress implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code sparseGrid} property in the builder.
+         * @param sparseGrid  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder sparseGrid(Grid<ImmPerson> sparseGrid) {
+            this.sparseGrid = sparseGrid;
+            return this;
+        }
+
+        /**
+         * Sets the {@code denseGrid} property in the builder.
+         * @param denseGrid  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder denseGrid(Grid<ImmPerson> denseGrid) {
+            this.denseGrid = denseGrid;
+            return this;
+        }
+
+        /**
          * Sets the {@code beanBeanMap} property in the builder.
          * @param beanBeanMap  the new value, not null
          * @return this, for chaining, not null
@@ -1005,7 +1120,7 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(448);
+            StringBuilder buf = new StringBuilder(512);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
@@ -1019,6 +1134,8 @@ public final class ImmAddress implements ImmutableBean {
             buf.append("mapInMap").append('=').append(JodaBeanUtils.toString(mapInMap)).append(',').append(' ');
             buf.append("simpleTable").append('=').append(JodaBeanUtils.toString(simpleTable)).append(',').append(' ');
             buf.append("compoundTable").append('=').append(JodaBeanUtils.toString(compoundTable)).append(',').append(' ');
+            buf.append("sparseGrid").append('=').append(JodaBeanUtils.toString(sparseGrid)).append(',').append(' ');
+            buf.append("denseGrid").append('=').append(JodaBeanUtils.toString(denseGrid)).append(',').append(' ');
             buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(beanBeanMap));
             buf.append('}');
             return buf.toString();

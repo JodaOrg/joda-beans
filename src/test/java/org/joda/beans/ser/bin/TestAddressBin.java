@@ -40,6 +40,8 @@ import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.test.BeanAssert;
+import org.joda.collect.grid.DenseGrid;
+import org.joda.collect.grid.SparseGrid;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.HashBasedTable;
@@ -136,6 +138,11 @@ public class TestAddressBin {
         table.put(1, 1, person);
         table.put(1, 2, child);
         table.put(2, 1, child2);
+        SparseGrid<ImmPerson> sparseGrid = SparseGrid.create(5, 5);
+        sparseGrid.put(1, 1, child2);
+        DenseGrid<ImmPerson> denseGrid = DenseGrid.create(2, 3);
+        denseGrid.put(0, 0, child);
+        denseGrid.put(1, 1, child2);
         ImmAddress address = ImmAddress.builder()
             .owner(person)
             .number(185)
@@ -148,6 +155,8 @@ public class TestAddressBin {
             .mapInMap(map4)
             .simpleTable(ImmutableTable.of(1, 1, "Hello"))
             .compoundTable(table)
+            .sparseGrid(sparseGrid)
+            .denseGrid(denseGrid)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         

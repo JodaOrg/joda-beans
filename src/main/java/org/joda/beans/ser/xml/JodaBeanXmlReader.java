@@ -16,6 +16,7 @@
 package org.joda.beans.ser.xml;
 
 import static org.joda.beans.ser.xml.JodaBeanXml.BEAN_QNAME;
+import static org.joda.beans.ser.xml.JodaBeanXml.COLS_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.COL_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.ENTRY_QNAME;
@@ -23,6 +24,7 @@ import static org.joda.beans.ser.xml.JodaBeanXml.ITEM_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.KEY_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL_QNAME;
+import static org.joda.beans.ser.xml.JodaBeanXml.ROWS_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.ROW_QNAME;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE_QNAME;
@@ -284,7 +286,7 @@ public class JodaBeanXmlReader {
                         } else {
                             SerIterable iterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
                             if (iterable != null) {
-                                value = parseIterable(iterable);
+                                value = parseIterable(start, iterable);
                             } else {
                                 String text = advanceAndParseText();
                                 value = settings.getConverter().convertFromString(childType, text);
@@ -308,7 +310,12 @@ public class JodaBeanXmlReader {
      * @param iterable  the iterable builder, not null
      * @return the iterable, not null
      */
-    private Object parseIterable(final SerIterable iterable) throws Exception {
+    private Object parseIterable(final StartElement iterableEvent, final SerIterable iterable) throws Exception {
+        Attribute rowsAttr = iterableEvent.getAttributeByName(ROWS_QNAME);
+        Attribute columnsAttr = iterableEvent.getAttributeByName(COLS_QNAME);
+        if (rowsAttr != null && columnsAttr != null) {
+            iterable.dimensions(new int[] {Integer.parseInt(rowsAttr.getValue()), Integer.parseInt(columnsAttr.getValue())});
+        }
         XMLEvent event = nextEvent(">iter ");
         while (event.isEndElement() == false) {
             if (event.isStartElement()) {
@@ -328,7 +335,7 @@ public class JodaBeanXmlReader {
                     }
                     value = parseValue(iterable, start);
                     
-                } else if (iterable.category() == SerCategory.TABLE) {
+                } else if (iterable.category() == SerCategory.TABLE || iterable.category() == SerCategory.GRID) {
                     Attribute rowAttr = start.getAttributeByName(ROW_QNAME);
                     Attribute colAttr = start.getAttributeByName(COL_QNAME);
                     if (rowAttr == null || colAttr == null) {
@@ -426,7 +433,7 @@ public class JodaBeanXmlReader {
                 // try deep generic parameters
                 SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(iterable);
                 if (childIterable != null) {
-                    value = parseIterable(childIterable);
+                    value = parseIterable(start, childIterable);
                 } else {
                     // metatype
                     Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
@@ -435,7 +442,7 @@ public class JodaBeanXmlReader {
                         if (childIterable == null) {
                             throw new IllegalArgumentException("Invalid metaType");
                         }
-                        value = parseIterable(childIterable);
+                        value = parseIterable(start, childIterable);
                     } else {
                         String text = advanceAndParseText();
                         value = settings.getConverter().convertFromString(childType, text);

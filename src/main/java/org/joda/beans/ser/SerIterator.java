@@ -34,6 +34,16 @@ public abstract class SerIterator {
     public abstract String metaTypeName();
 
     /**
+     * Gets the size of one dimension of the wrapped collection.
+     * 
+     * @param dimension  the dimension, 0 for row, 1 for column
+     * @return the size, -1 if unknown
+     */
+    public int dimensionSize(int dimension) {
+        return -1;
+    }
+
+    /**
      * Gets the size of the wrapped collection.
      * 
      * @return the size, -1 if unknown
@@ -126,5 +136,16 @@ public abstract class SerIterator {
      * @return the value, may be null
      */
     public abstract Object value();
+
+    /**
+     * The value at a row/column.
+     * 
+     * @param row  the row
+     * @param column  the column
+     * @return the value
+     */
+    public Object value(int row, int column) {
+        return null;
+    }
 
 }

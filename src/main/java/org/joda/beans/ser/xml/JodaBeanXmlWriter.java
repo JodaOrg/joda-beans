@@ -17,6 +17,7 @@ package org.joda.beans.ser.xml;
 
 import static org.joda.beans.ser.xml.JodaBeanXml.BEAN;
 import static org.joda.beans.ser.xml.JodaBeanXml.COL;
+import static org.joda.beans.ser.xml.JodaBeanXml.COLS;
 import static org.joda.beans.ser.xml.JodaBeanXml.COUNT;
 import static org.joda.beans.ser.xml.JodaBeanXml.ENTRY;
 import static org.joda.beans.ser.xml.JodaBeanXml.ITEM;
@@ -24,6 +25,7 @@ import static org.joda.beans.ser.xml.JodaBeanXml.KEY;
 import static org.joda.beans.ser.xml.JodaBeanXml.METATYPE;
 import static org.joda.beans.ser.xml.JodaBeanXml.NULL;
 import static org.joda.beans.ser.xml.JodaBeanXml.ROW;
+import static org.joda.beans.ser.xml.JodaBeanXml.ROWS;
 import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 
 import java.util.HashMap;
@@ -221,6 +223,10 @@ public class JodaBeanXmlWriter {
 
     //-----------------------------------------------------------------------
     private void writeElements(final String currentIndent, final String tagName, final StringBuilder attrs, final SerIterator itemIterator) {
+        if (itemIterator.category() == SerCategory.GRID) {
+            appendAttribute(attrs, ROWS, Integer.toString(itemIterator.dimensionSize(0)));
+            appendAttribute(attrs, COLS, Integer.toString(itemIterator.dimensionSize(1)));
+        }
         if (itemIterator.size() == 0) {
             builder.append(currentIndent).append('<').append(tagName).append(attrs).append('/').append('>').append(settings.getNewLine());
         } else {
@@ -236,7 +242,7 @@ public class JodaBeanXmlWriter {
         StringConverter<Object> rowConverter = null;
         StringConverter<Object> columnConverter = null;
         boolean keyBean = false;
-        if (itemIterator.category() == SerCategory.TABLE) {
+        if (itemIterator.category() == SerCategory.TABLE || itemIterator.category() == SerCategory.GRID) {
             try {
                 rowConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
             } catch (RuntimeException ex) {

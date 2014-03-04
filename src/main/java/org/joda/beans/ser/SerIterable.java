@@ -34,6 +34,15 @@ public abstract class SerIterable {
     public abstract SerIterator iterator();
 
     /**
+     * Sets the dimensions of the wrapped collection.
+     * 
+     * @param dimensions  the dimension, 0 for row, 1 for column
+     */
+    public void dimensions(int[] dimensions) {
+        throw new IllegalArgumentException("Iterable does not support dimensinos");
+    }
+
+    /**
      * Adds an item to the builder.
      * 
      * @param key  the key, such as for a map, null if no key

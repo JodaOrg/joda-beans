@@ -65,6 +65,22 @@ public final class JodaBeanXml {
      */
     public static final QName KEY_QNAME = new QName(null, KEY);
     /**
+     * XML rows attribute.
+     */
+    public static final String ROWS = "rows";
+    /**
+     * XML rows QName.
+     */
+    public static final QName ROWS_QNAME = new QName(null, ROWS);
+    /**
+     * XML cols attribute.
+     */
+    public static final String COLS = "cols";
+    /**
+     * XML cols QName.
+     */
+    public static final QName COLS_QNAME = new QName(null, COLS);
+    /**
      * XML row attribute.
      */
     public static final String ROW = "row";

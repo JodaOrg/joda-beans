@@ -35,6 +35,10 @@ public enum SerCategory {
     /**
      * Table.
      */
-    TABLE;
+    TABLE,
+    /**
+     * Grid.
+     */
+    GRID;
 
 }

@@ -49,10 +49,15 @@ public class SerIteratorFactory {
     public static final SerIteratorFactory INSTANCE = getInstance();
     private static SerIteratorFactory getInstance() {
         try {
-            Class.forName("com.google.common.collect.Multimap");
-            return new GuavaSerIteratorFactory();
+            Class.forName("org.joda.collect.grid.Grid");
+            return new CollectSerIteratorFactory();
         } catch (Throwable ex) {
-            return new SerIteratorFactory();
+            try {
+                Class.forName("com.google.common.collect.Multimap");
+                return new GuavaSerIteratorFactory();
+            } catch (Throwable ex2) {
+                return new SerIteratorFactory();
+            }
         }
     }
     /**
