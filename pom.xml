@@ -9,7 +9,7 @@
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Beans</name>
-  <version>0.9.6</version>
+  <version>0.9.7</version>
   <description>Beans and Properties</description>
   <url>http://www.joda.org/joda-beans/</url>
 
@@ -348,6 +348,18 @@
       <version>1.6</version>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>16.0.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-collect</artifactId>
+      <version>0.7</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
       <version>1.4</version>
@@ -357,12 +369,6 @@
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>2.3.15</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>16.0.1</version>
       <optional>true</optional>
     </dependency>
     <dependency>

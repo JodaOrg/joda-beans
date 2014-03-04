@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9.7" date="xxx" description="v0.9.7">
+    <release version="0.9.7" date="2014-03-04" description="v0.9.7">
       <action dev="jodastephen" type="add">
        Add support for Joda-Collect Grid interface.
        Fixes #59.
