@@ -34,21 +34,25 @@ import org.joda.collect.grid.ImmutableGrid;
 public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
 
     /**
-     * Creates an iterator wrapper for an arbitrary value.
+     * Creates an iterator wrapper for a value retrieved from a parent iterator.
+     * <p>
+     * Allows the parent iterator to define the child iterator using generic type information.
+     * This handles cases such as a {@code List} as the value in a {@code Map}.
      * 
      * @param value  the possible collection-like object, not null
-     * @param types  the generic type parameters to use, empty if unknown
+     * @param parent  the parent iterator, not null
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterator create(final Object value, final List<Class<?>> types) {
+    public SerIterator createChild(final Object value, final SerIterator parent) {
+        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof Grid) {
-            if (types.size() == 1) {
-                return grid((Grid<?>) value, types.get(0), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 1) {
+                return grid((Grid<?>) value, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
             return grid((Grid<?>) value, Object.class, EMPTY_VALUE_TYPES);
         }
-        return super.create(value, types);
+        return super.createChild(value, parent);
     }
 
     /**

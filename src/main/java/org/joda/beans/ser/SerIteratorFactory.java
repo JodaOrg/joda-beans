@@ -67,32 +67,26 @@ public class SerIteratorFactory {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an iterator wrapper for an arbitrary value.
+     * Creates an iterator wrapper for a value retrieved from a parent iterator.
+     * <p>
+     * Allows the parent iterator to define the child iterator using generic type information.
+     * This handles cases such as a {@code List} as the value in a {@code Map}.
      * 
      * @param value  the possible collection-like object, not null
+     * @param parent  the parent iterator, not null
      * @return the iterator, null if not a collection-like type
      */
-    public SerIterator create(final Object value) {
-        return create(value, EMPTY_VALUE_TYPES);
-    }
-
-    /**
-     * Creates an iterator wrapper for an arbitrary value.
-     * 
-     * @param value  the possible collection-like object, not null
-     * @param types  the generic type parameters to use, empty if unknown
-     * @return the iterator, null if not a collection-like type
-     */
-    public SerIterator create(final Object value, final List<Class<?>> types) {
+    public SerIterator createChild(final Object value, final SerIterator parent) {
+        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof Collection) {
-            if (types.size() == 1) {
-                return collection((Collection<?>) value, types.get(0), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 1) {
+                return collection((Collection<?>) value, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
             return collection((Collection<?>) value, Object.class, EMPTY_VALUE_TYPES);
         }
         if (value instanceof Map) {
-            if (types.size() == 2) {
-                return map((Map<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 2) {
+                return map((Map<?, ?>) value, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
             }
             return map((Map<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }

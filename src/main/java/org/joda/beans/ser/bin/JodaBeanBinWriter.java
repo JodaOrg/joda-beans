@@ -19,7 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.Bean;
@@ -227,7 +226,7 @@ public class JodaBeanBinWriter {
         output.writeArrayHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
         }
     }
 
@@ -240,7 +239,7 @@ public class JodaBeanBinWriter {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
             }
             writeObject(itemIterator.keyType(), key, null);
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
         }
     }
 
@@ -249,9 +248,9 @@ public class JodaBeanBinWriter {
         while (itemIterator.hasNext()) {
             itemIterator.next();
             output.writeArrayHeader(3);
-            writeObject(itemIterator.keyType(), itemIterator.key(), itemIterator.valueTypeTypes());
-            writeObject(itemIterator.columnType(), itemIterator.column(), itemIterator.valueTypeTypes());
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+            writeObject(itemIterator.keyType(), itemIterator.key(), null);
+            writeObject(itemIterator.columnType(), itemIterator.column(), null);
+            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
         }
     }
 
@@ -269,7 +268,7 @@ public class JodaBeanBinWriter {
                 output.writeArrayHeader(3);
                 output.writeInt((Integer) itemIterator.key());
                 output.writeInt((Integer) itemIterator.column());
-                writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+                writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
             }
         } else {
             // dense
@@ -278,7 +277,7 @@ public class JodaBeanBinWriter {
             output.writeInt(columns);
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < columns; column++) {
-                    writeObject(itemIterator.valueType(), itemIterator.value(row, column), itemIterator.valueTypeTypes());
+                    writeObject(itemIterator.valueType(), itemIterator.value(row, column), itemIterator);
                 }
             }
         }
@@ -288,22 +287,22 @@ public class JodaBeanBinWriter {
         output.writeMapHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator.valueTypeTypes());
+            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
             output.writeInt(itemIterator.count());
         }
     }
 
-    private void writeObject(final Class<?> declaredType, final Object obj, List<Class<?>> valueTypeTypes) throws IOException {
+    private void writeObject(final Class<?> declaredType, final Object obj, SerIterator parentIterator) throws IOException {
         if (obj == null) {
             output.writeNil();
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
             writeSimple(declaredType, obj);
         } else if (obj instanceof Bean) {
             writeBean((Bean) obj, declaredType, RootType.NOT_ROOT);
-        } else if (valueTypeTypes != null) {
-            SerIterator childIterator = settings.getIteratorFactory().create(obj, valueTypeTypes);
+        } else if (parentIterator != null) {
+            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
             if (childIterator != null) {
-                if (valueTypeTypes.size() == 0) {
+                if (parentIterator.valueTypeTypes().size() == 0) {
                     output.writeMapHeader(1);
                     output.writeExtensionString(MsgPack.JODA_TYPE_META, childIterator.metaTypeName());
                 }

@@ -323,7 +323,7 @@ public class JodaBeanXmlWriter {
                 writeBean(currentIndent, tagName, attrs, valueType, (Bean) value);
             }
         } else {
-            SerIterator childIterator = settings.getIteratorFactory().create(value, itemIterator.valueTypeTypes());
+            SerIterator childIterator = settings.getIteratorFactory().createChild(value, itemIterator);
             if (childIterator != null) {
                 if (itemIterator.valueTypeTypes().size() == 0) {
                     appendAttribute(attrs, METATYPE, childIterator.metaTypeName());

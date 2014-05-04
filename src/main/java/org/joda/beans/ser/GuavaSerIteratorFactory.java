@@ -47,39 +47,45 @@ import com.google.common.collect.TreeMultiset;
 public class GuavaSerIteratorFactory extends SerIteratorFactory {
 
     /**
-     * Creates an iterator wrapper for an arbitrary value.
+     * Creates an iterator wrapper for a value retrieved from a parent iterator.
+     * <p>
+     * Allows the parent iterator to define the child iterator using generic type information.
+     * This handles cases such as a {@code List} as the value in a {@code Map}.
      * 
      * @param value  the possible collection-like object, not null
-     * @param types  the generic type parameters to use, empty if unknown
+     * @param parent  the parent iterator, not null
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterator create(final Object value, final List<Class<?>> types) {
+    public SerIterator createChild(final Object value, final SerIterator parent) {
+        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof BiMap) {
-            if (types.size() == 2) {
-                return biMap((BiMap<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 2) {
+                return biMap((BiMap<?, ?>) value, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
             }
             return biMap((BiMap<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         if (value instanceof Multimap) {
-            if (types.size() == 2) {
-                return multimap((Multimap<?, ?>) value, types.get(0), types.get(1), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 2) {
+                return multimap((Multimap<?, ?>) value, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
             }
             return multimap((Multimap<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         if (value instanceof Multiset) {
-            if (types.size() == 1) {
-                return multiset((Multiset<?>) value, types.get(0), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 1) {
+                return multiset((Multiset<?>) value, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
             return multiset((Multiset<?>) value, Object.class, EMPTY_VALUE_TYPES);
         }
         if (value instanceof Table) {
-            if (types.size() == 3) {
-                return table((Table<?, ?, ?>) value, types.get(0), types.get(1), types.get(2), EMPTY_VALUE_TYPES);
+            if (childGenericTypes.size() == 3) {
+                return table((Table<?, ?, ?>) value,
+                        childGenericTypes.get(0), childGenericTypes.get(1),
+                        childGenericTypes.get(2), EMPTY_VALUE_TYPES);
             }
             return table((Table<?, ?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
-        return super.create(value, types);
+        return super.createChild(value, parent);
     }
 
     /**
