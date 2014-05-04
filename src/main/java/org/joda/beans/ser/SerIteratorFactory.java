@@ -67,6 +67,33 @@ public class SerIteratorFactory {
 
     //-----------------------------------------------------------------------
     /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param value  the possible collection-like object, not null
+     * @param prop  the meta-property defining the value, not null
+     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @return the iterator, null if not a collection-like type
+     */
+    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+        if (value instanceof Collection) {
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return collection((Collection<?>) value, valueType, valueTypeTypes);
+        }
+        if (value instanceof Map) {
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return map((Map<?, ?>) value, keyType, valueType, valueTypeTypes);
+        }
+        if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
+            Object[] array = (Object[]) value;
+            return array(array, array.getClass().getComponentType());
+        }
+        return null;
+    }
+
+    /**
      * Creates an iterator wrapper for a value retrieved from a parent iterator.
      * <p>
      * Allows the parent iterator to define the child iterator using generic type information.
@@ -89,33 +116,6 @@ public class SerIteratorFactory {
                 return map((Map<?, ?>) value, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
             }
             return map((Map<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
-            Object[] array = (Object[]) value;
-            return array(array, array.getClass().getComponentType());
-        }
-        return null;
-    }
-
-    /**
-     * Creates an iterator wrapper for a meta-property value.
-     * 
-     * @param value  the possible collection-like object, not null
-     * @param prop  the meta-property defining the value, not null
-     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
-     * @return the iterator, null if not a collection-like type
-     */
-    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
-        if (value instanceof Collection) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return collection((Collection<?>) value, valueType, valueTypeTypes);
-        }
-        if (value instanceof Map) {
-            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return map((Map<?, ?>) value, keyType, valueType, valueTypeTypes);
         }
         if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
             Object[] array = (Object[]) value;

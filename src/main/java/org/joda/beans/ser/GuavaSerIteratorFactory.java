@@ -47,6 +47,42 @@ import com.google.common.collect.TreeMultiset;
 public class GuavaSerIteratorFactory extends SerIteratorFactory {
 
     /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param value  the possible collection-like object, not null
+     * @param prop  the meta-property defining the value, not null
+     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @return the iterator, null if not a collection-like type
+     */
+    @Override
+    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+        if (value instanceof BiMap) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return biMap((BiMap<?, ?>) value, keyType, valueType, valueTypeTypes);
+        }
+        if (value instanceof Multiset) {
+            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return multiset((Multiset<?>) value, valueType, valueTypeTypes);
+        }
+        if (value instanceof Multimap) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return multimap((Multimap<?, ?>) value, keyType, valueType, valueTypeTypes);
+        }
+        if (value instanceof Table) {
+            Class<?> rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
+            Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
+            Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
+            return table((Table<?, ?, ?>) value, rowType, colType, valueType, EMPTY_VALUE_TYPES);
+        }
+        return super.create(value, prop, beanClass);
+    }
+
+    /**
      * Creates an iterator wrapper for a value retrieved from a parent iterator.
      * <p>
      * Allows the parent iterator to define the child iterator using generic type information.
@@ -86,42 +122,6 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             return table((Table<?, ?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         return super.createChild(value, parent);
-    }
-
-    /**
-     * Creates an iterator wrapper for a meta-property value.
-     * 
-     * @param value  the possible collection-like object, not null
-     * @param prop  the meta-property defining the value, not null
-     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
-     * @return the iterator, null if not a collection-like type
-     */
-    @Override
-    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
-        if (value instanceof BiMap) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return biMap((BiMap<?, ?>) value, keyType, valueType, valueTypeTypes);
-        }
-        if (value instanceof Multiset) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return multiset((Multiset<?>) value, valueType, valueTypeTypes);
-        }
-        if (value instanceof Multimap) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return multimap((Multimap<?, ?>) value, keyType, valueType, valueTypeTypes);
-        }
-        if (value instanceof Table) {
-            Class<?> rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
-            Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
-            Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
-            return table((Table<?, ?, ?>) value, rowType, colType, valueType, EMPTY_VALUE_TYPES);
-        }
-        return super.create(value, prop, beanClass);
     }
 
     //-----------------------------------------------------------------------

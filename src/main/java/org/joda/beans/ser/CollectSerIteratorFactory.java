@@ -34,6 +34,24 @@ import org.joda.collect.grid.ImmutableGrid;
 public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
 
     /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param value  the possible collection-like object, not null
+     * @param prop  the meta-property defining the value, not null
+     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @return the iterator, null if not a collection-like type
+     */
+    @Override
+    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+        if (value instanceof Grid) {
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return grid((Grid<?>) value, valueType, valueTypeTypes);
+        }
+        return super.create(value, prop, beanClass);
+    }
+
+    /**
      * Creates an iterator wrapper for a value retrieved from a parent iterator.
      * <p>
      * Allows the parent iterator to define the child iterator using generic type information.
@@ -53,24 +71,6 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
             return grid((Grid<?>) value, Object.class, EMPTY_VALUE_TYPES);
         }
         return super.createChild(value, parent);
-    }
-
-    /**
-     * Creates an iterator wrapper for a meta-property value.
-     * 
-     * @param value  the possible collection-like object, not null
-     * @param prop  the meta-property defining the value, not null
-     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
-     * @return the iterator, null if not a collection-like type
-     */
-    @Override
-    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
-        if (value instanceof Grid) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return grid((Grid<?>) value, valueType, valueTypeTypes);
-        }
-        return super.create(value, prop, beanClass);
     }
 
     //-----------------------------------------------------------------------
