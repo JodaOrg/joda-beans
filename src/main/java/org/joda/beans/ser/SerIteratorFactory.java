@@ -113,13 +113,13 @@ public class SerIteratorFactory {
      */
     public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
         if (value instanceof Collection) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return collection((Collection<?>) value, valueType, valueTypeTypes);
         }
         if (value instanceof Map) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return map((Map<?, ?>) value, keyType, valueType, valueTypeTypes);
         }
@@ -128,6 +128,16 @@ public class SerIteratorFactory {
             return array(array, array.getClass().getComponentType());
         }
         return null;
+    }
+
+    /**
+     * Defaults input class to Object class.
+     * 
+     * @param type  the type, may be null
+     * @return the type, not null
+     */
+    protected Class<?> defaultToObjectClass(Class<?> type) {
+        return (type != null ? type : Object.class);
     }
 
     //-----------------------------------------------------------------------

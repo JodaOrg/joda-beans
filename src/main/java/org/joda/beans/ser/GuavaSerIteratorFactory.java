@@ -160,43 +160,43 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     @Override
     public SerIterable createIterable(final MetaProperty<?> prop, Class<?> beanClass) {
         if (BiMap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return biMap(keyType, valueType, valueTypeTypes);
         }
         if (SortedMultiset.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return sortedMultiset(valueType, valueTypeTypes);
         }
         if (Multiset.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return multiset(valueType, valueTypeTypes);
         }
         if (SetMultimap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return setMultimap(keyType, valueType, valueTypeTypes);
         }
         if (ListMultimap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return listMultimap(keyType, valueType, valueTypeTypes);
         }
         if (Multimap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return listMultimap(keyType, valueType, valueTypeTypes);
         }
         if (Table.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
-            Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
-            Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
+            Class<?> rowType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0));
+            Class<?> colType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2));
             return table(rowType, colType, valueType, EMPTY_VALUE_TYPES);
         }
         return super.createIterable(prop, beanClass);

@@ -62,7 +62,7 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
     @Override
     public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
         if (value instanceof Grid) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return grid((Grid<?>) value, valueType, valueTypeTypes);
         }
