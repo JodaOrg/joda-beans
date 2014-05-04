@@ -76,6 +76,21 @@ public final class ImmAddress implements ImmutableBean {
     @PropertyDefinition(validate = "notNull")
     private final ImmPerson owner;
     /**
+     * The object field.
+     */
+    @PropertyDefinition
+    private final Object object1;
+    /**
+     * The object field.
+     */
+    @PropertyDefinition
+    private final Object object2;
+    /**
+     * The object in map field.
+     */
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableMap<String, Object> objectInMap;
+    /**
      * The list in map field.
      */
     @PropertyDefinition(validate = "notNull")
@@ -154,6 +169,9 @@ public final class ImmAddress implements ImmutableBean {
             String city,
             byte[] data,
             ImmPerson owner,
+            Object object1,
+            Object object2,
+            Map<String, Object> objectInMap,
             Map<String, List<String>> listInMap,
             Map<String, List<Integer>> listNumericInMap,
             Map<String, List<List<Integer>>> listInListInMap,
@@ -167,6 +185,7 @@ public final class ImmAddress implements ImmutableBean {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
         JodaBeanUtils.notNull(owner, "owner");
+        JodaBeanUtils.notNull(objectInMap, "objectInMap");
         JodaBeanUtils.notNull(listInMap, "listInMap");
         JodaBeanUtils.notNull(listNumericInMap, "listNumericInMap");
         JodaBeanUtils.notNull(listInListInMap, "listInListInMap");
@@ -178,6 +197,9 @@ public final class ImmAddress implements ImmutableBean {
         this.city = city;
         this.data = (data != null ? data.clone() : null);
         this.owner = owner;
+        this.object1 = object1;
+        this.object2 = object2;
+        this.objectInMap = ImmutableMap.copyOf(objectInMap);
         this.listInMap = ImmutableMap.copyOf(listInMap);
         this.listNumericInMap = ImmutableMap.copyOf(listNumericInMap);
         this.listInListInMap = ImmutableMap.copyOf(listInListInMap);
@@ -249,6 +271,33 @@ public final class ImmAddress implements ImmutableBean {
      */
     public ImmPerson getOwner() {
         return owner;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the object field.
+     * @return the value of the property
+     */
+    public Object getObject1() {
+        return object1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the object field.
+     * @return the value of the property
+     */
+    public Object getObject2() {
+        return object2;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the object in map field.
+     * @return the value of the property, not null
+     */
+    public ImmutableMap<String, Object> getObjectInMap() {
+        return objectInMap;
     }
 
     //-----------------------------------------------------------------------
@@ -367,6 +416,9 @@ public final class ImmAddress implements ImmutableBean {
                     JodaBeanUtils.equal(getCity(), other.getCity()) &&
                     JodaBeanUtils.equal(getData(), other.getData()) &&
                     JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
+                    JodaBeanUtils.equal(getObject1(), other.getObject1()) &&
+                    JodaBeanUtils.equal(getObject2(), other.getObject2()) &&
+                    JodaBeanUtils.equal(getObjectInMap(), other.getObjectInMap()) &&
                     JodaBeanUtils.equal(getListInMap(), other.getListInMap()) &&
                     JodaBeanUtils.equal(getListNumericInMap(), other.getListNumericInMap()) &&
                     JodaBeanUtils.equal(getListInListInMap(), other.getListInListInMap()) &&
@@ -389,6 +441,9 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
         hash += hash * 31 + JodaBeanUtils.hashCode(getData());
         hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getObject1());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getObject2());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getObjectInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInListInMap());
@@ -404,13 +459,16 @@ public final class ImmAddress implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(512);
+        StringBuilder buf = new StringBuilder(608);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
         buf.append("city").append('=').append(getCity()).append(',').append(' ');
         buf.append("data").append('=').append(getData()).append(',').append(' ');
         buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
+        buf.append("object1").append('=').append(getObject1()).append(',').append(' ');
+        buf.append("object2").append('=').append(getObject2()).append(',').append(' ');
+        buf.append("objectInMap").append('=').append(getObjectInMap()).append(',').append(' ');
         buf.append("listInMap").append('=').append(getListInMap()).append(',').append(' ');
         buf.append("listNumericInMap").append('=').append(getListNumericInMap()).append(',').append(' ');
         buf.append("listInListInMap").append('=').append(getListInListInMap()).append(',').append(' ');
@@ -460,6 +518,22 @@ public final class ImmAddress implements ImmutableBean {
          */
         private final MetaProperty<ImmPerson> owner = DirectMetaProperty.ofImmutable(
                 this, "owner", ImmAddress.class, ImmPerson.class);
+        /**
+         * The meta-property for the {@code object1} property.
+         */
+        private final MetaProperty<Object> object1 = DirectMetaProperty.ofImmutable(
+                this, "object1", ImmAddress.class, Object.class);
+        /**
+         * The meta-property for the {@code object2} property.
+         */
+        private final MetaProperty<Object> object2 = DirectMetaProperty.ofImmutable(
+                this, "object2", ImmAddress.class, Object.class);
+        /**
+         * The meta-property for the {@code objectInMap} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableMap<String, Object>> objectInMap = DirectMetaProperty.ofImmutable(
+                this, "objectInMap", ImmAddress.class, (Class) ImmutableMap.class);
         /**
          * The meta-property for the {@code listInMap} property.
          */
@@ -530,6 +604,9 @@ public final class ImmAddress implements ImmutableBean {
                 "city",
                 "data",
                 "owner",
+                "object1",
+                "object2",
+                "objectInMap",
                 "listInMap",
                 "listNumericInMap",
                 "listInListInMap",
@@ -560,6 +637,12 @@ public final class ImmAddress implements ImmutableBean {
                     return data;
                 case 106164915:  // owner
                     return owner;
+                case -1659648814:  // object1
+                    return object1;
+                case -1659648813:  // object2
+                    return object2;
+                case -1297715720:  // objectInMap
+                    return objectInMap;
                 case -1244601351:  // listInMap
                     return listInMap;
                 case 391098024:  // listNumericInMap
@@ -638,6 +721,30 @@ public final class ImmAddress implements ImmutableBean {
          */
         public MetaProperty<ImmPerson> owner() {
             return owner;
+        }
+
+        /**
+         * The meta-property for the {@code object1} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Object> object1() {
+            return object1;
+        }
+
+        /**
+         * The meta-property for the {@code object2} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Object> object2() {
+            return object2;
+        }
+
+        /**
+         * The meta-property for the {@code objectInMap} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableMap<String, Object>> objectInMap() {
+            return objectInMap;
         }
 
         /**
@@ -734,6 +841,12 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getData();
                 case 106164915:  // owner
                     return ((ImmAddress) bean).getOwner();
+                case -1659648814:  // object1
+                    return ((ImmAddress) bean).getObject1();
+                case -1659648813:  // object2
+                    return ((ImmAddress) bean).getObject2();
+                case -1297715720:  // objectInMap
+                    return ((ImmAddress) bean).getObjectInMap();
                 case -1244601351:  // listInMap
                     return ((ImmAddress) bean).getListInMap();
                 case 391098024:  // listNumericInMap
@@ -780,6 +893,9 @@ public final class ImmAddress implements ImmutableBean {
         private String city;
         private byte[] data;
         private ImmPerson owner;
+        private Object object1;
+        private Object object2;
+        private Map<String, Object> objectInMap = new HashMap<String, Object>();
         private Map<String, List<String>> listInMap = new HashMap<String, List<String>>();
         private Map<String, List<Integer>> listNumericInMap = new HashMap<String, List<Integer>>();
         private Map<String, List<List<Integer>>> listInListInMap = new HashMap<String, List<List<Integer>>>();
@@ -807,6 +923,9 @@ public final class ImmAddress implements ImmutableBean {
             this.city = beanToCopy.getCity();
             this.data = (beanToCopy.getData() != null ? beanToCopy.getData().clone() : null);
             this.owner = beanToCopy.getOwner();
+            this.object1 = beanToCopy.getObject1();
+            this.object2 = beanToCopy.getObject2();
+            this.objectInMap = new HashMap<String, Object>(beanToCopy.getObjectInMap());
             this.listInMap = new HashMap<String, List<String>>(beanToCopy.getListInMap());
             this.listNumericInMap = new HashMap<String, List<Integer>>(beanToCopy.getListNumericInMap());
             this.listInListInMap = new HashMap<String, List<List<Integer>>>(beanToCopy.getListInListInMap());
@@ -833,6 +952,12 @@ public final class ImmAddress implements ImmutableBean {
                     return data;
                 case 106164915:  // owner
                     return owner;
+                case -1659648814:  // object1
+                    return object1;
+                case -1659648813:  // object2
+                    return object2;
+                case -1297715720:  // objectInMap
+                    return objectInMap;
                 case -1244601351:  // listInMap
                     return listInMap;
                 case 391098024:  // listNumericInMap
@@ -876,6 +1001,15 @@ public final class ImmAddress implements ImmutableBean {
                     break;
                 case 106164915:  // owner
                     this.owner = (ImmPerson) newValue;
+                    break;
+                case -1659648814:  // object1
+                    this.object1 = (Object) newValue;
+                    break;
+                case -1659648813:  // object2
+                    this.object2 = (Object) newValue;
+                    break;
+                case -1297715720:  // objectInMap
+                    this.objectInMap = (Map<String, Object>) newValue;
                     break;
                 case -1244601351:  // listInMap
                     this.listInMap = (Map<String, List<String>>) newValue;
@@ -945,6 +1079,9 @@ public final class ImmAddress implements ImmutableBean {
                     city,
                     data,
                     owner,
+                    object1,
+                    object2,
+                    objectInMap,
                     listInMap,
                     listNumericInMap,
                     listInListInMap,
@@ -1008,6 +1145,37 @@ public final class ImmAddress implements ImmutableBean {
         public Builder owner(ImmPerson owner) {
             JodaBeanUtils.notNull(owner, "owner");
             this.owner = owner;
+            return this;
+        }
+
+        /**
+         * Sets the {@code object1} property in the builder.
+         * @param object1  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder object1(Object object1) {
+            this.object1 = object1;
+            return this;
+        }
+
+        /**
+         * Sets the {@code object2} property in the builder.
+         * @param object2  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder object2(Object object2) {
+            this.object2 = object2;
+            return this;
+        }
+
+        /**
+         * Sets the {@code objectInMap} property in the builder.
+         * @param objectInMap  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder objectInMap(Map<String, Object> objectInMap) {
+            JodaBeanUtils.notNull(objectInMap, "objectInMap");
+            this.objectInMap = objectInMap;
             return this;
         }
 
@@ -1120,13 +1288,16 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(512);
+            StringBuilder buf = new StringBuilder(608);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
             buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
             buf.append("data").append('=').append(JodaBeanUtils.toString(data)).append(',').append(' ');
             buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
+            buf.append("object1").append('=').append(JodaBeanUtils.toString(object1)).append(',').append(' ');
+            buf.append("object2").append('=').append(JodaBeanUtils.toString(object2)).append(',').append(' ');
+            buf.append("objectInMap").append('=').append(JodaBeanUtils.toString(objectInMap)).append(',').append(' ');
             buf.append("listInMap").append('=').append(JodaBeanUtils.toString(listInMap)).append(',').append(' ');
             buf.append("listNumericInMap").append('=').append(JodaBeanUtils.toString(listNumericInMap)).append(',').append(' ');
             buf.append("listInListInMap").append('=').append(JodaBeanUtils.toString(listInListInMap)).append(',').append(' ');

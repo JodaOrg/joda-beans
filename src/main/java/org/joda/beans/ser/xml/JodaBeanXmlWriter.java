@@ -257,12 +257,11 @@ public class JodaBeanXmlWriter {
                 throw new IllegalArgumentException("Unable to write map as declared column type is neither a bean nor a simple type: " + itemIterator.columnType().getName(), ex);
             }
         } else if (itemIterator.category() == SerCategory.MAP) {
+            // if key type is known and convertible use short key format, else use full bean format
             if (settings.getConverter().isConvertible(itemIterator.keyType())) {
                 keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
-            } else if (Bean.class.isAssignableFrom(itemIterator.keyType())) {
-                keyBean = true;
             } else {
-                throw new IllegalArgumentException("Unable to write map as declared key type is neither a bean nor a simple type: " + itemIterator.keyType().getName());
+                keyBean = true;
             }
         }
         // output each item
@@ -284,11 +283,9 @@ public class JodaBeanXmlWriter {
             }
             if (keyBean) {
                 Object key = itemIterator.key();
-                if (key == null) {
-                    throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
-                }
                 builder.append(currentIndent).append('<').append(ENTRY).append(attr).append('>').append(settings.getNewLine());
-                writeKeyValueElement(currentIndent + settings.getIndent(), key, itemIterator);
+                writeKeyElement(currentIndent + settings.getIndent(), key, itemIterator);
+                writeValueElement(currentIndent + settings.getIndent(), ITEM, new StringBuilder(), itemIterator);
                 builder.append(currentIndent).append('<').append('/').append(ENTRY).append('>').append(settings.getNewLine());
             } else {
                 String tagName = itemIterator.category() == SerCategory.MAP ? ENTRY : ITEM;
@@ -308,9 +305,21 @@ public class JodaBeanXmlWriter {
         return str;
     }
 
-    private void writeKeyValueElement(final String currentIndent, Object key, final SerIterator itemIterator) {
-        writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), (Bean) key);
-        writeValueElement(currentIndent, ITEM, new StringBuilder(), itemIterator);
+    private void writeKeyElement(final String currentIndent, Object key, final SerIterator itemIterator) {
+        if (key == null) {
+            throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
+        }
+        if (Bean.class.isAssignableFrom(itemIterator.keyType())) {
+            writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), (Bean) key);
+        } else {
+            // this case covers where the key type is not known, such as an Object meta-property
+            try {
+                writeSimple(currentIndent, ITEM, new StringBuilder(), Object.class, key);
+            } catch (RuntimeException ex) {
+                throw new IllegalArgumentException("Unable to write map as declared key type is neither a bean nor a simple type: " + itemIterator.keyType().getName(), ex);
+            }
+            
+        }
     }
 
     private void writeValueElement(final String currentIndent, final String tagName, final StringBuilder attrs, final SerIterator itemIterator) {

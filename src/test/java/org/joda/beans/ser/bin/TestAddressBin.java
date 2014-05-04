@@ -48,6 +48,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 
 /**
@@ -111,6 +112,11 @@ public class TestAddressBin {
 //      List<Object> objects2 = Arrays.<Object>asList((Object[]) new Double[] {1.2d, 3.4d}, "Hello");
         map5.put("A", Arrays.asList(objects1));
         map5.put("B", Arrays.asList(objects2));
+        Map<String, Object> map6 = new HashMap<String, Object>();
+        map6.put("A", "Abba");
+        map6.put("B", ImmutableSet.of("a", "b"));
+        map6.put("C", ImmutableSet.copyOf(objects2));
+        map6.put("D", ImmutableMap.of("d", 1, "e", 2));
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
             .middleNames(new String[] {"K", "T"})
@@ -148,6 +154,9 @@ public class TestAddressBin {
             .number(185)
             .street("Park Street")
             .city("London & Capital of the World <!>\n")
+            .object1(ImmutableList.of("a", "b", "c"))
+            .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
+            .objectInMap(map6)
             .listInMap(map)
             .listNumericInMap(map2)
             .listInListInMap(map3)

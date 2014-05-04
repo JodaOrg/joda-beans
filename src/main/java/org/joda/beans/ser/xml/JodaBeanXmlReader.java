@@ -288,8 +288,18 @@ public class JodaBeanXmlReader {
                             if (iterable != null) {
                                 value = parseIterable(start, iterable);
                             } else {
-                                String text = advanceAndParseText();
-                                value = settings.getConverter().convertFromString(childType, text);
+                                // metatype
+                                Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
+                                if (metaTypeAttr != null) {
+                                    iterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
+                                    if (iterable == null) {
+                                        throw new IllegalArgumentException("Invalid metaType");
+                                    }
+                                    value = parseIterable(start, iterable);
+                                } else {
+                                    String text = advanceAndParseText();
+                                    value = settings.getConverter().convertFromString(childType, text);
+                                }
                             }
                         }
                         deser.setValue(builder, metaProp, value);
@@ -369,9 +379,6 @@ public class JodaBeanXmlReader {
                         
                     } else {
                         // two items nested in this entry
-                        if (Bean.class.isAssignableFrom(iterable.keyType()) == false) {
-                            throw new IllegalArgumentException("Unable to read map as declared key type is neither a bean nor a simple type: " + iterable.keyType().getName());
-                        }
                         event = nextEvent(">>map ");
                         int loop = 0;
                         while (event.isEndElement() == false) {
@@ -407,10 +414,10 @@ public class JodaBeanXmlReader {
     private Object parseKey(final SerIterable iterable, StartElement start) throws Exception {
         // type
         Class<?> childType = parseTypeAttribute(start, iterable.keyType());
-        if (Bean.class.isAssignableFrom(childType)) {
+        if (Bean.class.isAssignableFrom(childType) || settings.getConverter().isConvertible(childType)) {
             return parseBean(childType);
         } else {
-            throw new IllegalArgumentException("Unable to read map as parsed key type is not a bean: " + childType.getName());
+            throw new IllegalArgumentException("Unable to read map as parsed key type is neither a bean nor a simple type: " + childType.getName());
         }
     }
 

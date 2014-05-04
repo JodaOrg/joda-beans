@@ -247,13 +247,12 @@ public class JodaBeanBinReader extends MsgPack {
         } else {
             if (isMap(typeByte) || isArray(typeByte)) {
                 SerIterable childIterable = null;
-                if (metaProp != null) {
+                if (metaType != null) {
+                    childIterable = SerIteratorFactory.INSTANCE.createIterable(metaType, settings, knownTypes);
+                } else if (metaProp != null) {
                     childIterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
                 } else if (parentIterable != null) {
                     childIterable = SerIteratorFactory.INSTANCE.createIterable(parentIterable);
-                    if (childIterable == null && metaType != null) {
-                        childIterable = SerIteratorFactory.INSTANCE.createIterable(metaType, settings, knownTypes);
-                    }
                 }
                 if (childIterable == null) {
                     throw new IllegalArgumentException("Invalid binary data: Invalid metaType: " + metaType);
