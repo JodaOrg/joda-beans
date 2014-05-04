@@ -34,6 +34,13 @@ public abstract class SerIterator {
     public abstract String metaTypeName();
 
     /**
+     * Checks if the meta type of the underlying is required.
+     * 
+     * @return true if generic inspection is insufficient to determine the collection
+     */
+    public abstract boolean metaTypeRequired();
+
+    /**
      * Gets the size of one dimension of the wrapped collection.
      * 
      * @param dimension  the dimension, 0 for row, 1 for column

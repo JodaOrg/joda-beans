@@ -43,10 +43,11 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      */
     @Override
     public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+        Class<?> declaredType = prop.propertyType();
         if (value instanceof Grid) {
             Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return grid((Grid<?>) value, valueType, valueTypeTypes);
+            return grid((Grid<?>) value, declaredType, valueType, valueTypeTypes);
         }
         return super.create(value, prop, beanClass);
     }
@@ -63,12 +64,13 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      */
     @Override
     public SerIterator createChild(final Object value, final SerIterator parent) {
+        Class<?> declaredType = parent.valueType();
         List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof Grid) {
             if (childGenericTypes.size() == 1) {
-                return grid((Grid<?>) value, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
+                return grid((Grid<?>) value, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
-            return grid((Grid<?>) value, Object.class, EMPTY_VALUE_TYPES);
+            return grid((Grid<?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         return super.createChild(value, parent);
     }
@@ -121,7 +123,7 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
             private int[] dimensions;
             @Override
             public SerIterator iterator() {
-                return grid(build(), valueType, valueTypeTypes);
+                return grid(build(), Object.class, valueType, valueTypeTypes);
             }
             @Override
             public void dimensions(int[] dimensions) {
@@ -168,12 +170,15 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * Gets an iterator wrapper for {@code Grid}.
      * 
      * @param grid  the collection, not null
+     * @param declaredType  the declared type, not null
      * @param valueType  the value type, not null
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator grid(final Grid<?> grid, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static final SerIterator grid(
+            final Grid<?> grid, final Class<?> declaredType,
+            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = grid.cells().iterator();
             private Grid.Cell current;
@@ -181,6 +186,10 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
             @Override
             public String metaTypeName() {
                 return "Grid";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                return Grid.class.isAssignableFrom(declaredType) == false;
             }
             @Override
             public SerCategory category() {

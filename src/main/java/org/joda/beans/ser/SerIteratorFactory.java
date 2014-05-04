@@ -75,20 +75,21 @@ public class SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+        Class<?> declaredType = prop.propertyType();
         if (value instanceof Collection) {
             Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return collection((Collection<?>) value, valueType, valueTypeTypes);
+            return collection((Collection<?>) value, declaredType, valueType, valueTypeTypes);
         }
         if (value instanceof Map) {
             Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
             Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
             List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return map((Map<?, ?>) value, keyType, valueType, valueTypeTypes);
+            return map((Map<?, ?>) value, declaredType, keyType, valueType, valueTypeTypes);
         }
         if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
             Object[] array = (Object[]) value;
-            return array(array, array.getClass().getComponentType());
+            return array(array, declaredType, array.getClass().getComponentType());
         }
         return null;
     }
@@ -104,22 +105,23 @@ public class SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     public SerIterator createChild(final Object value, final SerIterator parent) {
+        Class<?> declaredType = parent.valueType();
         List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof Collection) {
             if (childGenericTypes.size() == 1) {
-                return collection((Collection<?>) value, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
+                return collection((Collection<?>) value, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
-            return collection((Collection<?>) value, Object.class, EMPTY_VALUE_TYPES);
+            return collection((Collection<?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         if (value instanceof Map) {
             if (childGenericTypes.size() == 2) {
-                return map((Map<?, ?>) value, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
+                return map((Map<?, ?>) value, declaredType, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
             }
-            return map((Map<?, ?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            return map((Map<?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
             Object[] array = (Object[]) value;
-            return array(array, array.getClass().getComponentType());
+            return array(array, Object.class, Object.class);
         }
         return null;
     }
@@ -278,12 +280,13 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable list(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static final SerIterable list(
+            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
         final List<Object> coll = new ArrayList<Object>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
-                return collection(coll, valueType, valueTypeTypes);
+                return collection(coll, Object.class, valueType, valueTypeTypes);
             }
             @Override
             public void add(Object key, Object column, Object value, int count) {
@@ -345,11 +348,12 @@ public class SerIteratorFactory {
         return set(valueType, valueTypeTypes, coll);
     }
 
-    private static SerIterable set(final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Set<Object> coll) {
+    private static SerIterable set(
+            final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Set<Object> coll) {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
-                return collection(coll, valueType, valueTypeTypes);
+                return collection(coll, Object.class, valueType, valueTypeTypes);
             }
             @Override
             public void add(Object key, Object column, Object value, int count) {
@@ -379,12 +383,14 @@ public class SerIteratorFactory {
      * Gets an iterator wrapper for {@code Collection}.
      * 
      * @param coll  the collection, not null
+     * @param declaredType  the declared type, not null
      * @param valueType  the value type, not null
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator collection(final Collection<?> coll, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static final SerIterator collection(
+            final Collection<?> coll, final Class<?> declaredType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = coll.iterator();
             private Object current;
@@ -398,6 +404,16 @@ public class SerIteratorFactory {
                     return "List";
                 }
                 return "Collection";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                if (coll instanceof Set) {
+                    return Set.class.isAssignableFrom(declaredType) == false;
+                }
+                if (coll instanceof List) {
+                    return List.class.isAssignableFrom(declaredType) == false;
+                }
+                return Collection.class.isAssignableFrom(declaredType) == false;
             }
             @Override
             public int size() {
@@ -466,11 +482,13 @@ public class SerIteratorFactory {
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
-    static SerIterable map(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Map<Object, Object> map) {
+    static SerIterable map(
+            final Class<?> keyType, final Class<?> valueType,
+            final List<Class<?>> valueTypeTypes, final Map<Object, Object> map) {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
-                return map(map, keyType, valueType, valueTypeTypes);
+                return map(map, Object.class, keyType, valueType, valueTypeTypes);
             }
             @Override
             public void add(Object key, Object column, Object value, int count) {
@@ -509,13 +527,16 @@ public class SerIteratorFactory {
      * Gets an iterator wrapper for {@code Map}.
      * 
      * @param map  the collection, not null
+     * @param declaredType  the declared type, not null
      * @param keyType  the value type, not null
      * @param valueType  the value type, not null
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator map(final Map<?, ?> map, final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static final SerIterator map(
+            final Map<?, ?> map, final Class<?> declaredType,
+            final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = map.entrySet().iterator();
             private Entry current;
@@ -523,6 +544,10 @@ public class SerIteratorFactory {
             @Override
             public String metaTypeName() {
                 return "Map";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                return Map.class.isAssignableFrom(declaredType) == false;
             }
             @Override
             public SerCategory category() {
@@ -575,7 +600,7 @@ public class SerIteratorFactory {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
-                return array(build(), valueType);
+                return array(build(), Object.class, valueType);
             }
             @Override
             public void add(Object key, Object column, Object value, int count) {
@@ -609,10 +634,12 @@ public class SerIteratorFactory {
      * Gets an iterator wrapper for an array.
      * 
      * @param array  the array, not null
+     * @param declaredType  the declared type, not null
      * @param valueType  the value type, not null
      * @return the iterator, not null
      */
-    public static final SerIterator array(final Object[] array, final Class<?> valueType) {
+    public static final SerIterator array(
+            final Object[] array, final Class<?> declaredType, final Class<?> valueType) {
         return new SerIterator() {
             private int index = -1;
 
@@ -625,6 +652,16 @@ public class SerIteratorFactory {
                     return "String[]";
                 }
                 return valueType.getName() + "[]";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                if (valueType == Object.class) {
+                    return Object[].class.isAssignableFrom(declaredType) == false;
+                }
+                if (valueType == String.class) {
+                    return String[].class.isAssignableFrom(declaredType) == false;
+                }
+                return true;
             }
             @Override
             public int size() {

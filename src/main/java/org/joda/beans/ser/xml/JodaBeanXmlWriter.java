@@ -223,6 +223,9 @@ public class JodaBeanXmlWriter {
 
     //-----------------------------------------------------------------------
     private void writeElements(final String currentIndent, final String tagName, final StringBuilder attrs, final SerIterator itemIterator) {
+        if (itemIterator.metaTypeRequired()) {
+            appendAttribute(attrs, METATYPE, itemIterator.metaTypeName());
+        }
         if (itemIterator.category() == SerCategory.GRID) {
             appendAttribute(attrs, ROWS, Integer.toString(itemIterator.dimensionSize(0)));
             appendAttribute(attrs, COLS, Integer.toString(itemIterator.dimensionSize(1)));
@@ -325,9 +328,6 @@ public class JodaBeanXmlWriter {
         } else {
             SerIterator childIterator = settings.getIteratorFactory().createChild(value, itemIterator);
             if (childIterator != null) {
-                if (itemIterator.valueTypeTypes().size() == 0) {
-                    appendAttribute(attrs, METATYPE, childIterator.metaTypeName());
-                }
                 writeElements(currentIndent, tagName, attrs, childIterator);
             } else {
                 writeSimple(currentIndent, tagName, attrs, valueType, value);

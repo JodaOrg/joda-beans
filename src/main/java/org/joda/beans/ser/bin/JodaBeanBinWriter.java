@@ -209,6 +209,10 @@ public class JodaBeanBinWriter {
 
     //-----------------------------------------------------------------------
     private void writeElements(final SerIterator itemIterator) throws IOException {
+        if (itemIterator.metaTypeRequired()) {
+            output.writeMapHeader(1);
+            output.writeExtensionString(MsgPack.JODA_TYPE_META, itemIterator.metaTypeName());
+        }
         if (itemIterator.category() == SerCategory.MAP) {
             writeMap(itemIterator);
         } else if (itemIterator.category() == SerCategory.COUNTED) {
@@ -302,10 +306,6 @@ public class JodaBeanBinWriter {
         } else if (parentIterator != null) {
             SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
             if (childIterator != null) {
-                if (parentIterator.valueTypeTypes().size() == 0) {
-                    output.writeMapHeader(1);
-                    output.writeExtensionString(MsgPack.JODA_TYPE_META, childIterator.metaTypeName());
-                }
                 writeElements(childIterator);
             } else {
                 writeSimple(declaredType, obj);
