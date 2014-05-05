@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,11 @@ public final class ImmAddress implements ImmutableBean {
      */
     @PropertyDefinition
     private final Object object2;
+    /**
+     * The serializable field.
+     */
+    @PropertyDefinition
+    private final Serializable serializable;
     /**
      * The object in map field.
      */
@@ -171,6 +177,7 @@ public final class ImmAddress implements ImmutableBean {
             ImmPerson owner,
             Object object1,
             Object object2,
+            Serializable serializable,
             Map<String, Object> objectInMap,
             Map<String, List<String>> listInMap,
             Map<String, List<Integer>> listNumericInMap,
@@ -199,6 +206,7 @@ public final class ImmAddress implements ImmutableBean {
         this.owner = owner;
         this.object1 = object1;
         this.object2 = object2;
+        this.serializable = serializable;
         this.objectInMap = ImmutableMap.copyOf(objectInMap);
         this.listInMap = ImmutableMap.copyOf(listInMap);
         this.listNumericInMap = ImmutableMap.copyOf(listNumericInMap);
@@ -289,6 +297,15 @@ public final class ImmAddress implements ImmutableBean {
      */
     public Object getObject2() {
         return object2;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the serializable field.
+     * @return the value of the property
+     */
+    public Serializable getSerializable() {
+        return serializable;
     }
 
     //-----------------------------------------------------------------------
@@ -418,6 +435,7 @@ public final class ImmAddress implements ImmutableBean {
                     JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
                     JodaBeanUtils.equal(getObject1(), other.getObject1()) &&
                     JodaBeanUtils.equal(getObject2(), other.getObject2()) &&
+                    JodaBeanUtils.equal(getSerializable(), other.getSerializable()) &&
                     JodaBeanUtils.equal(getObjectInMap(), other.getObjectInMap()) &&
                     JodaBeanUtils.equal(getListInMap(), other.getListInMap()) &&
                     JodaBeanUtils.equal(getListNumericInMap(), other.getListNumericInMap()) &&
@@ -443,6 +461,7 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
         hash += hash * 31 + JodaBeanUtils.hashCode(getObject1());
         hash += hash * 31 + JodaBeanUtils.hashCode(getObject2());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getSerializable());
         hash += hash * 31 + JodaBeanUtils.hashCode(getObjectInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListInMap());
         hash += hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
@@ -459,7 +478,7 @@ public final class ImmAddress implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(608);
+        StringBuilder buf = new StringBuilder(640);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
@@ -468,6 +487,7 @@ public final class ImmAddress implements ImmutableBean {
         buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
         buf.append("object1").append('=').append(getObject1()).append(',').append(' ');
         buf.append("object2").append('=').append(getObject2()).append(',').append(' ');
+        buf.append("serializable").append('=').append(getSerializable()).append(',').append(' ');
         buf.append("objectInMap").append('=').append(getObjectInMap()).append(',').append(' ');
         buf.append("listInMap").append('=').append(getListInMap()).append(',').append(' ');
         buf.append("listNumericInMap").append('=').append(getListNumericInMap()).append(',').append(' ');
@@ -528,6 +548,11 @@ public final class ImmAddress implements ImmutableBean {
          */
         private final MetaProperty<Object> object2 = DirectMetaProperty.ofImmutable(
                 this, "object2", ImmAddress.class, Object.class);
+        /**
+         * The meta-property for the {@code serializable} property.
+         */
+        private final MetaProperty<Serializable> serializable = DirectMetaProperty.ofImmutable(
+                this, "serializable", ImmAddress.class, Serializable.class);
         /**
          * The meta-property for the {@code objectInMap} property.
          */
@@ -606,6 +631,7 @@ public final class ImmAddress implements ImmutableBean {
                 "owner",
                 "object1",
                 "object2",
+                "serializable",
                 "objectInMap",
                 "listInMap",
                 "listNumericInMap",
@@ -641,6 +667,8 @@ public final class ImmAddress implements ImmutableBean {
                     return object1;
                 case -1659648813:  // object2
                     return object2;
+                case 861034751:  // serializable
+                    return serializable;
                 case -1297715720:  // objectInMap
                     return objectInMap;
                 case -1244601351:  // listInMap
@@ -737,6 +765,14 @@ public final class ImmAddress implements ImmutableBean {
          */
         public MetaProperty<Object> object2() {
             return object2;
+        }
+
+        /**
+         * The meta-property for the {@code serializable} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Serializable> serializable() {
+            return serializable;
         }
 
         /**
@@ -845,6 +881,8 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getObject1();
                 case -1659648813:  // object2
                     return ((ImmAddress) bean).getObject2();
+                case 861034751:  // serializable
+                    return ((ImmAddress) bean).getSerializable();
                 case -1297715720:  // objectInMap
                     return ((ImmAddress) bean).getObjectInMap();
                 case -1244601351:  // listInMap
@@ -895,6 +933,7 @@ public final class ImmAddress implements ImmutableBean {
         private ImmPerson owner;
         private Object object1;
         private Object object2;
+        private Serializable serializable;
         private Map<String, Object> objectInMap = new HashMap<String, Object>();
         private Map<String, List<String>> listInMap = new HashMap<String, List<String>>();
         private Map<String, List<Integer>> listNumericInMap = new HashMap<String, List<Integer>>();
@@ -925,6 +964,7 @@ public final class ImmAddress implements ImmutableBean {
             this.owner = beanToCopy.getOwner();
             this.object1 = beanToCopy.getObject1();
             this.object2 = beanToCopy.getObject2();
+            this.serializable = beanToCopy.getSerializable();
             this.objectInMap = new HashMap<String, Object>(beanToCopy.getObjectInMap());
             this.listInMap = new HashMap<String, List<String>>(beanToCopy.getListInMap());
             this.listNumericInMap = new HashMap<String, List<Integer>>(beanToCopy.getListNumericInMap());
@@ -956,6 +996,8 @@ public final class ImmAddress implements ImmutableBean {
                     return object1;
                 case -1659648813:  // object2
                     return object2;
+                case 861034751:  // serializable
+                    return serializable;
                 case -1297715720:  // objectInMap
                     return objectInMap;
                 case -1244601351:  // listInMap
@@ -1007,6 +1049,9 @@ public final class ImmAddress implements ImmutableBean {
                     break;
                 case -1659648813:  // object2
                     this.object2 = (Object) newValue;
+                    break;
+                case 861034751:  // serializable
+                    this.serializable = (Serializable) newValue;
                     break;
                 case -1297715720:  // objectInMap
                     this.objectInMap = (Map<String, Object>) newValue;
@@ -1081,6 +1126,7 @@ public final class ImmAddress implements ImmutableBean {
                     owner,
                     object1,
                     object2,
+                    serializable,
                     objectInMap,
                     listInMap,
                     listNumericInMap,
@@ -1165,6 +1211,16 @@ public final class ImmAddress implements ImmutableBean {
          */
         public Builder object2(Object object2) {
             this.object2 = object2;
+            return this;
+        }
+
+        /**
+         * Sets the {@code serializable} property in the builder.
+         * @param serializable  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder serializable(Serializable serializable) {
+            this.serializable = serializable;
             return this;
         }
 
@@ -1288,7 +1344,7 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(608);
+            StringBuilder buf = new StringBuilder(640);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
@@ -1297,6 +1353,7 @@ public final class ImmAddress implements ImmutableBean {
             buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
             buf.append("object1").append('=').append(JodaBeanUtils.toString(object1)).append(',').append(' ');
             buf.append("object2").append('=').append(JodaBeanUtils.toString(object2)).append(',').append(' ');
+            buf.append("serializable").append('=').append(JodaBeanUtils.toString(serializable)).append(',').append(' ');
             buf.append("objectInMap").append('=').append(JodaBeanUtils.toString(objectInMap)).append(',').append(' ');
             buf.append("listInMap").append('=').append(JodaBeanUtils.toString(listInMap)).append(',').append(' ');
             buf.append("listNumericInMap").append('=').append(JodaBeanUtils.toString(listNumericInMap)).append(',').append(' ');

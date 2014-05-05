@@ -156,6 +156,7 @@ public class TestAddressBin {
             .city("London & Capital of the World <!>\n")
             .object1(ImmutableList.of("a", "b", "c"))
             .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
+            .serializable(ImmutableList.of("a", "b", "c"))
             .objectInMap(map6)
             .listInMap(map)
             .listNumericInMap(map2)
