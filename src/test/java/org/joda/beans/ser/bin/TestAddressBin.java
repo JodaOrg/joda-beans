@@ -154,6 +154,7 @@ public class TestAddressBin {
             .number(185)
             .street("Park Street")
             .city("London & Capital of the World <!>\n")
+            .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
             .object1(ImmutableList.of("a", "b", "c"))
             .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
             .serializable(ImmutableList.of("a", "b", "c"))

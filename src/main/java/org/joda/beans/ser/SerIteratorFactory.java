@@ -121,7 +121,7 @@ public class SerIteratorFactory {
         }
         if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
             Object[] array = (Object[]) value;
-            return array(array, Object.class, Object.class);
+            return array(array, Object.class, value.getClass().getComponentType());
         }
         return null;
     }
@@ -158,10 +158,26 @@ public class SerIteratorFactory {
         if (metaTypeDescription.equals("Map")) {
             return map(Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
-        if (metaTypeDescription.equals("Object[]")) {
-            return array(Object.class);
+        if (metaTypeDescription.endsWith("[][][]")) {
+            throw new IllegalArgumentException("Three-dimensional arrays cannot be parsed");
+        }
+        if (metaTypeDescription.endsWith("[][]")) {
+            if (metaTypeDescription.equals("Object[][]")) {
+                return array(Object[].class);
+            }
+            String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 4);
+            try {
+                Class<?> cls = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
+                String compound = "[L" + cls.getName() + ";";
+                return array(Class.forName(compound));  // needs to be Class.forName
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         if (metaTypeDescription.endsWith("[]")) {
+            if (metaTypeDescription.equals("Object[]")) {
+                return array(Object.class);
+            }
             String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
             try {
                 Class<?> cls = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
@@ -645,13 +661,19 @@ public class SerIteratorFactory {
 
             @Override
             public String metaTypeName() {
-                if (valueType == Object.class) {
+                return metaTypeNameBase(valueType);
+            }
+            private String metaTypeNameBase(Class<?> arrayType) {
+                if (arrayType.isArray()) {
+                    return metaTypeNameBase(arrayType.getComponentType()) + "[]";
+                }
+                if (arrayType == Object.class) {
                     return "Object[]";
                 }
-                if (valueType == String.class) {
+                if (arrayType == String.class) {
                     return "String[]";
                 }
-                return valueType.getName() + "[]";
+                return arrayType.getName() + "[]";
             }
             @Override
             public boolean metaTypeRequired() {

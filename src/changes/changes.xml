@@ -8,6 +8,16 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.8" date="xxxx-xx-xx" description="v0.9.8">
+      <action dev="jodastephen" type="fix">
+       Enhance and fix 2D array support in serialization.
+       Fixes #61.
+      </action>
+      <action dev="jodastephen" type="fix">
+       Enhance and fix meta-type support in serialization.
+       Fixes #60.
+      </action>
+    </release>
     <release version="0.9.7" date="2014-03-04" description="v0.9.7">
       <action dev="jodastephen" type="add">
        Add support for Joda-Collect Grid interface.

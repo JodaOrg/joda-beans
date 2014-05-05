@@ -72,6 +72,11 @@ public final class ImmAddress implements ImmutableBean {
     @PropertyDefinition
     private final byte[] data;
     /**
+     * The 2D array.
+     */
+    @PropertyDefinition
+    private final String[][] array2d;
+    /**
      * The owner.
      */
     @PropertyDefinition(validate = "notNull")
@@ -174,6 +179,7 @@ public final class ImmAddress implements ImmutableBean {
             String street,
             String city,
             byte[] data,
+            String[][] array2d,
             ImmPerson owner,
             Object object1,
             Object object2,
@@ -203,6 +209,7 @@ public final class ImmAddress implements ImmutableBean {
         this.street = street;
         this.city = city;
         this.data = (data != null ? data.clone() : null);
+        this.array2d = array2d;
         this.owner = owner;
         this.object1 = object1;
         this.object2 = object2;
@@ -270,6 +277,15 @@ public final class ImmAddress implements ImmutableBean {
      */
     public byte[] getData() {
         return (data != null ? data.clone() : null);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the 2D array.
+     * @return the value of the property
+     */
+    public String[][] getArray2d() {
+        return array2d;
     }
 
     //-----------------------------------------------------------------------
@@ -432,6 +448,7 @@ public final class ImmAddress implements ImmutableBean {
                     JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
                     JodaBeanUtils.equal(getCity(), other.getCity()) &&
                     JodaBeanUtils.equal(getData(), other.getData()) &&
+                    JodaBeanUtils.equal(getArray2d(), other.getArray2d()) &&
                     JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
                     JodaBeanUtils.equal(getObject1(), other.getObject1()) &&
                     JodaBeanUtils.equal(getObject2(), other.getObject2()) &&
@@ -458,6 +475,7 @@ public final class ImmAddress implements ImmutableBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
         hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
         hash += hash * 31 + JodaBeanUtils.hashCode(getData());
+        hash += hash * 31 + JodaBeanUtils.hashCode(getArray2d());
         hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
         hash += hash * 31 + JodaBeanUtils.hashCode(getObject1());
         hash += hash * 31 + JodaBeanUtils.hashCode(getObject2());
@@ -478,12 +496,13 @@ public final class ImmAddress implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(640);
+        StringBuilder buf = new StringBuilder(672);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("street").append('=').append(getStreet()).append(',').append(' ');
         buf.append("city").append('=').append(getCity()).append(',').append(' ');
         buf.append("data").append('=').append(getData()).append(',').append(' ');
+        buf.append("array2d").append('=').append(getArray2d()).append(',').append(' ');
         buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
         buf.append("object1").append('=').append(getObject1()).append(',').append(' ');
         buf.append("object2").append('=').append(getObject2()).append(',').append(' ');
@@ -533,6 +552,11 @@ public final class ImmAddress implements ImmutableBean {
          */
         private final MetaProperty<byte[]> data = DirectMetaProperty.ofImmutable(
                 this, "data", ImmAddress.class, byte[].class);
+        /**
+         * The meta-property for the {@code array2d} property.
+         */
+        private final MetaProperty<String[][]> array2d = DirectMetaProperty.ofImmutable(
+                this, "array2d", ImmAddress.class, String[][].class);
         /**
          * The meta-property for the {@code owner} property.
          */
@@ -628,6 +652,7 @@ public final class ImmAddress implements ImmutableBean {
                 "street",
                 "city",
                 "data",
+                "array2d",
                 "owner",
                 "object1",
                 "object2",
@@ -661,6 +686,8 @@ public final class ImmAddress implements ImmutableBean {
                     return city;
                 case 3076010:  // data
                     return data;
+                case -734443893:  // array2d
+                    return array2d;
                 case 106164915:  // owner
                     return owner;
                 case -1659648814:  // object1
@@ -741,6 +768,14 @@ public final class ImmAddress implements ImmutableBean {
          */
         public MetaProperty<byte[]> data() {
             return data;
+        }
+
+        /**
+         * The meta-property for the {@code array2d} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<String[][]> array2d() {
+            return array2d;
         }
 
         /**
@@ -875,6 +910,8 @@ public final class ImmAddress implements ImmutableBean {
                     return ((ImmAddress) bean).getCity();
                 case 3076010:  // data
                     return ((ImmAddress) bean).getData();
+                case -734443893:  // array2d
+                    return ((ImmAddress) bean).getArray2d();
                 case 106164915:  // owner
                     return ((ImmAddress) bean).getOwner();
                 case -1659648814:  // object1
@@ -930,6 +967,7 @@ public final class ImmAddress implements ImmutableBean {
         private String street;
         private String city;
         private byte[] data;
+        private String[][] array2d;
         private ImmPerson owner;
         private Object object1;
         private Object object2;
@@ -961,6 +999,7 @@ public final class ImmAddress implements ImmutableBean {
             this.street = beanToCopy.getStreet();
             this.city = beanToCopy.getCity();
             this.data = (beanToCopy.getData() != null ? beanToCopy.getData().clone() : null);
+            this.array2d = beanToCopy.getArray2d();
             this.owner = beanToCopy.getOwner();
             this.object1 = beanToCopy.getObject1();
             this.object2 = beanToCopy.getObject2();
@@ -990,6 +1029,8 @@ public final class ImmAddress implements ImmutableBean {
                     return city;
                 case 3076010:  // data
                     return data;
+                case -734443893:  // array2d
+                    return array2d;
                 case 106164915:  // owner
                     return owner;
                 case -1659648814:  // object1
@@ -1040,6 +1081,9 @@ public final class ImmAddress implements ImmutableBean {
                     break;
                 case 3076010:  // data
                     this.data = (byte[]) newValue;
+                    break;
+                case -734443893:  // array2d
+                    this.array2d = (String[][]) newValue;
                     break;
                 case 106164915:  // owner
                     this.owner = (ImmPerson) newValue;
@@ -1123,6 +1167,7 @@ public final class ImmAddress implements ImmutableBean {
                     street,
                     city,
                     data,
+                    array2d,
                     owner,
                     object1,
                     object2,
@@ -1180,6 +1225,16 @@ public final class ImmAddress implements ImmutableBean {
          */
         public Builder data(byte[] data) {
             this.data = data;
+            return this;
+        }
+
+        /**
+         * Sets the {@code array2d} property in the builder.
+         * @param array2d  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder array2d(String[][] array2d) {
+            this.array2d = array2d;
             return this;
         }
 
@@ -1344,12 +1399,13 @@ public final class ImmAddress implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(640);
+            StringBuilder buf = new StringBuilder(672);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
             buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
             buf.append("data").append('=').append(JodaBeanUtils.toString(data)).append(',').append(' ');
+            buf.append("array2d").append('=').append(JodaBeanUtils.toString(array2d)).append(',').append(' ');
             buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
             buf.append("object1").append('=').append(JodaBeanUtils.toString(object1)).append(',').append(' ');
             buf.append("object2").append('=').append(JodaBeanUtils.toString(object2)).append(',').append(' ');
