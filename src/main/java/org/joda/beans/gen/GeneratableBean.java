@@ -482,7 +482,7 @@ class GeneratableBean {
     }
 
     /**
-     * Gets the name of the parameterisation of the bean, such as '{@code <T>}'.
+     * Gets the name of the parameterisation of the bean, such as '{@code <T, U>}'.
      * @param includeBrackets  whether to include the brackets
      * @return the generic type name, or a blank string if not generic, not null
      */
@@ -497,6 +497,16 @@ class GeneratableBean {
                 result += ", " + typeGenericName[2];
             }
         }
+        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+    }
+
+    /**
+     * Gets the name of the parameterisation of the bean, such as '{@code <T>}'.
+     * @param typeParamIndex  the zero-based index of the type parameter
+     * @return the generic type name, not null
+     */
+    public String getTypeGenericName(int typeParamIndex, boolean includeBrackets) {
+        String result = typeGenericName[typeParamIndex];
         return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
     }
 

@@ -514,7 +514,9 @@ class BeanGen {
             insertRegion.add("\t/**");
             insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
             if (data.isTypeGeneric()) {
-                insertRegion.add("\t * @param " + data.getTypeGenericName(true) + "  the type");
+                for (int j = 0; j < data.getTypeGenericCount(); j++) {
+                    insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+                }
             }
             insertRegion.add("\t * @return the builder, not null");
             insertRegion.add("\t */");

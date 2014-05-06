@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.8" date="xxxx-xx-xx" description="v0.9.8">
       <action dev="jodastephen" type="fix">
+       Fix immutable beans builder method comment.
+       Fixes #62.
+      </action>
+      <action dev="jodastephen" type="fix">
        Enhance and fix 2D array support in serialization.
        Fixes #61.
       </action>

@@ -87,7 +87,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
 
     /**
      * Returns a builder used to create an instance of the bean.
-     * @param <X, Y, Z>  the type
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
      * @return the builder, not null
      */
     public static <X, Y, Z extends Address> TupleImmutable.Builder<X, Y, Z> builder() {
