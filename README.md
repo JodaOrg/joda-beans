@@ -49,7 +49,7 @@ The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 
 Joda-Beans runs on JDK 1.6 or later and requires [Joda-Convert](https://github.com/JodaOrg/joda-convert/)
-There are a number of [optional dependencies](http://www.joda.org/joda-convert/dependencies.html) which help with integration.
+There are a number of [optional dependencies](http://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
 Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|0.9.8|jar)
 
