@@ -65,6 +65,10 @@ class GeneratableProperty {
     private String getStyle;
     /** The setter style. */
     private String setStyle;
+    /** The override style. */
+    private boolean overrideGet;
+    /** The override style. */
+    private boolean overrideSet;
     /** The type style. */
     private String typeStyle;
     /** The validation string. */
@@ -307,6 +311,38 @@ class GeneratableProperty {
      */
     public void setSetStyle(String setStyle) {
         this.setStyle = setStyle;
+    }
+
+    /**
+     * Gets the override get flag.
+     * @return the setter style
+     */
+    public boolean isOverrideGet() {
+        return overrideGet;
+    }
+
+    /**
+     * Sets the override get flag.
+     * @param setStyle  the setter style to set
+     */
+    public void setOverrideGet(boolean overrideGet) {
+        this.overrideGet = overrideGet;
+    }
+
+    /**
+     * Gets the override get flag.
+     * @return the setter style
+     */
+    public boolean isOverrideSet() {
+        return overrideSet;
+    }
+
+    /**
+     * Sets the override get flag.
+     * @param setStyle  the setter style to set
+     */
+    public void setOverrideSet(boolean overrideSet) {
+        this.overrideSet = overrideSet;
     }
 
     /**

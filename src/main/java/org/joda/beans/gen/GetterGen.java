@@ -141,6 +141,9 @@ abstract class GetterGen {
         }
         list.add("\t * @return the value of the property" + prop.getNotNullJavadoc());
         list.add("\t */");
+        if (prop.isOverrideGet()) {
+            list.add("\t@Override");
+        }
         if (prop.isDeprecated()) {
             list.add("\t@Deprecated");
         }

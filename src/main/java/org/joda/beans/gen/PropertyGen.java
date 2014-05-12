@@ -35,6 +35,10 @@ class PropertyGen {
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
     /** The setter pattern. */
     private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
+    /** The override pattern. */
+    private static final Pattern OVERRIDE_GET_PATTERN = Pattern.compile(".*[ ,(]overrideGet[ ]*[=][ ]*(true|false).*");
+    /** The override pattern. */
+    private static final Pattern OVERRIDE_SET_PATTERN = Pattern.compile(".*[ ,(]overrideSet[ ]*[=][ ]*(true|false).*");
     /** The type pattern. */
     private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
     /** The validation pattern. */
@@ -76,6 +80,8 @@ class PropertyGen {
         } else {
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
+            prop.setOverrideGet(parseOverrideGet(content));
+            prop.setOverrideSet(parseOverrideSet(content));
             prop.setTypeStyle(parseTypeStyle(content));
             prop.setValidation(parseValidation(content));
             prop.setDeprecated(parseDeprecated(content));
@@ -145,6 +151,24 @@ class PropertyGen {
             return matcher.group(1);
         }
         return "smart";
+    }
+
+    private boolean parseOverrideGet(List<String> content) {
+        String line = content.get(propertyIndex).trim();
+        Matcher matcher = OVERRIDE_GET_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return "true".equals(matcher.group(1));
+        }
+        return false;
+    }
+
+    private boolean parseOverrideSet(List<String> content) {
+        String line = content.get(propertyIndex).trim();
+        Matcher matcher = OVERRIDE_SET_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return "true".equals(matcher.group(1));
+        }
+        return false;
     }
 
     private String parseTypeStyle(List<String> content) {

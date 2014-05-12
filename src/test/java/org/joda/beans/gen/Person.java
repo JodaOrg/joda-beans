@@ -42,13 +42,13 @@ import org.joda.beans.impl.flexi.FlexiBean;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public final class Person extends DirectBean {
+public final class Person extends DirectBean implements IPerson {
 
     /** The forename. */
-    @PropertyDefinition
+    @PropertyDefinition(overrideGet = true)
     private String forename;
     /** The surname. */
-    @PropertyDefinition
+    @PropertyDefinition(overrideGet = true, overrideSet = true)
     private String surname;
     /** The number of cars. */
     @PropertyDefinition
@@ -89,6 +89,7 @@ public final class Person extends DirectBean {
      * Gets the forename.
      * @return the value of the property
      */
+    @Override
     public String getForename() {
         return forename;
     }
@@ -114,6 +115,7 @@ public final class Person extends DirectBean {
      * Gets the surname.
      * @return the value of the property
      */
+    @Override
     public String getSurname() {
         return surname;
     }
@@ -122,6 +124,7 @@ public final class Person extends DirectBean {
      * Sets the surname.
      * @param surname  the new value of the property
      */
+    @Override
     public void setSurname(String surname) {
         this.surname = surname;
     }

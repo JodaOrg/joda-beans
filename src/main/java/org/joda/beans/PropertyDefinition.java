@@ -87,6 +87,20 @@ public @interface PropertyDefinition {
     String set() default "smart";
 
     /**
+     * Whether the generated getter should be declared with the {@code Override} annotation.
+     * <p>
+     * By default, the annotation is not added.
+     */
+    boolean overrideGet() default false;
+
+    /**
+     * Whether the generated setter should be declared with the {@code Override} annotation.
+     * <p>
+     * By default, the annotation is not added.
+     */
+    boolean overrideSet() default false;
+
+    /**
      * The exposed type of the property.
      * <p>
      * The style is used to control the exposed type of the property in
