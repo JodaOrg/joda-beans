@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9.8" date="xxxx-xx-xx" description="v0.9.8">
+    <release version="0.9.8" date="2014-05-12" description="v0.9.8">
       <action dev="jodastephen" type="add">
        Enable selective use of Override annotation.
        Fixes #63.
