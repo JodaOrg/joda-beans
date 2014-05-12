@@ -29,12 +29,11 @@ import org.joda.beans.MetaProperty;
  * <p>
  * The subclass implementation generally has concrete fields for each property.
  * This class has effectively been replaced by {@link DirectFieldsBeanBuilder}.
+ * It is retained for situations where the builder is being implemented manually.
  * 
  * @author Stephen Colebourne
  * @param <T>  the bean type
- * @deprecated Use DirectFieldsBeanBuilder
  */
-@Deprecated
 public abstract class BasicImmutableBeanBuilder<T extends Bean>
         implements BeanBuilder<T> {
 
@@ -55,7 +54,7 @@ public abstract class BasicImmutableBeanBuilder<T extends Bean>
     //-----------------------------------------------------------------------
     @Override
     public Object get(String propertyName) {
-        throw new UnsupportedOperationException();
+        return get(meta.metaProperty(propertyName));
     }
 
     @Override
