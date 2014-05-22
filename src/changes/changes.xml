@@ -8,6 +8,15 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.9" date="xxxx" description="v0.9.9">
+      <action dev="jodastephen" type="fix">
+        Block immutable beans from using EnumBiMap, EnumHashBiMap, HashBiMap,
+        EnumMultiset, HashMultiset, LinkedHashMultiset, TreeMultiset,
+        ArrayListMultimap, LinkedListMultimap, HashMultimap, LinkedHashMultimap, TreeMultimap,
+        SparseGrid, DenseGrid.
+       Fixes #64.
+      </action>
+    </release>
     <release version="0.9.8" date="2014-05-12" description="v0.9.8">
       <action dev="jodastephen" type="add">
        Enable selective use of Override annotation.
