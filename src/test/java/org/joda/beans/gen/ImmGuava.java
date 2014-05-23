@@ -910,7 +910,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         private Multiset<T> multiset = HashMultiset.create();
         private SortedMultiset<T> sortedMultiset = TreeMultiset.create();
         private BiMap<T, String> biMapInterface = HashBiMap.create();
-        private Multimap<T, String> multimapInterface = HashMultimap.create();
+        private Multimap<T, String> multimapInterface = ArrayListMultimap.create();
         private ListMultimap<T, String> listMultimapInterface = ArrayListMultimap.create();
         private SetMultimap<T, String> setMultimapInterface = HashMultimap.create();
         private Multiset<T> multisetInterface = HashMultiset.create();
@@ -940,7 +940,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             this.multiset = HashMultiset.create(beanToCopy.getMultiset());
             this.sortedMultiset = TreeMultiset.create(beanToCopy.getSortedMultiset());
             this.biMapInterface = HashBiMap.create(beanToCopy.getBiMapInterface());
-            this.multimapInterface = HashMultimap.create(beanToCopy.getMultimapInterface());
+            this.multimapInterface = ArrayListMultimap.create(beanToCopy.getMultimapInterface());
             this.listMultimapInterface = ArrayListMultimap.create(beanToCopy.getListMultimapInterface());
             this.setMultimapInterface = HashMultimap.create(beanToCopy.getSetMultimapInterface());
             this.multisetInterface = HashMultiset.create(beanToCopy.getMultisetInterface());

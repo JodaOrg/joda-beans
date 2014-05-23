@@ -12,9 +12,10 @@
       <action dev="jodastephen" type="fix">
         Block immutable beans from using EnumBiMap, EnumHashBiMap, HashBiMap,
         EnumMultiset, HashMultiset, LinkedHashMultiset, TreeMultiset,
-        ArrayListMultimap, LinkedListMultimap, HashMultimap, LinkedHashMultimap, TreeMultimap,
+        ArrayListMultimap, LinkedListMultimap, HashMultimap, LinkedHashMultimap, TreeMultimap, SortedSetMultimap
         SparseGrid, DenseGrid.
-       Fixes #64.
+        Change Multimap interface to use ArrayListMultimap, not HashMultimap, because ImmutableMultimap is list based.
+        Fixes #64.
       </action>
     </release>
     <release version="0.9.8" date="2014-05-12" description="v0.9.8">
