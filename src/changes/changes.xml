@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.9" date="xxxx" description="v0.9.9">
       <action dev="jodastephen" type="fix">
+        Provide @ImmutableValidator to allow immutable constructors to be manually validated.
+        Fixes #65.
+      </action>
+      <action dev="jodastephen" type="fix">
         Generate Javadoc param tags for generic types in meta/builder.
         Fixes #68.
       </action>

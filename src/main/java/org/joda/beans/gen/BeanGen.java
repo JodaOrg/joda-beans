@@ -95,6 +95,8 @@ class BeanGen {
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The root pattern. */
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The validator pattern. */
+    private static final Pattern VALIDATOR_PATTERN = Pattern.compile(".*private[ ]+void[ ]+([a-zA-Z][a-zA-Z0-9]*)[(][ ]*[)].*");
     /** Pattern to find super type. */
     private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
     static {
@@ -162,6 +164,9 @@ class BeanGen {
                 }
             } else {
                 this.data.setConstructorStyle(this.data.getImmutableConstructor());
+            }
+            if (data.isImmutable()) {
+                this.data.setImmutableValidator(parseImmutableValidator(beanDefIndex));
             }
             this.properties = parseProperties(data);
             this.autoStartIndex = parseStartAutogen();
@@ -391,6 +396,27 @@ class BeanGen {
         return found;
     }
 
+    private String parseImmutableValidator(int defLine) {
+        boolean found = false;
+        for (int index = defLine; index < content.size(); index++) {
+            if (content.get(index).trim().equals("@ImmutableValidator")) {
+                if (found) {
+                    throw new RuntimeException("Only one @ImmutableValidator may be specified");
+                }
+                found = true;
+                if (index + 1 < content.size()) {
+                    String nextLine = content.get(index + 1);
+                    Matcher matcher = VALIDATOR_PATTERN.matcher(nextLine);
+                    if (matcher.matches()) {
+                        return matcher.group(1);
+                    }
+                    throw new RuntimeException("@ImmutableValidator method must be private void and no-args");
+                }
+            }
+        }
+        return null;
+    }
+
     private List<PropertyGen> parseProperties(GeneratableBean data) {
         List<PropertyGen> props = new ArrayList<PropertyGen>();
         for (int index = 0; index < content.size(); index++) {
@@ -585,6 +611,9 @@ class BeanGen {
                     }
                 }
             }
+            if (data.getImmutableValidator() != null) {
+                insertRegion.add("\t\t" + data.getImmutableValidator() + "();");
+            }
             insertRegion.add("\t}");
             insertRegion.add("");
         }
@@ -615,6 +644,9 @@ class BeanGen {
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.addAll(nonDerived.get(i).generateConstructorAssign(""));
                 }
+            }
+            if (data.getImmutableValidator() != null) {
+                insertRegion.add("\t\t" + data.getImmutableValidator() + "();");
             }
             insertRegion.add("\t}");
             insertRegion.add("");

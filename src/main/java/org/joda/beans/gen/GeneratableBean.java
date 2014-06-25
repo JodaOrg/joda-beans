@@ -43,6 +43,8 @@ class GeneratableBean {
     private boolean constructable;
     /** Whether the class has a manual constructor for immutable beans. */
     private int immutableConstructor;
+    /** The method name of the immutable validator. */
+    private String immutableValidator;
     /** The style of constructor to generate. */
     private int constructorStyle;
     /** The full type of the bean class. */
@@ -265,6 +267,22 @@ class GeneratableBean {
      */
     public void setImmutableConstructor(int manualConstructor) {
         this.immutableConstructor = manualConstructor;
+    }
+
+    /**
+     * Gets whether the bean has a validator.
+     * @return the flag, zero for none, one for builder based, two for argument based
+     */
+    public String getImmutableValidator() {
+        return immutableValidator;
+    }
+
+    /**
+     * Sets whether the bean has a validator.
+     * @param immutableValidator  the validator method
+     */
+    public void setImmutableValidator(String immutableValidator) {
+        this.immutableValidator = immutableValidator;
     }
 
     /**
