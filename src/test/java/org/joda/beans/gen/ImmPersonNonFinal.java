@@ -126,11 +126,6 @@ public class ImmPersonNonFinal implements ImmutableBean {
     }
 
     @Override
-    public ImmPersonNonFinal clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

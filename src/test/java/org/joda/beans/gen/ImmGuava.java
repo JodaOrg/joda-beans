@@ -400,11 +400,6 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     }
 
     @Override
-    public ImmGuava<T> clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

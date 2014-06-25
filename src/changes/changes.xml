@@ -10,6 +10,13 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.9" date="xxxx" description="v0.9.9">
       <action dev="jodastephen" type="fix">
+        Remove Bean.clone().
+        Clashes with generic union types.
+        Immutable beans no longer generate a clone method.
+        Use JodaBeanUtils.clone(bean) instead.
+        Fixes #66.
+      </action>
+      <action dev="jodastephen" type="fix">
         Block immutable beans from using EnumBiMap, EnumHashBiMap, HashBiMap,
         EnumMultiset, HashMultiset, LinkedHashMultiset, TreeMultiset,
         ArrayListMultimap, LinkedListMultimap, HashMultimap, LinkedHashMultimap, TreeMultimap, SortedSetMultimap

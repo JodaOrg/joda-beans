@@ -119,11 +119,6 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
     }
 
     @Override
-    public ImmGeneric<T> clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

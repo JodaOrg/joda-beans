@@ -116,11 +116,6 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
     public abstract Builder toBuilder();
 
     @Override
-    public ImmPersonAbstract clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

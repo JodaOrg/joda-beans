@@ -121,11 +121,6 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     }
 
     @Override
-    public ImmDocumentationHolder<T> clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

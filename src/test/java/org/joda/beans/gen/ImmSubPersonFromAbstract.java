@@ -109,11 +109,6 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
     }
 
     @Override
-    public ImmSubPersonFromAbstract clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

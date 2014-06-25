@@ -120,11 +120,6 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
     }
 
     @Override
-    public ImmDocumentationResult<T> clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

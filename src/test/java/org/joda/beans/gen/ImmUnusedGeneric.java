@@ -118,11 +118,6 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     }
 
     @Override
-    public ImmUnusedGeneric<T> clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

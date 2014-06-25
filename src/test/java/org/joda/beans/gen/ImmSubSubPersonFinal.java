@@ -95,11 +95,6 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
     }
 
     @Override
-    public ImmSubSubPersonFinal clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

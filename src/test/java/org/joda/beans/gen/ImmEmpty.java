@@ -78,11 +78,6 @@ public final class ImmEmpty implements ImmutableBean {
 
     //-----------------------------------------------------------------------
     @Override
-    public ImmEmpty clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

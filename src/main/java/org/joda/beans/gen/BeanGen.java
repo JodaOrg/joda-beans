@@ -765,7 +765,7 @@ class BeanGen {
     }
 
     private void generateClone() {
-        if (data.isManualClone() || (data.isRootClass() == false && data.isConstructable() == false)) {
+        if (data.isManualClone() || data.isImmutable() || (data.isRootClass() == false && data.isConstructable() == false)) {
             return;
         }
         insertRegion.add("\t@Override");

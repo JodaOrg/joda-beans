@@ -158,11 +158,6 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     }
 
     @Override
-    public TupleImmutable<X, Y, Z> clone() {
-        return this;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
