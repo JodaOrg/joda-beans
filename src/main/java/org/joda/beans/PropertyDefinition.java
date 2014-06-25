@@ -49,6 +49,7 @@ public @interface PropertyDefinition {
      * <li>'get' - generates getXxx()
      * <li>'clone' - generates getXxx() with a clone of the field (assumed to be of the correct type)
      * <li>'cloneCast' - generates getXxx() with a clone of the field with a cast to the property type
+     * <li>'field' - generates direct access to the field, enabling a weird manual getter
      * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
      * </ul>
      */
@@ -72,6 +73,7 @@ public @interface PropertyDefinition {
      * <li>'set' - generates setXxx()
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
      * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
+     * <li>'field' - generates direct access to the field, enabling a weird manual setter
      * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
      * <li>a pattern, see below
      * </ul>

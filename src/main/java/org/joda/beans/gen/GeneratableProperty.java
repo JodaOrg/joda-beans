@@ -514,6 +514,8 @@ class GeneratableProperty {
             }
         } else if (style.equals("")) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
+        } else if (style.equals("field")) {
+            getterGen = GetterGen.NoGetterGen.INSTANCE;
         } else if (style.equals("clone")) {
             getterGen = GetterGen.CloneGetterGen.PUBLIC;
         } else if (style.equals("cloneCast")) {
@@ -570,6 +572,8 @@ class GeneratableProperty {
             }
         } else if (style.equals("")) {
             setterGen = SetterGen.NoSetterGen.INSTANCE;
+        } else if (style.equals("field")) {
+            setterGen = SetterGen.FieldSetterGen.INSTANCE;
         } else if (style.equals("manual")) {
             setterGen = SetterGen.NoSetterGen.INSTANCE;
         } else if (style.contains("$field") || style.contains("$value")) {

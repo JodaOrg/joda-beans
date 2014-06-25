@@ -9,6 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.9" date="xxxx" description="v0.9.9">
+      <action dev="jodastephen" type="add">
+        Add getter/setter style of "field".
+        As all access is direct to the field, a weird getter/setter can be used.
+        Fixes #67.
+      </action>
       <action dev="jodastephen" type="fix">
         Remove Bean.clone().
         Clashes with generic union types.

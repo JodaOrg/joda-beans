@@ -59,6 +59,11 @@ public class RWOnlyBean extends DirectBean {
      */
     @PropertyDefinition(get = "private", set = "private")
     private String priv;
+    /**
+     * The field-based get/set property.
+     */
+    @PropertyDefinition(get = "field", set = "field")
+    private String field;
 
     public RWOnlyBean() {
         fin = "";
@@ -181,6 +186,15 @@ public class RWOnlyBean extends DirectBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the the {@code field} property.
+     * @return the property, not null
+     */
+    public final Property<String> field() {
+        return metaBean().field().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the the {@code manualGet} property.
      * @return the property, not null
      */
@@ -215,6 +229,7 @@ public class RWOnlyBean extends DirectBean {
                     JodaBeanUtils.equal(wo, other.wo) &&
                     JodaBeanUtils.equal(getFin(), other.getFin()) &&
                     JodaBeanUtils.equal(getPriv(), other.getPriv()) &&
+                    JodaBeanUtils.equal(field, other.field) &&
                     JodaBeanUtils.equal(getManualGet(), other.getManualGet()) &&
                     JodaBeanUtils.equal(getDerived(), other.getDerived());
         }
@@ -228,6 +243,7 @@ public class RWOnlyBean extends DirectBean {
         hash += hash * 31 + JodaBeanUtils.hashCode(wo);
         hash += hash * 31 + JodaBeanUtils.hashCode(getFin());
         hash += hash * 31 + JodaBeanUtils.hashCode(getPriv());
+        hash += hash * 31 + JodaBeanUtils.hashCode(field);
         hash += hash * 31 + JodaBeanUtils.hashCode(getManualGet());
         hash += hash * 31 + JodaBeanUtils.hashCode(getDerived());
         return hash;
@@ -235,7 +251,7 @@ public class RWOnlyBean extends DirectBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(224);
+        StringBuilder buf = new StringBuilder(256);
         buf.append("RWOnlyBean{");
         int len = buf.length();
         toString(buf);
@@ -251,6 +267,7 @@ public class RWOnlyBean extends DirectBean {
         buf.append("wo").append('=').append(JodaBeanUtils.toString(wo)).append(',').append(' ');
         buf.append("fin").append('=').append(JodaBeanUtils.toString(getFin())).append(',').append(' ');
         buf.append("priv").append('=').append(JodaBeanUtils.toString(getPriv())).append(',').append(' ');
+        buf.append("field").append('=').append(JodaBeanUtils.toString(field)).append(',').append(' ');
         buf.append("manualGet").append('=').append(JodaBeanUtils.toString(getManualGet())).append(',').append(' ');
         buf.append("derived").append('=').append(JodaBeanUtils.toString(getDerived())).append(',').append(' ');
     }
@@ -286,6 +303,11 @@ public class RWOnlyBean extends DirectBean {
         private final MetaProperty<String> priv = DirectMetaProperty.ofReadWrite(
                 this, "priv", RWOnlyBean.class, String.class);
         /**
+         * The meta-property for the {@code field} property.
+         */
+        private final MetaProperty<String> field = DirectMetaProperty.ofReadWrite(
+                this, "field", RWOnlyBean.class, String.class);
+        /**
          * The meta-property for the {@code manualGet} property.
          */
         private final MetaProperty<String> manualGet = DirectMetaProperty.ofReadOnly(
@@ -304,6 +326,7 @@ public class RWOnlyBean extends DirectBean {
                 "wo",
                 "fin",
                 "priv",
+                "field",
                 "manualGet",
                 "derived");
 
@@ -324,6 +347,8 @@ public class RWOnlyBean extends DirectBean {
                     return fin;
                 case 3449519:  // priv
                     return priv;
+                case 97427706:  // field
+                    return field;
                 case 93508016:  // manualGet
                     return manualGet;
                 case 1556125213:  // derived
@@ -381,6 +406,14 @@ public class RWOnlyBean extends DirectBean {
         }
 
         /**
+         * The meta-property for the {@code field} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<String> field() {
+            return field;
+        }
+
+        /**
          * The meta-property for the {@code manualGet} property.
          * @return the meta-property, not null
          */
@@ -411,6 +444,8 @@ public class RWOnlyBean extends DirectBean {
                     return ((RWOnlyBean) bean).getFin();
                 case 3449519:  // priv
                     return ((RWOnlyBean) bean).getPriv();
+                case 97427706:  // field
+                    return ((RWOnlyBean) bean).field;
                 case 93508016:  // manualGet
                     return ((RWOnlyBean) bean).getManualGet();
                 case 1556125213:  // derived
@@ -437,6 +472,9 @@ public class RWOnlyBean extends DirectBean {
                     throw new UnsupportedOperationException("Property cannot be written: fin");
                 case 3449519:  // priv
                     ((RWOnlyBean) bean).setPriv((String) newValue);
+                    return;
+                case 97427706:  // field
+                    ((RWOnlyBean) bean).field = (String) newValue;
                     return;
                 case 93508016:  // manualGet
                     if (quiet) {

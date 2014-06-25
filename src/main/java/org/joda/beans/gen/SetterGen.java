@@ -48,10 +48,11 @@ abstract class SetterGen {
      * This is just the method name.
      * 
      * @param prop  the property data, not null
+     * @param newValue  the new value, not null
      * @return the generated code, null if no setter
      */
-    String generateSetInvoke(GeneratableProperty prop) {
-        return "set" + prop.getUpperName();
+    String generateSetInvoke(GeneratableProperty prop, String newValue) {
+        return "set" + prop.getUpperName() + "(" + newValue + ")";
     }
 
     //-----------------------------------------------------------------------
@@ -155,6 +156,22 @@ abstract class SetterGen {
         @Override
         List<String> generateSetter(String indent, GeneratableProperty prop) {
             return Collections.emptyList();
+        }
+    }
+
+    static class FieldSetterGen extends SetterGen {
+        static final SetterGen INSTANCE = new FieldSetterGen();
+        @Override
+        boolean isSetterGenerated(GeneratableProperty prop) {
+            return true;
+        }
+        @Override
+        List<String> generateSetter(String indent, GeneratableProperty prop) {
+            return Collections.emptyList();
+        }
+        @Override
+        String generateSetInvoke(GeneratableProperty prop, String newValue) {
+            return prop.getFieldName() + " = " + newValue;
         }
     }
 
