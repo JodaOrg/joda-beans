@@ -160,6 +160,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code ImmGenericNonFinal}.
+     * @param <T>  the type
      */
     public static class Meta<T extends Address> extends DirectMetaBean {
         /**
@@ -245,6 +246,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The bean-builder for {@code ImmGenericNonFinal}.
+     * @param <T>  the type
      */
     public static class Builder<T extends Address> extends DirectFieldsBeanBuilder<ImmGenericNonFinal<T>> {
 

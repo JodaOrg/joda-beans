@@ -194,6 +194,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code TupleImmutable}.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
      */
     public static final class Meta<X, Y, Z extends Address> extends DirectMetaBean {
         /**
@@ -317,6 +320,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     //-----------------------------------------------------------------------
     /**
      * The bean-builder for {@code TupleImmutable}.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
      */
     public static final class Builder<X, Y, Z extends Address> extends DirectFieldsBeanBuilder<TupleImmutable<X, Y, Z>> {
 

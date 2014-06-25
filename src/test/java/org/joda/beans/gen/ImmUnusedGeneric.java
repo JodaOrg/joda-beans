@@ -148,6 +148,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code ImmUnusedGeneric}.
+     * @param <T>  the type
      */
     public static final class Meta<T> extends DirectMetaBean {
         /**
@@ -232,6 +233,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The bean-builder for {@code ImmUnusedGeneric}.
+     * @param <T>  the type
      */
     public static final class Builder<T> extends DirectFieldsBeanBuilder<ImmUnusedGeneric<T>> {
 

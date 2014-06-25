@@ -108,6 +108,7 @@ public class SubPerson<T> extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code SubPerson}.
+     * @param <T>  the type
      */
     public static class Meta<T> extends DirectMetaBean {
         /**

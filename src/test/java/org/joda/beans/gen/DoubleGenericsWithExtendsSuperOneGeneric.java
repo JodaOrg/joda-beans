@@ -342,6 +342,8 @@ public class DoubleGenericsWithExtendsSuperOneGeneric<T extends Serializable, U 
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code DoubleGenericsWithExtendsSuperOneGeneric}.
+     * @param <T>  the type
+     * @param <U>  the type
      */
     public static class Meta<T extends Serializable, U extends Number> extends Documentation.Meta<T> {
         /**

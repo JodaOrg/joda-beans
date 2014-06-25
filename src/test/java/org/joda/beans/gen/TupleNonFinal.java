@@ -216,6 +216,9 @@ public class TupleNonFinal<X, Y, Z> extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code TupleNonFinal}.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
      */
     public static class Meta<X, Y, Z> extends DirectMetaBean {
         /**

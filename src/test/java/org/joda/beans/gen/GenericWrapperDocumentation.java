@@ -145,6 +145,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code GenericWrapperDocumentation}.
+     * @param <T>  the type
      */
     public static class Meta<T extends Address> extends Documentation.Meta<Wrapper<T>> {
         /**

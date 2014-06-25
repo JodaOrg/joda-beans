@@ -218,6 +218,9 @@ public final class TupleFinal<X, Y, Z> implements Bean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code TupleFinal}.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
      */
     public static final class Meta<X, Y, Z> extends DirectMetaBean {
         /**

@@ -151,6 +151,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code ImmDocumentationHolder}.
+     * @param <T>  the type
      */
     public static final class Meta<T> extends DirectMetaBean {
         /**
@@ -236,6 +237,7 @@ public final class ImmDocumentationHolder<T> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The bean-builder for {@code ImmDocumentationHolder}.
+     * @param <T>  the type
      */
     public static final class Builder<T> extends DirectFieldsBeanBuilder<ImmDocumentationHolder<T>> {
 

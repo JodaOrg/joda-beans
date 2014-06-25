@@ -174,6 +174,7 @@ public class GenericAllFinal<T> implements Bean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code GenericAllFinal}.
+     * @param <T>  the type
      */
     public static class Meta<T> extends DirectMetaBean {
         /**

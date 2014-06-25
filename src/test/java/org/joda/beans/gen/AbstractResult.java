@@ -160,6 +160,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code AbstractResult}.
+     * @param <T>  the type
      */
     public static class Meta<T extends Address> extends DirectMetaBean {
         /**

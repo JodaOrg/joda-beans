@@ -350,6 +350,8 @@ public class DoubleGenericsNoExtendsNoSuper<T, U>
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code DoubleGenericsNoExtendsNoSuper}.
+     * @param <T>  the type
+     * @param <U>  the type
      */
     public static class Meta<T, U> extends DirectMetaBean {
         /**

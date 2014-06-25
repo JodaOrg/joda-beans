@@ -102,6 +102,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code MidAbstractResult}.
+     * @param <S>  the type
      */
     public static class Meta<S extends Address> extends AbstractResult.Meta<S> {
         /**

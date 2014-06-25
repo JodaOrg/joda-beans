@@ -351,6 +351,8 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code DoubleGenericsWithExtendsNoSuper}.
+     * @param <T>  the type
+     * @param <U>  the type
      */
     public static class Meta<T extends Serializable, U extends Number> extends DirectMetaBean {
         /**

@@ -155,6 +155,7 @@ public class GenericArray<T extends Address> implements Bean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code GenericArray}.
+     * @param <T>  the type
      */
     public static class Meta<T extends Address> extends DirectMetaBean {
         /**

@@ -225,6 +225,8 @@ public class DoubleGenericsSimpleSuper<T, U>
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code DoubleGenericsSimpleSuper}.
+     * @param <T>  the type
+     * @param <U>  the type
      */
     public static class Meta<T, U> extends DirectMetaBean {
         /**

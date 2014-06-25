@@ -148,6 +148,9 @@ public final class TupleSub<X extends Number, Y extends Number, Z> extends Tuple
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code TupleSub}.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
      */
     public static final class Meta<X extends Number, Y extends Number, Z> extends TupleNonFinal.Meta<X, Y, Z> {
         /**

@@ -174,6 +174,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Wrapper}.
+     * @param <T>  the type
      */
     public static class Meta<T extends Address> extends DirectMetaBean {
         /**

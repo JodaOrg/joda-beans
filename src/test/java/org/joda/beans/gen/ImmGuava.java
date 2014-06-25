@@ -481,6 +481,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code ImmGuava}.
+     * @param <T>  the type
      */
     public static final class Meta<T extends Comparable<T>> extends DirectMetaBean {
         /**
@@ -889,6 +890,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     //-----------------------------------------------------------------------
     /**
      * The bean-builder for {@code ImmGuava}.
+     * @param <T>  the type
      */
     public static final class Builder<T extends Comparable<T>> extends DirectFieldsBeanBuilder<ImmGuava<T>> {
 

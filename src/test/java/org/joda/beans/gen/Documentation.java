@@ -205,6 +205,7 @@ public class Documentation<T> extends DirectBean {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code Documentation}.
+     * @param <T>  the type
      */
     public static class Meta<T> extends DirectMetaBean {
         /**

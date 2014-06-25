@@ -910,6 +910,11 @@ class BeanGen {
         generateSeparator();
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+        if (data.isTypeGeneric()) {
+            for (int j = 0; j < data.getTypeGenericCount(); j++) {
+                insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+            }
+        }
         insertRegion.add("\t */");
         String superMeta;
         if (data.isSubClass()) {
@@ -1140,6 +1145,11 @@ class BeanGen {
         String finalType = data.isTypeFinal() ? "final " : "";
         insertRegion.add("\t/**");
         insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
+        if (data.isTypeGeneric()) {
+            for (int j = 0; j < data.getTypeGenericCount(); j++) {
+                insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+            }
+        }
         insertRegion.add("\t */");
         String superBuilder;
         if (data.isSubClass()) {

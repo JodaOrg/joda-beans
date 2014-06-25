@@ -146,6 +146,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code GenericSubWrapper}.
+     * @param <T>  the type
      */
     public static class Meta<T extends Address> extends Wrapper.Meta<T> {
         /**

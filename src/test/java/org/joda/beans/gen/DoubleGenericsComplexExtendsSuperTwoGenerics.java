@@ -340,6 +340,8 @@ public class DoubleGenericsComplexExtendsSuperTwoGenerics<T extends Comparable<T
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code DoubleGenericsComplexExtendsSuperTwoGenerics}.
+     * @param <T>  the type
+     * @param <U>  the type
      */
     public static class Meta<T extends Comparable<T>, U extends Number> extends DoubleGenericsSimpleSuper.Meta<T, U> {
         /**
