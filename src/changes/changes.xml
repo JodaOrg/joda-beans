@@ -8,7 +8,10 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9.9" date="xxxx" description="v0.9.9">
+    <release version="1.0" date="2014-06-26" description="v1.0">
+      <action dev="jodastephen" type="add">
+        Update docs for v1.0.
+      </action>
       <action dev="jodastephen" type="fix">
         Provide @ImmutableValidator to allow immutable constructors to be manually validated.
         Fixes #65.
