@@ -419,9 +419,11 @@ public final class JodaBeanUtils {
      */
     public static String propertiesToString(Bean bean, String prefix) {
         Set<String> names = bean.propertyNames();
-        StringBuilder buf = new StringBuilder((names.size()) * 32 + prefix.length());
+        StringBuilder buf;
         if (prefix != null) {
-            buf.append(prefix);
+            buf = new StringBuilder((names.size()) * 32 + prefix.length()).append(prefix);
+        } else {
+            buf = new StringBuilder((names.size()) * 32);
         }
         buf.append('{');
         if (names.size() > 0) {
@@ -667,6 +669,9 @@ public final class JodaBeanUtils {
                 Type[] actualTypeArguments = pt.getActualTypeArguments();
                 // find type variables declared in source code
                 Class<?> rawType = eraseToClass(pt.getRawType());
+                if (rawType == null) {
+                    return null;
+                }
                 TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
                 for (int i = 0; i < actualTypeArguments.length; i++) {
                     resolved.put(typeParameters[i], actualTypeArguments[i]);

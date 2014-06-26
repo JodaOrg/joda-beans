@@ -15,8 +15,8 @@
  */
 package org.joda.beans.integrate.mongo;
 
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.joda.beans.Bean;
@@ -81,11 +81,11 @@ public class BeanMongoDBObject implements DBObject {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void putAll(Map map) {
-        for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
-            Object key = (Object) it.next();
-            put(key.toString(), map.get(key));
+        Map<Object, Object> castMap = map;
+        for (Entry<Object, Object> entry : castMap.entrySet()) {
+            put(entry.getKey().toString(), map.get(entry.getValue()));
         }
     }
 

@@ -83,7 +83,7 @@ public abstract class MsgPackInput extends MsgPack {
     protected void readObject(int unsigned) throws IOException {
         handleObjectStart();
         byte b = (byte) unsigned;
-        if (b >= MIN_FIX_INT && b <= MAX_FIX_INT) {
+        if (b >= MIN_FIX_INT) {  // no need to check for b <= MAX_FIX_INT
             handleInt(b);
             
         } else if (b >= MIN_FIX_STR && b <= MAX_FIX_STR) {

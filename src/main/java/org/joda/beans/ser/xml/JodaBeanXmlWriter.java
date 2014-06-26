@@ -406,6 +406,9 @@ public class JodaBeanXmlWriter {
     }
 
     private String encodeAttribute(final String text) {
+        if (text == null) {
+            return null;
+        }
         return appendEncodedAttribute(new StringBuilder(text.length() + 16), text).toString();
     }
 

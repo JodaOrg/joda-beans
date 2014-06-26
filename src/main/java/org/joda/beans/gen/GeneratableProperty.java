@@ -214,10 +214,8 @@ class GeneratableProperty {
             setTypeStyle("");
         }
         final String fieldType = getFieldType();
-        String rawType = fieldType;
         String generics = "";
-        if (rawType.contains("<")) {
-            rawType = rawType.substring(0, fieldType.indexOf('<'));
+        if (fieldType.contains("<")) {
             generics = fieldType.substring(fieldType.indexOf('<'));
         }
         if (getTypeStyle().equals("smart")) {

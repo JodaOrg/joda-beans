@@ -199,7 +199,7 @@ public class TestAddress {
         Address address = new Address();
         PropertyMap test = address.metaBean().createPropertyMap(address);
         
-        assertSame(test.size(), NUM_PROPERTIES);
+        assertEquals(test.size(), NUM_PROPERTIES);
         assertEquals(test.containsKey(STREET), true);
         assertEquals(test.containsKey(CITY), true);
         assertEquals(test.containsKey(NUMBER), true);
@@ -212,7 +212,7 @@ public class TestAddress {
         address.setNumber(3);
         Map<String, Object> test = address.metaBean().createPropertyMap(address).flatten();
         
-        assertSame(test.size(), NUM_PROPERTIES);
+        assertEquals(test.size(), NUM_PROPERTIES);
         assertEquals(test.get(STREET), "A");
         assertEquals(test.get(CITY), "B");
         assertEquals(test.get(NUMBER), 3);
@@ -223,9 +223,9 @@ public class TestAddress {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().street();
         
-        assertSame(test.metaBean().beanType(), Address.class);
-        assertSame(test.propertyType(), String.class);
-        assertSame(test.name(), STREET);
+        assertEquals(test.metaBean().beanType(), Address.class);
+        assertEquals(test.propertyType(), String.class);
+        assertEquals(test.name(), STREET);
         assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
@@ -242,9 +242,9 @@ public class TestAddress {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().metaProperty(STREET);
         
-        assertSame(test.metaBean().beanType(), Address.class);
-        assertSame(test.propertyType(), String.class);
-        assertSame(test.name(), STREET);
+        assertEquals(test.metaBean().beanType(), Address.class);
+        assertEquals(test.propertyType(), String.class);
+        assertEquals(test.name(), STREET);
         assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(address), null);
@@ -260,9 +260,9 @@ public class TestAddress {
     public void test_metaProperty_types() {
         MetaProperty<String> test = Address.meta().street();
         
-        assertSame(test.metaBean().beanType(), Address.class);
-        assertSame(test.propertyType(), String.class);
-        assertSame(test.propertyGenericType(), String.class);
+        assertEquals(test.metaBean().beanType(), Address.class);
+        assertEquals(test.propertyType(), String.class);
+        assertEquals(test.propertyGenericType(), String.class);
     }
 
     public void test_metaProperty_annotations() {

@@ -84,7 +84,11 @@ public final class BeanGenConfig {
         } else {
             fullFile = "org/joda/beans/gen/" + resourceLocator + ".ini";
         }
-        URL url = BeanGenConfig.class.getClassLoader().getResource(fullFile);
+        ClassLoader loader = BeanGenConfig.class.getClassLoader();
+        if (loader == null) {
+            throw new IllegalArgumentException("ClassLoader was null: " + fullFile);
+        }
+        URL url = loader.getResource(fullFile);
         if (url == null) {
             throw new IllegalArgumentException("Configuration file not found: " + fullFile);
         }

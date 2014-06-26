@@ -149,6 +149,7 @@ public class BeanCodeGen {
         final List<File> result = new ArrayList<File>();
         if (parent.isDirectory()) {
             File[] files = parent.listFiles();
+            files = (files != null ? files : new File[0]);
             for (File child : files) {
                 if (child.isFile() && child.getName().endsWith(".java")) {
                     result.add(child);
