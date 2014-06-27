@@ -1019,7 +1019,14 @@ class BeanGen {
 
     private void generateMetaBuilder() {
         insertRegion.add("\t\t@Override");
-        if (data.isImmutable() || (data.isMutable() && data.isBuilderScopePublic())) {
+        if (data.isImmutable() && data.isEffectiveBuilderScopePublic() == false) {
+            insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
+            if (data.isConstructable()) {
+                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+            } else {
+                insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+            }
+        } else if (data.isImmutable() || (data.isMutable() && data.isBuilderScopePublic())) {
             insertRegion.add("\t\tpublic " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
             if (data.isConstructable()) {
                 insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");

@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.joda.beans.Bean;
+import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
@@ -170,7 +171,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         }
 
         @Override
-        public ImmGenericArray.Builder<T> builder() {
+        public BeanBuilder<? extends ImmGenericArray<T>> builder() {
             return new ImmGenericArray.Builder<T>();
         }
 

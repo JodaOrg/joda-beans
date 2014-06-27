@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.0.1" date="2014-06-27" description="v1.0.1">
       <action dev="jodastephen" type="fix">
+        Fix immutable beans with private builders.
+        Meta-Bean builder() method returned the private buidler.
+        Fixes #70.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix immutable builder setString() method to actually convert from a string.
         Fixes #69.
       </action>
