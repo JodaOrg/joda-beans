@@ -21,8 +21,12 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +51,64 @@ import com.google.common.collect.ImmutableMultiset;
 @Test
 public class TestJodaBeanUtils {
 
+    //-----------------------------------------------------------------------
+    public void test_notNull_ok() {
+        JodaBeanUtils.notNull("", "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notNull_notOk() {
+        JodaBeanUtils.notNull(null, "name");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_notEmpty_String_ok() {
+        JodaBeanUtils.notEmpty("Blah", "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notEmpty_String_notOk_empty() {
+        JodaBeanUtils.notEmpty("", "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notEmpty_String_notOk_null() {
+        JodaBeanUtils.notEmpty((String) null, "name");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_notEmpty_Collection_ok() {
+        JodaBeanUtils.notEmpty(Arrays.asList("Blah"), "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notEmpty_Collection_notOk_empty() {
+        JodaBeanUtils.notEmpty(new ArrayList<String>(), "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notEmpty_Collection_notOk_null() {
+        JodaBeanUtils.notEmpty((Collection<?>) null, "name");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_notEmpty_Map_ok() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("A", "B");
+        JodaBeanUtils.notEmpty(map, "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notEmpty_Map_notOk_empty() {
+        JodaBeanUtils.notEmpty(new HashMap<String, String>(), "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notEmpty_Map_notOk_null() {
+        JodaBeanUtils.notEmpty((Map<?, ?>) null, "name");
+    }
+
+    //-----------------------------------------------------------------------
     public void test_metaBean() {
         MetaBean metaBean = JodaBeanUtils.metaBean(MetaBeanLoad.class);
         assertNotNull(metaBean);

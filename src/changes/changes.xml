@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.1" date="2014-06-27" description="v1.0.1">
+      <action dev="jodastephen" type="add">
+        Add JodaBeansUtils.notEmpty(Collection) and JodaBeansUtils.notEmpty(Map).
+        Fixes #71.
+      </action>
+    </release>
     <release version="1.0" date="2014-06-26" description="v1.0">
       <action dev="jodastephen" type="add">
         Update docs for v1.0.

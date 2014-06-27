@@ -505,6 +505,32 @@ public final class JodaBeanUtils {
         }
     }
 
+    /**
+     * Checks if the collection value is not empty, throwing an exception if it is.
+     * 
+     * @param value  the value to check, may be null
+     * @param propertyName  the property name, should not be null
+     * @throws IllegalArgumentException if the value is null or empty
+     */
+    public static void notEmpty(Collection<?> value, String propertyName) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be empty");
+        }
+    }
+
+    /**
+     * Checks if the map value is not empty, throwing an exception if it is.
+     * 
+     * @param value  the value to check, may be null
+     * @param propertyName  the property name, should not be null
+     * @throws IllegalArgumentException if the value is null or empty
+     */
+    public static void notEmpty(Map<?, ?> value, String propertyName) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be empty");
+        }
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Extracts the collection content type as a {@code Class} from a property.
