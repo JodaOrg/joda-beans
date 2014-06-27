@@ -1326,7 +1326,7 @@ class BeanGen {
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(MetaProperty<?> property, String value) {");
-        insertRegion.add("\t\t\tsuper.set(property, value);");
+        insertRegion.add("\t\t\tsuper.setString(property, value);");
         insertRegion.add("\t\t\treturn this;");
         insertRegion.add("\t\t}");
         insertRegion.add("");

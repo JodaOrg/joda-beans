@@ -394,7 +394,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
 
         @Override
         public Builder<X, Y, Z> setString(MetaProperty<?> property, String value) {
-            super.set(property, value);
+            super.setString(property, value);
             return this;
         }
 

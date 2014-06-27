@@ -1067,7 +1067,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
         @Override
         public Builder<T> setString(MetaProperty<?> property, String value) {
-            super.set(property, value);
+            super.setString(property, value);
             return this;
         }
 

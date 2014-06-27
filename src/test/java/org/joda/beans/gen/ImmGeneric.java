@@ -293,7 +293,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
 
         @Override
         public Builder<T> setString(MetaProperty<?> property, String value) {
-            super.set(property, value);
+            super.setString(property, value);
             return this;
         }
 
