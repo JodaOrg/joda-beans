@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.2" date="2014-07-17" description="v1.0.2">
+      <action dev="jodastephen" type="fix">
+        Fix serialization to handle subclasses of enums.
+        Fixes #72.
+      </action>
+    </release>
     <release version="1.0.1" date="2014-06-27" description="v1.0.1">
       <action dev="jodastephen" type="fix">
         Fix immutable beans with private builders.

@@ -85,18 +85,26 @@ public final class SerTypeMapper {
      * <p>
      * This handles known simple types, like String, Integer or File, and prefixing.
      * It also allows a map of message specific shorter forms.
+     * 
      * @param cls  the class to encode, not null
      * @param settings  the settings object, not null
      * @param basePackage  the base package to use with trailing dot, null if none
      * @param knownTypes  the known types map, null if not using known type shortening
-     * 
      * @return the class object, null if not a basic type
      */
-    public static String encodeType(final Class<?> cls, final JodaBeanSer settings, final String basePackage, final Map<Class<?>, String> knownTypes) {
+    public static String encodeType(Class<?> cls, final JodaBeanSer settings, final String basePackage, final Map<Class<?>, String> knownTypes) {
         // basic type
         String result = BASIC_TYPES.get(cls);
         if (result != null) {
             return result;
+        }
+        // handle enum subclasses
+        Class<?> supr1 = cls.getSuperclass();
+        if (supr1 != null) {
+            Class<?> supr2 = supr1.getSuperclass();
+            if (supr2 == Enum.class) {
+                cls = supr1;
+            }
         }
         // calculate
         if (settings.isShortTypes()) {
@@ -141,11 +149,11 @@ public final class SerTypeMapper {
      * This uses the context class loader.
      * This handles known simple types, like String, Integer or File, and prefixing.
      * It also allows a map of message specific shorter forms.
+     * 
      * @param className  the class name, not null
      * @param settings  the settings object, not null
      * @param basePackage  the base package to use with trailing dot, null if none
      * @param knownTypes  the known types map, null if not using known type shortening
-     * 
      * @return the class object, not null
      * @throws ClassNotFoundException if not found
      */

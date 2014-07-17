@@ -37,6 +37,8 @@ import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.JodaConvertBean;
 import org.joda.beans.gen.JodaConvertWrapper;
 import org.joda.beans.gen.Person;
+import org.joda.beans.gen.RiskLevel;
+import org.joda.beans.gen.RiskPerception;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.test.BeanAssert;
@@ -137,6 +139,9 @@ public class TestAddressBin {
                 .number(185)
                 .street("Park Street")
                 .city("London")
+                .riskLevel(RiskLevel.HIGH)
+                .object1(RiskLevel.MEDIUM)
+                .object2(RiskPerception.LOW)
                 .data(new byte[] {64, 65, 66})
                 .build();
         map4.put(child, ImmutableMap.of("sibling", child2));
