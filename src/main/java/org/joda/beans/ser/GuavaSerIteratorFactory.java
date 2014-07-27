@@ -628,6 +628,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             public Class<?> columnType() {
                 return colType;
             }
+            @Override
             public Object column() {
                 return current.getColumnKey();
             }

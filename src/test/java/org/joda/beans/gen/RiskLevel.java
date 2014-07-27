@@ -23,16 +23,19 @@ package org.joda.beans.gen;
 public enum RiskLevel {
 
     LOW {
+        @Override
         public int level() {
             return 0;
         }
     },
     MEDIUM {
+        @Override
         public int level() {
             return 0;
         }
     },
     HIGH {
+        @Override
         public int level() {
             return 0;
         }

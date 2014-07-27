@@ -931,6 +931,7 @@ public final class JodaBeanUtils {
         GuavaCloner() {
         }
 
+        @Override
         Object clone(Object value) {
             if (value == null) {
                 return value;
@@ -989,6 +990,7 @@ public final class JodaBeanUtils {
         CollectCloner() {
         }
 
+        @Override
         Object clone(Object value) {
             if (value == null) {
                 return value;

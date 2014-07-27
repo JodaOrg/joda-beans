@@ -32,6 +32,7 @@ public interface DynamicBean extends Bean {
      * 
      * @return the meta-bean, not null
      */
+    @Override
     DynamicMetaBean metaBean();
 
     /**
@@ -44,6 +45,7 @@ public interface DynamicBean extends Bean {
      * @param propertyName  the property name to retrieve, not null
      * @return the property, not null
      */
+    @Override
     <R> Property<R> property(String propertyName);
 
     /**

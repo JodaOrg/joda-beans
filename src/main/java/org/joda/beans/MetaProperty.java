@@ -119,6 +119,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws ClassCastException if the bean is of an incorrect type
      * @throws UnsupportedOperationException if the property is write-only
      */
+    @Override
     P get(Bean bean);
 
     /**
