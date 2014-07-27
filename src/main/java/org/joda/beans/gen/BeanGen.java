@@ -780,6 +780,9 @@ class BeanGen {
                     insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
                     insertRegion.add("\t * @return the mutable builder, not null");
                     insertRegion.add("\t */");
+                    if (data.isRootClass() == false) {
+                        insertRegion.add("\t@Override");
+                    }
                     insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
                     insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
                     insertRegion.add("\t}");
@@ -790,6 +793,9 @@ class BeanGen {
                 insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
                 insertRegion.add("\t * @return the mutable builder, not null");
                 insertRegion.add("\t */");
+                if (data.isRootClass() == false) {
+                    insertRegion.add("\t@Override");
+                }
                 insertRegion.add("\tpublic abstract Builder" + data.getTypeGenericName(true) + " toBuilder();");
                 insertRegion.add("");
             }

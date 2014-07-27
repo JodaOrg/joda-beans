@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.3" date="2014-xx-xx" description="v1.0.3">
+      <action dev="jodastephen" type="fix">
+        Fix to add @Override annotation on toBuilder().
+        Fixes #73.
+      </action>
+    </release>
     <release version="1.0.2" date="2014-07-17" description="v1.0.2">
       <action dev="jodastephen" type="fix">
         Fix serialization to handle subclasses of enums.
