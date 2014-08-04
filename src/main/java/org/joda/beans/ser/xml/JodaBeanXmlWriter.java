@@ -346,17 +346,22 @@ public class JodaBeanXmlWriter {
 
     //-----------------------------------------------------------------------
     private void writeSimple(final String currentIndent, final String tagName, final StringBuilder attrs, final Class<?> declaredType, final Object value) {
-        Class<?> effectiveType = declaredType;
-        if (effectiveType == Object.class) {
-            effectiveType = value.getClass();
-            if (effectiveType != String.class) {
+        Class<?> effectiveType;
+        if (declaredType == Object.class) {
+            Class<?> realType = value.getClass();
+            if (realType != String.class) {
+                effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
                 String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 appendAttribute(attrs, TYPE, typeStr);
+            } else {
+                effectiveType = realType;
             }
-        } else if (settings.getConverter().isConvertible(effectiveType) == false) {
-            effectiveType = value.getClass();
+        } else if (settings.getConverter().isConvertible(declaredType) == false) {
+            effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
             String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             appendAttribute(attrs, TYPE, typeStr);
+        } else {
+            effectiveType = declaredType;
         }
         try {
             String converted = settings.getConverter().convertToString(effectiveType, value);

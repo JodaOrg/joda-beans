@@ -336,14 +336,16 @@ public class JodaBeanBinWriter {
         // handle no declared type and subclasses
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
-            effectiveType = realType;
-            if (effectiveType != String.class) {
+            if (realType != String.class) {
+                effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
                 String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 output.writeMapHeader(1);
                 output.writeExtensionString(MsgPack.JODA_TYPE_DATA, typeStr);
+            } else {
+                effectiveType = realType;
             }
         } else if (settings.getConverter().isConvertible(declaredType) == false) {
-            effectiveType = realType;
+            effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
             String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             output.writeMapHeader(1);
             output.writeExtensionString(MsgPack.JODA_TYPE_DATA, typeStr);

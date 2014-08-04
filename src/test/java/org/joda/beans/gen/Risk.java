@@ -15,33 +15,21 @@
  */
 package org.joda.beans.gen;
 
+import org.joda.convert.FromStringFactory;
+import org.joda.convert.ToString;
+
 /**
- * Mock enum with subclasses.
+ * Mock extensible enum interface.
  * 
  * @author Stephen Colebourne
  */
-public enum RiskLevel implements Risk {
+@FromStringFactory(factory = RiskFactory.class)
+public interface Risk {
 
-    LOW {
-        @Override
-        public int level() {
-            return 0;
-        }
-    },
-    MEDIUM {
-        @Override
-        public int level() {
-            return 0;
-        }
-    },
-    HIGH {
-        @Override
-        public int level() {
-            return 0;
-        }
-    };
+    int level();
 
     @Override
-    public abstract int level();
+    @ToString
+    String toString();
 
 }

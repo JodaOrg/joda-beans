@@ -139,6 +139,7 @@ public class TestAddressBin {
                 .number(185)
                 .street("Park Street")
                 .city("London")
+                .risk(RiskLevel.LOW)
                 .riskLevel(RiskLevel.HIGH)
                 .object1(RiskLevel.MEDIUM)
                 .object2(RiskPerception.LOW)

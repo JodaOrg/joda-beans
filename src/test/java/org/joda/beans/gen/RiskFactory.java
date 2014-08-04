@@ -15,33 +15,18 @@
  */
 package org.joda.beans.gen;
 
+import org.joda.convert.FromString;
+
 /**
- * Mock enum with subclasses.
+ * Mock Joda-Convert factory.
  * 
  * @author Stephen Colebourne
  */
-public enum RiskLevel implements Risk {
+public class RiskFactory {
 
-    LOW {
-        @Override
-        public int level() {
-            return 0;
-        }
-    },
-    MEDIUM {
-        @Override
-        public int level() {
-            return 0;
-        }
-    },
-    HIGH {
-        @Override
-        public int level() {
-            return 0;
-        }
-    };
-
-    @Override
-    public abstract int level();
+    @FromString
+    public static Risk risk(String str) {
+        return RiskLevel.valueOf(str);
+    }
 
 }
