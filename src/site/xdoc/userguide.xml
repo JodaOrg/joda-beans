@@ -290,7 +290,6 @@ This supports code based manipulation, using the <code>toBuilder()</code> method
 The scope of the builder may be controlled in the bean definition:
 </p>
 <pre class="source">
- // superclass
  @BeanDefinition(builderScope = "private")
  public final class Bar implements ImmutableBean {
    // code generated immutable bean with private builder
