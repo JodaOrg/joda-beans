@@ -23,6 +23,7 @@ import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 
 /**
  * Basic implementation of {@code BeanBuilder} that wraps a {@code MetaBean}.
