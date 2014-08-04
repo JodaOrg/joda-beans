@@ -32,6 +32,8 @@ public interface Bean {
     /**
      * Gets the meta-bean representing the parts of the bean that are
      * common across all instances, such as the set of meta-properties.
+     * <p>
+     * The meta-bean can be thought of as the equivalent of {@link Class} but for beans.
      * 
      * @return the meta-bean, not null
      */
@@ -39,6 +41,9 @@ public interface Bean {
 
     /**
      * Gets a property by name.
+     * <p>
+     * Each bean consists of a known set of properties.
+     * This method checks whether there is a property with the specified name.
      * <p>
      * The base interface throws an exception if the name is not recognised.
      * By contrast, the {@code DynamicBean} subinterface creates the property on demand.
@@ -52,8 +57,11 @@ public interface Bean {
 
     /**
      * Gets the set of property names.
+     * <p>
+     * Each bean consists of a known set of properties.
+     * This method returns the known property names.
      * 
-     * @return the unmodifiable map of property objects, not null
+     * @return the unmodifiable set of property names, not null
      */
     Set<String> propertyNames();
 

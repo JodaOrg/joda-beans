@@ -16,6 +16,10 @@ The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 </p>
 <p>
+By default, Joda-Beans includes a round-trip serialization system to XML and MsgPack binary.
+This uses the information encoded in the Joda-Bean as a partial schema for the message.
+</p>
+<p>
 Version 1.0.2 is the latest version - <a href="download.html">Download now</a>
 </p>
 <p>
@@ -43,6 +47,24 @@ Finally, you run a code generator, which creates the get/set methods plus framew
 to be effectively queried.
 A key point is that the code generator may be run again and again on the Java file, and is non-destructive.
 </p>
+<pre class="source">
+ @BeanDefinition
+ public final class Foo implements Bean {
+   /** The forename. */
+    @PropertyDefinition
+    private String forename;
+
+    /** The surname. */
+    @PropertyDefinition(validate = "notNull")
+    private String surname;
+
+    /** The address of the person. */
+    @PropertyDefinition
+    private Address address;
+    
+   // Joda-Beans will code generate all getters, setters, equals, hashCode, toString and property accessors
+ }
+</pre>
 <p>
 See these sample classes used for testing -
 <a href="https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/gen/SimplePerson.java#L43">basic Person class</a>,
@@ -60,6 +82,7 @@ Various documentation is available:
 <li>The <a href="apidocs/index.html">Javadoc</a></li>
 <li>The change notes for the <a href="changes-report.html">releases</a></li>
 <li>The <a href="https://github.com/JodaOrg/joda-beans">GitHub</a> source repository</li>
+<li>The <a href="https://github.com/JodaOrg/joda-beans-maven-plugin">Maven plugin</a> for code generation</li>
 </ul>
 </p>
 </section>

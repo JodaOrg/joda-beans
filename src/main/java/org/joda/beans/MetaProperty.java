@@ -33,6 +33,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
 
     /**
      * Creates a property that binds this meta-property to a specific bean.
+     * <p>
+     * This method returns a {@code Property} instance that connects this meta-property to the specified bean.
+     * The result can be queried and passed around without further reference to the bean.
      * 
      * @param bean  the bean to create the property for, not null
      * @return the property, not null
@@ -61,6 +64,8 @@ public interface MetaProperty<P> extends BeanQuery<P> {
 
     /**
      * Get the type that declares the property, represented as a {@code Class}.
+     * <p>
+     * This is the type of the bean where the property is declared.
      * 
      * @return the type declaring the property, not null
      */
@@ -68,6 +73,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
 
     /**
      * Get the type of the property represented as a {@code Class}.
+     * <p>
+     * This is the type of the property.
+     * For example, the surname of a person would typically be a {@code String}.
      * 
      * @return the type of the property, not null
      */
@@ -84,6 +92,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
 
     /**
      * Gets the style of the property, such as read-only, read-write or write-only.
+     * <p>
+     * Rather than testing against specific values, it is strongly recommended to
+     * call the helper methods on the returned style.
      * 
      * @return the property style, not null
      */
@@ -92,13 +103,19 @@ public interface MetaProperty<P> extends BeanQuery<P> {
     //-----------------------------------------------------------------------
     /**
      * Gets the annotations of the property.
+     * <p>
+     * The annotations are queried from the property.
+     * This is typically accomplished by querying the annotations of the underlying instance variable.
      * 
      * @return the annotations, unmodifiable, not null
      */
     List<Annotation> annotations();
 
     /**
-     * Gets a specified annotation of the property.
+     * Gets an annotation from the property.
+     * <p>
+     * The annotations are queried from the property.
+     * This is typically accomplished by querying the annotations of the underlying instance variable.
      * 
      * @param <A>  the annotation type
      * @param annotation  the annotation class to find, not null

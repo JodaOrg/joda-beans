@@ -12,9 +12,25 @@
 <section name="User guide">
 <p>
 Joda-Beans is a small library that adds properties to the Java programming language.
-It consists of two main parts - a set of interfaces and classes that define a property
-and a matching code generator.
+It consists of these main parts:
 </p>
+<ul>
+<li>a set of interfaces and classes that define a property</li>
+<li>a source code generator</li>
+<li>serialization and deserialization via MsgPack binary and XML</li>
+<li>integration with other technologies</li>
+</ul>
+<p>
+The main rationale for the project is to raise the abstraction level of Java development.
+Most mainstream languages have some kind of support for properties, unfortunately Java does not.
+The benefits of the Joda-Beans approach mostly apply when using the code generator:
+</p>
+<ul>
+<li>easy to write common utilities acting on arbitrary beans without using reflection</li>
+<li>no need to manually write getters, setters, equals, hashCode, toString</li>
+<li>simple way to create immutable beans</li>
+<li>effective and simple round-trip serialization and deserialization</li>
+</ul>
 </section>
 
 
@@ -34,6 +50,11 @@ Each property object holds a reference to the bean that the property is part of.
 This means that there are simple methods to get and set the value of the property which directly affect the underlying bean.
 The property also provides methods to get the property name, the underlying bean and the <i>meta-property</i> (see below).
 </p>
+<pre class="source">
+  Bean person = new Person();
+  Property&lt;String&gt; surnameProperty = bean.property("surname");
+  String surname = surnameProperty.get();
+</pre>
 <p>
 The <a href="apidocs/org/joda/beans/MetaBean.html">MetaBean</a> interface defines
 the meta-bean. The "meta" name indicates that this is a higher level description of the bean itself.
@@ -50,6 +71,11 @@ one meta-property object for all instances of the property.
 The meta-property API provides access to the name of the property, it's type, any declared annotations, whether it is read-write or read-only
 as well as methods to get and set the value which require the bean to be passed in, just like <code>java.lang.reflect.Field</code>.
 </p>
+<pre class="source">
+  Bean person = new Person();
+  MetaProperty&lt;String&gt; surnameMetaProperty = bean.metaBean().metaProperty("surname");
+  String surname = surnameMetaProperty.get(person);
+</pre>
 </section>
 
 
@@ -78,8 +104,8 @@ Each property is then set before calling <code>build</code>.
 </p>
 <p>
 A selection of utilities is available on <a href="apidocs/org/joda/beans/JodaBeanUtils.html">JodaBeanUtils</a>.
-This includes the ability to lookup a meta-bean from a <code>java.lang.Class</code>, access to the Joda-Convert string converter and methods
-to extract the types of lists and maps using reflection on generics.
+This includes the ability to lookup a meta-bean from a <code>java.lang.Class</code>, access to the Joda-Convert string
+converter and methods to extract the types of lists and maps using reflection on generics.
 </p>
 <p>
 The access to the field-level annotations provided by the meta-property is also useful to framework writers.
@@ -111,7 +137,7 @@ This feature allows the value of a nested property to be queried from the parent
 For example, these two code sequences are equivalent - obviously the second would only be used within a framework
 where the query setup was separate from the actual query.
 </p>
-<pre>
+<pre class="source">
  String city = document.getPerson().getAddress().getCity()
  
  ChainedBeanQuery&lt;String&gt; query = ChainedBeanQuery.of(Document.meta().person(), Person.meta().address(), Address.meta().city());
@@ -166,7 +192,7 @@ Apart from the absence of a field, a derived property is very similar to a norma
 <p>
 The command line takes the following arguments:
 </p>
-<pre>
+<pre class="source">
   Usage java org.joda.beans.gen.BeanCodeGen [file]
   Options
     -R                process all files recursively, default false
@@ -232,17 +258,46 @@ All fields in an immutable bean must be final.
 It is recommended that immutable beans are final,
 do not extend any bean class and directly implement <code>ImmutableBean</code>.
 </p>
+<pre class="source">
+ @BeanDefinition
+ public final class Foo implements ImmutableBean {
+   // code generated immutable bean with public builder
+ }
+</pre>
 <p>
 It is possible for an immutable bean to be non-final.
 Any subclass should logically also be immutable, but must set the
-<code>BeanDefinition</code> annotation value <code>hierarchy</code> to "immutable".
+<code>BeanDefinition</code> annotation value <code>hierarchy</code> to "immutable":
 </p>
+<pre class="source">
+ // superclass
+ @BeanDefinition
+ public abstract class SuperFoo implements ImmutableBean {
+   // code generation will enable an immutable subclass
+ }
+ 
+ // subclass
+ @BeanDefinition(hierarchy = "immutable")
+ public final class Foo extends SuperFoo {
+   // code generation will connect to superclass
+   // note that there is NO 'implements ImmutableBean' on the subclass
+ }
+</pre>
 <p>
-Rather than set methods, a builder class will be generated.
+Immutable beans do not have set methods.
+Instead, a public builder class will be generated with methods to setup an instance.
 This supports code based manipulation, using the <code>toBuilder()</code> method.
+The scope of the builder may be controlled in the bean definition:
 </p>
+<pre class="source">
+ // superclass
+ @BeanDefinition(builderScope = "private")
+ public final class Bar implements ImmutableBean {
+   // code generated immutable bean with private builder
+ }
+</pre>
 <p>
-It is also possible for an bean to be partially final.
+It is also possible for a bean to be partially final.
 In this case, the bean will implement <code>Bean</code> rather than <code>ImmutableBean</code>.
 To get the correct behaviour, the <code>BeanDefinition</code> annotation value
 <code>builderScope</code> must be set to "public".
@@ -257,11 +312,11 @@ It is recommended to keep is simple, and only have normal mutable beans or final
 
 <section name="Serialization">
 <p>
-The <code>org.joda.beans.ser</code> package provides support for serializing Joda-Beans via XML.
+The <code>org.joda.beans.ser</code> package provides support for serializing Joda-Beans via XML or MsgPack binary.
 The main class is <a href="apidocs/org/joda/beans/ser/JodaBeanSer.html">JodaBeanSer</a>.
 It contains the relevant settings and methods to access the serialization and deserialization.
 </p>
-<pre>
+<pre class="source">
  // write to XML
  JodaBeanSer.COMPACT.xmlWriter().write(bean);
  // read from XML
@@ -273,14 +328,22 @@ The compact layout has no whitespace, whereas the pretty layout uses indentation
 Methods on <code>JodaBeanSer</code> allow for further customization.
 </p>
 <p>
+For binary, replace <code>xmlWriter()</code> by <code>binWriter()</code> and
+<code>xmlReader()</code> by <code>binReader()</code>.
+</p>
+<p>
 The serializer makes use the meta-data in the bean to minimize the output size.
-When deserializing, the same meta-data is used to parse the XML.
+In effect, the Joda-Bean acts as a schema to interpret the data.
+</p>
+<p>
+When deserializing, the Joda-Bean meta-data is used to parse the input XML/binary.
 However, this causes a problem if the bean is refactored between serialization and deserialization.
 To handle this, two mechanisms are provided.
 </p>
 <p>
-Firstly, the <code>RenameHandler</code> class from Joda-Convert allows type renames and
-enum constant renames to be handled. The class is a singleton into which renames are stored.
+Firstly, the <code>RenameHandler</code> class from Joda-Convert is used.
+This allows type renames and enum constant renames to be handled.
+The class is a singleton and must be configured at application startup.
 </p>
 <p>
 Secondly, Joda-Beans provides the <code>SerDeserializer</code> mechanism.
@@ -296,7 +359,10 @@ directly as part of the parsing process.
 <p>
 Joda-Beans has so far been integrated with Freemarker and MongoDB.
 The <a href="http://developers.opengamma.com/">OpenGamma</a> project has also provided its own integration with the Fudge messaging project.
-The support classes are included in the jar file but only work when the optional dependency is present.
+</p>
+<p>
+The integration support classes are included in the jar file but only work when the optional dependency is present.
+Note that it is entirely valid to use Joda-Beans without additional jar file dependencies apart from Joda-Convert.
 </p>
 <p>
 <br />
