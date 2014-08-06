@@ -13,32 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.ser;
 
 /**
- * Defines the type of the iterable.
+ * Serialization of Joda-Beans using a binary format.
  */
-public enum SerCategory {
-
-    /**
-     * Simple collection.
-     */
-    COLLECTION,
-    /**
-     * Counted collection.
-     */
-    COUNTED,
-    /**
-     * Map.
-     */
-    MAP,
-    /**
-     * Table.
-     */
-    TABLE,
-    /**
-     * Grid.
-     */
-    GRID;
-
-}
+package org.joda.beans.ser.bin;

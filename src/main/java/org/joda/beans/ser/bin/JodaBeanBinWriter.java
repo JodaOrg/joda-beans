@@ -100,7 +100,7 @@ public class JodaBeanBinWriter {
      * The type of the bean will be set in the message.
      * 
      * @param bean  the bean to output, not null
-     * @return the XML, not null
+     * @return the binary data, not null
      */
     public byte[] write(final Bean bean) {
         return write(bean, true);
@@ -111,7 +111,7 @@ public class JodaBeanBinWriter {
      * 
      * @param bean  the bean to output, not null
      * @param rootType  true to output the root type
-     * @return the XML, not null
+     * @return the binary data, not null
      */
     public byte[] write(final Bean bean, final boolean rootType) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
