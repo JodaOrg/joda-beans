@@ -15,6 +15,10 @@
         Backwards incompatible, but should not have been used.
       </action>
       <action dev="jodastephen" type="add">
+        Add JSON round-trip serialization.
+        Fixes #75.
+      </action>
+      <action dev="jodastephen" type="add">
         Use effective type exposed by Joda-Convert.
         Joda-Convert v1.7 exposes the effective type of the converted string.
         This can be more useful to use in serialization than the value type.

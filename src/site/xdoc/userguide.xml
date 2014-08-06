@@ -17,7 +17,7 @@ It consists of these main parts:
 <ul>
 <li>a set of interfaces and classes that define a property</li>
 <li>a source code generator</li>
-<li>serialization and deserialization via MsgPack binary and XML</li>
+<li>serialization and deserialization via JSON, XML and MsgPack binary</li>
 <li>integration with other technologies</li>
 </ul>
 <p>
@@ -311,7 +311,7 @@ It is recommended to keep is simple, and only have normal mutable beans or final
 
 <section name="Serialization">
 <p>
-The <code>org.joda.beans.ser</code> package provides support for serializing Joda-Beans via XML or MsgPack binary.
+The <code>org.joda.beans.ser</code> package provides support for serializing Joda-Beans via JSON, XML or MsgPack binary.
 The main class is <a href="apidocs/org/joda/beans/ser/JodaBeanSer.html">JodaBeanSer</a>.
 It contains the relevant settings and methods to access the serialization and deserialization.
 </p>
@@ -331,11 +331,15 @@ For binary, replace <code>xmlWriter()</code> by <code>binWriter()</code> and
 <code>xmlReader()</code> by <code>binReader()</code>.
 </p>
 <p>
+For JSON, replace <code>xmlWriter()</code> by <code>jsonWriter()</code> and
+<code>xmlReader()</code> by <code>jsonReader()</code>.
+</p>
+<p>
 The serializer makes use the meta-data in the bean to minimize the output size.
 In effect, the Joda-Bean acts as a schema to interpret the data.
 </p>
 <p>
-When deserializing, the Joda-Bean meta-data is used to parse the input XML/binary.
+When deserializing, the Joda-Bean meta-data is used to parse the input JSON/XML/binary.
 However, this causes a problem if the bean is refactored between serialization and deserialization.
 To handle this, two mechanisms are provided.
 </p>

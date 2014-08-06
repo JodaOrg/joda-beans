@@ -16,7 +16,7 @@ The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 </p>
 <p>
-By default, Joda-Beans includes a round-trip serialization system to XML and MsgPack binary.
+By default, Joda-Beans includes a round-trip serialization system to JSON, XML and MsgPack binary.
 This uses the information encoded in the Joda-Bean as a partial schema for the message.
 </p>
 <p>

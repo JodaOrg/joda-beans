@@ -18,6 +18,8 @@ package org.joda.beans.ser;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
+import org.joda.beans.ser.json.JodaBeanJsonReader;
+import org.joda.beans.ser.json.JodaBeanJsonWriter;
 import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
 import org.joda.convert.StringConvert;
@@ -252,6 +254,25 @@ public final class JodaBeanSer {
      */
     public JodaBeanXmlReader xmlReader() {
         return new JodaBeanXmlReader(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a JSON writer.
+     * 
+     * @return the JSON writer, not null
+     */
+    public JodaBeanJsonWriter jsonWriter() {
+        return new JodaBeanJsonWriter(this);
+    }
+
+    /**
+     * Creates a JSON reader.
+     * 
+     * @return the JSON reader, not null
+     */
+    public JodaBeanJsonReader jsonReader() {
+        return new JodaBeanJsonReader(this);
     }
 
     //-----------------------------------------------------------------------

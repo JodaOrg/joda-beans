@@ -13,32 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.ser;
 
 /**
- * Provides mime types for Joda-Beans.
- *
- * @author Stephen Colebourne
+ * Serialization of Joda-Beans using JSON.
  */
-public final class JodaBeanMimeType {
-
-    /**
-     * Mime type for the binary format.
-     */
-    public static final String BINARY = "application/vnd.org.joda.bean";
-    /**
-     * Mime type for the XML format.
-     */
-    public static final String XML = "application/vnd.org.joda.bean+xml";
-    /**
-     * Mime type for the JSON format.
-     */
-    public static final String JSON = "application/vnd.org.joda.bean+json";
-
-    /**
-     * Restricted constructor
-     */
-    private JodaBeanMimeType() {
-    }
-
-}
+package org.joda.beans.ser.json;

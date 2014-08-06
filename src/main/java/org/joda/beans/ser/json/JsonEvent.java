@@ -13,32 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.ser;
+package org.joda.beans.ser.json;
 
 /**
- * Provides mime types for Joda-Beans.
- *
- * @author Stephen Colebourne
+ * JSON event types.
  */
-public final class JodaBeanMimeType {
+enum JsonEvent {
 
-    /**
-     * Mime type for the binary format.
-     */
-    public static final String BINARY = "application/vnd.org.joda.bean";
-    /**
-     * Mime type for the XML format.
-     */
-    public static final String XML = "application/vnd.org.joda.bean+xml";
-    /**
-     * Mime type for the JSON format.
-     */
-    public static final String JSON = "application/vnd.org.joda.bean+json";
-
-    /**
-     * Restricted constructor
-     */
-    private JodaBeanMimeType() {
-    }
+    OBJECT,
+    OBJECT_END,
+    ARRAY,
+    ARRAY_END,
+    STRING,
+    NUMBER_INTEGRAL,
+    NUMBER_FLOATING,
+    NULL,
+    TRUE,
+    FALSE,
+    COMMA,
+    COLON,
 
 }
