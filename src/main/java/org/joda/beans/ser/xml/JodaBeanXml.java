@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
  *
  * @author Stephen Colebourne
  */
-public final class JodaBeanXml {
+final class JodaBeanXml {
 
     /**
      * XML bean tag.

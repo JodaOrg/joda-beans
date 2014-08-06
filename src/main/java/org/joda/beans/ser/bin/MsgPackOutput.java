@@ -24,7 +24,7 @@ import java.io.OutputStream;
  *
  * @author Stephen Colebourne
  */
-public final class MsgPackOutput extends MsgPack {
+final class MsgPackOutput extends MsgPack {
 
     /**
      * The stream to write to.
@@ -36,7 +36,7 @@ public final class MsgPackOutput extends MsgPack {
      * 
      * @param stream  the stream to write to, not null
      */
-    public MsgPackOutput(OutputStream stream) {
+    MsgPackOutput(OutputStream stream) {
         this.output = new DataOutputStream(stream);
     }
 
@@ -45,7 +45,7 @@ public final class MsgPackOutput extends MsgPack {
      * 
      * @param stream  the stream to write to, not null
      */
-    public MsgPackOutput(DataOutputStream stream) {
+    MsgPackOutput(DataOutputStream stream) {
         this.output = stream;
     }
 
@@ -55,7 +55,7 @@ public final class MsgPackOutput extends MsgPack {
      * 
      * @throws IOException if an error occurs
      */
-    public void writeNil() throws IOException {
+    void writeNil() throws IOException {
         output.writeByte(NIL);
     }
 
@@ -65,7 +65,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value
      * @throws IOException if an error occurs
      */
-    public void writeBoolean(boolean value) throws IOException {
+    void writeBoolean(boolean value) throws IOException {
         if (value) {
             output.writeByte(TRUE);
         } else {
@@ -79,7 +79,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value
      * @throws IOException if an error occurs
      */
-    public void writeInt(int value) throws IOException {
+    void writeInt(int value) throws IOException {
         if (value < MIN_FIX_INT) {
             // large negative
             if (value >= Byte.MIN_VALUE) {
@@ -116,7 +116,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value
      * @throws IOException if an error occurs
      */
-    public void writeLong(long value) throws IOException {
+    void writeLong(long value) throws IOException {
         if (value < MIN_FIX_INT) {
             // large negative
             if (value >= Byte.MIN_VALUE) {
@@ -159,7 +159,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value
      * @throws IOException if an error occurs
      */
-    public void writeFloat(float value) throws IOException {
+    void writeFloat(float value) throws IOException {
         output.writeByte(FLOAT_32);
         output.writeFloat(value);
     }
@@ -170,7 +170,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value
      * @throws IOException if an error occurs
      */
-    public void writeDouble(double value) throws IOException {
+    void writeDouble(double value) throws IOException {
         output.writeByte(FLOAT_64);
         output.writeDouble(value);
     }
@@ -181,7 +181,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param bytes  the bytes, not null
      * @throws IOException if an error occurs
      */
-    public void writeBytes(byte[] bytes) throws IOException {
+    void writeBytes(byte[] bytes) throws IOException {
         int size = bytes.length;
         if (size < 256) {
             output.writeByte(BIN_8);
@@ -202,7 +202,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value
      * @throws IOException if an error occurs
      */
-    public void writeString(String value) throws IOException {
+    void writeString(String value) throws IOException {
         byte[] bytes = toUTF8(value);
         int size = bytes.length;
         if (size < 32) {
@@ -241,7 +241,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param size  the size
      * @throws IOException if an error occurs
      */
-    public void writeArrayHeader(int size) throws IOException {
+    void writeArrayHeader(int size) throws IOException {
         if (size < 16) {
             output.writeByte(MIN_FIX_ARRAY + size);
         } else if (size < 65536) {
@@ -259,7 +259,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param size  the size
      * @throws IOException if an error occurs
      */
-    public void writeMapHeader(int size) throws IOException {
+    void writeMapHeader(int size) throws IOException {
         if (size < 16) {
             output.writeByte(MIN_FIX_MAP + size);
         } else if (size < 65536) {
@@ -278,7 +278,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param value  the value to write as the data
      * @throws IOException if an error occurs
      */
-    public void writeExtensionByte(int extensionType, int value) throws IOException {
+    void writeExtensionByte(int extensionType, int value) throws IOException {
         output.write(FIX_EXT_1);
         output.write(extensionType);
         output.write(value);
@@ -291,7 +291,7 @@ public final class MsgPackOutput extends MsgPack {
      * @param str  the string to write as the data
      * @throws IOException if an error occurs
      */
-    public void writeExtensionString(int extensionType, String str) throws IOException {
+    void writeExtensionString(int extensionType, String str) throws IOException {
         byte[] bytes = str.getBytes(UTF_8);
         if (bytes.length > 256) {
             throw new IllegalArgumentException("String too long");
@@ -300,16 +300,6 @@ public final class MsgPackOutput extends MsgPack {
         output.write(bytes.length);
         output.write(extensionType);
         output.write(bytes);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Closes the underlying stream.
-     * 
-     * @throws IOException if an error occurs
-     */
-    public void close() throws IOException {
-        output.close();
     }
 
 }

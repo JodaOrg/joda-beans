@@ -9,6 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.1.0" date="2014-xx-xx" description="v1.1.0">
+      <action dev="jodastephen" type="remove">
+        Reduce scope of serialization helper classes.
+        MsgPack, MsgPackInput, MsgPackOutput and JodaBeanXml.
+        Backwards incompatible, but should not have been used.
+      </action>
       <action dev="jodastephen" type="add">
         Use effective type exposed by Joda-Convert.
         Joda-Convert v1.7 exposes the effective type of the converted string.

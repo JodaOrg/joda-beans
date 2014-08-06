@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
  *
  * @author Stephen Colebourne
  */
-public abstract class MsgPack {
+abstract class MsgPack {
 
     /**
      * UTF-8 encoding.

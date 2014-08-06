@@ -25,7 +25,7 @@ import java.io.InputStream;
  *
  * @author Stephen Colebourne
  */
-public abstract class MsgPackInput extends MsgPack {
+abstract class MsgPackInput extends MsgPack {
 
     /**
      * The stream to read.
