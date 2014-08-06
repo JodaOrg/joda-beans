@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  * Test property roundtrip using binary.
  */
 @Test
-public class TestAddressBin {
+public class TestSerializeBin {
 
     public void test_writeAddress() throws IOException {
         Address address = SerTestHelper.testAddress();

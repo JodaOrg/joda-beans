@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  * Test property roundtrip using XML.
  */
 @Test
-public class TestAddressXml {
+public class TestSerializeXml {
 
     public void test_writeAddress() {
         Address address = SerTestHelper.testAddress();
