@@ -326,6 +326,18 @@ Simply declare a private void method taking no arguments annotated with '@Imutab
  }
 </pre>
 <p>
+An immutable bean can be configured to apply default property values.
+In most cases this is not necessary, but if the bean has lots of non-null properties it may be
+desirable to have some default values.
+Simply declare a private static void method taking one 'Builder' argument annotated with '@ImutableDefaults'.
+</p>
+<pre class="source">
+ @ImutableDefaults
+ private static void applyDefaults(Builder builder) {
+   // set default property values directly into the builder
+ }
+</pre>
+<p>
 An immutable bean can be configured to cache the hash code.
 In most cases this is not necessary, but if the bean is used as a hash key, then it may be helpful.
 Simply set the boolean 'cacheHashCode' flag of '@BeanDefinition' to true.

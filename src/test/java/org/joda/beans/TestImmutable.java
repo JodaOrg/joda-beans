@@ -143,4 +143,15 @@ public class TestImmutable {
         }
     }
 
+    //-----------------------------------------------------------------------
+    public void test_builder_defaultValue() {
+        ImmPerson person = ImmPerson.builder()
+            .forename("A")
+            .surname("B")
+            .build();
+        assertEquals(person.getForename(), "A");
+        assertEquals(person.getSurname(), "B");
+        assertEquals(person.getNumberOfCars(), 1);
+    }
+
 }

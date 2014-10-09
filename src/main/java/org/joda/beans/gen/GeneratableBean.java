@@ -47,6 +47,8 @@ class GeneratableBean {
     private int immutableConstructor;
     /** The method name of the immutable validator. */
     private String immutableValidator;
+    /** The method name of the immutable defaults. */
+    private String immutableDefaults;
     /** The style of constructor to generate. */
     private int constructorStyle;
     /** The full type of the bean class. */
@@ -302,6 +304,22 @@ class GeneratableBean {
      */
     public void setImmutableValidator(String immutableValidator) {
         this.immutableValidator = immutableValidator;
+    }
+
+    /**
+     * Gets whether the bean has an apply defaults method.
+     * @return the flag, zero for none, one for builder based, two for argument based
+     */
+    public String getImmutableDefaults() {
+        return immutableDefaults;
+    }
+
+    /**
+     * Sets whether the bean has an apply defaults method.
+     * @param immutableValidator  the validator method
+     */
+    public void setImmutableDefaults(String immutableDefaults) {
+        this.immutableDefaults = immutableDefaults;
     }
 
     /**

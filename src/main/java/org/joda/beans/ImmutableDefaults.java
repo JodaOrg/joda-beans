@@ -21,21 +21,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation defining which method is to be used to validate the bean
+ * Annotation defining which method is to be used to apply the default property values
  * when code generating immutable beans.
  * <p>
- * Each property in a bean can be independently validated.
- * This annotation allows properties to be cross-checked at the end of the constructor.
+ * Each non-collection property in an immutable bean normally has to be initialized before use.
+ * This annotation allows default values to be set when creating the builder.
+ * Note that the defaults apply to the builder, not to the constructor of the bean.
  * <p>
- * The method must be a private void instance method and take no arguments.
- * Private is necessary as it is called from the constructor.
+ * The method must be a private static void instance method that takes a single argument of the type 'Builder'.
+ * Private is necessary as it is called from the builder constructor.
  * For example:
  * <pre>
- *   {@literal @}ImmutableValidator
- *   private void validate() {
- *     if (age != null && age {@literal <} 0) {
- *       throw new IllegalArgumentException("Age must not be negative if specified")
- *     }
+ *   {@literal @}ImmutableDefaults
+ *   private static void applyDefaults(Builder builder) {
+ *     builder.group(Group.STANDARD);  // default the group property to 'STANDARD'
  *   }
  * </pre>
  * 
@@ -43,6 +42,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
-public @interface ImmutableValidator {
+public @interface ImmutableDefaults {
 
 }
