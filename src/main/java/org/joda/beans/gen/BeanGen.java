@@ -65,11 +65,11 @@ class BeanGen {
     private static final Pattern BEAN_TYPE = Pattern.compile(".*class +(" +
             "([A-Z][A-Za-z0-9_]+)" +
                 "(?:<" +
-                    "([A-Z])( +extends +[A-Za-z0-9_<>]+)?" +
+                    "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?)?" +
                     "(?:[,] +" +
-                        "([A-Z])( +extends +[A-Za-z0-9_<>]+)?" +
+                        "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?)?" +
                         "(?:[,] +" +
-                            "([A-Z])( +extends +[A-Za-z0-9_<>]+)?" +
+                            "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?)?" +
                         ")?" +
                     ")?" +
                 ">)?" +
