@@ -179,4 +179,41 @@ abstract class SetterGen {
         }
     }
 
+    static class ObservableSetterGen extends SetterGen {
+        static final SetterGen PUBLIC = new ObservableSetterGen();
+        @Override
+        boolean isSetterGenerated(PropertyData prop) {
+            return true;
+        }
+        @Override
+        List<String> generateSetter(String indent, PropertyData prop) {
+            List<String> list = new ArrayList<String>();
+            list.add("\t/**");
+            list.add("\t * Sets " + prop.getFirstComment());
+            for (String comment : prop.getComments()) {
+                list.add("\t * " + comment);
+            }
+            list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
+            list.add("\t */");
+            if (prop.isOverrideSet()) {
+                list.add("\t@Override");
+            }
+            if (prop.isDeprecated()) {
+                list.add("\t@Deprecated");
+            }
+            list.add("\tpublic void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            if (prop.isValidated()) {
+                list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
+            }
+            String old = "old" + prop.getUpperName();
+            list.add("\t\t" + prop.getFieldType() + " " + old + " = this." + prop.getFieldName() + ";");
+            list.add("\t\tthis." + prop.getFieldName() + " = " + prop.getPropertyName() + ";");
+            list.add("\t\tthis.propertyChangeSupport.firePropertyChange(\"" +
+                prop.getPropertyName() + "\", " + old + ", " + prop.getPropertyName() + ");");
+            list.add("\t}");
+            list.add("");
+            return list;
+        }
+    }
+
 }

@@ -251,6 +251,20 @@ class BeanData {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets whether property change support is needed.
+     * @return the flag
+     */
+    public boolean isPropertyChangeSupport() {
+        for (PropertyData prop : properties) {
+            if (prop.isBound()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets whether the bean is immutable.
      * @return the flag
      */

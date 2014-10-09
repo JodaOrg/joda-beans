@@ -153,6 +153,7 @@ In most cases, the default "smart" setting is sufficient:
 * "set" - generates `setXxx()`
 * "setClearAddAll" - generates `setXxx()` using `field.clear()` and `field.addAll(newData)`
 * "setClearPutAll" - generates `setXxx()` using `field.clear()` and `field.putAll(newData)`
+* "bound" - generates a bound property with {@code PropertyChangeSupport}
 * "field" - generates direct access to the field, enabling a weird manual setter
 * "manual" - a method named `setXxx()` must be manually provided at package scope or greater
 * a pattern, see [Javadoc](apidocs/org/joda/beans/PropertyDefinition.html#set--)
@@ -171,6 +172,10 @@ For example, to have a private setter:
    }
  }
 ```
+
+Note that support for bound properties is very basic. It only handles simple mutable properties.
+For more complex cases, it is necessary to write the setter manually.
+The PropertyChangeSupport field is generated, but not the methods to add listeners.
 
 Validation can be specified using the annotation parameter "validate":
 

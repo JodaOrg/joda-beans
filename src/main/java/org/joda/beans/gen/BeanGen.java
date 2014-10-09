@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -129,6 +130,7 @@ class BeanGen {
             insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
             generateSerializationVersionId();
+            generatePropertyChangeSupportField();
             generateHashCodeField();
             generateImmutableBuilderMethod();
             generateArgBasedConstructor();
@@ -397,6 +399,17 @@ class BeanGen {
             insertRegion.add("\t * The serialization version id.");
             insertRegion.add("\t */");
             insertRegion.add("\tprivate static final long serialVersionUID = 1L;");
+            insertRegion.add("");
+        }
+    }
+
+    private void generatePropertyChangeSupportField() {
+        if (data.isPropertyChangeSupport()) {
+            data.ensureImport(PropertyChangeSupport.class);
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The property change support field.");
+            insertRegion.add("\t */");
+            insertRegion.add("\tprivate PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);");
             insertRegion.add("");
         }
     }

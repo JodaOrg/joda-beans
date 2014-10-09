@@ -102,6 +102,8 @@ class PropertyData {
     private GetterGen getterGen;
     /** The setter generator. */
     private SetterGen setterGen;
+    /** The flag for bound properties. */
+    private boolean bound;
     /** The copy generator. */
     private CopyGen copyGen;
     /** The builder generator. */
@@ -632,6 +634,13 @@ class PropertyData {
             setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.addAll($value);");
         } else if (style.equals("setClearPutAll")) {
             setterGen = new SetterGen.PatternSetterGen("$field.clear();\n$field.putAll($value);");
+        } else if (style.equals("bound")) {
+            if (isFinal()) {
+                throw new IllegalArgumentException("Final field must not have a bound setter");
+            } else {
+                setterGen = SetterGen.ObservableSetterGen.PUBLIC;
+                bound = true;
+            }
         } else if (style.equals("smart")) {
             if (isDerived()) {
                 setterGen = SetterGen.NoSetterGen.INSTANCE;
@@ -681,6 +690,14 @@ class PropertyData {
             return "private";
         }
         return "public";
+    }
+
+    /**
+     * Gets whether the property is bound.
+     * @return true if bound
+     */
+    public boolean isBound() {
+        return bound;
     }
 
     //-----------------------------------------------------------------------

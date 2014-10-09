@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6" date="SNAPSHOT" description="v1.6">
       <action dev="jodastephen" type="add">
+         Add basic support for bound properties.
+         Implementation only handles non-final properties on mutable beans.
+         Fixes #78.
+      </action>
+      <action dev="jodastephen" type="add">
          Support package, protected and public scoped immutable constructors.
          Fixes #107.
       </action>

@@ -94,6 +94,7 @@ public @interface PropertyDefinition {
      * <li>'set' - generates setXxx()
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
      * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
+     * <li>'bound' - generates a bound property with {@code PropertyChangeSupport}
      * <li>'field' - generates direct access to the field, enabling a weird manual setter
      * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
      * <li>a pattern, see below
