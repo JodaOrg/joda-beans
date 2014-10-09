@@ -62,14 +62,18 @@ class BeanGen {
     /** Line separator. */
     private static final String LINE_SEPARATOR_INDENTED = "\t\t//-----------------------------------------------------------------------";
     /** Pattern to find bean type. */
+    // handle three comma separated generic parameters
+    // handle generic parameter extends clause
+    // handle extends clause with further level of generic parameters
+    // handle extends clause union types without generic parameters
     private static final Pattern BEAN_TYPE = Pattern.compile(".*class +(" +
             "([A-Z][A-Za-z0-9_]+)" +
                 "(?:<" +
-                    "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?)?" +
+                    "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?(?:[ ]+[&][ ]+[A-Za-z0-9]+)*)?" +
                     "(?:[,] +" +
-                        "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?)?" +
+                        "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?(?:[ ]+[&][ ]+[A-Za-z0-9]+)*)?" +
                         "(?:[,] +" +
-                            "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?)?" +
+                            "([A-Z])( +extends +[A-Za-z0-9_]+(?:[<][A-Za-z0-9_, ?]+[>])?(?:[ ]+[&][ ]+[A-Za-z0-9]+)*)?" +
                         ")?" +
                     ")?" +
                 ">)?" +
