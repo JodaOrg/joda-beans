@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -781,6 +782,23 @@ public final class JodaBeanUtils {
                 }
                 return true;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns an iterator over all the beans contained within the bean.
+     * <p>
+     * The iterator is a depth-first traversal of the beans within the specified bean.
+     * The first returned bean is the specified bean.
+     * Beans within collections will be returned.
+     * <p>
+     * A cycle in the bean structure will cause an infinite loop.
+     * 
+     * @param bean  the bean to iterate over, not null
+     * @return the iterator, not null
+     */
+    public static Iterator<Bean> beanIterator(Bean bean) {
+        return new BeanIterator(bean);
     }
 
     //-------------------------------------------------------------------------

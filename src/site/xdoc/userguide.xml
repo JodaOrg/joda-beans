@@ -122,6 +122,24 @@ The conversion between the string and the type of the property, such as <code>in
 </section>
 
 
+<section name="Utilities">
+<p>
+The <code>JodaBeanUtils</code> contains a number of additional utilities.
+</p>
+<p>
+The Java bytecode format contains more details about generic types than is often realised.
+The <code>JodaBeanUtils</code> methods <code>collectionType()</code>, <code>mapKeyType()</code> and
+<code>mapValueType()</code> allow the generic parameter type of a property to be extracted.
+Thus an application can tell that a property is a list of strings, not just a list.
+</p>
+<p>
+The <code>JodaBeanUtils</code> method <code>beanIterator()</code> provides a simple mechanism
+to iterate over all the beans within a bean. The iteration is depth-first, and handles collections
+and collections within collections.
+</p>
+</section>
+
+
 <section name="Chained access">
 <p>
 Joda-Beans provides the ability to chain properties together using
