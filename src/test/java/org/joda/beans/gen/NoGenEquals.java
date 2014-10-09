@@ -32,10 +32,12 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 /**
  * Mock used for test equals and final class.
+ * <p>
+ * The {@code cacheHashCode} flag is a test to ensure it is ignored.
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(cacheHashCode = true)
 public final class NoGenEquals extends DirectBean {
 
     /**

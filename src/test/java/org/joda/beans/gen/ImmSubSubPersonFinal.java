@@ -34,7 +34,7 @@ import com.google.common.collect.Multiset;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(hierarchy = "immutable")
+@BeanDefinition(hierarchy = "immutable", cacheHashCode = true)
 public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
 
     @PropertyDefinition
@@ -53,6 +53,11 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
     static {
         JodaBeanUtils.registerMetaBean(ImmSubSubPersonFinal.Meta.INSTANCE);
     }
+
+    /**
+     * The cached hash code, using the racy single-check idiom.
+     */
+    private int cachedHashCode;
 
     /**
      * Returns a builder used to create an instance of the bean.
@@ -110,9 +115,14 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
-        return hash ^ super.hashCode();
+        int hash = cachedHashCode;
+        if (hash == 0) {
+            hash = 7;
+            hash += hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
+            hash = hash ^ super.hashCode();
+            cachedHashCode = hash;
+        }
+        return hash;
     }
 
     @Override

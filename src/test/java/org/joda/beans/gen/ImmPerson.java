@@ -48,7 +48,7 @@ import com.google.common.collect.Multiset;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(cacheHashCode = true)
 public final class ImmPerson implements ImmutableBean {
 
     /** The forename. */
@@ -102,6 +102,11 @@ public final class ImmPerson implements ImmutableBean {
     static {
         JodaBeanUtils.registerMetaBean(ImmPerson.Meta.INSTANCE);
     }
+
+    /**
+     * The cached hash code, using the racy single-check idiom.
+     */
+    private int cachedHashCode;
 
     /**
      * Returns a builder used to create an instance of the bean.
@@ -273,18 +278,22 @@ public final class ImmPerson implements ImmutableBean {
 
     @Override
     public int hashCode() {
-        int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAge());
+        int hash = cachedHashCode;
+        if (hash == 0) {
+            hash = getClass().hashCode();
+            hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
+            hash += hash * 31 + JodaBeanUtils.hashCode(getAge());
+            cachedHashCode = hash;
+        }
         return hash;
     }
 

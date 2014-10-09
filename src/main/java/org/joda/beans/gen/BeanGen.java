@@ -91,10 +91,12 @@ class BeanGen {
     private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".*implements.*[ ,]((Immutable)?Bean)[ ,].*");
     /** The style pattern. */
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
-    /** The style pattern. */
+    /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
-    /** The root pattern. */
+    /** The hierarchy pattern. */
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The cacheHashCode pattern. */
+    private static final Pattern CACHE_HASH_CODE_PATTERN = Pattern.compile(".*[ ,(]cacheHashCode[ ]*[=][ ]*(true|false).*");
     /** The validator pattern. */
     private static final Pattern VALIDATOR_PATTERN = Pattern.compile(".*private[ ]+void[ ]+([a-zA-Z][a-zA-Z0-9]*)[(][ ]*[)].*");
     /** Pattern to find super type. */
@@ -145,6 +147,7 @@ class BeanGen {
             if (data.isBeanBuilderScopeValid() == false) {
                 throw new RuntimeException("Invalid bean builder scope: " + data.getBeanStyle());
             }
+            this.data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
             this.data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
             this.data.setConstructable(parseConstructable(beanDefIndex));
             this.data.setTypeParts(parseBeanType(beanDefIndex));
@@ -184,6 +187,9 @@ class BeanGen {
             } else if (data.getImmutableConstructor() > CONSTRUCTOR_NONE) {
                 throw new RuntimeException("Mutable beans must not specify @ImmutableConstructor: " + data.getTypeRaw());
             }
+            if (data.isCacheHashCode()) {
+                data.setCacheHashCode(data.isImmutable() && data.isManualEqualsHashCode() == false);
+            }
         } else {
             this.autoStartIndex = -1;
             this.autoEndIndex = -1;
@@ -206,6 +212,7 @@ class BeanGen {
             }
             insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
+            generateHashCodeField();
             generateImmutableBuilderMethod();
             generateArgBasedConstructor();
             generateBuilderBasedConstructor();
@@ -302,6 +309,15 @@ class BeanGen {
             return matcher.group(1);
         }
         return "";
+    }
+
+    private boolean parseCacheHashCode(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = CACHE_HASH_CODE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return Boolean.valueOf(matcher.group(1));
+        }
+        return false;
     }
 
     private boolean parseConstructable(int defLine) {
@@ -723,6 +739,16 @@ class BeanGen {
         insertRegion.add("");
     }
 
+    private void generateHashCodeField() {
+        if (data.isCacheHashCode()) {
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The cached hash code, using the racy single-check idiom.");
+            insertRegion.add("\t */");
+            insertRegion.add("\tprivate int cachedHashCode;");
+            insertRegion.add("");
+        }
+    }
+
     private void generateMetaBean() {
         if (data.isTypeGeneric()) {
             insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
@@ -866,23 +892,44 @@ class BeanGen {
         data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic int hashCode() {");
-        if (data.isSubClass()) {
-            insertRegion.add("\t\tint hash = 7;");
-        } else {
-            insertRegion.add("\t\tint hash = getClass().hashCode();");
-        }
-        for (int i = 0; i < properties.size(); i++) {
-            PropertyGen prop = properties.get(i);
-            String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
-            insertRegion.add("\t\thash += hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
-        }
-        if (data.isSubClass()) {
-            insertRegion.add("\t\treturn hash ^ super.hashCode();");
-        } else {
+        if (data.isCacheHashCode()) {
+            insertRegion.add("\t\tint hash = cachedHashCode;");
+            insertRegion.add("\t\tif (hash == 0) {");
+            if (data.isSubClass()) {
+                insertRegion.add("\t\t\thash = 7;");
+            } else {
+                insertRegion.add("\t\t\thash = getClass().hashCode();");
+            }
+            generateHashCodeContent("\t\t\t");
+            if (data.isSubClass()) {
+                insertRegion.add("\t\t\thash = hash ^ super.hashCode();");
+            }
+            insertRegion.add("\t\t\tcachedHashCode = hash;");
+            insertRegion.add("\t\t}");
             insertRegion.add("\t\treturn hash;");
+        } else {
+            if (data.isSubClass()) {
+                insertRegion.add("\t\tint hash = 7;");
+            } else {
+                insertRegion.add("\t\tint hash = getClass().hashCode();");
+            }
+            generateHashCodeContent("\t\t");
+            if (data.isSubClass()) {
+                insertRegion.add("\t\treturn hash ^ super.hashCode();");
+            } else {
+                insertRegion.add("\t\treturn hash;");
+            }
         }
         insertRegion.add("\t}");
         insertRegion.add("");
+    }
+
+    private void generateHashCodeContent(String indent) {
+        for (int i = 0; i < properties.size(); i++) {
+            PropertyGen prop = properties.get(i);
+            String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
+            insertRegion.add(indent + "hash += hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
+        }
     }
 
     private void generateToString() {

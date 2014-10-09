@@ -57,4 +57,12 @@ public @interface BeanDefinition {
      */
     String hierarchy() default "";
 
+    /**
+     * Whether to generate code to cache the hash code.
+     * <p>
+     * Setting this to true will cause the hash code to be cached using the racy single check idiom.
+     * The setting only applies to immutable beans.
+     */
+    boolean cacheHashCode() default false;
+
 }

@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.2" date="2014-10-09" description="v1.2">
+      <action dev="jodastephen" type="add">
+        Add option to allow hash codes to be cached.
+        New attribute on @BeanDefinition allows caching of hash codes.
+        Fixes #79.
+      </action>
+    </release>
     <release version="1.1" date="2014-08-07" description="v1.1">
       <action dev="jodastephen" type="remove">
         Reduce scope of serialization helper classes.

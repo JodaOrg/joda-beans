@@ -37,6 +37,8 @@ class GeneratableBean {
     private String beanStyle;
     /** The bean builder scope. */
     private String beanBuilderScope;
+    /** Whether to cache the hash code. */
+    private boolean cacheHashCode;
     /** Whether the class is immutable. */
     private boolean immutable;
     /** Whether the class can be constructed. */
@@ -210,6 +212,23 @@ class GeneratableBean {
      */
     public boolean isBuilderScopePublic() {
         return "public".equals(beanBuilderScope);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets whether to cache the hash code.
+     * @return the flag
+     */
+    public boolean isCacheHashCode() {
+        return cacheHashCode;
+    }
+
+    /**
+     * Sets whether to cache the hash code.
+     * @param cacheHashCode  the flag
+     */
+    public void setCacheHashCode(boolean cacheHashCode) {
+        this.cacheHashCode = cacheHashCode;
     }
 
     //-----------------------------------------------------------------------
