@@ -24,6 +24,7 @@ import org.joda.beans.gen.ImmEmpty;
 import org.joda.beans.gen.JodaConvertBean;
 import org.joda.beans.gen.JodaConvertWrapper;
 import org.joda.beans.gen.Person;
+import org.joda.beans.gen.SimpleName;
 import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
@@ -130,6 +131,17 @@ public class TestSerializeXml {
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean bean = new FlexiBean();
         bean.set("element", "Test");
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_read_aliased() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.SimpleName\">" +
+        		"<firstName>A</firstName><givenName>B</givenName></bean>";
+        Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
+        SimpleName bean = new SimpleName();
+        bean.setForename("A");
+        bean.setSurname("B");
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 

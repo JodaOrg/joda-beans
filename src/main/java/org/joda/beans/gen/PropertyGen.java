@@ -32,6 +32,8 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 class PropertyGen {
 
     /** The getter pattern. */
+    private static final Pattern ALIAS_PATTERN = Pattern.compile(".*[ ,(]alias[ ]*[=][ ]*[\"]([a-zA-z_][a-zA-z0-9_]*)[\"].*");
+    /** The getter pattern. */
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
     /** The setter pattern. */
     private static final Pattern SETTER_PATTERN = Pattern.compile(".*[ ,(]set[ ]*[=][ ]*[\"]([ !#-~]*)[\"].*");
@@ -78,6 +80,7 @@ class PropertyGen {
             prop.setFieldType(parseMethodType(content));
             prop.setInitializer(parseFieldInitializer(content));
         } else {
+            prop.setAlias(parseAlias(content));
             prop.setGetStyle(parseGetStyle(content));
             prop.setSetStyle(parseSetStyle(content));
             prop.setOverrideGet(parseOverrideGet(content));
@@ -133,6 +136,15 @@ class PropertyGen {
             }
         }
         throw new RuntimeException("Unable to locate field for property at line " + (propertyIndex + 1));
+    }
+
+    private String parseAlias(List<String> content) {
+        String line = content.get(propertyIndex).trim();
+        Matcher matcher = ALIAS_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private String parseGetStyle(List<String> content) {
@@ -411,6 +423,9 @@ class PropertyGen {
     List<String> generateMetaPropertyGetCase() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getAlias() != null) {
+            list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
+        }
         list.add("\t\t\t\t\treturn " + metaFieldName() + ";");
         return list;
     }
@@ -470,6 +485,9 @@ class PropertyGen {
     List<String> generatePropertyGetCase() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getAlias() != null) {
+            list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
+        }
         if (data.getStyle().isReadable()) {
             list.add("\t\t\t\t\treturn ((" + data.getBean().getTypeWildcard() + ") bean)." + data.getGetterGen().generateGetInvoke(data) + ";");
         } else {
@@ -484,6 +502,9 @@ class PropertyGen {
     List<String> generatePropertySetCase() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getAlias() != null) {
+            list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
+        }
         String setter = data.getSetterGen().generateSetInvoke(data, castObject() + "newValue");
         if (data.getStyle().isWritable() && setter != null) {
             list.add("\t\t\t\t\t((" + data.getBean().getTypeNoExtends() + ") bean)." + setter + ";");
@@ -509,6 +530,9 @@ class PropertyGen {
     List<String> generateBuilderFieldGet() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getAlias() != null) {
+            list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
+        }
         list.add("\t\t\t\t\treturn " + generateBuilderFieldName() + ";");
         return list;
     }
@@ -516,6 +540,9 @@ class PropertyGen {
     List<String> generateBuilderFieldSet() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
+        if (data.getAlias() != null) {
+            list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
+        }
         list.add("\t\t\t\t\tthis." + generateBuilderFieldName() + " = (" + propertyType(getBuilderType()) + ") newValue;");
         list.add("\t\t\t\t\tbreak;");
         return list;

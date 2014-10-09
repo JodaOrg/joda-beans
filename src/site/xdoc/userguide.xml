@@ -382,7 +382,7 @@ In effect, the Joda-Bean acts as a schema to interpret the data.
 <p>
 When deserializing, the Joda-Bean meta-data is used to parse the input JSON/XML/binary.
 However, this causes a problem if the bean is refactored between serialization and deserialization.
-To handle this, two mechanisms are provided.
+To handle this, three mechanisms are provided.
 </p>
 <p>
 Firstly, the <code>RenameHandler</code> class from Joda-Convert is used.
@@ -395,6 +395,10 @@ A <code>SerDeserializer</code> class can be written for each refactored bean.
 It supports multiple kinds of change, including property rename, property type change and
 complex semantic changes. It is registered with <code>SerDeserializers</code> and called
 directly as part of the parsing process.
+</p>
+<p>
+Finally, the <code>PropertyDefinition</code> annotation has an "alias" attribute.
+Setting that allows the old name of a property to be retained when a property is renamed.
 </p>
 </section>
 

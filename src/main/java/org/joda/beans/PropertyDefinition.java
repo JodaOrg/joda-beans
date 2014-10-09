@@ -33,6 +33,18 @@ import java.lang.annotation.Target;
 public @interface PropertyDefinition {
 
     /**
+     * An alternative name for the property.
+     * <p>
+     * The property can be looked up using the specified alias.
+     * The primary name is unaffected, and the alias is only used in certain circumstances.
+     * For example, {@code bean.metaProperty("alias")} and {@code bean.property("alias")}
+     * will both work, as will getting and setting via an immutable bean builder.
+     * <p>
+     * This attribute is most useful in handling change from serialized forms.
+     */
+    String alias() default "";
+
+    /**
      * The style of the method used to query the property.
      * <p>
      * The style is a string describing the getter, typically used for code generation.

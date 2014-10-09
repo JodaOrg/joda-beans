@@ -40,13 +40,13 @@ public class SimpleName
         implements Bean {
 
     /** The forename. */
-    @PropertyDefinition
+    @PropertyDefinition(alias = "firstName")
     private String forename;
     /** The  middle names. */
     @PropertyDefinition
     private String[] middleNames;
     /** The surname. */
-    @PropertyDefinition
+    @PropertyDefinition(alias = "givenName")
     private String surname;
 
     /**
@@ -251,10 +251,12 @@ public class SimpleName
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
+                case 132835675:  // firstName (alias)
                     return forename;
                 case 404996787:  // middleNames
                     return middleNames;
                 case -1852993317:  // surname
+                case 1469046696:  // givenName (alias)
                     return surname;
             }
             return super.metaPropertyGet(propertyName);
@@ -305,10 +307,12 @@ public class SimpleName
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
+                case 132835675:  // firstName (alias)
                     return ((SimpleName) bean).getForename();
                 case 404996787:  // middleNames
                     return ((SimpleName) bean).getMiddleNames();
                 case -1852993317:  // surname
+                case 1469046696:  // givenName (alias)
                     return ((SimpleName) bean).getSurname();
             }
             return super.propertyGet(bean, propertyName, quiet);
@@ -318,12 +322,14 @@ public class SimpleName
         protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
+                case 132835675:  // firstName (alias)
                     ((SimpleName) bean).setForename((String) newValue);
                     return;
                 case 404996787:  // middleNames
                     ((SimpleName) bean).setMiddleNames((String[]) newValue);
                     return;
                 case -1852993317:  // surname
+                case 1469046696:  // givenName (alias)
                     ((SimpleName) bean).setSurname((String) newValue);
                     return;
             }

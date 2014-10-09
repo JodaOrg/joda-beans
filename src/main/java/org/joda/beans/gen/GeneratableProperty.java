@@ -61,6 +61,8 @@ class GeneratableProperty {
     private boolean isFinal;
     /** The field initializer. */
     private String initializer;
+    /** The alias. */
+    private String alias;
     /** The getter style. */
     private String getStyle;
     /** The setter style. */
@@ -261,6 +263,22 @@ class GeneratableProperty {
      */
     public void setInitializer(String initializer) {
         this.initializer = initializer;
+    }
+
+    /**
+     * Gets the alias.
+     * @return the alias
+     */
+    public String getAlias() {
+        return alias;
+    }
+
+    /**
+     * Sets the alias.
+     * @param alias  the alias
+     */
+    public void setAlias(String alias) {
+        this.alias = (alias != null && alias.isEmpty() == false ? alias : null);
     }
 
     /**

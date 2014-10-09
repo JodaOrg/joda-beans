@@ -42,7 +42,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 public final class ImmDocumentationResult<T> implements ImmutableBean {
 
     /** The documentation. */
-    @PropertyDefinition
+    @PropertyDefinition(alias = "underlying")
     private final Documentation<T> documentation;
 
     @ImmutableConstructor
@@ -182,6 +182,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
+                case -1770633379:  // underlying (alias)
                     return documentation;
             }
             return super.metaPropertyGet(propertyName);
@@ -217,6 +218,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
+                case -1770633379:  // underlying (alias)
                     return ((ImmDocumentationResult<?>) bean).getDocumentation();
             }
             return super.propertyGet(bean, propertyName, quiet);
@@ -261,6 +263,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
+                case -1770633379:  // underlying (alias)
                     return documentation;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
@@ -272,6 +275,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         public Builder<T> set(String propertyName, Object newValue) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
+                case -1770633379:  // underlying (alias)
                     this.documentation = (Documentation<T>) newValue;
                     break;
                 default:

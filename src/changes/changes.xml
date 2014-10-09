@@ -9,6 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.2" date="2014-10-09" description="v1.2">
+      <action dev="jodastephen" type="add">
+        Add alias support to PropertyDefinition.
+        A simple mechanism to handle property renames.
+        Fixes #82.
+      </action>
       <action dev="jodastephen" type="fix">
         Fix parsing of class name with extends clause generics of type with two generic parameters.
         Fixes #81.
