@@ -23,7 +23,7 @@ This uses the information encoded in the Joda-Bean as a partial schema for the m
 Version 1.1 is the latest version - <a href="download.html">Download now</a>
 </p>
 <p>
-Joda-Beans is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
+Joda-Beans is licensed under the business-friendly <a href="licensecover.html">Apache 2.0 licence</a>.
 </p>
 </section>
 
@@ -70,6 +70,41 @@ See these sample classes used for testing -
 <a href="https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/gen/SimplePerson.java#L43">basic Person class</a>,
 <a href="https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/Examples.java#L26">example usage</a>,
 <a href="https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/gen/ValidateBean.java#L38">example of validation</a>.
+</p>
+<p>
+As well as mutable beans following the Java Bean specification. Joda-Beans supports the creation of immutable beans.
+One of the biggest issues with using immutable objects in Java is their creation.
+Joda-Beans simplifies this by code generating builder classes for each immutable bean:
+</p>
+<pre class="source">
+  // using code generated immutable bean builders, example showing an interest rate swap leg
+  FixedRateSwapLeg payLeg = FixedRateSwapLeg.builder()
+    .accrualPeriods(PeriodicScheduleDefn.builder()
+      .startDate(LocalDate.of(2014, 9, 12))
+      .endDate(LocalDate.of(2021, 9, 12))
+      .frequency(Frequency.P6M)
+      .businessDayAdjustment(BusinessDayAdjustment.of(BusinessDayConventions.MODIFIED_FOLLOWING, HolidayCalendars.USNY))
+      .startDateBusinessDayAdjustment(BusinessDayAdjustment.NONE)
+      .build())
+    .calculation(FixedRateCalculation.builder()
+      .notional(NotionalAmount.of(CurrencyAmount.of(Currency.USD, 100_000_000)))
+      .dayCount(DayCounts.THIRTY_U_360)
+      .rate(ValueSchedule.of(0.015))
+      .build())
+    .build();
+</pre>
+<p>
+Once beans and properties are defined, it is possible to use them in powerful ways.
+A fast and efficient serialization mechanism is provided using
+<a href="http://www.joda.org/joda-convert/">Joda-Convert</a> for object to string conversion:
+</p>
+<ul>
+<li>JSON</li>
+<li>XML</li>
+<li>Binary (MsgPack format)</li>
+</ul>
+<p>
+Further integration is included for MongoDB and Freemarker.
 </p>
 </section>
 
