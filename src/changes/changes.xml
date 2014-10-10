@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.2" date="2014-10-09" description="v1.2">
+    <release version="1.2" date="2014-10-10" description="v1.2">
       <action dev="jodastephen" type="add">
         Add ability to iterate over all the beans within a bean.
         Depth-first iteration handling collections.
