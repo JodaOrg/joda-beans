@@ -110,7 +110,7 @@ public class SerTestHelper {
         map6.put("D", ImmutableMap.of("d", 1, "e", 2));
         ImmPerson person = ImmPerson.builder()
             .forename("Etienne")
-            .middleNames(new String[] {"K", "T"})
+            .middleNames("K", "T")
             .surname("Colebourne")
             .addressList(Arrays.asList(new Address()))
             .codeCounts(ImmutableMultiset.of("A", "A", "B"))

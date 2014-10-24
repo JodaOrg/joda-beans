@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -354,6 +355,16 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
         public Builder addressList(List<Address> addressList) {
             this.addressList = addressList;
             return this;
+        }
+
+        /**
+         * Sets the {@code addressList} property in the builder
+         * from an array of objects.
+         * @param addressList  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder addressList(Address... addressList) {
+            return addressList(Arrays.asList(addressList));
         }
 
         //-----------------------------------------------------------------------

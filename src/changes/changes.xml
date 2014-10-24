@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.3" date="" description="v1.3">
       <action dev="jodastephen" type="fix">
+        Add varargs overrides for collections in immutable builders.
+        Fixes #85.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix code generation of immutable package-scoped beans.
         Fixes #86.
       </action>

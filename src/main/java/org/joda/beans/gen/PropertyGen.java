@@ -16,7 +16,10 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -569,8 +572,14 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
-                "(" + getBuilderType() + " " + data.getPropertyName() + ") {");
+        String builderType = getBuilderType();
+        if (builderType.endsWith("[]") && !builderType.endsWith("[][]") && !builderType.equals("byte[]")) {
+            list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
+                    "(" + builderType.substring(0, builderType.length() - 2) + "... " + data.getPropertyName() + ") {");
+        } else {
+            list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
+                    "(" + builderType + " " + data.getPropertyName() + ") {");
+        }
         if (data.isValidated()) {
             list.add("\t\t\t" + data.getValidationMethodName() + "(" + data.getPropertyName() + ", \"" + data.getPropertyName() + "\");");
         }
@@ -578,11 +587,54 @@ class PropertyGen {
         list.add("\t\t\treturn this;");
         list.add("\t\t}");
         list.add("");
+        if (data.isCollectionType()) {
+            generateBuilderSetCollectionMethod(list);
+        }
         return list;
     }
 
     String getBuilderType() {
         return data.getBuilderGen().generateType(data);
+    }
+
+    private void generateBuilderSetCollectionMethod(List<String> list) {
+        // do not generate for List<List<Bar>> type elements, needs @SafeVarargs
+        if (data.getTypeGenericsSimple().contains("<")) {
+            return;
+        }
+        // generate based on an array
+        list.add("\t\t/**");
+        list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder");
+        list.add("\t\t * from an array of objects.");
+        list.add("\t\t * @param " + data.getPropertyName() + "  the new value" + data.getNotNullJavadoc());
+        list.add("\t\t * @return this, for chaining, not null");
+        if (data.isDeprecated()) {
+            for (String comment : data.getComments()) {
+                if (comment.contains("@deprecated")) {
+                    list.add("\t\t * " + comment);
+                }
+            }
+        }
+        list.add("\t\t */");
+        if (data.isDeprecated()) {
+            list.add("\t\t@Deprecated");
+        }
+        list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
+                "(" + data.getTypeGenericsSimple() + "... " + data.getPropertyName() + ") {");
+        if (data.isSortedSetType()) {
+            data.getBean().ensureImport(TreeSet.class);
+            list.add("\t\t\treturn " + data.getPropertyName() + "(new TreeSet<" + data.getTypeGenericsSimple() +
+                    ">(Arrays.asList(" + data.getPropertyName() + ")));");
+        } else if (data.isSetType()) {
+            data.getBean().ensureImport(LinkedHashSet.class);
+            list.add("\t\t\treturn " + data.getPropertyName() + "(new LinkedHashSet<" + data.getTypeGenericsSimple() +
+                    ">(Arrays.asList(" + data.getPropertyName() + ")));");
+        } else {
+            data.getBean().ensureImport(Arrays.class);
+            list.add("\t\t\treturn " + data.getPropertyName() + "(Arrays.asList(" + data.getPropertyName() + "));");
+        }
+        list.add("\t\t}");
+        list.add("");
     }
 
     //-----------------------------------------------------------------------

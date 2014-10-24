@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -783,7 +784,7 @@ public final class ImmPerson implements ImmutableBean {
          * @param middleNames  the new value
          * @return this, for chaining, not null
          */
-        public Builder middleNames(String[] middleNames) {
+        public Builder middleNames(String... middleNames) {
             this.middleNames = middleNames;
             return this;
         }
@@ -796,6 +797,16 @@ public final class ImmPerson implements ImmutableBean {
         public Builder addressList(List<Address> addressList) {
             this.addressList = addressList;
             return this;
+        }
+
+        /**
+         * Sets the {@code addressList} property in the builder
+         * from an array of objects.
+         * @param addressList  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder addressList(Address... addressList) {
+            return addressList(Arrays.asList(addressList));
         }
 
         /**

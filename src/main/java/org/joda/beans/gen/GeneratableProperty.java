@@ -37,6 +37,18 @@ class GeneratableProperty {
                     "ArrayList", "LinkedList",
                     "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet",
                     "ImmutableCollection", "ImmutableList", "ImmutableSet", "ImmutableSortedSet"));
+    /** Set types. */
+    private static final Set<String> SETS = new HashSet<String>(
+            Arrays.asList(
+                    "Set", "SortedSet", "NavigableSet",
+                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet",
+                    "ImmutableSet", "ImmutableSortedSet"));
+    /** Set types. */
+    private static final Set<String> SORTED_SETS = new HashSet<String>(
+            Arrays.asList(
+                    "SortedSet", "NavigableSet",
+                    "TreeSet", "ConcurrentSkipListSet",
+                    "ImmutableSortedSet"));
     /** Map types. */
     private static final Set<String> MAPS = new HashSet<String>(
             Arrays.asList(
@@ -721,6 +733,24 @@ class GeneratableProperty {
     }
 
     /**
+     * Checks if this property is a known set type.
+     * 
+     * @return true if it is a known set type
+     */
+    public boolean isSetType() {
+        return isGeneric() && SETS.contains(getRawType());
+    }
+
+    /**
+     * Checks if this property is a known sorted set type.
+     * 
+     * @return true if it is a known set type
+     */
+    public boolean isSortedSetType() {
+        return isGeneric() && SORTED_SETS.contains(getRawType());
+    }
+
+    /**
      * Checks if this property is a known map type.
      * 
      * @return true if it is a known map type
@@ -830,7 +860,7 @@ class GeneratableProperty {
     /**
      * Gets the generic part of the property type.
      * <p>
-     * For example, "Foo&lt;String&gt;" will return "&lt;String&gt;".
+     * For example, "{@literal Foo<String>}" will return "{@literal <String>}".
      * 
      * @return the generic part of the type, not null
      */
@@ -838,6 +868,21 @@ class GeneratableProperty {
         final String type = getType();
         if (type.contains("<")) {
             return type.substring(type.indexOf('<'));
+        }
+        return "";
+    }
+
+    /**
+     * Gets the generic part of the property type.
+     * <p>
+     * For example, "{@literal Foo<String>}" will return "String".
+     * 
+     * @return the generic part of the type, not null
+     */
+    public String getTypeGenericsSimple() {
+        final String type = getType();
+        if (type.contains("<")) {
+            return type.substring(type.indexOf('<') + 1, type.length() - 1);
         }
         return "";
     }

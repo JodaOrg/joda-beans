@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -728,6 +729,16 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
             JodaBeanUtils.notNull(addressList, "addressList");
             this.addressList = addressList;
             return this;
+        }
+
+        /**
+         * Sets the {@code addressList} property in the builder
+         * from an array of objects.
+         * @param addressList  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addressList(Address... addressList) {
+            return addressList(Arrays.asList(addressList));
         }
 
         /**

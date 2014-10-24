@@ -16,9 +16,11 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -1113,6 +1115,16 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code collection} property in the builder
+         * from an array of objects.
+         * @param collection  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> collection(T... collection) {
+            return collection(Arrays.asList(collection));
+        }
+
+        /**
          * Sets the {@code list} property in the builder.
          * @param list  the new value, not null
          * @return this, for chaining, not null
@@ -1121,6 +1133,16 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             JodaBeanUtils.notNull(list, "list");
             this.list = list;
             return this;
+        }
+
+        /**
+         * Sets the {@code list} property in the builder
+         * from an array of objects.
+         * @param list  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> list(T... list) {
+            return list(Arrays.asList(list));
         }
 
         /**
@@ -1135,6 +1157,16 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code set} property in the builder
+         * from an array of objects.
+         * @param set  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> set(T... set) {
+            return set(new LinkedHashSet<T>(Arrays.asList(set)));
+        }
+
+        /**
          * Sets the {@code sortedSet} property in the builder.
          * @param sortedSet  the new value, not null
          * @return this, for chaining, not null
@@ -1143,6 +1175,16 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             JodaBeanUtils.notNull(sortedSet, "sortedSet");
             this.sortedSet = sortedSet;
             return this;
+        }
+
+        /**
+         * Sets the {@code sortedSet} property in the builder
+         * from an array of objects.
+         * @param sortedSet  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> sortedSet(T... sortedSet) {
+            return sortedSet(new TreeSet<T>(Arrays.asList(sortedSet)));
         }
 
         /**
