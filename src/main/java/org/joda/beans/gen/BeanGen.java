@@ -346,8 +346,8 @@ class BeanGen {
             String line = content.get(index);
             matcher.reset(line);
             if (matcher.matches()) {
-                int startName = matcher.start(1);
-                String fnl = line.substring(0, startName).contains(" final ") ? " final " : null;
+                String startStr = line.substring(0, matcher.start(1));
+                String fnl = startStr.contains(" final ") || startStr.startsWith("final ") ? "final" : null;
                 return new String[] {fnl, matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4),
                         matcher.group(5), matcher.group(6), matcher.group(7), matcher.group(8)};
             }
