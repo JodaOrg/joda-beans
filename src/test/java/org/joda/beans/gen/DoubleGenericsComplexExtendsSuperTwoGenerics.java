@@ -302,13 +302,13 @@ public class DoubleGenericsComplexExtendsSuperTwoGenerics<T extends Comparable<T
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNormalType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeT());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeU());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeTList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeUList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeTArray());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeUArray());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getNormalType());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeT());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeU());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeUList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTArray());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeUArray());
         return hash ^ super.hashCode();
     }
 

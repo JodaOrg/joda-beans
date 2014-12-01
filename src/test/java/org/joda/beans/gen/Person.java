@@ -323,14 +323,14 @@ public final class Person extends DirectBean implements IPerson {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getExtensions());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAddressList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getExtensions());
         return hash;
     }
 

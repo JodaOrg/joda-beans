@@ -314,13 +314,13 @@ public class DoubleGenericsNoExtendsNoSuper<T, U>
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNormalType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeT());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeU());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeTList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeUList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeTArray());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getTypeUArray());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getNormalType());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeT());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeU());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeUList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTArray());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeUArray());
         return hash;
     }
 

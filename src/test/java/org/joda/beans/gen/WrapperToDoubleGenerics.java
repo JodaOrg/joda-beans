@@ -138,7 +138,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBase());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBase());
         return hash;
     }
 

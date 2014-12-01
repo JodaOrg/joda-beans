@@ -182,9 +182,9 @@ public class SimpleName
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
         return hash;
     }
 

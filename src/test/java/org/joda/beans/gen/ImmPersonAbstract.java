@@ -132,9 +132,9 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getForename());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAge());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAge());
         return hash;
     }
 

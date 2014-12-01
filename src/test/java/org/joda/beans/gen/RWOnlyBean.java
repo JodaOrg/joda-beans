@@ -239,13 +239,13 @@ public class RWOnlyBean extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getRo());
-        hash += hash * 31 + JodaBeanUtils.hashCode(wo);
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFin());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getPriv());
-        hash += hash * 31 + JodaBeanUtils.hashCode(field);
-        hash += hash * 31 + JodaBeanUtils.hashCode(getManualGet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDerived());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getRo());
+        hash = hash * 31 + JodaBeanUtils.hashCode(wo);
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFin());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getPriv());
+        hash = hash * 31 + JodaBeanUtils.hashCode(field);
+        hash = hash * 31 + JodaBeanUtils.hashCode(getManualGet());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getDerived());
         return hash;
     }
 

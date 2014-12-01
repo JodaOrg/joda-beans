@@ -120,7 +120,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getName());
         return hash ^ super.hashCode();
     }
 

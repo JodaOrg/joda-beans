@@ -118,7 +118,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         int hash = cachedHashCode;
         if (hash == 0) {
             hash = 7;
-            hash += hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
+            hash = hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
             hash = hash ^ super.hashCode();
             cachedHashCode = hash;
         }

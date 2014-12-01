@@ -962,7 +962,7 @@ class BeanGen {
         for (int i = 0; i < properties.size(); i++) {
             PropertyGen prop = properties.get(i);
             String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
-            insertRegion.add(indent + "hash += hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
+            insertRegion.add(indent + "hash = hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }
     }
 

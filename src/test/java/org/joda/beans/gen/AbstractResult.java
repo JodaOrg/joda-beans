@@ -134,8 +134,8 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDocs());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getResultType());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getDocs());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getResultType());
         return hash;
     }
 

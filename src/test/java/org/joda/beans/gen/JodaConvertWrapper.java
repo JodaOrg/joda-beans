@@ -143,8 +143,8 @@ public class JodaConvertWrapper extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBean());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDescription());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBean());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getDescription());
         return hash;
     }
 

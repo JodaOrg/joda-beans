@@ -302,14 +302,14 @@ public class PrimitiveBean extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueLong());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueInt());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueShort());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueByte());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueDouble());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueFloat());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getValueChar());
-        hash += hash * 31 + JodaBeanUtils.hashCode(isValueBoolean());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueLong());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueInt());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueShort());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueByte());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueDouble());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueFloat());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getValueChar());
+        hash = hash * 31 + JodaBeanUtils.hashCode(isValueBoolean());
         return hash;
     }
 

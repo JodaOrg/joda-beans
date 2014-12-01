@@ -132,7 +132,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(get_errorMessage());
+        hash = hash * 31 + JodaBeanUtils.hashCode(get_errorMessage());
         return hash;
     }
 

@@ -119,7 +119,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getName());
         return hash ^ super.hashCode();
     }
 

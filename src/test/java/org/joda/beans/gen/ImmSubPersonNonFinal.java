@@ -127,8 +127,8 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleName());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddressList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMiddleName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAddressList());
         return hash ^ super.hashCode();
     }
 

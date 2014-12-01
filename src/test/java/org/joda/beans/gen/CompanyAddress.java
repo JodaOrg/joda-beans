@@ -106,7 +106,7 @@ public class CompanyAddress extends Address {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCompanyName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCompanyName());
         return hash ^ super.hashCode();
     }
 

@@ -325,14 +325,14 @@ public class ClonePerson
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFirstNames());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDateOfDeath());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAddresses());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCompanies());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAmounts());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFirstNames());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getDateOfDeath());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAddresses());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCompanies());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAmounts());
         return hash;
     }
 

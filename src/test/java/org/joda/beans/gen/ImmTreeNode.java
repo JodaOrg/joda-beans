@@ -187,11 +187,11 @@ public final class ImmTreeNode implements ImmutableBean {
         int hash = cachedHashCode;
         if (hash == 0) {
             hash = getClass().hashCode();
-            hash += hash * 31 + JodaBeanUtils.hashCode(getName());
-            hash += hash * 31 + JodaBeanUtils.hashCode(getChild1());
-            hash += hash * 31 + JodaBeanUtils.hashCode(getChild2());
-            hash += hash * 31 + JodaBeanUtils.hashCode(getChild3());
-            hash += hash * 31 + JodaBeanUtils.hashCode(getChildList());
+            hash = hash * 31 + JodaBeanUtils.hashCode(getName());
+            hash = hash * 31 + JodaBeanUtils.hashCode(getChild1());
+            hash = hash * 31 + JodaBeanUtils.hashCode(getChild2());
+            hash = hash * 31 + JodaBeanUtils.hashCode(getChild3());
+            hash = hash * 31 + JodaBeanUtils.hashCode(getChildList());
             cachedHashCode = hash;
         }
         return hash;

@@ -159,10 +159,10 @@ public final class ImmMinimal implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getNumber());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getStreet());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getOwner());
         return hash;
     }
 

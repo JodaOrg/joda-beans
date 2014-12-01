@@ -240,11 +240,11 @@ public class FinalFieldBean extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFieldFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFieldNonFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFlexiFinal());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getPersonFinal());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFieldFinal());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFieldNonFinal());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListFinal());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFlexiFinal());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getPersonFinal());
         return hash;
     }
 

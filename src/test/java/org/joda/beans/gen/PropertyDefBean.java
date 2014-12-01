@@ -353,15 +353,15 @@ public final class PropertyDefBean implements Bean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getStringAsCharSequence());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getIntAsInteger());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListCopyOfCollection());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getArrayListSmart());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getArrayListExposed());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getArrayListAsCollection());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getArrayList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListAsIterable());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListAsIterableNoField());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getStringAsCharSequence());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getIntAsInteger());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListCopyOfCollection());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getArrayListSmart());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getArrayListExposed());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getArrayListAsCollection());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getArrayList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListAsIterable());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListAsIterableNoField());
         return hash;
     }
 

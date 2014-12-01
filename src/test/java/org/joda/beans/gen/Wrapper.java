@@ -148,8 +148,8 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getType());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getContent());
         return hash;
     }
 

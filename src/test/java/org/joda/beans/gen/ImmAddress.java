@@ -517,29 +517,29 @@ public final class ImmAddress implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getNumber());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getStreet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCity());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getAbstractNumber());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getData());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getArray2d());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getOwner());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getObject1());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getObject2());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getRisk());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getRiskLevel());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSerializable());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getObjectInMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListInMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListInListInMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getObjectListInListInMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMapInMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSimpleTable());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCompoundTable());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSparseGrid());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getDenseGrid());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBeanBeanMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getNumber());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getStreet());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getAbstractNumber());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getData());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getArray2d());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getOwner());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getObject1());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getObject2());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getRisk());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getRiskLevel());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSerializable());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getObjectInMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListInMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListInListInMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getObjectListInListInMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMapInMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSimpleTable());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCompoundTable());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSparseGrid());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getDenseGrid());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBeanBeanMap());
         return hash;
     }
 

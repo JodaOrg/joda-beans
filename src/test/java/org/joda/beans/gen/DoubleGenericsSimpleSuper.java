@@ -197,9 +197,9 @@ public class DoubleGenericsSimpleSuper<T, U>
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBaseType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBaseT());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBaseU());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBaseType());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBaseT());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBaseU());
         return hash;
     }
 

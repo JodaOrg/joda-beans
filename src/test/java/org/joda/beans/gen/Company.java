@@ -133,7 +133,7 @@ public class Company
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCompanyName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCompanyName());
         return hash;
     }
 

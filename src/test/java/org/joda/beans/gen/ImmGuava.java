@@ -433,24 +433,24 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getCollection());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getList());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSortedSet());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSortedMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBiMap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMultimap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListMultimap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSetMultimap());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMultiset());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSortedMultiset());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getBiMapInterface());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMultimapInterface());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getListMultimapInterface());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSetMultimapInterface());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMultisetInterface());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSortedMultisetInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCollection());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSet());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedSet());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBiMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMultimap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListMultimap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSetMultimap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMultiset());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMultiset());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getBiMapInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMultimapInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListMultimapInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSetMultimapInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMultisetInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMultisetInterface());
         return hash;
     }
 

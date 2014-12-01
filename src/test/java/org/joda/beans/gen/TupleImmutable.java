@@ -174,9 +174,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getThird());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFirst());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSecond());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getThird());
         return hash;
     }
 

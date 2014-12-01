@@ -177,9 +177,9 @@ public class Documentation<T> extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getType());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getContent());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getType());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getContent());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMap());
         return hash;
     }
 

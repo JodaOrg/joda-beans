@@ -216,10 +216,10 @@ public class ValidateBean extends DirectBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFirst());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getSecond());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getThird());
-        hash += hash * 31 + JodaBeanUtils.hashCode(getFourth());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFirst());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSecond());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getThird());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFourth());
         return hash;
     }
 

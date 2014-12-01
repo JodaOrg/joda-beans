@@ -121,7 +121,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += hash * 31 + JodaBeanUtils.hashCode(getMiddleName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMiddleName());
         return hash ^ super.hashCode();
     }
 
