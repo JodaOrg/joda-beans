@@ -45,7 +45,7 @@ class PropertyGen {
     /** The override pattern. */
     private static final Pattern OVERRIDE_SET_PATTERN = Pattern.compile(".*[ ,(]overrideSet[ ]*[=][ ]*(true|false).*");
     /** The type pattern. */
-    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>.]*)[\"].*");
+    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>?.]*)[\"].*");
     /** The validation pattern. */
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(".*[ ,(]validate[ ]*[=][ ]*[\"]([a-zA-Z_.]*)[\"].*");
 
@@ -599,7 +599,7 @@ class PropertyGen {
 
     private void generateBuilderSetCollectionMethod(List<String> list) {
         // do not generate for List<List<Bar>> type elements, needs @SafeVarargs
-        if (data.getTypeGenericsSimple().contains("<")) {
+        if (data.getTypeGenericsSimple().contains("<") || data.getTypeGenericsSimple().equals("?")) {
             return;
         }
         // generate based on an array
@@ -722,6 +722,11 @@ class PropertyGen {
 
     GeneratableProperty getData() {
         return data;
+    }
+
+    // resolves awkward generics
+    static String resolveWildcard(String input) {
+        return input.equals("<?>") ? "<Object>" : input;
     }
 
 }

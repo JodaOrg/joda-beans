@@ -237,6 +237,8 @@ class GeneratableProperty {
         } else if (getTypeStyle().length() > 0) {
             if (getTypeStyle().contains("<>")) {
                 setType(getTypeStyle().replace("<>", generics));
+            } else if (getTypeStyle().contains("<")) {
+                setType(getTypeStyle());
             } else {
                 setType(getTypeStyle() + generics);
             }

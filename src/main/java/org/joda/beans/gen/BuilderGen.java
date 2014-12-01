@@ -59,7 +59,7 @@ abstract class BuilderGen {
             List<String> list = new ArrayList<String>();
             if (prop.isNotNull()) {
                 String init = this.init;
-                init = init.replace("<>", prop.getTypeGenerics());
+                init = init.replace("<>", PropertyGen.resolveWildcard(prop.getTypeGenerics()));
                 list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + " = " + init + ";");
             } else {
                 list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
