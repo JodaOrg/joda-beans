@@ -20,7 +20,7 @@ By default, Joda-Beans includes a round-trip serialization system to JSON, XML a
 This uses the information encoded in the Joda-Bean as a partial schema for the message.
 </p>
 <p>
-Version 1.2 is the latest version - <a href="download.html">Download now</a>
+Version 1.3 is the latest version - <a href="download.html">Download now</a>
 </p>
 <p>
 Joda-Beans is licensed under the business-friendly <a href="licensecover.html">Apache 2.0 licence</a>.
@@ -125,7 +125,7 @@ Various documentation is available:
 
 <section name="Releases">
 <p>
-<a href="download.html">Release 1.2</a> is the current release.
+<a href="download.html">Release 1.3</a> is the current release.
 This release is considered stable and worthy of the 1.x tag.
 </p>
 <p>
@@ -133,7 +133,7 @@ The project runs on JDK 1.6 and requires <a href="http://www.joda.org/joda-conve
 There are a number of <a href="dependencies.html">optional dependencies</a> which help with integration.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.2|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.3|jar">Maven Central</a>.
 </p>
 </section>
 
