@@ -273,8 +273,8 @@ class PropertyGen {
         if (line.contains("//")) {
             line = line.substring(0, line.indexOf("//")).trim();
         }
-        if (line.contains(" = ")) {
-            line = line.substring(0, line.indexOf(" = ")).trim() + ";";
+        if (line.contains("=")) {
+            line = line.substring(0, line.indexOf("=")).trim() + ";";
         }
         return line;
     }

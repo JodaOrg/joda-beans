@@ -10,7 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.3" date="" description="v1.3">
       <action dev="jodastephen" type="fix">
-        Fix the bean generation to handle a property of a wildcard list type.
+        Fix bean generation to handle a lack of spaces in field initializers.
+        Fixes #87.
+      </action>
+      <action dev="jodastephen" type="fix">
+        Fix bean generation to handle a property of a wildcard list type.
         While the need for this is rare, better processing is needed.
         The fix requires use of the PropertyDefinition "type" attribute in certain cases.
         Fixes #88.
