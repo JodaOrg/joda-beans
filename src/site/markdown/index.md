@@ -108,7 +108,7 @@ Further integration is included for MongoDB and Freemarker.
 [Release 1.3](download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
-The project runs on JDK 1.6 and requires [Joda-Convert](http://www.joda.org/joda-convert/).
+Joda-Beans requires Java SE 6 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
 
 Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-beans%7C1.3%7Cjar).
