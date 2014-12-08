@@ -123,8 +123,7 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPersonAbstract other = (ImmPersonAbstract) obj;
             return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    (getAge() == other.getAge());
+                    JodaBeanUtils.equal(getSurname(), other.getSurname());
         }
         return false;
     }
@@ -134,7 +133,6 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
         int hash = getClass().hashCode();
         hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
         hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getAge());
         return hash;
     }
 

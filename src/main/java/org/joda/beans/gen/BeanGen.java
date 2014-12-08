@@ -890,7 +890,8 @@ class BeanGen {
         insertRegion.add("\t\t\treturn true;");
         insertRegion.add("\t\t}");
         insertRegion.add("\t\tif (obj != null && obj.getClass() == this.getClass()) {");
-        if (properties.size() == 0) {
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        if (nonDerived.size() == 0) {
             if (data.isSubClass()) {
                 insertRegion.add("\t\t\treturn super.equals(obj);");
             } else {
@@ -898,8 +899,8 @@ class BeanGen {
             }
         } else {
             insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
-            for (int i = 0; i < properties.size(); i++) {
-                PropertyGen prop = properties.get(i);
+            for (int i = 0; i < nonDerived.size(); i++) {
+                PropertyGen prop = nonDerived.get(i);
                 String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
                 String equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
@@ -907,7 +908,7 @@ class BeanGen {
                 }
                 insertRegion.add(
                         (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +
-                        (data.isSubClass() || i < properties.size() - 1 ? " &&" : ";"));
+                        (data.isSubClass() || i < nonDerived.size() - 1 ? " &&" : ";"));
             }
             if (data.isSubClass()) {
                 insertRegion.add("\t\t\t\t\tsuper.equals(obj);");
@@ -959,8 +960,9 @@ class BeanGen {
     }
 
     private void generateHashCodeContent(String indent) {
-        for (int i = 0; i < properties.size(); i++) {
-            PropertyGen prop = properties.get(i);
+        List<PropertyGen> nonDerived = nonDerivedProperties();
+        for (int i = 0; i < nonDerived.size(); i++) {
+            PropertyGen prop = nonDerived.get(i);
             String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
             insertRegion.add(indent + "hash = hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }

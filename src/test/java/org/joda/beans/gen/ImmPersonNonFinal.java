@@ -133,8 +133,7 @@ public class ImmPersonNonFinal implements ImmutableBean {
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPersonNonFinal other = (ImmPersonNonFinal) obj;
             return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    (getAge() == other.getAge());
+                    JodaBeanUtils.equal(getSurname(), other.getSurname());
         }
         return false;
     }
@@ -144,7 +143,6 @@ public class ImmPersonNonFinal implements ImmutableBean {
         int hash = getClass().hashCode();
         hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
         hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getAge());
         return hash;
     }
 

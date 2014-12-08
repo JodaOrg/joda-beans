@@ -277,8 +277,7 @@ public final class ImmPerson implements ImmutableBean {
                     JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
                     JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
                     JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
-                    JodaBeanUtils.equal(getCodeCounts(), other.getCodeCounts()) &&
-                    (getAge() == other.getAge());
+                    JodaBeanUtils.equal(getCodeCounts(), other.getCodeCounts());
         }
         return false;
     }
@@ -298,7 +297,6 @@ public final class ImmPerson implements ImmutableBean {
             hash = hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
             hash = hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
             hash = hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getAge());
             cachedHashCode = hash;
         }
         return hash;

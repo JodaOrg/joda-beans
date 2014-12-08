@@ -125,8 +125,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             AbstractResult<?> other = (AbstractResult<?>) obj;
-            return JodaBeanUtils.equal(getDocs(), other.getDocs()) &&
-                    JodaBeanUtils.equal(getResultType(), other.getResultType());
+            return JodaBeanUtils.equal(getDocs(), other.getDocs());
         }
         return false;
     }
@@ -135,7 +134,6 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     public int hashCode() {
         int hash = getClass().hashCode();
         hash = hash * 31 + JodaBeanUtils.hashCode(getDocs());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getResultType());
         return hash;
     }
 

@@ -261,8 +261,7 @@ public class RWOnlyBean extends DirectBean {
                     JodaBeanUtils.equal(getPriv(), other.getPriv()) &&
                     JodaBeanUtils.equal(getProt(), other.getProt()) &&
                     JodaBeanUtils.equal(field, other.field) &&
-                    JodaBeanUtils.equal(getManualGet(), other.getManualGet()) &&
-                    JodaBeanUtils.equal(getDerived(), other.getDerived());
+                    JodaBeanUtils.equal(getManualGet(), other.getManualGet());
         }
         return false;
     }
@@ -277,7 +276,6 @@ public class RWOnlyBean extends DirectBean {
         hash = hash * 31 + JodaBeanUtils.hashCode(getProt());
         hash = hash * 31 + JodaBeanUtils.hashCode(field);
         hash = hash * 31 + JodaBeanUtils.hashCode(getManualGet());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getDerived());
         return hash;
     }
 
