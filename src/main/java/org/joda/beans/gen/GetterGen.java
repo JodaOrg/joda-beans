@@ -113,6 +113,80 @@ abstract class GetterGen {
         }
     }
 
+    static final class Optional8GetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new Optional8GetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            List<String> list = new ArrayList<String>();
+            list.add("\t/**");
+            list.add("\t * Gets " + prop.getFirstComment());
+            for (String comment : prop.getComments()) {
+                list.add("\t * " + comment);
+            }
+            list.add("\t * @return the optional value of the property, not null");
+            list.add("\t */");
+            if (prop.isOverrideGet()) {
+                list.add("\t@Override");
+            }
+            if (prop.isDeprecated()) {
+                list.add("\t@Deprecated");
+            }
+            if ("Double".equals(prop.getType())) {
+                list.add("\tpublic OptionalDouble get" + prop.getUpperName() + "() {");
+                list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
+                    "OptionalDouble.of(" + prop.getFieldName() + ") : OptionalDouble.empty();");
+            } else if ("Integer".equals(prop.getType())) {
+                list.add("\tpublic OptionalInt get" + prop.getUpperName() + "() {");
+                list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
+                    "OptionalInt.of(" + prop.getFieldName() + ") : OptionalInt.empty();");
+            } else if ("Long".equals(prop.getType())) {
+                list.add("\tpublic OptionalLong get" + prop.getUpperName() + "() {");
+                list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
+                    "OptionalLong.of(" + prop.getFieldName() + ") : OptionalLong.empty();");
+            } else {
+                list.add("\tpublic Optional<" + prop.getType() + "> get" + prop.getUpperName() + "() {");
+                list.add("\t\treturn Optional.ofNullable(" + prop.getFieldName() + ");");
+            }
+            list.add("\t}");
+            list.add("");
+            return list;
+        }
+        @Override
+        String generateGetInvoke(GeneratableProperty prop) {
+            return prop.getFieldName();
+        }
+    }
+
+    static final class OptionalGuavaGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new OptionalGuavaGetterGen();
+        @Override
+        List<String> generateGetter(GeneratableProperty prop) {
+            List<String> list = new ArrayList<String>();
+            list.add("\t/**");
+            list.add("\t * Gets " + prop.getFirstComment());
+            for (String comment : prop.getComments()) {
+                list.add("\t * " + comment);
+            }
+            list.add("\t * @return the optional value of the property, not null");
+            list.add("\t */");
+            if (prop.isOverrideGet()) {
+                list.add("\t@Override");
+            }
+            if (prop.isDeprecated()) {
+                list.add("\t@Deprecated");
+            }
+            list.add("\tpublic Optional<" + prop.getType() + "> get" + prop.getUpperName() + "() {");
+            list.add("\t\treturn Optional.fromNullable(" + prop.getFieldName() + ");");
+            list.add("\t}");
+            list.add("");
+            return list;
+        }
+        @Override
+        String generateGetInvoke(GeneratableProperty prop) {
+            return prop.getFieldName();
+        }
+    }
+
     static class ManualGetterGen extends GetterGen {
         static final GetterGen INSTANCE = new ManualGetterGen();
         @Override

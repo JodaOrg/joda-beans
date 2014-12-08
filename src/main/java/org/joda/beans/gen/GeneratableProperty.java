@@ -553,10 +553,14 @@ class GeneratableProperty {
             getterGen = GetterGen.CloneGetterGen.PUBLIC;
         } else if (style.equals("cloneCast")) {
             getterGen = GetterGen.CloneCastGetterGen.PUBLIC;
+        } else if (style.equals("optional")) {
+            getterGen = GetterGen.Optional8GetterGen.PUBLIC;
+        } else if (style.equals("optionalGuava")) {
+            getterGen = GetterGen.OptionalGuavaGetterGen.PUBLIC;
         } else if (style.equals("manual")) {
             getterGen = GetterGen.ManualGetterGen.INSTANCE;
         } else {
-            throw new RuntimeException("Unable to locate setter generator '" + style + "'" +
+            throw new RuntimeException("Unable to locate getter generator '" + style + "'" +
                     " in " + getBean().getTypeRaw() + "." + getPropertyName());
         }
     }

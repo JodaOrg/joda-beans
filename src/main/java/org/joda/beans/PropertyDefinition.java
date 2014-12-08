@@ -52,7 +52,7 @@ public @interface PropertyDefinition {
      * what to generate. This will be a method of the form {@code isXxx()} for {@code boolean}
      * and {@code getXxx()} for all other types.
      * <p>
-     * Supported style stings are:
+     * Supported style strings are:
      * <ul>
      * <li>'' - do not generate any form of getter
      * <li>'smart' - process intelligently - 'is' for boolean and 'get' for other types
@@ -62,6 +62,11 @@ public @interface PropertyDefinition {
      * <li>'get' - generates getXxx()
      * <li>'clone' - generates getXxx() with a clone of the field (assumed to be of the correct type)
      * <li>'cloneCast' - generates getXxx() with a clone of the field with a cast to the property type
+     * <li>'optional' - generate getXxx() returning a Java 8 {@code Optional} wrapper around the field,
+     *  where the field itself is nullable instead of optional. {@code OptionalDouble}, {@code OptionalInt}
+     *  and {@code OptionalLong} are also handled
+     * <li>'optionalGuava' - generate getXxx() returning a Guava {@code Optional} wrapper around the field,
+     *  where the field itself is nullable instead of optional
      * <li>'field' - generates direct access to the field, enabling a weird manual getter
      * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
      * </ul>
@@ -77,7 +82,7 @@ public @interface PropertyDefinition {
      * the field is {@code final}. If the field is a final {@code Collection} or {@code Map}
      * of a known type then a set method is generated using {@code addAll} or {@code puAll}
      * <p>
-     * Standard style stings are:
+     * Standard style strings are:
      * <ul>
      * <li>'' - do not generate any form of setter
      * <li>'smart' - process intelligently - uses 'set' unless final, when it will use 'setClearAddAll'
@@ -143,7 +148,7 @@ public @interface PropertyDefinition {
      * There must be two arguments, the value and the property name. The value may be the
      * property type or a superclass (like Object). The property name should be a String.
      * <p>
-     * Standard validation stings are:
+     * Standard validation strings are:
      * <ul>
      * <li>'' - do not generate any form of validation
      * <li>'notNull' - suitable for checking that the value is non-null,
