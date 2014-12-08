@@ -26,6 +26,7 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
@@ -167,7 +168,7 @@ public class JodaBeanBinWriter {
         int size = 0;
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable()) {
-                Object value = prop.get(bean);
+                Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     props[size] = prop;
                     values[size++] = value;
@@ -189,7 +190,7 @@ public class JodaBeanBinWriter {
             MetaProperty<?> prop = props[i];
             Object value = values[i];
             output.writeString(prop.name());
-            Class<?> propType = prop.propertyType();
+            Class<?> propType = SerOptional.extractType(prop, bean.getClass());
             if (value instanceof Bean) {
                 if (settings.getConverter().isConvertible(value.getClass())) {
                     writeSimple(propType, value);

@@ -27,6 +27,7 @@ import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Company;
 import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
+import org.joda.beans.gen.ImmOptional;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Person;
 import org.joda.beans.gen.PrimitiveBean;
@@ -35,6 +36,7 @@ import org.joda.beans.gen.RiskPerception;
 import org.joda.collect.grid.DenseGrid;
 import org.joda.collect.grid.SparseGrid;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -167,6 +169,13 @@ public class SerTestHelper {
             .beanBeanMap(ImmutableMap.of(child, childAddress))
             .build();
         return address;
+    }
+
+    public static ImmOptional testImmOptional() {
+        ImmOptional optional = ImmOptional.builder()
+            .optString(Optional.of("A"))
+            .build();
+        return optional;
     }
 
 }

@@ -51,6 +51,7 @@ import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
+import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
@@ -279,7 +280,7 @@ public class JodaBeanXmlReader {
                         }
                         // skip elements
                     } else {
-                        Class<?> childType = parseTypeAttribute(start, metaProp.propertyType());
+                        Class<?> childType = parseTypeAttribute(start, SerOptional.extractType(metaProp, beanType));
                         Object value;
                         if (Bean.class.isAssignableFrom(childType)) {
                             value = parseBean(childType);
@@ -302,7 +303,7 @@ public class JodaBeanXmlReader {
                                 }
                             }
                         }
-                        deser.setValue(builder, metaProp, value);
+                        deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                     }
                     propName = "";
                 }

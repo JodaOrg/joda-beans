@@ -35,6 +35,7 @@ import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
+import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
@@ -155,8 +156,9 @@ public class JodaBeanJsonReader {
                 if (metaProp == null) {
                     input.skipData();
                 } else {
-                    Object value = parseObject(input.readEvent(), metaProp.propertyType(), metaProp, beanType, null, false);
-                    deser.setValue(builder, metaProp, value);
+                    Object value = parseObject(input.readEvent(),
+                            SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
+                    deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
                 propName = "";
                 event = input.acceptObjectSeparator();

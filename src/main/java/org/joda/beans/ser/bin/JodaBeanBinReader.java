@@ -31,6 +31,7 @@ import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerIteratorFactory;
+import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
@@ -167,8 +168,8 @@ public class JodaBeanBinReader extends MsgPack {
                 if (metaProp == null) {
                     MsgPackInput.skipObject(input);
                 } else {
-                    Object value = parseObject(metaProp.propertyType(), metaProp, beanType, null, false);
-                    deser.setValue(builder, metaProp, value);
+                    Object value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
+                    deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
                 propName = "";
             }

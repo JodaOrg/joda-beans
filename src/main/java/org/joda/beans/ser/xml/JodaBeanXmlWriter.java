@@ -36,6 +36,7 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 import org.joda.convert.StringConverter;
 
@@ -178,10 +179,10 @@ public class JodaBeanXmlWriter {
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable()) {
                 output = true;
-                Object value = prop.get(bean);
+                Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     String propName = prop.name();
-                    Class<?> propType = prop.propertyType();
+                    Class<?> propType = SerOptional.extractType(prop, bean.getClass());
                     if (value instanceof Bean) {
                         if (settings.getConverter().isConvertible(value.getClass())) {
                             writeSimple(currentIndent, propName, new StringBuilder(), propType, value);

@@ -25,6 +25,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmEmpty;
+import org.joda.beans.gen.ImmOptional;
 import org.joda.beans.gen.JodaConvertBean;
 import org.joda.beans.gen.JodaConvertWrapper;
 import org.joda.beans.gen.Person;
@@ -61,6 +62,16 @@ public class TestSerializeJson {
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, address);
+    }
+
+    public void test_writeImmOptional() {
+        ImmOptional optional = SerTestHelper.testImmOptional();
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
+//        System.out.println(json);
+        
+        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, optional);
     }
 
     //-----------------------------------------------------------------------

@@ -10,6 +10,12 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.4" date="SNAPSHOT" description="v1.4">
       <action dev="jodastephen" type="add">
+        Support Optional properties in serialization.
+        If an optional property is used, support it in serialization.
+        This works for everything except collection types.
+        Fixes #93.
+      </action>
+      <action dev="jodastephen" type="add">
         Support Optional return type for getters of nullable properties.
         Allows the instance variable of a property to remain nullable (as recommended for Java 8)
         but with the getter returning an Optional wrapper.
