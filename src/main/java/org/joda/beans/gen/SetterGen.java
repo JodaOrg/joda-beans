@@ -58,10 +58,11 @@ abstract class SetterGen {
     //-----------------------------------------------------------------------
     static final class SetSetterGen extends SetterGen {
         static final SetSetterGen PUBLIC = new SetSetterGen("public");
+        static final SetSetterGen PROTECTED = new SetSetterGen("protected");
         static final SetSetterGen PRIVATE = new SetSetterGen("private");
         private final String access;
         static SetSetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : PUBLIC);
+            return (access.equals("private") ? PRIVATE : access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private SetSetterGen(String access) {
             this.access = access;

@@ -46,10 +46,11 @@ abstract class GetterGen {
     //-----------------------------------------------------------------------
     static final class GetGetterGen extends GetterGen {
         static final GetGetterGen PUBLIC = new GetGetterGen("public");
+        static final GetGetterGen PROTECTED = new GetGetterGen("protected");
         static final GetGetterGen PRIVATE = new GetGetterGen("private");
         private final String access;
         static GetGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : PUBLIC);
+            return (access.equals("private") ? PRIVATE : access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private GetGetterGen(String access) {
             this.access = access;

@@ -520,6 +520,9 @@ class GeneratableProperty {
         if (style.equals("private")) {
             style = "smart";
             access = "private";
+        } else if (style.equals("protected")) {
+            style = "smart";
+            access = "protected";
         }
         if (style.equals("get")) {
             getterGen = GetterGen.GetGetterGen.PUBLIC;
@@ -579,6 +582,9 @@ class GeneratableProperty {
         if (style.equals("private")) {
             style = "smart";
             access = "private";
+        } else if (style.equals("protected")) {
+            style = "smart";
+            access = "protected";
         }
         if (style.equals("set")) {
             setterGen = SetterGen.SetSetterGen.PUBLIC;
