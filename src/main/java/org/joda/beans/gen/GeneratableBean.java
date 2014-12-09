@@ -71,6 +71,10 @@ class GeneratableBean {
     private String superTypeGeneric;
     /** The list of properties, in the order they are declared. */
     private List<GeneratableProperty> properties = new ArrayList<GeneratableProperty>();
+    /** The serializable flag. */
+    private boolean serializable;
+    /** The manual serialization version id flag. */
+    private boolean manualSerVersionId;
     /** Does the class have a manual clone. */
     private boolean manualClone;
     /** Does the class have a manual equals or hash code. */
@@ -336,6 +340,38 @@ class GeneratableBean {
      */
     public void setConstructorStyle(int constructorStyle) {
         this.constructorStyle = constructorStyle;
+    }
+
+    /**
+     * Checks whether the bean is serializable.
+     * @return the flag
+     */
+    public boolean isSerializable() {
+        return serializable;
+    }
+
+    /**
+     * Sets whether the bean is serializable.
+     * @param serializable  the flag
+     */
+    public void setSerializable(boolean serializable) {
+        this.serializable = serializable;
+    }
+
+    /**
+     * Checks whether the bean has a manual serialization id.
+     * @return the flag
+     */
+    public boolean isManualSerializationId() {
+        return manualSerVersionId;
+    }
+
+    /**
+     * Sets whether the bean has a manual serialization id.
+     * @param manualSerVersionId  the flag
+     */
+    public void setManualSerializationId(boolean manualSerVersionId) {
+        this.manualSerVersionId = manualSerVersionId;
     }
 
     /**

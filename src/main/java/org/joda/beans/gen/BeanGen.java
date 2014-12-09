@@ -93,6 +93,8 @@ class BeanGen {
             ").*");
     /** Pattern to find root type. */
     private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".*implements.*[ ,]((Immutable)?Bean)[ ,].*");
+    /** Pattern to find serializable interface. */
+    private static final Pattern SERIALIZABLE_TYPE = Pattern.compile(".*implements.*[ ,]Serializable[ ,].*");
     /** The style pattern. */
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderScope pattern. */
@@ -162,6 +164,8 @@ class BeanGen {
             this.data.setConstructable(parseConstructable(beanDefIndex));
             this.data.setTypeParts(parseBeanType(beanDefIndex));
             this.data.setSuperTypeParts(parseBeanSuperType(beanDefIndex));
+            this.data.setSerializable(parseSerializable(beanDefIndex));
+            this.data.setManualSerializationId(parseManualSerializationId(beanDefIndex));
             if (parseBeanHierarchy(beanDefIndex).equals("immutable")) {
                 this.data.setImmutable(true);
                 this.data.setConstructorStyle(CONSTRUCTOR_BY_BUILDER);
@@ -223,6 +227,7 @@ class BeanGen {
             }
             insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
+            generateSerializationVersionId();
             generateHashCodeField();
             generateImmutableBuilderMethod();
             generateArgBasedConstructor();
@@ -403,6 +408,24 @@ class BeanGen {
             }
         }
         throw new RuntimeException("Unable to locate bean superclass");
+    }
+
+    private boolean parseSerializable(int defLine) {
+        for (int index = defLine; index < content.size(); index++) {
+            if (SERIALIZABLE_TYPE.matcher(content.get(index)).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean parseManualSerializationId(int defLine) {
+        for (int index = defLine; index < content.size(); index++) {
+            if (content.get(index).trim().startsWith("private static final long serialVersionUID")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int parseImmutableConstructor(int defLine) {
@@ -771,6 +794,16 @@ class BeanGen {
         insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
         insertRegion.add("\t}");
         insertRegion.add("");
+    }
+
+    private void generateSerializationVersionId() {
+        if (data.isSerializable() && !data.isManualSerializationId()) {
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The serialization version id.");
+            insertRegion.add("\t */");
+            insertRegion.add("\tprivate static final long serialVersionUID = 1L;");
+            insertRegion.add("");
+        }
     }
 
     private void generateHashCodeField() {

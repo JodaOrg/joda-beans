@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -39,7 +40,11 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public final class ImmDocumentationHolder<T> implements ImmutableBean {
+public final class ImmDocumentationHolder<T>
+        implements ImmutableBean, Serializable {
+
+    /** Serialization. */
+    private static final long serialVersionUID = 1L;
 
     /** The documentation. */
     @PropertyDefinition

@@ -48,7 +48,7 @@ import com.google.common.collect.Table;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public final class ImmAddress implements ImmutableBean {
+public final class ImmAddress implements ImmutableBean, Serializable {
 
     /**
      * The number.
@@ -180,6 +180,11 @@ public final class ImmAddress implements ImmutableBean {
     static {
         JodaBeanUtils.registerMetaBean(ImmAddress.Meta.INSTANCE);
     }
+
+    /**
+     * The serialization version id.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Returns a builder used to create an instance of the bean.

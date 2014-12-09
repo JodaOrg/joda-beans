@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.4" date="SNAPSHOT" description="v1.4">
       <action dev="jodastephen" type="add">
+        Generate serialization version id.
+        If the class implements Serializable and there is no manual serialVersionUID, then one will be generated.
+        Fixes #94.
+      </action>
+      <action dev="jodastephen" type="add">
         Support Optional properties in serialization.
         If an optional property is used, support it in serialization.
         This works for everything except collection types.
