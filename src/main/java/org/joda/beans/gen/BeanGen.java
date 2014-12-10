@@ -165,7 +165,6 @@ class BeanGen {
             this.data.setTypeParts(parseBeanType(beanDefIndex));
             this.data.setSuperTypeParts(parseBeanSuperType(beanDefIndex));
             this.data.setSerializable(parseSerializable(beanDefIndex));
-            this.data.setManualSerializationId(parseManualSerializationId(beanDefIndex));
             if (parseBeanHierarchy(beanDefIndex).equals("immutable")) {
                 this.data.setImmutable(true);
                 this.data.setConstructorStyle(CONSTRUCTOR_BY_BUILDER);
@@ -190,6 +189,7 @@ class BeanGen {
             this.autoStartIndex = parseStartAutogen();
             this.autoEndIndex = parseEndAutogen();
             this.insertRegion = content.subList(autoStartIndex + 1, autoEndIndex);
+            this.data.setManualSerializationId(parseManualSerializationId(beanDefIndex));
             this.data.setManualClone(parseManualClone(beanDefIndex));
             this.data.setManualEqualsHashCode(parseManualEqualsHashCode(beanDefIndex));
             this.data.setManualToStringCode(parseManualToStringCode(beanDefIndex));
@@ -420,7 +420,7 @@ class BeanGen {
     }
 
     private boolean parseManualSerializationId(int defLine) {
-        for (int index = defLine; index < content.size(); index++) {
+        for (int index = defLine; index < autoStartIndex; index++) {
             if (content.get(index).trim().startsWith("private static final long serialVersionUID")) {
                 return true;
             }
