@@ -105,14 +105,123 @@ A [Maven plugin](https://github.com/JodaOrg/joda-beans-maven-plugin) is availabl
 
 The generator has a limited set of customisations to the core part of the generation.
 
-The `PropertyDefinition` has attributes that allow the getter and setter generation to be controlled.
-The main use case is to prevent generation of the getter by specifying "manual".
-The developer can then write their own method with whatever special logic is required.
+One key set of control is provided by [@PropertyDefinition](apidocs/org/joda/beans/PropertyDefinition.html).
 
-The `PropertyDefinition` also has an attribute to specify validation.
-The standard values are "notNull" and "notEmpty", which are implemented in `JodaBeanUtils`.
-Developers may specify any text in the attribute however, and it is simply inserted into the output.
-Thus a validation attribute of "Validate.noNulls" could be used to connect up to Commons Lang.
+The style of getter can be controlled using the annotation parameter "get".
+In most cases, the default "smart" setting is sufficient:
+
+* "" - do not generate any form of getter
+* "smart" - process intelligently, using "is" for `boolean` and "get" for other types
+* "private" - process as per "smart" but set scope as private
+* "protected" - process as per "smart" but set scope as protected
+* "is" - generates `isXxx()`
+* "get" - generates `getXxx()`
+* "clone" - generates `getXxx()` with a clone of the field (assumed to be of the correct type)
+* "cloneCast" - generates `getXxx()` with a clone of the field with a cast to the property type
+* "optional" - generate `getXxx()` returning a Java 8 `Optional` wrapper around the field, where the field
+ itself is nullable instead of optional. `OptionalDouble`, `OptionalInt` and `OptionalLong` are also handled
+* "optionalGuava" - generate `getXxx()` returning a Guava `Optional` wrapper around the field,
+ where the field itself is nullable instead of optional
+* "field" - generates direct access to the field, enabling a weird manual getter
+* "manual" - a method named `getXxx()` must be manually provided
+
+For example, using the optional wrappers:
+
+```
+ @BeanDefinition
+ public final class Foo implements Bean {
+   @PropertyDefinition(get = "optional")
+   private String name;  // regular field that can hold null
+
+   // generated getter as follows:
+   public Optional<String> getName() {
+     return Optional.ofNullable(name);
+   }
+ }
+```
+
+The style of setter can be controlled using the annotation parameter "set".
+In most cases, the default "smart" setting is sufficient:
+
+* "' - do not generate any form of setter
+* "smart" - process intelligently - uses "set" unless final, when it will use "setClearAddAll"
+ for common list types or "setClearPutAll" for common map types and `FlexiBean`
+* "private" - process as per "smart" but set scope as private
+* "protected" - process as per "smart" but set scope as protected
+* "set" - generates `setXxx()`
+* "setClearAddAll" - generates `setXxx()` using `field.clear()` and `field.addAll(newData)`
+* "setClearPutAll" - generates `setXxx()` using `field.clear()` and `field.putAll(newData)`
+* "field" - generates direct access to the field, enabling a weird manual setter
+* "manual" - a method named `setXxx()` must be manually provided at package scope or greater
+* a pattern, see [Javadoc](apidocs/org/joda/beans/PropertyDefinition.html#set--)
+
+For example, to have a private setter:
+
+```
+ @BeanDefinition
+ public final class Foo implements Bean {
+   @PropertyDefinition(set = "private")
+   private String name;
+
+   // generated setter as follows:
+   private String setName() {
+     this.name = name;
+   }
+ }
+```
+
+Validation can be specified using the annotation parameter "validate":
+
+* "" - do not generate any form of validation
+* "notNull" - checks that the value is non-null using `JodaBeanUtils.notNull()` which throws IllegalArgumentException
+* "notEmpty' - checks that a string/collection/map is non-null and non-empty using `JodaBeanUtils.notEmpty()`
+ which throws IllegalArgumentException
+* "{staticMethodName}" - a custom validation method located on this class
+* "{className}.{staticMethodName}" - a custom validation method located on any class
+
+```
+ @BeanDefinition
+ public final class Foo implements Bean {
+   @PropertyDefinition(validate = "notNull")
+   private String surname;  // generated code will ensure field is non-null
+ }
+```
+
+The exposed type of the property can be specified using the annotation parameter "type".
+For example, if the field is declared as an `ArrayList` but the public type of the getter/setter
+should be `List` then that can be achieved.
+Simply add the annotation parameter `type = "List<>"` (the generics are inserted during generation).
+
+```
+ @BeanDefinition
+ public final class Foo implements Bean {
+   @PropertyDefinition(type = "List<>")
+   private ArrayList<String> names;
+
+   // generated getter as follows:
+   public List<String> getNames() { ... }
+ }
+```
+
+A properties getter and/or setter can be declared to override a superclass.
+Simply add the annotation parameter `overrideGet = true` or `overrideSet = true`
+and the requisite `@Override` annotation will be placed on the getter/setter.
+
+```
+ @BeanDefinition
+ public final class Foo implements Bean {
+   @PropertyDefinition(overrideGet = true)
+   private String name;
+
+   // generated getter as follows:
+   @Override
+   public String getName() { ... }
+ }
+```
+
+A property can be given an alias, or alternate name.
+Simply add the annotation parameter `alias = "otherName"`.
+This is most useful when a property is renamed, to handle change during [deserialization](userguide-serialization.html).
 
 
 ## Derived properties
@@ -130,7 +239,7 @@ Code generated beans may be immutable.
 
 All fields in an immutable bean must be final.
 It is recommended that immutable beans are final,
-do not extend any other bean class and directly implement `ImmutableBean`.
+do not extend any other bean class and directly implement [ImmutableBean](apidocs/org/joda/beans/ImmutableBean.html).
 
 ```
  @BeanDefinition
@@ -148,7 +257,8 @@ An immutable bean can be configured to provide additional cross-property validat
 In most cases the per-property validation attribute is sufficient.
 When cross-property validation is needed, this technique can be used.
 
-Simply declare a private void method taking no arguments annotated with '@ImmutableValidator'.
+Simply declare a private void method taking no arguments annotated with
+[@ImmutableValidator](apidocs/org/joda/beans/ImmutableValidator.html).
 The method will be called during the validation phase of the constructor.
 
 ```
@@ -162,7 +272,8 @@ An immutable bean can be configured to apply default property values.
 In most cases this is not necessary, but if the bean has lots of non-null properties it may be
 desirable to have some default values.
 
-Simply declare a private static void method taking one 'Builder' argument annotated with '@ImmutableDefaults'.
+Simply declare a private static void method taking one 'Builder' argument annotated with
+[@ImmutableDefaults](apidocs/org/joda/beans/ImmutableDefaults.html).
 The method will be called before the empty builder is made available for population.
 
 ```
@@ -177,7 +288,8 @@ In most cases this is not necessary, but if the bean has a property that needs t
 from another property this can be useful.
 In general, use of `@ImmutableValidator` and/or `@ImmutableDefaults` should be preferred.
 
-Simply declare a private static void method taking one 'Builder' argument annotated with '@ImmutablePreBuild'.
+Simply declare a private static void method taking one 'Builder' argument annotated with
+[@ImmutablePreBuild](apidocs/org/joda/beans/ImmutablePreBuild.html).
 The method will be called when `build()` is invoked on the builder.
 
 ```
@@ -191,7 +303,8 @@ The constructor of an immutable bean can be replaced.
 In most cases this is not necessary, but there may be occasional use cases.
 In general, use of `@ImmutableValidator` and/or `@ImmutableDefaults` should be preferred.
 
-A constructor with parameters matching each property must be written and annotated with '@ImmutableConstructor'.
+A constructor with parameters matching each property must be written and annotated with
+[@ImmutableConstructor](apidocs/org/joda/beans/ImmutableConstructor.html).
 It may be easier to generate the bean without the annotation and move the generated constructor out
 into user code, adding the annotation only at that point.
 

@@ -102,7 +102,7 @@ public @interface PropertyDefinition {
      * For example, 'new Foo($value)' or '$field = $value.clone()'.<br/>
      * '$field' for the field to copy into.<br/>
      * '$value' for the value to copy from.<br/>
-     * '&gt;&lt;' for the generics of the type including angle brackets.<br/>
+     * '&lt;&gt;' for the generics of the type including angle brackets.<br/>
      * '\n' for a new line (all lines must then include semi-colons).<br/>
      */
     String set() default "smart";
