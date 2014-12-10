@@ -10,6 +10,12 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.4" date="SNAPSHOT" description="v1.4">
       <action dev="jodastephen" type="add">
+        Add ImmutablePreBuild annotation.
+        This handles the case where a property needs to be defaulted from the value of another property.
+        In most cases, ImmutableDefaults and/or ImmutableValidator are sufficient.
+        Fixes #95.
+      </action>
+      <action dev="jodastephen" type="add">
         Generate serialization version id.
         If the class implements Serializable and there is no manual serialVersionUID, then one will be generated.
         Fixes #94.

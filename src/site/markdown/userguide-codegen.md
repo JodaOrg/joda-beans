@@ -147,7 +147,9 @@ Code generated immutable beans can be customized as follows.
 An immutable bean can be configured to provide additional cross-property validation.
 In most cases the per-property validation attribute is sufficient.
 When cross-property validation is needed, this technique can be used.
+
 Simply declare a private void method taking no arguments annotated with '@ImmutableValidator'.
+The method will be called during the validation phase of the constructor.
 
 ```
  @ImmutableValidator
@@ -159,7 +161,9 @@ Simply declare a private void method taking no arguments annotated with '@Immuta
 An immutable bean can be configured to apply default property values.
 In most cases this is not necessary, but if the bean has lots of non-null properties it may be
 desirable to have some default values.
+
 Simply declare a private static void method taking one 'Builder' argument annotated with '@ImmutableDefaults'.
+The method will be called before the empty builder is made available for population.
 
 ```
  @ImmutableDefaults
@@ -168,8 +172,39 @@ Simply declare a private static void method taking one 'Builder' argument annota
  }
 ```
 
+An immutable bean can be intercepted when the bean is being built.
+In most cases this is not necessary, but if the bean has a property that needs to be defaulted
+from another property this can be useful.
+In general, use of `@ImmutableValidator` and/or `@ImmutableDefaults` should be preferred.
+
+Simply declare a private static void method taking one 'Builder' argument annotated with '@ImmutablePreBuild'.
+The method will be called when `build()` is invoked on the builder.
+
+```
+ @ImmutablePreBuild
+ private static void preBuild(Builder builder) {
+   // query the builder and make any necessary changes
+ }
+```
+
+The constructor of an immutable bean can be replaced.
+In most cases this is not necessary, but there may be occasional use cases.
+In general, use of `@ImmutableValidator` and/or `@ImmutableDefaults` should be preferred.
+
+A constructor with parameters matching each property must be written and annotated with '@ImmutableConstructor'.
+It may be easier to generate the bean without the annotation and move the generated constructor out
+into user code, adding the annotation only at that point.
+
+```
+ @ImmutableConstructor
+ private myBean(String surname, String forename) {
+   // a constructor entirely under application control
+ }
+```
+
 An immutable bean can be configured to cache the hash code.
 In most cases this is not necessary, but if the bean is used as a hash key, then it may be helpful.
+
 Simply set the boolean 'cacheHashCode' flag of '@BeanDefinition' to true.
 
 ```

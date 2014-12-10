@@ -49,6 +49,8 @@ class GeneratableBean {
     private String immutableValidator;
     /** The method name of the immutable defaults. */
     private String immutableDefaults;
+    /** The method name of the immutable pre-build. */
+    private String immutablePreBuild;
     /** The style of constructor to generate. */
     private int constructorStyle;
     /** The full type of the bean class. */
@@ -296,7 +298,7 @@ class GeneratableBean {
 
     /**
      * Gets whether the bean has a validator.
-     * @return the flag, zero for none, one for builder based, two for argument based
+     * @return the method name
      */
     public String getImmutableValidator() {
         return immutableValidator;
@@ -304,7 +306,7 @@ class GeneratableBean {
 
     /**
      * Sets whether the bean has a validator.
-     * @param immutableValidator  the validator method
+     * @param immutableValidator  the method name
      */
     public void setImmutableValidator(String immutableValidator) {
         this.immutableValidator = immutableValidator;
@@ -312,7 +314,7 @@ class GeneratableBean {
 
     /**
      * Gets whether the bean has an apply defaults method.
-     * @return the flag, zero for none, one for builder based, two for argument based
+     * @return the method name
      */
     public String getImmutableDefaults() {
         return immutableDefaults;
@@ -320,10 +322,26 @@ class GeneratableBean {
 
     /**
      * Sets whether the bean has an apply defaults method.
-     * @param immutableValidator  the validator method
+     * @param immutableValidator  the method name
      */
     public void setImmutableDefaults(String immutableDefaults) {
         this.immutableDefaults = immutableDefaults;
+    }
+
+    /**
+     * Gets whether the bean has a pre-build method.
+     * @return the method name
+     */
+    public String getImmutablePreBuild() {
+        return immutablePreBuild;
+    }
+
+    /**
+     * Sets whether the bean has a pre-build method.
+     * @param immutablePreBuild  the method name
+     */
+    public void setImmutablePreBuild(String immutablePreBuild) {
+        this.immutablePreBuild = immutablePreBuild;
     }
 
     /**

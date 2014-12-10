@@ -184,6 +184,7 @@ class BeanGen {
             if (data.isImmutable()) {
                 this.data.setImmutableValidator(parseImmutableValidator(beanDefIndex));
                 this.data.setImmutableDefaults(parseImmutableDefaults(beanDefIndex));
+                this.data.setImmutablePreBuild(parseImmutablePreBuild(beanDefIndex));
             }
             this.properties = parseProperties(data);
             this.autoStartIndex = parseStartAutogen();
@@ -484,6 +485,28 @@ class BeanGen {
                     }
                     throw new RuntimeException(
                         "@ImmutableDefaults method must be private static void and have one argument of type 'Builder'");
+                }
+            }
+        }
+        return null;
+    }
+
+    private String parseImmutablePreBuild(int defLine) {
+        boolean found = false;
+        for (int index = defLine; index < content.size(); index++) {
+            if (content.get(index).trim().equals("@ImmutablePreBuild")) {
+                if (found) {
+                    throw new RuntimeException("Only one @ImmutablePreBuild may be specified");
+                }
+                found = true;
+                if (index + 1 < content.size()) {
+                    String nextLine = content.get(index + 1);
+                    Matcher matcher = DEFAULTS_PATTERN.matcher(nextLine);
+                    if (matcher.matches()) {
+                        return matcher.group(1);
+                    }
+                    throw new RuntimeException(
+                        "@ImmutablePreBuild method must be private static void and have one argument of type 'Builder'");
                 }
             }
         }
@@ -1474,6 +1497,9 @@ class BeanGen {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGenericName(true) + " build() {");
+        if (data.getImmutablePreBuild() != null) {
+            insertRegion.add("\t\t\t" + data.getImmutablePreBuild() + "(this);");
+        }
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS) {
             if (nonDerived.size() == 0) {
                 insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "();");
