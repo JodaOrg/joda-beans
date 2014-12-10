@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.4" date="SNAPSHOT" description="v1.4">
+    <release version="1.4" date="2014-12-10" description="v1.4">
       <action dev="jodastephen" type="add">
         Add ImmutablePreBuild annotation.
         This handles the case where a property needs to be defaulted from the value of another property.
