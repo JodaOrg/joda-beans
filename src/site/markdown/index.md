@@ -26,6 +26,7 @@ A selection of key features:
 Various documentation is available:
 
 * The helpful [user guide](userguide.html)
+* The extended [code generation guide](userguide-codegen.html)
 * The [Javadoc](apidocs/index.html)
 * The [change notes](changes-report.html) for each release
 * The [GitHub](https://github.com/JodaOrg/joda-beans) source repository
@@ -70,7 +71,8 @@ A key point is that the code generator may be run again and again on the Java fi
 ```
 
 See these sample classes used for testing -
-[basic Person class](https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/gen/SimplePerson.java#L43),
+[a simple user account class](https://github.com/JodaOrg/joda-beans/blob/v1.4/src/test/java/org/joda/beans/gen/UserAccount.java#L34).
+[more complex person class](https://github.com/JodaOrg/joda-beans/blob/v1.3/src/test/java/org/joda/beans/gen/SimplePerson.java#L44),
 [example usage](https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/Examples.java#L26),
 [example of validation](https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/gen/ValidateBean.java#L38).
 
