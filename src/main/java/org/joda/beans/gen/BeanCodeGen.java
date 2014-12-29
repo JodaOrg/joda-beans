@@ -117,7 +117,7 @@ public class BeanCodeGen {
                 }
                 config = BeanGenConfig.parse(arg.substring(8));
             } else if (arg.startsWith("-verbose=")) {
-                verbosity = Integer.parseInt(arg.substring(3));
+                verbosity = Integer.parseInt(arg.substring(9));
             } else if (arg.startsWith("-v=")) {
                 System.out.println("Deprecated command line argument -v (use -verbose instead)");
                 verbosity = Integer.parseInt(arg.substring(3));
