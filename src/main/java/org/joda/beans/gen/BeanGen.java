@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -124,7 +125,11 @@ class BeanGen {
     }
 
     /** The content to process. */
+    private final File file;
+    /** The content to process. */
     private final List<String> content;
+    /** The content to process. */
+    private final int beanDefIndex;
     /** The config. */
     private final BeanGenConfig config;
     /** The start position of auto-generation. */
@@ -143,21 +148,22 @@ class BeanGen {
      * @param content  the content to process, not null
      * @param config  the config to use, not null
      */
-    BeanGen(List<String> content, BeanGenConfig config) {
+    BeanGen(File file, List<String> content, BeanGenConfig config) {
+        this.file = file;
         this.content = content;
         this.config = config;
-        int beanDefIndex = parseBeanDefinition();
+        beanDefIndex = parseBeanDefinition();
         if (beanDefIndex >= 0) {
             this.data = new GeneratableBean();
             this.data.getCurrentImports().addAll(parseImports(beanDefIndex));
             this.data.setImportInsertLocation(parseImportLocation(beanDefIndex));
             this.data.setBeanStyle(parseBeanStyle(beanDefIndex));
             if (data.isBeanStyleValid() == false) {
-                throw new RuntimeException("Invalid bean style: " + data.getBeanStyle());
+                throw new BeanCodeGenException("Invalid bean style: " + data.getBeanStyle(), file, beanDefIndex);
             }
             this.data.setBeanBuilderScope(parseBeanBuilderScope(beanDefIndex));
             if (data.isBeanBuilderScopeValid() == false) {
-                throw new RuntimeException("Invalid bean builder scope: " + data.getBeanStyle());
+                throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanStyle(), file, beanDefIndex);
             }
             this.data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
             this.data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
@@ -197,11 +203,13 @@ class BeanGen {
             if (data.isImmutable()) {
                 for (PropertyGen prop : properties) {
                     if (prop.getData().isDerived() == false && prop.getData().isFinal() == false) {
-                        throw new RuntimeException("ImmutableBean must have final properties: " + data.getTypeRaw() + "." + prop.getData().getFieldName());
+                        throw new BeanCodeGenException("ImmutableBean must have final properties: " +
+                                data.getTypeRaw() + "." + prop.getData().getFieldName(), file, prop.getPropertyLineIndex());
                     }
                 }
             } else if (data.getImmutableConstructor() > CONSTRUCTOR_NONE) {
-                throw new RuntimeException("Mutable beans must not specify @ImmutableConstructor: " + data.getTypeRaw());
+                throw new BeanCodeGenException("Mutable beans must not specify @ImmutableConstructor: " +
+                        data.getTypeRaw(), file, beanDefIndex);
             }
             if (data.isCacheHashCode()) {
                 data.setCacheHashCode(data.isImmutable() && data.isManualEqualsHashCode() == false);
@@ -361,7 +369,7 @@ class BeanGen {
                 break;
             }
         }
-        throw new RuntimeException("Unable to locate bean class name");
+        throw new BeanCodeGenException("Unable to locate bean class name", file, beanDefIndex);
     }
 
     private String[] parseBeanSuperType(int defLine) {
@@ -408,7 +416,7 @@ class BeanGen {
                 break;
             }
         }
-        throw new RuntimeException("Unable to locate bean superclass");
+        throw new BeanCodeGenException("Unable to locate bean superclass", file, beanDefIndex);
     }
 
     private boolean parseSerializable(int defLine) {
@@ -434,7 +442,7 @@ class BeanGen {
         for (int index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutableConstructor")) {
                 if (found > 0) {
-                    throw new RuntimeException("Only one @ImmutableConstructor may be specified");
+                    throw new BeanCodeGenException("Only one @ImmutableConstructor may be specified", file, index);
                 }
                 found = CONSTRUCTOR_BY_ARGS;
                 if (index + 1 < content.size()) {
@@ -453,7 +461,7 @@ class BeanGen {
         for (int index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutableValidator")) {
                 if (found) {
-                    throw new RuntimeException("Only one @ImmutableValidator may be specified");
+                    throw new BeanCodeGenException("Only one @ImmutableValidator may be specified", file, index);
                 }
                 found = true;
                 if (index + 1 < content.size()) {
@@ -462,7 +470,8 @@ class BeanGen {
                     if (matcher.matches()) {
                         return matcher.group(1);
                     }
-                    throw new RuntimeException("@ImmutableValidator method must be private void and no-args");
+                    throw new BeanCodeGenException(
+                        "@ImmutableValidator method must be private void and no-args", file, index + 1);
                 }
             }
         }
@@ -474,7 +483,7 @@ class BeanGen {
         for (int index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutableDefaults")) {
                 if (found) {
-                    throw new RuntimeException("Only one @ImmutableDefaults may be specified");
+                    throw new BeanCodeGenException("Only one @ImmutableDefaults may be specified", file, index);
                 }
                 found = true;
                 if (index + 1 < content.size()) {
@@ -483,8 +492,9 @@ class BeanGen {
                     if (matcher.matches()) {
                         return matcher.group(1);
                     }
-                    throw new RuntimeException(
-                        "@ImmutableDefaults method must be private static void and have one argument of type 'Builder'");
+                    throw new BeanCodeGenException(
+                        "@ImmutableDefaults method must be private static void and have one argument of type 'Builder'",
+                        file, index + 1);
                 }
             }
         }
@@ -496,7 +506,7 @@ class BeanGen {
         for (int index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutablePreBuild")) {
                 if (found) {
-                    throw new RuntimeException("Only one @ImmutablePreBuild may be specified");
+                    throw new BeanCodeGenException("Only one @ImmutablePreBuild may be specified", file, index);
                 }
                 found = true;
                 if (index + 1 < content.size()) {
@@ -505,8 +515,9 @@ class BeanGen {
                     if (matcher.matches()) {
                         return matcher.group(1);
                     }
-                    throw new RuntimeException(
-                        "@ImmutablePreBuild method must be private static void and have one argument of type 'Builder'");
+                    throw new BeanCodeGenException(
+                        "@ImmutablePreBuild method must be private static void and have one argument of type 'Builder'",
+                        file, index + 1);
                 }
             }
         }
@@ -548,7 +559,7 @@ class BeanGen {
                 break;
             }
         }
-        throw new RuntimeException("Unable to locate start autogeneration point");
+        throw new BeanCodeGenException("Unable to locate start autogeneration point", file, beanDefIndex);
     }
 
     private int parseEndAutogen() {
@@ -1595,6 +1606,10 @@ class BeanGen {
 
     BeanGenConfig getConfig() {
         return config;
+    }
+
+    File getFile() {
+        return file;
     }
 
     String getFieldPrefix() {

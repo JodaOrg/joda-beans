@@ -9,6 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.5" date="SNAPSHOT" description="v1.5">
+      <action>
+         Standard format for exceptions in code generation.
+         Dedicated exception type allows tooling, such as the maven plugin, to be enhanced.
+         Fixes #98.
+      </action>
       <action dev="jodastephen" type="add">
         Add related projects page to website.
       </action>

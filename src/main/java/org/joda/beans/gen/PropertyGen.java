@@ -99,9 +99,9 @@ class PropertyGen {
             prop.setInitializer(parseFieldInitializer(content));
         }
         prop.resolveType();
-        prop.resolveGetterGen();
-        prop.resolveSetterGen();
-        prop.resolveCopyGen();
+        prop.resolveGetterGen(bean.getFile(), lineIndex);
+        prop.resolveSetterGen(bean.getFile(), lineIndex);
+        prop.resolveCopyGen(bean.getFile(), lineIndex);
         prop.resolveBuilderGen();
         prop.resolveValidation();
         List<String> comments = parseComment(content, prop.getPropertyName());
@@ -133,12 +133,16 @@ class PropertyGen {
         for (int index = propertyIndex; index < content.size(); index++) {
             if (content.get(index).trim().startsWith("@") == false) {
                 if (content.get(index).trim().length() == 0) {
-                    throw new RuntimeException("Unable to locate field for property at line " + (propertyIndex + 1) + ", found blank line");
+                    throw new BeanCodeGenException(
+                        "Unable to locate field for property at line " + (propertyIndex + 1) + ", found blank line",
+                        bean.getFile(), propertyIndex + 1);
                 }
                 return index;
             }
         }
-        throw new RuntimeException("Unable to locate field for property at line " + (propertyIndex + 1));
+        throw new BeanCodeGenException(
+            "Unable to locate field for property at line " + (propertyIndex + 1),
+            bean.getFile(), propertyIndex + 1);
     }
 
     private String parseAlias(List<String> content) {
@@ -222,14 +226,16 @@ class PropertyGen {
         if (last.endsWith(";") && last.length() > 1) {
             return last.substring(0, last.length() - 1);
         }
-        throw new RuntimeException("Unable to locate field name at line " + (propertyIndex + 1));
+        throw new BeanCodeGenException(
+            "Unable to locate field name at line " + (propertyIndex + 1), bean.getFile(), propertyIndex + 1);
     }
 
     private boolean parseFinal(List<String> content) {
         String line = parseFieldDefinition(content);
         String[] parts = line.split(" ");
         if (parts.length < 2) {
-            throw new RuntimeException("Unable to locate field type at line " + (propertyIndex + 1));
+            throw new BeanCodeGenException(
+                "Unable to locate field type at line " + (propertyIndex + 1), bean.getFile(), propertyIndex + 1);
         }
         if (parts[0].equals("final") || parts[1].equals("final") ||
                 (parts.length >= 3 && parts[2].equals("final"))) {
@@ -242,7 +248,8 @@ class PropertyGen {
         String line = parseFieldDefinition(content);
         String[] parts = line.split(" ");
         if (parts.length < 2) {
-            throw new RuntimeException("Unable to locate field type at line " + (propertyIndex + 1));
+            throw new BeanCodeGenException(
+                "Unable to locate field type at line " + (propertyIndex + 1), bean.getFile(), propertyIndex + 1);
         }
         int partsPos = parts.length - 2;
         String type = parts[partsPos];
@@ -260,7 +267,9 @@ class PropertyGen {
                 break;
             }
             if (partsPos == 0) {
-                throw new RuntimeException("Unable to locate field type at line " + (propertyIndex + 1) + ", mismatched generics");
+                throw new BeanCodeGenException(
+                    "Unable to locate field type at line " + (propertyIndex + 1) + ", mismatched generics",
+                    bean.getFile(), propertyIndex + 1);
             }
             partsPos--;
             type = parts[partsPos] + " " + type;
@@ -287,7 +296,7 @@ class PropertyGen {
         if (line.contains(" = ")) {
             line = line.substring(line.indexOf(" = ") + 3).trim();
             if (line.endsWith(";") == false) {
-                throw new RuntimeException("Field line does not end with semi-colon");
+                throw new BeanCodeGenException("Field line does not end with semi-colon", bean.getFile(), fieldIndex);
             }
             return line.substring(0, line.length() - 1).trim();
         }
@@ -298,7 +307,7 @@ class PropertyGen {
     private String parseMethodNameAsPropertyName(List<String> content) {
         String[] parts = parseMethodDefinition(content);
         if (parts[1].length() == 0 || Character.isUpperCase(parts[1].charAt(0)) == false) {
-            throw new RuntimeException("@DerivedProperty method name invalid'");
+            throw new BeanCodeGenException("@DerivedProperty method name invalid'", bean.getFile(), fieldIndex);
         }
         return Character.toLowerCase(parts[1].charAt(0)) + parts[1].substring(1);
     }
@@ -324,14 +333,14 @@ class PropertyGen {
         } else if (line.startsWith("final ")) {
             line = line.substring(6).trim();
         } else if (line.startsWith("static ")) {
-            throw new RuntimeException("@DerivedProperty method cannot be static");
+            throw new BeanCodeGenException("@DerivedProperty method cannot be static", bean.getFile(), fieldIndex);
         }
         int getIndex = line.indexOf(" get");
         if (getIndex < 0) {
-            throw new RuntimeException("@DerivedProperty method must start with 'get'");
+            throw new BeanCodeGenException("@DerivedProperty method must start with 'get'", bean.getFile(), fieldIndex);
         }
         if (line.endsWith(lineEnd) == false) {
-            throw new RuntimeException("@DerivedProperty method must end with '" + lineEnd + "'");
+            throw new BeanCodeGenException("@DerivedProperty method must end with '" + lineEnd + "'", bean.getFile(), fieldIndex);
         }
         line = line.substring(0, line.length() - lineEnd.length());
         String[] split = new String[2];
@@ -354,7 +363,7 @@ class PropertyGen {
                 }
             }
             if (startCommentIndex == -1) {
-                throw new RuntimeException("Unable to locate comment start at line " + annotationIndex);
+                throw new BeanCodeGenException("Unable to locate comment start at line " + annotationIndex, bean.getFile(), annotationIndex);
             }
             if (startCommentIndex < annotationIndex - 1) {
                 for (int i = startCommentIndex; i < annotationIndex - 1; i++) {
@@ -722,6 +731,10 @@ class PropertyGen {
 
     GeneratableProperty getData() {
         return data;
+    }
+
+    int getPropertyLineIndex() {
+        return propertyIndex;
     }
 
     // resolves awkward generics

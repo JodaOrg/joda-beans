@@ -255,9 +255,11 @@ public class BeanCodeGen {
         List<String> content = new ArrayList<String>(original);
         BeanGen gen;
         try {
-            gen = new BeanGen(content, config);
+            gen = new BeanGen(file, content, config);
+        } catch (BeanCodeGenException ex) {
+            throw ex;
         } catch (Exception ex) {
-            throw new RuntimeException("Error in bean: " + file, ex);
+            throw new BeanCodeGenException(ex.getMessage(), ex, file);
         }
         if (gen.isBean()) {
             if (verbosity >= 2) {

@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -511,7 +512,7 @@ class GeneratableProperty {
     /**
      * Resolves the getter generator.
      */
-    public void resolveGetterGen() {
+    public void resolveGetterGen(File file, int lineIndex) {
         if (getGetStyle() == null) {
             setGetStyle("");
         }
@@ -560,8 +561,8 @@ class GeneratableProperty {
         } else if (style.equals("manual")) {
             getterGen = GetterGen.ManualGetterGen.INSTANCE;
         } else {
-            throw new RuntimeException("Unable to locate getter generator '" + style + "'" +
-                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+            throw new BeanCodeGenException("Unable to locate getter generator '" + style + "'" +
+                    " in " + getBean().getTypeRaw() + "." + getPropertyName(), file, lineIndex);
         }
     }
 
@@ -577,7 +578,7 @@ class GeneratableProperty {
     /**
      * Resolves the setter generator.
      */
-    public void resolveSetterGen() {
+    public void resolveSetterGen(File file, int lineIndex) {
         if (getSetStyle() == null) {
             setSetStyle("");
         }
@@ -623,8 +624,8 @@ class GeneratableProperty {
                 setterGen = new SetterGen.PatternSetterGen("$field = " + style);
             }
         } else {
-            throw new RuntimeException("Unable to locate setter generator '" + style + "'" +
-                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+            throw new BeanCodeGenException("Unable to locate setter generator '" + style + "'" +
+                    " in " + getBean().getTypeRaw() + "." + getPropertyName(), file, lineIndex);
         }
     }
 
@@ -651,13 +652,13 @@ class GeneratableProperty {
     /**
      * Resolves the copy generator.
      */
-    public void resolveCopyGen() {
+    public void resolveCopyGen(File file, int lineIndex) {
         if (getBean().isMutable() && getBean().isBuilderScopePublic() == false) {
             return;  // no copying
         }
         if (config.getInvalidImmutableTypes().contains(getFieldTypeRaw())) {
-            throw new RuntimeException("Invalid collection type for immutable bean: " + getFieldTypeRaw() +
-                    " in " + getBean().getTypeRaw() + "." + getPropertyName());
+            throw new BeanCodeGenException("Invalid collection type for immutable bean: " + getFieldTypeRaw() +
+                    " in " + getBean().getTypeRaw() + "." + getPropertyName(), file, lineIndex);
         }
         if (isDerived()) {
             copyGen = CopyGen.NoCopyGen.INSTANCE;
