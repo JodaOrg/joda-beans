@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.5" date="SNAPSHOT" description="v1.5">
+      <action dev="andreas-schilling" type="fix">
+        Fixed parsing of verbose command line flag.
+        Fixes #97.
+      </action>
+    </release>
     <release version="1.4" date="2014-12-10" description="v1.4">
       <action dev="jodastephen" type="add">
         Add ImmutablePreBuild annotation.

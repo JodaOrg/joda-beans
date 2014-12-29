@@ -35,11 +35,15 @@
   <contributors>
     <contributor>
       <name>Kevin Vella</name>
-      <timezone>0</timezone>
+      <url>https://github.com/lega</url>
     </contributor>
     <contributor>
       <name>Chris Kent</name>
-      <timezone>0</timezone>
+      <url>https://github.com/cjkent</url>
+    </contributor>
+    <contributor>
+      <name>Andreas Schilling</name>
+      <url>https://github.com/andreas-schilling</url>
     </contributor>
   </contributors>
 
