@@ -30,7 +30,7 @@ Various documentation is available:
 * The [Javadoc](apidocs/index.html)
 * The [change notes](changes-report.html) for each release
 * The [GitHub](https://github.com/JodaOrg/joda-beans) source repository
-* The [Maven plugin](https://github.com/JodaOrg/joda-beans-maven-plugin) for code generation
+* The [related projects](related.html) including Maven, Gradle and IntelliJ integration
 
 
 ---
@@ -121,6 +121,9 @@ Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda
   <version>1.4</version>
 </dependency>
 ```
+
+See the [related projects](related.html) page for Maven, Gradle and IntelliJ integration.
+
 
 ---
 

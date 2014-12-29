@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.5" date="SNAPSHOT" description="v1.5">
+      <action dev="jodastephen" type="add">
+        Add related projects page to website.
+      </action>
       <action dev="andreas-schilling" type="fix">
         Fixed parsing of verbose command line flag.
         Fixes #97.
