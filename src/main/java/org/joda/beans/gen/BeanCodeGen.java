@@ -232,14 +232,34 @@ public class BeanCodeGen {
 
     //-----------------------------------------------------------------------
     /**
-     * Processes the file, recursing as necessary, generating the code.
+     * Processes the file, recursing as necessary, generating the source code.
+     * <p>
+     * The number of altered files is returned.
      * 
      * @return the number of changed files
      */
     public int process() throws Exception {
         int changed = 0;
         for (File child : files) {
-            changed += (processFile(child) ? 1 : 0);
+            changed += (processFile(child) != null ? 1 : 0);
+        }
+        return changed;
+    }
+
+    /**
+     * Processes the file, recursing as necessary, generating the source code.
+     * <p>
+     * The list of altered files is returned.
+     * 
+     * @return the list of changed files, not null
+     */
+    public List<File> processFiles() throws Exception {
+        List<File> changed = new ArrayList<File>();
+        for (File child : files) {
+            File file = processFile(child);
+            if (file != null) {
+                changed.add(file);
+            }
         }
         return changed;
     }
@@ -248,9 +268,9 @@ public class BeanCodeGen {
      * Processes the bean, generating the code.
      * 
      * @param file  the file to process, not null
-     * @return true if changed
+     * @return not-null if changed
      */
-    private boolean processFile(File file) throws Exception {
+    private File processFile(File file) throws Exception {
         List<String> original = readFile(file);
         List<String> content = new ArrayList<String>(original);
         BeanGen gen;
@@ -281,7 +301,7 @@ public class BeanCodeGen {
                         System.out.println(file + "  [changed not written]");
                     }
                 }
-                return true;
+                return file;
             } else {
                 if (verbosity >= 2) {
                     System.out.println(" [no change]");
@@ -292,7 +312,7 @@ public class BeanCodeGen {
                 System.out.println(file + "  [ignored]");
             }
         }
-        return false;
+        return null;
     }
 
     //-----------------------------------------------------------------------

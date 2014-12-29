@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.5" date="SNAPSHOT" description="v1.5">
       <action>
+         Provide details of files changed by code generation.
+         This allows tooling, such as the maven plugin, to be enhanced.
+         Fixes #99.
+      </action>
+      <action>
          Standard format for exceptions in code generation.
          Dedicated exception type allows tooling, such as the maven plugin, to be enhanced.
          Fixes #98.
