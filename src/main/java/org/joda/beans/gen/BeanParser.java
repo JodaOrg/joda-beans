@@ -452,12 +452,13 @@ class BeanParser {
         List<PropertyGen> props = new ArrayList<PropertyGen>();
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
+            PropertyParser parser = new PropertyParser(this);
             if (line.startsWith("@PropertyDefinition")) {
-                PropertyGen prop = new PropertyGen(this, data, content, index, false);
+                PropertyGen prop = parser.parse(data, content, index);
                 props.add(prop);
                 data.getProperties().add(prop.getData());
             } else if (line.startsWith("@DerivedProperty")) {
-                PropertyGen prop = new PropertyGen(this, data, content, index, true);
+                PropertyGen prop = parser.parseDerived(data, content, index);
                 props.add(prop);
                 data.getProperties().add(prop.getData());
             }

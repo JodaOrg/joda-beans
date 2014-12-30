@@ -64,6 +64,8 @@ class GeneratableProperty {
     private String propertyName;
     /** Field name. */
     private String fieldName;
+    /** Meta field name. */
+    private String metaFieldName;
     /** Upper property name. */
     private String upperName;
     /** Property type. */
@@ -171,6 +173,22 @@ class GeneratableProperty {
      */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    /**
+     * Gets the meta field name.
+     * @return the meta field name
+     */
+    public String getMetaFieldName() {
+        return metaFieldName;
+    }
+
+    /**
+     * Sets the meta field name.
+     * @param metaFieldName  the meta field name to set
+     */
+    public void setMetaFieldName(String metaFieldName) {
+        this.metaFieldName = metaFieldName;
     }
 
     /**
