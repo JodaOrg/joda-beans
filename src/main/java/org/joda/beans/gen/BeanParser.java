@@ -132,7 +132,7 @@ class BeanParser {
 
     //-----------------------------------------------------------------------
     BeanGen parse() {
-        GeneratableBean data = new GeneratableBean();
+        BeanData data = new BeanData();
         beanDefIndex = parseBeanDefinition();
         if (beanDefIndex < 0) {
             return new BeanGen(file, content, config);
@@ -448,7 +448,7 @@ class BeanParser {
         return null;
     }
 
-    private List<PropertyGen> parseProperties(GeneratableBean data) {
+    private List<PropertyGen> parseProperties(BeanData data) {
         List<PropertyGen> props = new ArrayList<PropertyGen>();
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();

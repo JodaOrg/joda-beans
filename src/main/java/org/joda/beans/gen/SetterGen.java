@@ -32,7 +32,7 @@ abstract class SetterGen {
      * @param prop  the property data, not null
      * @return true if a setter is possible
      */
-    abstract boolean isSetterGenerated(GeneratableProperty prop);
+    abstract boolean isSetterGenerated(PropertyData prop);
 
     /**
      * Generates the setter method.
@@ -41,7 +41,7 @@ abstract class SetterGen {
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateSetter(String indent, GeneratableProperty prop);
+    abstract List<String> generateSetter(String indent, PropertyData prop);
 
     /**
      * Generates the setter method invocation.
@@ -51,7 +51,7 @@ abstract class SetterGen {
      * @param newValue  the new value, not null
      * @return the generated code, null if no setter
      */
-    String generateSetInvoke(GeneratableProperty prop, String newValue) {
+    String generateSetInvoke(PropertyData prop, String newValue) {
         return "set" + prop.getUpperName() + "(" + newValue + ")";
     }
 
@@ -68,11 +68,11 @@ abstract class SetterGen {
             this.access = access;
         }
         @Override
-        boolean isSetterGenerated(GeneratableProperty prop) {
+        boolean isSetterGenerated(PropertyData prop) {
             return true;
         }
         @Override
-        List<String> generateSetter(String indent, GeneratableProperty prop) {
+        List<String> generateSetter(String indent, PropertyData prop) {
             List<String> list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Sets " + prop.getFirstComment());
@@ -109,11 +109,11 @@ abstract class SetterGen {
             this.access = access;
         }
         @Override
-        boolean isSetterGenerated(GeneratableProperty prop) {
+        boolean isSetterGenerated(PropertyData prop) {
             return true;
         }
         @Override
-        List<String> generateSetter(String indent, GeneratableProperty prop) {
+        List<String> generateSetter(String indent, PropertyData prop) {
             List<String> list = new ArrayList<String>();
             list.add(indent + "/**");
             list.add(indent + " * Sets " + prop.getFirstComment());
@@ -151,11 +151,11 @@ abstract class SetterGen {
     static class NoSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new NoSetterGen();
         @Override
-        boolean isSetterGenerated(GeneratableProperty prop) {
+        boolean isSetterGenerated(PropertyData prop) {
             return false;
         }
         @Override
-        List<String> generateSetter(String indent, GeneratableProperty prop) {
+        List<String> generateSetter(String indent, PropertyData prop) {
             return Collections.emptyList();
         }
     }
@@ -163,15 +163,15 @@ abstract class SetterGen {
     static class FieldSetterGen extends SetterGen {
         static final SetterGen INSTANCE = new FieldSetterGen();
         @Override
-        boolean isSetterGenerated(GeneratableProperty prop) {
+        boolean isSetterGenerated(PropertyData prop) {
             return true;
         }
         @Override
-        List<String> generateSetter(String indent, GeneratableProperty prop) {
+        List<String> generateSetter(String indent, PropertyData prop) {
             return Collections.emptyList();
         }
         @Override
-        String generateSetInvoke(GeneratableProperty prop, String newValue) {
+        String generateSetInvoke(PropertyData prop, String newValue) {
             return prop.getFieldName() + " = " + newValue;
         }
     }

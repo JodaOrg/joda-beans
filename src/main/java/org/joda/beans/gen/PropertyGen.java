@@ -33,7 +33,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 class PropertyGen {
 
     /** The data model of the property. */
-    private final GeneratableProperty data;
+    private final PropertyData data;
     /** Annotation line index for {@code PropertyDefinition} in input file. */
     private final int propertyIndex;
 
@@ -42,7 +42,7 @@ class PropertyGen {
      * @param propData  the property data
      * @param lineIndex  the index of a PropertyDefinition
      */
-    public PropertyGen(GeneratableProperty propData, int lineIndex) {
+    public PropertyGen(PropertyData propData, int lineIndex) {
         this.data = propData;
         this.propertyIndex = lineIndex;
     }
@@ -375,7 +375,7 @@ class PropertyGen {
         return type;
     }
 
-    GeneratableProperty getData() {
+    PropertyData getData() {
         return data;
     }
 

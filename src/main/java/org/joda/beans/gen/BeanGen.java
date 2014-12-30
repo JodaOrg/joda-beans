@@ -73,7 +73,7 @@ class BeanGen {
     /** The config. */
     private final BeanGenConfig config;
     /** The data model of the bean. */
-    private final GeneratableBean data;
+    private final BeanData data;
     /** The list of property generators. */
     private final List<PropertyGen> properties;
     /** The region to insert into. */
@@ -106,7 +106,7 @@ class BeanGen {
      */
     public BeanGen(
             File file, List<String> content, BeanGenConfig config,
-            GeneratableBean data, List<PropertyGen> properties, int autoStartIndex, int autoEndIndex) {
+            BeanData data, List<PropertyGen> properties, int autoStartIndex, int autoEndIndex) {
         this.file = file;
         this.content = content;
         this.config = config;
@@ -240,7 +240,7 @@ class BeanGen {
             } else {
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen propGen = nonDerived.get(i);
-                    GeneratableProperty prop = propGen.getData();
+                    PropertyData prop = propGen.getData();
                     if (prop.isCollectionType()) {
                         if (prop.isNotNull()) {
                             insertRegion.add("\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
@@ -832,7 +832,7 @@ class BeanGen {
         }
         
         boolean generics = false;
-        for (GeneratableProperty prop : data.getProperties()) {
+        for (PropertyData prop : data.getProperties()) {
             generics |= (prop.getStyle().isWritable() &&
                     ((prop.isGeneric() && prop.isGenericWildcardParamType() == false) || data.isTypeGeneric()));
         }
@@ -990,7 +990,7 @@ class BeanGen {
     private void generateBuilderSet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         boolean generics = false;
-        for (GeneratableProperty prop : data.getProperties()) {
+        for (PropertyData prop : data.getProperties()) {
             generics |= (prop.isGeneric() && prop.isGenericWildcardParamType() == false);
         }
         if (generics) {
@@ -1144,7 +1144,7 @@ class BeanGen {
         return data != null;
     }
 
-    GeneratableBean getData() {
+    BeanData getData() {
         return data;
     }
 

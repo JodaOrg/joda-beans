@@ -31,7 +31,7 @@ abstract class GetterGen {
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateGetter(GeneratableProperty prop);
+    abstract List<String> generateGetter(PropertyData prop);
 
     /**
      * Generates the getter method invocation.
@@ -39,7 +39,7 @@ abstract class GetterGen {
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    String generateGetInvoke(GeneratableProperty prop) {
+    String generateGetInvoke(PropertyData prop) {
         return "get" + prop.getUpperName() + "()";
     }
 
@@ -56,7 +56,7 @@ abstract class GetterGen {
             this.access = access;
         }
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             return doGenerateGetter(prop, access, "get", prop.getFieldName());
         }
     }
@@ -72,11 +72,11 @@ abstract class GetterGen {
             this.access = access;
         }
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             return doGenerateGetter(prop, access, "is", prop.getFieldName());
         }
         @Override
-        String generateGetInvoke(GeneratableProperty prop) {
+        String generateGetInvoke(PropertyData prop) {
             return "is" + prop.getUpperName() + "()";
         }
     }
@@ -92,7 +92,7 @@ abstract class GetterGen {
             this.access = access;
         }
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             return doGenerateGetter(prop, access, "get", "(" + prop.getFieldName() + " != null ? " + prop.getFieldName() + ".clone() : null)");
         }
     }
@@ -108,7 +108,7 @@ abstract class GetterGen {
             this.access = access;
         }
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             return doGenerateGetter(prop, access, "get", "(" + prop.getFieldName() + " != null ? (" + prop.getFieldType() + ") " + prop.getFieldName() + ".clone() : null)");
         }
     }
@@ -116,7 +116,7 @@ abstract class GetterGen {
     static final class Optional8GetterGen extends GetterGen {
         static final GetterGen PUBLIC = new Optional8GetterGen();
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             List<String> list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Gets " + prop.getFirstComment());
@@ -152,7 +152,7 @@ abstract class GetterGen {
             return list;
         }
         @Override
-        String generateGetInvoke(GeneratableProperty prop) {
+        String generateGetInvoke(PropertyData prop) {
             return prop.getFieldName();
         }
     }
@@ -160,7 +160,7 @@ abstract class GetterGen {
     static final class OptionalGuavaGetterGen extends GetterGen {
         static final GetterGen PUBLIC = new OptionalGuavaGetterGen();
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             List<String> list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Gets " + prop.getFirstComment());
@@ -182,7 +182,7 @@ abstract class GetterGen {
             return list;
         }
         @Override
-        String generateGetInvoke(GeneratableProperty prop) {
+        String generateGetInvoke(PropertyData prop) {
             return prop.getFieldName();
         }
     }
@@ -190,7 +190,7 @@ abstract class GetterGen {
     static class ManualGetterGen extends GetterGen {
         static final GetterGen INSTANCE = new ManualGetterGen();
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             return Collections.emptyList();
         }
     }
@@ -198,16 +198,16 @@ abstract class GetterGen {
     static class NoGetterGen extends GetterGen {
         static final GetterGen INSTANCE = new NoGetterGen();
         @Override
-        List<String> generateGetter(GeneratableProperty prop) {
+        List<String> generateGetter(PropertyData prop) {
             return Collections.emptyList();
         }
         @Override
-        String generateGetInvoke(GeneratableProperty prop) {
+        String generateGetInvoke(PropertyData prop) {
             return prop.getFieldName();
         }
     }
 
-    private static List<String> doGenerateGetter(GeneratableProperty prop, String access, String prefix, String expression) {
+    private static List<String> doGenerateGetter(PropertyData prop, String access, String prefix, String expression) {
         List<String> list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());

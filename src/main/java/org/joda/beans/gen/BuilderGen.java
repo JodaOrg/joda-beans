@@ -33,7 +33,7 @@ abstract class BuilderGen {
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    abstract List<String> generateField(String indent, GeneratableProperty prop);
+    abstract List<String> generateField(String indent, PropertyData prop);
 
     /**
      * Generates the builder exposed type.
@@ -42,7 +42,7 @@ abstract class BuilderGen {
      * @param prop  the property data, not null
      * @return the generated code, not null
      */
-    String generateType(GeneratableProperty prop) {
+    String generateType(PropertyData prop) {
         return prop.getType();
     }
 
@@ -55,7 +55,7 @@ abstract class BuilderGen {
             this.init = init;
         }
         @Override
-        List<String> generateField(String indent, GeneratableProperty prop) {
+        List<String> generateField(String indent, PropertyData prop) {
             List<String> list = new ArrayList<String>();
             if (prop.isNotNull()) {
                 String init = this.init;
@@ -67,7 +67,7 @@ abstract class BuilderGen {
             return list;
         }
         @Override
-        String generateType(GeneratableProperty prop) {
+        String generateType(PropertyData prop) {
             return type.replace("<>", prop.getTypeGenerics());
         }
     }
@@ -78,13 +78,13 @@ abstract class BuilderGen {
             this.type = type;
         }
         @Override
-        List<String> generateField(String indent, GeneratableProperty prop) {
+        List<String> generateField(String indent, PropertyData prop) {
             List<String> list = new ArrayList<String>();
             list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
             return list;
         }
         @Override
-        String generateType(GeneratableProperty prop) {
+        String generateType(PropertyData prop) {
             return type.replace("<>", prop.getTypeGenerics());
         }
     }
@@ -92,7 +92,7 @@ abstract class BuilderGen {
     static class NoBuilderGen extends BuilderGen {
         static final BuilderGen INSTANCE = new NoBuilderGen();
         @Override
-        List<String> generateField(String indent, GeneratableProperty prop) {
+        List<String> generateField(String indent, PropertyData prop) {
             return Collections.emptyList();
         }
     }

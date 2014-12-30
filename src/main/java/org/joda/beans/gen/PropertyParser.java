@@ -60,11 +60,11 @@ class PropertyParser {
     }
 
     //-----------------------------------------------------------------------
-    PropertyGen parse(GeneratableBean beanData, List<String> content, int lineIndex) {
+    PropertyGen parse(BeanData beanData, List<String> content, int lineIndex) {
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
-        GeneratableProperty data = new GeneratableProperty(beanData, beanParser.getConfig());
+        PropertyData data = new PropertyData(beanData, beanParser.getConfig());
         data.setAlias(parseAlias(content));
         data.setGetStyle(parseGetStyle(content));
         data.setSetStyle(parseSetStyle(content));
@@ -92,11 +92,11 @@ class PropertyParser {
         return new PropertyGen(data, lineIndex);
     }
 
-    PropertyGen parseDerived(GeneratableBean beanData, List<String> content, int lineIndex) {
+    PropertyGen parseDerived(BeanData beanData, List<String> content, int lineIndex) {
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
-        GeneratableProperty data = new GeneratableProperty(beanData, beanParser.getConfig());
+        PropertyData data = new PropertyData(beanData, beanParser.getConfig());
         data.setGetStyle("manual");
         data.setSetStyle("");
         data.setTypeStyle("");
