@@ -64,7 +64,7 @@ class PropertyParser {
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
-        PropertyData data = new PropertyData(beanData, beanParser.getConfig());
+        PropertyData data = new PropertyData(beanData, beanParser.getConfig(), lineIndex);
         data.setAlias(parseAlias(content));
         data.setGetStyle(parseGetStyle(content));
         data.setSetStyle(parseSetStyle(content));
@@ -89,14 +89,14 @@ class PropertyParser {
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
         data.getComments().addAll(comments.subList(1, comments.size()));
-        return new PropertyGen(data, lineIndex);
+        return new PropertyGen(data);
     }
 
     PropertyGen parseDerived(BeanData beanData, List<String> content, int lineIndex) {
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
-        PropertyData data = new PropertyData(beanData, beanParser.getConfig());
+        PropertyData data = new PropertyData(beanData, beanParser.getConfig(), lineIndex);
         data.setGetStyle("manual");
         data.setSetStyle("");
         data.setTypeStyle("");
@@ -115,7 +115,7 @@ class PropertyParser {
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
         data.getComments().addAll(comments.subList(1, comments.size()));
-        return new PropertyGen(data, lineIndex);
+        return new PropertyGen(data);
     }
 
     //-----------------------------------------------------------------------

@@ -60,6 +60,8 @@ class PropertyData {
 
     /** Owning bean. */
     private final BeanData bean;
+    /** Annotation line index for {@code PropertyDefinition} in input file. */
+    private final int lineIndex;
     /** Property name. */
     private String propertyName;
     /** Field name. */
@@ -110,9 +112,10 @@ class PropertyData {
     /**
      * Constructor.
      */
-    PropertyData(BeanData bean, BeanGenConfig config) {
+    PropertyData(BeanData bean, BeanGenConfig config, int lineIndex) {
         this.bean = bean;
         this.config = config;
+        this.lineIndex = lineIndex;
     }
 
     //-----------------------------------------------------------------------
@@ -143,6 +146,14 @@ class PropertyData {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the property line index.
+     * @return the property line index
+     */
+    public int getLineIndex() {
+        return lineIndex;
+    }
+
     /**
      * Gets the property name.
      * @return the property name

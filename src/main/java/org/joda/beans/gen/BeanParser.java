@@ -185,7 +185,8 @@ class BeanParser {
             for (PropertyGen prop : properties) {
                 if (prop.getData().isDerived() == false && prop.getData().isFinal() == false) {
                     throw new BeanCodeGenException("ImmutableBean must have final properties: " +
-                            data.getTypeRaw() + "." + prop.getData().getFieldName(), file, prop.getPropertyLineIndex());
+                            data.getTypeRaw() + "." + prop.getData().getFieldName(),
+                            file, prop.getData().getLineIndex());
                 }
             }
         } else if (data.getImmutableConstructor() > CONSTRUCTOR_NONE) {
