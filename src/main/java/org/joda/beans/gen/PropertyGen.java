@@ -278,10 +278,12 @@ class PropertyGen {
                 "(" + data.getTypeGenericsSimple() + "... " + data.getPropertyName() + ") {");
         if (data.isSortedSetType()) {
             data.getBean().ensureImport(TreeSet.class);
+            data.getBean().ensureImport(Arrays.class);
             list.add("\t\t\treturn " + data.getPropertyName() + "(new TreeSet<" + data.getTypeGenericsSimple() +
                     ">(Arrays.asList(" + data.getPropertyName() + ")));");
         } else if (data.isSetType()) {
             data.getBean().ensureImport(LinkedHashSet.class);
+            data.getBean().ensureImport(Arrays.class);
             list.add("\t\t\treturn " + data.getPropertyName() + "(new LinkedHashSet<" + data.getTypeGenericsSimple() +
                     ">(Arrays.asList(" + data.getPropertyName() + ")));");
         } else {

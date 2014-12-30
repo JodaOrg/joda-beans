@@ -25,7 +25,6 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
-import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
 
@@ -246,7 +245,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
          * @param beanToCopy  the bean to copy from, not null
          */
         private Builder(ImmSubSubPersonFinal beanToCopy) {
-            this.codeCounts = (beanToCopy.getCodeCounts() != null ? HashMultiset.create(beanToCopy.getCodeCounts()) : null);
+            this.codeCounts = beanToCopy.getCodeCounts();
         }
 
         //-----------------------------------------------------------------------

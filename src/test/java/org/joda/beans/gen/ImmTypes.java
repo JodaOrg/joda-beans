@@ -314,9 +314,9 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
      */
     public static final class Builder<T extends Comparable<T>> extends DirectFieldsBeanBuilder<ImmTypes<T>> {
 
-        private List<?> listWild = new ArrayList<Object>();
-        private List<?> listWildPublic1 = new ArrayList<Object>();
-        private List<?> listWildPublic2 = new ArrayList<Object>();
+        private List<?> listWild = ImmutableList.of();
+        private List<?> listWildPublic1 = ImmutableList.of();
+        private List<?> listWildPublic2 = ImmutableList.of();
 
         /**
          * Restricted constructor.
@@ -329,9 +329,9 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
          * @param beanToCopy  the bean to copy from, not null
          */
         private Builder(ImmTypes<T> beanToCopy) {
-            this.listWild = new ArrayList<Object>(beanToCopy.getListWild());
-            this.listWildPublic1 = new ArrayList<Object>(beanToCopy.getListWildPublic1());
-            this.listWildPublic2 = new ArrayList<Object>(beanToCopy.getListWildPublic2());
+            this.listWild = beanToCopy.getListWild();
+            this.listWildPublic1 = ImmutableList.copyOf(beanToCopy.getListWildPublic1());
+            this.listWildPublic2 = beanToCopy.getListWildPublic2();
         }
 
         //-----------------------------------------------------------------------

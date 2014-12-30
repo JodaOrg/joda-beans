@@ -15,7 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -274,7 +273,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
          */
         protected Builder(ImmSubPersonNonFinal beanToCopy) {
             this.middleName = beanToCopy.getMiddleName();
-            this.addressList = (beanToCopy.getAddressList() != null ? new ArrayList<Address>(beanToCopy.getAddressList()) : null);
+            this.addressList = beanToCopy.getAddressList();
         }
 
         //-----------------------------------------------------------------------

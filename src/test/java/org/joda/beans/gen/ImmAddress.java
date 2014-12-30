@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -35,9 +34,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.collect.grid.Grid;
 import org.joda.collect.grid.ImmutableGrid;
-import org.joda.collect.grid.SparseGrid;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
@@ -1086,17 +1083,17 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         private Risk risk;
         private RiskLevel riskLevel;
         private Serializable serializable;
-        private Map<String, Object> objectInMap = new HashMap<String, Object>();
-        private Map<String, List<String>> listInMap = new HashMap<String, List<String>>();
-        private Map<String, List<Integer>> listNumericInMap = new HashMap<String, List<Integer>>();
-        private Map<String, List<List<Integer>>> listInListInMap = new HashMap<String, List<List<Integer>>>();
-        private Map<String, List<List<Object>>> objectListInListInMap = new HashMap<String, List<List<Object>>>();
-        private Map<ImmPerson, Map<String, ImmPerson>> mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>();
+        private Map<String, Object> objectInMap = ImmutableMap.of();
+        private Map<String, List<String>> listInMap = ImmutableMap.of();
+        private Map<String, List<Integer>> listNumericInMap = ImmutableMap.of();
+        private Map<String, List<List<Integer>>> listInListInMap = ImmutableMap.of();
+        private Map<String, List<List<Object>>> objectListInListInMap = ImmutableMap.of();
+        private Map<ImmPerson, Map<String, ImmPerson>> mapInMap = ImmutableMap.of();
         private Table<Integer, Integer, String> simpleTable;
         private Table<Integer, Integer, ImmPerson> compoundTable;
         private Grid<ImmPerson> sparseGrid;
         private Grid<ImmPerson> denseGrid;
-        private Map<ImmPerson, ImmAddress> beanBeanMap = new HashMap<ImmPerson, ImmAddress>();
+        private Map<ImmPerson, ImmAddress> beanBeanMap = ImmutableMap.of();
 
         /**
          * Restricted constructor.
@@ -1121,17 +1118,17 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             this.risk = beanToCopy.getRisk();
             this.riskLevel = beanToCopy.getRiskLevel();
             this.serializable = beanToCopy.getSerializable();
-            this.objectInMap = new HashMap<String, Object>(beanToCopy.getObjectInMap());
-            this.listInMap = new HashMap<String, List<String>>(beanToCopy.getListInMap());
-            this.listNumericInMap = new HashMap<String, List<Integer>>(beanToCopy.getListNumericInMap());
-            this.listInListInMap = new HashMap<String, List<List<Integer>>>(beanToCopy.getListInListInMap());
-            this.objectListInListInMap = new HashMap<String, List<List<Object>>>(beanToCopy.getObjectListInListInMap());
-            this.mapInMap = new HashMap<ImmPerson, Map<String, ImmPerson>>(beanToCopy.getMapInMap());
-            this.simpleTable = (beanToCopy.getSimpleTable() != null ? HashBasedTable.create(beanToCopy.getSimpleTable()) : null);
-            this.compoundTable = (beanToCopy.getCompoundTable() != null ? HashBasedTable.create(beanToCopy.getCompoundTable()) : null);
-            this.sparseGrid = (beanToCopy.getSparseGrid() != null ? SparseGrid.create(beanToCopy.getSparseGrid()) : null);
-            this.denseGrid = (beanToCopy.getDenseGrid() != null ? SparseGrid.create(beanToCopy.getDenseGrid()) : null);
-            this.beanBeanMap = new HashMap<ImmPerson, ImmAddress>(beanToCopy.getBeanBeanMap());
+            this.objectInMap = beanToCopy.getObjectInMap();
+            this.listInMap = beanToCopy.getListInMap();
+            this.listNumericInMap = beanToCopy.getListNumericInMap();
+            this.listInListInMap = beanToCopy.getListInListInMap();
+            this.objectListInListInMap = beanToCopy.getObjectListInListInMap();
+            this.mapInMap = beanToCopy.getMapInMap();
+            this.simpleTable = beanToCopy.getSimpleTable();
+            this.compoundTable = beanToCopy.getCompoundTable();
+            this.sparseGrid = beanToCopy.getSparseGrid();
+            this.denseGrid = beanToCopy.getDenseGrid();
+            this.beanBeanMap = beanToCopy.getBeanBeanMap();
         }
 
         //-----------------------------------------------------------------------

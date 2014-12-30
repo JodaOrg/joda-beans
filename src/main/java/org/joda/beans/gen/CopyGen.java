@@ -99,7 +99,11 @@ abstract class CopyGen {
                         if (prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
-                            line = "$field = ($value != null ? " + line + " : null);";
+                            if (line.equals("$value")) {
+                                line = "$field = $value;";
+                            } else {
+                                line = "$field = ($value != null ? " + line + " : null);";
+                            }
                         }
                     }
                     if (line.startsWith("$field = ") == false) {

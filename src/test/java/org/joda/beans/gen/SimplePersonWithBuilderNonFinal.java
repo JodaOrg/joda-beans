@@ -34,6 +34,9 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 /**
  * Mock person JavaBean, used for testing.
  * 
@@ -580,9 +583,9 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
         private String forename;
         private String surname;
         private int numberOfCars;
-        private List<Address> addressList = new ArrayList<Address>();
-        private Map<String, Address> otherAddressMap = new HashMap<String, Address>();
-        private List<List<Address>> addressesList = new ArrayList<List<Address>>();
+        private List<Address> addressList = ImmutableList.of();
+        private Map<String, Address> otherAddressMap = ImmutableMap.of();
+        private List<List<Address>> addressesList = ImmutableList.of();
         private Address mainAddress;
 
         /**
@@ -599,9 +602,9 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
             this.forename = beanToCopy.getForename();
             this.surname = beanToCopy.getSurname();
             this.numberOfCars = beanToCopy.getNumberOfCars();
-            this.addressList = new ArrayList<Address>(beanToCopy.getAddressList());
-            this.otherAddressMap = new HashMap<String, Address>(beanToCopy.getOtherAddressMap());
-            this.addressesList = new ArrayList<List<Address>>(beanToCopy.getAddressesList());
+            this.addressList = ImmutableList.copyOf(beanToCopy.getAddressList());
+            this.otherAddressMap = ImmutableMap.copyOf(beanToCopy.getOtherAddressMap());
+            this.addressesList = ImmutableList.copyOf(beanToCopy.getAddressesList());
             this.mainAddress = beanToCopy.getMainAddress();
         }
 

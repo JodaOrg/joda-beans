@@ -15,7 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -375,7 +374,7 @@ public final class ImmTreeNode implements ImmutableBean {
         private ImmTreeNode child1;
         private ImmTreeNode child2;
         private ImmTreeNode child3;
-        private List<ImmTreeNode> childList = new ArrayList<ImmTreeNode>();
+        private List<ImmTreeNode> childList = ImmutableList.of();
 
         /**
          * Restricted constructor.
@@ -392,7 +391,7 @@ public final class ImmTreeNode implements ImmutableBean {
             this.child1 = beanToCopy.getChild1();
             this.child2 = beanToCopy.getChild2();
             this.child3 = beanToCopy.getChild3();
-            this.childList = new ArrayList<ImmTreeNode>(beanToCopy.getChildList());
+            this.childList = ImmutableList.copyOf(beanToCopy.getChildList());
         }
 
         //-----------------------------------------------------------------------

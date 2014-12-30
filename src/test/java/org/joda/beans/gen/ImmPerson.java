@@ -15,10 +15,8 @@
  */
 package org.joda.beans.gen;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -40,7 +38,6 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
-import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
@@ -629,11 +626,11 @@ public final class ImmPerson implements ImmutableBean {
             this.numberOfCars = beanToCopy.getNumberOfCars();
             this.dateOfBirth = (beanToCopy.getDateOfBirth() != null ? (Date) beanToCopy.getDateOfBirth().clone() : null);
             this.middleNames = (beanToCopy.getMiddleNames() != null ? beanToCopy.getMiddleNames().clone() : null);
-            this.addressList = (beanToCopy.getAddressList() != null ? new ArrayList<Address>(beanToCopy.getAddressList()) : null);
-            this.otherAddressMap = (beanToCopy.getOtherAddressMap() != null ? new HashMap<String, Address>(beanToCopy.getOtherAddressMap()) : null);
-            this.addressesList = (beanToCopy.getAddressesList() != null ? new ArrayList<List<Address>>(beanToCopy.getAddressesList()) : null);
+            this.addressList = beanToCopy.getAddressList();
+            this.otherAddressMap = (beanToCopy.getOtherAddressMap() != null ? ImmutableMap.copyOf(beanToCopy.getOtherAddressMap()) : null);
+            this.addressesList = (beanToCopy.getAddressesList() != null ? ImmutableList.copyOf(beanToCopy.getAddressesList()) : null);
             this.mainAddress = beanToCopy.getMainAddress();
-            this.codeCounts = (beanToCopy.getCodeCounts() != null ? HashMultiset.create(beanToCopy.getCodeCounts()) : null);
+            this.codeCounts = beanToCopy.getCodeCounts();
         }
 
         //-----------------------------------------------------------------------

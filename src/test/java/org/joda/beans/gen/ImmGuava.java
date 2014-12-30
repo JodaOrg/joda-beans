@@ -15,11 +15,8 @@
  */
 package org.joda.beans.gen;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +24,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.joda.beans.Bean;
@@ -42,11 +38,7 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -64,7 +56,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.SortedMultiset;
-import com.google.common.collect.TreeMultiset;
 
 /**
  * Mock JavaBean, used for testing.
@@ -99,6 +90,19 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     private final ImmutableMultiset<T> multiset;
     @PropertyDefinition(validate = "notNull")
     private final ImmutableSortedMultiset<T> sortedMultiset;
+
+    @PropertyDefinition(validate = "notNull")
+    private final Collection<T> collectionInterface;
+    @PropertyDefinition(validate = "notNull")
+    private final List<T> listInterface;
+    @PropertyDefinition(validate = "notNull")
+    private final Set<T> setInterface;
+    @PropertyDefinition(validate = "notNull")
+    private final SortedSet<T> sortedSetInterface;
+    @PropertyDefinition(validate = "notNull")
+    private final Map<T, String> mapInterface;
+    @PropertyDefinition(validate = "notNull")
+    private final SortedMap<T, String> sortedMapInterface;
 
     @PropertyDefinition(validate = "notNull")
     private final BiMap<T, String> biMapInterface;
@@ -170,6 +174,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             SetMultimap<T, String> setMultimap,
             Multiset<T> multiset,
             SortedMultiset<T> sortedMultiset,
+            Collection<T> collectionInterface,
+            List<T> listInterface,
+            Set<T> setInterface,
+            SortedSet<T> sortedSetInterface,
+            Map<T, String> mapInterface,
+            SortedMap<T, String> sortedMapInterface,
             BiMap<T, String> biMapInterface,
             Multimap<T, String> multimapInterface,
             ListMultimap<T, String> listMultimapInterface,
@@ -188,6 +198,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         JodaBeanUtils.notNull(setMultimap, "setMultimap");
         JodaBeanUtils.notNull(multiset, "multiset");
         JodaBeanUtils.notNull(sortedMultiset, "sortedMultiset");
+        JodaBeanUtils.notNull(collectionInterface, "collectionInterface");
+        JodaBeanUtils.notNull(listInterface, "listInterface");
+        JodaBeanUtils.notNull(setInterface, "setInterface");
+        JodaBeanUtils.notNull(sortedSetInterface, "sortedSetInterface");
+        JodaBeanUtils.notNull(mapInterface, "mapInterface");
+        JodaBeanUtils.notNull(sortedMapInterface, "sortedMapInterface");
         JodaBeanUtils.notNull(biMapInterface, "biMapInterface");
         JodaBeanUtils.notNull(multimapInterface, "multimapInterface");
         JodaBeanUtils.notNull(listMultimapInterface, "listMultimapInterface");
@@ -206,6 +222,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         this.setMultimap = ImmutableSetMultimap.copyOf(setMultimap);
         this.multiset = ImmutableMultiset.copyOf(multiset);
         this.sortedMultiset = ImmutableSortedMultiset.copyOfSorted(sortedMultiset);
+        this.collectionInterface = ImmutableList.copyOf(collectionInterface);
+        this.listInterface = ImmutableList.copyOf(listInterface);
+        this.setInterface = ImmutableSet.copyOf(setInterface);
+        this.sortedSetInterface = ImmutableSortedSet.copyOfSorted(sortedSetInterface);
+        this.mapInterface = ImmutableMap.copyOf(mapInterface);
+        this.sortedMapInterface = ImmutableSortedMap.copyOfSorted(sortedMapInterface);
         this.biMapInterface = ImmutableBiMap.copyOf(biMapInterface);
         this.multimapInterface = ImmutableMultimap.copyOf(multimapInterface);
         this.listMultimapInterface = ImmutableListMultimap.copyOf(listMultimapInterface);
@@ -340,6 +362,60 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the collectionInterface.
+     * @return the value of the property, not null
+     */
+    public Collection<T> getCollectionInterface() {
+        return collectionInterface;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the listInterface.
+     * @return the value of the property, not null
+     */
+    public List<T> getListInterface() {
+        return listInterface;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the setInterface.
+     * @return the value of the property, not null
+     */
+    public Set<T> getSetInterface() {
+        return setInterface;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the sortedSetInterface.
+     * @return the value of the property, not null
+     */
+    public SortedSet<T> getSortedSetInterface() {
+        return sortedSetInterface;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the mapInterface.
+     * @return the value of the property, not null
+     */
+    public Map<T, String> getMapInterface() {
+        return mapInterface;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the sortedMapInterface.
+     * @return the value of the property, not null
+     */
+    public SortedMap<T, String> getSortedMapInterface() {
+        return sortedMapInterface;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the biMapInterface.
      * @return the value of the property, not null
      */
@@ -420,6 +496,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     JodaBeanUtils.equal(getSetMultimap(), other.getSetMultimap()) &&
                     JodaBeanUtils.equal(getMultiset(), other.getMultiset()) &&
                     JodaBeanUtils.equal(getSortedMultiset(), other.getSortedMultiset()) &&
+                    JodaBeanUtils.equal(getCollectionInterface(), other.getCollectionInterface()) &&
+                    JodaBeanUtils.equal(getListInterface(), other.getListInterface()) &&
+                    JodaBeanUtils.equal(getSetInterface(), other.getSetInterface()) &&
+                    JodaBeanUtils.equal(getSortedSetInterface(), other.getSortedSetInterface()) &&
+                    JodaBeanUtils.equal(getMapInterface(), other.getMapInterface()) &&
+                    JodaBeanUtils.equal(getSortedMapInterface(), other.getSortedMapInterface()) &&
                     JodaBeanUtils.equal(getBiMapInterface(), other.getBiMapInterface()) &&
                     JodaBeanUtils.equal(getMultimapInterface(), other.getMultimapInterface()) &&
                     JodaBeanUtils.equal(getListMultimapInterface(), other.getListMultimapInterface()) &&
@@ -445,6 +527,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         hash = hash * 31 + JodaBeanUtils.hashCode(getSetMultimap());
         hash = hash * 31 + JodaBeanUtils.hashCode(getMultiset());
         hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMultiset());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getCollectionInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSetInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedSetInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getMapInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMapInterface());
         hash = hash * 31 + JodaBeanUtils.hashCode(getBiMapInterface());
         hash = hash * 31 + JodaBeanUtils.hashCode(getMultimapInterface());
         hash = hash * 31 + JodaBeanUtils.hashCode(getListMultimapInterface());
@@ -456,7 +544,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(608);
+        StringBuilder buf = new StringBuilder(800);
         buf.append("ImmGuava{");
         buf.append("collection").append('=').append(getCollection()).append(',').append(' ');
         buf.append("list").append('=').append(getList()).append(',').append(' ');
@@ -470,6 +558,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         buf.append("setMultimap").append('=').append(getSetMultimap()).append(',').append(' ');
         buf.append("multiset").append('=').append(getMultiset()).append(',').append(' ');
         buf.append("sortedMultiset").append('=').append(getSortedMultiset()).append(',').append(' ');
+        buf.append("collectionInterface").append('=').append(getCollectionInterface()).append(',').append(' ');
+        buf.append("listInterface").append('=').append(getListInterface()).append(',').append(' ');
+        buf.append("setInterface").append('=').append(getSetInterface()).append(',').append(' ');
+        buf.append("sortedSetInterface").append('=').append(getSortedSetInterface()).append(',').append(' ');
+        buf.append("mapInterface").append('=').append(getMapInterface()).append(',').append(' ');
+        buf.append("sortedMapInterface").append('=').append(getSortedMapInterface()).append(',').append(' ');
         buf.append("biMapInterface").append('=').append(getBiMapInterface()).append(',').append(' ');
         buf.append("multimapInterface").append('=').append(getMultimapInterface()).append(',').append(' ');
         buf.append("listMultimapInterface").append('=').append(getListMultimapInterface()).append(',').append(' ');
@@ -565,6 +659,42 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         private final MetaProperty<ImmutableSortedMultiset<T>> sortedMultiset = DirectMetaProperty.ofImmutable(
                 this, "sortedMultiset", ImmGuava.class, (Class) ImmutableSortedMultiset.class);
         /**
+         * The meta-property for the {@code collectionInterface} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<Collection<T>> collectionInterface = DirectMetaProperty.ofImmutable(
+                this, "collectionInterface", ImmGuava.class, (Class) Collection.class);
+        /**
+         * The meta-property for the {@code listInterface} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<List<T>> listInterface = DirectMetaProperty.ofImmutable(
+                this, "listInterface", ImmGuava.class, (Class) List.class);
+        /**
+         * The meta-property for the {@code setInterface} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<Set<T>> setInterface = DirectMetaProperty.ofImmutable(
+                this, "setInterface", ImmGuava.class, (Class) Set.class);
+        /**
+         * The meta-property for the {@code sortedSetInterface} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<SortedSet<T>> sortedSetInterface = DirectMetaProperty.ofImmutable(
+                this, "sortedSetInterface", ImmGuava.class, (Class) SortedSet.class);
+        /**
+         * The meta-property for the {@code mapInterface} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<Map<T, String>> mapInterface = DirectMetaProperty.ofImmutable(
+                this, "mapInterface", ImmGuava.class, (Class) Map.class);
+        /**
+         * The meta-property for the {@code sortedMapInterface} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<SortedMap<T, String>> sortedMapInterface = DirectMetaProperty.ofImmutable(
+                this, "sortedMapInterface", ImmGuava.class, (Class) SortedMap.class);
+        /**
          * The meta-property for the {@code biMapInterface} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -617,6 +747,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                 "setMultimap",
                 "multiset",
                 "sortedMultiset",
+                "collectionInterface",
+                "listInterface",
+                "setInterface",
+                "sortedSetInterface",
+                "mapInterface",
+                "sortedMapInterface",
                 "biMapInterface",
                 "multimapInterface",
                 "listMultimapInterface",
@@ -657,6 +793,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     return multiset;
                 case 1018567270:  // sortedMultiset
                     return sortedMultiset;
+                case 420048955:  // collectionInterface
+                    return collectionInterface;
+                case -259084741:  // listInterface
+                    return listInterface;
+                case 2042011383:  // setInterface
+                    return setInterface;
+                case 1019335252:  // sortedSetInterface
+                    return sortedSetInterface;
+                case 651439933:  // mapInterface
+                    return mapInterface;
+                case -371236198:  // sortedMapInterface
+                    return sortedMapInterface;
                 case 2068077860:  // biMapInterface
                     return biMapInterface;
                 case -1415579914:  // multimapInterface
@@ -787,6 +935,54 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
+         * The meta-property for the {@code collectionInterface} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Collection<T>> collectionInterface() {
+            return collectionInterface;
+        }
+
+        /**
+         * The meta-property for the {@code listInterface} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<List<T>> listInterface() {
+            return listInterface;
+        }
+
+        /**
+         * The meta-property for the {@code setInterface} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Set<T>> setInterface() {
+            return setInterface;
+        }
+
+        /**
+         * The meta-property for the {@code sortedSetInterface} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<SortedSet<T>> sortedSetInterface() {
+            return sortedSetInterface;
+        }
+
+        /**
+         * The meta-property for the {@code mapInterface} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Map<T, String>> mapInterface() {
+            return mapInterface;
+        }
+
+        /**
+         * The meta-property for the {@code sortedMapInterface} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<SortedMap<T, String>> sortedMapInterface() {
+            return sortedMapInterface;
+        }
+
+        /**
          * The meta-property for the {@code biMapInterface} property.
          * @return the meta-property, not null
          */
@@ -862,6 +1058,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     return ((ImmGuava<?>) bean).getMultiset();
                 case 1018567270:  // sortedMultiset
                     return ((ImmGuava<?>) bean).getSortedMultiset();
+                case 420048955:  // collectionInterface
+                    return ((ImmGuava<?>) bean).getCollectionInterface();
+                case -259084741:  // listInterface
+                    return ((ImmGuava<?>) bean).getListInterface();
+                case 2042011383:  // setInterface
+                    return ((ImmGuava<?>) bean).getSetInterface();
+                case 1019335252:  // sortedSetInterface
+                    return ((ImmGuava<?>) bean).getSortedSetInterface();
+                case 651439933:  // mapInterface
+                    return ((ImmGuava<?>) bean).getMapInterface();
+                case -371236198:  // sortedMapInterface
+                    return ((ImmGuava<?>) bean).getSortedMapInterface();
                 case 2068077860:  // biMapInterface
                     return ((ImmGuava<?>) bean).getBiMapInterface();
                 case -1415579914:  // multimapInterface
@@ -896,24 +1104,30 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
      */
     public static final class Builder<T extends Comparable<T>> extends DirectFieldsBeanBuilder<ImmGuava<T>> {
 
-        private Collection<T> collection = new ArrayList<T>();
-        private List<T> list = new ArrayList<T>();
-        private Set<T> set = new HashSet<T>();
-        private SortedSet<T> sortedSet = new TreeSet<T>();
-        private Map<T, String> map = new HashMap<T, String>();
-        private SortedMap<T, String> sortedMap = new TreeMap<T, String>();
-        private BiMap<T, String> biMap = HashBiMap.create();
-        private Multimap<T, String> multimap = HashMultimap.create();
-        private ListMultimap<T, String> listMultimap = ArrayListMultimap.create();
-        private SetMultimap<T, String> setMultimap = HashMultimap.create();
-        private Multiset<T> multiset = HashMultiset.create();
-        private SortedMultiset<T> sortedMultiset = TreeMultiset.create();
-        private BiMap<T, String> biMapInterface = HashBiMap.create();
-        private Multimap<T, String> multimapInterface = ArrayListMultimap.create();
-        private ListMultimap<T, String> listMultimapInterface = ArrayListMultimap.create();
-        private SetMultimap<T, String> setMultimapInterface = HashMultimap.create();
-        private Multiset<T> multisetInterface = HashMultiset.create();
-        private SortedMultiset<T> sortedMultisetInterface = TreeMultiset.create();
+        private Collection<T> collection = ImmutableList.of();
+        private List<T> list = ImmutableList.of();
+        private Set<T> set = ImmutableSet.of();
+        private SortedSet<T> sortedSet = ImmutableSortedSet.of();
+        private Map<T, String> map = ImmutableMap.of();
+        private SortedMap<T, String> sortedMap = ImmutableSortedMap.of();
+        private BiMap<T, String> biMap = ImmutableBiMap.of();
+        private Multimap<T, String> multimap = ImmutableMultimap.of();
+        private ListMultimap<T, String> listMultimap = ImmutableListMultimap.of();
+        private SetMultimap<T, String> setMultimap = ImmutableSetMultimap.of();
+        private Multiset<T> multiset = ImmutableMultiset.of();
+        private SortedMultiset<T> sortedMultiset = ImmutableSortedMultiset.of();
+        private Collection<T> collectionInterface = ImmutableList.of();
+        private List<T> listInterface = ImmutableList.of();
+        private Set<T> setInterface = ImmutableSet.of();
+        private SortedSet<T> sortedSetInterface = ImmutableSortedSet.of();
+        private Map<T, String> mapInterface = ImmutableMap.of();
+        private SortedMap<T, String> sortedMapInterface = ImmutableSortedMap.of();
+        private BiMap<T, String> biMapInterface = ImmutableBiMap.of();
+        private Multimap<T, String> multimapInterface = ImmutableMultimap.of();
+        private ListMultimap<T, String> listMultimapInterface = ImmutableListMultimap.of();
+        private SetMultimap<T, String> setMultimapInterface = ImmutableSetMultimap.of();
+        private Multiset<T> multisetInterface = ImmutableMultiset.of();
+        private SortedMultiset<T> sortedMultisetInterface = ImmutableSortedMultiset.of();
 
         /**
          * Restricted constructor.
@@ -926,24 +1140,30 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param beanToCopy  the bean to copy from, not null
          */
         private Builder(ImmGuava<T> beanToCopy) {
-            this.collection = new ArrayList<T>(beanToCopy.getCollection());
-            this.list = new ArrayList<T>(beanToCopy.getList());
-            this.set = new HashSet<T>(beanToCopy.getSet());
-            this.sortedSet = new TreeSet<T>(beanToCopy.getSortedSet());
-            this.map = new HashMap<T, String>(beanToCopy.getMap());
-            this.sortedMap = new TreeMap<T, String>(beanToCopy.getSortedMap());
-            this.biMap = HashBiMap.create(beanToCopy.getBiMap());
-            this.multimap = HashMultimap.create(beanToCopy.getMultimap());
-            this.listMultimap = ArrayListMultimap.create(beanToCopy.getListMultimap());
-            this.setMultimap = HashMultimap.create(beanToCopy.getSetMultimap());
-            this.multiset = HashMultiset.create(beanToCopy.getMultiset());
-            this.sortedMultiset = TreeMultiset.create(beanToCopy.getSortedMultiset());
-            this.biMapInterface = HashBiMap.create(beanToCopy.getBiMapInterface());
-            this.multimapInterface = ArrayListMultimap.create(beanToCopy.getMultimapInterface());
-            this.listMultimapInterface = ArrayListMultimap.create(beanToCopy.getListMultimapInterface());
-            this.setMultimapInterface = HashMultimap.create(beanToCopy.getSetMultimapInterface());
-            this.multisetInterface = HashMultiset.create(beanToCopy.getMultisetInterface());
-            this.sortedMultisetInterface = TreeMultiset.create(beanToCopy.getSortedMultisetInterface());
+            this.collection = beanToCopy.getCollection();
+            this.list = beanToCopy.getList();
+            this.set = beanToCopy.getSet();
+            this.sortedSet = beanToCopy.getSortedSet();
+            this.map = beanToCopy.getMap();
+            this.sortedMap = beanToCopy.getSortedMap();
+            this.biMap = beanToCopy.getBiMap();
+            this.multimap = beanToCopy.getMultimap();
+            this.listMultimap = beanToCopy.getListMultimap();
+            this.setMultimap = beanToCopy.getSetMultimap();
+            this.multiset = beanToCopy.getMultiset();
+            this.sortedMultiset = beanToCopy.getSortedMultiset();
+            this.collectionInterface = ImmutableList.copyOf(beanToCopy.getCollectionInterface());
+            this.listInterface = ImmutableList.copyOf(beanToCopy.getListInterface());
+            this.setInterface = ImmutableSet.copyOf(beanToCopy.getSetInterface());
+            this.sortedSetInterface = ImmutableSortedSet.copyOfSorted(beanToCopy.getSortedSetInterface());
+            this.mapInterface = ImmutableMap.copyOf(beanToCopy.getMapInterface());
+            this.sortedMapInterface = ImmutableSortedMap.copyOfSorted(beanToCopy.getSortedMapInterface());
+            this.biMapInterface = ImmutableBiMap.copyOf(beanToCopy.getBiMapInterface());
+            this.multimapInterface = ImmutableMultimap.copyOf(beanToCopy.getMultimapInterface());
+            this.listMultimapInterface = ImmutableListMultimap.copyOf(beanToCopy.getListMultimapInterface());
+            this.setMultimapInterface = ImmutableSetMultimap.copyOf(beanToCopy.getSetMultimapInterface());
+            this.multisetInterface = ImmutableMultiset.copyOf(beanToCopy.getMultisetInterface());
+            this.sortedMultisetInterface = ImmutableSortedMultiset.copyOfSorted(beanToCopy.getSortedMultisetInterface());
         }
 
         //-----------------------------------------------------------------------
@@ -974,6 +1194,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     return multiset;
                 case 1018567270:  // sortedMultiset
                     return sortedMultiset;
+                case 420048955:  // collectionInterface
+                    return collectionInterface;
+                case -259084741:  // listInterface
+                    return listInterface;
+                case 2042011383:  // setInterface
+                    return setInterface;
+                case 1019335252:  // sortedSetInterface
+                    return sortedSetInterface;
+                case 651439933:  // mapInterface
+                    return mapInterface;
+                case -371236198:  // sortedMapInterface
+                    return sortedMapInterface;
                 case 2068077860:  // biMapInterface
                     return biMapInterface;
                 case -1415579914:  // multimapInterface
@@ -1030,6 +1262,24 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     break;
                 case 1018567270:  // sortedMultiset
                     this.sortedMultiset = (SortedMultiset<T>) newValue;
+                    break;
+                case 420048955:  // collectionInterface
+                    this.collectionInterface = (Collection<T>) newValue;
+                    break;
+                case -259084741:  // listInterface
+                    this.listInterface = (List<T>) newValue;
+                    break;
+                case 2042011383:  // setInterface
+                    this.setInterface = (Set<T>) newValue;
+                    break;
+                case 1019335252:  // sortedSetInterface
+                    this.sortedSetInterface = (SortedSet<T>) newValue;
+                    break;
+                case 651439933:  // mapInterface
+                    this.mapInterface = (Map<T, String>) newValue;
+                    break;
+                case -371236198:  // sortedMapInterface
+                    this.sortedMapInterface = (SortedMap<T, String>) newValue;
                     break;
                 case 2068077860:  // biMapInterface
                     this.biMapInterface = (BiMap<T, String>) newValue;
@@ -1094,6 +1344,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     setMultimap,
                     multiset,
                     sortedMultiset,
+                    collectionInterface,
+                    listInterface,
+                    setInterface,
+                    sortedSetInterface,
+                    mapInterface,
+                    sortedMapInterface,
                     biMapInterface,
                     multimapInterface,
                     listMultimapInterface,
@@ -1276,6 +1532,112 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code collectionInterface} property in the builder.
+         * @param collectionInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> collectionInterface(Collection<T> collectionInterface) {
+            JodaBeanUtils.notNull(collectionInterface, "collectionInterface");
+            this.collectionInterface = collectionInterface;
+            return this;
+        }
+
+        /**
+         * Sets the {@code collectionInterface} property in the builder
+         * from an array of objects.
+         * @param collectionInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> collectionInterface(T... collectionInterface) {
+            return collectionInterface(Arrays.asList(collectionInterface));
+        }
+
+        /**
+         * Sets the {@code listInterface} property in the builder.
+         * @param listInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listInterface(List<T> listInterface) {
+            JodaBeanUtils.notNull(listInterface, "listInterface");
+            this.listInterface = listInterface;
+            return this;
+        }
+
+        /**
+         * Sets the {@code listInterface} property in the builder
+         * from an array of objects.
+         * @param listInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listInterface(T... listInterface) {
+            return listInterface(Arrays.asList(listInterface));
+        }
+
+        /**
+         * Sets the {@code setInterface} property in the builder.
+         * @param setInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setInterface(Set<T> setInterface) {
+            JodaBeanUtils.notNull(setInterface, "setInterface");
+            this.setInterface = setInterface;
+            return this;
+        }
+
+        /**
+         * Sets the {@code setInterface} property in the builder
+         * from an array of objects.
+         * @param setInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setInterface(T... setInterface) {
+            return setInterface(new LinkedHashSet<T>(Arrays.asList(setInterface)));
+        }
+
+        /**
+         * Sets the {@code sortedSetInterface} property in the builder.
+         * @param sortedSetInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> sortedSetInterface(SortedSet<T> sortedSetInterface) {
+            JodaBeanUtils.notNull(sortedSetInterface, "sortedSetInterface");
+            this.sortedSetInterface = sortedSetInterface;
+            return this;
+        }
+
+        /**
+         * Sets the {@code sortedSetInterface} property in the builder
+         * from an array of objects.
+         * @param sortedSetInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> sortedSetInterface(T... sortedSetInterface) {
+            return sortedSetInterface(new TreeSet<T>(Arrays.asList(sortedSetInterface)));
+        }
+
+        /**
+         * Sets the {@code mapInterface} property in the builder.
+         * @param mapInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> mapInterface(Map<T, String> mapInterface) {
+            JodaBeanUtils.notNull(mapInterface, "mapInterface");
+            this.mapInterface = mapInterface;
+            return this;
+        }
+
+        /**
+         * Sets the {@code sortedMapInterface} property in the builder.
+         * @param sortedMapInterface  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> sortedMapInterface(SortedMap<T, String> sortedMapInterface) {
+            JodaBeanUtils.notNull(sortedMapInterface, "sortedMapInterface");
+            this.sortedMapInterface = sortedMapInterface;
+            return this;
+        }
+
+        /**
          * Sets the {@code biMapInterface} property in the builder.
          * @param biMapInterface  the new value, not null
          * @return this, for chaining, not null
@@ -1344,7 +1706,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(608);
+            StringBuilder buf = new StringBuilder(800);
             buf.append("ImmGuava.Builder{");
             buf.append("collection").append('=').append(JodaBeanUtils.toString(collection)).append(',').append(' ');
             buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
@@ -1358,6 +1720,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             buf.append("setMultimap").append('=').append(JodaBeanUtils.toString(setMultimap)).append(',').append(' ');
             buf.append("multiset").append('=').append(JodaBeanUtils.toString(multiset)).append(',').append(' ');
             buf.append("sortedMultiset").append('=').append(JodaBeanUtils.toString(sortedMultiset)).append(',').append(' ');
+            buf.append("collectionInterface").append('=').append(JodaBeanUtils.toString(collectionInterface)).append(',').append(' ');
+            buf.append("listInterface").append('=').append(JodaBeanUtils.toString(listInterface)).append(',').append(' ');
+            buf.append("setInterface").append('=').append(JodaBeanUtils.toString(setInterface)).append(',').append(' ');
+            buf.append("sortedSetInterface").append('=').append(JodaBeanUtils.toString(sortedSetInterface)).append(',').append(' ');
+            buf.append("mapInterface").append('=').append(JodaBeanUtils.toString(mapInterface)).append(',').append(' ');
+            buf.append("sortedMapInterface").append('=').append(JodaBeanUtils.toString(sortedMapInterface)).append(',').append(' ');
             buf.append("biMapInterface").append('=').append(JodaBeanUtils.toString(biMapInterface)).append(',').append(' ');
             buf.append("multimapInterface").append('=').append(JodaBeanUtils.toString(multimapInterface)).append(',').append(' ');
             buf.append("listMultimapInterface").append('=').append(JodaBeanUtils.toString(listMultimapInterface)).append(',').append(' ');
