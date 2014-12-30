@@ -275,7 +275,8 @@ public class BeanCodeGen {
         List<String> content = new ArrayList<String>(original);
         BeanGen gen;
         try {
-            gen = new BeanGen(file, content, config);
+            BeanParser parser = new BeanParser(file, content, config);
+            gen = parser.parse();
         } catch (BeanCodeGenException ex) {
             throw ex;
         } catch (Exception ex) {
