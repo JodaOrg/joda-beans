@@ -15,16 +15,13 @@
  */
 package org.joda.beans.gen;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
@@ -1377,7 +1374,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> collection(T... collection) {
-            return collection(Arrays.asList(collection));
+            return collection(ImmutableList.copyOf(collection));
         }
 
         /**
@@ -1398,7 +1395,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> list(T... list) {
-            return list(Arrays.asList(list));
+            return list(ImmutableList.copyOf(list));
         }
 
         /**
@@ -1419,7 +1416,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> set(T... set) {
-            return set(new LinkedHashSet<T>(Arrays.asList(set)));
+            return set(ImmutableSet.copyOf(set));
         }
 
         /**
@@ -1440,7 +1437,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> sortedSet(T... sortedSet) {
-            return sortedSet(new TreeSet<T>(Arrays.asList(sortedSet)));
+            return sortedSet(ImmutableSortedSet.copyOf(sortedSet));
         }
 
         /**
@@ -1549,7 +1546,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> collectionInterface(T... collectionInterface) {
-            return collectionInterface(Arrays.asList(collectionInterface));
+            return collectionInterface(ImmutableList.copyOf(collectionInterface));
         }
 
         /**
@@ -1570,7 +1567,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> listInterface(T... listInterface) {
-            return listInterface(Arrays.asList(listInterface));
+            return listInterface(ImmutableList.copyOf(listInterface));
         }
 
         /**
@@ -1591,7 +1588,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> setInterface(T... setInterface) {
-            return setInterface(new LinkedHashSet<T>(Arrays.asList(setInterface)));
+            return setInterface(ImmutableSet.copyOf(setInterface));
         }
 
         /**
@@ -1612,7 +1609,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder<T> sortedSetInterface(T... sortedSetInterface) {
-            return sortedSetInterface(new TreeSet<T>(Arrays.asList(sortedSetInterface)));
+            return sortedSetInterface(ImmutableSortedSet.copyOf(sortedSetInterface));
         }
 
         /**

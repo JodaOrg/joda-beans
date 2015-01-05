@@ -15,7 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -532,7 +531,7 @@ public final class ImmTreeNode implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder childList(ImmTreeNode... childList) {
-            return childList(Arrays.asList(childList));
+            return childList(ImmutableList.copyOf(childList));
         }
 
         //-----------------------------------------------------------------------

@@ -15,7 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -810,7 +809,7 @@ public final class ImmPerson implements ImmutableBean {
          * @return this, for chaining, not null
          */
         public Builder addressList(Address... addressList) {
-            return addressList(Arrays.asList(addressList));
+            return addressList(ImmutableList.copyOf(addressList));
         }
 
         /**

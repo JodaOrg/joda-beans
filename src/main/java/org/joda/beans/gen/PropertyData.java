@@ -929,4 +929,13 @@ class PropertyData {
         return "";
     }
 
+    /**
+     * Gets the varargs code.
+     * 
+     * @return the varargs code, null if not applicable
+     */
+    public String getVarArgsCode() {
+        return config.getImmutableVarArgs().get(getTypeRaw());
+    }
+
 }

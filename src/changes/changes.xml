@@ -9,12 +9,17 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.5" date="SNAPSHOT" description="v1.5">
-      <action>
+      <action dev="jodastephen" type="fix">
+         Optimise internals of generated builders to use immutable collections.
+         This avoids unnecessary copying and object creation.
+         Fixes #96.
+      </action>
+      <action dev="jodastephen" type="add">
          Provide details of files changed by code generation.
          This allows tooling, such as the maven plugin, to be enhanced.
          Fixes #99.
       </action>
-      <action>
+      <action dev="jodastephen" type="add">
          Standard format for exceptions in code generation.
          Dedicated exception type allows tooling, such as the maven plugin, to be enhanced.
          Fixes #98.

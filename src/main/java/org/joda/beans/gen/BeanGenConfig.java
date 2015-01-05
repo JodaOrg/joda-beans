@@ -57,6 +57,10 @@ public final class BeanGenConfig {
      */
     private final Set<String> invalidImmutableTypes;
     /**
+     * The immutable varargs code.
+     */
+    private final Map<String, String> immutableVarArgs;
+    /**
      * The immutable get clones.
      */
     private final Map<String, String> immutableGetClones;
@@ -121,6 +125,7 @@ public final class BeanGenConfig {
         Map<String, String> immutableCopiers = new HashMap<String, String>();
         Map<String, String> mutableCopiers = new HashMap<String, String>();
         Map<String, String> immutableGetClones = new HashMap<String, String>();
+        Map<String, String> immutableVarArgs = new HashMap<String, String>();
         Map<String, String> builderInits = new HashMap<String, String>();
         Map<String, String> builderTypes = new HashMap<String, String>();
         Set<String> invalidImmutableTypes = new HashSet<String>();
@@ -184,6 +189,21 @@ public final class BeanGenConfig {
                     }
                     immutableGetClones.put(key, value);
                 }
+            } else if (line.equals("[immutable.builder.varargs]")) {
+                while (iterator.hasNext()) {
+                    line = iterator.next().trim();
+                    if (line.startsWith("[")) {
+                        iterator.previous();
+                        break;
+                    }
+                    int pos = line.indexOf('=');
+                    if (pos <= 0) {
+                        throw new IllegalArgumentException("Invalid ini file line: " + line);
+                    }
+                    String key = line.substring(0, pos).trim();
+                    String value = line.substring(pos + 1).trim();
+                    immutableVarArgs.put(key, value);
+                }
             } else if (line.equals("[immutable.builder.type]")) {
                 while (iterator.hasNext()) {
                     line = iterator.next().trim();
@@ -237,7 +257,7 @@ public final class BeanGenConfig {
             }
             copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier));
         }
-        return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes, immutableGetClones);
+        return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes, immutableVarArgs, immutableGetClones);
     }
 
     //-----------------------------------------------------------------------
@@ -245,20 +265,24 @@ public final class BeanGenConfig {
      * Creates an instance.
      * 
      * @param copyGenerators  the copy generators, not null
-     * @param invalidImmutableTypes  the invalid immutable types, not null
-     * @param builderTypes  the builder types, not null
      * @param builderGenerators  the builder generators, not null
+     * @param builderTypes  the builder types, not null
+     * @param invalidImmutableTypes  the invalid immutable types, not null
+     * @param immutableVarArgs  the varargs code
+     * @param immutableGetClones  the get clone code
      */
     private BeanGenConfig(
             Map<String, CopyGen> copyGenerators,
             Map<String, BuilderGen> builderGenerators,
             Map<String, String> builderTypes,
             Set<String> invalidImmutableTypes,
+            Map<String, String> immutableVarArgs,
             Map<String, String> immutableGetClones) {
         this.copyGenerators = copyGenerators;
         this.builderGenerators = builderGenerators;
         this.builderTypes = builderTypes;
         this.invalidImmutableTypes = invalidImmutableTypes;
+        this.immutableVarArgs = immutableVarArgs;
         this.immutableGetClones = immutableGetClones;
     }
 
@@ -297,6 +321,15 @@ public final class BeanGenConfig {
      */
     public Set<String> getInvalidImmutableTypes() {
         return invalidImmutableTypes;
+    }
+
+    /**
+     * The builder varargs code.
+     * 
+     * @return the varargs, not null
+     */
+    public Map<String, String> getImmutableVarArgs() {
+        return immutableVarArgs;
     }
 
     /**

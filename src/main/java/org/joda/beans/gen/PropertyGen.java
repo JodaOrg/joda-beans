@@ -17,9 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
@@ -242,9 +240,7 @@ class PropertyGen {
         list.add("\t\t\treturn this;");
         list.add("\t\t}");
         list.add("");
-        if (data.isCollectionType()) {
-            generateBuilderSetCollectionMethod(list);
-        }
+        generateBuilderSetCollectionMethod(list);
         return list;
     }
 
@@ -253,11 +249,15 @@ class PropertyGen {
     }
 
     private void generateBuilderSetCollectionMethod(List<String> list) {
+        String code = data.getVarArgsCode();
+        if (code == null) {
+            return;
+        }
         // do not generate for List<List<Bar>> type elements, needs @SafeVarargs
         if (data.getTypeGenericsSimple().contains("<") || data.getTypeGenericsSimple().equals("?")) {
             return;
         }
-        // generate based on an array
+        // generate based on varargs
         list.add("\t\t/**");
         list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder");
         list.add("\t\t * from an array of objects.");
@@ -276,20 +276,12 @@ class PropertyGen {
         }
         list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
                 "(" + data.getTypeGenericsSimple() + "... " + data.getPropertyName() + ") {");
-        if (data.isSortedSetType()) {
-            data.getBean().ensureImport(TreeSet.class);
+        if (code.contains("Arrays.asList")) {
             data.getBean().ensureImport(Arrays.class);
-            list.add("\t\t\treturn " + data.getPropertyName() + "(new TreeSet<" + data.getTypeGenericsSimple() +
-                    ">(Arrays.asList(" + data.getPropertyName() + ")));");
-        } else if (data.isSetType()) {
-            data.getBean().ensureImport(LinkedHashSet.class);
-            data.getBean().ensureImport(Arrays.class);
-            list.add("\t\t\treturn " + data.getPropertyName() + "(new LinkedHashSet<" + data.getTypeGenericsSimple() +
-                    ">(Arrays.asList(" + data.getPropertyName() + ")));");
-        } else {
-            data.getBean().ensureImport(Arrays.class);
-            list.add("\t\t\treturn " + data.getPropertyName() + "(Arrays.asList(" + data.getPropertyName() + "));");
         }
+        code = code.replace("$value", data.getPropertyName());
+        code = code.replace("<>", data.getTypeGenerics());
+        list.add("\t\t\treturn " + data.getPropertyName() + "(" + code + ");");
         list.add("\t\t}");
         list.add("");
     }
