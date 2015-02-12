@@ -62,6 +62,10 @@ public abstract class DirectMetaBean extends BasicMetaBean {
      * @throws NoSuchElementException if the property name is invalid
      */
     protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
+        // used to enable 100% test coverage in beans
+        if (quiet) {
+            return null;
+        }
         throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
@@ -75,6 +79,10 @@ public abstract class DirectMetaBean extends BasicMetaBean {
      * @throws NoSuchElementException if the property name is invalid
      */
     protected void propertySet(Bean bean, String propertyName, Object value, boolean quiet) {
+        // used to enable 100% test coverage in beans
+        if (quiet) {
+            return;
+        }
         throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 

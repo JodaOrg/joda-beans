@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6" date="SNAPSHOT" description="v1.6">
       <action dev="jodastephen" type="fix">
+         Enable better test coverage.
+         Fixes #102.
+      </action>
+      <action dev="jodastephen" type="fix">
          Optimise JodaBeanUtils for hotspot inlining.
          Fixes #101.
       </action>
