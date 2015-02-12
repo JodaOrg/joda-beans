@@ -52,6 +52,15 @@ import com.google.common.collect.ImmutableMultiset;
 public class TestJodaBeanUtils {
 
     //-----------------------------------------------------------------------
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registerMetaBean() {
+        // register once OK
+        assertNotNull(ImmPerson.meta());
+        // register second time not OK
+        JodaBeanUtils.registerMetaBean(ImmPerson.meta());
+    }
+
+    //-----------------------------------------------------------------------
     public void test_notNull_ok() {
         JodaBeanUtils.notNull("", "name");
     }
@@ -208,6 +217,25 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    public void test_equal_MixedArrays() {
+        byte[] b = new byte[] {1, 2, 3};
+        short[] s = new short[] {1, 2, 3};
+        int[] i = new int[] {1, 2, 3};
+        long[] l = new long[] {1, 2, 4};
+        boolean[] bl = new boolean[] {true, false, true};
+        char[] c = new char[] {'1', '2', '3'};
+        float[] f = new float[] {1f, 2f, 3f};
+        double[] d = new double[] {1d, 2d, 3d};
+        assertEquals(JodaBeanUtils.equal(b, i), false);
+        assertEquals(JodaBeanUtils.equal(s, i), false);
+        assertEquals(JodaBeanUtils.equal(i, l), false);
+        assertEquals(JodaBeanUtils.equal(l, i), false);
+        assertEquals(JodaBeanUtils.equal(bl, i), false);
+        assertEquals(JodaBeanUtils.equal(c, i), false);
+        assertEquals(JodaBeanUtils.equal(f, i), false);
+        assertEquals(JodaBeanUtils.equal(d, i), false);
+    }
+
     public void test_equal_LongArray() {
         long[] a1 = new long[] {1, 2, 3};
         long[] a2 = new long[] {1, 2, 3};
@@ -285,10 +313,28 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    public void test_equal_floats() {
+        assertEquals(JodaBeanUtils.equal(1.01f, 1.01f), true);
+        assertEquals(JodaBeanUtils.equal(1.0f, 1.2f), false);
+    }
+
+    public void test_equal_doubles() {
+        assertEquals(JodaBeanUtils.equal(1.01d, 1.01d), true);
+        assertEquals(JodaBeanUtils.equal(1.0d, 1.2d), false);
+    }
+
     //-----------------------------------------------------------------------
     public void test_hashCode_Object() {
         assertEquals(JodaBeanUtils.hashCode("A"), "A".hashCode());
         assertEquals(JodaBeanUtils.hashCode(null), 0);
+        assertEquals(JodaBeanUtils.hashCode(new byte[] {1}), Arrays.hashCode(new byte[] {1}));
+        assertEquals(JodaBeanUtils.hashCode(new short[] {1}), Arrays.hashCode(new short[] {1}));
+        assertEquals(JodaBeanUtils.hashCode(new int[] {1}), Arrays.hashCode(new int[] {1}));
+        assertEquals(JodaBeanUtils.hashCode(new long[] {1}), Arrays.hashCode(new long[] {1}));
+        assertEquals(JodaBeanUtils.hashCode(new boolean[] {true}), Arrays.hashCode(new boolean[] {true}));
+        assertEquals(JodaBeanUtils.hashCode(new char[] {'1'}), Arrays.hashCode(new char[] {'1'}));
+        assertEquals(JodaBeanUtils.hashCode(new float[] {1f}), Arrays.hashCode(new float[] {1f}));
+        assertEquals(JodaBeanUtils.hashCode(new double[] {1d}), Arrays.hashCode(new double[] {1d}));
     }
 
     //-----------------------------------------------------------------------

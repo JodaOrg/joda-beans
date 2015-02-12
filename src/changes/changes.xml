@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.6" date="SNAPSHOT" description="v1.6">
+      <action dev="jodastephen" type="fix">
+         Optimise JodaBeanUtils for hotspot inlining.
+         Fixes #101.
+      </action>
+    </release>
     <release version="1.5" date="2015-01-05" description="v1.5">
       <action dev="jodastephen" type="fix">
          Optimise internals of generated builders to use immutable collections.

@@ -107,36 +107,42 @@ public final class JodaBeanUtils {
     public static MetaBean metaBean(Class<?> cls) {
         MetaBean meta = metaBeans.get(cls);
         if (meta == null) {
-            // handle dynamic beans
-            if (cls == FlexiBean.class) {
-                return new FlexiBean().metaBean();
-            } else if (cls == MapBean.class) {
-                return new MapBean().metaBean();
-            } else if (DynamicBean.class.isAssignableFrom(cls)) {
-                try {
-                    return cls.asSubclass(DynamicBean.class).newInstance().metaBean();
-                } catch (InstantiationException ex) {
-                    throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
-                } catch (IllegalAccessException ex) {
-                    throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
-                }
-            }
-            // a Class can be loaded without being initialized
-            // in this state, the static initializers have not run, and thus the metabean not registered
-            // here initialization is forced to handle that scenario
+            return metaBeanLookup(cls);
+        }
+        return meta;
+    }
+
+    // lookup the MetaBean outside the fast path, aiding hotspot inlining
+    private static MetaBean metaBeanLookup(Class<?> cls) {
+        // handle dynamic beans
+        if (cls == FlexiBean.class) {
+            return new FlexiBean().metaBean();
+        } else if (cls == MapBean.class) {
+            return new MapBean().metaBean();
+        } else if (DynamicBean.class.isAssignableFrom(cls)) {
             try {
-                cls = Class.forName(cls.getName(), true, cls.getClassLoader());
-            } catch (ClassNotFoundException ex) {
-                // should be impossible
-                throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
-            } catch (Error ex) {
-                // should be impossible
-                throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+                return cls.asSubclass(DynamicBean.class).newInstance().metaBean();
+            } catch (InstantiationException ex) {
+                throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
+            } catch (IllegalAccessException ex) {
+                throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
             }
-            meta = metaBeans.get(cls);
-            if (meta == null) {
-                throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
-            }
+        }
+        // a Class can be loaded without being initialized
+        // in this state, the static initializers have not run, and thus the metabean not registered
+        // here initialization is forced to handle that scenario
+        try {
+            cls = Class.forName(cls.getName(), true, cls.getClassLoader());
+        } catch (ClassNotFoundException ex) {
+            // should be impossible
+            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+        } catch (Error ex) {
+            // should be impossible
+            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
+        }
+        MetaBean meta = metaBeans.get(cls);
+        if (meta == null) {
+            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
         }
         return meta;
     }
@@ -185,30 +191,37 @@ public final class JodaBeanUtils {
         if (obj1 == null || obj2 == null) {
             return false;
         }
-        if (obj1.getClass().isArray() && obj1.getClass() == obj2.getClass()) {
-            if (obj1 instanceof Object[] && obj2 instanceof Object[]) {
-                return Arrays.deepEquals((Object[]) obj1, (Object[]) obj2);
-            } else if (obj1 instanceof int[] && obj2 instanceof int[]) {
-                return Arrays.equals((int[]) obj1, (int[]) obj2);
-            } else if (obj1 instanceof long[] && obj2 instanceof long[]) {
-                return Arrays.equals((long[]) obj1, (long[]) obj2);
-            } else if (obj1 instanceof byte[] && obj2 instanceof byte[]) {
-                return Arrays.equals((byte[]) obj1, (byte[]) obj2);
-            } else if (obj1 instanceof double[] && obj2 instanceof double[]) {
-                return Arrays.equals((double[]) obj1, (double[]) obj2);
-            } else if (obj1 instanceof float[] && obj2 instanceof float[]) {
-                return Arrays.equals((float[]) obj1, (float[]) obj2);
-            } else if (obj1 instanceof char[] && obj2 instanceof char[]) {
-                return Arrays.equals((char[]) obj1, (char[]) obj2);
-            } else if (obj1 instanceof short[] && obj2 instanceof short[]) {
-                return Arrays.equals((short[]) obj1, (short[]) obj2);
-            } else if (obj1 instanceof boolean[] && obj2 instanceof boolean[]) {
-                return Arrays.equals((boolean[]) obj1, (boolean[]) obj2);
-            }
+        if (obj1.getClass().isArray()) {
+            return equalsArray(obj1, obj2);
         }
         // this does not handle arrays embedded in objects, such as in lists/maps
         // but you shouldn't use arrays like that, should you?
         return obj1.equals(obj2);
+    }
+
+    // extracted from equal(Object,Object) to aid hotspot inlining
+    private static boolean equalsArray(Object obj1, Object obj2) {
+        if (obj1 instanceof Object[] && obj2 instanceof Object[] && obj1.getClass() == obj2.getClass()) {
+            return Arrays.deepEquals((Object[]) obj1, (Object[]) obj2);
+        } else if (obj1 instanceof int[] && obj2 instanceof int[]) {
+            return Arrays.equals((int[]) obj1, (int[]) obj2);
+        } else if (obj1 instanceof long[] && obj2 instanceof long[]) {
+            return Arrays.equals((long[]) obj1, (long[]) obj2);
+        } else if (obj1 instanceof byte[] && obj2 instanceof byte[]) {
+            return Arrays.equals((byte[]) obj1, (byte[]) obj2);
+        } else if (obj1 instanceof double[] && obj2 instanceof double[]) {
+            return Arrays.equals((double[]) obj1, (double[]) obj2);
+        } else if (obj1 instanceof float[] && obj2 instanceof float[]) {
+            return Arrays.equals((float[]) obj1, (float[]) obj2);
+        } else if (obj1 instanceof char[] && obj2 instanceof char[]) {
+            return Arrays.equals((char[]) obj1, (char[]) obj2);
+        } else if (obj1 instanceof short[] && obj2 instanceof short[]) {
+            return Arrays.equals((short[]) obj1, (short[]) obj2);
+        } else if (obj1 instanceof boolean[] && obj2 instanceof boolean[]) {
+            return Arrays.equals((boolean[]) obj1, (boolean[]) obj2);
+        }
+        // reachable if obj1 is an array and obj2 is not
+        return false;
     }
 
     /**
@@ -248,26 +261,33 @@ public final class JodaBeanUtils {
             return 0;
         }
         if (obj.getClass().isArray()) {
-            if (obj instanceof Object[]) {
-                return Arrays.deepHashCode((Object[]) obj);
-            } else if (obj instanceof int[]) {
-                return Arrays.hashCode((int[]) obj);
-            } else if (obj instanceof long[]) {
-                return Arrays.hashCode((long[]) obj);
-            } else if (obj instanceof byte[]) {
-                return Arrays.hashCode((byte[]) obj);
-            } else if (obj instanceof double[]) {
-                return Arrays.hashCode((double[]) obj);
-            } else if (obj instanceof float[]) {
-                return Arrays.hashCode((float[]) obj);
-            } else if (obj instanceof char[]) {
-                return Arrays.hashCode((char[]) obj);
-            } else if (obj instanceof short[]) {
-                return Arrays.hashCode((short[]) obj);
-            } else if (obj instanceof boolean[]) {
-                return Arrays.hashCode((boolean[]) obj);
-            }
+            return hashCodeArray(obj);
         }
+        return obj.hashCode();
+    }
+
+    // extracted from hashCode(Object) to aid hotspot inlining
+    private static int hashCodeArray(Object obj) {
+        if (obj instanceof Object[]) {
+            return Arrays.deepHashCode((Object[]) obj);
+        } else if (obj instanceof int[]) {
+            return Arrays.hashCode((int[]) obj);
+        } else if (obj instanceof long[]) {
+            return Arrays.hashCode((long[]) obj);
+        } else if (obj instanceof byte[]) {
+            return Arrays.hashCode((byte[]) obj);
+        } else if (obj instanceof double[]) {
+            return Arrays.hashCode((double[]) obj);
+        } else if (obj instanceof float[]) {
+            return Arrays.hashCode((float[]) obj);
+        } else if (obj instanceof char[]) {
+            return Arrays.hashCode((char[]) obj);
+        } else if (obj instanceof short[]) {
+            return Arrays.hashCode((short[]) obj);
+        } else if (obj instanceof boolean[]) {
+            return Arrays.hashCode((boolean[]) obj);
+        }
+        // unreachable?
         return obj.hashCode();
     }
 
@@ -333,26 +353,33 @@ public final class JodaBeanUtils {
             return "null";
         }
         if (obj.getClass().isArray()) {
-            if (obj instanceof Object[]) {
-                return Arrays.deepToString((Object[]) obj);
-            } else if (obj instanceof int[]) {
-                return Arrays.toString((int[]) obj);
-            } else if (obj instanceof long[]) {
-                return Arrays.toString((long[]) obj);
-            } else if (obj instanceof byte[]) {
-                return Arrays.toString((byte[]) obj);
-            } else if (obj instanceof double[]) {
-                return Arrays.toString((double[]) obj);
-            } else if (obj instanceof float[]) {
-                return Arrays.toString((float[]) obj);
-            } else if (obj instanceof char[]) {
-                return Arrays.toString((char[]) obj);
-            } else if (obj instanceof short[]) {
-                return Arrays.toString((short[]) obj);
-            } else if (obj instanceof boolean[]) {
-                return Arrays.toString((boolean[]) obj);
-            }
+            return toStringArray(obj);
         }
+        return obj.toString();
+    }
+
+    // extracted from toString(Object) to aid hotspot inlining
+    private static String toStringArray(Object obj) {
+        if (obj instanceof Object[]) {
+            return Arrays.deepToString((Object[]) obj);
+        } else if (obj instanceof int[]) {
+            return Arrays.toString((int[]) obj);
+        } else if (obj instanceof long[]) {
+            return Arrays.toString((long[]) obj);
+        } else if (obj instanceof byte[]) {
+            return Arrays.toString((byte[]) obj);
+        } else if (obj instanceof double[]) {
+            return Arrays.toString((double[]) obj);
+        } else if (obj instanceof float[]) {
+            return Arrays.toString((float[]) obj);
+        } else if (obj instanceof char[]) {
+            return Arrays.toString((char[]) obj);
+        } else if (obj instanceof short[]) {
+            return Arrays.toString((short[]) obj);
+        } else if (obj instanceof boolean[]) {
+            return Arrays.toString((boolean[]) obj);
+        }
+        // unreachable?
         return obj.toString();
     }
 
@@ -489,8 +516,13 @@ public final class JodaBeanUtils {
      */
     public static void notNull(Object value, String propertyName) {
         if (value == null) {
-            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be null");
+            throw new IllegalArgumentException(notNullMsg(propertyName));
         }
+    }
+
+    // extracted from notNull(Object,String) to aid hotspot inlining
+    private static String notNullMsg(String propertyName) {
+        return "Argument '" + propertyName + "' must not be null";
     }
 
     /**
@@ -502,8 +534,13 @@ public final class JodaBeanUtils {
      */
     public static void notEmpty(String value, String propertyName) {
         if (value == null || value.length() == 0) {
-            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be empty");
+            throw new IllegalArgumentException(notEmpty(propertyName));
         }
+    }
+
+    // extracted from notEmpty(?,String) to aid hotspot inlining
+    private static String notEmpty(String propertyName) {
+        return "Argument '" + propertyName + "' must not be empty";
     }
 
     /**
@@ -515,7 +552,7 @@ public final class JodaBeanUtils {
      */
     public static void notEmpty(Collection<?> value, String propertyName) {
         if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be empty");
+            throw new IllegalArgumentException(notEmpty(propertyName));
         }
     }
 
@@ -528,7 +565,7 @@ public final class JodaBeanUtils {
      */
     public static void notEmpty(Map<?, ?> value, String propertyName) {
         if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Argument '" + propertyName + "' must not be empty");
+            throw new IllegalArgumentException(notEmpty(propertyName));
         }
     }
 
