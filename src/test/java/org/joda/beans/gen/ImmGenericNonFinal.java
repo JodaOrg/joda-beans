@@ -321,7 +321,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code value} property in the builder.
+         * Sets the name.
          * @param value  the new value, not null
          * @return this, for chaining, not null
          */

@@ -304,7 +304,7 @@ public class SimpleSubPersonWithBuilderNonFinal extends SimplePersonWithBuilderN
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code middleName} property in the builder.
+         * Sets the middle name.
          * @param middleName  the new value
          * @return this, for chaining, not null
          */

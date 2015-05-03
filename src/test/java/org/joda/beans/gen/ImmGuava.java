@@ -1357,7 +1357,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code collection} property in the builder.
+         * Sets the collection.
          * @param collection  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1378,7 +1378,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code list} property in the builder.
+         * Sets the list.
          * @param list  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1399,7 +1399,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code set} property in the builder.
+         * Sets the set.
          * @param set  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1420,7 +1420,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code sortedSet} property in the builder.
+         * Sets the sortedSet.
          * @param sortedSet  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1441,7 +1441,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code map} property in the builder.
+         * Sets the map.
          * @param map  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1452,7 +1452,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code sortedMap} property in the builder.
+         * Sets the sortedMap.
          * @param sortedMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1463,7 +1463,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code biMap} property in the builder.
+         * Sets the biMap.
          * @param biMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1474,7 +1474,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code multimap} property in the builder.
+         * Sets the multimap.
          * @param multimap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1485,7 +1485,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code listMultimap} property in the builder.
+         * Sets the listMultimap.
          * @param listMultimap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1496,7 +1496,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code setMultimap} property in the builder.
+         * Sets the setMultimap.
          * @param setMultimap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1507,7 +1507,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code multiset} property in the builder.
+         * Sets the multiset.
          * @param multiset  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1518,7 +1518,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code sortedMultiset} property in the builder.
+         * Sets the sortedMultiset.
          * @param sortedMultiset  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1529,7 +1529,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code collectionInterface} property in the builder.
+         * Sets the collectionInterface.
          * @param collectionInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1550,7 +1550,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code listInterface} property in the builder.
+         * Sets the listInterface.
          * @param listInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1571,7 +1571,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code setInterface} property in the builder.
+         * Sets the setInterface.
          * @param setInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1592,7 +1592,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code sortedSetInterface} property in the builder.
+         * Sets the sortedSetInterface.
          * @param sortedSetInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1613,7 +1613,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code mapInterface} property in the builder.
+         * Sets the mapInterface.
          * @param mapInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1624,7 +1624,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code sortedMapInterface} property in the builder.
+         * Sets the sortedMapInterface.
          * @param sortedMapInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1635,7 +1635,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code biMapInterface} property in the builder.
+         * Sets the biMapInterface.
          * @param biMapInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1646,7 +1646,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code multimapInterface} property in the builder.
+         * Sets the multimapInterface.
          * @param multimapInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1657,7 +1657,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code listMultimapInterface} property in the builder.
+         * Sets the listMultimapInterface.
          * @param listMultimapInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1668,7 +1668,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code setMultimapInterface} property in the builder.
+         * Sets the setMultimapInterface.
          * @param setMultimapInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1679,7 +1679,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code multisetInterface} property in the builder.
+         * Sets the multisetInterface.
          * @param multisetInterface  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1690,7 +1690,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code sortedMultisetInterface} property in the builder.
+         * Sets the sortedMultisetInterface.
          * @param sortedMultisetInterface  the new value, not null
          * @return this, for chaining, not null
          */

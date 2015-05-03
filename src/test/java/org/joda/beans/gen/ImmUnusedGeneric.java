@@ -308,7 +308,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code _errorMessage} property in the builder.
+         * Sets the _errorMessage.
          * @param _errorMessage  the new value, not null
          * @return this, for chaining, not null
          */

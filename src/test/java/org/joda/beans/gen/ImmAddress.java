@@ -1319,7 +1319,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code number} property in the builder.
+         * Sets the number.
+         * This will be the flat, house number or house name.
          * @param number  the new value
          * @return this, for chaining, not null
          */
@@ -1329,7 +1330,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code street} property in the builder.
+         * Sets the street.
          * @param street  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1340,7 +1341,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code city} property in the builder.
+         * Sets the city.
          * @param city  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1351,7 +1352,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code abstractNumber} property in the builder.
+         * Sets the abstract number.
          * @param abstractNumber  the new value
          * @return this, for chaining, not null
          */
@@ -1361,7 +1362,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code data} property in the builder.
+         * Sets the extra data.
          * @param data  the new value
          * @return this, for chaining, not null
          */
@@ -1371,7 +1372,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code array2d} property in the builder.
+         * Sets the 2D array.
          * @param array2d  the new value
          * @return this, for chaining, not null
          */
@@ -1381,7 +1382,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code owner} property in the builder.
+         * Sets the owner.
          * @param owner  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1392,7 +1393,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code object1} property in the builder.
+         * Sets the object field.
          * @param object1  the new value
          * @return this, for chaining, not null
          */
@@ -1402,7 +1403,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code object2} property in the builder.
+         * Sets the object field.
          * @param object2  the new value
          * @return this, for chaining, not null
          */
@@ -1412,7 +1413,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code risk} property in the builder.
+         * Sets the risk field.
          * @param risk  the new value
          * @return this, for chaining, not null
          */
@@ -1422,7 +1423,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code riskLevel} property in the builder.
+         * Sets the risk level field.
          * @param riskLevel  the new value
          * @return this, for chaining, not null
          */
@@ -1432,7 +1433,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code serializable} property in the builder.
+         * Sets the serializable field.
          * @param serializable  the new value
          * @return this, for chaining, not null
          */
@@ -1442,7 +1443,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code objectInMap} property in the builder.
+         * Sets the object in map field.
          * @param objectInMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1453,7 +1454,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code listInMap} property in the builder.
+         * Sets the list in map field.
          * @param listInMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1464,7 +1465,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code listNumericInMap} property in the builder.
+         * Sets the list in map field.
          * @param listNumericInMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1475,7 +1476,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code listInListInMap} property in the builder.
+         * Sets the list in list in map field.
          * @param listInListInMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1486,7 +1487,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code objectListInListInMap} property in the builder.
+         * Sets the object list in list in map field.
          * @param objectListInListInMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1497,7 +1498,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code mapInMap} property in the builder.
+         * Sets the map in map field.
          * @param mapInMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -1508,7 +1509,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code simpleTable} property in the builder.
+         * Sets the simple table.
          * @param simpleTable  the new value
          * @return this, for chaining, not null
          */
@@ -1518,7 +1519,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code compoundTable} property in the builder.
+         * Sets the compound table.
          * @param compoundTable  the new value
          * @return this, for chaining, not null
          */
@@ -1528,7 +1529,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code sparseGrid} property in the builder.
+         * Sets the grid.
          * @param sparseGrid  the new value
          * @return this, for chaining, not null
          */
@@ -1538,7 +1539,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code denseGrid} property in the builder.
+         * Sets the grid.
          * @param denseGrid  the new value
          * @return this, for chaining, not null
          */
@@ -1548,7 +1549,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the {@code beanBeanMap} property in the builder.
+         * Sets the bean key and bean value field.
          * @param beanBeanMap  the new value, not null
          * @return this, for chaining, not null
          */

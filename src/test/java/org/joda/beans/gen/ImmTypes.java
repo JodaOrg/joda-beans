@@ -400,7 +400,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code listWild} property in the builder.
+         * Sets the listWild.
          * @param listWild  the new value, not null
          * @return this, for chaining, not null
          */
@@ -411,7 +411,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code listWildPublic1} property in the builder.
+         * Sets the listWildPublic1.
          * @param listWildPublic1  the new value, not null
          * @return this, for chaining, not null
          */
@@ -422,7 +422,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code listWildPublic2} property in the builder.
+         * Sets the listWildPublic2.
          * @param listWildPublic2  the new value, not null
          * @return this, for chaining, not null
          */

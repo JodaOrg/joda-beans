@@ -743,7 +743,7 @@ public final class ImmPerson implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code forename} property in the builder.
+         * Sets the forename.
          * @param forename  the new value
          * @return this, for chaining, not null
          */
@@ -753,7 +753,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code surname} property in the builder.
+         * Sets the surname.
          * @param surname  the new value
          * @return this, for chaining, not null
          */
@@ -763,7 +763,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code numberOfCars} property in the builder.
+         * Sets the number of cars.
          * @param numberOfCars  the new value
          * @return this, for chaining, not null
          */
@@ -773,7 +773,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code dateOfBirth} property in the builder.
+         * Sets the date of birth.
          * @param dateOfBirth  the new value
          * @return this, for chaining, not null
          */
@@ -783,7 +783,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code middleNames} property in the builder.
+         * Sets the middle names.
          * @param middleNames  the new value
          * @return this, for chaining, not null
          */
@@ -793,7 +793,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code addressList} property in the builder.
+         * Sets the addressList.
          * @param addressList  the new value
          * @return this, for chaining, not null
          */
@@ -813,7 +813,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code otherAddressMap} property in the builder.
+         * Sets the otherAddressMap.
          * @param otherAddressMap  the new value
          * @return this, for chaining, not null
          */
@@ -823,7 +823,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code addressesList} property in the builder.
+         * Sets the addressesList.
          * @param addressesList  the new value
          * @return this, for chaining, not null
          */
@@ -833,7 +833,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code mainAddress} property in the builder.
+         * Sets the mainAddress.
          * @param mainAddress  the new value
          * @return this, for chaining, not null
          */
@@ -843,7 +843,7 @@ public final class ImmPerson implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code codeCounts} property in the builder.
+         * Sets the codeCounts.
          * @param codeCounts  the new value
          * @return this, for chaining, not null
          */

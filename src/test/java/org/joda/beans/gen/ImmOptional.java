@@ -515,7 +515,7 @@ public final class ImmOptional implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code optString} property in the builder.
+         * Sets the optString.
          * @param optString  the new value, not null
          * @return this, for chaining, not null
          */
@@ -526,7 +526,7 @@ public final class ImmOptional implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code optStringEmpty} property in the builder.
+         * Sets the optStringEmpty.
          * @param optStringEmpty  the new value, not null
          * @return this, for chaining, not null
          */
@@ -537,7 +537,7 @@ public final class ImmOptional implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code optStringGetter} property in the builder.
+         * Sets the optStringGetter.
          * @param optStringGetter  the new value
          * @return this, for chaining, not null
          */
@@ -547,7 +547,7 @@ public final class ImmOptional implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code optLongGetter} property in the builder.
+         * Sets the optLongGetter.
          * @param optLongGetter  the new value
          * @return this, for chaining, not null
          */
@@ -557,7 +557,7 @@ public final class ImmOptional implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code optIntGetter} property in the builder.
+         * Sets the optIntGetter.
          * @param optIntGetter  the new value
          * @return this, for chaining, not null
          */
@@ -567,7 +567,7 @@ public final class ImmOptional implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code optDoubleGetter} property in the builder.
+         * Sets the optDoubleGetter.
          * @param optDoubleGetter  the new value
          * @return this, for chaining, not null
          */

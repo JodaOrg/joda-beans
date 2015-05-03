@@ -743,7 +743,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code forename} property in the builder.
+         * Sets the forename.
          * @param forename  the new value
          * @return this, for chaining, not null
          */
@@ -753,7 +753,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code surname} property in the builder.
+         * Sets the surname.
          * @param surname  the new value, not null
          * @return this, for chaining, not null
          */
@@ -764,7 +764,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code numberOfCars} property in the builder.
+         * Sets the number of cars.
          * @param numberOfCars  the new value
          * @return this, for chaining, not null
          */
@@ -774,7 +774,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code addressList} property in the builder.
+         * Sets the addressList.
          * @param addressList  the new value, not null
          * @return this, for chaining, not null
          */
@@ -795,7 +795,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code otherAddressMap} property in the builder.
+         * Sets the otherAddressMap.
          * @param otherAddressMap  the new value, not null
          * @return this, for chaining, not null
          */
@@ -806,7 +806,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code addressesList} property in the builder.
+         * Sets the addressesList.
          * @param addressesList  the new value, not null
          * @return this, for chaining, not null
          */
@@ -817,7 +817,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code mainAddress} property in the builder.
+         * Sets the mainAddress.
          * @param mainAddress  the new value
          * @return this, for chaining, not null
          */
@@ -827,7 +827,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         }
 
         /**
-         * Sets the {@code tags} property in the builder.
+         * Sets the tags.
          * @param tags  the new value
          * @return this, for chaining, not null
          */

@@ -304,7 +304,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code codeCounts} property in the builder.
+         * Sets the codeCounts.
          * @param codeCounts  the new value
          * @return this, for chaining, not null
          */

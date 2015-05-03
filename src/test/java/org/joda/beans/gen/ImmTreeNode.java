@@ -473,7 +473,7 @@ public final class ImmTreeNode implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code name} property in the builder.
+         * Sets the name.
          * @param name  the new value, not null
          * @return this, for chaining, not null
          */
@@ -484,7 +484,7 @@ public final class ImmTreeNode implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code child1} property in the builder.
+         * Sets the child1.
          * @param child1  the new value
          * @return this, for chaining, not null
          */
@@ -494,7 +494,7 @@ public final class ImmTreeNode implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code child2} property in the builder.
+         * Sets the child2.
          * @param child2  the new value
          * @return this, for chaining, not null
          */
@@ -504,7 +504,7 @@ public final class ImmTreeNode implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code child3} property in the builder.
+         * Sets the child3.
          * @param child3  the new value
          * @return this, for chaining, not null
          */
@@ -514,7 +514,7 @@ public final class ImmTreeNode implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code childList} property in the builder.
+         * Sets the childList.
          * @param childList  the new value, not null
          * @return this, for chaining, not null
          */

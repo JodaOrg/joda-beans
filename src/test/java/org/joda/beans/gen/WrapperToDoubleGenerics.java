@@ -323,7 +323,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code base} property in the builder.
+         * Sets the base.
          * @param base  the new value
          * @return this, for chaining, not null
          */

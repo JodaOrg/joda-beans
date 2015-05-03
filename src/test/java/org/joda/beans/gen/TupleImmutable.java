@@ -414,7 +414,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code first} property in the builder.
+         * Sets the first value.
          * @param first  the new value
          * @return this, for chaining, not null
          */
@@ -424,7 +424,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         }
 
         /**
-         * Sets the {@code second} property in the builder.
+         * Sets the second value.
          * @param second  the new value
          * @return this, for chaining, not null
          */
@@ -434,7 +434,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         }
 
         /**
-         * Sets the {@code third} property in the builder.
+         * Sets the third value.
          * @param third  the new value
          * @return this, for chaining, not null
          */

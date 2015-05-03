@@ -336,7 +336,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code middleName} property in the builder.
+         * Sets the middle name.
          * @param middleName  the new value
          * @return this, for chaining, not null
          */
@@ -346,7 +346,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
         }
 
         /**
-         * Sets the {@code addressList} property in the builder.
+         * Sets the list of addresses.
          * @param addressList  the new value
          * @return this, for chaining, not null
          */

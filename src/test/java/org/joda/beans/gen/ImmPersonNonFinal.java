@@ -366,7 +366,7 @@ public class ImmPersonNonFinal implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code forename} property in the builder.
+         * Sets the forename.
          * @param forename  the new value
          * @return this, for chaining, not null
          */
@@ -376,7 +376,7 @@ public class ImmPersonNonFinal implements ImmutableBean {
         }
 
         /**
-         * Sets the {@code surname} property in the builder.
+         * Sets the surname.
          * @param surname  the new value
          * @return this, for chaining, not null
          */

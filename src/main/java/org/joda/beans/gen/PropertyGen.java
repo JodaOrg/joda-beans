@@ -211,7 +211,10 @@ class PropertyGen {
     List<String> generateBuilderSetMethod() {
         List<String> list = new ArrayList<String>();
         list.add("\t\t/**");
-        list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder.");
+        list.add("\t\t * Sets " + data.getFirstComment());
+        for (String comment : data.getComments()) {
+            list.add("\t\t * " + comment);
+        }
         list.add("\t\t * @param " + data.getPropertyName() + "  the new value" + data.getNotNullJavadoc());
         list.add("\t\t * @return this, for chaining, not null");
         if (data.isDeprecated()) {

@@ -318,7 +318,7 @@ public final class ImmDocumentationHolder<T>
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code documentation} property in the builder.
+         * Sets the documentation.
          * @param documentation  the new value
          * @return this, for chaining, not null
          */

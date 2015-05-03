@@ -305,7 +305,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
 
         //-----------------------------------------------------------------------
         /**
-         * Sets the {@code value} property in the builder.
+         * Sets the value.
          * @param value  the new value
          * @return this, for chaining, not null
          */
