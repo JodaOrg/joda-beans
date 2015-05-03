@@ -9,6 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.6" date="SNAPSHOT" description="v1.6">
+      <action dev="jodastephen" type="fix">
+         Enhance generation of varargs builder methods.
+         Support "List&lt;? extends Foo&gt;" and "List&lt;?&gt;"
+         Fixes #104.
+      </action>
       <action dev="jodastephen" type="add">
          Generate documentation for builder methods based on user-written docs.
          Fixes #106.

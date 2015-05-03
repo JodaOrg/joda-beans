@@ -411,6 +411,16 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code listWild} property in the builder
+         * from an array of objects.
+         * @param listWild  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWild(Object... listWild) {
+            return listWild(ImmutableList.copyOf(listWild));
+        }
+
+        /**
          * Sets the listWildPublic1.
          * @param listWildPublic1  the new value, not null
          * @return this, for chaining, not null
@@ -422,6 +432,16 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         }
 
         /**
+         * Sets the {@code listWildPublic1} property in the builder
+         * from an array of objects.
+         * @param listWildPublic1  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildPublic1(Object... listWildPublic1) {
+            return listWildPublic1(ImmutableList.copyOf(listWildPublic1));
+        }
+
+        /**
          * Sets the listWildPublic2.
          * @param listWildPublic2  the new value, not null
          * @return this, for chaining, not null
@@ -430,6 +450,16 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
             JodaBeanUtils.notNull(listWildPublic2, "listWildPublic2");
             this.listWildPublic2 = listWildPublic2;
             return this;
+        }
+
+        /**
+         * Sets the {@code listWildPublic2} property in the builder
+         * from an array of objects.
+         * @param listWildPublic2  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildPublic2(Object... listWildPublic2) {
+            return listWildPublic2(ImmutableList.copyOf(listWildPublic2));
         }
 
         //-----------------------------------------------------------------------

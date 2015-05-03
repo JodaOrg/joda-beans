@@ -257,8 +257,12 @@ class PropertyGen {
             return;
         }
         // do not generate for List<List<Bar>> type elements, needs @SafeVarargs
-        if (data.getTypeGenericsSimple().contains("<") || data.getTypeGenericsSimple().equals("?")) {
-            return;
+        String argType = data.getTypeGenericsSimple();
+        if (argType.equals("?")) {
+            argType = "Object";
+        }
+        if (argType.startsWith("? extends ")) {
+            argType = argType.substring(10);
         }
         // generate based on varargs
         list.add("\t\t/**");
@@ -278,7 +282,7 @@ class PropertyGen {
             list.add("\t\t@Deprecated");
         }
         list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
-                "(" + data.getTypeGenericsSimple() + "... " + data.getPropertyName() + ") {");
+                "(" + argType + "... " + data.getPropertyName() + ") {");
         if (code.contains("Arrays.asList")) {
             data.getBean().ensureImport(Arrays.class);
         }

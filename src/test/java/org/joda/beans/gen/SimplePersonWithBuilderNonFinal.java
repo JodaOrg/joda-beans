@@ -766,6 +766,16 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
         }
 
         /**
+         * Sets the {@code addressesList} property in the builder
+         * from an array of objects.
+         * @param addressesList  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addressesList(List<Address>... addressesList) {
+            return addressesList(ImmutableList.copyOf(addressesList));
+        }
+
+        /**
          * Sets the mainAddress.
          * @param mainAddress  the new value
          * @return this, for chaining, not null

@@ -114,6 +114,20 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     @PropertyDefinition(validate = "notNull")
     private final SortedMultiset<T> sortedMultisetInterface;
 
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableList<? extends T> listWildExtendsT;
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableList<? extends Number> listWildExtendsNumber;
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableList<? extends Comparable<?>> listWildExtendsComparable;
+
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableSet<? extends T> setWildExtendsT;
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableSet<? extends Number> setWildExtendsNumber;
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableSet<? extends Comparable<?>> setWildExtendsComparable;
+
 //    @PropertyDefinition(validate = "notNull")
 //    private final ArrayListMultimap<T, String> listMultimapArray;
 //    @PropertyDefinition(validate = "notNull")
@@ -182,7 +196,13 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             ListMultimap<T, String> listMultimapInterface,
             SetMultimap<T, String> setMultimapInterface,
             Multiset<T> multisetInterface,
-            SortedMultiset<T> sortedMultisetInterface) {
+            SortedMultiset<T> sortedMultisetInterface,
+            List<? extends T> listWildExtendsT,
+            List<? extends Number> listWildExtendsNumber,
+            List<? extends Comparable<?>> listWildExtendsComparable,
+            Set<? extends T> setWildExtendsT,
+            Set<? extends Number> setWildExtendsNumber,
+            Set<? extends Comparable<?>> setWildExtendsComparable) {
         JodaBeanUtils.notNull(collection, "collection");
         JodaBeanUtils.notNull(list, "list");
         JodaBeanUtils.notNull(set, "set");
@@ -207,6 +227,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         JodaBeanUtils.notNull(setMultimapInterface, "setMultimapInterface");
         JodaBeanUtils.notNull(multisetInterface, "multisetInterface");
         JodaBeanUtils.notNull(sortedMultisetInterface, "sortedMultisetInterface");
+        JodaBeanUtils.notNull(listWildExtendsT, "listWildExtendsT");
+        JodaBeanUtils.notNull(listWildExtendsNumber, "listWildExtendsNumber");
+        JodaBeanUtils.notNull(listWildExtendsComparable, "listWildExtendsComparable");
+        JodaBeanUtils.notNull(setWildExtendsT, "setWildExtendsT");
+        JodaBeanUtils.notNull(setWildExtendsNumber, "setWildExtendsNumber");
+        JodaBeanUtils.notNull(setWildExtendsComparable, "setWildExtendsComparable");
         this.collection = ImmutableList.copyOf(collection);
         this.list = ImmutableList.copyOf(list);
         this.set = ImmutableSet.copyOf(set);
@@ -231,6 +257,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         this.setMultimapInterface = ImmutableSetMultimap.copyOf(setMultimapInterface);
         this.multisetInterface = ImmutableMultiset.copyOf(multisetInterface);
         this.sortedMultisetInterface = ImmutableSortedMultiset.copyOfSorted(sortedMultisetInterface);
+        this.listWildExtendsT = ImmutableList.copyOf(listWildExtendsT);
+        this.listWildExtendsNumber = ImmutableList.copyOf(listWildExtendsNumber);
+        this.listWildExtendsComparable = ImmutableList.copyOf(listWildExtendsComparable);
+        this.setWildExtendsT = ImmutableSet.copyOf(setWildExtendsT);
+        this.setWildExtendsNumber = ImmutableSet.copyOf(setWildExtendsNumber);
+        this.setWildExtendsComparable = ImmutableSet.copyOf(setWildExtendsComparable);
     }
 
     @SuppressWarnings("unchecked")
@@ -467,6 +499,60 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the listWildExtendsT.
+     * @return the value of the property, not null
+     */
+    public ImmutableList<? extends T> getListWildExtendsT() {
+        return listWildExtendsT;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the listWildExtendsNumber.
+     * @return the value of the property, not null
+     */
+    public ImmutableList<? extends Number> getListWildExtendsNumber() {
+        return listWildExtendsNumber;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the listWildExtendsComparable.
+     * @return the value of the property, not null
+     */
+    public ImmutableList<? extends Comparable<?>> getListWildExtendsComparable() {
+        return listWildExtendsComparable;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the setWildExtendsT.
+     * @return the value of the property, not null
+     */
+    public ImmutableSet<? extends T> getSetWildExtendsT() {
+        return setWildExtendsT;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the setWildExtendsNumber.
+     * @return the value of the property, not null
+     */
+    public ImmutableSet<? extends Number> getSetWildExtendsNumber() {
+        return setWildExtendsNumber;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the setWildExtendsComparable.
+     * @return the value of the property, not null
+     */
+    public ImmutableSet<? extends Comparable<?>> getSetWildExtendsComparable() {
+        return setWildExtendsComparable;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a builder that allows this bean to be mutated.
      * @return the mutable builder, not null
      */
@@ -504,7 +590,13 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     JodaBeanUtils.equal(getListMultimapInterface(), other.getListMultimapInterface()) &&
                     JodaBeanUtils.equal(getSetMultimapInterface(), other.getSetMultimapInterface()) &&
                     JodaBeanUtils.equal(getMultisetInterface(), other.getMultisetInterface()) &&
-                    JodaBeanUtils.equal(getSortedMultisetInterface(), other.getSortedMultisetInterface());
+                    JodaBeanUtils.equal(getSortedMultisetInterface(), other.getSortedMultisetInterface()) &&
+                    JodaBeanUtils.equal(getListWildExtendsT(), other.getListWildExtendsT()) &&
+                    JodaBeanUtils.equal(getListWildExtendsNumber(), other.getListWildExtendsNumber()) &&
+                    JodaBeanUtils.equal(getListWildExtendsComparable(), other.getListWildExtendsComparable()) &&
+                    JodaBeanUtils.equal(getSetWildExtendsT(), other.getSetWildExtendsT()) &&
+                    JodaBeanUtils.equal(getSetWildExtendsNumber(), other.getSetWildExtendsNumber()) &&
+                    JodaBeanUtils.equal(getSetWildExtendsComparable(), other.getSetWildExtendsComparable());
         }
         return false;
     }
@@ -536,12 +628,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         hash = hash * 31 + JodaBeanUtils.hashCode(getSetMultimapInterface());
         hash = hash * 31 + JodaBeanUtils.hashCode(getMultisetInterface());
         hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMultisetInterface());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildExtendsT());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildExtendsNumber());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildExtendsComparable());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSetWildExtendsT());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSetWildExtendsNumber());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getSetWildExtendsComparable());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(800);
+        StringBuilder buf = new StringBuilder(992);
         buf.append("ImmGuava{");
         buf.append("collection").append('=').append(getCollection()).append(',').append(' ');
         buf.append("list").append('=').append(getList()).append(',').append(' ');
@@ -566,7 +664,13 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         buf.append("listMultimapInterface").append('=').append(getListMultimapInterface()).append(',').append(' ');
         buf.append("setMultimapInterface").append('=').append(getSetMultimapInterface()).append(',').append(' ');
         buf.append("multisetInterface").append('=').append(getMultisetInterface()).append(',').append(' ');
-        buf.append("sortedMultisetInterface").append('=').append(JodaBeanUtils.toString(getSortedMultisetInterface()));
+        buf.append("sortedMultisetInterface").append('=').append(getSortedMultisetInterface()).append(',').append(' ');
+        buf.append("listWildExtendsT").append('=').append(getListWildExtendsT()).append(',').append(' ');
+        buf.append("listWildExtendsNumber").append('=').append(getListWildExtendsNumber()).append(',').append(' ');
+        buf.append("listWildExtendsComparable").append('=').append(getListWildExtendsComparable()).append(',').append(' ');
+        buf.append("setWildExtendsT").append('=').append(getSetWildExtendsT()).append(',').append(' ');
+        buf.append("setWildExtendsNumber").append('=').append(getSetWildExtendsNumber()).append(',').append(' ');
+        buf.append("setWildExtendsComparable").append('=').append(JodaBeanUtils.toString(getSetWildExtendsComparable()));
         buf.append('}');
         return buf.toString();
     }
@@ -728,6 +832,42 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         private final MetaProperty<SortedMultiset<T>> sortedMultisetInterface = DirectMetaProperty.ofImmutable(
                 this, "sortedMultisetInterface", ImmGuava.class, (Class) SortedMultiset.class);
         /**
+         * The meta-property for the {@code listWildExtendsT} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableList<? extends T>> listWildExtendsT = DirectMetaProperty.ofImmutable(
+                this, "listWildExtendsT", ImmGuava.class, (Class) ImmutableList.class);
+        /**
+         * The meta-property for the {@code listWildExtendsNumber} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableList<? extends Number>> listWildExtendsNumber = DirectMetaProperty.ofImmutable(
+                this, "listWildExtendsNumber", ImmGuava.class, (Class) ImmutableList.class);
+        /**
+         * The meta-property for the {@code listWildExtendsComparable} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableList<? extends Comparable<?>>> listWildExtendsComparable = DirectMetaProperty.ofImmutable(
+                this, "listWildExtendsComparable", ImmGuava.class, (Class) ImmutableList.class);
+        /**
+         * The meta-property for the {@code setWildExtendsT} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableSet<? extends T>> setWildExtendsT = DirectMetaProperty.ofImmutable(
+                this, "setWildExtendsT", ImmGuava.class, (Class) ImmutableSet.class);
+        /**
+         * The meta-property for the {@code setWildExtendsNumber} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableSet<? extends Number>> setWildExtendsNumber = DirectMetaProperty.ofImmutable(
+                this, "setWildExtendsNumber", ImmGuava.class, (Class) ImmutableSet.class);
+        /**
+         * The meta-property for the {@code setWildExtendsComparable} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<ImmutableSet<? extends Comparable<?>>> setWildExtendsComparable = DirectMetaProperty.ofImmutable(
+                this, "setWildExtendsComparable", ImmGuava.class, (Class) ImmutableSet.class);
+        /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
@@ -755,7 +895,13 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                 "listMultimapInterface",
                 "setMultimapInterface",
                 "multisetInterface",
-                "sortedMultisetInterface");
+                "sortedMultisetInterface",
+                "listWildExtendsT",
+                "listWildExtendsNumber",
+                "listWildExtendsComparable",
+                "setWildExtendsT",
+                "setWildExtendsNumber",
+                "setWildExtendsComparable");
 
         /**
          * Restricted constructor.
@@ -814,6 +960,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     return multisetInterface;
                 case 271697267:  // sortedMultisetInterface
                     return sortedMultisetInterface;
+                case -826400637:  // listWildExtendsT
+                    return listWildExtendsT;
+                case 789015706:  // listWildExtendsNumber
+                    return listWildExtendsNumber;
+                case 857377195:  // listWildExtendsComparable
+                    return listWildExtendsComparable;
+                case -844782009:  // setWildExtendsT
+                    return setWildExtendsT;
+                case -1417617066:  // setWildExtendsNumber
+                    return setWildExtendsNumber;
+                case 940785767:  // setWildExtendsComparable
+                    return setWildExtendsComparable;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -1027,6 +1185,54 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             return sortedMultisetInterface;
         }
 
+        /**
+         * The meta-property for the {@code listWildExtendsT} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableList<? extends T>> listWildExtendsT() {
+            return listWildExtendsT;
+        }
+
+        /**
+         * The meta-property for the {@code listWildExtendsNumber} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableList<? extends Number>> listWildExtendsNumber() {
+            return listWildExtendsNumber;
+        }
+
+        /**
+         * The meta-property for the {@code listWildExtendsComparable} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableList<? extends Comparable<?>>> listWildExtendsComparable() {
+            return listWildExtendsComparable;
+        }
+
+        /**
+         * The meta-property for the {@code setWildExtendsT} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableSet<? extends T>> setWildExtendsT() {
+            return setWildExtendsT;
+        }
+
+        /**
+         * The meta-property for the {@code setWildExtendsNumber} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableSet<? extends Number>> setWildExtendsNumber() {
+            return setWildExtendsNumber;
+        }
+
+        /**
+         * The meta-property for the {@code setWildExtendsComparable} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<ImmutableSet<? extends Comparable<?>>> setWildExtendsComparable() {
+            return setWildExtendsComparable;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
@@ -1079,6 +1285,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     return ((ImmGuava<?>) bean).getMultisetInterface();
                 case 271697267:  // sortedMultisetInterface
                     return ((ImmGuava<?>) bean).getSortedMultisetInterface();
+                case -826400637:  // listWildExtendsT
+                    return ((ImmGuava<?>) bean).getListWildExtendsT();
+                case 789015706:  // listWildExtendsNumber
+                    return ((ImmGuava<?>) bean).getListWildExtendsNumber();
+                case 857377195:  // listWildExtendsComparable
+                    return ((ImmGuava<?>) bean).getListWildExtendsComparable();
+                case -844782009:  // setWildExtendsT
+                    return ((ImmGuava<?>) bean).getSetWildExtendsT();
+                case -1417617066:  // setWildExtendsNumber
+                    return ((ImmGuava<?>) bean).getSetWildExtendsNumber();
+                case 940785767:  // setWildExtendsComparable
+                    return ((ImmGuava<?>) bean).getSetWildExtendsComparable();
             }
             return super.propertyGet(bean, propertyName, quiet);
         }
@@ -1125,6 +1343,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         private SetMultimap<T, String> setMultimapInterface = ImmutableSetMultimap.of();
         private Multiset<T> multisetInterface = ImmutableMultiset.of();
         private SortedMultiset<T> sortedMultisetInterface = ImmutableSortedMultiset.of();
+        private List<? extends T> listWildExtendsT = ImmutableList.of();
+        private List<? extends Number> listWildExtendsNumber = ImmutableList.of();
+        private List<? extends Comparable<?>> listWildExtendsComparable = ImmutableList.of();
+        private Set<? extends T> setWildExtendsT = ImmutableSet.of();
+        private Set<? extends Number> setWildExtendsNumber = ImmutableSet.of();
+        private Set<? extends Comparable<?>> setWildExtendsComparable = ImmutableSet.of();
 
         /**
          * Restricted constructor.
@@ -1161,6 +1385,12 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             this.setMultimapInterface = ImmutableSetMultimap.copyOf(beanToCopy.getSetMultimapInterface());
             this.multisetInterface = ImmutableMultiset.copyOf(beanToCopy.getMultisetInterface());
             this.sortedMultisetInterface = ImmutableSortedMultiset.copyOfSorted(beanToCopy.getSortedMultisetInterface());
+            this.listWildExtendsT = beanToCopy.getListWildExtendsT();
+            this.listWildExtendsNumber = beanToCopy.getListWildExtendsNumber();
+            this.listWildExtendsComparable = beanToCopy.getListWildExtendsComparable();
+            this.setWildExtendsT = beanToCopy.getSetWildExtendsT();
+            this.setWildExtendsNumber = beanToCopy.getSetWildExtendsNumber();
+            this.setWildExtendsComparable = beanToCopy.getSetWildExtendsComparable();
         }
 
         //-----------------------------------------------------------------------
@@ -1215,6 +1445,18 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     return multisetInterface;
                 case 271697267:  // sortedMultisetInterface
                     return sortedMultisetInterface;
+                case -826400637:  // listWildExtendsT
+                    return listWildExtendsT;
+                case 789015706:  // listWildExtendsNumber
+                    return listWildExtendsNumber;
+                case 857377195:  // listWildExtendsComparable
+                    return listWildExtendsComparable;
+                case -844782009:  // setWildExtendsT
+                    return setWildExtendsT;
+                case -1417617066:  // setWildExtendsNumber
+                    return setWildExtendsNumber;
+                case 940785767:  // setWildExtendsComparable
+                    return setWildExtendsComparable;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
@@ -1296,6 +1538,24 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                 case 271697267:  // sortedMultisetInterface
                     this.sortedMultisetInterface = (SortedMultiset<T>) newValue;
                     break;
+                case -826400637:  // listWildExtendsT
+                    this.listWildExtendsT = (List<? extends T>) newValue;
+                    break;
+                case 789015706:  // listWildExtendsNumber
+                    this.listWildExtendsNumber = (List<? extends Number>) newValue;
+                    break;
+                case 857377195:  // listWildExtendsComparable
+                    this.listWildExtendsComparable = (List<? extends Comparable<?>>) newValue;
+                    break;
+                case -844782009:  // setWildExtendsT
+                    this.setWildExtendsT = (Set<? extends T>) newValue;
+                    break;
+                case -1417617066:  // setWildExtendsNumber
+                    this.setWildExtendsNumber = (Set<? extends Number>) newValue;
+                    break;
+                case 940785767:  // setWildExtendsComparable
+                    this.setWildExtendsComparable = (Set<? extends Comparable<?>>) newValue;
+                    break;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
@@ -1352,7 +1612,13 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
                     listMultimapInterface,
                     setMultimapInterface,
                     multisetInterface,
-                    sortedMultisetInterface);
+                    sortedMultisetInterface,
+                    listWildExtendsT,
+                    listWildExtendsNumber,
+                    listWildExtendsComparable,
+                    setWildExtendsT,
+                    setWildExtendsNumber,
+                    setWildExtendsComparable);
         }
 
         //-----------------------------------------------------------------------
@@ -1700,10 +1966,136 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             return this;
         }
 
+        /**
+         * Sets the listWildExtendsT.
+         * @param listWildExtendsT  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildExtendsT(List<? extends T> listWildExtendsT) {
+            JodaBeanUtils.notNull(listWildExtendsT, "listWildExtendsT");
+            this.listWildExtendsT = listWildExtendsT;
+            return this;
+        }
+
+        /**
+         * Sets the {@code listWildExtendsT} property in the builder
+         * from an array of objects.
+         * @param listWildExtendsT  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildExtendsT(T... listWildExtendsT) {
+            return listWildExtendsT(ImmutableList.copyOf(listWildExtendsT));
+        }
+
+        /**
+         * Sets the listWildExtendsNumber.
+         * @param listWildExtendsNumber  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildExtendsNumber(List<? extends Number> listWildExtendsNumber) {
+            JodaBeanUtils.notNull(listWildExtendsNumber, "listWildExtendsNumber");
+            this.listWildExtendsNumber = listWildExtendsNumber;
+            return this;
+        }
+
+        /**
+         * Sets the {@code listWildExtendsNumber} property in the builder
+         * from an array of objects.
+         * @param listWildExtendsNumber  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildExtendsNumber(Number... listWildExtendsNumber) {
+            return listWildExtendsNumber(ImmutableList.copyOf(listWildExtendsNumber));
+        }
+
+        /**
+         * Sets the listWildExtendsComparable.
+         * @param listWildExtendsComparable  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildExtendsComparable(List<? extends Comparable<?>> listWildExtendsComparable) {
+            JodaBeanUtils.notNull(listWildExtendsComparable, "listWildExtendsComparable");
+            this.listWildExtendsComparable = listWildExtendsComparable;
+            return this;
+        }
+
+        /**
+         * Sets the {@code listWildExtendsComparable} property in the builder
+         * from an array of objects.
+         * @param listWildExtendsComparable  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> listWildExtendsComparable(Comparable<?>... listWildExtendsComparable) {
+            return listWildExtendsComparable(ImmutableList.copyOf(listWildExtendsComparable));
+        }
+
+        /**
+         * Sets the setWildExtendsT.
+         * @param setWildExtendsT  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setWildExtendsT(Set<? extends T> setWildExtendsT) {
+            JodaBeanUtils.notNull(setWildExtendsT, "setWildExtendsT");
+            this.setWildExtendsT = setWildExtendsT;
+            return this;
+        }
+
+        /**
+         * Sets the {@code setWildExtendsT} property in the builder
+         * from an array of objects.
+         * @param setWildExtendsT  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setWildExtendsT(T... setWildExtendsT) {
+            return setWildExtendsT(ImmutableSet.copyOf(setWildExtendsT));
+        }
+
+        /**
+         * Sets the setWildExtendsNumber.
+         * @param setWildExtendsNumber  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setWildExtendsNumber(Set<? extends Number> setWildExtendsNumber) {
+            JodaBeanUtils.notNull(setWildExtendsNumber, "setWildExtendsNumber");
+            this.setWildExtendsNumber = setWildExtendsNumber;
+            return this;
+        }
+
+        /**
+         * Sets the {@code setWildExtendsNumber} property in the builder
+         * from an array of objects.
+         * @param setWildExtendsNumber  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setWildExtendsNumber(Number... setWildExtendsNumber) {
+            return setWildExtendsNumber(ImmutableSet.copyOf(setWildExtendsNumber));
+        }
+
+        /**
+         * Sets the setWildExtendsComparable.
+         * @param setWildExtendsComparable  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setWildExtendsComparable(Set<? extends Comparable<?>> setWildExtendsComparable) {
+            JodaBeanUtils.notNull(setWildExtendsComparable, "setWildExtendsComparable");
+            this.setWildExtendsComparable = setWildExtendsComparable;
+            return this;
+        }
+
+        /**
+         * Sets the {@code setWildExtendsComparable} property in the builder
+         * from an array of objects.
+         * @param setWildExtendsComparable  the new value, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> setWildExtendsComparable(Comparable<?>... setWildExtendsComparable) {
+            return setWildExtendsComparable(ImmutableSet.copyOf(setWildExtendsComparable));
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(800);
+            StringBuilder buf = new StringBuilder(992);
             buf.append("ImmGuava.Builder{");
             buf.append("collection").append('=').append(JodaBeanUtils.toString(collection)).append(',').append(' ');
             buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
@@ -1728,7 +2120,13 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             buf.append("listMultimapInterface").append('=').append(JodaBeanUtils.toString(listMultimapInterface)).append(',').append(' ');
             buf.append("setMultimapInterface").append('=').append(JodaBeanUtils.toString(setMultimapInterface)).append(',').append(' ');
             buf.append("multisetInterface").append('=').append(JodaBeanUtils.toString(multisetInterface)).append(',').append(' ');
-            buf.append("sortedMultisetInterface").append('=').append(JodaBeanUtils.toString(sortedMultisetInterface));
+            buf.append("sortedMultisetInterface").append('=').append(JodaBeanUtils.toString(sortedMultisetInterface)).append(',').append(' ');
+            buf.append("listWildExtendsT").append('=').append(JodaBeanUtils.toString(listWildExtendsT)).append(',').append(' ');
+            buf.append("listWildExtendsNumber").append('=').append(JodaBeanUtils.toString(listWildExtendsNumber)).append(',').append(' ');
+            buf.append("listWildExtendsComparable").append('=').append(JodaBeanUtils.toString(listWildExtendsComparable)).append(',').append(' ');
+            buf.append("setWildExtendsT").append('=').append(JodaBeanUtils.toString(setWildExtendsT)).append(',').append(' ');
+            buf.append("setWildExtendsNumber").append('=').append(JodaBeanUtils.toString(setWildExtendsNumber)).append(',').append(' ');
+            buf.append("setWildExtendsComparable").append('=').append(JodaBeanUtils.toString(setWildExtendsComparable));
             buf.append('}');
             return buf.toString();
         }

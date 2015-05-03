@@ -17,16 +17,20 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmAddress.Builder;
+import org.joda.beans.gen.ImmGuava;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.ImmPersonNonFinal;
 import org.joda.beans.gen.ImmSubPersonNonFinal;
 import org.joda.beans.gen.ImmSubSubPersonFinal;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultiset;
 
 /**
@@ -152,6 +156,29 @@ public class TestImmutable {
         assertEquals(person.getForename(), "A");
         assertEquals(person.getSurname(), "B");
         assertEquals(person.getNumberOfCars(), 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_builder_methodTypes() {
+        Calendar cal = Calendar.getInstance();
+        GregorianCalendar gcal = new GregorianCalendar(2015, 5, 30);
+        ImmutableList<Calendar> listCal = ImmutableList.of(cal);
+        ImmutableList<GregorianCalendar> listGcal = ImmutableList.of(gcal);
+        ImmutableList<Number> listNumbers = ImmutableList.<Number>of(2d, 5, 3f);
+        ImmutableList<Integer> listInts = ImmutableList.<Integer>of(1, 2, 3);
+        ImmGuava<Calendar> obj = ImmGuava.<Calendar>builder()
+            .list(cal, gcal)
+//            .list(listGcal)
+            .list(listCal)
+            .listWildExtendsT(listCal)
+            .listWildExtendsT(listGcal)
+            .listWildExtendsNumber(2d, 5, 3f)
+            .listWildExtendsNumber(listNumbers)
+            .listWildExtendsNumber(listInts)
+            .listWildExtendsComparable((Double) 2d, (Integer) 5, (Float) 3f)
+            .listWildExtendsComparable(listInts)
+            .build();
+        assertEquals(obj.getList(), listCal);
     }
 
 }
