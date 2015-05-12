@@ -258,7 +258,7 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
     public static class Builder extends ImmPersonAbstract.Builder {
 
         private String middleName;
-        private List<Address> addressList;
+        private List<? extends Address> addressList;
 
         /**
          * Restricted constructor.
@@ -296,7 +296,7 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
                     this.middleName = (String) newValue;
                     break;
                 case -1377524046:  // addressList
-                    this.addressList = (List<Address>) newValue;
+                    this.addressList = (List<? extends Address>) newValue;
                     break;
                 default:
                     super.set(propertyName, newValue);
@@ -350,7 +350,7 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
          * @param addressList  the new value
          * @return this, for chaining, not null
          */
-        public Builder addressList(List<Address> addressList) {
+        public Builder addressList(List<? extends Address> addressList) {
             this.addressList = addressList;
             return this;
         }

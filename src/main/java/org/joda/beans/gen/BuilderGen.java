@@ -68,7 +68,11 @@ abstract class BuilderGen {
         }
         @Override
         String generateType(PropertyData prop) {
-            return type.replace("<>", prop.getTypeGenerics());
+            String result = type.replace("<>", prop.getTypeGenerics());
+            if (result.contains("<? extends>")) {
+                result = makeExtends(type.replace("<? extends>", prop.getTypeGenerics()));
+            }
+            return result;
         }
     }
 
@@ -85,7 +89,11 @@ abstract class BuilderGen {
         }
         @Override
         String generateType(PropertyData prop) {
-            return type.replace("<>", prop.getTypeGenerics());
+            String result = type.replace("<>", prop.getTypeGenerics());
+            if (result.contains("<? extends>")) {
+                result = makeExtends(type.replace("<? extends>", prop.getTypeGenerics()));
+            }
+            return result;
         }
     }
 
@@ -94,6 +102,52 @@ abstract class BuilderGen {
         @Override
         List<String> generateField(String indent, PropertyData prop) {
             return Collections.emptyList();
+        }
+    }
+
+    static String makeExtends(String type) {
+        int pos = type.indexOf("<");
+        if (pos >= 0 && type.endsWith(">")) {
+            String generics = type.substring(pos + 1, type.length() - 1);
+            return type.substring(0, pos + 1) + adjustExtends(generics) + ">";
+        }
+        return type;
+    }
+
+    private static String adjustExtends(String generics) {
+        // search and handle types like Map<A, B>, Map<List<A>, B>, Map<List<A>, List<B>>
+        boolean hasGenerics = false;
+        int open = 0;
+        for (int i = 0; i < generics.length(); i++) {
+            char ch = generics.charAt(i);
+            if (ch == '<') {
+                open++;
+                hasGenerics = true;
+            } else if (ch == '>') {
+                open--;
+            } else if (ch == ',' && open == 0) {
+                String part1 = generics.substring(0, i);
+                String part2 = generics.substring(i + 1);
+                String mid = ",";
+                while (part2.startsWith(" ")) {
+                    part2 = part2.substring(1);
+                    mid += " ";
+                }
+                if (hasGenerics) {
+                    return part1 + mid + adjustExtends(part2);
+                }
+                return adjustExtends(part1) + mid + adjustExtends(part2);
+            }
+        }
+        // Only add extends if type has no generics, is not String and does not already have a wildcard
+        if (hasGenerics) {
+            return generics;
+        } else if (generics.equals("Object")) {
+            return "?";
+        } else if (!generics.startsWith("?") && !generics.equals("String")) {
+            return "? extends " + generics;
+        } else {
+            return generics;
         }
     }
 

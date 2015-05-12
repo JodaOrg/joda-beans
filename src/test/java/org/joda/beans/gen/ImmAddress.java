@@ -204,17 +204,17 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             Risk risk,
             RiskLevel riskLevel,
             Serializable serializable,
-            Map<String, Object> objectInMap,
+            Map<String, ?> objectInMap,
             Map<String, List<String>> listInMap,
             Map<String, List<Integer>> listNumericInMap,
             Map<String, List<List<Integer>>> listInListInMap,
             Map<String, List<List<Object>>> objectListInListInMap,
-            Map<ImmPerson, Map<String, ImmPerson>> mapInMap,
+            Map<? extends ImmPerson, Map<String, ImmPerson>> mapInMap,
             Table<Integer, Integer, String> simpleTable,
             Table<Integer, Integer, ImmPerson> compoundTable,
             Grid<ImmPerson> sparseGrid,
             Grid<ImmPerson> denseGrid,
-            Map<ImmPerson, ImmAddress> beanBeanMap) {
+            Map<? extends ImmPerson, ? extends ImmAddress> beanBeanMap) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
         JodaBeanUtils.notNull(owner, "owner");
@@ -1083,17 +1083,17 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         private Risk risk;
         private RiskLevel riskLevel;
         private Serializable serializable;
-        private Map<String, Object> objectInMap = ImmutableMap.of();
+        private Map<String, ?> objectInMap = ImmutableMap.of();
         private Map<String, List<String>> listInMap = ImmutableMap.of();
         private Map<String, List<Integer>> listNumericInMap = ImmutableMap.of();
         private Map<String, List<List<Integer>>> listInListInMap = ImmutableMap.of();
         private Map<String, List<List<Object>>> objectListInListInMap = ImmutableMap.of();
-        private Map<ImmPerson, Map<String, ImmPerson>> mapInMap = ImmutableMap.of();
+        private Map<? extends ImmPerson, Map<String, ImmPerson>> mapInMap = ImmutableMap.of();
         private Table<Integer, Integer, String> simpleTable;
         private Table<Integer, Integer, ImmPerson> compoundTable;
         private Grid<ImmPerson> sparseGrid;
         private Grid<ImmPerson> denseGrid;
-        private Map<ImmPerson, ImmAddress> beanBeanMap = ImmutableMap.of();
+        private Map<? extends ImmPerson, ? extends ImmAddress> beanBeanMap = ImmutableMap.of();
 
         /**
          * Restricted constructor.
@@ -1227,7 +1227,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     this.serializable = (Serializable) newValue;
                     break;
                 case -1297715720:  // objectInMap
-                    this.objectInMap = (Map<String, Object>) newValue;
+                    this.objectInMap = (Map<String, ?>) newValue;
                     break;
                 case -1244601351:  // listInMap
                     this.listInMap = (Map<String, List<String>>) newValue;
@@ -1242,7 +1242,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     this.objectListInListInMap = (Map<String, List<List<Object>>>) newValue;
                     break;
                 case 158545403:  // mapInMap
-                    this.mapInMap = (Map<ImmPerson, Map<String, ImmPerson>>) newValue;
+                    this.mapInMap = (Map<? extends ImmPerson, Map<String, ImmPerson>>) newValue;
                     break;
                 case -1429579460:  // simpleTable
                     this.simpleTable = (Table<Integer, Integer, String>) newValue;
@@ -1257,7 +1257,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     this.denseGrid = (Grid<ImmPerson>) newValue;
                     break;
                 case -2039203396:  // beanBeanMap
-                    this.beanBeanMap = (Map<ImmPerson, ImmAddress>) newValue;
+                    this.beanBeanMap = (Map<? extends ImmPerson, ? extends ImmAddress>) newValue;
                     break;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
@@ -1447,7 +1447,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
          * @param objectInMap  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder objectInMap(Map<String, Object> objectInMap) {
+        public Builder objectInMap(Map<String, ?> objectInMap) {
             JodaBeanUtils.notNull(objectInMap, "objectInMap");
             this.objectInMap = objectInMap;
             return this;
@@ -1502,7 +1502,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
          * @param mapInMap  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder mapInMap(Map<ImmPerson, Map<String, ImmPerson>> mapInMap) {
+        public Builder mapInMap(Map<? extends ImmPerson, Map<String, ImmPerson>> mapInMap) {
             JodaBeanUtils.notNull(mapInMap, "mapInMap");
             this.mapInMap = mapInMap;
             return this;
@@ -1553,7 +1553,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
          * @param beanBeanMap  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder beanBeanMap(Map<ImmPerson, ImmAddress> beanBeanMap) {
+        public Builder beanBeanMap(Map<? extends ImmPerson, ? extends ImmAddress> beanBeanMap) {
             JodaBeanUtils.notNull(beanBeanMap, "beanBeanMap");
             this.beanBeanMap = beanBeanMap;
             return this;

@@ -626,8 +626,8 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
         private String forename;
         private String surname;
         private int numberOfCars;
-        private List<Address> addressList = ImmutableList.of();
-        private Map<String, Address> otherAddressMap = ImmutableMap.of();
+        private List<? extends Address> addressList = ImmutableList.of();
+        private Map<String, ? extends Address> otherAddressMap = ImmutableMap.of();
         private List<List<Address>> addressesList = ImmutableList.of();
         private Address mainAddress;
         private String[] tags;
@@ -692,10 +692,10 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
                     this.numberOfCars = (Integer) newValue;
                     break;
                 case -1377524046:  // addressList
-                    this.addressList = (List<Address>) newValue;
+                    this.addressList = (List<? extends Address>) newValue;
                     break;
                 case 1368089592:  // otherAddressMap
-                    this.otherAddressMap = (Map<String, Address>) newValue;
+                    this.otherAddressMap = (Map<String, ? extends Address>) newValue;
                     break;
                 case -226885792:  // addressesList
                     this.addressesList = (List<List<Address>>) newValue;
@@ -778,7 +778,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
          * @param addressList  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder addressList(List<Address> addressList) {
+        public Builder addressList(List<? extends Address> addressList) {
             JodaBeanUtils.notNull(addressList, "addressList");
             this.addressList = addressList;
             return this;
@@ -799,7 +799,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
          * @param otherAddressMap  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder otherAddressMap(Map<String, Address> otherAddressMap) {
+        public Builder otherAddressMap(Map<String, ? extends Address> otherAddressMap) {
             JodaBeanUtils.notNull(otherAddressMap, "otherAddressMap");
             this.otherAddressMap = otherAddressMap;
             return this;
