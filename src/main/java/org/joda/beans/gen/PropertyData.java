@@ -550,6 +550,9 @@ class PropertyData {
         if (style.equals("private")) {
             style = "smart";
             access = "private";
+        } else if (style.equals("package")) {
+            style = "smart";
+            access = "package";
         } else if (style.equals("protected")) {
             style = "smart";
             access = "protected";
@@ -616,6 +619,9 @@ class PropertyData {
         if (style.equals("private")) {
             style = "smart";
             access = "private";
+        } else if (style.equals("package")) {
+            style = "smart";
+            access = "package";
         } else if (style.equals("protected")) {
             style = "smart";
             access = "protected";

@@ -45,12 +45,15 @@ abstract class GetterGen {
 
     //-----------------------------------------------------------------------
     static final class GetGetterGen extends GetterGen {
-        static final GetGetterGen PUBLIC = new GetGetterGen("public");
-        static final GetGetterGen PROTECTED = new GetGetterGen("protected");
-        static final GetGetterGen PRIVATE = new GetGetterGen("private");
+        static final GetGetterGen PUBLIC = new GetGetterGen("public ");
+        static final GetGetterGen PROTECTED = new GetGetterGen("protected ");
+        static final GetGetterGen PACKAGE = new GetGetterGen("");
+        static final GetGetterGen PRIVATE = new GetGetterGen("private ");
         private final String access;
         static GetGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : access.equals("protected") ? PROTECTED : PUBLIC);
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private GetGetterGen(String access) {
             this.access = access;
@@ -62,11 +65,15 @@ abstract class GetterGen {
     }
 
     static final class IsGetterGen extends GetterGen {
-        static final IsGetterGen PUBLIC = new IsGetterGen("public");
-        static final IsGetterGen PRIVATE = new IsGetterGen("private");
+        static final IsGetterGen PUBLIC = new IsGetterGen("public ");
+        static final IsGetterGen PROTECTED = new IsGetterGen("protected ");
+        static final IsGetterGen PACKAGE = new IsGetterGen("");
+        static final IsGetterGen PRIVATE = new IsGetterGen("private ");
         private final String access;
         static IsGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : PUBLIC);
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private IsGetterGen(String access) {
             this.access = access;
@@ -82,11 +89,15 @@ abstract class GetterGen {
     }
 
     static final class CloneGetterGen extends GetterGen {
-        static final CloneGetterGen PUBLIC = new CloneGetterGen("public");
-        static final CloneGetterGen PRIVATE = new CloneGetterGen("private");
+        static final CloneGetterGen PUBLIC = new CloneGetterGen("public ");
+        static final CloneGetterGen PROTECTED = new CloneGetterGen("protected ");
+        static final CloneGetterGen PACKAGE = new CloneGetterGen("");
+        static final CloneGetterGen PRIVATE = new CloneGetterGen("private ");
         private final String access;
         static CloneGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : PUBLIC);
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private CloneGetterGen(String access) {
             this.access = access;
@@ -98,11 +109,15 @@ abstract class GetterGen {
     }
 
     static final class CloneCastGetterGen extends GetterGen {
-        static final CloneCastGetterGen PUBLIC = new CloneCastGetterGen("public");
-        static final CloneCastGetterGen PRIVATE = new CloneCastGetterGen("private");
+        static final CloneCastGetterGen PUBLIC = new CloneCastGetterGen("public ");
+        static final CloneCastGetterGen PROTECTED = new CloneCastGetterGen("protected ");
+        static final CloneCastGetterGen PACKAGE = new CloneCastGetterGen("");
+        static final CloneCastGetterGen PRIVATE = new CloneCastGetterGen("private ");
         private final String access;
         static CloneCastGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : PUBLIC);
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private CloneCastGetterGen(String access) {
             this.access = access;
@@ -222,7 +237,7 @@ abstract class GetterGen {
         if (prop.isDeprecated()) {
             list.add("\t@Deprecated");
         }
-        list.add("\t" + access + " " + prop.getType() + " " + prefix + prop.getUpperName() + "() {");
+        list.add("\t" + access + prop.getType() + " " + prefix + prop.getUpperName() + "() {");
         list.add("\t\treturn " + expression + ";");
         list.add("\t}");
         list.add("");

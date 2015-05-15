@@ -57,12 +57,15 @@ abstract class SetterGen {
 
     //-----------------------------------------------------------------------
     static final class SetSetterGen extends SetterGen {
-        static final SetSetterGen PUBLIC = new SetSetterGen("public");
-        static final SetSetterGen PROTECTED = new SetSetterGen("protected");
-        static final SetSetterGen PRIVATE = new SetSetterGen("private");
+        static final SetSetterGen PUBLIC = new SetSetterGen("public ");
+        static final SetSetterGen PROTECTED = new SetSetterGen("protected ");
+        static final SetSetterGen PACKAGE = new SetSetterGen("");
+        static final SetSetterGen PRIVATE = new SetSetterGen("private ");
         private final String access;
         static SetSetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE : access.equals("protected") ? PROTECTED : PUBLIC);
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
         }
         private SetSetterGen(String access) {
             this.access = access;
@@ -87,7 +90,7 @@ abstract class SetterGen {
             if (prop.isDeprecated()) {
                 list.add("\t@Deprecated");
             }
-            list.add("\t" + access + " void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            list.add("\t" + access + "void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
             if (prop.isValidated()) {
                 list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
             }
@@ -106,7 +109,7 @@ abstract class SetterGen {
         }
         PatternSetterGen(String setPattern, String access) {
             this.setPattern = setPattern;
-            this.access = access;
+            this.access = (access.equals("package") ? "" : access + ' ');;
         }
         @Override
         boolean isSetterGenerated(PropertyData prop) {
@@ -128,7 +131,7 @@ abstract class SetterGen {
             if (prop.isDeprecated()) {
                 list.add(indent + "@Deprecated");
             }
-            list.add(indent + access + " void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
+            list.add(indent + access + "void set" + prop.getUpperName() + "(" + prop.getType() +  " " + prop.getPropertyName() + ") {");
             if (prop.isValidated()) {
                 list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
             }

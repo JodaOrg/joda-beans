@@ -57,6 +57,7 @@ public @interface PropertyDefinition {
      * <li>'' - do not generate any form of getter
      * <li>'smart' - process intelligently - 'is' for boolean and 'get' for other types
      * <li>'private' - process as per 'smart' but set scope as private
+     * <li>'package' - process as per 'smart' but set scope as package/default
      * <li>'protected' - process as per 'smart' but set scope as protected
      * <li>'is' - generates isXxx()
      * <li>'get' - generates getXxx()
@@ -88,6 +89,7 @@ public @interface PropertyDefinition {
      * <li>'smart' - process intelligently - uses 'set' unless final, when it will use 'setClearAddAll'
      *  for common list types or 'setClearPutAll' for common map types and FlexiBean
      * <li>'private' - process as per 'smart' but set scope as private
+     * <li>'package' - process as per 'smart' but set scope as package/default
      * <li>'protected' - process as per 'smart' but set scope as protected
      * <li>'set' - generates setXxx()
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)

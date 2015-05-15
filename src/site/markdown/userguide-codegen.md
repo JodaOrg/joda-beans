@@ -113,6 +113,7 @@ In most cases, the default "smart" setting is sufficient:
 * "" - do not generate any form of getter
 * "smart" - process intelligently, using "is" for `boolean` and "get" for other types
 * "private" - process as per "smart" but set scope as private
+* "package" - process as per 'smart' but set scope as package/default
 * "protected" - process as per "smart" but set scope as protected
 * "is" - generates `isXxx()`
 * "get" - generates `getXxx()`
@@ -147,6 +148,7 @@ In most cases, the default "smart" setting is sufficient:
 * "smart" - process intelligently - uses "set" unless final, when it will use "setClearAddAll"
  for common list types or "setClearPutAll" for common map types and `FlexiBean`
 * "private" - process as per "smart" but set scope as private
+* "package" - process as per 'smart' but set scope as package/default
 * "protected" - process as per "smart" but set scope as protected
 * "set" - generates `setXxx()`
 * "setClearAddAll" - generates `setXxx()` using `field.clear()` and `field.addAll(newData)`

@@ -60,6 +60,11 @@ public class RWOnlyBean extends DirectBean {
     @PropertyDefinition(get = "private", set = "private")
     private String priv;
     /**
+     * The package-scoped get/set property.
+     */
+    @PropertyDefinition(get = "package", set = "package")
+    private String pkg;
+    /**
      * The protected get/set property.
      */
     @PropertyDefinition(get = "protected", set = "protected")
@@ -191,6 +196,31 @@ public class RWOnlyBean extends DirectBean {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the package-scoped get/set property.
+     * @return the value of the property
+     */
+    String getPkg() {
+        return pkg;
+    }
+
+    /**
+     * Sets the package-scoped get/set property.
+     * @param pkg  the new value of the property
+     */
+    void setPkg(String pkg) {
+        this.pkg = pkg;
+    }
+
+    /**
+     * Gets the the {@code pkg} property.
+     * @return the property, not null
+     */
+    public final Property<String> pkg() {
+        return metaBean().pkg().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the protected get/set property.
      * @return the value of the property
      */
@@ -259,6 +289,7 @@ public class RWOnlyBean extends DirectBean {
                     JodaBeanUtils.equal(wo, other.wo) &&
                     JodaBeanUtils.equal(getFin(), other.getFin()) &&
                     JodaBeanUtils.equal(getPriv(), other.getPriv()) &&
+                    JodaBeanUtils.equal(getPkg(), other.getPkg()) &&
                     JodaBeanUtils.equal(getProt(), other.getProt()) &&
                     JodaBeanUtils.equal(field, other.field) &&
                     JodaBeanUtils.equal(getManualGet(), other.getManualGet());
@@ -273,6 +304,7 @@ public class RWOnlyBean extends DirectBean {
         hash = hash * 31 + JodaBeanUtils.hashCode(wo);
         hash = hash * 31 + JodaBeanUtils.hashCode(getFin());
         hash = hash * 31 + JodaBeanUtils.hashCode(getPriv());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getPkg());
         hash = hash * 31 + JodaBeanUtils.hashCode(getProt());
         hash = hash * 31 + JodaBeanUtils.hashCode(field);
         hash = hash * 31 + JodaBeanUtils.hashCode(getManualGet());
@@ -281,7 +313,7 @@ public class RWOnlyBean extends DirectBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(288);
+        StringBuilder buf = new StringBuilder(320);
         buf.append("RWOnlyBean{");
         int len = buf.length();
         toString(buf);
@@ -297,6 +329,7 @@ public class RWOnlyBean extends DirectBean {
         buf.append("wo").append('=').append(JodaBeanUtils.toString(wo)).append(',').append(' ');
         buf.append("fin").append('=').append(JodaBeanUtils.toString(getFin())).append(',').append(' ');
         buf.append("priv").append('=').append(JodaBeanUtils.toString(getPriv())).append(',').append(' ');
+        buf.append("pkg").append('=').append(JodaBeanUtils.toString(getPkg())).append(',').append(' ');
         buf.append("prot").append('=').append(JodaBeanUtils.toString(getProt())).append(',').append(' ');
         buf.append("field").append('=').append(JodaBeanUtils.toString(field)).append(',').append(' ');
         buf.append("manualGet").append('=').append(JodaBeanUtils.toString(getManualGet())).append(',').append(' ');
@@ -334,6 +367,11 @@ public class RWOnlyBean extends DirectBean {
         private final MetaProperty<String> priv = DirectMetaProperty.ofReadWrite(
                 this, "priv", RWOnlyBean.class, String.class);
         /**
+         * The meta-property for the {@code pkg} property.
+         */
+        private final MetaProperty<String> pkg = DirectMetaProperty.ofReadWrite(
+                this, "pkg", RWOnlyBean.class, String.class);
+        /**
          * The meta-property for the {@code prot} property.
          */
         private final MetaProperty<String> prot = DirectMetaProperty.ofReadWrite(
@@ -362,6 +400,7 @@ public class RWOnlyBean extends DirectBean {
                 "wo",
                 "fin",
                 "priv",
+                "pkg",
                 "prot",
                 "field",
                 "manualGet",
@@ -384,6 +423,8 @@ public class RWOnlyBean extends DirectBean {
                     return fin;
                 case 3449519:  // priv
                     return priv;
+                case 111052:  // pkg
+                    return pkg;
                 case 3449703:  // prot
                     return prot;
                 case 97427706:  // field
@@ -445,6 +486,14 @@ public class RWOnlyBean extends DirectBean {
         }
 
         /**
+         * The meta-property for the {@code pkg} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<String> pkg() {
+            return pkg;
+        }
+
+        /**
          * The meta-property for the {@code prot} property.
          * @return the meta-property, not null
          */
@@ -491,6 +540,8 @@ public class RWOnlyBean extends DirectBean {
                     return ((RWOnlyBean) bean).getFin();
                 case 3449519:  // priv
                     return ((RWOnlyBean) bean).getPriv();
+                case 111052:  // pkg
+                    return ((RWOnlyBean) bean).getPkg();
                 case 3449703:  // prot
                     return ((RWOnlyBean) bean).getProt();
                 case 97427706:  // field
@@ -521,6 +572,9 @@ public class RWOnlyBean extends DirectBean {
                     throw new UnsupportedOperationException("Property cannot be written: fin");
                 case 3449519:  // priv
                     ((RWOnlyBean) bean).setPriv((String) newValue);
+                    return;
+                case 111052:  // pkg
+                    ((RWOnlyBean) bean).setPkg((String) newValue);
                     return;
                 case 3449703:  // prot
                     ((RWOnlyBean) bean).setProt((String) newValue);
