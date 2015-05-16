@@ -41,10 +41,12 @@ public @interface BeanDefinition {
     String style() default "smart";
 
     /**
-     * The scope of the builder class, currently just for immutable beans.
+     * The scope of the builder class.
      * <p>
-     * By default, this follows 'smart' rules.
+     * By default, this follows 'smart' rules, which generate a public builder for
+     * immutable beans and no builder for mutable beans.
      * Set to 'private' to generate a private builder.
+     * Set to 'package' to generate a package-scoped builder.
      * Set to 'public' to generate a public builder.
      */
     String builderScope() default "smart";

@@ -16,26 +16,26 @@
 package org.joda.beans.gen;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
-import org.joda.beans.impl.direct.DirectBeanBuilder;
+import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import java.util.Set;
 
 /**
  * Mock tuple, used for testing.
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(builderScope = "package")
 public final class TupleFinal<X, Y, Z> implements Bean {
 
     /**
@@ -82,6 +82,27 @@ public final class TupleFinal<X, Y, Z> implements Bean {
 
     static {
         JodaBeanUtils.registerMetaBean(TupleFinal.Meta.INSTANCE);
+    }
+
+    /**
+     * Returns a builder used to create an instance of the bean.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
+     * @return the builder, not null
+     */
+    static <X, Y, Z> TupleFinal.Builder<X, Y, Z> builder() {
+        return new TupleFinal.Builder<X, Y, Z>();
+    }
+
+    /**
+     * Restricted constructor.
+     * @param builder  the builder to copy from, not null
+     */
+    private TupleFinal(TupleFinal.Builder<X, Y, Z> builder) {
+        this.first = builder.first;
+        this.second = builder.second;
+        this.third = builder.third;
     }
 
     @SuppressWarnings("unchecked")
@@ -276,8 +297,8 @@ public final class TupleFinal<X, Y, Z> implements Bean {
         }
 
         @Override
-        public BeanBuilder<? extends TupleFinal<X, Y, Z>> builder() {
-            return new DirectBeanBuilder<TupleFinal<X, Y, Z>>(new TupleFinal<X, Y, Z>());
+        public TupleFinal.Builder<X, Y, Z> builder() {
+            return new TupleFinal.Builder<X, Y, Z>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -345,6 +366,151 @@ public final class TupleFinal<X, Y, Z> implements Bean {
                     return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
+        }
+
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * The bean-builder for {@code TupleFinal}.
+     * @param <X>  the type
+     * @param <Y>  the type
+     * @param <Z>  the type
+     */
+    static final class Builder<X, Y, Z> extends DirectFieldsBeanBuilder<TupleFinal<X, Y, Z>> {
+
+        private X first;
+        private Y second;
+        private Z third;
+
+        /**
+         * Restricted constructor.
+         */
+        private Builder() {
+        }
+
+        /**
+         * Restricted copy constructor.
+         * @param beanToCopy  the bean to copy from, not null
+         */
+        private Builder(TupleFinal<X, Y, Z> beanToCopy) {
+            this.first = beanToCopy.getFirst();
+            this.second = beanToCopy.getSecond();
+            this.third = beanToCopy.getThird();
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public Object get(String propertyName) {
+            switch (propertyName.hashCode()) {
+                case 97440432:  // first
+                    return first;
+                case -906279820:  // second
+                    return second;
+                case 110331239:  // third
+                    return third;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Builder<X, Y, Z> set(String propertyName, Object newValue) {
+            switch (propertyName.hashCode()) {
+                case 97440432:  // first
+                    this.first = (X) newValue;
+                    break;
+                case -906279820:  // second
+                    this.second = (Y) newValue;
+                    break;
+                case 110331239:  // third
+                    this.third = (Z) newValue;
+                    break;
+                default:
+                    throw new NoSuchElementException("Unknown property: " + propertyName);
+            }
+            return this;
+        }
+
+        @Override
+        public Builder<X, Y, Z> set(MetaProperty<?> property, Object value) {
+            super.set(property, value);
+            return this;
+        }
+
+        @Override
+        public Builder<X, Y, Z> setString(String propertyName, String value) {
+            setString(meta().metaProperty(propertyName), value);
+            return this;
+        }
+
+        @Override
+        public Builder<X, Y, Z> setString(MetaProperty<?> property, String value) {
+            super.setString(property, value);
+            return this;
+        }
+
+        @Override
+        public Builder<X, Y, Z> setAll(Map<String, ? extends Object> propertyValueMap) {
+            super.setAll(propertyValueMap);
+            return this;
+        }
+
+        @Override
+        public TupleFinal<X, Y, Z> build() {
+            return new TupleFinal<X, Y, Z>(this);
+        }
+
+        //-----------------------------------------------------------------------
+        /**
+         * Sets the first value.
+         * @param first  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder<X, Y, Z> first(X first) {
+            this.first = first;
+            return this;
+        }
+
+        /**
+         * Sets the second value.
+         * @param second  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder<X, Y, Z> second(Y second) {
+            this.second = second;
+            return this;
+        }
+
+        /**
+         * Sets the third value.
+         * @param third  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder<X, Y, Z> third(Z third) {
+            this.third = third;
+            return this;
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder(128);
+            buf.append("TupleFinal.Builder{");
+            int len = buf.length();
+            toString(buf);
+            if (buf.length() > len) {
+                buf.setLength(buf.length() - 2);
+            }
+            buf.append('}');
+            return buf.toString();
+        }
+
+        protected void toString(StringBuilder buf) {
+            buf.append("first").append('=').append(JodaBeanUtils.toString(first)).append(',').append(' ');
+            buf.append("second").append('=').append(JodaBeanUtils.toString(second)).append(',').append(' ');
+            buf.append("third").append('=').append(JodaBeanUtils.toString(third)).append(',').append(' ');
         }
 
     }

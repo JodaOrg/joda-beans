@@ -198,9 +198,10 @@ class BeanGen {
             insertRegion.add("\t * @return the builder, not null");
             insertRegion.add("\t */");
             if (data.isTypeGeneric()) {
-                insertRegion.add("\tpublic static " + data.getTypeGeneric(true) + " " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
+                insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + data.getTypeGeneric(true) +
+                                " " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
             } else {
-                insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Builder builder() {");
+                insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + data.getTypeRaw() + ".Builder builder() {");
             }
             insertRegion.add("\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
             insertRegion.add("\t}");
@@ -454,7 +455,7 @@ class BeanGen {
                     if (data.isRootClass() == false) {
                         insertRegion.add("\t@Override");
                     }
-                    insertRegion.add("\tpublic Builder" + data.getTypeGenericName(true) + " toBuilder() {");
+                    insertRegion.add("\t" + data.getEffectiveBuilderScope() + "Builder" + data.getTypeGenericName(true) + " toBuilder() {");
                     insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
                     insertRegion.add("\t}");
                     insertRegion.add("");
@@ -898,10 +899,10 @@ class BeanGen {
             superBuilder = "DirectFieldsBeanBuilder<" + data.getTypeNoExtends() + ">";
         }
         if (data.isConstructable()) {
-            insertRegion.add("\t" + data.getEffectiveBuilderScope() + " static " + finalType +
+            insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + finalType +
                     "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
         } else {
-            insertRegion.add("\t" + data.getEffectiveBuilderScope() + " abstract static " + finalType +
+            insertRegion.add("\t" + data.getEffectiveBuilderScope() + "abstract static " + finalType +
                     "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
         }
         if (nonDerived.size() > 0) {

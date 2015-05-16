@@ -195,7 +195,10 @@ class BeanData {
      * @return the flag
      */
     public boolean isBeanBuilderScopeValid() {
-        return "smart".equals(beanBuilderScope) || "private".equals(beanBuilderScope) || "public".equals(beanBuilderScope);
+        return "smart".equals(beanBuilderScope) ||
+                "private".equals(beanBuilderScope) ||
+                "package".equals(beanBuilderScope) ||
+                "public".equals(beanBuilderScope);
     }
 
     /**
@@ -203,7 +206,12 @@ class BeanData {
      * @return the scope
      */
     public String getEffectiveBuilderScope() {
-        return "smart".equals(beanBuilderScope) ? "public" : beanBuilderScope;
+        if ("smart".equals(beanBuilderScope)) {
+            return "public ";
+        } else if ("package".equals(beanBuilderScope)) {
+            return "";
+        }
+        return beanBuilderScope + " ";
     }
 
     /**
@@ -211,7 +219,7 @@ class BeanData {
      * @return the scope
      */
     public boolean isEffectiveBuilderScopePublic() {
-        return "smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope);
+        return "smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope);
     }
 
     /**
@@ -219,7 +227,7 @@ class BeanData {
      * @return the scope
      */
     public boolean isBuilderScopePublic() {
-        return "public".equals(beanBuilderScope);
+        return "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope);
     }
 
     //-----------------------------------------------------------------------

@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6" date="SNAPSHOT" description="v1.6">
       <action dev="jodastephen" type="add">
+         Support package-scoped builder classes.
+         Fixes #109.
+      </action>
+      <action dev="jodastephen" type="add">
          Support package-scoped getters/setters.
          Fixes #108.
       </action>

@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(builderScope = "package")
 public final class ImmUnusedGeneric<T> implements ImmutableBean {
 
     @PropertyDefinition(validate = "notNull")
@@ -73,7 +73,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      * @param <T>  the type
      * @return the builder, not null
      */
-    public static <T> ImmUnusedGeneric.Builder<T> builder() {
+    static <T> ImmUnusedGeneric.Builder<T> builder() {
         return new ImmUnusedGeneric.Builder<T>();
     }
 
@@ -113,7 +113,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      * Returns a builder that allows this bean to be mutated.
      * @return the mutable builder, not null
      */
-    public Builder<T> toBuilder() {
+    Builder<T> toBuilder() {
         return new Builder<T>(this);
     }
 
@@ -235,7 +235,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      * The bean-builder for {@code ImmUnusedGeneric}.
      * @param <T>  the type
      */
-    public static final class Builder<T> extends DirectFieldsBeanBuilder<ImmUnusedGeneric<T>> {
+    static final class Builder<T> extends DirectFieldsBeanBuilder<ImmUnusedGeneric<T>> {
 
         private String _errorMessage;
 

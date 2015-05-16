@@ -354,7 +354,8 @@ Any subclass should logically also be immutable, but must set the
 Immutable beans do not have set methods.
 Instead, a public builder class will be generated with methods to setup an instance.
 This supports code based manipulation, using the `toBuilder()` method.
-The scope of the builder may be controlled in the bean definition:
+The scope of the builder, public private or package-scoped, may be controlled in the bean definition.
+The default is public for immutable beans and no-builder for mutable beans:
 
 ```
  @BeanDefinition(builderScope = "private")
