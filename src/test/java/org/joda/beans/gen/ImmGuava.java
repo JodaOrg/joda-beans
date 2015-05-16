@@ -59,7 +59,7 @@ import com.google.common.collect.SortedMultiset;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(builderScope = "public")
+@BeanDefinition(builderScope = "public", constructorScope = "public")
 public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
     @PropertyDefinition(validate = "notNull")
@@ -177,7 +177,42 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         return new ImmGuava.Builder<T>();
     }
 
-    private ImmGuava(
+    /**
+     * Creates an instance.
+     * @param collection  the value of the property, not null
+     * @param list  the value of the property, not null
+     * @param set  the value of the property, not null
+     * @param sortedSet  the value of the property, not null
+     * @param map  the value of the property, not null
+     * @param sortedMap  the value of the property, not null
+     * @param biMap  the value of the property, not null
+     * @param multimap  the value of the property, not null
+     * @param listMultimap  the value of the property, not null
+     * @param setMultimap  the value of the property, not null
+     * @param multiset  the value of the property, not null
+     * @param sortedMultiset  the value of the property, not null
+     * @param collectionInterface  the value of the property, not null
+     * @param listInterface  the value of the property, not null
+     * @param setInterface  the value of the property, not null
+     * @param sortedSetInterface  the value of the property, not null
+     * @param mapInterface  the value of the property, not null
+     * @param sortedMapInterface  the value of the property, not null
+     * @param biMapInterface  the value of the property, not null
+     * @param multimapInterface  the value of the property, not null
+     * @param listMultimapInterface  the value of the property, not null
+     * @param setMultimapInterface  the value of the property, not null
+     * @param multisetInterface  the value of the property, not null
+     * @param sortedMultisetInterface  the value of the property, not null
+     * @param listObject  the value of the property, not null
+     * @param listWild  the value of the property, not null
+     * @param listWildExtendsT  the value of the property, not null
+     * @param listWildExtendsNumber  the value of the property, not null
+     * @param listWildExtendsComparable  the value of the property, not null
+     * @param setWildExtendsT  the value of the property, not null
+     * @param setWildExtendsNumber  the value of the property, not null
+     * @param setWildExtendsComparable  the value of the property, not null
+     */
+    public ImmGuava(
             Collection<? extends T> collection,
             List<? extends T> list,
             Set<? extends T> set,

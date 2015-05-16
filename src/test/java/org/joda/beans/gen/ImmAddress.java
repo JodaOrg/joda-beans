@@ -44,7 +44,7 @@ import com.google.common.collect.Table;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(constructorScope = "private")
 public final class ImmAddress implements ImmutableBean, Serializable {
 
     /**

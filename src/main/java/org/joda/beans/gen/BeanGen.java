@@ -274,12 +274,28 @@ class BeanGen {
     private void generateArgBasedConstructor() {
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS && data.getImmutableConstructor() == CONSTRUCTOR_NONE && 
                 ((data.isMutable() && data.isBuilderScopePublic()) || data.isImmutable())) {
+            String scope = data.getEffectiveConstructorScope();
+            boolean generateJavadoc = !"private ".equals(scope);
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (nonDerived.size() == 0) {
-                insertRegion.add("\tprivate " + data.getTypeRaw() + "() {");
+                if (generateJavadoc) {
+                    insertRegion.add("\t/**");
+                    insertRegion.add("\t * Creates an instance.");
+                    insertRegion.add("\t */");
+                }
+                insertRegion.add("\t" + scope + data.getTypeRaw() + "() {");
             } else {
                 // signature
-                insertRegion.add("\tprivate " + data.getTypeRaw() + "(");
+                if (generateJavadoc) {
+                    insertRegion.add("\t/**");
+                    insertRegion.add("\t * Creates an instance.");
+                    for (int i = 0; i < nonDerived.size(); i++) {
+                        PropertyData prop = nonDerived.get(i).getData();
+                        insertRegion.add("\t * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
+                    }
+                    insertRegion.add("\t */");
+                }
+                insertRegion.add("\t" + scope + data.getTypeRaw() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
                     insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));

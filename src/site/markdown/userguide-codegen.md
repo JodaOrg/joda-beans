@@ -329,6 +329,29 @@ Simply set the boolean 'cacheHashCode' flag of '@BeanDefinition' to true.
  }
 ```
 
+Immutable beans do not have set methods.
+Instead, a public builder class will be generated with methods to setup an instance.
+This supports code based manipulation, using the `toBuilder()` method.
+The scope of the builder, public private or package-scoped, may be controlled in the bean definition.
+The default is public for immutable beans and no-builder for mutable beans:
+
+```
+ @BeanDefinition(builderScope = "private")
+ public final class Bar implements ImmutableBean {
+   // code generated immutable bean with private builder
+ }
+```
+
+The scope of the generated constructor for immutable beans can be controlled.
+The default is to be as private as possible for the needs of the builder, typically private:
+
+```
+ @BeanDefinition(constructorScope = "package")
+ public final class Bar implements ImmutableBean {
+   // code generated immutable bean with package-scoped constructor
+ }
+```
+
 
 ## Immutable bean hierarchies
 
@@ -348,19 +371,6 @@ Any subclass should logically also be immutable, but must set the
  public final class Foo extends SuperFoo {
    // code generation will connect to superclass
    // note that there is NO 'implements ImmutableBean' on the subclass
- }
-```
-
-Immutable beans do not have set methods.
-Instead, a public builder class will be generated with methods to setup an instance.
-This supports code based manipulation, using the `toBuilder()` method.
-The scope of the builder, public private or package-scoped, may be controlled in the bean definition.
-The default is public for immutable beans and no-builder for mutable beans:
-
-```
- @BeanDefinition(builderScope = "private")
- public final class Bar implements ImmutableBean {
-   // code generated immutable bean with private builder
  }
 ```
 

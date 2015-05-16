@@ -53,6 +53,8 @@ class BeanData {
     private String immutablePreBuild;
     /** The style of constructor to generate. */
     private int constructorStyle;
+    /** The generated constructor scope. */
+    private String constructorScope;
     /** The full type of the bean class. */
     private String typeFull;
     /** The simple name of the bean class. */
@@ -191,7 +193,7 @@ class BeanData {
     }
 
     /**
-     * Is the bean style indicating that properties should be generated.
+     * Is the builder scope valid.
      * @return the flag
      */
     public boolean isBeanBuilderScopeValid() {
@@ -366,6 +368,48 @@ class BeanData {
      */
     public void setConstructorStyle(int constructorStyle) {
         this.constructorStyle = constructorStyle;
+    }
+
+    /**
+     * Gets the constructor scope to generate.
+     * @return the scope
+     */
+    public String getConstructorScope() {
+        return constructorScope;
+    }
+
+    /**
+     * Sets the constructor scope to generate.
+     * @param constructorScope  the constructor scope
+     */
+    public void setConstructorScope(String constructorScope) {
+        this.constructorScope = constructorScope;
+    }
+
+    /**
+     * Is the constructor scope valid.
+     * @return true if valid
+     */
+    public boolean isConstructorScopeValid() {
+        return "smart".equals(constructorScope) ||
+                "private".equals(constructorScope) ||
+                "package".equals(constructorScope) ||
+                "protected".equals(constructorScope) ||
+                "public".equals(constructorScope);
+    }
+
+    /**
+     * Gets the effective scope to use in the constructor.
+     * @param defaultScope  the default scope
+     * @return the scope
+     */
+    public String getEffectiveConstructorScope() {
+        if ("smart".equals(constructorScope)) {
+            return isTypeFinal() ? "private " : "protected ";
+        } else if ("package".equals(constructorScope)) {
+            return "";
+        }
+        return constructorScope + " ";
     }
 
     /**

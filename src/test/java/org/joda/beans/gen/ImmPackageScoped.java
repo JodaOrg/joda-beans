@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(constructorScope = "package")
 final class ImmPackageScoped implements ImmutableBean {
 
     @PropertyDefinition(validate = "notNull")
@@ -64,7 +64,11 @@ final class ImmPackageScoped implements ImmutableBean {
         return new ImmPackageScoped.Builder();
     }
 
-    private ImmPackageScoped(
+    /**
+     * Creates an instance.
+     * @param name  the value of the property, not null
+     */
+    ImmPackageScoped(
             String name) {
         JodaBeanUtils.notNull(name, "name");
         this.name = name;

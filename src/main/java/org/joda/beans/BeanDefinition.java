@@ -41,6 +41,18 @@ public @interface BeanDefinition {
     String style() default "smart";
 
     /**
+     * The scope of the generated constructor.
+     * <p>
+     * Only applicable to immutable beans. By default, this follows 'smart'
+     * rules, which generate a private constructor when needed by the builder.
+     * Set to 'private' to generate a private constructor.
+     * Set to 'package' to generate a package-scoped constructor.
+     * Set to 'protected' to generate a protected constructor.
+     * Set to 'public' to generate a public constructor.
+     */
+    String constructorScope() default "smart";
+
+    /**
      * The scope of the builder class.
      * <p>
      * By default, this follows 'smart' rules, which generate a public builder for

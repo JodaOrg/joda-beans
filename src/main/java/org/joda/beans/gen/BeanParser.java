@@ -78,6 +78,8 @@ class BeanParser {
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The constructorScope pattern. */
+    private static final Pattern CONSTRUCTOR_SCOPE_PATTERN = Pattern.compile(".*[ ,(]constructorScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The hierarchy pattern. */
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The cacheHashCode pattern. */
@@ -143,6 +145,10 @@ class BeanParser {
         if (data.isBeanStyleValid() == false) {
             throw new BeanCodeGenException("Invalid bean style: " + data.getBeanStyle(), file, beanDefIndex);
         }
+        data.setConstructorScope(parseConstrucorScope(beanDefIndex));
+        if (data.isConstructorScopeValid() == false) {
+            throw new BeanCodeGenException("Invalid constructor scope: " + data.getBeanStyle(), file, beanDefIndex);
+        }
         data.setBeanBuilderScope(parseBeanBuilderScope(beanDefIndex));
         if (data.isBeanBuilderScopeValid() == false) {
             throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanStyle(), file, beanDefIndex);
@@ -189,9 +195,15 @@ class BeanParser {
                             file, prop.getData().getLineIndex());
                 }
             }
-        } else if (data.getImmutableConstructor() > CONSTRUCTOR_NONE) {
-            throw new BeanCodeGenException("Mutable beans must not specify @ImmutableConstructor: " +
-                    data.getTypeRaw(), file, beanDefIndex);
+        } else {
+            if (data.getImmutableConstructor() > CONSTRUCTOR_NONE) {
+                throw new BeanCodeGenException("Mutable beans must not specify @ImmutableConstructor: " +
+                        data.getTypeRaw(), file, beanDefIndex);
+            }
+            if (!"smart".equals(data.getConstructorScope())) {
+                throw new BeanCodeGenException("Mutable beans must not specify @BeanDefinition(constructorScope): " +
+                                data.getTypeRaw(), file, beanDefIndex);
+            }
         }
         if (data.isCacheHashCode()) {
             data.setCacheHashCode(data.isImmutable() && data.isManualEqualsHashCode() == false);
@@ -237,6 +249,15 @@ class BeanParser {
     private String parseBeanStyle(int defLine) {
         String line = content.get(defLine).trim();
         Matcher matcher = STYLE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+
+    private String parseConstrucorScope(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = CONSTRUCTOR_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
