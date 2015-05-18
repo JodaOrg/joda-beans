@@ -44,6 +44,7 @@ import org.joda.beans.ser.SerTypeMapper;
  * The JSON format is defined by {@link JodaBeanJsonWriter}.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
+ * A new instance must be created for each message.
  */
 public class JodaBeanJsonReader {
 

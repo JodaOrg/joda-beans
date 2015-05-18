@@ -33,6 +33,7 @@ import org.joda.beans.ser.SerTypeMapper;
  * Provides the ability for a Joda-Bean to be written to a binary format.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
+ * A new instance must be created for each message.
  * <p>
  * The binary format is based on MessagePack v2.0.
  * Each bean is output as a map using the property name.

@@ -44,6 +44,7 @@ import org.joda.convert.StringConverter;
  * Provides the ability for a Joda-Bean to be written to XML.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
+ * A new instance must be created for each message.
  * <p>
  * The XML consists of a root level 'bean' element with a 'type' attribute.
  * At each subsequent level, a bean is output using the property name.

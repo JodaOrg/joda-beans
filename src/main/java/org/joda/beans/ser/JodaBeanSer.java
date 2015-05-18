@@ -221,6 +221,8 @@ public final class JodaBeanSer {
     //-----------------------------------------------------------------------
     /**
      * Creates a binary writer.
+     * <p>
+     * A new instance of the writer must be created for each message.
      * 
      * @return the binary writer, not null
      */
@@ -230,6 +232,8 @@ public final class JodaBeanSer {
 
     /**
      * Creates a binary reader.
+     * <p>
+     * A new instance of the reader must be created for each message.
      * 
      * @return the binary reader, not null
      */
@@ -240,6 +244,8 @@ public final class JodaBeanSer {
     //-----------------------------------------------------------------------
     /**
      * Creates an XML writer.
+     * <p>
+     * A new instance of the writer must be created for each message.
      * 
      * @return the XML writer, not null
      */
@@ -249,6 +255,8 @@ public final class JodaBeanSer {
 
     /**
      * Creates an XML reader.
+     * <p>
+     * A new instance of the reader must be created for each message.
      * 
      * @return the XML reader, not null
      */
@@ -259,6 +267,8 @@ public final class JodaBeanSer {
     //-----------------------------------------------------------------------
     /**
      * Creates a JSON writer.
+     * <p>
+     * A new instance of the writer must be created for each message.
      * 
      * @return the JSON writer, not null
      */
@@ -268,6 +278,8 @@ public final class JodaBeanSer {
 
     /**
      * Creates a JSON reader.
+     * <p>
+     * A new instance of the reader must be created for each message.
      * 
      * @return the JSON reader, not null
      */

@@ -60,6 +60,7 @@ import org.joda.beans.ser.SerTypeMapper;
  * The XML format is defined by {@link JodaBeanXmlWriter}.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
+ * A new instance must be created for each message.
  *
  * @author Stephen Colebourne
  */

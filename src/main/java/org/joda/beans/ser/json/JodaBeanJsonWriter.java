@@ -33,6 +33,7 @@ import org.joda.convert.StringConverter;
  * Provides the ability for a Joda-Bean to be written to JSON.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
+ * A new instance must be created for each message.
  * <p>
  * The JSON format is kept relatively natural, however some meta-data is added.
  * This has the unfortunate effect of adding an additional object structure to
