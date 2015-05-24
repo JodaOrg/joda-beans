@@ -32,12 +32,6 @@
          Support package-scoped getters/setters.
          Fixes #108.
       </action>
-      <action dev="jodastephen" type="add">
-         Enhance generation of builder methods to add "? extends".
-         Where it is safe and simple to do so, add "? extends" for builder input methods
-         and generated constructors. This is safe in variance terms for immutable classes.
-         Fixes #103.
-      </action>
       <action dev="jodastephen" type="fix">
          Enhance generation of varargs builder methods.
          Support "List&lt;? extends Foo&gt;" and "List&lt;?&gt;"

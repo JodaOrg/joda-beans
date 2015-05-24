@@ -258,7 +258,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
     public static class Builder extends ImmPersonNonFinal.Builder {
 
         private String middleName;
-        private List<? extends Address> addressList;
+        private List<Address> addressList;
 
         /**
          * Restricted constructor.
@@ -296,7 +296,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
                     this.middleName = (String) newValue;
                     break;
                 case -1377524046:  // addressList
-                    this.addressList = (List<? extends Address>) newValue;
+                    this.addressList = (List<Address>) newValue;
                     break;
                 default:
                     super.set(propertyName, newValue);
@@ -350,7 +350,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
          * @param addressList  the new value
          * @return this, for chaining, not null
          */
-        public Builder addressList(List<? extends Address> addressList) {
+        public Builder addressList(List<Address> addressList) {
             this.addressList = addressList;
             return this;
         }

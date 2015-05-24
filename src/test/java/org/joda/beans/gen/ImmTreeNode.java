@@ -85,7 +85,7 @@ public final class ImmTreeNode implements ImmutableBean {
             ImmTreeNode child1,
             ImmTreeNode child2,
             ImmTreeNode child3,
-            List<? extends ImmTreeNode> childList) {
+            List<ImmTreeNode> childList) {
         JodaBeanUtils.notNull(name, "name");
         JodaBeanUtils.notNull(childList, "childList");
         this.name = name;
@@ -373,7 +373,7 @@ public final class ImmTreeNode implements ImmutableBean {
         private ImmTreeNode child1;
         private ImmTreeNode child2;
         private ImmTreeNode child3;
-        private List<? extends ImmTreeNode> childList = ImmutableList.of();
+        private List<ImmTreeNode> childList = ImmutableList.of();
 
         /**
          * Restricted constructor.
@@ -429,7 +429,7 @@ public final class ImmTreeNode implements ImmutableBean {
                     this.child3 = (ImmTreeNode) newValue;
                     break;
                 case -95409190:  // childList
-                    this.childList = (List<? extends ImmTreeNode>) newValue;
+                    this.childList = (List<ImmTreeNode>) newValue;
                     break;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
@@ -518,7 +518,7 @@ public final class ImmTreeNode implements ImmutableBean {
          * @param childList  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder childList(List<? extends ImmTreeNode> childList) {
+        public Builder childList(List<ImmTreeNode> childList) {
             JodaBeanUtils.notNull(childList, "childList");
             this.childList = childList;
             return this;

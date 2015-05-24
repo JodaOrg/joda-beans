@@ -133,8 +133,8 @@ public final class ImmPerson implements ImmutableBean {
             int numberOfCars,
             Date dateOfBirth,
             String[] middleNames,
-            List<? extends Address> addressList,
-            Map<String, ? extends Address> otherAddressMap,
+            List<Address> addressList,
+            Map<String, Address> otherAddressMap,
             List<List<Address>> addressesList,
             ImmAddress mainAddress,
             Multiset<String> codeCounts) {
@@ -602,8 +602,8 @@ public final class ImmPerson implements ImmutableBean {
         private int numberOfCars;
         private Date dateOfBirth;
         private String[] middleNames;
-        private List<? extends Address> addressList;
-        private Map<String, ? extends Address> otherAddressMap;
+        private List<Address> addressList;
+        private Map<String, Address> otherAddressMap;
         private List<List<Address>> addressesList;
         private ImmAddress mainAddress;
         private Multiset<String> codeCounts;
@@ -681,10 +681,10 @@ public final class ImmPerson implements ImmutableBean {
                     this.middleNames = (String[]) newValue;
                     break;
                 case -1377524046:  // addressList
-                    this.addressList = (List<? extends Address>) newValue;
+                    this.addressList = (List<Address>) newValue;
                     break;
                 case 1368089592:  // otherAddressMap
-                    this.otherAddressMap = (Map<String, ? extends Address>) newValue;
+                    this.otherAddressMap = (Map<String, Address>) newValue;
                     break;
                 case -226885792:  // addressesList
                     this.addressesList = (List<List<Address>>) newValue;
@@ -797,7 +797,7 @@ public final class ImmPerson implements ImmutableBean {
          * @param addressList  the new value
          * @return this, for chaining, not null
          */
-        public Builder addressList(List<? extends Address> addressList) {
+        public Builder addressList(List<Address> addressList) {
             this.addressList = addressList;
             return this;
         }
@@ -817,7 +817,7 @@ public final class ImmPerson implements ImmutableBean {
          * @param otherAddressMap  the new value
          * @return this, for chaining, not null
          */
-        public Builder otherAddressMap(Map<String, ? extends Address> otherAddressMap) {
+        public Builder otherAddressMap(Map<String, Address> otherAddressMap) {
             this.otherAddressMap = otherAddressMap;
             return this;
         }

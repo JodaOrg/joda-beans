@@ -168,7 +168,7 @@ public class TestImmutable {
         ImmutableList<Integer> listInts = ImmutableList.<Integer>of(1, 2, 3);
         ImmGuava<Calendar> obj = ImmGuava.<Calendar>builder()
             .list(cal, gcal)
-            .list(listGcal)
+//            .list(listGcal)
             .list(listCal)
             .listWildExtendsT(listCal)
             .listWildExtendsT(listGcal)
