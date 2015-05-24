@@ -33,6 +33,10 @@
          Fixes #108.
       </action>
       <action dev="jodastephen" type="fix">
+         Allow immutable builder property type to be manually controlled.
+         Fixes #103.
+      </action>
+      <action dev="jodastephen" type="fix">
          Enhance generation of varargs builder methods.
          Support "List&lt;? extends Foo&gt;" and "List&lt;?&gt;"
          Fixes #104.

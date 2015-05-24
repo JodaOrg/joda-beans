@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -72,6 +72,8 @@ class PropertyData {
     private String upperName;
     /** Property type. */
     private String type;
+    /** The builder type. */
+    private String builderType;
     /** Property field type. */
     private String fieldType;
     /** Whether the field is declared final. */
@@ -90,6 +92,8 @@ class PropertyData {
     private boolean overrideSet;
     /** The type style. */
     private String typeStyle;
+    /** The builder type style. */
+    private String builderTypeStyle;
     /** The validation string. */
     private String validation;
     /** Deprecated flag. */
@@ -237,6 +241,22 @@ class PropertyData {
     }
 
     /**
+     * Gets the builder type.
+     * @return the type
+     */
+    public String getBuilderType() {
+        return builderType;
+    }
+
+    /**
+     * Sets the builder type.
+     * @param builderType  the type to set
+     */
+    public void setBuilderType(String builderType) {
+        this.builderType = builderType;
+    }
+
+    /**
      * Gets the field type.
      * @return the field type
      */
@@ -276,6 +296,33 @@ class PropertyData {
             }
         } else {
             setType(fieldType);
+        }
+    }
+
+    /**
+     * Resolves the field builder type.
+     */
+    public void resolveBuilderType() {
+        if (getBuilderTypeStyle() == null) {
+            setBuilderTypeStyle("");
+        }
+        final String fieldType = getFieldType();
+        String generics = "";
+        if (fieldType.contains("<")) {
+            generics = fieldType.substring(fieldType.indexOf('<'));
+        }
+        if (getBuilderTypeStyle().equals("smart")) {
+            setBuilderType(fieldType);
+        } else if (getBuilderTypeStyle().length() > 0) {
+            if (getBuilderTypeStyle().contains("<>")) {
+                setBuilderType(getBuilderTypeStyle().replace("<>", generics));
+            } else if (getBuilderTypeStyle().contains("<")) {
+                setBuilderType(getBuilderTypeStyle());
+            } else {
+                setBuilderType(getBuilderTypeStyle() + generics);
+            }
+        } else {
+            setBuilderType(fieldType);
         }
     }
 
@@ -357,6 +404,22 @@ class PropertyData {
      */
     public void setTypeStyle(String typeStyle) {
         this.typeStyle = typeStyle;
+    }
+
+    /**
+     * Gets the type builder type style.
+     * @return the builder type style
+     */
+    public String getBuilderTypeStyle() {
+        return builderTypeStyle;
+    }
+
+    /**
+     * Sets the builder type style.
+     * @param builderTypeStyle  the builder type style to set
+     */
+    public void setBuilderTypeStyle(String builderTypeStyle) {
+        this.builderTypeStyle = builderTypeStyle;
     }
 
     /**
@@ -756,7 +819,7 @@ class PropertyData {
             if (builder != null) {
                 builderGen = builder;
             } else {
-                builderGen = new BuilderGen.SimpleBuilderGen(getFieldType());
+                builderGen = new BuilderGen.SimpleBuilderGen();
             }
         }
     }

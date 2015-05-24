@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ abstract class BuilderGen {
      * @return the generated code, not null
      */
     String generateType(PropertyData prop) {
-        return prop.getType();
+        return prop.getBuilderType();
     }
 
     //-----------------------------------------------------------------------
@@ -68,14 +68,15 @@ abstract class BuilderGen {
         }
         @Override
         String generateType(PropertyData prop) {
+            if (!"smart".equals(prop.getBuilderTypeStyle())) {
+                return prop.getBuilderType().replace("<>", prop.getTypeGenerics());
+            }
             return type.replace("<>", prop.getTypeGenerics());
         }
     }
 
     static class SimpleBuilderGen extends BuilderGen {
-        private final String type;
-        SimpleBuilderGen(String type) {
-            this.type = type;
+        SimpleBuilderGen() {
         }
         @Override
         List<String> generateField(String indent, PropertyData prop) {
@@ -85,7 +86,7 @@ abstract class BuilderGen {
         }
         @Override
         String generateType(PropertyData prop) {
-            return type.replace("<>", prop.getTypeGenerics());
+            return prop.getBuilderType().replace("<>", prop.getTypeGenerics());
         }
     }
 

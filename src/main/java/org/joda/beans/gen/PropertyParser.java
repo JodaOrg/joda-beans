@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,7 +38,9 @@ class PropertyParser {
     /** The override pattern. */
     private static final Pattern OVERRIDE_SET_PATTERN = Pattern.compile(".*[ ,(]overrideSet[ ]*[=][ ]*(true|false).*");
     /** The type pattern. */
-    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9_<>?.]*)[\"].*");
+    private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9 ,_<>?.]*)[\"].*");
+    /** The type builder pattern. */
+    private static final Pattern BUILDER_TYPE_PATTERN = Pattern.compile(".*[ ,(]builderType[ ]*[=][ ]*[\"]([a-zA-Z0-9 ,_<>?.]*)[\"].*");
     /** The validation pattern. */
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(".*[ ,(]validate[ ]*[=][ ]*[\"]([a-zA-Z_.]*)[\"].*");
 
@@ -71,6 +73,7 @@ class PropertyParser {
         data.setOverrideGet(parseOverrideGet(content));
         data.setOverrideSet(parseOverrideSet(content));
         data.setTypeStyle(parseTypeStyle(content));
+        data.setBuilderTypeStyle(parseBuilderTypeStyle(content));
         data.setValidation(parseValidation(content));
         data.setDeprecated(parseDeprecated(content));
         data.setFieldName(parseFieldName(content));
@@ -80,6 +83,7 @@ class PropertyParser {
         data.setFieldType(parseFieldType(content));
         data.setInitializer(parseFieldInitializer(content));
         data.resolveType();
+        data.resolveBuilderType();
         data.resolveGetterGen(beanParser.getFile(), lineIndex);
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
@@ -100,12 +104,14 @@ class PropertyParser {
         data.setGetStyle("manual");
         data.setSetStyle("");
         data.setTypeStyle("");
+        data.setBuilderTypeStyle("");
         data.setDeprecated(parseDeprecated(content));
         data.setPropertyName(parseMethodNameAsPropertyName(content));
         data.setUpperName(makeUpperName(data.getPropertyName()));
         data.setFieldType(parseMethodType(content));
         data.setInitializer(parseFieldInitializer(content));
         data.resolveType();
+        data.resolveBuilderType();
         data.resolveGetterGen(beanParser.getFile(), lineIndex);
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
@@ -202,6 +208,15 @@ class PropertyParser {
     private String parseTypeStyle(List<String> content) {
         String line = content.get(propertyIndex).trim();
         Matcher matcher = TYPE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+
+    private String parseBuilderTypeStyle(List<String> content) {
+        String line = content.get(propertyIndex).trim();
+        Matcher matcher = BUILDER_TYPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }

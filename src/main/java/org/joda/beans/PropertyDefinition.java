@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -131,11 +131,26 @@ public @interface PropertyDefinition {
      * getters and setters, or similar.
      * <p>
      * This is used when the type of the field is not the same as the type
-     * as should be used in public methods such as getters and setters.
+     * that should be used in public methods such as getters and setters.
      * <p>
      * By default, the declared type will be used as the exposed type.
      */
     String type() default "smart";
+
+    /**
+     * The exposed type of the property in the builder and associated constructor.
+     * <p>
+     * The style is used to control the exposed type of the property in
+     * immutable builders and associated constructors, or similar.
+     * <p>
+     * This is used when the type of the field is not the same as the type
+     * that should be used in public methods such as builder setters.
+     * <p>
+     * By default, the declared type will be used as the exposed type.
+     * <p>
+     * This is typically used to add '? extends' to collection types.
+     */
+    String builderType() default "smart";
 
     /**
      * The validator to use.

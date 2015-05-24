@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -168,7 +168,6 @@ public class TestImmutable {
         ImmutableList<Integer> listInts = ImmutableList.<Integer>of(1, 2, 3);
         ImmGuava<Calendar> obj = ImmGuava.<Calendar>builder()
             .list(cal, gcal)
-//            .list(listGcal)
             .list(listCal)
             .listWildExtendsT(listCal)
             .listWildExtendsT(listGcal)

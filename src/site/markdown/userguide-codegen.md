@@ -210,6 +210,25 @@ Simply add the annotation parameter `type = "List<>"` (the generics are inserted
  }
 ```
 
+The exposed type of the property in the builder used for immutable beans can be specified using the annotation parameter "builderType".
+For example, if the field is declared as an `ImmutableList<Address>` but the public type of the builder methods
+should be `List<? extends Address>` then that can be achieved.
+Simply add the annotation parameter `builderType = "List<? extends Address>"`.
+
+```
+ @BeanDefinition
+ public final class Foo implements Bean {
+   @PropertyDefinition(builderType = "List<? extends Address>")
+   private ImmutableList<Address> addresses;
+
+   // generated getter as follows:
+   public ImmutableList<Address> getAddresses() { ... }
+
+   // generated builder method as follows:
+   public Builder addresses(List<? extends Address> addresses) { ... }
+ }
+```
+
 A properties getter and/or setter can be declared to override a superclass.
 Simply add the annotation parameter `overrideGet = true` or `overrideSet = true`
 and the requisite `@Override` annotation will be placed on the getter/setter.
