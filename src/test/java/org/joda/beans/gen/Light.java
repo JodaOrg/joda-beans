@@ -75,6 +75,7 @@ public final class Light implements ImmutableBean, Serializable {
 
     /**
      * The meta-bean for {@code Light}.
+     * @return the meta-bean, not null
      */
     public static MetaBean meta() {
         return META_BEAN;

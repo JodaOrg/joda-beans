@@ -337,6 +337,7 @@ class BeanGen {
             insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
             insertRegion.add("\tpublic static MetaBean meta() {");
             insertRegion.add("\t\treturn META_BEAN;");
@@ -349,13 +350,12 @@ class BeanGen {
             // raw types forever
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            insertRegion.add("\t * @return the meta-bean, not null");
             if (data.isTypeGeneric()) {
-                insertRegion.add("\t * @return the meta-bean, not null");
                 insertRegion.add("\t */");
                 insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
                 insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
             } else {
-                insertRegion.add("\t * @return the meta-bean, not null");
                 insertRegion.add("\t */");
                 insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
             }
