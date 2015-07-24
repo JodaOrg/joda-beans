@@ -40,6 +40,16 @@ public class TestLight {
         assertEquals(bean.getCity(), "Smallville");
         assertEquals(bean.getStreetName(), "Park Lane");
         assertEquals(bean.getOwner(), person);
+        
+        assertEquals(bean.metaBean().beanType(), Light.class);
+        assertEquals(bean.metaBean().metaPropertyCount(), 5);
+        assertEquals(bean.metaBean().metaPropertyExists("number"), true);
+        assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
+        assertEquals(mp.propertyType(), int.class);
+        assertEquals(mp.declaringType(), Light.class);
+        assertEquals(mp.get(bean), 12);
+        assertEquals(mp.style(), PropertyStyle.IMMUTABLE);
     }
 
 }

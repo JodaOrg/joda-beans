@@ -180,7 +180,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Class<?> declaringType() {
-        return propertyType;
+        return metaBean.beanType();
     }
 
     @Override
@@ -195,7 +195,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public PropertyStyle style() {
-        return PropertyStyle.READ_ONLY;
+        return PropertyStyle.IMMUTABLE;
     }
 
     @Override
