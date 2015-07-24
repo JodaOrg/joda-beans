@@ -43,13 +43,13 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.5.1](http://www.joda.org/joda-beans/download.html) is the current release.
+[Release 1.6](http://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 Joda-Beans runs on JDK 1.6 or later and requires [Joda-Convert](https://github.com/JodaOrg/joda-convert/)
 There are a number of [optional dependencies](http://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.5.1|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.6|jar)
 
 
 ### Support

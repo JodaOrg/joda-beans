@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.6" date="SNAPSHOT" description="v1.6">
+    <release version="1.6" date="2015-07-24" description="v1.6">
       <action dev="jodastephen" type="add">
          Add light-weight immutable bean generation.
          Light-weight code generation using reflection to implement the bean methods.
