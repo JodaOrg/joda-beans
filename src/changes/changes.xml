@@ -47,6 +47,11 @@
          Generate documentation for builder methods based on user-written docs.
          Fixes #106.
       </action>
+      <action dev="jodastephen" type="add">
+         Fix code generation for immutable beans where there are two generic types and the types are linked.
+         For example, Foo&lt;A, B extends Comparable&lt;A&gt;&gt;.
+         Fixes #110.
+      </action>
     </release>
     <release version="1.5.1" date="2015-02-12" description="v1.5.1">
       <action dev="jodastephen" type="fix">

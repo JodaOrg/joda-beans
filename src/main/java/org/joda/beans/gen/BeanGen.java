@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -399,17 +399,18 @@ class BeanGen {
         insertRegion.add("\t * @return the meta-bean, not null");
         insertRegion.add("\t */");
         insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        String[] typeNames = new String[] {"R", "S", "T"};
         if (data.getTypeGenericCount() == 1) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") + "> " + data.getTypeRaw() +
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) + "> " + data.getTypeRaw() +
                     ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
         } else if (data.getTypeGenericCount() == 2) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") +
-                    ", S" + data.getTypeGenericExtends(1, "S") + "> " + data.getTypeRaw() +
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
+                    ", S" + data.getTypeGenericExtends(1, typeNames) + "> " + data.getTypeRaw() +
                     ".Meta<R, S> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2) {");
         } else if (data.getTypeGenericCount() == 3) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") +
-                    ", S" + data.getTypeGenericExtends(1, "S") +
-                    ", T" + data.getTypeGenericExtends(2, "T") +
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
+                    ", S" + data.getTypeGenericExtends(1, typeNames) +
+                    ", T" + data.getTypeGenericExtends(2, typeNames) +
                     "> " + data.getTypeRaw() +
                     ".Meta<R, S, T> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2, Class<T> cls3) {");
         }

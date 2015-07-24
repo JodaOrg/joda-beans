@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -709,9 +709,15 @@ class BeanData {
      * @param typeParamIndex  the zero-based index of the type parameter
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
-    public String getTypeGenericExtends(int typeParamIndex, String typeParamName) {
+    public String getTypeGenericExtends(int typeParamIndex, String[] typeParamNames) {
         String genericClause = typeGenericExtends[typeParamIndex];
-        return genericClause.replace("<" + typeGenericName[typeParamIndex] + ">", "<" + typeParamName + ">");
+        genericClause = genericClause.replace("<" + typeGenericName[typeParamIndex] + ">", "<" + typeParamNames[typeParamIndex] + ">");
+        for (int i = 0; i < typeGenericName.length; i++) {
+            genericClause = genericClause.replace("<" + typeGenericName[i] + ">", "<" + typeParamNames[i] + ">");
+            genericClause = genericClause.replace(" extends " + typeGenericName[i] + ">", " extends " + typeParamNames[i] + ">");
+            genericClause = genericClause.replace(" super " + typeGenericName[i] + ">", " super " + typeParamNames[i] + ">");
+        }
+        return genericClause;
     }
 
     /**
