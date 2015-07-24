@@ -786,6 +786,7 @@ class BeanGen {
     private void generateMetaBuilder() {
         insertRegion.add("\t\t@Override");
         if (data.isImmutable() && data.isEffectiveBuilderScopePublic() == false) {
+            data.ensureImport(BeanBuilder.class);
             insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
                 insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
