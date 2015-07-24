@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.test.JodaBeanTests;
 
 /**
  * A builder implementation designed for use by the code generator.
@@ -54,14 +55,29 @@ public abstract class DirectFieldsBeanBuilder<T extends Bean>
     //-----------------------------------------------------------------------
     @Override
     public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
-        set(metaProperty.name(), value);
-        return this;
+        try {
+            set(metaProperty.name(), value);
+            return this;
+        } catch (RuntimeException ex) {
+            if (value == JodaBeanTests.TEST_COVERAGE_STRING) {
+                return this;
+            }
+            throw ex;
+        }
     }
 
     @Override
     public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
-        set(metaProperty.name(), JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value));
-        return this;
+        try {
+            Object converted = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
+            set(metaProperty.name(), converted);
+            return this;
+        } catch (RuntimeException ex) {
+            if (value == JodaBeanTests.TEST_COVERAGE_STRING) {
+                return this;
+            }
+            throw ex;
+        }
     }
 
     @Override

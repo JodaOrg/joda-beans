@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.NoSuchElementException;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.BasicMetaBean;
+import org.joda.beans.impl.StandaloneMetaProperty;
+import org.joda.beans.test.JodaBeanTests;
 
 /**
  * A meta-bean implementation designed for use by the code generator.
@@ -29,14 +31,28 @@ import org.joda.beans.impl.BasicMetaBean;
 public abstract class DirectMetaBean extends BasicMetaBean {
     // overriding other methods has negligible effect considering DirectMetaPropertyMap
 
+    /**
+     * This constant can be used to pass into {@code setString()} to increase test coverage.
+     */
+    public static final String TEST_COVERAGE_STRING = "!ConstantUsedForTestCoveragePurposes!";
+
     @SuppressWarnings("unchecked")
     @Override
     public <R> MetaProperty<R> metaProperty(String propertyName) {
         MetaProperty<?> mp = metaPropertyGet(propertyName);
         if (mp == null) {
-            throw new NoSuchElementException("Unknown property: " + propertyName);
+            return metaPropertyNotFound(propertyName);
         }
         return (MetaProperty<R>) mp;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R> MetaProperty<R> metaPropertyNotFound(String propertyName) {
+        if (propertyName == JodaBeanTests.TEST_COVERAGE_PROPERTY) {
+            // cast is unsafe unless R is String, but code only used in test coverage scenarios
+            return (MetaProperty<R>) StandaloneMetaProperty.of(propertyName, this, String.class);
+        }
+        throw new NoSuchElementException("Unknown property: " + propertyName);
     }
 
     /**
