@@ -37,6 +37,7 @@ public @interface BeanDefinition {
      * By default, this follows 'smart' rules.
      * Set to 'minimal' to generate a minimal amount of code.
      * Set to 'full' to generate the full code.
+     * Set to 'light' to generate a light immutable bean using reflection internally.
      */
     String style() default "smart";
 

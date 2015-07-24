@@ -179,6 +179,15 @@ class BeanParser {
             data.setImmutableValidator(parseImmutableValidator(beanDefIndex));
             data.setImmutableDefaults(parseImmutableDefaults(beanDefIndex));
             data.setImmutablePreBuild(parseImmutablePreBuild(beanDefIndex));
+            if (data.isBeanStyleLight() && !data.isTypeFinal()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Light beans must be declared final", file, beanDefIndex);
+            }
+        } else {
+            if (data.isBeanStyleLight()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Light beans must be immutable", file, beanDefIndex);
+            }
         }
         properties = parseProperties(data);
         autoStartIndex = parseStartAutogen();

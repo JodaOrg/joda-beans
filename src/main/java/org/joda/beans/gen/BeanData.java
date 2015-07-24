@@ -156,7 +156,16 @@ class BeanData {
      * @return the flag
      */
     public boolean isBeanStyleValid() {
-        return "full".equals(beanStyle) || "smart".equals(beanStyle) || "minimal".equals(beanStyle);
+        return "full".equals(beanStyle) || "smart".equals(beanStyle) ||
+                "minimal".equals(beanStyle) || "light".equals(beanStyle);
+    }
+
+    /**
+     * Is the bean style indicating that no meta and builder should be generated.
+     * @return the flag
+     */
+    public boolean isBeanStyleLight() {
+        return "light".equals(beanStyle);
     }
 
     /**
@@ -221,7 +230,8 @@ class BeanData {
      * @return the scope
      */
     public boolean isEffectiveBuilderScopePublic() {
-        return "smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope);
+        return ("smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope)) &&
+                !isBeanStyleLight();
     }
 
     /**

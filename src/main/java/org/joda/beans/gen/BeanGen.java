@@ -29,6 +29,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
@@ -37,6 +38,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.impl.light.LightMetaBean;
 
 /**
  * Code generator for a bean.
@@ -325,72 +327,94 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateMeta() {
-        data.ensureImport(JodaBeanUtils.class);
-        // this cannot be generified without either Eclipse or javac complaining
-        // raw types forever
-        insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
-        if (data.isTypeGeneric()) {
-            insertRegion.add("\t * @return the meta-bean, not null");
+        if (data.isBeanStyleLight()) {
+            data.ensureImport(MetaBean.class);
+            data.ensureImport(LightMetaBean.class);
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t */");
-            insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
-            insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
-        } else {
-            insertRegion.add("\t * @return the meta-bean, not null");
-            insertRegion.add("\t */");
-            insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
-        }
-        insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
-        insertRegion.add("\t}");
-        
-        if (data.isTypeGeneric()) {
-            // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
-            // long name needed for uniqueness as static overriding is borked
+            insertRegion.add("\tprivate static MetaBean META_BEAN = LightMetaBean.of(" + data.getTypeRaw() + ".class);");
             insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
-            if (data.getTypeGenericCount() == 1) {
-                insertRegion.add("\t * @param <R>  the bean's generic type");
-                insertRegion.add("\t * @param cls  the bean's generic type");
-            } else if (data.getTypeGenericCount() == 2) {
-                insertRegion.add("\t * @param <R>  the first generic type");
-                insertRegion.add("\t * @param <S>  the second generic type");
-                insertRegion.add("\t * @param cls1  the first generic type");
-                insertRegion.add("\t * @param cls2  the second generic type");
-            } else if (data.getTypeGenericCount() == 3) {
-                insertRegion.add("\t * @param <R>  the first generic type");
-                insertRegion.add("\t * @param <S>  the second generic type");
-                insertRegion.add("\t * @param <T>  the second generic type");
-                insertRegion.add("\t * @param cls1  the first generic type");
-                insertRegion.add("\t * @param cls2  the second generic type");
-                insertRegion.add("\t * @param cls3  the third generic type");
-            }
-            insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
-            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
-            if (data.getTypeGenericCount() == 1) {
-                insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") + "> " + data.getTypeRaw() +
-                        ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
-            } else if (data.getTypeGenericCount() == 2) {
-                insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") +
-                        ", S" + data.getTypeGenericExtends(1, "S") + "> " + data.getTypeRaw() +
-                        ".Meta<R, S> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2) {");
-            } else if (data.getTypeGenericCount() == 3) {
-                insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") +
-                        ", S" + data.getTypeGenericExtends(1, "S") +
-                        ", T" + data.getTypeGenericExtends(2, "T") +
-                        "> " + data.getTypeRaw() +
-                        ".Meta<R, S, T> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2, Class<T> cls3) {");
+            insertRegion.add("\tpublic static MetaBean meta() {");
+            insertRegion.add("\t\treturn META_BEAN;");
+            insertRegion.add("\t}");
+            insertRegion.add("");
+            
+        } else {
+            data.ensureImport(JodaBeanUtils.class);
+            // this cannot be generified without either Eclipse or javac complaining
+            // raw types forever
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            if (data.isTypeGeneric()) {
+                insertRegion.add("\t * @return the meta-bean, not null");
+                insertRegion.add("\t */");
+                insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
+                insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
+            } else {
+                insertRegion.add("\t * @return the meta-bean, not null");
+                insertRegion.add("\t */");
+                insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
             }
             insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
             insertRegion.add("\t}");
+            
+            if (data.isTypeGeneric()) {
+                generateMetaForGenericType();
+            }
+            
+            insertRegion.add("");
+            insertRegion.add("\tstatic {");
+            insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+            insertRegion.add("\t}");
+            insertRegion.add("");
         }
-        
+    }
+
+    private void generateMetaForGenericType() {
+        // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
+        // long name needed for uniqueness as static overriding is borked
         insertRegion.add("");
-        insertRegion.add("\tstatic {");
-        insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+        insertRegion.add("\t/**");
+        insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+        if (data.getTypeGenericCount() == 1) {
+            insertRegion.add("\t * @param <R>  the bean's generic type");
+            insertRegion.add("\t * @param cls  the bean's generic type");
+        } else if (data.getTypeGenericCount() == 2) {
+            insertRegion.add("\t * @param <R>  the first generic type");
+            insertRegion.add("\t * @param <S>  the second generic type");
+            insertRegion.add("\t * @param cls1  the first generic type");
+            insertRegion.add("\t * @param cls2  the second generic type");
+        } else if (data.getTypeGenericCount() == 3) {
+            insertRegion.add("\t * @param <R>  the first generic type");
+            insertRegion.add("\t * @param <S>  the second generic type");
+            insertRegion.add("\t * @param <T>  the second generic type");
+            insertRegion.add("\t * @param cls1  the first generic type");
+            insertRegion.add("\t * @param cls2  the second generic type");
+            insertRegion.add("\t * @param cls3  the third generic type");
+        }
+        insertRegion.add("\t * @return the meta-bean, not null");
+        insertRegion.add("\t */");
+        insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        if (data.getTypeGenericCount() == 1) {
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") + "> " + data.getTypeRaw() +
+                    ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
+        } else if (data.getTypeGenericCount() == 2) {
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") +
+                    ", S" + data.getTypeGenericExtends(1, "S") + "> " + data.getTypeRaw() +
+                    ".Meta<R, S> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2) {");
+        } else if (data.getTypeGenericCount() == 3) {
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, "R") +
+                    ", S" + data.getTypeGenericExtends(1, "S") +
+                    ", T" + data.getTypeGenericExtends(2, "T") +
+                    "> " + data.getTypeRaw() +
+                    ".Meta<R, S, T> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2, Class<T> cls3) {");
+        }
+        insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
         insertRegion.add("\t}");
-        insertRegion.add("");
     }
 
     private void generateSerializationVersionId() {
@@ -425,14 +449,22 @@ class BeanGen {
     }
 
     private void generateMetaBean() {
-        if (data.isTypeGeneric()) {
-            insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        if (data.isBeanStyleLight()) {
+            insertRegion.add("\t@Override");
+            insertRegion.add("\tpublic MetaBean metaBean() {");
+            insertRegion.add("\t\treturn META_BEAN;");
+            insertRegion.add("\t}");
+            insertRegion.add("");
+        } else {
+            if (data.isTypeGeneric()) {
+                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+            }
+            insertRegion.add("\t@Override");
+            insertRegion.add("\tpublic " + data.getTypeRaw() + ".Meta" + data.getTypeGenericName(true) + " metaBean() {");
+            insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
+            insertRegion.add("\t}");
+            insertRegion.add("");
         }
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic " + data.getTypeRaw() + ".Meta" + data.getTypeGenericName(true) + " metaBean() {");
-        insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
-        insertRegion.add("\t}");
-        insertRegion.add("");
     }
 
     private void generateGettersSetters() {
@@ -669,6 +701,9 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateMetaClass() {
+        if (data.isBeanStyleLight()) {
+            return;
+        }
         generateSeparator();
         insertRegion.add("\t/**");
         insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
@@ -906,7 +941,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateBuilderClass() {
-        if (data.isMutable() && data.isBuilderScopePublic() == false) {
+        if ((data.isMutable() && data.isBuilderScopePublic() == false) || data.isBeanStyleLight()) {
             return;
         }
         List<PropertyGen> nonDerived = nonDerivedProperties();
