@@ -17,9 +17,13 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
-import org.joda.beans.gen.Light;
+import java.util.ArrayList;
+
 import org.joda.beans.gen.ImmPerson;
+import org.joda.beans.gen.Light;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test style=light.
@@ -34,15 +38,17 @@ public class TestLight {
                 .setString("street", "Park Lane")
                 .setString("city", "Smallville")
                 .set("owner", person)
+                .set("list", new ArrayList<String>())
                 .build();
         
         assertEquals(bean.getNumber(), 12);
         assertEquals(bean.getCity(), "Smallville");
         assertEquals(bean.getStreetName(), "Park Lane");
         assertEquals(bean.getOwner(), person);
+        assertEquals(bean.getList(), ImmutableList.of());
         
         assertEquals(bean.metaBean().beanType(), Light.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 5);
+        assertEquals(bean.metaBean().metaPropertyCount(), 6);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");

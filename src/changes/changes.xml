@@ -8,6 +8,14 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
+      <action dev="jodastephen" type="fix">
+         Fix light-weight immutable bean generation.
+         Generation needs to add call to register the meta-bean.
+         Constructor location logic is now more lenient to handle interface/class separation.
+         Fixes #111.
+      </action>
+    </release>
     <release version="1.6" date="2015-07-24" description="v1.6">
       <action dev="jodastephen" type="add">
          Add light-weight immutable bean generation.

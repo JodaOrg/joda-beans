@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.beans.BeanDefinition;
@@ -25,6 +26,8 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.light.LightMetaBean;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -59,6 +62,11 @@ public final class Light implements ImmutableBean, Serializable {
      */
     @PropertyDefinition(validate = "notNull")
     private final ImmPerson owner;
+    /**
+     * The list.
+     */
+    @PropertyDefinition(validate = "notNull")
+    private final ImmutableList<String> list;
 
     //-----------------------------------------------------------------------
     // manual getter with a different name
@@ -81,6 +89,10 @@ public final class Light implements ImmutableBean, Serializable {
         return META_BEAN;
     }
 
+    static {
+        JodaBeanUtils.registerMetaBean(META_BEAN);
+    }
+
     /**
      * The serialization version id.
      */
@@ -91,15 +103,18 @@ public final class Light implements ImmutableBean, Serializable {
             boolean flag,
             String street,
             String city,
-            ImmPerson owner) {
+            ImmPerson owner,
+            List<String> list) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
         JodaBeanUtils.notNull(owner, "owner");
+        JodaBeanUtils.notNull(list, "list");
         this.number = number;
         this.flag = flag;
         this.street = street;
         this.city = city;
         this.owner = owner;
+        this.list = ImmutableList.copyOf(list);
     }
 
     @Override
@@ -154,6 +169,15 @@ public final class Light implements ImmutableBean, Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the list.
+     * @return the value of the property, not null
+     */
+    public ImmutableList<String> getList() {
+        return list;
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -165,7 +189,8 @@ public final class Light implements ImmutableBean, Serializable {
                     (isFlag() == other.isFlag()) &&
                     JodaBeanUtils.equal(street, other.street) &&
                     JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getOwner(), other.getOwner());
+                    JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
+                    JodaBeanUtils.equal(getList(), other.getList());
         }
         return false;
     }
@@ -178,18 +203,20 @@ public final class Light implements ImmutableBean, Serializable {
         hash = hash * 31 + JodaBeanUtils.hashCode(street);
         hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
         hash = hash * 31 + JodaBeanUtils.hashCode(getOwner());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getList());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(192);
+        StringBuilder buf = new StringBuilder(224);
         buf.append("Light{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("flag").append('=').append(isFlag()).append(',').append(' ');
         buf.append("street").append('=').append(street).append(',').append(' ');
         buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("owner").append('=').append(JodaBeanUtils.toString(getOwner()));
+        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
+        buf.append("list").append('=').append(JodaBeanUtils.toString(getList()));
         buf.append('}');
         return buf.toString();
     }

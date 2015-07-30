@@ -134,10 +134,33 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
             Constructor<T> con = beanType.getDeclaredConstructor(types);
             con.setAccessible(true);
             return con;
-        } catch (SecurityException ex) {
-            throw new UnsupportedOperationException("Unable to find constructor: " + beanType.getSimpleName(), ex);
+            
         } catch (NoSuchMethodException ex) {
-            throw new UnsupportedOperationException("Unable to find constructor: " + beanType.getSimpleName(), ex);
+            // try a more lenient search
+            // this handles cases where field is a concrete class and constructor is an interface
+            @SuppressWarnings("unchecked")
+            Constructor<T>[] cons = (Constructor<T>[]) beanType.getDeclaredConstructors();
+            Constructor<T> match = null;
+            for (int i = 0; i < cons.length; i++) {
+                Constructor<T> con = cons[i];
+                Class<?>[] conTypes = con.getParameterTypes();
+                if (conTypes.length == types.length) {
+                    for (int j = 0; j < types.length; j++) {
+                        if (!conTypes[j].isAssignableFrom(types[j])) {
+                            break;
+                        }
+                    }
+                    if (match != null) {
+                        throw new UnsupportedOperationException("Unable to find constructor: More than one matches");
+                    }
+                    match = con;
+                }
+            }
+            if (match == null) {
+                throw new UnsupportedOperationException("Unable to find constructor: " + beanType.getSimpleName(), ex);
+            }
+            match.setAccessible(true);
+            return match;
         }
     }
 

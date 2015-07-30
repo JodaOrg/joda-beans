@@ -343,6 +343,10 @@ class BeanGen {
             insertRegion.add("\t\treturn META_BEAN;");
             insertRegion.add("\t}");
             insertRegion.add("");
+            insertRegion.add("\tstatic {");
+            insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(META_BEAN);");
+            insertRegion.add("\t}");
+            insertRegion.add("");
             
         } else {
             data.ensureImport(JodaBeanUtils.class);
