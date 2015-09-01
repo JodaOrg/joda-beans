@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -88,13 +88,33 @@ abstract class GetterGen {
         }
     }
 
-    static final class CloneGetterGen extends GetterGen {
-        static final CloneGetterGen PUBLIC = new CloneGetterGen("public ");
-        static final CloneGetterGen PROTECTED = new CloneGetterGen("protected ");
-        static final CloneGetterGen PACKAGE = new CloneGetterGen("");
-        static final CloneGetterGen PRIVATE = new CloneGetterGen("private ");
+    static final class CloneNNGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new CloneNNGetterGen("public ");
+        static final GetterGen PROTECTED = new CloneNNGetterGen("protected ");
+        static final GetterGen PACKAGE = new CloneNNGetterGen("");
+        static final GetterGen PRIVATE = new CloneNNGetterGen("private ");
         private final String access;
-        static CloneGetterGen of(String access) {
+        static GetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
+        }
+        private CloneNNGetterGen(String access) {
+            this.access = access;
+        }
+        @Override
+        List<String> generateGetter(PropertyData prop) {
+            return doGenerateGetter(prop, access, "get", prop.getFieldName() + ".clone()");
+        }
+    }
+
+    static final class CloneGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new CloneGetterGen("public ");
+        static final GetterGen PROTECTED = new CloneGetterGen("protected ");
+        static final GetterGen PACKAGE = new CloneGetterGen("");
+        static final GetterGen PRIVATE = new CloneGetterGen("private ");
+        private final String access;
+        static GetterGen of(String access) {
             return (access.equals("private") ? PRIVATE :
                     access.equals("package") ? PACKAGE :
                     access.equals("protected") ? PROTECTED : PUBLIC);
@@ -108,13 +128,33 @@ abstract class GetterGen {
         }
     }
 
-    static final class CloneCastGetterGen extends GetterGen {
-        static final CloneCastGetterGen PUBLIC = new CloneCastGetterGen("public ");
-        static final CloneCastGetterGen PROTECTED = new CloneCastGetterGen("protected ");
-        static final CloneCastGetterGen PACKAGE = new CloneCastGetterGen("");
-        static final CloneCastGetterGen PRIVATE = new CloneCastGetterGen("private ");
+    static final class CloneCastNNGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new CloneCastNNGetterGen("public ");
+        static final GetterGen PROTECTED = new CloneCastNNGetterGen("protected ");
+        static final GetterGen PACKAGE = new CloneCastNNGetterGen("");
+        static final GetterGen PRIVATE = new CloneCastNNGetterGen("private ");
         private final String access;
-        static CloneCastGetterGen of(String access) {
+        static GetterGen of(String access) {
+            return (access.equals("private") ? PRIVATE :
+                    access.equals("package") ? PACKAGE :
+                    access.equals("protected") ? PROTECTED : PUBLIC);
+        }
+        private CloneCastNNGetterGen(String access) {
+            this.access = access;
+        }
+        @Override
+        List<String> generateGetter(PropertyData prop) {
+            return doGenerateGetter(prop, access, "get", "(" + prop.getFieldType() + ") " + prop.getFieldName() + ".clone()");
+        }
+    }
+
+    static final class CloneCastGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new CloneCastGetterGen("public ");
+        static final GetterGen PROTECTED = new CloneCastGetterGen("protected ");
+        static final GetterGen PACKAGE = new CloneCastGetterGen("");
+        static final GetterGen PRIVATE = new CloneCastGetterGen("private ");
+        private final String access;
+        static GetterGen of(String access) {
             return (access.equals("private") ? PRIVATE :
                     access.equals("package") ? PACKAGE :
                     access.equals("protected") ? PROTECTED : PUBLIC);

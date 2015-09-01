@@ -84,11 +84,11 @@ class PropertyParser {
         data.setInitializer(parseFieldInitializer(content));
         data.resolveType();
         data.resolveBuilderType();
+        data.resolveValidation();
         data.resolveGetterGen(beanParser.getFile(), lineIndex);
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
         data.resolveBuilderGen();
-        data.resolveValidation();
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
@@ -112,11 +112,11 @@ class PropertyParser {
         data.setInitializer(parseFieldInitializer(content));
         data.resolveType();
         data.resolveBuilderType();
+        data.resolveValidation();
         data.resolveGetterGen(beanParser.getFile(), lineIndex);
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
         data.resolveBuilderGen();
-        data.resolveValidation();
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));

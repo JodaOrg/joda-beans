@@ -630,9 +630,13 @@ class PropertyData {
             if (bean.isImmutable()) {
                 String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
                 if ("clone".equals(clone)) {
-                    getterGen = GetterGen.CloneGetterGen.of(access);
+                    getterGen = isNotNull() ?
+                                    GetterGen.CloneNNGetterGen.of(access) :
+                                    GetterGen.CloneGetterGen.of(access);
                 } else if ("cloneCast".equals(clone)) {
-                    getterGen = GetterGen.CloneCastGetterGen.of(access);
+                    getterGen = isNotNull() ?
+                                    GetterGen.CloneCastNNGetterGen.of(access) :
+                                    GetterGen.CloneCastGetterGen.of(access);
                 } else if (getType().equals("boolean")) {
                     getterGen = GetterGen.IsGetterGen.of(access);
                 } else {
@@ -648,9 +652,9 @@ class PropertyData {
         } else if (style.equals("field")) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
         } else if (style.equals("clone")) {
-            getterGen = GetterGen.CloneGetterGen.PUBLIC;
+            getterGen = isNotNull() ? GetterGen.CloneNNGetterGen.PUBLIC : GetterGen.CloneGetterGen.PUBLIC;
         } else if (style.equals("cloneCast")) {
-            getterGen = GetterGen.CloneCastGetterGen.PUBLIC;
+            getterGen = isNotNull() ? GetterGen.CloneCastNNGetterGen.PUBLIC : GetterGen.CloneCastGetterGen.PUBLIC;
         } else if (style.equals("optional")) {
             getterGen = GetterGen.Optional8GetterGen.PUBLIC;
         } else if (style.equals("optionalGuava")) {
