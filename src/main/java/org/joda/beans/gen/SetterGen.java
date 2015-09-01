@@ -208,7 +208,7 @@ abstract class SetterGen {
             String old = "old" + prop.getUpperName();
             list.add("\t\t" + prop.getFieldType() + " " + old + " = this." + prop.getFieldName() + ";");
             list.add("\t\tthis." + prop.getFieldName() + " = " + prop.getPropertyName() + ";");
-            list.add("\t\tthis.propertyChangeSupport.firePropertyChange(\"" +
+            list.add("\t\tthis." + prop.getConfig().getPrefix() + "propertyChangeSupport.firePropertyChange(\"" +
                 prop.getPropertyName() + "\", " + old + ", " + prop.getPropertyName() + ");");
             list.add("\t}");
             list.add("");

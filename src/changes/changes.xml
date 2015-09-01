@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
       <action dev="jodastephen" type="fix">
+         Use configured prefix for cachedHashCode and propertyChangeSupport.
+         Fixes #115.
+      </action>
+      <action dev="jodastephen" type="fix">
          Avoid null check in array clone getters where possible.
          Fixes #114.
       </action>
