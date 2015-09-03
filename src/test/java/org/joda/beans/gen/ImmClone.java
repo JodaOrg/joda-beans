@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -38,7 +39,8 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public final class ImmClone implements ImmutableBean {
+public final class ImmClone implements ImmutableBean, Serializable{
+    // NOTE: no space between Serializable and {
 
     // clone non-null
     @PropertyDefinition(validate = "notNull")
@@ -72,6 +74,11 @@ public final class ImmClone implements ImmutableBean {
     static {
         JodaBeanUtils.registerMetaBean(ImmClone.Meta.INSTANCE);
     }
+
+    /**
+     * The serialization version id.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Returns a builder used to create an instance of the bean.

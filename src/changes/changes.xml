@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
       <action dev="jodastephen" type="fix">
+         Make bean parser more lenient.
+         Handle open brace immediately following Bean or ImmutableBean in an implements clause.
+         Fixes #116.
+      </action>
+      <action dev="jodastephen" type="fix">
          Use configured prefix for cachedHashCode and propertyChangeSupport.
          Fixes #115.
       </action>

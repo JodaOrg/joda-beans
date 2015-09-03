@@ -40,7 +40,8 @@ import com.google.common.collect.ImmutableList;
  * @author Stephen Colebourne
  */
 @BeanDefinition(cacheHashCode = true)
-public final class ImmTreeNode implements ImmutableBean {
+public final class ImmTreeNode implements ImmutableBean{
+    // NOTE: no space between ImmutableBean and {
 
     @PropertyDefinition(validate = "notNull")
     private final String name;

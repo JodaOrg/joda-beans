@@ -71,9 +71,9 @@ class BeanParser {
                 ">)?" +
             ").*");
     /** Pattern to find root type. */
-    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".*implements.*[ ,]((Immutable)?Bean)[ ,].*");
+    private static final Pattern SUPER_IMPL_TYPE = Pattern.compile(".*implements.*[ ,]((Immutable)?Bean)([ ,{]|$).*");
     /** Pattern to find serializable interface. */
-    private static final Pattern SERIALIZABLE_TYPE = Pattern.compile(".*implements.*[ ,]Serializable[ ,].*");
+    private static final Pattern SERIALIZABLE_TYPE = Pattern.compile(".*implements.*[ ,]Serializable([ ,{]|$).*");
     /** The style pattern. */
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderScope pattern. */

@@ -37,7 +37,8 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * @author Stephen Colebourne
  */
 @BeanDefinition
-public class DocumentationHolder extends DirectBean {
+public class DocumentationHolder extends DirectBean{
+    // NOTE: no space between DirectBean and {
 
     /** The documentation. */
     @PropertyDefinition
