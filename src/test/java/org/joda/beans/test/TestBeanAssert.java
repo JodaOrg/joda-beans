@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.joda.beans.test;
 
 import org.joda.beans.gen.Address;
+import org.joda.beans.gen.ImmTolerance;
 import org.joda.beans.gen.Person;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -148,6 +149,78 @@ public class TestBeanAssert {
             BeanAssert.assertBeanEqualsFullDetail(person1, person2);
         } catch (BeanComparisonError ex) {
             Assert.assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>\n.surname: Content differs, expected String <Cable> but was <Bug2>", ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_bean_oneField_double() {
+        ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
+        ImmTolerance t2 = ImmTolerance.builder().value(0.016d).build();
+        try {
+            BeanAssert.assertBeanEquals(t1, t2);
+        } catch (BeanComparisonError ex) {
+            Assert.assertEquals("Bean did not equal expected. Differences:\n.value: Content differs, expected Double <0.015> but was <0.016>", ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void test_bean_oneField_double_withinToleranceUp() {
+        ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
+        ImmTolerance t2 = ImmTolerance.builder().value(0.0151d).build();
+        BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
+    }
+
+    public void test_bean_oneField_double_withinToleranceDown() {
+        ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
+        ImmTolerance t2 = ImmTolerance.builder().value(0.0149d).build();
+        BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
+    }
+
+    public void test_bean_oneField_double_notInTolerance() {
+        ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
+        ImmTolerance t2 = ImmTolerance.builder().value(0.0153d).build();
+        try {
+            BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
+        } catch (BeanComparisonError ex) {
+            Assert.assertEquals("Bean did not equal expected. Differences:\n.value: Double values differ by more than allowed tolerance, expected Double <0.015> but was <0.0153>", ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_bean_oneField_doubleArray() {
+        ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
+        ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.016d}).build();
+        try {
+            BeanAssert.assertBeanEquals(t1, t2);
+        } catch (BeanComparisonError ex) {
+            Assert.assertEquals("Bean did not equal expected. Differences:\n.array: Content differs, expected " +
+            		"double[] <[0.015, 0.015]> but was <[0.015, 0.016]>", ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void test_bean_oneField_doubleArray_withinToleranceUp() {
+        ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
+        ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0151d}).build();
+        BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
+    }
+
+    public void test_bean_oneField_doubleArray_withinToleranceDown() {
+        ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
+        ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0149d}).build();
+        BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
+    }
+
+    public void test_bean_oneField_doubleArray_notInTolerance() {
+        ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
+        ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0153d}).build();
+        try {
+            BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
+        } catch (BeanComparisonError ex) {
+            Assert.assertEquals("Bean did not equal expected. Differences:\n.array: Double arrays differ by " +
+        		"more than allowed tolerance, expected double[] <[0.015, 0.015]> but was <[0.015, 0.0153]>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }

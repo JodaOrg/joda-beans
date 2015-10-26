@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -238,6 +238,21 @@ public final class JodaBeanUtils {
     }
 
     /**
+     * Checks if two floats are equal within the specified tolerance.
+     * <p>
+     * Two NaN values are equal. Positive and negative infinity are only equal with themselves.
+     * Otherwise, the difference between the values is compared to the tolerance.
+     * 
+     * @param val1  the first value, may be null
+     * @param val2  the second value, may be null
+     * @param tolerance  the tolerance used to compare equal
+     * @return true if equal
+     */
+    public static boolean equalWithTolerance(float val1, float val2, double tolerance) {
+        return (Float.floatToIntBits(val1) == Float.floatToIntBits(val2)) || Math.abs(val1 - val2) <= tolerance;
+    }
+
+    /**
      * Checks if two doubles are equal based on identity.
      * <p>
      * This performs the same check as {@link Double#equals(Object)}.
@@ -248,6 +263,22 @@ public final class JodaBeanUtils {
      */
     public static boolean equal(double val1, double val2) {
         return Double.doubleToLongBits(val1) == Double.doubleToLongBits(val2);
+    }
+
+    /**
+     * Checks if two doubles are equal within the specified tolerance.
+     * <p>
+     * Two NaN values are equal. Positive and negative infinity are only equal with themselves.
+     * Otherwise, the difference between the values is compared to the tolerance.
+     * The tolerance is expected to be a finite value, not NaN or infinity.
+     * 
+     * @param val1  the first value, may be null
+     * @param val2  the second value, may be null
+     * @param tolerance  the tolerance used to compare equal
+     * @return true if equal
+     */
+    public static boolean equalWithTolerance(double val1, double val2, double tolerance) {
+        return (Double.doubleToLongBits(val1) == Double.doubleToLongBits(val2)) || Math.abs(val1 - val2) <= tolerance;
     }
 
     /**

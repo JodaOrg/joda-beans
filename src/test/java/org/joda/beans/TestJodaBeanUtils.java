@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -313,14 +313,110 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    //-----------------------------------------------------------------------
     public void test_equal_floats() {
         assertEquals(JodaBeanUtils.equal(1.01f, 1.01f), true);
         assertEquals(JodaBeanUtils.equal(1.0f, 1.2f), false);
     }
 
+    public void test_equalWithTolerance_floats_zeroTolerance() {
+        double tolerance = 0d;
+        assertEquals(JodaBeanUtils.equalWithTolerance(1.01f, 1.01f, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 1.2f, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NaN, Float.NaN, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NaN, 1f, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, Float.NaN, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.POSITIVE_INFINITY, Float.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.MAX_VALUE, Float.POSITIVE_INFINITY, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NEGATIVE_INFINITY, -Float.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(-Float.MAX_VALUE, Float.NEGATIVE_INFINITY, tolerance), false);
+    }
+
+    public void test_equalWithTolerance_floats_someTolerance() {
+        double tolerance = 0.125d;
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 1.250001f, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 1.125f, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 1.124999f, tolerance), true);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 0.875001f, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 0.875f, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, 0.874999f, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NaN, Float.NaN, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NaN, 1f, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1f, Float.NaN, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.POSITIVE_INFINITY, Float.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.MAX_VALUE, Float.POSITIVE_INFINITY, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, 0d), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Float.NEGATIVE_INFINITY, -Float.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(-Float.MAX_VALUE, Float.NEGATIVE_INFINITY, tolerance), false);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_equal_doubles() {
         assertEquals(JodaBeanUtils.equal(1.01d, 1.01d), true);
         assertEquals(JodaBeanUtils.equal(1.0d, 1.2d), false);
+
+        assertEquals(JodaBeanUtils.equal(Double.NaN, Double.NaN), true);
+        assertEquals(JodaBeanUtils.equal(Double.NaN, 1d), false);
+        assertEquals(JodaBeanUtils.equal(1d, Double.NaN), false);
+
+        assertEquals(JodaBeanUtils.equal(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), true);
+        assertEquals(JodaBeanUtils.equal(Double.POSITIVE_INFINITY, Double.MAX_VALUE), false);
+        assertEquals(JodaBeanUtils.equal(Double.MAX_VALUE, Double.POSITIVE_INFINITY), false);
+
+        assertEquals(JodaBeanUtils.equal(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY), true);
+        assertEquals(JodaBeanUtils.equal(Double.NEGATIVE_INFINITY, -Double.MAX_VALUE), false);
+        assertEquals(JodaBeanUtils.equal(-Double.MAX_VALUE, Double.NEGATIVE_INFINITY), false);
+    }
+
+    public void test_equalWithTolerance_doubles_zeroTolerance() {
+        double tolerance = 0d;
+        assertEquals(JodaBeanUtils.equalWithTolerance(1.01d, 1.01d, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 1.2d, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NaN, Double.NaN, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NaN, 1d, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, Double.NaN, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.POSITIVE_INFINITY, Double.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.MAX_VALUE, Double.POSITIVE_INFINITY, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(-Double.MAX_VALUE, Double.NEGATIVE_INFINITY, tolerance), false);
+    }
+
+    public void test_equalWithTolerance_doubles_someTolerance() {
+        double tolerance = 0.125d;
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 1.250001d, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 1.125d, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 1.124999d, tolerance), true);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 0.875001d, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 0.875d, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, 0.874999d, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NaN, Double.NaN, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NaN, 1d, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(1d, Double.NaN, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, tolerance), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.POSITIVE_INFINITY, Double.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.MAX_VALUE, Double.POSITIVE_INFINITY, tolerance), false);
+
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, 0d), true);
+        assertEquals(JodaBeanUtils.equalWithTolerance(Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, tolerance), false);
+        assertEquals(JodaBeanUtils.equalWithTolerance(-Double.MAX_VALUE, Double.NEGATIVE_INFINITY, tolerance), false);
     }
 
     //-----------------------------------------------------------------------
