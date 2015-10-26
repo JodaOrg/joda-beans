@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -311,7 +311,10 @@ public class JodaBeanXmlWriter {
         if (key == null) {
             throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
         }
-        if (Bean.class.isAssignableFrom(itemIterator.keyType())) {
+        // if key type is known and convertible use short key format
+        if (settings.getConverter().isConvertible(itemIterator.keyType())) {
+            writeSimple(currentIndent, ITEM, new StringBuilder(), Object.class, key);
+        } else if (key instanceof Bean) {
             writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), (Bean) key);
         } else {
             // this case covers where the key type is not known, such as an Object meta-property
@@ -320,7 +323,6 @@ public class JodaBeanXmlWriter {
             } catch (RuntimeException ex) {
                 throw new IllegalArgumentException("Unable to write map as declared key type is neither a bean nor a simple type: " + itemIterator.keyType().getName(), ex);
             }
-            
         }
     }
 

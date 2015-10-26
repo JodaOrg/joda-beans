@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2015 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,7 +21,10 @@ import org.joda.beans.Bean;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmEmpty;
+import org.joda.beans.gen.ImmKey1;
+import org.joda.beans.gen.ImmMappedKey;
 import org.joda.beans.gen.ImmOptional;
+import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.JodaConvertBean;
 import org.joda.beans.gen.JodaConvertWrapper;
 import org.joda.beans.gen.Person;
@@ -32,6 +35,8 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Test property roundtrip using XML.
@@ -154,6 +159,18 @@ public class TestSerializeXml {
         bean.setForename("A");
         bean.setSurname("B");
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_readWriteInterfaceKeyMap() {
+        ImmKey1 key1 = ImmKey1.builder().name("Alpha").build();
+        ImmPerson person1 = ImmPerson.builder().forename("Bob").surname("Builder").build();
+        ImmKey1 key2 = ImmKey1.builder().name("Beta").build();
+        ImmPerson person2 = ImmPerson.builder().forename("Dana").surname("Dash").build();
+        ImmMappedKey mapped = ImmMappedKey.builder().data(ImmutableMap.of(key1, person1, key2, person2)).build();
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(mapped);
+        
+        ImmMappedKey bean = (ImmMappedKey) JodaBeanSer.PRETTY.xmlReader().read(xml);
+        BeanAssert.assertBeanEquals(bean, mapped);
     }
 
     //-----------------------------------------------------------------------

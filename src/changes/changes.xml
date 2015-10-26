@@ -28,6 +28,11 @@
          Constructor location logic is now more lenient to handle interface/class separation.
          Fixes #111.
       </action>
+      <action dev="jodastephen" type="fix">
+         Fix XML to read/write interface base keys.
+         Handle case where interface does note extend Bean interface.
+         Fixes #119.
+      </action>
     </release>
     <release version="1.6" date="2015-07-24" description="v1.6">
       <action dev="jodastephen" type="add">
