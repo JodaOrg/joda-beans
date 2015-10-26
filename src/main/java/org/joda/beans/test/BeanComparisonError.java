@@ -48,7 +48,7 @@ class BeanComparisonError extends AssertionError {
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public BeanComparisonError(final String message, final int maxErrors, final Bean expected, final Bean actual) {
+    public BeanComparisonError(String message, int maxErrors, Bean expected, Bean actual) {
         super(buildMessage(message, maxErrors, expected, actual));
         this.expected = expected;
         this.actual = actual;
@@ -64,7 +64,7 @@ class BeanComparisonError extends AssertionError {
      * @param actual  the actual value, not null
      * @return the message, not null
      */
-    private static String buildMessage(final String message, final int maxErrors, final Bean expected, final Bean actual) {
+    private static String buildMessage(String message, int maxErrors, Bean expected, Bean actual) {
         List<String> diffs = new ArrayList<String>();
         buildMessage(diffs, "", expected, actual);
         StringBuilder buf = new StringBuilder();
@@ -83,7 +83,7 @@ class BeanComparisonError extends AssertionError {
         return buf.toString();
     }
 
-    private static void buildMessage(final List<String> diffs, final String prefix, final Object expected, final Object actual) {
+    private static void buildMessage(List<String> diffs, String prefix, Object expected, Object actual) {
         if (expected == null && actual == null) {
             return;
         }
@@ -145,7 +145,7 @@ class BeanComparisonError extends AssertionError {
      * 
      * @param obj  the object to summarise, not null
      */
-    private static String buildSummary(final Object obj, final boolean includeType) {
+    private static String buildSummary(Object obj, boolean includeType) {
         String type = obj.getClass().getSimpleName();
         String toStr = obj.toString();
         if (toStr.length() > 60) {

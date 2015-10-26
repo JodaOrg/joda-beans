@@ -38,7 +38,7 @@ public final class BeanAssert {
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public static void assertBeanEquals(final Bean expected, final Bean actual) {
+    public static void assertBeanEquals(Bean expected, Bean actual) {
         assertBeanEquals(null, expected, actual);
     }
 
@@ -49,7 +49,7 @@ public final class BeanAssert {
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public static void assertBeanEquals(final String message, final Bean expected, final Bean actual) {
+    public static void assertBeanEquals(String message, Bean expected, Bean actual) {
         if (expected == null) {
             throw new AssertionError(message + ": Expected bean must not be null");
         }
@@ -68,7 +68,7 @@ public final class BeanAssert {
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public static void assertBeanEqualsFullDetail(final Bean expected, final Bean actual) {
+    public static void assertBeanEqualsFullDetail(Bean expected, Bean actual) {
         assertBeanEqualsFullDetail(null, expected, actual);
     }
 
@@ -80,7 +80,7 @@ public final class BeanAssert {
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public static void assertBeanEqualsFullDetail(final String message, final Bean expected, final Bean actual) {
+    public static void assertBeanEqualsFullDetail(String message, Bean expected, Bean actual) {
         if (expected == null) {
             throw new AssertionError(message + ": Expected bean must not be null");
         }
