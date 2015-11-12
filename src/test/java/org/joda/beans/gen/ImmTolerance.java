@@ -127,8 +127,8 @@ public final class ImmTolerance implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmTolerance other = (ImmTolerance) obj;
-            return JodaBeanUtils.equal(getValue(), other.getValue()) &&
-                    JodaBeanUtils.equal(getArray(), other.getArray());
+            return JodaBeanUtils.equal(value, other.value) &&
+                    JodaBeanUtils.equal(array, other.array);
         }
         return false;
     }
@@ -138,8 +138,8 @@ public final class ImmTolerance implements ImmutableBean {
         int hash = cachedHashCode;
         if (hash == 0) {
             hash = getClass().hashCode();
-            hash = hash * 31 + JodaBeanUtils.hashCode(getValue());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getArray());
+            hash = hash * 31 + JodaBeanUtils.hashCode(value);
+            hash = hash * 31 + JodaBeanUtils.hashCode(array);
             cachedHashCode = hash;
         }
         return hash;
@@ -149,8 +149,8 @@ public final class ImmTolerance implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("ImmTolerance{");
-        buf.append("value").append('=').append(getValue()).append(',').append(' ');
-        buf.append("array").append('=').append(JodaBeanUtils.toString(getArray()));
+        buf.append("value").append('=').append(value).append(',').append(' ');
+        buf.append("array").append('=').append(JodaBeanUtils.toString(array));
         buf.append('}');
         return buf.toString();
     }

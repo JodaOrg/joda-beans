@@ -148,10 +148,10 @@ public final class ImmMinimal implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmMinimal other = (ImmMinimal) obj;
-            return (getNumber() == other.getNumber()) &&
-                    JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
-                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getOwner(), other.getOwner());
+            return (number == other.number) &&
+                    JodaBeanUtils.equal(street, other.street) &&
+                    JodaBeanUtils.equal(city, other.city) &&
+                    JodaBeanUtils.equal(owner, other.owner);
         }
         return false;
     }
@@ -159,10 +159,10 @@ public final class ImmMinimal implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getNumber());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getStreet());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getOwner());
+        hash = hash * 31 + JodaBeanUtils.hashCode(number);
+        hash = hash * 31 + JodaBeanUtils.hashCode(street);
+        hash = hash * 31 + JodaBeanUtils.hashCode(city);
+        hash = hash * 31 + JodaBeanUtils.hashCode(owner);
         return hash;
     }
 
@@ -170,10 +170,10 @@ public final class ImmMinimal implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("ImmMinimal{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("street").append('=').append(getStreet()).append(',').append(' ');
-        buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("owner").append('=').append(JodaBeanUtils.toString(getOwner()));
+        buf.append("number").append('=').append(number).append(',').append(' ');
+        buf.append("street").append('=').append(street).append(',').append(' ');
+        buf.append("city").append('=').append(city).append(',').append(' ');
+        buf.append("owner").append('=').append(JodaBeanUtils.toString(owner));
         buf.append('}');
         return buf.toString();
     }

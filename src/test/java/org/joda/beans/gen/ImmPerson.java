@@ -272,16 +272,16 @@ public final class ImmPerson implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPerson other = (ImmPerson) obj;
-            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    (getNumberOfCars() == other.getNumberOfCars()) &&
-                    JodaBeanUtils.equal(getDateOfBirth(), other.getDateOfBirth()) &&
-                    JodaBeanUtils.equal(getMiddleNames(), other.getMiddleNames()) &&
-                    JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
-                    JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
-                    JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
-                    JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
-                    JodaBeanUtils.equal(getCodeCounts(), other.getCodeCounts());
+            return JodaBeanUtils.equal(forename, other.forename) &&
+                    JodaBeanUtils.equal(surname, other.surname) &&
+                    (numberOfCars == other.numberOfCars) &&
+                    JodaBeanUtils.equal(dateOfBirth, other.dateOfBirth) &&
+                    JodaBeanUtils.equal(middleNames, other.middleNames) &&
+                    JodaBeanUtils.equal(addressList, other.addressList) &&
+                    JodaBeanUtils.equal(otherAddressMap, other.otherAddressMap) &&
+                    JodaBeanUtils.equal(addressesList, other.addressesList) &&
+                    JodaBeanUtils.equal(mainAddress, other.mainAddress) &&
+                    JodaBeanUtils.equal(codeCounts, other.codeCounts);
         }
         return false;
     }
@@ -291,16 +291,16 @@ public final class ImmPerson implements ImmutableBean {
         int hash = cachedHashCode;
         if (hash == 0) {
             hash = getClass().hashCode();
-            hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getNumberOfCars());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getDateOfBirth());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getMiddleNames());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getAddressList());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getOtherAddressMap());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getAddressesList());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getMainAddress());
-            hash = hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
+            hash = hash * 31 + JodaBeanUtils.hashCode(forename);
+            hash = hash * 31 + JodaBeanUtils.hashCode(surname);
+            hash = hash * 31 + JodaBeanUtils.hashCode(numberOfCars);
+            hash = hash * 31 + JodaBeanUtils.hashCode(dateOfBirth);
+            hash = hash * 31 + JodaBeanUtils.hashCode(middleNames);
+            hash = hash * 31 + JodaBeanUtils.hashCode(addressList);
+            hash = hash * 31 + JodaBeanUtils.hashCode(otherAddressMap);
+            hash = hash * 31 + JodaBeanUtils.hashCode(addressesList);
+            hash = hash * 31 + JodaBeanUtils.hashCode(mainAddress);
+            hash = hash * 31 + JodaBeanUtils.hashCode(codeCounts);
             cachedHashCode = hash;
         }
         return hash;
@@ -310,16 +310,16 @@ public final class ImmPerson implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(384);
         buf.append("ImmPerson{");
-        buf.append("forename").append('=').append(getForename()).append(',').append(' ');
-        buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
-        buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
-        buf.append("dateOfBirth").append('=').append(getDateOfBirth()).append(',').append(' ');
-        buf.append("middleNames").append('=').append(getMiddleNames()).append(',').append(' ');
-        buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
-        buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
-        buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
-        buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
-        buf.append("codeCounts").append('=').append(getCodeCounts()).append(',').append(' ');
+        buf.append("forename").append('=').append(forename).append(',').append(' ');
+        buf.append("surname").append('=').append(surname).append(',').append(' ');
+        buf.append("numberOfCars").append('=').append(numberOfCars).append(',').append(' ');
+        buf.append("dateOfBirth").append('=').append(dateOfBirth).append(',').append(' ');
+        buf.append("middleNames").append('=').append(middleNames).append(',').append(' ');
+        buf.append("addressList").append('=').append(addressList).append(',').append(' ');
+        buf.append("otherAddressMap").append('=').append(otherAddressMap).append(',').append(' ');
+        buf.append("addressesList").append('=').append(addressesList).append(',').append(' ');
+        buf.append("mainAddress").append('=').append(mainAddress).append(',').append(' ');
+        buf.append("codeCounts").append('=').append(codeCounts).append(',').append(' ');
         buf.append("age").append('=').append(JodaBeanUtils.toString(getAge()));
         buf.append('}');
         return buf.toString();

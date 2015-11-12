@@ -186,8 +186,8 @@ public final class ImmOptional implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmOptional other = (ImmOptional) obj;
-            return JodaBeanUtils.equal(getOptString(), other.getOptString()) &&
-                    JodaBeanUtils.equal(getOptStringEmpty(), other.getOptStringEmpty()) &&
+            return JodaBeanUtils.equal(optString, other.optString) &&
+                    JodaBeanUtils.equal(optStringEmpty, other.optStringEmpty) &&
                     JodaBeanUtils.equal(optStringGetter, other.optStringGetter) &&
                     JodaBeanUtils.equal(optLongGetter, other.optLongGetter) &&
                     JodaBeanUtils.equal(optIntGetter, other.optIntGetter) &&
@@ -199,8 +199,8 @@ public final class ImmOptional implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getOptString());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getOptStringEmpty());
+        hash = hash * 31 + JodaBeanUtils.hashCode(optString);
+        hash = hash * 31 + JodaBeanUtils.hashCode(optStringEmpty);
         hash = hash * 31 + JodaBeanUtils.hashCode(optStringGetter);
         hash = hash * 31 + JodaBeanUtils.hashCode(optLongGetter);
         hash = hash * 31 + JodaBeanUtils.hashCode(optIntGetter);
@@ -212,8 +212,8 @@ public final class ImmOptional implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(224);
         buf.append("ImmOptional{");
-        buf.append("optString").append('=').append(getOptString()).append(',').append(' ');
-        buf.append("optStringEmpty").append('=').append(getOptStringEmpty()).append(',').append(' ');
+        buf.append("optString").append('=').append(optString).append(',').append(' ');
+        buf.append("optStringEmpty").append('=').append(optStringEmpty).append(',').append(' ');
         buf.append("optStringGetter").append('=').append(optStringGetter).append(',').append(' ');
         buf.append("optLongGetter").append('=').append(optLongGetter).append(',').append(' ');
         buf.append("optIntGetter").append('=').append(optIntGetter).append(',').append(' ');

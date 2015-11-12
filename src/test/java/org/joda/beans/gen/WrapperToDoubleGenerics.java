@@ -130,7 +130,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             WrapperToDoubleGenerics<?> other = (WrapperToDoubleGenerics<?>) obj;
-            return JodaBeanUtils.equal(getBase(), other.getBase());
+            return JodaBeanUtils.equal(base, other.base);
         }
         return false;
     }
@@ -138,7 +138,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getBase());
+        hash = hash * 31 + JodaBeanUtils.hashCode(base);
         return hash;
     }
 
@@ -156,7 +156,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("base").append('=').append(JodaBeanUtils.toString(getBase())).append(',').append(' ');
+        buf.append("base").append('=').append(JodaBeanUtils.toString(base)).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

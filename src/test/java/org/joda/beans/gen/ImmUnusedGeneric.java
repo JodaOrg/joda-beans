@@ -124,7 +124,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmUnusedGeneric<?> other = (ImmUnusedGeneric<?>) obj;
-            return JodaBeanUtils.equal(get_errorMessage(), other.get_errorMessage());
+            return JodaBeanUtils.equal(_errorMessage, other._errorMessage);
         }
         return false;
     }
@@ -132,7 +132,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(get_errorMessage());
+        hash = hash * 31 + JodaBeanUtils.hashCode(_errorMessage);
         return hash;
     }
 
@@ -140,7 +140,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmUnusedGeneric{");
-        buf.append("_errorMessage").append('=').append(JodaBeanUtils.toString(get_errorMessage()));
+        buf.append("_errorMessage").append('=').append(JodaBeanUtils.toString(_errorMessage));
         buf.append('}');
         return buf.toString();
     }

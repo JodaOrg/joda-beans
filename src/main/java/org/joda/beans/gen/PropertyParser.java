@@ -41,6 +41,10 @@ class PropertyParser {
     private static final Pattern TYPE_PATTERN = Pattern.compile(".*[ ,(]type[ ]*[=][ ]*[\"]([a-zA-Z0-9 ,_<>?.]*)[\"].*");
     /** The type builder pattern. */
     private static final Pattern BUILDER_TYPE_PATTERN = Pattern.compile(".*[ ,(]builderType[ ]*[=][ ]*[\"]([a-zA-Z0-9 ,_<>?.]*)[\"].*");
+    /** The equalsHashCode pattern. */
+    private static final Pattern EQ_HASH_PATTERN = Pattern.compile(".*[ ,(]equalsHashCodeStyle[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The toString pattern. */
+    private static final Pattern TO_STR_PATTERN = Pattern.compile(".*[ ,(]toStringStyle[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The validation pattern. */
     private static final Pattern VALIDATION_PATTERN = Pattern.compile(".*[ ,(]validate[ ]*[=][ ]*[\"]([a-zA-Z_.]*)[\"].*");
 
@@ -74,6 +78,8 @@ class PropertyParser {
         data.setOverrideSet(parseOverrideSet(content));
         data.setTypeStyle(parseTypeStyle(content));
         data.setBuilderTypeStyle(parseBuilderTypeStyle(content));
+        data.setEqualsHashCodeStyle(parseEqualsHashCodeStyle(content));
+        data.setToStringStyle(parseToStringStyle(content));
         data.setValidation(parseValidation(content));
         data.setDeprecated(parseDeprecated(content));
         data.setFieldName(parseFieldName(content));
@@ -89,6 +95,8 @@ class PropertyParser {
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
         data.resolveBuilderGen();
+        data.resolveEqualsHashCodeStyle(beanParser.getFile(), lineIndex);
+        data.resolveToStringStyle(beanParser.getFile(), lineIndex);
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
@@ -223,6 +231,24 @@ class PropertyParser {
         return "smart";
     }
 
+    private String parseEqualsHashCodeStyle(List<String> content) {
+        String line = content.get(propertyIndex).trim();
+        Matcher matcher = EQ_HASH_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+    
+    private String parseToStringStyle(List<String> content) {
+        String line = content.get(propertyIndex).trim();
+        Matcher matcher = TO_STR_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+    
     private String parseValidation(List<String> content) {
         String line = content.get(propertyIndex).trim();
         Matcher matcher = VALIDATION_PATTERN.matcher(line);

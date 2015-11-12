@@ -647,39 +647,39 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmGuava<?> other = (ImmGuava<?>) obj;
-            return JodaBeanUtils.equal(getCollection(), other.getCollection()) &&
-                    JodaBeanUtils.equal(getList(), other.getList()) &&
-                    JodaBeanUtils.equal(getSet(), other.getSet()) &&
-                    JodaBeanUtils.equal(getSortedSet(), other.getSortedSet()) &&
-                    JodaBeanUtils.equal(getMap(), other.getMap()) &&
-                    JodaBeanUtils.equal(getSortedMap(), other.getSortedMap()) &&
-                    JodaBeanUtils.equal(getBiMap(), other.getBiMap()) &&
-                    JodaBeanUtils.equal(getMultimap(), other.getMultimap()) &&
-                    JodaBeanUtils.equal(getListMultimap(), other.getListMultimap()) &&
-                    JodaBeanUtils.equal(getSetMultimap(), other.getSetMultimap()) &&
-                    JodaBeanUtils.equal(getMultiset(), other.getMultiset()) &&
-                    JodaBeanUtils.equal(getSortedMultiset(), other.getSortedMultiset()) &&
-                    JodaBeanUtils.equal(getCollectionInterface(), other.getCollectionInterface()) &&
-                    JodaBeanUtils.equal(getListInterface(), other.getListInterface()) &&
-                    JodaBeanUtils.equal(getSetInterface(), other.getSetInterface()) &&
-                    JodaBeanUtils.equal(getSortedSetInterface(), other.getSortedSetInterface()) &&
-                    JodaBeanUtils.equal(getMapInterface(), other.getMapInterface()) &&
-                    JodaBeanUtils.equal(getSortedMapInterface(), other.getSortedMapInterface()) &&
-                    JodaBeanUtils.equal(getBiMapInterface(), other.getBiMapInterface()) &&
-                    JodaBeanUtils.equal(getMultimapInterface(), other.getMultimapInterface()) &&
-                    JodaBeanUtils.equal(getListMultimapInterface(), other.getListMultimapInterface()) &&
-                    JodaBeanUtils.equal(getSetMultimapInterface(), other.getSetMultimapInterface()) &&
-                    JodaBeanUtils.equal(getMultisetInterface(), other.getMultisetInterface()) &&
-                    JodaBeanUtils.equal(getSortedMultisetInterface(), other.getSortedMultisetInterface()) &&
-                    JodaBeanUtils.equal(getListWildExtendsT(), other.getListWildExtendsT()) &&
-                    JodaBeanUtils.equal(getListWildExtendsNumber(), other.getListWildExtendsNumber()) &&
-                    JodaBeanUtils.equal(getListWildExtendsComparable(), other.getListWildExtendsComparable()) &&
-                    JodaBeanUtils.equal(getSetWildExtendsT(), other.getSetWildExtendsT()) &&
-                    JodaBeanUtils.equal(getSetWildExtendsNumber(), other.getSetWildExtendsNumber()) &&
-                    JodaBeanUtils.equal(getSetWildExtendsComparable(), other.getSetWildExtendsComparable()) &&
-                    JodaBeanUtils.equal(getListWildBuilder1(), other.getListWildBuilder1()) &&
-                    JodaBeanUtils.equal(getListWildBuilder2(), other.getListWildBuilder2()) &&
-                    JodaBeanUtils.equal(getMapWildBuilder1(), other.getMapWildBuilder1());
+            return JodaBeanUtils.equal(collection, other.collection) &&
+                    JodaBeanUtils.equal(list, other.list) &&
+                    JodaBeanUtils.equal(set, other.set) &&
+                    JodaBeanUtils.equal(sortedSet, other.sortedSet) &&
+                    JodaBeanUtils.equal(map, other.map) &&
+                    JodaBeanUtils.equal(sortedMap, other.sortedMap) &&
+                    JodaBeanUtils.equal(biMap, other.biMap) &&
+                    JodaBeanUtils.equal(multimap, other.multimap) &&
+                    JodaBeanUtils.equal(listMultimap, other.listMultimap) &&
+                    JodaBeanUtils.equal(setMultimap, other.setMultimap) &&
+                    JodaBeanUtils.equal(multiset, other.multiset) &&
+                    JodaBeanUtils.equal(sortedMultiset, other.sortedMultiset) &&
+                    JodaBeanUtils.equal(collectionInterface, other.collectionInterface) &&
+                    JodaBeanUtils.equal(listInterface, other.listInterface) &&
+                    JodaBeanUtils.equal(setInterface, other.setInterface) &&
+                    JodaBeanUtils.equal(sortedSetInterface, other.sortedSetInterface) &&
+                    JodaBeanUtils.equal(mapInterface, other.mapInterface) &&
+                    JodaBeanUtils.equal(sortedMapInterface, other.sortedMapInterface) &&
+                    JodaBeanUtils.equal(biMapInterface, other.biMapInterface) &&
+                    JodaBeanUtils.equal(multimapInterface, other.multimapInterface) &&
+                    JodaBeanUtils.equal(listMultimapInterface, other.listMultimapInterface) &&
+                    JodaBeanUtils.equal(setMultimapInterface, other.setMultimapInterface) &&
+                    JodaBeanUtils.equal(multisetInterface, other.multisetInterface) &&
+                    JodaBeanUtils.equal(sortedMultisetInterface, other.sortedMultisetInterface) &&
+                    JodaBeanUtils.equal(listWildExtendsT, other.listWildExtendsT) &&
+                    JodaBeanUtils.equal(listWildExtendsNumber, other.listWildExtendsNumber) &&
+                    JodaBeanUtils.equal(listWildExtendsComparable, other.listWildExtendsComparable) &&
+                    JodaBeanUtils.equal(setWildExtendsT, other.setWildExtendsT) &&
+                    JodaBeanUtils.equal(setWildExtendsNumber, other.setWildExtendsNumber) &&
+                    JodaBeanUtils.equal(setWildExtendsComparable, other.setWildExtendsComparable) &&
+                    JodaBeanUtils.equal(listWildBuilder1, other.listWildBuilder1) &&
+                    JodaBeanUtils.equal(listWildBuilder2, other.listWildBuilder2) &&
+                    JodaBeanUtils.equal(mapWildBuilder1, other.mapWildBuilder1);
         }
         return false;
     }
@@ -687,39 +687,39 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getCollection());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getList());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSet());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedSet());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getBiMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMultimap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListMultimap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSetMultimap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMultiset());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMultiset());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getCollectionInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSetInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedSetInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMapInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMapInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getBiMapInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMultimapInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListMultimapInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSetMultimapInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMultisetInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSortedMultisetInterface());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildExtendsT());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildExtendsNumber());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildExtendsComparable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSetWildExtendsT());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSetWildExtendsNumber());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSetWildExtendsComparable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildBuilder1());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildBuilder2());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMapWildBuilder1());
+        hash = hash * 31 + JodaBeanUtils.hashCode(collection);
+        hash = hash * 31 + JodaBeanUtils.hashCode(list);
+        hash = hash * 31 + JodaBeanUtils.hashCode(set);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sortedSet);
+        hash = hash * 31 + JodaBeanUtils.hashCode(map);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sortedMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(biMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(multimap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listMultimap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(setMultimap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(multiset);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sortedMultiset);
+        hash = hash * 31 + JodaBeanUtils.hashCode(collectionInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(setInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sortedSetInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(mapInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sortedMapInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(biMapInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(multimapInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listMultimapInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(setMultimapInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(multisetInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sortedMultisetInterface);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildExtendsT);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildExtendsNumber);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildExtendsComparable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(setWildExtendsT);
+        hash = hash * 31 + JodaBeanUtils.hashCode(setWildExtendsNumber);
+        hash = hash * 31 + JodaBeanUtils.hashCode(setWildExtendsComparable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildBuilder1);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildBuilder2);
+        hash = hash * 31 + JodaBeanUtils.hashCode(mapWildBuilder1);
         return hash;
     }
 
@@ -727,39 +727,39 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(1088);
         buf.append("ImmGuava{");
-        buf.append("collection").append('=').append(getCollection()).append(',').append(' ');
-        buf.append("list").append('=').append(getList()).append(',').append(' ');
-        buf.append("set").append('=').append(getSet()).append(',').append(' ');
-        buf.append("sortedSet").append('=').append(getSortedSet()).append(',').append(' ');
-        buf.append("map").append('=').append(getMap()).append(',').append(' ');
-        buf.append("sortedMap").append('=').append(getSortedMap()).append(',').append(' ');
-        buf.append("biMap").append('=').append(getBiMap()).append(',').append(' ');
-        buf.append("multimap").append('=').append(getMultimap()).append(',').append(' ');
-        buf.append("listMultimap").append('=').append(getListMultimap()).append(',').append(' ');
-        buf.append("setMultimap").append('=').append(getSetMultimap()).append(',').append(' ');
-        buf.append("multiset").append('=').append(getMultiset()).append(',').append(' ');
-        buf.append("sortedMultiset").append('=').append(getSortedMultiset()).append(',').append(' ');
-        buf.append("collectionInterface").append('=').append(getCollectionInterface()).append(',').append(' ');
-        buf.append("listInterface").append('=').append(getListInterface()).append(',').append(' ');
-        buf.append("setInterface").append('=').append(getSetInterface()).append(',').append(' ');
-        buf.append("sortedSetInterface").append('=').append(getSortedSetInterface()).append(',').append(' ');
-        buf.append("mapInterface").append('=').append(getMapInterface()).append(',').append(' ');
-        buf.append("sortedMapInterface").append('=').append(getSortedMapInterface()).append(',').append(' ');
-        buf.append("biMapInterface").append('=').append(getBiMapInterface()).append(',').append(' ');
-        buf.append("multimapInterface").append('=').append(getMultimapInterface()).append(',').append(' ');
-        buf.append("listMultimapInterface").append('=').append(getListMultimapInterface()).append(',').append(' ');
-        buf.append("setMultimapInterface").append('=').append(getSetMultimapInterface()).append(',').append(' ');
-        buf.append("multisetInterface").append('=').append(getMultisetInterface()).append(',').append(' ');
-        buf.append("sortedMultisetInterface").append('=').append(getSortedMultisetInterface()).append(',').append(' ');
-        buf.append("listWildExtendsT").append('=').append(getListWildExtendsT()).append(',').append(' ');
-        buf.append("listWildExtendsNumber").append('=').append(getListWildExtendsNumber()).append(',').append(' ');
-        buf.append("listWildExtendsComparable").append('=').append(getListWildExtendsComparable()).append(',').append(' ');
-        buf.append("setWildExtendsT").append('=').append(getSetWildExtendsT()).append(',').append(' ');
-        buf.append("setWildExtendsNumber").append('=').append(getSetWildExtendsNumber()).append(',').append(' ');
-        buf.append("setWildExtendsComparable").append('=').append(getSetWildExtendsComparable()).append(',').append(' ');
-        buf.append("listWildBuilder1").append('=').append(getListWildBuilder1()).append(',').append(' ');
-        buf.append("listWildBuilder2").append('=').append(getListWildBuilder2()).append(',').append(' ');
-        buf.append("mapWildBuilder1").append('=').append(JodaBeanUtils.toString(getMapWildBuilder1()));
+        buf.append("collection").append('=').append(collection).append(',').append(' ');
+        buf.append("list").append('=').append(list).append(',').append(' ');
+        buf.append("set").append('=').append(set).append(',').append(' ');
+        buf.append("sortedSet").append('=').append(sortedSet).append(',').append(' ');
+        buf.append("map").append('=').append(map).append(',').append(' ');
+        buf.append("sortedMap").append('=').append(sortedMap).append(',').append(' ');
+        buf.append("biMap").append('=').append(biMap).append(',').append(' ');
+        buf.append("multimap").append('=').append(multimap).append(',').append(' ');
+        buf.append("listMultimap").append('=').append(listMultimap).append(',').append(' ');
+        buf.append("setMultimap").append('=').append(setMultimap).append(',').append(' ');
+        buf.append("multiset").append('=').append(multiset).append(',').append(' ');
+        buf.append("sortedMultiset").append('=').append(sortedMultiset).append(',').append(' ');
+        buf.append("collectionInterface").append('=').append(collectionInterface).append(',').append(' ');
+        buf.append("listInterface").append('=').append(listInterface).append(',').append(' ');
+        buf.append("setInterface").append('=').append(setInterface).append(',').append(' ');
+        buf.append("sortedSetInterface").append('=').append(sortedSetInterface).append(',').append(' ');
+        buf.append("mapInterface").append('=').append(mapInterface).append(',').append(' ');
+        buf.append("sortedMapInterface").append('=').append(sortedMapInterface).append(',').append(' ');
+        buf.append("biMapInterface").append('=').append(biMapInterface).append(',').append(' ');
+        buf.append("multimapInterface").append('=').append(multimapInterface).append(',').append(' ');
+        buf.append("listMultimapInterface").append('=').append(listMultimapInterface).append(',').append(' ');
+        buf.append("setMultimapInterface").append('=').append(setMultimapInterface).append(',').append(' ');
+        buf.append("multisetInterface").append('=').append(multisetInterface).append(',').append(' ');
+        buf.append("sortedMultisetInterface").append('=').append(sortedMultisetInterface).append(',').append(' ');
+        buf.append("listWildExtendsT").append('=').append(listWildExtendsT).append(',').append(' ');
+        buf.append("listWildExtendsNumber").append('=').append(listWildExtendsNumber).append(',').append(' ');
+        buf.append("listWildExtendsComparable").append('=').append(listWildExtendsComparable).append(',').append(' ');
+        buf.append("setWildExtendsT").append('=').append(setWildExtendsT).append(',').append(' ');
+        buf.append("setWildExtendsNumber").append('=').append(setWildExtendsNumber).append(',').append(' ');
+        buf.append("setWildExtendsComparable").append('=').append(setWildExtendsComparable).append(',').append(' ');
+        buf.append("listWildBuilder1").append('=').append(listWildBuilder1).append(',').append(' ');
+        buf.append("listWildBuilder2").append('=').append(listWildBuilder2).append(',').append(' ');
+        buf.append("mapWildBuilder1").append('=').append(JodaBeanUtils.toString(mapWildBuilder1));
         buf.append('}');
         return buf.toString();
     }

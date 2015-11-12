@@ -122,8 +122,8 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPersonAbstract other = (ImmPersonAbstract) obj;
-            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname());
+            return JodaBeanUtils.equal(forename, other.forename) &&
+                    JodaBeanUtils.equal(surname, other.surname);
         }
         return false;
     }
@@ -131,8 +131,8 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getForename());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSurname());
+        hash = hash * 31 + JodaBeanUtils.hashCode(forename);
+        hash = hash * 31 + JodaBeanUtils.hashCode(surname);
         return hash;
     }
 
@@ -150,8 +150,8 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("forename").append('=').append(JodaBeanUtils.toString(getForename())).append(',').append(' ');
-        buf.append("surname").append('=').append(JodaBeanUtils.toString(getSurname())).append(',').append(' ');
+        buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
+        buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
         buf.append("age").append('=').append(JodaBeanUtils.toString(getAge())).append(',').append(' ');
     }
 

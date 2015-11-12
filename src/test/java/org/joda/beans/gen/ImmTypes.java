@@ -199,12 +199,12 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmTypes<?> other = (ImmTypes<?>) obj;
-            return JodaBeanUtils.equal(getListWild(), other.getListWild()) &&
-                    JodaBeanUtils.equal(getListWildPublic1(), other.getListWildPublic1()) &&
-                    JodaBeanUtils.equal(getListWildPublic2(), other.getListWildPublic2()) &&
-                    JodaBeanUtils.equal(getListWildBuilder1(), other.getListWildBuilder1()) &&
-                    JodaBeanUtils.equal(getListWildBuilder2(), other.getListWildBuilder2()) &&
-                    JodaBeanUtils.equal(getMapWildBuilder1(), other.getMapWildBuilder1());
+            return JodaBeanUtils.equal(listWild, other.listWild) &&
+                    JodaBeanUtils.equal(listWildPublic1, other.listWildPublic1) &&
+                    JodaBeanUtils.equal(listWildPublic2, other.listWildPublic2) &&
+                    JodaBeanUtils.equal(listWildBuilder1, other.listWildBuilder1) &&
+                    JodaBeanUtils.equal(listWildBuilder2, other.listWildBuilder2) &&
+                    JodaBeanUtils.equal(mapWildBuilder1, other.mapWildBuilder1);
         }
         return false;
     }
@@ -212,12 +212,12 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWild());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildPublic1());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildPublic2());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildBuilder1());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListWildBuilder2());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMapWildBuilder1());
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWild);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildPublic1);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildPublic2);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildBuilder1);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listWildBuilder2);
+        hash = hash * 31 + JodaBeanUtils.hashCode(mapWildBuilder1);
         return hash;
     }
 
@@ -225,12 +225,12 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(224);
         buf.append("ImmTypes{");
-        buf.append("listWild").append('=').append(getListWild()).append(',').append(' ');
-        buf.append("listWildPublic1").append('=').append(getListWildPublic1()).append(',').append(' ');
-        buf.append("listWildPublic2").append('=').append(getListWildPublic2()).append(',').append(' ');
-        buf.append("listWildBuilder1").append('=').append(getListWildBuilder1()).append(',').append(' ');
-        buf.append("listWildBuilder2").append('=').append(getListWildBuilder2()).append(',').append(' ');
-        buf.append("mapWildBuilder1").append('=').append(JodaBeanUtils.toString(getMapWildBuilder1()));
+        buf.append("listWild").append('=').append(listWild).append(',').append(' ');
+        buf.append("listWildPublic1").append('=').append(listWildPublic1).append(',').append(' ');
+        buf.append("listWildPublic2").append('=').append(listWildPublic2).append(',').append(' ');
+        buf.append("listWildBuilder1").append('=').append(listWildBuilder1).append(',').append(' ');
+        buf.append("listWildBuilder2").append('=').append(listWildBuilder2).append(',').append(' ');
+        buf.append("mapWildBuilder1").append('=').append(JodaBeanUtils.toString(mapWildBuilder1));
         buf.append('}');
         return buf.toString();
     }

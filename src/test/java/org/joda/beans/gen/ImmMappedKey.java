@@ -121,7 +121,7 @@ public final class ImmMappedKey implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmMappedKey other = (ImmMappedKey) obj;
-            return JodaBeanUtils.equal(getData(), other.getData());
+            return JodaBeanUtils.equal(data, other.data);
         }
         return false;
     }
@@ -129,7 +129,7 @@ public final class ImmMappedKey implements ImmutableBean, Serializable {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getData());
+        hash = hash * 31 + JodaBeanUtils.hashCode(data);
         return hash;
     }
 
@@ -137,7 +137,7 @@ public final class ImmMappedKey implements ImmutableBean, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmMappedKey{");
-        buf.append("data").append('=').append(JodaBeanUtils.toString(getData()));
+        buf.append("data").append('=').append(JodaBeanUtils.toString(data));
         buf.append('}');
         return buf.toString();
     }

@@ -106,7 +106,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmSubSubPersonFinal other = (ImmSubSubPersonFinal) obj;
-            return JodaBeanUtils.equal(getCodeCounts(), other.getCodeCounts()) &&
+            return JodaBeanUtils.equal(codeCounts, other.codeCounts) &&
                     super.equals(obj);
         }
         return false;
@@ -117,7 +117,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         int hash = cachedHashCode;
         if (hash == 0) {
             hash = 7;
-            hash = hash * 31 + JodaBeanUtils.hashCode(getCodeCounts());
+            hash = hash * 31 + JodaBeanUtils.hashCode(codeCounts);
             hash = hash ^ super.hashCode();
             cachedHashCode = hash;
         }
@@ -140,7 +140,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
     @Override
     protected void toString(StringBuilder buf) {
         super.toString(buf);
-        buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(getCodeCounts())).append(',').append(' ');
+        buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(codeCounts)).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

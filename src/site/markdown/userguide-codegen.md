@@ -253,6 +253,15 @@ Simply add the annotation parameter `alias = "otherName"`.
 This is most useful when a property is renamed, to handle change during [deserialization](userguide-serialization.html).
 
 
+The style of equals/hashCode/toString can be controlled using the annotation parameters "equalsHashCodeStyle" and
+"toStringStyle". In most cases, the default "smart" setting is sufficient:
+
+* "omit" - omit this property from equals/hashCode/toString
+* "smart" - process intelligently, equivalent to "field" for immutable and "getter" for mutable
+* "getter" - use the getter for equals/hashCode/toString
+* "field" - use the field for equals/hashCode/toString
+
+
 ## Derived properties
 
 It is possible to declare a property without a matching field.

@@ -128,7 +128,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmGenericNonFinal<?> other = (ImmGenericNonFinal<?>) obj;
-            return JodaBeanUtils.equal(getValue(), other.getValue());
+            return JodaBeanUtils.equal(value, other.value);
         }
         return false;
     }
@@ -136,7 +136,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getValue());
+        hash = hash * 31 + JodaBeanUtils.hashCode(value);
         return hash;
     }
 
@@ -154,7 +154,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
     }
 
     protected void toString(StringBuilder buf) {
-        buf.append("value").append('=').append(JodaBeanUtils.toString(getValue())).append(',').append(' ');
+        buf.append("value").append('=').append(JodaBeanUtils.toString(value)).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

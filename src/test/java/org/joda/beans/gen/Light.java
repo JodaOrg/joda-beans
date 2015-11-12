@@ -185,12 +185,12 @@ public final class Light implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Light other = (Light) obj;
-            return (getNumber() == other.getNumber()) &&
-                    (isFlag() == other.isFlag()) &&
+            return (number == other.number) &&
+                    (flag == other.flag) &&
                     JodaBeanUtils.equal(street, other.street) &&
-                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
-                    JodaBeanUtils.equal(getList(), other.getList());
+                    JodaBeanUtils.equal(city, other.city) &&
+                    JodaBeanUtils.equal(owner, other.owner) &&
+                    JodaBeanUtils.equal(list, other.list);
         }
         return false;
     }
@@ -198,12 +198,12 @@ public final class Light implements ImmutableBean, Serializable {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getNumber());
-        hash = hash * 31 + JodaBeanUtils.hashCode(isFlag());
+        hash = hash * 31 + JodaBeanUtils.hashCode(number);
+        hash = hash * 31 + JodaBeanUtils.hashCode(flag);
         hash = hash * 31 + JodaBeanUtils.hashCode(street);
-        hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getOwner());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(city);
+        hash = hash * 31 + JodaBeanUtils.hashCode(owner);
+        hash = hash * 31 + JodaBeanUtils.hashCode(list);
         return hash;
     }
 
@@ -211,12 +211,12 @@ public final class Light implements ImmutableBean, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(224);
         buf.append("Light{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("flag").append('=').append(isFlag()).append(',').append(' ');
+        buf.append("number").append('=').append(number).append(',').append(' ');
+        buf.append("flag").append('=').append(flag).append(',').append(' ');
         buf.append("street").append('=').append(street).append(',').append(' ');
-        buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
-        buf.append("list").append('=').append(JodaBeanUtils.toString(getList()));
+        buf.append("city").append('=').append(city).append(',').append(' ');
+        buf.append("owner").append('=').append(owner).append(',').append(' ');
+        buf.append("list").append('=').append(JodaBeanUtils.toString(list));
         buf.append('}');
         return buf.toString();
     }

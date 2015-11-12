@@ -214,14 +214,14 @@ public final class ImmClone implements ImmutableBean, Serializable{
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmClone other = (ImmClone) obj;
-            return JodaBeanUtils.equal(getDate(), other.getDate()) &&
-                    JodaBeanUtils.equal(getArray1(), other.getArray1()) &&
-                    JodaBeanUtils.equal(getArray2(), other.getArray2()) &&
-                    JodaBeanUtils.equal(getArray3(), other.getArray3()) &&
-                    JodaBeanUtils.equal(getDateNullable(), other.getDateNullable()) &&
-                    JodaBeanUtils.equal(getArray1Nullable(), other.getArray1Nullable()) &&
-                    JodaBeanUtils.equal(getArray2Nullable(), other.getArray2Nullable()) &&
-                    JodaBeanUtils.equal(getArray3Nullable(), other.getArray3Nullable());
+            return JodaBeanUtils.equal(date, other.date) &&
+                    JodaBeanUtils.equal(array1, other.array1) &&
+                    JodaBeanUtils.equal(array2, other.array2) &&
+                    JodaBeanUtils.equal(array3, other.array3) &&
+                    JodaBeanUtils.equal(dateNullable, other.dateNullable) &&
+                    JodaBeanUtils.equal(array1Nullable, other.array1Nullable) &&
+                    JodaBeanUtils.equal(array2Nullable, other.array2Nullable) &&
+                    JodaBeanUtils.equal(array3Nullable, other.array3Nullable);
         }
         return false;
     }
@@ -229,14 +229,14 @@ public final class ImmClone implements ImmutableBean, Serializable{
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getDate());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray1());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray2());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray3());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getDateNullable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray1Nullable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray2Nullable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray3Nullable());
+        hash = hash * 31 + JodaBeanUtils.hashCode(date);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array1);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array2);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array3);
+        hash = hash * 31 + JodaBeanUtils.hashCode(dateNullable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array1Nullable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array2Nullable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array3Nullable);
         return hash;
     }
 
@@ -244,14 +244,14 @@ public final class ImmClone implements ImmutableBean, Serializable{
     public String toString() {
         StringBuilder buf = new StringBuilder(288);
         buf.append("ImmClone{");
-        buf.append("date").append('=').append(getDate()).append(',').append(' ');
-        buf.append("array1").append('=').append(getArray1()).append(',').append(' ');
-        buf.append("array2").append('=').append(getArray2()).append(',').append(' ');
-        buf.append("array3").append('=').append(getArray3()).append(',').append(' ');
-        buf.append("dateNullable").append('=').append(getDateNullable()).append(',').append(' ');
-        buf.append("array1Nullable").append('=').append(getArray1Nullable()).append(',').append(' ');
-        buf.append("array2Nullable").append('=').append(getArray2Nullable()).append(',').append(' ');
-        buf.append("array3Nullable").append('=').append(JodaBeanUtils.toString(getArray3Nullable()));
+        buf.append("date").append('=').append(date).append(',').append(' ');
+        buf.append("array1").append('=').append(array1).append(',').append(' ');
+        buf.append("array2").append('=').append(array2).append(',').append(' ');
+        buf.append("array3").append('=').append(array3).append(',').append(' ');
+        buf.append("dateNullable").append('=').append(dateNullable).append(',').append(' ');
+        buf.append("array1Nullable").append('=').append(array1Nullable).append(',').append(' ');
+        buf.append("array2Nullable").append('=').append(array2Nullable).append(',').append(' ');
+        buf.append("array3Nullable").append('=').append(JodaBeanUtils.toString(array3Nullable));
         buf.append('}');
         return buf.toString();
     }

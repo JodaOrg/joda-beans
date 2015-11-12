@@ -585,7 +585,7 @@ class BeanGen {
         insertRegion.add("\t\t\treturn true;");
         insertRegion.add("\t\t}");
         insertRegion.add("\t\tif (obj != null && obj.getClass() == this.getClass()) {");
-        List<PropertyGen> nonDerived = nonDerivedProperties();
+        List<PropertyGen> nonDerived = nonDerivedEqualsHashCodeProperties();
         if (nonDerived.size() == 0) {
             if (data.isSubClass()) {
                 insertRegion.add("\t\t\treturn super.equals(obj);");
@@ -596,7 +596,7 @@ class BeanGen {
             insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
-                String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
+                String getter = equalsHashCodeFieldAccessor(prop);
                 String equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
                     equals = "(" + getter + " == other." + getter + ")";
@@ -655,11 +655,19 @@ class BeanGen {
     }
 
     private void generateHashCodeContent(String indent) {
-        List<PropertyGen> nonDerived = nonDerivedProperties();
+        List<PropertyGen> nonDerived = nonDerivedEqualsHashCodeProperties();
         for (int i = 0; i < nonDerived.size(); i++) {
             PropertyGen prop = nonDerived.get(i);
-            String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
+            String getter = equalsHashCodeFieldAccessor(prop);
             insertRegion.add(indent + "hash = hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
+        }
+    }
+
+    private String equalsHashCodeFieldAccessor(PropertyGen prop) {
+        if (prop.getData().getEqualsHashCodeStyle().equals("field")) {
+            return prop.getData().getFieldName();
+        } else {
+            return prop.getData().getGetterGen().generateGetInvoke(prop.getData());
         }
     }
 
@@ -667,15 +675,16 @@ class BeanGen {
         if (data.isManualToStringCode()) {
             return;
         }
+        List<PropertyGen> props = toStringProperties();
         if (data.isRootClass() && data.isTypeFinal()) {
             insertRegion.add("\t@Override");
             insertRegion.add("\tpublic String toString() {");
-            insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
+            insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
             insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
-            for (int i = 0; i < properties.size(); i++) {
-                PropertyGen prop = properties.get(i);
-                String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
-                if (i < properties.size() - 1) {
+            for (int i = 0; i < props.size(); i++) {
+                PropertyGen prop = props.get(i);
+                String getter = toStringFieldAccessor(prop);
+                if (i < props.size() - 1) {
                     insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(" + getter + ").append(',').append(' ');");
                 } else {
@@ -692,7 +701,7 @@ class BeanGen {
         
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic String toString() {");
-        insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (properties.size() * 32 + 32) + ");");
+        insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
         insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
         insertRegion.add("\t\tint len = buf.length();");
         insertRegion.add("\t\ttoString(buf);");
@@ -711,14 +720,24 @@ class BeanGen {
         if (data.isSubClass()) {
             insertRegion.add("\t\tsuper.toString(buf);");
         }
-        for (int i = 0; i < properties.size(); i++) {
-            PropertyGen prop = properties.get(i);
-            String getter = prop.getData().getGetterGen().generateGetInvoke(prop.getData());
+        for (int i = 0; i < props.size(); i++) {
+            PropertyGen prop = props.get(i);
+            String getter = toStringFieldAccessor(prop);
             insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                     "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }
         insertRegion.add("\t}");
         insertRegion.add("");
+    }
+
+    private String toStringFieldAccessor(PropertyGen prop) {
+        if (prop.getData().isDerived()) {
+            return prop.getData().getGetterGen().generateGetInvoke(prop.getData());
+        } else if (prop.getData().getToStringStyle().equals("field")) {
+            return prop.getData().getFieldName();
+        } else {
+            return prop.getData().getGetterGen().generateGetInvoke(prop.getData());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -1256,6 +1275,26 @@ class BeanGen {
             }
         }
         return nonDerived;
+    }
+
+    private List<PropertyGen> nonDerivedEqualsHashCodeProperties() {
+        List<PropertyGen> nonDerived = new ArrayList<PropertyGen>();
+        for (PropertyGen prop : properties) {
+            if (!prop.getData().isDerived() && !prop.getData().getEqualsHashCodeStyle().equals("omit")) {
+                nonDerived.add(prop);
+            }
+        }
+        return nonDerived;
+    }
+
+    private List<PropertyGen> toStringProperties() {
+        List<PropertyGen> props = new ArrayList<PropertyGen>();
+        for (PropertyGen prop : properties) {
+            if (!"omit".equals(prop.getData().getToStringStyle())) {
+                props.add(prop);
+            }
+        }
+        return props;
     }
 
 }

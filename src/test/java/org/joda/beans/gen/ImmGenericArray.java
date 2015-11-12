@@ -109,7 +109,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmGenericArray<?> other = (ImmGenericArray<?>) obj;
-            return JodaBeanUtils.equal(getValues(), other.getValues());
+            return JodaBeanUtils.equal(values, other.values);
         }
         return false;
     }
@@ -117,7 +117,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getValues());
+        hash = hash * 31 + JodaBeanUtils.hashCode(values);
         return hash;
     }
 
@@ -125,7 +125,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmGenericArray{");
-        buf.append("values").append('=').append(JodaBeanUtils.toString(getValues()));
+        buf.append("values").append('=').append(JodaBeanUtils.toString(values));
         buf.append('}');
         return buf.toString();
     }

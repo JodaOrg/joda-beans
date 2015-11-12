@@ -94,6 +94,10 @@ class PropertyData {
     private String typeStyle;
     /** The builder type style. */
     private String builderTypeStyle;
+    /** The equals hashCode style. */
+    private String equalsHashCodeStyle;
+    /** The toString style. */
+    private String toStringStyle;
     /** The validation string. */
     private String validation;
     /** Deprecated flag. */
@@ -420,6 +424,70 @@ class PropertyData {
      */
     public void setBuilderTypeStyle(String builderTypeStyle) {
         this.builderTypeStyle = builderTypeStyle;
+    }
+
+    /**
+     * Gets the equals hashCode style.
+     * @return the equals hashCode style
+     */
+    public String getEqualsHashCodeStyle() {
+        return equalsHashCodeStyle;
+    }
+
+    /**
+     * Sets the equals hashCode style.
+     * @param equalsHashCodeStyle  the equals hashCode style
+     */
+    public void setEqualsHashCodeStyle(String equalsHashCodeStyle) {
+        this.equalsHashCodeStyle = equalsHashCodeStyle;
+    }
+
+    /**
+     * Resolves the equals hashCode generator.
+     */
+    public void resolveEqualsHashCodeStyle(File file, int lineIndex) {
+        if (equalsHashCodeStyle.equals("smart")) {
+            equalsHashCodeStyle = (bean.isImmutable() ? "field" : "getter");
+        }
+        if (equalsHashCodeStyle.equals("omit") ||
+                equalsHashCodeStyle.equals("getter") ||
+                equalsHashCodeStyle.equals("field")) {
+            return;
+        }
+        throw new BeanCodeGenException("Invalid equals/hashCode style: " + equalsHashCodeStyle +
+                " in " + getBean().getTypeRaw() + "." + getPropertyName(), file, lineIndex);
+    }
+
+    /**
+     * Gets the toString style.
+     * @return the toString style
+     */
+    public String getToStringStyle() {
+        return toStringStyle;
+    }
+
+    /**
+     * Sets the toString style.
+     * @param toStringStyle  the toString style
+     */
+    public void setToStringStyle(String toStringStyle) {
+        this.toStringStyle = toStringStyle;
+    }
+
+    /**
+     * Resolves the toString generator.
+     */
+    public void resolveToStringStyle(File file, int lineIndex) {
+        if (toStringStyle.equals("smart")) {
+            toStringStyle = (bean.isImmutable() ? "field" : "getter");
+        }
+        if (toStringStyle.equals("omit") ||
+                toStringStyle.equals("getter") ||
+                toStringStyle.equals("field")) {
+            return;
+        }
+        throw new BeanCodeGenException("Invalid toString style: " + toStringStyle +
+                " in " + getBean().getTypeRaw() + "." + getPropertyName(), file, lineIndex);
     }
 
     /**

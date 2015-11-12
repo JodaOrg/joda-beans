@@ -114,7 +114,7 @@ final class ImmPackageScoped implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPackageScoped other = (ImmPackageScoped) obj;
-            return JodaBeanUtils.equal(getName(), other.getName());
+            return JodaBeanUtils.equal(name, other.name);
         }
         return false;
     }
@@ -122,7 +122,7 @@ final class ImmPackageScoped implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(name);
         return hash;
     }
 
@@ -130,7 +130,7 @@ final class ImmPackageScoped implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmPackageScoped{");
-        buf.append("name").append('=').append(JodaBeanUtils.toString(getName()));
+        buf.append("name").append('=').append(JodaBeanUtils.toString(name));
         buf.append('}');
         return buf.toString();
     }

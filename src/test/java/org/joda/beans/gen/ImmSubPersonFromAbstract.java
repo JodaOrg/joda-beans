@@ -115,8 +115,8 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmSubPersonFromAbstract other = (ImmSubPersonFromAbstract) obj;
-            return JodaBeanUtils.equal(getMiddleName(), other.getMiddleName()) &&
-                    JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
+            return JodaBeanUtils.equal(middleName, other.middleName) &&
+                    JodaBeanUtils.equal(addressList, other.addressList) &&
                     super.equals(obj);
         }
         return false;
@@ -125,8 +125,8 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMiddleName());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getAddressList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(middleName);
+        hash = hash * 31 + JodaBeanUtils.hashCode(addressList);
         return hash ^ super.hashCode();
     }
 
@@ -146,8 +146,8 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
     @Override
     protected void toString(StringBuilder buf) {
         super.toString(buf);
-        buf.append("middleName").append('=').append(JodaBeanUtils.toString(getMiddleName())).append(',').append(' ');
-        buf.append("addressList").append('=').append(JodaBeanUtils.toString(getAddressList())).append(',').append(' ');
+        buf.append("middleName").append('=').append(JodaBeanUtils.toString(middleName)).append(',').append(' ');
+        buf.append("addressList").append('=').append(JodaBeanUtils.toString(addressList)).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

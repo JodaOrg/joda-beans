@@ -122,7 +122,7 @@ public final class ImmKey1 implements ImmutableBean, IKey, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmKey1 other = (ImmKey1) obj;
-            return JodaBeanUtils.equal(getName(), other.getName());
+            return JodaBeanUtils.equal(name, other.name);
         }
         return false;
     }
@@ -130,7 +130,7 @@ public final class ImmKey1 implements ImmutableBean, IKey, Serializable {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getName());
+        hash = hash * 31 + JodaBeanUtils.hashCode(name);
         return hash;
     }
 
@@ -138,7 +138,7 @@ public final class ImmKey1 implements ImmutableBean, IKey, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmKey1{");
-        buf.append("name").append('=').append(JodaBeanUtils.toString(getName()));
+        buf.append("name").append('=').append(JodaBeanUtils.toString(name));
         buf.append('}');
         return buf.toString();
     }

@@ -489,29 +489,29 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmAddress other = (ImmAddress) obj;
-            return (getNumber() == other.getNumber()) &&
-                    JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
-                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getAbstractNumber(), other.getAbstractNumber()) &&
-                    JodaBeanUtils.equal(getData(), other.getData()) &&
-                    JodaBeanUtils.equal(getArray2d(), other.getArray2d()) &&
-                    JodaBeanUtils.equal(getOwner(), other.getOwner()) &&
-                    JodaBeanUtils.equal(getObject1(), other.getObject1()) &&
-                    JodaBeanUtils.equal(getObject2(), other.getObject2()) &&
-                    JodaBeanUtils.equal(getRisk(), other.getRisk()) &&
-                    JodaBeanUtils.equal(getRiskLevel(), other.getRiskLevel()) &&
-                    JodaBeanUtils.equal(getSerializable(), other.getSerializable()) &&
-                    JodaBeanUtils.equal(getObjectInMap(), other.getObjectInMap()) &&
-                    JodaBeanUtils.equal(getListInMap(), other.getListInMap()) &&
-                    JodaBeanUtils.equal(getListNumericInMap(), other.getListNumericInMap()) &&
-                    JodaBeanUtils.equal(getListInListInMap(), other.getListInListInMap()) &&
-                    JodaBeanUtils.equal(getObjectListInListInMap(), other.getObjectListInListInMap()) &&
-                    JodaBeanUtils.equal(getMapInMap(), other.getMapInMap()) &&
-                    JodaBeanUtils.equal(getSimpleTable(), other.getSimpleTable()) &&
-                    JodaBeanUtils.equal(getCompoundTable(), other.getCompoundTable()) &&
-                    JodaBeanUtils.equal(getSparseGrid(), other.getSparseGrid()) &&
-                    JodaBeanUtils.equal(getDenseGrid(), other.getDenseGrid()) &&
-                    JodaBeanUtils.equal(getBeanBeanMap(), other.getBeanBeanMap());
+            return (number == other.number) &&
+                    JodaBeanUtils.equal(street, other.street) &&
+                    JodaBeanUtils.equal(city, other.city) &&
+                    JodaBeanUtils.equal(abstractNumber, other.abstractNumber) &&
+                    JodaBeanUtils.equal(data, other.data) &&
+                    JodaBeanUtils.equal(array2d, other.array2d) &&
+                    JodaBeanUtils.equal(owner, other.owner) &&
+                    JodaBeanUtils.equal(object1, other.object1) &&
+                    JodaBeanUtils.equal(object2, other.object2) &&
+                    JodaBeanUtils.equal(risk, other.risk) &&
+                    JodaBeanUtils.equal(riskLevel, other.riskLevel) &&
+                    JodaBeanUtils.equal(serializable, other.serializable) &&
+                    JodaBeanUtils.equal(objectInMap, other.objectInMap) &&
+                    JodaBeanUtils.equal(listInMap, other.listInMap) &&
+                    JodaBeanUtils.equal(listNumericInMap, other.listNumericInMap) &&
+                    JodaBeanUtils.equal(listInListInMap, other.listInListInMap) &&
+                    JodaBeanUtils.equal(objectListInListInMap, other.objectListInListInMap) &&
+                    JodaBeanUtils.equal(mapInMap, other.mapInMap) &&
+                    JodaBeanUtils.equal(simpleTable, other.simpleTable) &&
+                    JodaBeanUtils.equal(compoundTable, other.compoundTable) &&
+                    JodaBeanUtils.equal(sparseGrid, other.sparseGrid) &&
+                    JodaBeanUtils.equal(denseGrid, other.denseGrid) &&
+                    JodaBeanUtils.equal(beanBeanMap, other.beanBeanMap);
         }
         return false;
     }
@@ -519,29 +519,29 @@ public final class ImmAddress implements ImmutableBean, Serializable {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getNumber());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getStreet());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getAbstractNumber());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getData());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getArray2d());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getOwner());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getObject1());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getObject2());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getRisk());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getRiskLevel());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSerializable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getObjectInMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListInMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListNumericInMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getListInListInMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getObjectListInListInMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getMapInMap());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSimpleTable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getCompoundTable());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSparseGrid());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getDenseGrid());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getBeanBeanMap());
+        hash = hash * 31 + JodaBeanUtils.hashCode(number);
+        hash = hash * 31 + JodaBeanUtils.hashCode(street);
+        hash = hash * 31 + JodaBeanUtils.hashCode(city);
+        hash = hash * 31 + JodaBeanUtils.hashCode(abstractNumber);
+        hash = hash * 31 + JodaBeanUtils.hashCode(data);
+        hash = hash * 31 + JodaBeanUtils.hashCode(array2d);
+        hash = hash * 31 + JodaBeanUtils.hashCode(owner);
+        hash = hash * 31 + JodaBeanUtils.hashCode(object1);
+        hash = hash * 31 + JodaBeanUtils.hashCode(object2);
+        hash = hash * 31 + JodaBeanUtils.hashCode(risk);
+        hash = hash * 31 + JodaBeanUtils.hashCode(riskLevel);
+        hash = hash * 31 + JodaBeanUtils.hashCode(serializable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(objectInMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listInMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listNumericInMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(listInListInMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(objectListInListInMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(mapInMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(simpleTable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(compoundTable);
+        hash = hash * 31 + JodaBeanUtils.hashCode(sparseGrid);
+        hash = hash * 31 + JodaBeanUtils.hashCode(denseGrid);
+        hash = hash * 31 + JodaBeanUtils.hashCode(beanBeanMap);
         return hash;
     }
 
@@ -549,29 +549,29 @@ public final class ImmAddress implements ImmutableBean, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(768);
         buf.append("ImmAddress{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("street").append('=').append(getStreet()).append(',').append(' ');
-        buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("abstractNumber").append('=').append(getAbstractNumber()).append(',').append(' ');
-        buf.append("data").append('=').append(getData()).append(',').append(' ');
-        buf.append("array2d").append('=').append(getArray2d()).append(',').append(' ');
-        buf.append("owner").append('=').append(getOwner()).append(',').append(' ');
-        buf.append("object1").append('=').append(getObject1()).append(',').append(' ');
-        buf.append("object2").append('=').append(getObject2()).append(',').append(' ');
-        buf.append("risk").append('=').append(getRisk()).append(',').append(' ');
-        buf.append("riskLevel").append('=').append(getRiskLevel()).append(',').append(' ');
-        buf.append("serializable").append('=').append(getSerializable()).append(',').append(' ');
-        buf.append("objectInMap").append('=').append(getObjectInMap()).append(',').append(' ');
-        buf.append("listInMap").append('=').append(getListInMap()).append(',').append(' ');
-        buf.append("listNumericInMap").append('=').append(getListNumericInMap()).append(',').append(' ');
-        buf.append("listInListInMap").append('=').append(getListInListInMap()).append(',').append(' ');
-        buf.append("objectListInListInMap").append('=').append(getObjectListInListInMap()).append(',').append(' ');
-        buf.append("mapInMap").append('=').append(getMapInMap()).append(',').append(' ');
-        buf.append("simpleTable").append('=').append(getSimpleTable()).append(',').append(' ');
-        buf.append("compoundTable").append('=').append(getCompoundTable()).append(',').append(' ');
-        buf.append("sparseGrid").append('=').append(getSparseGrid()).append(',').append(' ');
-        buf.append("denseGrid").append('=').append(getDenseGrid()).append(',').append(' ');
-        buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(getBeanBeanMap()));
+        buf.append("number").append('=').append(number).append(',').append(' ');
+        buf.append("street").append('=').append(street).append(',').append(' ');
+        buf.append("city").append('=').append(city).append(',').append(' ');
+        buf.append("abstractNumber").append('=').append(abstractNumber).append(',').append(' ');
+        buf.append("data").append('=').append(data).append(',').append(' ');
+        buf.append("array2d").append('=').append(array2d).append(',').append(' ');
+        buf.append("owner").append('=').append(owner).append(',').append(' ');
+        buf.append("object1").append('=').append(object1).append(',').append(' ');
+        buf.append("object2").append('=').append(object2).append(',').append(' ');
+        buf.append("risk").append('=').append(risk).append(',').append(' ');
+        buf.append("riskLevel").append('=').append(riskLevel).append(',').append(' ');
+        buf.append("serializable").append('=').append(serializable).append(',').append(' ');
+        buf.append("objectInMap").append('=').append(objectInMap).append(',').append(' ');
+        buf.append("listInMap").append('=').append(listInMap).append(',').append(' ');
+        buf.append("listNumericInMap").append('=').append(listNumericInMap).append(',').append(' ');
+        buf.append("listInListInMap").append('=').append(listInListInMap).append(',').append(' ');
+        buf.append("objectListInListInMap").append('=').append(objectListInListInMap).append(',').append(' ');
+        buf.append("mapInMap").append('=').append(mapInMap).append(',').append(' ');
+        buf.append("simpleTable").append('=').append(simpleTable).append(',').append(' ');
+        buf.append("compoundTable").append('=').append(compoundTable).append(',').append(' ');
+        buf.append("sparseGrid").append('=').append(sparseGrid).append(',').append(' ');
+        buf.append("denseGrid").append('=').append(denseGrid).append(',').append(' ');
+        buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(beanBeanMap));
         buf.append('}');
         return buf.toString();
     }

@@ -153,6 +153,38 @@ public @interface PropertyDefinition {
     String builderType() default "smart";
 
     /**
+     * The configuration for equals and hash code.
+     * <p>
+     * This flag controls generation of the {@code equals} and {@code hashCode} methods.
+     * The default is 'smart'.
+     * <p>
+     * Standard strings are:
+     * <ul>
+     * <li>'omit' - omit this property from equals and hashCode
+     * <li>'smart' - process intelligently, equivalent to 'field' for immutable and 'getter' for mutable
+     * <li>'getter' - include in equals and hashCode using the getter
+     * <li>'field' - include in equals and hashCode using the field
+     * </ul>
+     */
+    String equalsHashCodeStyle() default "smart";
+
+    /**
+     * The configuration for toString.
+     * <p>
+     * This flag controls generation of the {@code toString} method.
+     * The default is 'smart'.
+     * <p>
+     * Standard strings are:
+     * <ul>
+     * <li>'omit' - omit this property from equals and hashCode
+     * <li>'smart' - process intelligently, equivalent to 'field' for immutable and 'getter' for mutable
+     * <li>'getter' - include in equals and hashCode using the getter
+     * <li>'field' - include in equals and hashCode using the field
+     * </ul>
+     */
+    String toStringStyle() default "smart";
+
+    /**
      * The validator to use.
      * <p>
      * The property value may be validated by specifying this attribute.

@@ -164,9 +164,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             TupleImmutable<?, ?, ?> other = (TupleImmutable<?, ?, ?>) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
-                    JodaBeanUtils.equal(getThird(), other.getThird());
+            return JodaBeanUtils.equal(first, other.first) &&
+                    JodaBeanUtils.equal(second, other.second) &&
+                    JodaBeanUtils.equal(third, other.third);
         }
         return false;
     }
@@ -174,9 +174,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getFirst());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getSecond());
-        hash = hash * 31 + JodaBeanUtils.hashCode(getThird());
+        hash = hash * 31 + JodaBeanUtils.hashCode(first);
+        hash = hash * 31 + JodaBeanUtils.hashCode(second);
+        hash = hash * 31 + JodaBeanUtils.hashCode(third);
         return hash;
     }
 
@@ -184,9 +184,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("TupleImmutable{");
-        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
-        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
-        buf.append("third").append('=').append(JodaBeanUtils.toString(getThird()));
+        buf.append("first").append('=').append(first).append(',').append(' ');
+        buf.append("second").append('=').append(second).append(',').append(' ');
+        buf.append("third").append('=').append(JodaBeanUtils.toString(third));
         buf.append('}');
         return buf.toString();
     }

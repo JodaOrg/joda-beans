@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
       <action dev="jodastephen" type="add">
+         Change equals/hashCode/toString to use fields, not getters, for immutable beans.
+         Allow equals/hashCode/toString to be controlled , including selectively omitted.
+         Fixes #118, #121.
+      </action>
+      <action dev="jodastephen" type="add">
          Provide ability to generate ConstructorProperties annotation.
          Fixes #120.
       </action>

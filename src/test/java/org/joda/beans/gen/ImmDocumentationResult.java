@@ -126,7 +126,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDocumentationResult<?> other = (ImmDocumentationResult<?>) obj;
-            return JodaBeanUtils.equal(getDocumentation(), other.getDocumentation());
+            return JodaBeanUtils.equal(documentation, other.documentation);
         }
         return false;
     }
@@ -134,7 +134,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
     @Override
     public int hashCode() {
         int hash = getClass().hashCode();
-        hash = hash * 31 + JodaBeanUtils.hashCode(getDocumentation());
+        hash = hash * 31 + JodaBeanUtils.hashCode(documentation);
         return hash;
     }
 
@@ -142,7 +142,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(64);
         buf.append("ImmDocumentationResult{");
-        buf.append("documentation").append('=').append(JodaBeanUtils.toString(getDocumentation()));
+        buf.append("documentation").append('=').append(JodaBeanUtils.toString(documentation));
         buf.append('}');
         return buf.toString();
     }
