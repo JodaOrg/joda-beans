@@ -79,7 +79,7 @@ class BeanParser {
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The constructorScope pattern. */
-    private static final Pattern CONSTRUCTOR_SCOPE_PATTERN = Pattern.compile(".*[ ,(]constructorScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    private static final Pattern CONSTRUCTOR_SCOPE_PATTERN = Pattern.compile(".*[ ,(]constructorScope[ ]*[=][ ]*[\"]([a-zA-Z@]*)[\"].*");
     /** The hierarchy pattern. */
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The cacheHashCode pattern. */

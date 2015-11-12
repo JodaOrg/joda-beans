@@ -376,6 +376,15 @@ The default is to be as private as possible for the needs of the builder, typica
  }
 ```
 
+An option also exists to generate the ConstructorProperties annotation:
+
+```
+ @BeanDefinition(constructorScope = "public@ConstructorProperties")
+ public final class Bar implements ImmutableBean {
+   // code generated immutable bean with annotated public constructor
+ }
+```
+
 
 ## Immutable bean hierarchies
 

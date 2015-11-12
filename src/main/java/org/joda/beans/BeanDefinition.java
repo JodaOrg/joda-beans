@@ -50,6 +50,7 @@ public @interface BeanDefinition {
      * Set to 'package' to generate a package-scoped constructor.
      * Set to 'protected' to generate a protected constructor.
      * Set to 'public' to generate a public constructor.
+     * Set to 'public@ConstructorProperties' to generate a public constructor.
      */
     String constructorScope() default "smart";
 

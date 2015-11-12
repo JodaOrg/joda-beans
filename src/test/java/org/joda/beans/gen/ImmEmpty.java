@@ -27,13 +27,14 @@ import org.joda.beans.Property;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import java.beans.ConstructorProperties;
 
 /**
  * Mock immutable empty bean, used for testing.
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(constructorScope = "public@ConstructorProperties")
 public final class ImmEmpty implements ImmutableBean
 {
     // NOTE: open braces on a new line
@@ -60,7 +61,11 @@ public final class ImmEmpty implements ImmutableBean
         return new ImmEmpty.Builder();
     }
 
-    private ImmEmpty() {
+    /**
+     * Creates an instance.
+     */
+    @ConstructorProperties({})
+    public ImmEmpty() {
     }
 
     @Override

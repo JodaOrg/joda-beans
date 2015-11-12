@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.6.1" date="SNAPSHOT" description="v1.6.1">
       <action dev="jodastephen" type="add">
+         Provide ability to generate ConstructorProperties annotation.
+         Fixes #120.
+      </action>
+      <action dev="jodastephen" type="add">
          Allow tolerance to be set when comparing beans using BeanAssert.
          Additional methods on JodaBeanUtils provides tools for manual equals() methods.
          Fixes #117.

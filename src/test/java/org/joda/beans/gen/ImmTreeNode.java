@@ -33,13 +33,14 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
+import java.beans.ConstructorProperties;
 
 /**
  * Mock immutable tree node, used for iterator testing.
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(cacheHashCode = true)
+@BeanDefinition(cacheHashCode = true, constructorScope = "public@ConstructorProperties")
 public final class ImmTreeNode implements ImmutableBean{
     // NOTE: no space between ImmutableBean and {
 
@@ -81,7 +82,16 @@ public final class ImmTreeNode implements ImmutableBean{
         return new ImmTreeNode.Builder();
     }
 
-    private ImmTreeNode(
+    /**
+     * Creates an instance.
+     * @param name  the value of the property, not null
+     * @param child1  the value of the property
+     * @param child2  the value of the property
+     * @param child3  the value of the property
+     * @param childList  the value of the property, not null
+     */
+    @ConstructorProperties({"name", "child1", "child2", "child3", "childList"})
+    public ImmTreeNode(
             String name,
             ImmTreeNode child1,
             ImmTreeNode child2,

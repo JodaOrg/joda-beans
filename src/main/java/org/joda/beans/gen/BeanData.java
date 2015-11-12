@@ -419,7 +419,8 @@ class BeanData {
                 "private".equals(constructorScope) ||
                 "package".equals(constructorScope) ||
                 "protected".equals(constructorScope) ||
-                "public".equals(constructorScope);
+                "public".equals(constructorScope) ||
+                "public@ConstructorProperties".equals(constructorScope);
     }
 
     /**
@@ -432,8 +433,18 @@ class BeanData {
             return isTypeFinal() ? "private " : "protected ";
         } else if ("package".equals(constructorScope)) {
             return "";
+        } else if ("public@ConstructorProperties".equals(constructorScope)) {
+            return "public ";
         }
         return constructorScope + " ";
+    }
+
+    /**
+     * Checks if the scope indicates the need for the ConstructorProperties annotation.
+     * @return true if the annotation is needed
+     */
+    public boolean isConstructorPropertiesAnnotation() {
+        return "public@ConstructorProperties".equals(constructorScope);
     }
 
     /**

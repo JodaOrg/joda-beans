@@ -15,6 +15,7 @@
  */
 package org.joda.beans.gen;
 
+import java.beans.ConstructorProperties;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
@@ -279,6 +280,7 @@ class BeanGen {
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS && data.getImmutableConstructor() == CONSTRUCTOR_NONE && 
                 ((data.isMutable() && data.isBuilderScopePublic()) || data.isImmutable())) {
             String scope = data.getEffectiveConstructorScope();
+            boolean generateAnnotation = data.isConstructorPropertiesAnnotation();
             boolean generateJavadoc = !"private ".equals(scope);
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (nonDerived.size() == 0) {
@@ -286,6 +288,10 @@ class BeanGen {
                     insertRegion.add("\t/**");
                     insertRegion.add("\t * Creates an instance.");
                     insertRegion.add("\t */");
+                }
+                if (generateAnnotation) {
+                    data.ensureImport(ConstructorProperties.class);
+                    insertRegion.add("\t@ConstructorProperties({})");
                 }
                 insertRegion.add("\t" + scope + data.getTypeRaw() + "() {");
             } else {
@@ -298,6 +304,17 @@ class BeanGen {
                         insertRegion.add("\t * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
                     }
                     insertRegion.add("\t */");
+                }
+                if (generateAnnotation) {
+                    data.ensureImport(ConstructorProperties.class);
+                    StringBuilder buf = new StringBuilder();
+                    for (int i = 0; i < nonDerived.size(); i++) {
+                        if (i > 0) {
+                            buf.append(", ");
+                        }
+                        buf.append('"').append(nonDerived.get(i).getData().getPropertyName()).append('"');
+                    }
+                    insertRegion.add("\t@ConstructorProperties({" + buf.toString() + "})");
                 }
                 insertRegion.add("\t" + scope + data.getTypeRaw() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
