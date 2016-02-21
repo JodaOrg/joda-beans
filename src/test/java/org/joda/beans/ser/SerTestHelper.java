@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.joda.beans.ser;
 
 import java.util.Arrays;
 import java.util.Currency;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -132,6 +133,7 @@ public class SerTestHelper {
                 .city("London")
                 .risk(RiskLevel.LOW)
                 .riskLevel(RiskLevel.HIGH)
+                .riskLevels(EnumSet.of(RiskLevel.LOW, RiskLevel.MEDIUM))
                 .object1(RiskLevel.MEDIUM)
                 .object2(RiskPerception.LOW)
                 .data(new byte[] {64, 65, 66})

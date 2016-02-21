@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.8" date="SNAPSHOT" description="v1.8">
+      <action dev="jodastephen" type="add">
+         Add support for EnumSet.
+         Fixes #125.
+      </action>
+    </release>
     <release version="1.7" date="2015-11-12" description="v1.7">
       <action dev="jodastephen" type="add">
          Change equals/hashCode/toString to use fields, not getters, for immutable beans.

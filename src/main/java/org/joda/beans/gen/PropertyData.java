@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -36,13 +36,13 @@ class PropertyData {
             Arrays.asList(
                     "Collection", "Set", "SortedSet", "NavigableSet", "List",
                     "ArrayList", "LinkedList",
-                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet",
+                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
                     "ImmutableCollection", "ImmutableList", "ImmutableSet", "ImmutableSortedSet"));
     /** Set types. */
     private static final Set<String> SETS = new HashSet<String>(
             Arrays.asList(
                     "Set", "SortedSet", "NavigableSet",
-                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet",
+                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
                     "ImmutableSet", "ImmutableSortedSet"));
     /** Set types. */
     private static final Set<String> SORTED_SETS = new HashSet<String>(

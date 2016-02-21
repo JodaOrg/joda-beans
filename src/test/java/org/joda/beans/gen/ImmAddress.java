@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 package org.joda.beans.gen;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -99,10 +102,15 @@ public final class ImmAddress implements ImmutableBean, Serializable {
     @PropertyDefinition
     private final Risk risk;
     /**
-     * The risk level field.
+     * The risk level field, testing an {@code Enum}.
      */
     @PropertyDefinition
     private final RiskLevel riskLevel;
+    /**
+     * The risk levels field, testing {@code EnumSet}.
+     */
+    @PropertyDefinition
+    private final EnumSet<RiskLevel> riskLevels;
     /**
      * The serializable field.
      */
@@ -203,6 +211,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             Object object2,
             Risk risk,
             RiskLevel riskLevel,
+            Set<RiskLevel> riskLevels,
             Serializable serializable,
             Map<String, Object> objectInMap,
             Map<String, List<String>> listInMap,
@@ -236,6 +245,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         this.object2 = object2;
         this.risk = risk;
         this.riskLevel = riskLevel;
+        this.riskLevels = (riskLevels != null ? EnumSet.copyOf(riskLevels) : null);
         this.serializable = serializable;
         this.objectInMap = ImmutableMap.copyOf(objectInMap);
         this.listInMap = ImmutableMap.copyOf(listInMap);
@@ -358,11 +368,20 @@ public final class ImmAddress implements ImmutableBean, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the risk level field.
+     * Gets the risk level field, testing an {@code Enum}.
      * @return the value of the property
      */
     public RiskLevel getRiskLevel() {
         return riskLevel;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the risk levels field, testing {@code EnumSet}.
+     * @return the value of the property
+     */
+    public EnumSet<RiskLevel> getRiskLevels() {
+        return riskLevels;
     }
 
     //-----------------------------------------------------------------------
@@ -500,6 +519,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     JodaBeanUtils.equal(object2, other.object2) &&
                     JodaBeanUtils.equal(risk, other.risk) &&
                     JodaBeanUtils.equal(riskLevel, other.riskLevel) &&
+                    JodaBeanUtils.equal(riskLevels, other.riskLevels) &&
                     JodaBeanUtils.equal(serializable, other.serializable) &&
                     JodaBeanUtils.equal(objectInMap, other.objectInMap) &&
                     JodaBeanUtils.equal(listInMap, other.listInMap) &&
@@ -530,6 +550,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         hash = hash * 31 + JodaBeanUtils.hashCode(object2);
         hash = hash * 31 + JodaBeanUtils.hashCode(risk);
         hash = hash * 31 + JodaBeanUtils.hashCode(riskLevel);
+        hash = hash * 31 + JodaBeanUtils.hashCode(riskLevels);
         hash = hash * 31 + JodaBeanUtils.hashCode(serializable);
         hash = hash * 31 + JodaBeanUtils.hashCode(objectInMap);
         hash = hash * 31 + JodaBeanUtils.hashCode(listInMap);
@@ -547,7 +568,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(768);
+        StringBuilder buf = new StringBuilder(800);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(number).append(',').append(' ');
         buf.append("street").append('=').append(street).append(',').append(' ');
@@ -560,6 +581,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         buf.append("object2").append('=').append(object2).append(',').append(' ');
         buf.append("risk").append('=').append(risk).append(',').append(' ');
         buf.append("riskLevel").append('=').append(riskLevel).append(',').append(' ');
+        buf.append("riskLevels").append('=').append(riskLevels).append(',').append(' ');
         buf.append("serializable").append('=').append(serializable).append(',').append(' ');
         buf.append("objectInMap").append('=').append(objectInMap).append(',').append(' ');
         buf.append("listInMap").append('=').append(listInMap).append(',').append(' ');
@@ -641,6 +663,12 @@ public final class ImmAddress implements ImmutableBean, Serializable {
          */
         private final MetaProperty<RiskLevel> riskLevel = DirectMetaProperty.ofImmutable(
                 this, "riskLevel", ImmAddress.class, RiskLevel.class);
+        /**
+         * The meta-property for the {@code riskLevels} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<EnumSet<RiskLevel>> riskLevels = DirectMetaProperty.ofImmutable(
+                this, "riskLevels", ImmAddress.class, (Class) EnumSet.class);
         /**
          * The meta-property for the {@code serializable} property.
          */
@@ -728,6 +756,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                 "object2",
                 "risk",
                 "riskLevel",
+                "riskLevels",
                 "serializable",
                 "objectInMap",
                 "listInMap",
@@ -772,6 +801,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     return risk;
                 case 540453365:  // riskLevel
                     return riskLevel;
+                case -425814754:  // riskLevels
+                    return riskLevels;
                 case 861034751:  // serializable
                     return serializable;
                 case -1297715720:  // objectInMap
@@ -905,6 +936,14 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
+         * The meta-property for the {@code riskLevels} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<EnumSet<RiskLevel>> riskLevels() {
+            return riskLevels;
+        }
+
+        /**
          * The meta-property for the {@code serializable} property.
          * @return the meta-property, not null
          */
@@ -1026,6 +1065,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     return ((ImmAddress) bean).getRisk();
                 case 540453365:  // riskLevel
                     return ((ImmAddress) bean).getRiskLevel();
+                case -425814754:  // riskLevels
+                    return ((ImmAddress) bean).getRiskLevels();
                 case 861034751:  // serializable
                     return ((ImmAddress) bean).getSerializable();
                 case -1297715720:  // objectInMap
@@ -1082,6 +1123,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         private Object object2;
         private Risk risk;
         private RiskLevel riskLevel;
+        private Set<RiskLevel> riskLevels;
         private Serializable serializable;
         private Map<String, Object> objectInMap = ImmutableMap.of();
         private Map<String, List<String>> listInMap = ImmutableMap.of();
@@ -1117,6 +1159,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             this.object2 = beanToCopy.getObject2();
             this.risk = beanToCopy.getRisk();
             this.riskLevel = beanToCopy.getRiskLevel();
+            this.riskLevels = (beanToCopy.getRiskLevels() != null ? new HashSet<RiskLevel>(beanToCopy.getRiskLevels()) : null);
             this.serializable = beanToCopy.getSerializable();
             this.objectInMap = beanToCopy.getObjectInMap();
             this.listInMap = beanToCopy.getListInMap();
@@ -1157,6 +1200,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     return risk;
                 case 540453365:  // riskLevel
                     return riskLevel;
+                case -425814754:  // riskLevels
+                    return riskLevels;
                 case 861034751:  // serializable
                     return serializable;
                 case -1297715720:  // objectInMap
@@ -1222,6 +1267,9 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     break;
                 case 540453365:  // riskLevel
                     this.riskLevel = (RiskLevel) newValue;
+                    break;
+                case -425814754:  // riskLevels
+                    this.riskLevels = (Set<RiskLevel>) newValue;
                     break;
                 case 861034751:  // serializable
                     this.serializable = (Serializable) newValue;
@@ -1303,6 +1351,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     object2,
                     risk,
                     riskLevel,
+                    riskLevels,
                     serializable,
                     objectInMap,
                     listInMap,
@@ -1423,13 +1472,33 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
-         * Sets the risk level field.
+         * Sets the risk level field, testing an {@code Enum}.
          * @param riskLevel  the new value
          * @return this, for chaining, not null
          */
         public Builder riskLevel(RiskLevel riskLevel) {
             this.riskLevel = riskLevel;
             return this;
+        }
+
+        /**
+         * Sets the risk levels field, testing {@code EnumSet}.
+         * @param riskLevels  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder riskLevels(Set<RiskLevel> riskLevels) {
+            this.riskLevels = riskLevels;
+            return this;
+        }
+
+        /**
+         * Sets the {@code riskLevels} property in the builder
+         * from an array of objects.
+         * @param riskLevels  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder riskLevels(RiskLevel... riskLevels) {
+            return riskLevels(EnumSet.copyOf(Arrays.asList(riskLevels)));
         }
 
         /**
@@ -1562,7 +1631,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(768);
+            StringBuilder buf = new StringBuilder(800);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
@@ -1575,6 +1644,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             buf.append("object2").append('=').append(JodaBeanUtils.toString(object2)).append(',').append(' ');
             buf.append("risk").append('=').append(JodaBeanUtils.toString(risk)).append(',').append(' ');
             buf.append("riskLevel").append('=').append(JodaBeanUtils.toString(riskLevel)).append(',').append(' ');
+            buf.append("riskLevels").append('=').append(JodaBeanUtils.toString(riskLevels)).append(',').append(' ');
             buf.append("serializable").append('=').append(JodaBeanUtils.toString(serializable)).append(',').append(' ');
             buf.append("objectInMap").append('=').append(JodaBeanUtils.toString(objectInMap)).append(',').append(' ');
             buf.append("listInMap").append('=').append(JodaBeanUtils.toString(listInMap)).append(',').append(' ');
