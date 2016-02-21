@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -409,6 +409,20 @@ public class JodaBeanJsonReader {
                         throw new IllegalArgumentException("Invalid JSON data: Expected byte, but was " + value);
                     }
                     return Byte.valueOf((byte) value);
+                    
+                } else if (type == Double.class || type == double.class) {
+                    double dblVal = (double) value;
+                    if (value != (long) dblVal) {
+                        throw new IllegalArgumentException("Invalid JSON data: Value exceeds capacity of double: " + value);
+                    }
+                    return Double.valueOf(dblVal);
+                    
+                } else if (type == Float.class || type == float.class) {
+                    float fltVal = (float) value;
+                    if (value != (long) fltVal) {
+                        throw new IllegalArgumentException("Invalid JSON data: Value exceeds capacity of float: " + value);
+                    }
+                    return Float.valueOf(fltVal);
                     
                 } else {
                     if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {

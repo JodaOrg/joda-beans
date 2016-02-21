@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -216,19 +216,55 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
-    public void test_readWrite_double_NaN_asNull() {
-        PrimitiveBean bean = new PrimitiveBean();
-        bean.setValueDouble(Double.NaN);
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":null}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
     public void test_readWrite_double_Infinity() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Double.POSITIVE_INFINITY);
         String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
         assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"Infinity\"}}");
+        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_read_double_integer_flexiWithTypeAnnotation() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("data", Double.valueOf(6));
+        String json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"6\"}}";
+        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_read_double_fromInteger() {
+        PrimitiveBean bean = new PrimitiveBean();
+        bean.setValueDouble(6d);
+        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":6}";
+        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_double_fromIntegerTooBig() {
+        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":123456789123456789}";
+        JodaBeanSer.COMPACT.jsonReader().read(json);
+    }
+
+    public void test_read_float_fromInteger() {
+        PrimitiveBean bean = new PrimitiveBean();
+        bean.setValueFloat(6f);
+        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueFloat\":6}";
+        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_read_float_fromIntegerTooBig() {
+        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueFloat\":123456789123456789}";
+        JodaBeanSer.COMPACT.jsonReader().read(json);
+    }
+
+    public void test_read_double_NaN_asNull() {
+        PrimitiveBean bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":null}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
