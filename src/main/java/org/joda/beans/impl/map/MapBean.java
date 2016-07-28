@@ -23,11 +23,15 @@ import org.joda.beans.DynamicBean;
 import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.impl.BasicProperty;
+import org.joda.beans.impl.flexi.FlexiBean;
 
 /**
  * Implementation of a fully dynamic {@code Bean} based on an exposed {@code Map}.
  * <p>
  * Properties are dynamic, and can be added and removed at will from the map.
+ * <p>
+ * This class extends {@link HashMap}, allowing it to be used wherever a map is.
+ * See {@link FlexiBean} for a map-like bean implementation that is more controlled.
  * 
  * @author Stephen Colebourne
  */
