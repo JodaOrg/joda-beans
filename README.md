@@ -25,8 +25,9 @@ Joda-Beans provides a solution. As a developer, you just write the fields much a
 Then you add annotations to the bean and properties.
 Finally, you run a code generator, which creates the get/set methods plus framework methods that allow the properties
 to be effectively queried.
-A key point is that the code generator may be run again and again on the Java file, and is non-destructive.
+If you use Eclipse and the Joda-Beans Maven plugin, the bean will be regenerated automatically on save.
 
+A key point is that the code generator may be run again and again on the Java file, and is non-destructive.
 See these sample classes used for testing -
 [a simple user account class](https://github.com/JodaOrg/joda-beans/blob/v1.4/src/test/java/org/joda/beans/gen/UserAccount.java#L34),
 [example usage](https://github.com/JodaOrg/joda-beans/blob/v1.0/src/test/java/org/joda/beans/Examples.java#L26),

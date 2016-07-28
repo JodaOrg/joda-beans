@@ -378,6 +378,16 @@ The default is public for immutable beans and no-builder for mutable beans:
  }
 ```
 
+The scope of the meta-bean, public private or package-scoped, may also be controlled in the bean definition.
+The default is public:
+
+```
+ @BeanDefinition(metaScope = "package")
+ public final class Bar implements ImmutableBean {
+   // code generated immutable bean with package-scoped meta-bean
+ }
+```
+
 The scope of the generated constructor for immutable beans can be controlled.
 The default is to be as private as possible for the needs of the builder, typically private:
 
