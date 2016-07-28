@@ -205,7 +205,7 @@ class BeanData {
 
     /**
      * Sets the bean meta scope.
-     * @param builderScope  the scope
+     * @param metaScope  the scope
      */
     public void setBeanMetaScope(String metaScope) {
         this.beanMetaScope = metaScope;
@@ -383,7 +383,7 @@ class BeanData {
 
     /**
      * Sets whether the bean has a manual constructor to use.
-     * @param constructable  the flag
+     * @param manualConstructor  the flag
      */
     public void setImmutableConstructor(int manualConstructor) {
         this.immutableConstructor = manualConstructor;
@@ -415,7 +415,7 @@ class BeanData {
 
     /**
      * Sets whether the bean has an apply defaults method.
-     * @param immutableValidator  the method name
+     * @param immutableDefaults  the method name
      */
     public void setImmutableDefaults(String immutableDefaults) {
         this.immutableDefaults = immutableDefaults;
@@ -484,7 +484,6 @@ class BeanData {
 
     /**
      * Gets the effective scope to use in the constructor.
-     * @param defaultScope  the default scope
      * @return the scope
      */
     public String getEffectiveConstructorScope() {
@@ -670,7 +669,7 @@ class BeanData {
     //-----------------------------------------------------------------------
     /**
      * Checks if this bean is a superclass.
-     * @param true if this is a subclass of another bean
+     * @return true if this is a subclass of another bean
      */
     public boolean isSubClass() {
         return !root;
@@ -678,7 +677,7 @@ class BeanData {
 
     /**
      * Checks if this bean is the root class in a hierarchy.
-     * @param true if this is the root class with no bean superclasses
+     * @return true if this is the root class with no bean superclasses
      */
     public boolean isRootClass() {
         return root;
@@ -686,7 +685,7 @@ class BeanData {
 
     /**
      * Checks if this bean directly extends {@code DirectBean}.
-     * @param true if this extends DirectBean
+     * @return true if this extends DirectBean
      */
     public boolean isExtendsDirectBean() {
         return "DirectBean".equals(superTypeFull);

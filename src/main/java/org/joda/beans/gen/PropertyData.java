@@ -340,7 +340,7 @@ class PropertyData {
 
     /**
      * Sets whether the field is declared final.
-     * @param type  the field is final flag
+     * @param isFinal  the field is final flag
      */
     public void setFinal(boolean isFinal) {
         this.isFinal = isFinal;
@@ -356,7 +356,7 @@ class PropertyData {
 
     /**
      * Sets the field initializer.
-     * @param type  the field initializer
+     * @param initializer  the field initializer
      */
     public void setInitializer(String initializer) {
         this.initializer = initializer;
@@ -516,7 +516,7 @@ class PropertyData {
 
     /**
      * Sets the override get flag.
-     * @param setStyle  the setter style to set
+     * @param overrideGet  the setter style to set
      */
     public void setOverrideGet(boolean overrideGet) {
         this.overrideGet = overrideGet;
@@ -532,7 +532,7 @@ class PropertyData {
 
     /**
      * Sets the override get flag.
-     * @param setStyle  the setter style to set
+     * @param overrideSet  the setter style to set
      */
     public void setOverrideSet(boolean overrideSet) {
         this.overrideSet = overrideSet;
