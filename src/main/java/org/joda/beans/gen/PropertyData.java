@@ -840,7 +840,7 @@ class PropertyData {
      * Resolves the copy generator.
      */
     public void resolveCopyGen(File file, int lineIndex) {
-        if (getBean().isMutable() && getBean().isBuilderScopePublic() == false) {
+        if (getBean().isMutable() && getBean().isBuilderScopeVisible() == false) {
             return;  // no copying
         }
         if (config.getInvalidImmutableTypes().contains(getFieldTypeRaw())) {
@@ -881,7 +881,7 @@ class PropertyData {
      * Resolves the copy generator.
      */
     public void resolveBuilderGen() {
-        if (getBean().isMutable() && getBean().isBuilderScopePublic() == false) {
+        if (getBean().isMutable() && getBean().isBuilderScopeVisible() == false) {
             return;  // no builder
         }
         if (isDerived()) {
@@ -975,7 +975,7 @@ class PropertyData {
             return PropertyStyle.READ_WRITE;
         }
         if (getGetStyle().length() > 0) {
-            if (bean.isBuilderScopePublic()) {
+            if (bean.isBuilderScopeVisible()) {
                 return PropertyStyle.READ_ONLY_BUILDABLE;
             } else {
                 return PropertyStyle.READ_ONLY;

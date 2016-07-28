@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -76,6 +76,8 @@ class BeanParser {
     private static final Pattern SERIALIZABLE_TYPE = Pattern.compile(".*implements.*[ ,]Serializable([ ,{]|$).*");
     /** The style pattern. */
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The metaScope pattern. */
+    private static final Pattern META_SCOPE_PATTERN = Pattern.compile(".*[ ,(]metaScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The constructorScope pattern. */
@@ -147,11 +149,15 @@ class BeanParser {
         }
         data.setConstructorScope(parseConstrucorScope(beanDefIndex));
         if (data.isConstructorScopeValid() == false) {
-            throw new BeanCodeGenException("Invalid constructor scope: " + data.getBeanStyle(), file, beanDefIndex);
+            throw new BeanCodeGenException("Invalid constructor scope: " + data.getConstructorScope(), file, beanDefIndex);
+        }
+        data.setBeanMetaScope(parseBeanMetaScope(beanDefIndex));
+        if (data.isBeanMetaScopeValid() == false) {
+            throw new BeanCodeGenException("Invalid meta-bean scope: " + data.getBeanMetaScope(), file, beanDefIndex);
         }
         data.setBeanBuilderScope(parseBeanBuilderScope(beanDefIndex));
         if (data.isBeanBuilderScopeValid() == false) {
-            throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanStyle(), file, beanDefIndex);
+            throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanBuilderScope(), file, beanDefIndex);
         }
         data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
         data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
@@ -267,6 +273,15 @@ class BeanParser {
     private String parseConstrucorScope(int defLine) {
         String line = content.get(defLine).trim();
         Matcher matcher = CONSTRUCTOR_SCOPE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "smart";
+    }
+
+    private String parseBeanMetaScope(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = META_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }

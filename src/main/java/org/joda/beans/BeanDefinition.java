@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,6 +53,16 @@ public @interface BeanDefinition {
      * Set to 'public@ConstructorProperties' to generate a public constructor.
      */
     String constructorScope() default "smart";
+
+    /**
+     * The scope of the meta-bean class.
+     * <p>
+     * By default, this follows 'smart' rules, which generate a public meta-bean.
+     * Set to 'private' to generate a private meta-bean.
+     * Set to 'package' to generate a package-scoped meta-bean.
+     * Set to 'public' to generate a public meta-bean.
+     */
+    String metaScope() default "smart";
 
     /**
      * The scope of the builder class.

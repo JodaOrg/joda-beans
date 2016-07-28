@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(metaScope = "package")
 public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableBean {
 
     /**
@@ -198,7 +198,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
      * @param <Y>  the type
      * @param <Z>  the type
      */
-    public static final class Meta<X, Y, Z extends Address> extends DirectMetaBean {
+    static final class Meta<X, Y, Z extends Address> extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */

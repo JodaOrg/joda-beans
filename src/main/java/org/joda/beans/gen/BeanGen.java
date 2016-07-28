@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -192,7 +192,7 @@ class BeanGen {
 
     private void generateImmutableBuilderMethod() {
         if (data.isConstructable() &&
-                ((data.isImmutable() && data.isEffectiveBuilderScopePublic()) || (data.isMutable() && data.isBuilderScopePublic()))) {
+                ((data.isImmutable() && data.isEffectiveBuilderScopeVisible()) || (data.isMutable() && data.isBuilderScopeVisible()))) {
             insertRegion.add("\t/**");
             insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
             if (data.isTypeGeneric()) {
@@ -216,7 +216,7 @@ class BeanGen {
 
     private void generateBuilderBasedConstructor() {
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_BUILDER && data.getImmutableConstructor() == CONSTRUCTOR_NONE && 
-                ((data.isMutable() && data.isBuilderScopePublic()) || data.isImmutable())) {
+                ((data.isMutable() && data.isBuilderScopeVisible()) || data.isImmutable())) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             String scope = (data.isTypeFinal() ? "private" : "protected");
             // signature
@@ -278,7 +278,7 @@ class BeanGen {
 
     private void generateArgBasedConstructor() {
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS && data.getImmutableConstructor() == CONSTRUCTOR_NONE && 
-                ((data.isMutable() && data.isBuilderScopePublic()) || data.isImmutable())) {
+                ((data.isMutable() && data.isBuilderScopeVisible()) || data.isImmutable())) {
             String scope = data.getEffectiveConstructorScope();
             boolean generateAnnotation = data.isConstructorPropertiesAnnotation();
             boolean generateJavadoc = !"private ".equals(scope);
@@ -372,7 +372,11 @@ class BeanGen {
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t * @return the meta-bean, not null");
-            if (data.isTypeGeneric()) {
+            if (data.isMetaScopePrivate()) {
+                data.ensureImport(MetaBean.class);
+                insertRegion.add("\t */");
+                insertRegion.add("\tpublic static MetaBean meta() {");
+            } else if (data.isTypeGeneric()) {
                 insertRegion.add("\t */");
                 insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
                 insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
@@ -422,8 +426,8 @@ class BeanGen {
         insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
         String[] typeNames = new String[] {"R", "S", "T"};
         if (data.getTypeGenericCount() == 1) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) + "> " + data.getTypeRaw() +
-                    ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
+            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
+                    "> " + data.getTypeRaw() + ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
         } else if (data.getTypeGenericCount() == 2) {
             insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
                     ", S" + data.getTypeGenericExtends(1, typeNames) + "> " + data.getTypeRaw() +
@@ -471,10 +475,15 @@ class BeanGen {
     }
 
     private void generateMetaBean() {
-        if (data.isBeanStyleLight()) {
+        if (data.isMetaScopePrivate()) {
+            data.ensureImport(MetaBean.class);
             insertRegion.add("\t@Override");
             insertRegion.add("\tpublic MetaBean metaBean() {");
-            insertRegion.add("\t\treturn META_BEAN;");
+            if (data.isBeanStyleLight()) {
+                insertRegion.add("\t\treturn META_BEAN;");
+            } else {
+                insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
+            }
             insertRegion.add("\t}");
             insertRegion.add("");
         } else {
@@ -482,7 +491,8 @@ class BeanGen {
                 insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
             }
             insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic " + data.getTypeRaw() + ".Meta" + data.getTypeGenericName(true) + " metaBean() {");
+            insertRegion.add("\tpublic " + data.getTypeRaw() +
+                    ".Meta" + data.getTypeGenericName(true) + " metaBean() {");
             insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
             insertRegion.add("\t}");
             insertRegion.add("");
@@ -527,7 +537,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateImmutableToBuilder() {
-        if (data.isImmutable() && data.isEffectiveBuilderScopePublic()) {
+        if (data.isImmutable() && data.isEffectiveBuilderScopeVisible()) {
             if (data.isConstructable()) {
                 List<PropertyGen> nonDerived = nonDerivedProperties();
                 if (nonDerived.size() > 0) {
@@ -763,9 +773,11 @@ class BeanGen {
         }
         String finalType = data.isTypeFinal() ? "final " : "";
         if (data.isTypeGeneric()) {
-            insertRegion.add("\tpublic static " + finalType + "class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
+            insertRegion.add("\t" + data.getEffectiveMetaScope() + "static " + finalType + 
+                    "class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
         } else {
-            insertRegion.add("\tpublic static " + finalType + "class Meta extends " + superMeta + " {");
+            insertRegion.add("\t" + data.getEffectiveMetaScope() + "static " + finalType + 
+                    "class Meta extends " + superMeta + " {");
         }
         insertRegion.add("\t\t/**");
         insertRegion.add("\t\t * The singleton instance of the meta-bean.");
@@ -825,7 +837,7 @@ class BeanGen {
 
     private void generateMetaBuilder() {
         insertRegion.add("\t\t@Override");
-        if (data.isImmutable() && data.isEffectiveBuilderScopePublic() == false) {
+        if (data.isImmutable() && data.isEffectiveBuilderScopeVisible() == false) {
             data.ensureImport(BeanBuilder.class);
             insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
@@ -833,7 +845,7 @@ class BeanGen {
             } else {
                 insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
-        } else if (data.isImmutable() || (data.isMutable() && data.isBuilderScopePublic())) {
+        } else if (data.isImmutable() || (data.isMutable() && data.isBuilderScopeVisible())) {
             insertRegion.add("\t\tpublic " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
             if (data.isConstructable()) {
                 insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
@@ -983,7 +995,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateBuilderClass() {
-        if ((data.isMutable() && data.isBuilderScopePublic() == false) || data.isBeanStyleLight()) {
+        if ((data.isMutable() && data.isBuilderScopeVisible() == false) || data.isBeanStyleLight()) {
             return;
         }
         List<PropertyGen> nonDerived = nonDerivedProperties();
@@ -1046,7 +1058,7 @@ class BeanGen {
     }
 
     private void generateBuilderConstructorCopy() {
-        if (data.isEffectiveBuilderScopePublic()) {
+        if (data.isEffectiveBuilderScopeVisible()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (nonDerived.size() > 0) {
                 insertRegion.add("\t\t/**");
@@ -1137,7 +1149,11 @@ class BeanGen {
         insertRegion.add("");
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(String propertyName, String value) {");
-        insertRegion.add("\t\t\tsetString(meta().metaProperty(propertyName), value);");
+        if (data.isMetaScopePrivate()) {
+            insertRegion.add("\t\t\tsetString(" + data.getTypeRaw() + ".Meta.INSTANCE.metaProperty(propertyName), value);");
+        } else {
+            insertRegion.add("\t\t\tsetString(meta().metaProperty(propertyName), value);");
+        }
         insertRegion.add("\t\t\treturn this;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
@@ -1179,7 +1195,7 @@ class BeanGen {
     }
 
     private void generateBuilderPropertySetMethods() {
-        if (data.isEffectiveBuilderScopePublic()) {
+        if (data.isEffectiveBuilderScopeVisible()) {
             for (PropertyGen prop : nonDerivedProperties()) {
                 insertRegion.addAll(prop.generateBuilderSetMethod());
             }

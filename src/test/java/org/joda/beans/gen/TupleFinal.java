@@ -35,7 +35,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(builderScope = "package")
+@BeanDefinition(builderScope = "package", metaScope = "package")
 public final class TupleFinal<X, Y, Z> implements Bean {
 
     /**
@@ -243,7 +243,7 @@ public final class TupleFinal<X, Y, Z> implements Bean {
      * @param <Y>  the type
      * @param <Z>  the type
      */
-    public static final class Meta<X, Y, Z> extends DirectMetaBean {
+    static final class Meta<X, Y, Z> extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */

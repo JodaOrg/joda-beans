@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ class BeanData {
     private int lastImportLine;
     /** The bean style. */
     private String beanStyle;
+    /** The bean meta scope. */
+    private String beanMetaScope;
     /** The bean builder scope. */
     private String beanBuilderScope;
     /** Whether to cache the hash code. */
@@ -169,6 +171,14 @@ class BeanData {
     }
 
     /**
+     * Is the bean style minimal.
+     * @return the flag
+     */
+    public boolean isBeanStyleMinimal() {
+        return "minimal".equals(beanStyle);
+    }
+
+    /**
      * Is the bean style indicating that properties should be generated.
      * @return the flag
      */
@@ -181,7 +191,56 @@ class BeanData {
      * @return the flag
      */
     public boolean isBeanStyleGenerateMetaProperties() {
-        return "full".equals(beanStyle) || "smart".equals(beanStyle);
+        return ("full".equals(beanStyle) || "smart".equals(beanStyle)) && !isMetaScopePrivate();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the bean meta scope.
+     * @return the scope
+     */
+    public String getBeanMetaScope() {
+        return beanMetaScope;
+    }
+
+    /**
+     * Sets the bean meta scope.
+     * @param builderScope  the scope
+     */
+    public void setBeanMetaScope(String metaScope) {
+        this.beanMetaScope = metaScope;
+    }
+
+    /**
+     * Is the meta scope valid.
+     * @return the flag
+     */
+    public boolean isBeanMetaScopeValid() {
+        return "smart".equals(beanMetaScope) ||
+                "private".equals(beanMetaScope) ||
+                "package".equals(beanMetaScope) ||
+                "public".equals(beanMetaScope);
+    }
+
+    /**
+     * Gets the effective scope to use in the meta.
+     * @return the scope
+     */
+    public String getEffectiveMetaScope() {
+        if ("smart".equals(beanMetaScope)) {
+            return "public ";
+        } else if ("package".equals(beanMetaScope)) {
+            return "";
+        }
+        return beanMetaScope + " ";
+    }
+
+    /**
+     * Checks the meta-bean scope.
+     * @return the scope
+     */
+    public boolean isMetaScopePrivate() {
+        return "private".equals(beanMetaScope) || isBeanStyleLight();
     }
 
     //-----------------------------------------------------------------------
@@ -229,7 +288,7 @@ class BeanData {
      * Is the effective scope to use in the builder public.
      * @return the scope
      */
-    public boolean isEffectiveBuilderScopePublic() {
+    public boolean isEffectiveBuilderScopeVisible() {
         return ("smart".equals(beanBuilderScope) || "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope)) &&
                 !isBeanStyleLight();
     }
@@ -238,7 +297,7 @@ class BeanData {
      * Is the scope to use in the builder public.
      * @return the scope
      */
-    public boolean isBuilderScopePublic() {
+    public boolean isBuilderScopeVisible() {
         return "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope);
     }
 
