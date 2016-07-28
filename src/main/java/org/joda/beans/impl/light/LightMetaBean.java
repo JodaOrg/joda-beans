@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -88,6 +88,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
                 PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
                 String name = field.getName();
                 if (pdef.get().equals("field")) {
+                    field.setAccessible(true);
                     map.put(name, LightMetaProperty.of(this, field, name, propertyTypes.size()));
                     propertyTypes.add(field.getType());
                 } else if (!pdef.get().equals("")) {

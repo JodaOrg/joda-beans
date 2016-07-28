@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.io.Serializable;
+import java.util.Currency;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.light.LightMetaBean;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -53,6 +55,11 @@ public final class Light implements ImmutableBean, Serializable {
     @PropertyDefinition(validate = "notNull", get = "field")
     private final String street;
     /**
+     * The town.
+     */
+    @PropertyDefinition(get = "optionalGuava")
+    private final String town;
+    /**
      * The city.
      */
     @PropertyDefinition(validate = "notNull")
@@ -67,6 +74,11 @@ public final class Light implements ImmutableBean, Serializable {
      */
     @PropertyDefinition(validate = "notNull")
     private final ImmutableList<String> list;
+    /**
+     * The currency.
+     */
+    @PropertyDefinition(get = "optionalGuava")
+    private final Currency currency;
 
     //-----------------------------------------------------------------------
     // manual getter with a different name
@@ -102,9 +114,11 @@ public final class Light implements ImmutableBean, Serializable {
             int number,
             boolean flag,
             String street,
+            String town,
             String city,
             ImmPerson owner,
-            List<String> list) {
+            List<String> list,
+            Currency currency) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
         JodaBeanUtils.notNull(owner, "owner");
@@ -112,9 +126,11 @@ public final class Light implements ImmutableBean, Serializable {
         this.number = number;
         this.flag = flag;
         this.street = street;
+        this.town = town;
         this.city = city;
         this.owner = owner;
         this.list = ImmutableList.copyOf(list);
+        this.currency = currency;
     }
 
     @Override
@@ -152,6 +168,15 @@ public final class Light implements ImmutableBean, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the town.
+     * @return the optional value of the property, not null
+     */
+    public Optional<String> getTown() {
+        return Optional.fromNullable(town);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the city.
      * @return the value of the property, not null
      */
@@ -178,6 +203,15 @@ public final class Light implements ImmutableBean, Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the currency.
+     * @return the optional value of the property, not null
+     */
+    public Optional<Currency> getCurrency() {
+        return Optional.fromNullable(currency);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -188,9 +222,11 @@ public final class Light implements ImmutableBean, Serializable {
             return (number == other.number) &&
                     (flag == other.flag) &&
                     JodaBeanUtils.equal(street, other.street) &&
+                    JodaBeanUtils.equal(town, other.town) &&
                     JodaBeanUtils.equal(city, other.city) &&
                     JodaBeanUtils.equal(owner, other.owner) &&
-                    JodaBeanUtils.equal(list, other.list);
+                    JodaBeanUtils.equal(list, other.list) &&
+                    JodaBeanUtils.equal(currency, other.currency);
         }
         return false;
     }
@@ -201,22 +237,26 @@ public final class Light implements ImmutableBean, Serializable {
         hash = hash * 31 + JodaBeanUtils.hashCode(number);
         hash = hash * 31 + JodaBeanUtils.hashCode(flag);
         hash = hash * 31 + JodaBeanUtils.hashCode(street);
+        hash = hash * 31 + JodaBeanUtils.hashCode(town);
         hash = hash * 31 + JodaBeanUtils.hashCode(city);
         hash = hash * 31 + JodaBeanUtils.hashCode(owner);
         hash = hash * 31 + JodaBeanUtils.hashCode(list);
+        hash = hash * 31 + JodaBeanUtils.hashCode(currency);
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(224);
+        StringBuilder buf = new StringBuilder(288);
         buf.append("Light{");
         buf.append("number").append('=').append(number).append(',').append(' ');
         buf.append("flag").append('=').append(flag).append(',').append(' ');
         buf.append("street").append('=').append(street).append(',').append(' ');
+        buf.append("town").append('=').append(town).append(',').append(' ');
         buf.append("city").append('=').append(city).append(',').append(' ');
         buf.append("owner").append('=').append(owner).append(',').append(' ');
-        buf.append("list").append('=').append(JodaBeanUtils.toString(list));
+        buf.append("list").append('=').append(list).append(',').append(' ');
+        buf.append("currency").append('=').append(JodaBeanUtils.toString(currency));
         buf.append('}');
         return buf.toString();
     }

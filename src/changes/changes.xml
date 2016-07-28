@@ -10,6 +10,12 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.8" date="SNAPSHOT" description="v1.8">
       <action dev="jodastephen" type="fix">
+         Optional properties on light beans did not report the correct property type.
+         This caused serialization to fail.
+         Also fix field-based access problems due to lack of setAccessible.
+         Fixes #126.
+      </action>
+      <action dev="jodastephen" type="fix">
          Handle JSON parsing where integer can be converted safely to double or float.
          Fixes #122.
       </action>

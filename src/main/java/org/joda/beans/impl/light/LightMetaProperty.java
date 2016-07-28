@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2015 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -126,11 +126,18 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
                 }
             }
         };
+        // special case for optional
+        Class<P> propertyType = (Class<P>) field.getType();
+        Type propertyGenericType = field.getGenericType();
+        if (method.getReturnType().getName().contains("Optional")) {
+            propertyType = (Class<P>) method.getReturnType();
+            propertyGenericType = method.getGenericReturnType();
+        }
         return new LightMetaProperty<P>(
                 metaBean, 
                 propertyName, 
-                (Class<P>) field.getType(), 
-                field.getGenericType(), 
+                propertyType, 
+                propertyGenericType, 
                 Arrays.asList(field.getAnnotations()), 
                 getter,
                 constructorIndex);
