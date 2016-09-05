@@ -10,20 +10,20 @@ import java.util.List;
  */
 public final class CompositeDeserializerProvider implements DeserializerProvider {
 
-    private final List<DeserializerProvider> deserializers;
+    private final List<DeserializerProvider> providers;
 
     /**
      * Creates an instance
      *
-     * @param deserializers  the deserializers
+     * @param providers  the deserializers
      */
-    public CompositeDeserializerProvider(List<DeserializerProvider> deserializers) {
-        this.deserializers = new ArrayList<DeserializerProvider>(deserializers);
+    public CompositeDeserializerProvider(List<DeserializerProvider> providers) {
+        this.providers = new ArrayList<DeserializerProvider>(providers);
     }
 
     @Override
     public SerDeserializer findDeserializer(Class<?> type) {
-        for (DeserializerProvider provider : deserializers) {
+        for (DeserializerProvider provider : providers) {
             SerDeserializer deserializer = provider.findDeserializer(type);
 
             if (deserializer != null) {
