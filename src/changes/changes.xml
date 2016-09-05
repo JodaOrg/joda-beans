@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.9" date="SNAPSHOT" description="v1.9">
+      <action dev="jodastephen" type="add">
+         Provide integration with Kryo serialization.
+         Fixes #130.
+      </action>
+    </release>
     <release version="1.8" date="2016-07-28" description="v1.8">
       <action dev="jodastephen" type="add">
          Allow scope of meta-bean to be controlled.
