@@ -15,10 +15,15 @@
  */
 package org.joda.beans.ser;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
@@ -29,7 +34,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
@@ -80,6 +88,27 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
             Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
             return table((Table<?, ?, ?>) value, declaredType, rowType, colType, valueType, EMPTY_VALUE_TYPES);
+        }
+        if (value instanceof ImmutableList) {
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return immutableList((Collection<?>) value, declaredType, valueType, valueTypeTypes);
+        }
+        if (value instanceof ImmutableSortedSet) {
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return immutableSortedSet((Collection<?>) value, declaredType, valueType, valueTypeTypes);
+        }
+        if (value instanceof ImmutableSet) {
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return immutableSet((Collection<?>) value, declaredType, valueType, valueTypeTypes);
+        }
+        if (value instanceof ImmutableMap) {
+            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return immutableMap((Map<?, ?>) value, declaredType, keyType, valueType, valueTypeTypes);
         }
         return super.create(value, prop, beanClass);
     }
@@ -156,6 +185,18 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         if (metaTypeDescription.equals("Table")) {
             return table(Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
+        if (metaTypeDescription.equals("ImmutableList")) {
+            return immutableList(Object.class, EMPTY_VALUE_TYPES);
+        }
+        if (metaTypeDescription.equals("ImmutableSortedSet")) {
+            return immutableSortedSet(Object.class, EMPTY_VALUE_TYPES);
+        }
+        if (metaTypeDescription.equals("ImmutableSet")) {
+            return immutableSet(Object.class, EMPTY_VALUE_TYPES);
+        }
+        if (metaTypeDescription.equals("ImmutableMap")) {
+            return immutableMap(Object.class, Object.class, EMPTY_VALUE_TYPES);
+        }
         return super.createIterable(metaTypeDescription, settings, knownTypes);
     }
 
@@ -207,6 +248,27 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             Class<?> colType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1));
             Class<?> valueType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2));
             return table(rowType, colType, valueType, EMPTY_VALUE_TYPES);
+        }
+        if (ImmutableList.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return immutableList(valueType, valueTypeTypes);
+        }
+        if (ImmutableSortedSet.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return immutableSortedSet(valueType, valueTypeTypes);
+        }
+        if (ImmutableSet.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return immutableSet(valueType, valueTypeTypes);
+        }
+        if (ImmutableMap.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return immutableMap(keyType, valueType, valueTypeTypes);
         }
         return super.createIterable(prop, beanClass);
     }
@@ -717,4 +779,380 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         };
     }
 
+    /**
+     * Gets an iterable wrapper for {@code ImmutableList}.
+     *
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterable, not null
+     */
+    public static final SerIterable immutableList(
+            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        final List<Object> coll = new ArrayList<Object>();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return collection(coll, Object.class, valueType, valueTypeTypes);
+            }
+            @Override
+            public void add(Object key, Object column, Object value, int count) {
+                if (key != null) {
+                    throw new IllegalArgumentException("Unexpected key");
+                }
+                for (int i = 0; i < count; i++) {
+                    coll.add(value);
+                }
+            }
+            @Override
+            public Object build() {
+                return ImmutableList.copyOf(coll);
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterable wrapper for {@code ImmutableSortedSet}.
+     *
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterable, not null
+     */
+    public static final SerIterable immutableSortedSet(
+            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        final Set<Object> coll = new LinkedHashSet<Object>();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return collection(coll, Object.class, valueType, valueTypeTypes);
+            }
+            @Override
+            public void add(Object key, Object column, Object value, int count) {
+                if (key != null) {
+                    throw new IllegalArgumentException("Unexpected key");
+                }
+                for (int i = 0; i < count; i++) {
+                    coll.add(value);
+                }
+            }
+            @Override
+            public Object build() {
+                return ImmutableSortedSet.copyOf(coll);
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterable wrapper for {@code ImmutableSet}.
+     *
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterable, not null
+     */
+    public static final SerIterable immutableSet(
+            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        final Set<Object> coll = new LinkedHashSet<Object>();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return collection(coll, Object.class, valueType, valueTypeTypes);
+            }
+            @Override
+            public void add(Object key, Object column, Object value, int count) {
+                if (key != null) {
+                    throw new IllegalArgumentException("Unexpected key");
+                }
+                for (int i = 0; i < count; i++) {
+                    coll.add(value);
+                }
+            }
+            @Override
+            public Object build() {
+                return ImmutableSet.copyOf(coll);
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+        };
+    }
+
+    static SerIterable immutableMap(
+            final Class<?> keyType, final Class<?> valueType,
+            final List<Class<?>> valueTypeTypes) {
+        final Map<Object, Object> map = new LinkedHashMap<Object, Object>();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return map(map, Object.class, keyType, valueType, valueTypeTypes);
+            }
+            @Override
+            public void add(Object key, Object column, Object value, int count) {
+                if (key == null) {
+                    throw new IllegalArgumentException("Missing key");
+                }
+                if (count != 1) {
+                    throw new IllegalArgumentException("Unexpected count");
+                }
+                map.put(key, value);
+            }
+            @Override
+            public Object build() {
+                return ImmutableMap.copyOf(map);
+            }
+            @Override
+            public SerCategory category() {
+                return SerCategory.MAP;
+            }
+            @Override
+            public Class<?> keyType() {
+                return keyType;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for {@code ImmutableList}.
+     *
+     * @param coll  the collection, not null
+     * @param declaredType  the declared type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterator, not null
+     */
+    @SuppressWarnings("rawtypes")
+    public static final SerIterator immutableList(
+            final Collection<?> coll, final Class<?> declaredType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        return new SerIterator() {
+            private final Iterator it = coll.iterator();
+            private Object current;
+
+            @Override
+            public String metaTypeName() {
+                return "ImmutableList";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                return ImmutableList.class.isAssignableFrom(declaredType) == false;
+            }
+            @Override
+            public int size() {
+                return coll.size();
+            }
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            @Override
+            public void next() {
+                current = it.next();
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+            @Override
+            public Object value() {
+                return current;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for {@code ImmutableSortedSet}.
+     *
+     * @param coll  the collection, not null
+     * @param declaredType  the declared type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterator, not null
+     */
+    @SuppressWarnings("rawtypes")
+    public static final SerIterator immutableSortedSet(
+            final Collection<?> coll, final Class<?> declaredType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        return new SerIterator() {
+            private final Iterator it = coll.iterator();
+            private Object current;
+
+            @Override
+            public String metaTypeName() {
+                return "ImmutableSortedSet";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                return ImmutableSortedSet.class.isAssignableFrom(declaredType) == false;
+            }
+            @Override
+            public int size() {
+                return coll.size();
+            }
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            @Override
+            public void next() {
+                current = it.next();
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+            @Override
+            public Object value() {
+                return current;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for {@code ImmutableSet}.
+     *
+     * @param coll  the collection, not null
+     * @param declaredType  the declared type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterator, not null
+     */
+    @SuppressWarnings("rawtypes")
+    public static final SerIterator immutableSet(
+            final Collection<?> coll, final Class<?> declaredType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        return new SerIterator() {
+            private final Iterator it = coll.iterator();
+            private Object current;
+
+            @Override
+            public String metaTypeName() {
+                return "ImmutableSet";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                return ImmutableSet.class.isAssignableFrom(declaredType) == false;
+            }
+            @Override
+            public int size() {
+                return coll.size();
+            }
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            @Override
+            public void next() {
+                current = it.next();
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+            @Override
+            public Object value() {
+                return current;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for {@code ImmutableMap}.
+     *
+     * @param map  the collection, not null
+     * @param declaredType  the declared type, not null
+     * @param keyType  the value type, not null
+     * @param valueType  the value type, not null
+     * @param valueTypeTypes  the generic parameters of the value type
+     * @return the iterator, not null
+     */
+    @SuppressWarnings("rawtypes")
+    public static final SerIterator immutableMap(
+            final Map<?, ?> map, final Class<?> declaredType,
+            final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+        return new SerIterator() {
+            private final Iterator it = map.entrySet().iterator();
+            private Entry current;
+
+            @Override
+            public String metaTypeName() {
+                return "ImmutableMap";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                return ImmutableMap.class.isAssignableFrom(declaredType) == false;
+            }
+            @Override
+            public SerCategory category() {
+                return SerCategory.MAP;
+            }
+            @Override
+            public int size() {
+                return map.size();
+            }
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+            @Override
+            public void next() {
+                current = (Entry) it.next();
+            }
+            @Override
+            public Class<?> keyType() {
+                return keyType;
+            }
+            @Override
+            public Object key() {
+                return current.getKey();
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+            @Override
+            public Object value() {
+                return current.getValue();
+            }
+        };
+    }
 }
