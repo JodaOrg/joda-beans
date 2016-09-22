@@ -37,7 +37,7 @@ import com.google.common.base.Optional;
 /**
  * Mock.
  */
-@BeanDefinition
+@BeanDefinition(factoryName = "of")
 public final class ImmOptional implements ImmutableBean {
 
     // this works but in serialization they fail for lists/maps
@@ -74,6 +74,31 @@ public final class ImmOptional implements ImmutableBean {
 
     static {
         JodaBeanUtils.registerMetaBean(ImmOptional.Meta.INSTANCE);
+    }
+
+    /**
+     * Obtains an instance.
+     * @param optString  the value of the property, not null
+     * @param optStringEmpty  the value of the property, not null
+     * @param optStringGetter  the value of the property
+     * @param optLongGetter  the value of the property
+     * @param optIntGetter  the value of the property
+     * @param optDoubleGetter  the value of the property
+     */
+    public static ImmOptional of(
+            Optional<String> optString,
+            Optional<String> optStringEmpty,
+            String optStringGetter,
+            Long optLongGetter,
+            Integer optIntGetter,
+            Double optDoubleGetter) {
+        return new ImmOptional(
+            optString,
+            optStringEmpty,
+            optStringGetter,
+            optLongGetter,
+            optIntGetter,
+            optDoubleGetter);
     }
 
     /**

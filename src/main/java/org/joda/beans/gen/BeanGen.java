@@ -135,6 +135,7 @@ class BeanGen {
             generateSerializationVersionId();
             generatePropertyChangeSupportField();
             generateHashCodeField();
+            generateFactory();
             generateImmutableBuilderMethod();
             generateArgBasedConstructor();
             generateBuilderBasedConstructor();
@@ -188,6 +189,48 @@ class BeanGen {
             return;
         }
         insertRegion.add(LINE_SEPARATOR_INDENTED);
+    }
+
+    private void generateFactory() {
+        if (data.isFactoryRequired()) {
+            List<PropertyGen> nonDerived = nonDerivedProperties();
+            insertRegion.add("\t/**");
+            insertRegion.add("\t * Obtains an instance.");
+            if (nonDerived.size() > 0) {
+                if (data.isTypeGeneric()) {
+                    for (int j = 0; j < data.getTypeGenericCount(); j++) {
+                        insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+                    }
+                }
+                for (int i = 0; i < nonDerived.size(); i++) {
+                    PropertyData prop = nonDerived.get(i).getData();
+                    insertRegion.add("\t * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
+                }
+            }
+            insertRegion.add("\t */");
+            if (nonDerived.isEmpty()) {
+                insertRegion.add("\tpublic static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "() {");
+                insertRegion.add("\t\treturn new " + data.getTypeNoExtends() + "();");
+                
+            } else {
+                if (data.isTypeGeneric()) {
+                    insertRegion.add("\tpublic static " + data.getTypeGeneric(true) + " " +
+                                    data.getTypeNoExtends() + " " + data.getFactoryName() + "(");
+                } else {
+                    insertRegion.add("\tpublic static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "(");
+                }
+                for (int i = 0; i < nonDerived.size(); i++) {
+                    PropertyGen prop = nonDerived.get(i);
+                    insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
+                }
+                insertRegion.add("\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "(");
+                for (int i = 0; i < nonDerived.size(); i++) {
+                    insertRegion.add("\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
+                }
+            }
+            insertRegion.add("\t}");
+            insertRegion.add("");
+        }
     }
 
     private void generateImmutableBuilderMethod() {

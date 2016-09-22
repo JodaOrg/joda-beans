@@ -39,6 +39,8 @@ class BeanData {
     private String beanMetaScope;
     /** The bean builder scope. */
     private String beanBuilderScope;
+    /** The factory method name. */
+    private String factoryName;
     /** Whether to cache the hash code. */
     private boolean cacheHashCode;
     /** Whether the class is immutable. */
@@ -299,6 +301,31 @@ class BeanData {
      */
     public boolean isBuilderScopeVisible() {
         return "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the factory name.
+     * @return the factory name
+     */
+    public boolean isFactoryRequired() {
+        return factoryName.length() > 0;
+    }
+
+    /**
+     * Gets the factory name.
+     * @return the factory name
+     */
+    public String getFactoryName() {
+        return factoryName;
+    }
+
+    /**
+     * Sets the factory name.
+     * @param name  the factory name
+     */
+    public void setFactoryName(String name) {
+        factoryName = name;
     }
 
     //-----------------------------------------------------------------------

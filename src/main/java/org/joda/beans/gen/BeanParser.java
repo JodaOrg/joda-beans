@@ -82,6 +82,8 @@ class BeanParser {
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The constructorScope pattern. */
     private static final Pattern CONSTRUCTOR_SCOPE_PATTERN = Pattern.compile(".*[ ,(]constructorScope[ ]*[=][ ]*[\"]([a-zA-Z@]*)[\"].*");
+    /** The factoryName pattern. */
+    private static final Pattern FACTORY_NAME_PATTERN = Pattern.compile(".*[ ,(]factoryName[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The hierarchy pattern. */
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The cacheHashCode pattern. */
@@ -159,6 +161,7 @@ class BeanParser {
         if (data.isBeanBuilderScopeValid() == false) {
             throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanBuilderScope(), file, beanDefIndex);
         }
+        data.setFactoryName(parseFactoryName(beanDefIndex));
         data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
         data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
         data.setConstructable(parseConstructable(beanDefIndex));
@@ -189,10 +192,22 @@ class BeanParser {
                 throw new BeanCodeGenException(
                         "Invalid bean style: Light beans must be declared final", file, beanDefIndex);
             }
+            if (data.isFactoryRequired() && !data.isRootClass()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Factory method only allowed when bean has no bean superclass", file, beanDefIndex);
+            }
+            if (data.isFactoryRequired() && !data.isTypeFinal()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Factory method only allowed when bean is final", file, beanDefIndex);
+            }
         } else {
             if (data.isBeanStyleLight()) {
                 throw new BeanCodeGenException(
                         "Invalid bean style: Light beans must be immutable", file, beanDefIndex);
+            }
+            if (data.isFactoryRequired()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Factory method only allowed when bean is immutable", file, beanDefIndex);
             }
         }
         properties = parseProperties(data);
@@ -295,6 +310,15 @@ class BeanParser {
             return matcher.group(1);
         }
         return "smart";
+    }
+
+    private String parseFactoryName(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = FACTORY_NAME_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private String parseBeanHierarchy(int defLine) {

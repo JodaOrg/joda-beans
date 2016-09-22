@@ -40,7 +40,7 @@ import com.google.common.collect.ImmutableMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(builderScope = "public")
+@BeanDefinition(builderScope = "public", factoryName = "of")
 public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
 
     @PropertyDefinition(validate = "notNull")
@@ -81,6 +81,32 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
 
     static {
         JodaBeanUtils.registerMetaBean(ImmTypes.Meta.INSTANCE);
+    }
+
+    /**
+     * Obtains an instance.
+     * @param <T>  the type
+     * @param listWild  the value of the property, not null
+     * @param listWildPublic1  the value of the property, not null
+     * @param listWildPublic2  the value of the property, not null
+     * @param listWildBuilder1  the value of the property, not null
+     * @param listWildBuilder2  the value of the property, not null
+     * @param mapWildBuilder1  the value of the property, not null
+     */
+    public static <T extends Comparable<T>> ImmTypes<T> of(
+            List<?> listWild,
+            List<?> listWildPublic1,
+            List<?> listWildPublic2,
+            List<?> listWildBuilder1,
+            List<? extends Address> listWildBuilder2,
+            Map<String, ? extends Address> mapWildBuilder1) {
+        return new ImmTypes<T>(
+            listWild,
+            listWildPublic1,
+            listWildPublic2,
+            listWildBuilder1,
+            listWildBuilder2,
+            mapWildBuilder1);
     }
 
     /**

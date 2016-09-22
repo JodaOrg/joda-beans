@@ -40,7 +40,7 @@ import java.beans.ConstructorProperties;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(cacheHashCode = true, constructorScope = "public@ConstructorProperties")
+@BeanDefinition(cacheHashCode = true, constructorScope = "public@ConstructorProperties", factoryName = "of")
 public final class ImmTreeNode implements ImmutableBean{
     // NOTE: no space between ImmutableBean and {
 
@@ -73,6 +73,28 @@ public final class ImmTreeNode implements ImmutableBean{
      * The cached hash code, using the racy single-check idiom.
      */
     private int cachedHashCode;
+
+    /**
+     * Obtains an instance.
+     * @param name  the value of the property, not null
+     * @param child1  the value of the property
+     * @param child2  the value of the property
+     * @param child3  the value of the property
+     * @param childList  the value of the property, not null
+     */
+    public static ImmTreeNode of(
+            String name,
+            ImmTreeNode child1,
+            ImmTreeNode child2,
+            ImmTreeNode child3,
+            List<ImmTreeNode> childList) {
+        return new ImmTreeNode(
+            name,
+            child1,
+            child2,
+            child3,
+            childList);
+    }
 
     /**
      * Returns a builder used to create an instance of the bean.

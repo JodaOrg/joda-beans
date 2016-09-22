@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(builderScope = "public")
+@BeanDefinition(builderScope = "public", factoryName = "of")
 public final class ImmGeneric<T extends Address> implements ImmutableBean {
 
     /** The name. */
@@ -67,6 +67,17 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
 
     static {
         JodaBeanUtils.registerMetaBean(ImmGeneric.Meta.INSTANCE);
+    }
+
+    /**
+     * Obtains an instance.
+     * @param <T>  the type
+     * @param value  the value of the property, not null
+     */
+    public static <T extends Address> ImmGeneric<T> of(
+            T value) {
+        return new ImmGeneric<T>(
+            value);
     }
 
     /**

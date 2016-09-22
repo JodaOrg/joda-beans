@@ -76,6 +76,14 @@ public @interface BeanDefinition {
     String builderScope() default "smart";
 
     /**
+     * The name of the factory method.
+     * <p>
+     * By default, this is an empty string and no factory is generated.
+     * Set to 'of' to generate a factory method named 'of.
+     */
+    String factoryName() default "";
+
+    /**
      * Information about the bean hierarchy.
      * <p>
      * This is needed to add information that cannot be derived.

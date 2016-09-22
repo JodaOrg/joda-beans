@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(cacheHashCode = true)
+@BeanDefinition(cacheHashCode = true, factoryName = "create")
 public final class ImmTolerance implements ImmutableBean {
 
     @PropertyDefinition
@@ -62,6 +62,19 @@ public final class ImmTolerance implements ImmutableBean {
      * The cached hash code, using the racy single-check idiom.
      */
     private int cachedHashCode;
+
+    /**
+     * Obtains an instance.
+     * @param value  the value of the property
+     * @param array  the value of the property
+     */
+    public static ImmTolerance create(
+            double value,
+            double[] array) {
+        return new ImmTolerance(
+            value,
+            array);
+    }
 
     /**
      * Returns a builder used to create an instance of the bean.
