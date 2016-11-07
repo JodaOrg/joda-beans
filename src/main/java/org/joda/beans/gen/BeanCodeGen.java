@@ -111,7 +111,7 @@ public class BeanCodeGen {
                 prefix = arg.substring(8);
             } else if (arg.equals("-R")) {
                 recurse = true;
-            } else if (arg.equals("-config=")) {
+            } else if (arg.startsWith("-config=")) {
                 if (config != null) {
                     throw new IllegalArgumentException("Argument 'config' must not be specified twice: " + Arrays.toString(args));
                 }
