@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.9" date="SNAPSHOT" description="v1.9">
+      <action dev="andreas-schilling" type="fix">
+         Incorrect config file for JDK 6.
+         Fixes #134.
+      </action>
       <action dev="jodastephen" type="add">
          Provide integration with Kryo serialization.
          Fixes #130.
