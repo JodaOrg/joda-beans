@@ -89,6 +89,8 @@ class BeanData {
     private boolean manualEqualsHashCode;
     /** Does the class have a manual toString. */
     private boolean manualToStringCode;
+    /** Whether to omit overriding Object#clone */
+    private boolean skipOverrideClone;
 
     /**
      * Constructor.
@@ -610,6 +612,22 @@ class BeanData {
      */
     public void setManualToStringCode(boolean manualToStringCode) {
         this.manualToStringCode = manualToStringCode;
+    }
+
+    /**
+     * Checks if {@link Object#clone()} should be not be overriden
+     * @return true if override is unwanted
+     */
+    public boolean isSkipOverrideClone() {
+        return skipOverrideClone;
+    }
+
+    /**
+     * Sets if {@link Object#clone()} should be not be overriden
+     * @param skipOverrideClone  true if  override is unwanted
+     */
+    public void setSkipOverrideClone(boolean skipOverrideClone) {
+        this.skipOverrideClone = skipOverrideClone;
     }
 
     /**

@@ -88,6 +88,9 @@ class BeanParser {
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The cacheHashCode pattern. */
     private static final Pattern CACHE_HASH_CODE_PATTERN = Pattern.compile(".*[ ,(]cacheHashCode[ ]*[=][ ]*(true|false).*");
+    /** The skipOverrideClone pattern. */
+    private static final Pattern SKIP_OVERRIDE_CLONE_PATTERN = Pattern.compile(".*[ ,(]skipOverrideClone[ ]*[=][ ]*(true|false).*");
+
     /** The validator pattern. */
     private static final Pattern VALIDATOR_PATTERN = Pattern.compile(
             ".*private[ ]+void[ ]+" +
@@ -163,6 +166,7 @@ class BeanParser {
         }
         data.setFactoryName(parseFactoryName(beanDefIndex));
         data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
+        data.setSkipOverrideClone(parseSkipOverrideClone(beanDefIndex));
         data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
         data.setConstructable(parseConstructable(beanDefIndex));
         data.setTypeParts(parseBeanType(beanDefIndex));
@@ -333,6 +337,15 @@ class BeanParser {
     private boolean parseCacheHashCode(int defLine) {
         String line = content.get(defLine).trim();
         Matcher matcher = CACHE_HASH_CODE_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return Boolean.valueOf(matcher.group(1));
+        }
+        return false;
+    }
+
+    private boolean parseSkipOverrideClone(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = SKIP_OVERRIDE_CLONE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return Boolean.valueOf(matcher.group(1));
         }

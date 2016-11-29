@@ -16,6 +16,7 @@
 package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotSame;
 
 import java.util.Arrays;
@@ -24,7 +25,10 @@ import java.util.Date;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ClonePerson;
 import org.joda.beans.gen.Company;
+import org.joda.beans.gen.NoClone;
 import org.testng.annotations.Test;
+
+import java.lang.reflect.Method;
 
 /**
  * Test property using ClonePerson.
@@ -56,6 +60,15 @@ public class TestClone {
         assertNotSame(cloned.getCompanies(), base.getCompanies());
         assertNotSame(cloned.getCompanies()[0], base.getCompanies()[0]);
         assertNotSame(cloned.getAmounts(), base.getAmounts());
+    }
+
+    public void test_noclone_on_mutable_bean_option() {
+        Class c = NoClone.class;
+        Method[] noCloneMethods = c.getDeclaredMethods();
+
+        for (Method method : noCloneMethods) {
+            assertNotEquals("clone", method.getName());
+        }
     }
 
 }

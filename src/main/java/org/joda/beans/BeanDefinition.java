@@ -99,4 +99,14 @@ public @interface BeanDefinition {
      */
     boolean cacheHashCode() default false;
 
+    /**
+     * Whether to skip override of {@link Object#clone()}.
+     * <p>
+     * Setting this to true will cause the bean generator to omit overriding {@link Object#clone()}.
+     * The setting only applies to mutable beans (note that {@link Object#clone()} will never be overridden
+     * for immutable beans).
+     */
+    boolean skipOverrideClone() default false;
+
+
 }
