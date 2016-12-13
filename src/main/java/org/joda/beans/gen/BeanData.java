@@ -89,8 +89,8 @@ class BeanData {
     private boolean manualEqualsHashCode;
     /** Does the class have a manual toString. */
     private boolean manualToStringCode;
-    /** Whether to omit overriding Object#clone */
-    private boolean skipOverrideClone;
+    /** The style for Object#clone */
+    private String cloneStyle;
 
     /**
      * Constructor.
@@ -615,19 +615,37 @@ class BeanData {
     }
 
     /**
-     * Checks if {@link Object#clone()} should be not be overriden
-     * @return true if override is unwanted
+     * Gets the clone style.
+     * @return the clone style
      */
-    public boolean isSkipOverrideClone() {
-        return skipOverrideClone;
+    public String getCloneStyle() {
+        return cloneStyle;
     }
 
     /**
-     * Sets if {@link Object#clone()} should be not be overriden
-     * @param skipOverrideClone  true if  override is unwanted
+     * Sets the clone style.
+     * @param cloneStyle  the clone style
      */
-    public void setSkipOverrideClone(boolean skipOverrideClone) {
-        this.skipOverrideClone = skipOverrideClone;
+    public void setCloneStyle(String cloneStyle) {
+        this.cloneStyle = cloneStyle;
+    }
+
+    /**
+     * Is the clone style valid.
+     * @return true if valid
+     */
+    public boolean isCloneStyleValid() {
+        return "smart".equals(cloneStyle) ||
+                "omit".equals(cloneStyle) ||
+                "generate".equals(cloneStyle);
+    }
+
+    /**
+     * Is the clone method to be skiped.
+     * @return true to generate
+     */
+    public boolean isSkipCloneGeneration() {
+        return ("smart".equals(cloneStyle) && isImmutable()) || "omit".equals(cloneStyle);
     }
 
     /**

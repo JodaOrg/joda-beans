@@ -88,8 +88,8 @@ class BeanParser {
     private static final Pattern HIERARCHY_PATTERN = Pattern.compile(".*[ ,(]hierarchy[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The cacheHashCode pattern. */
     private static final Pattern CACHE_HASH_CODE_PATTERN = Pattern.compile(".*[ ,(]cacheHashCode[ ]*[=][ ]*(true|false).*");
-    /** The skipOverrideClone pattern. */
-    private static final Pattern SKIP_OVERRIDE_CLONE_PATTERN = Pattern.compile(".*[ ,(]skipOverrideClone[ ]*[=][ ]*(true|false).*");
+    /** The cloneStyle pattern. */
+    private static final Pattern CLONE_STYLE_PATTERN = Pattern.compile(".*[ ,(]cloneStyle[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
 
     /** The validator pattern. */
     private static final Pattern VALIDATOR_PATTERN = Pattern.compile(
@@ -166,7 +166,10 @@ class BeanParser {
         }
         data.setFactoryName(parseFactoryName(beanDefIndex));
         data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
-        data.setSkipOverrideClone(parseSkipOverrideClone(beanDefIndex));
+        data.setCloneStyle(parseCloneStyle(beanDefIndex));
+        if (data.isCloneStyleValid() == false) {
+            throw new BeanCodeGenException("Invalid clone style: " + data.getCloneStyle(), file, beanDefIndex);
+        }
         data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
         data.setConstructable(parseConstructable(beanDefIndex));
         data.setTypeParts(parseBeanType(beanDefIndex));
@@ -343,13 +346,13 @@ class BeanParser {
         return false;
     }
 
-    private boolean parseSkipOverrideClone(int defLine) {
+    private String parseCloneStyle(int defLine) {
         String line = content.get(defLine).trim();
-        Matcher matcher = SKIP_OVERRIDE_CLONE_PATTERN.matcher(line);
+        Matcher matcher = CLONE_STYLE_PATTERN.matcher(line);
         if (matcher.matches()) {
-            return Boolean.valueOf(matcher.group(1));
+            return matcher.group(1);
         }
-        return false;
+        return "smart";
     }
 
     private boolean parseConstructable(int defLine) {

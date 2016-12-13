@@ -10,6 +10,13 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.9" date="SNAPSHOT" description="v1.9">
       <action dev="jodastephen" type="add">
+         Allow clone methods on immutable beans.
+      </action>
+      <action dev="bcamel" type="add">
+         Allow clone methods to be skipped during generation.
+         Fixes #135.
+      </action>
+      <action dev="jodastephen" type="add">
          Enhance Guava deserialization when using certain immutable collection types.
          Fixes #131.
       </action>

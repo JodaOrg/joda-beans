@@ -610,15 +610,10 @@ class BeanGen {
         }
     }
 
-    private boolean isSkippingCloneGeneration() {
-        return (data.isManualClone()        ||
-                data.isImmutable()          ||
-                data.isSkipOverrideClone()  ||
-                (data.isRootClass() == false && data.isConstructable() == false));
-    }
-
     private void generateClone() {
-        if (isSkippingCloneGeneration()) {
+        if (data.isSkipCloneGeneration() ||
+                data.isManualClone() ||
+                (data.isRootClass() == false && data.isConstructable() == false)) {
             return;
         }
         insertRegion.add("\t@Override");

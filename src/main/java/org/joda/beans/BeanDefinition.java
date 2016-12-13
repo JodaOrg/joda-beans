@@ -92,21 +92,26 @@ public @interface BeanDefinition {
     String hierarchy() default "";
 
     /**
+     * The configuration for generating clone methods.
+     * <p>
+     * This flag controls generation of the {@code clone} method.
+     * The default is 'smart'.
+     * <p>
+     * The valid values are:
+     * <ul>
+     * <li>'omit' - omit the clone method
+     * <li>'smart' - process intelligently, generating it for mutable and not generating for immutable
+     * <li>'generate' - generate the clone method
+     * </ul>
+     */
+    String cloneStyle() default "smart";
+
+    /**
      * Whether to generate code to cache the hash code.
      * <p>
      * Setting this to true will cause the hash code to be cached using the racy single check idiom.
      * The setting only applies to immutable beans.
      */
     boolean cacheHashCode() default false;
-
-    /**
-     * Whether to skip override of {@link Object#clone()}.
-     * <p>
-     * Setting this to true will cause the bean generator to omit overriding {@link Object#clone()}.
-     * The setting only applies to mutable beans (note that {@link Object#clone()} will never be overridden
-     * for immutable beans).
-     */
-    boolean skipOverrideClone() default false;
-
 
 }

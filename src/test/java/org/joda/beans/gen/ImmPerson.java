@@ -47,7 +47,7 @@ import com.google.common.collect.Multiset;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(cacheHashCode = true)
+@BeanDefinition(cacheHashCode = true, cloneStyle = "generate")
 public final class ImmPerson implements ImmutableBean {
 
     /** The forename. */
@@ -263,6 +263,11 @@ public final class ImmPerson implements ImmutableBean {
      */
     public Builder toBuilder() {
         return new Builder(this);
+    }
+
+    @Override
+    public ImmPerson clone() {
+        return this;
     }
 
     @Override
