@@ -294,17 +294,13 @@ class BeanGen {
                         if (prop.isNotNull()) {
                             insertRegion.add("\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
                         } else {
-                            insertRegion.add("\t\tif (" + prop.getPropertyName() + " != null) {");
-                            insertRegion.add("\t\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
-                            insertRegion.add("\t\t}");
+                            insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                         }
                     } else if (prop.isMapType()) {
                         if (prop.isNotNull()) {
                             insertRegion.add("\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
                         } else {
-                            insertRegion.add("\t\tif (" + prop.getPropertyName() + " != null) {");
-                            insertRegion.add("\t\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
-                            insertRegion.add("\t\t}");
+                            insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                         }
                     } else {
                         insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");

@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.9" date="SNAPSHOT" description="v1.9">
+      <action dev="jodastephen" type="fix">
+        Avoid NPE for mutable beans with builder.
+        Fixes #138.
+      </action>
       <action dev="jodastephen" type="add">
          Allow clone methods on immutable beans.
       </action>
