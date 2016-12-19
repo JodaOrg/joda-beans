@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2014 Stephen Colebourne
+ *  Copyright 2001-2016 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package org.joda.beans.ser;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Manages a map of deserializers that assist with data migration.
@@ -41,12 +43,27 @@ public final class SerDeserializers {
     /**
      * The deserializers.
      */
-    private ConcurrentMap<Class<?>, SerDeserializer> deserializers = new ConcurrentHashMap<Class<?>, SerDeserializer>();
+    private final ConcurrentMap<Class<?>, SerDeserializer> deserializers =
+            new ConcurrentHashMap<Class<?>, SerDeserializer>();
+    /**
+     * The deserializer providers.
+     */
+    private final CopyOnWriteArrayList<SerDeserializerProvider> providers =
+            new CopyOnWriteArrayList<SerDeserializerProvider>();
 
     /**
      * Creates an instance.
      */
     public SerDeserializers() {
+    }
+
+    /**
+     * Creates an instance using additional providers.
+     * 
+     * @param providers  the providers to use
+     */
+    public SerDeserializers(SerDeserializerProvider... providers) {
+        this.providers.addAll(Arrays.asList(providers));
     }
 
     //-----------------------------------------------------------------------
@@ -73,6 +90,18 @@ public final class SerDeserializers {
 
     //-----------------------------------------------------------------------
     /**
+     * Adds the deserializer provider to be used.
+     * 
+     * @param provider  the deserializer provider, not null
+     * @return this, for chaining, not null
+     */
+    public SerDeserializers registerProvider(SerDeserializerProvider provider) {
+        providers.add(provider);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Finds the deserializer for the specified type.
      * <p>
      * The {@code DefaultDeserializer} is used if one has not been registered.
@@ -82,10 +111,16 @@ public final class SerDeserializers {
      */
     public SerDeserializer findDeserializer(Class<?> type) {
         SerDeserializer deser = deserializers.get(type);
-        if (deser == null) {
-            deser = DefaultDeserializer.INSTANCE;
+        if (deser != null) {
+            return deser;
         }
-        return deser;
+        for (SerDeserializerProvider provider : providers) {
+            deser = provider.findDeserializer(type);
+            if (deser != null) {
+                return deser;
+            }
+        }
+        return DefaultDeserializer.INSTANCE;
     }
 
     //-----------------------------------------------------------------------

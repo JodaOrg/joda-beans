@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.9" date="SNAPSHOT" description="v1.9">
       <action dev="jodastephen" type="add">
+        Add deserializer providers, to allow more extensibility in deserialization.
+        Fixes #128.
+      </action>
+      <action dev="jodastephen" type="add">
         Extend concept of "light" beans to mutable.
         Light beans generate minimal code - no meta bean or builder.
         Fixes #139.
