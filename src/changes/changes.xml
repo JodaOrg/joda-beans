@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.9" date="SNAPSHOT" description="v1.9">
+    <release version="1.9" date="2016-12-19" description="v1.9">
       <action dev="jodastephen" type="add">
         Add deserializer providers, to allow more extensibility in deserialization.
         Fixes #128.
