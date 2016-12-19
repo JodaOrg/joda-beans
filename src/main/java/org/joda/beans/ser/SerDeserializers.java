@@ -41,12 +41,27 @@ public final class SerDeserializers {
     /**
      * The deserializers.
      */
-    private ConcurrentMap<Class<?>, SerDeserializer> deserializers = new ConcurrentHashMap<Class<?>, SerDeserializer>();
+    private final ConcurrentMap<Class<?>, SerDeserializer> deserializers = new ConcurrentHashMap<Class<?>, SerDeserializer>();
+
+    /**
+     * Provider of deserializers.
+     */
+    private final DeserializerProvider deserializerProvider;
+
+    /**
+     * Creates an instance.
+     *
+     * @param deserializerProvider  provides deserializers for beans
+     */
+    public SerDeserializers(DeserializerProvider deserializerProvider) {
+        this.deserializerProvider = deserializerProvider;
+    }
 
     /**
      * Creates an instance.
      */
     public SerDeserializers() {
+       this(EmptyDeserializerProvider.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -82,6 +97,9 @@ public final class SerDeserializers {
      */
     public SerDeserializer findDeserializer(Class<?> type) {
         SerDeserializer deser = deserializers.get(type);
+        if (deser == null) {
+            deser = deserializerProvider.findDeserializer(type);
+        }
         if (deser == null) {
             deser = DefaultDeserializer.INSTANCE;
         }
