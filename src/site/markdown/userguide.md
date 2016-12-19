@@ -155,8 +155,8 @@ For information on serialization in XML, JSON and binary, see the [serialization
 
 ## Integration
 
-Joda-Beans has so far been integrated with Freemarker and MongoDB.
-The [OpenGamma](http://developers.opengamma.com/) project has also provided its own integration with the Fudge messaging project.
-
+Joda-Beans has been integrated with Freemarker, MongoDB and Kryo.
 The integration support classes are included in the jar file but only work when the optional dependency is present.
 Note that it is entirely valid to use Joda-Beans without additional jar file dependencies apart from Joda-Convert.
+
+The beans are also widely use in the [Strata](http://strata.opengamma.io/) market risk project.

@@ -452,9 +452,9 @@ The rules as to what works and what does not are complex.
 It is recommended to keep is simple, and only have normal mutable beans or final immutable beans.
 
 
-## Light immutable beans
+## Light beans
 
-It is possible to generate a very light-weight immutable bean.
+It is possible to generate a very light-weight bean.
 This approach has no Meta class or Builder (the objects exist behind the scenes).
 This is the approach with the lowest code generation.
 
@@ -468,6 +468,8 @@ This is the approach with the lowest code generation.
 
 Internally, the bean uses reflection to implement the meta bean and builder.
 As such, it may be a little slower.
+
+Both immutable and mutable light-weight beans can be generated.
 
 
 ## Links
