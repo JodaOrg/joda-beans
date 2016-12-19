@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyStyle;
@@ -200,7 +201,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public PropertyStyle style() {
-        return PropertyStyle.IMMUTABLE;
+        return ImmutableBean.class.isAssignableFrom(metaBean.beanType()) ? PropertyStyle.IMMUTABLE : PropertyStyle.READ_WRITE;
     }
 
     @Override

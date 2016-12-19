@@ -186,7 +186,11 @@ class BeanParser {
                     data.setConstructorStyle(CONSTRUCTOR_BY_BUILDER);
                 }
             } else {
-                data.setConstructorStyle(CONSTRUCTOR_BY_BUILDER);
+                if (data.isBeanStyleLight()) {
+                    data.setConstructorStyle(CONSTRUCTOR_BY_ARGS);
+                } else {
+                    data.setConstructorStyle(CONSTRUCTOR_BY_BUILDER);
+                }
             }
         } else {
             data.setConstructorStyle(data.getImmutableConstructor());
@@ -208,9 +212,9 @@ class BeanParser {
                         "Invalid bean style: Factory method only allowed when bean is final", file, beanDefIndex);
             }
         } else {
-            if (data.isBeanStyleLight()) {
+            if (data.isBeanStyleLight() && !data.isTypeFinal()) {
                 throw new BeanCodeGenException(
-                        "Invalid bean style: Light beans must be immutable", file, beanDefIndex);
+                        "Invalid bean style: Light beans must be declared final", file, beanDefIndex);
             }
             if (data.isFactoryRequired()) {
                 throw new BeanCodeGenException(

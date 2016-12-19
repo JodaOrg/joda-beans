@@ -881,8 +881,10 @@ class PropertyData {
      * Resolves the copy generator.
      */
     public void resolveBuilderGen() {
-        if (getBean().isMutable() && getBean().isBuilderScopeVisible() == false) {
-            return;  // no builder
+        if (getBean().isMutable()) {
+            if (!getBean().isBuilderScopeVisible() && !getBean().isBeanStyleLight()) {
+                return;  // no builder
+            }
         }
         if (isDerived()) {
             builderGen = BuilderGen.NoBuilderGen.INSTANCE;

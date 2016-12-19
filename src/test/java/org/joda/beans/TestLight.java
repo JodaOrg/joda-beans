@@ -24,6 +24,7 @@ import java.util.Currency;
 
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Light;
+import org.joda.beans.gen.MutableLight;
 import org.joda.beans.ser.JodaBeanSer;
 import org.testng.annotations.Test;
 
@@ -36,7 +37,7 @@ import com.google.common.collect.ImmutableList;
 @Test
 public class TestLight {
 
-    public void test_builder() {
+    public void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         Light bean = (Light) Light.meta().builder()
                 .setString("number", "12")
@@ -71,6 +72,42 @@ public class TestLight {
         assertEquals(mp2.declaringType(), Light.class);
         assertEquals(mp2.get(bean), Optional.absent());
         assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
+        
+        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
+        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+    }
+
+    public void test_mutable() {
+        MutableLight bean = (MutableLight) MutableLight.meta().builder()
+                .setString("number", "12")
+                .setString("text", "Park Lane")
+                .setString("city", "London")
+                .set("list", new ArrayList<String>())
+                .set("currency", Currency.getInstance("USD"))
+                .build();
+        
+        assertEquals(bean.getNumber(), 12);
+        assertEquals(bean.getText(), "Park Lane");
+        assertEquals(bean.getList(), ImmutableList.of());
+        assertEquals(bean.getCurrency(), Optional.of(Currency.getInstance("USD")));
+        
+        assertEquals(bean.metaBean().beanType(), MutableLight.class);
+        assertEquals(bean.metaBean().metaPropertyCount(), 6);
+        assertEquals(bean.metaBean().metaPropertyExists("number"), true);
+        assertEquals(bean.metaBean().metaPropertyExists("text"), true);
+        assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        
+        MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
+        assertEquals(mp.propertyType(), int.class);
+        assertEquals(mp.declaringType(), MutableLight.class);
+        assertEquals(mp.get(bean), 12);
+        assertEquals(mp.style(), PropertyStyle.READ_WRITE);
+        
+        MetaProperty<Object> mp2 = bean.metaBean().metaProperty("currency");
+        assertEquals(mp2.propertyType(), Optional.class);
+        assertEquals(mp2.declaringType(), MutableLight.class);
+        assertEquals(mp2.get(bean), Optional.of(Currency.getInstance("USD")));
+        assertEquals(mp2.style(), PropertyStyle.READ_WRITE);
         
         assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
         assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));

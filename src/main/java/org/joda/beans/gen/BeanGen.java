@@ -317,7 +317,7 @@ class BeanGen {
 
     private void generateArgBasedConstructor() {
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS && data.getImmutableConstructor() == CONSTRUCTOR_NONE && 
-                ((data.isMutable() && data.isBuilderScopeVisible()) || data.isImmutable())) {
+                ((data.isMutable() && (data.isBuilderScopeVisible() || data.isBeanStyleLight())) || data.isImmutable())) {
             String scope = data.getEffectiveConstructorScope();
             boolean generateAnnotation = data.isConstructorPropertiesAnnotation();
             boolean generateJavadoc = !"private ".equals(scope);
@@ -360,17 +360,26 @@ class BeanGen {
                     PropertyGen prop = nonDerived.get(i);
                     insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
                 }
-                // validate
-                for (PropertyGen prop : properties) {
-                    if (prop.getData().isValidated()) {
-                        insertRegion.add("\t\t" + prop.getData().getValidationMethodName() +
-                                "(" + prop.getData().getPropertyName() +
-                                ", \"" + prop.getData().getPropertyName() + "\");");
+                // validate (mutable light beans call setters which validate)
+                if (!(data.isMutable() && data.isBeanStyleLight())) {
+                    for (PropertyGen prop : properties) {
+                        if (prop.getData().isValidated()) {
+                            insertRegion.add("\t\t" + prop.getData().getValidationMethodName() +
+                                    "(" + prop.getData().getPropertyName() +
+                                    ", \"" + prop.getData().getPropertyName() + "\");");
+                        }
                     }
                 }
                 // assign
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.addAll(nonDerived.get(i).generateConstructorAssign(""));
+                    PropertyGen prop = nonDerived.get(i);
+                    if (data.isMutable() && data.isBeanStyleLight()) {
+                        String generateSetInvoke = prop.getData().getSetterGen().generateSetInvoke(
+                                prop.getData(), prop.getData().getPropertyName());
+                        insertRegion.add("\t\t" + generateSetInvoke + ";");
+                    } else {
+                        insertRegion.addAll(prop.generateConstructorAssign(""));
+                    }
                 }
             }
             if (data.getImmutableValidator() != null) {
