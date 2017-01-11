@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.9.1" date="SNAPSHOT" description="v1.9.1">
+    <release version="1.9.1" date="2017-01-11" description="v1.9.1">
       <action dev="jodastephen" type="fix">
         Scope of meta bean and builder should match scope of main bean.
         Fixes #140.
