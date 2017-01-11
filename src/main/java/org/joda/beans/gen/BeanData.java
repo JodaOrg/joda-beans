@@ -69,6 +69,8 @@ class BeanData {
     private String[] typeGenericExtends;
     /** Whether the type is final with no subclasses. */
     private boolean typeFinal;
+    /** The scope of the type. */
+    private String typeScope;
     /** Whether the type is a root with no bean super-classes. */
     private boolean root;
     /** The full name of the bean superclass. */
@@ -231,12 +233,11 @@ class BeanData {
      * @return the scope
      */
     public String getEffectiveMetaScope() {
-        if ("smart".equals(beanMetaScope)) {
-            return "public ";
-        } else if ("package".equals(beanMetaScope)) {
-            return "";
+        String scope = beanMetaScope;
+        if ("smart".equals(scope)) {
+            scope = typeScope;
         }
-        return beanMetaScope + " ";
+        return "package".equals(scope) ? "" : scope + " ";
     }
 
     /**
@@ -280,12 +281,11 @@ class BeanData {
      * @return the scope
      */
     public String getEffectiveBuilderScope() {
-        if ("smart".equals(beanBuilderScope)) {
-            return "public ";
-        } else if ("package".equals(beanBuilderScope)) {
-            return "";
+        String scope = beanBuilderScope;
+        if ("smart".equals(scope)) {
+            scope = typeScope;
         }
-        return beanBuilderScope + " ";
+        return "package".equals(scope) ? "" : scope + " ";
     }
 
     /**
@@ -654,23 +654,24 @@ class BeanData {
      */
     public void setTypeParts(String[] parts) {
         this.typeFinal = parts[0] != null;
-        this.typeFull = parts[1];
-        this.typeRaw = parts[2];
-        if (parts[7] != null) {
-            this.typeGenericName = new String[] {parts[3], parts[5], parts[7]};
+        this.typeScope = parts[1];
+        this.typeFull = parts[2];
+        this.typeRaw = parts[3];
+        if (parts[8] != null) {
+            this.typeGenericName = new String[] {parts[4], parts[6], parts[8]};
             this.typeGenericExtends = new String[3];
-            this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
-            this.typeGenericExtends[1] = parts[6] != null ? parts[6] : "";
-            this.typeGenericExtends[2] = parts[8] != null ? parts[8] : "";
-        } else if (parts[5] != null) {
-            this.typeGenericName = new String[] {parts[3], parts[5]};
+            this.typeGenericExtends[0] = parts[5] != null ? parts[5] : "";
+            this.typeGenericExtends[1] = parts[7] != null ? parts[7] : "";
+            this.typeGenericExtends[2] = parts[9] != null ? parts[9] : "";
+        } else if (parts[6] != null) {
+            this.typeGenericName = new String[] {parts[4], parts[6]};
             this.typeGenericExtends = new String[2];
-            this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
-            this.typeGenericExtends[1] = parts[6] != null ? parts[6] : "";
-        } else if (parts[3] != null) {
-            this.typeGenericName = new String[] {parts[3]};
+            this.typeGenericExtends[0] = parts[5] != null ? parts[5] : "";
+            this.typeGenericExtends[1] = parts[7] != null ? parts[7] : "";
+        } else if (parts[4] != null) {
+            this.typeGenericName = new String[] {parts[4]};
             this.typeGenericExtends = new String[1];
-            this.typeGenericExtends[0] = parts[4] != null ? parts[4] : "";
+            this.typeGenericExtends[0] = parts[5] != null ? parts[5] : "";
         } else {
             this.typeGenericName = new String[0];
             this.typeGenericExtends = new String[0];
@@ -727,6 +728,14 @@ class BeanData {
      */
     public void setTypeFinal(boolean typeFinal) {
         this.typeFinal = typeFinal;
+    }
+
+    /**
+     * Gets the scope of the type.
+     * @return true if manual
+     */
+    public String getTypeScope() {
+        return typeScope;
     }
 
     //-----------------------------------------------------------------------

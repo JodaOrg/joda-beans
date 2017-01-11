@@ -60,7 +60,7 @@ final class ImmPackageScoped implements ImmutableBean {
      * Returns a builder used to create an instance of the bean.
      * @return the builder, not null
      */
-    public static ImmPackageScoped.Builder builder() {
+    static ImmPackageScoped.Builder builder() {
         return new ImmPackageScoped.Builder();
     }
 
@@ -103,7 +103,7 @@ final class ImmPackageScoped implements ImmutableBean {
      * Returns a builder that allows this bean to be mutated.
      * @return the mutable builder, not null
      */
-    public Builder toBuilder() {
+    Builder toBuilder() {
         return new Builder(this);
     }
 
@@ -139,7 +139,7 @@ final class ImmPackageScoped implements ImmutableBean {
     /**
      * The meta-bean for {@code ImmPackageScoped}.
      */
-    public static final class Meta extends DirectMetaBean {
+    static final class Meta extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -221,7 +221,7 @@ final class ImmPackageScoped implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmPackageScoped}.
      */
-    public static final class Builder extends DirectFieldsBeanBuilder<ImmPackageScoped> {
+    static final class Builder extends DirectFieldsBeanBuilder<ImmPackageScoped> {
 
         private String name;
 
