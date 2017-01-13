@@ -63,7 +63,7 @@ public class TestClone {
     }
 
     public void test_noclone_on_mutable_bean_option() {
-        Class c = NoClone.class;
+        Class<?> c = NoClone.class;
         Method[] noCloneMethods = c.getDeclaredMethods();
 
         for (Method method : noCloneMethods) {
