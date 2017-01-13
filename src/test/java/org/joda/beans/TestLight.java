@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2016 Stephen Colebourne
+ *  Copyright 2001-2017 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -90,6 +90,15 @@ public class TestLight {
         assertEquals(bean.getText(), "Park Lane");
         assertEquals(bean.getList(), ImmutableList.of());
         assertEquals(bean.getCurrency(), Optional.of(Currency.getInstance("USD")));
+        
+        bean.setCity("Nodnol");
+        assertEquals(bean.getCity(), "Nodnol");
+        
+        bean.property("city").set("Paris");;
+        assertEquals(bean.getCity(), "Paris");
+        
+        bean.metaBean().metaProperty("city").set(bean, "London");;
+        assertEquals(bean.getCity(), "London");
         
         assertEquals(bean.metaBean().beanType(), MutableLight.class);
         assertEquals(bean.metaBean().metaPropertyCount(), 6);

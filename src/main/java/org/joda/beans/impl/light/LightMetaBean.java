@@ -1,5 +1,5 @@
 /*
- *  Copyright 2001-2016 Stephen Colebourne
+ *  Copyright 2001-2017 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
+import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyDefinition;
@@ -89,23 +90,39 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
                 String name = field.getName();
                 if (pdef.get().equals("field")) {
                     field.setAccessible(true);
-                    map.put(name, LightMetaProperty.of(this, field, name, propertyTypes.size()));
+                    MetaProperty<Object> mp = ImmutableLightMetaProperty.of(this, field, name, propertyTypes.size());
+                    if (!ImmutableBean.class.isAssignableFrom(beanType)) {
+                        mp = MutableLightMetaProperty.of(this, field, name, propertyTypes.size());
+                    }
+                    map.put(name, mp);
                     propertyTypes.add(field.getType());
                 } else if (!pdef.get().equals("")) {
                     String getterName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
-                    Method method = null;
+                    Method getMethod = null;
                     if (field.getType() == boolean.class) {
-                        method = findMethod(beanType, "is" + name.substring(0, 1).toUpperCase() + name.substring(1));
+                        getMethod = findGetMethod(beanType, "is" + name.substring(0, 1).toUpperCase() + name.substring(1));
                     }
-                    if (method == null) {
-                        method = findMethod(beanType, getterName);
-                        if (method == null) {
+                    if (getMethod == null) {
+                        getMethod = findGetMethod(beanType, getterName);
+                        if (getMethod == null) {
                             throw new IllegalArgumentException(
                                 "Unable to find property getter: " + beanType.getSimpleName() + "." + getterName + "()");
                         }
                     }
-                    method.setAccessible(true);
-                    map.put(name, LightMetaProperty.of(this, field, method, name, propertyTypes.size()));
+                    getMethod.setAccessible(true);
+                    if (ImmutableBean.class.isAssignableFrom(beanType)) {
+                        map.put(name, ImmutableLightMetaProperty.<Object>of(this, field, getMethod, name, propertyTypes.size()));
+                        
+                    } else {
+                        String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                        Method setMethod = findSetMethod(beanType, setterName, field.getType());
+                        if (setMethod == null) {
+                            throw new IllegalArgumentException(
+                                "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
+                        }
+                        map.put(name, MutableLightMetaProperty.of(
+                                this, field, getMethod, setMethod, name, propertyTypes.size()));
+                    }
                     propertyTypes.add(field.getType());
                 }
             }
@@ -116,7 +133,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
     }
 
     // finds a method on class or public method on super-type
-    private static Method findMethod(Class<? extends Bean> beanType, String getterName) {
+    private static Method findGetMethod(Class<? extends Bean> beanType, String getterName) {
         try {
             return beanType.getDeclaredMethod(getterName);
         } catch (NoSuchMethodException ex) {
@@ -125,6 +142,30 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
             } catch (NoSuchMethodException ex2) {
                 return null;
             }
+        }
+    }
+
+    // finds a method on class or public method on super-type
+    private static Method findSetMethod(Class<? extends Bean> beanType, String setterName, Class<?> fieldType) {
+        try {
+            return beanType.getDeclaredMethod(setterName, fieldType);
+        } catch (NoSuchMethodException ex) {
+            Method[] methods = beanType.getMethods();
+            List<Method> potential = new ArrayList<Method>();
+            for (Method method : methods) {
+                if (method.getName().equals(setterName) && method.getParameterTypes().length == 1) {
+                    potential.add(method);
+                }
+            }
+            if (potential.size() == 1) {
+                return potential.get(0);
+            }
+            for (Method method : potential) {
+                if (method.getParameterTypes()[0].equals(fieldType)) {
+                    return method;
+                }
+            }
+            return null;
         }
     }
 

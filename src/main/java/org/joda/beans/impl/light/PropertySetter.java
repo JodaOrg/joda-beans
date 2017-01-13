@@ -18,18 +18,18 @@ package org.joda.beans.impl.light;
 import org.joda.beans.Bean;
 
 /**
- * Functional interface providing the ability to get a property from a bean.
+ * Functional interface providing the ability to set a property in a bean.
  * 
  * @author Stephen Colebourne
  */
-interface PropertyGetter {
+interface PropertySetter {
 
     /**
-     * Queries the property.
+     * Sets the property.
      * 
-     * @param bean  the bean to query
-     * @return the property value
+     * @param bean  the bean to change
+     * @param value  the value to set
      */
-    Object get(Bean bean);
+    void set(Bean bean, Object value);
 
 }
