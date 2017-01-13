@@ -398,7 +398,7 @@ class BeanGen {
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t */");
-            insertRegion.add("\tprivate static MetaBean META_BEAN = LightMetaBean.of(" + data.getTypeRaw() + ".class);");
+            insertRegion.add("\tprivate static final MetaBean META_BEAN = LightMetaBean.of(" + data.getTypeRaw() + ".class);");
             insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");

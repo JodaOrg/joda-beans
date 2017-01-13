@@ -75,7 +75,7 @@ public final class MutableLight implements Bean, Serializable {
     /**
      * The meta-bean for {@code MutableLight}.
      */
-    private static MetaBean META_BEAN = LightMetaBean.of(MutableLight.class);
+    private static final MetaBean META_BEAN = LightMetaBean.of(MutableLight.class);
 
     /**
      * The meta-bean for {@code MutableLight}.

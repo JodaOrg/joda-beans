@@ -91,7 +91,7 @@ public final class Light implements ImmutableBean, Serializable {
     /**
      * The meta-bean for {@code Light}.
      */
-    private static MetaBean META_BEAN = LightMetaBean.of(Light.class);
+    private static final MetaBean META_BEAN = LightMetaBean.of(Light.class);
 
     /**
      * The meta-bean for {@code Light}.
