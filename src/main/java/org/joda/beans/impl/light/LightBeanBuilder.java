@@ -91,7 +91,16 @@ class LightBeanBuilder<B extends Bean>
     }
 
     private int index(MetaProperty<?> metaProperty) {
-        return ((LightMetaProperty<?>) metaProperty).getConstructorIndex();
+        try {
+            return ((LightMetaProperty<?>) metaProperty).getConstructorIndex();
+        } catch (ClassCastException ex) {
+            for (MetaProperty<?> mp : metaBean.metaPropertyIterable()) {
+                if (mp.equals(metaProperty)) {
+                    return ((LightMetaProperty<?>) mp).getConstructorIndex();
+                }
+            }
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

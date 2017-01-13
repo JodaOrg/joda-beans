@@ -25,6 +25,7 @@ import java.util.Currency;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Light;
 import org.joda.beans.gen.MutableLight;
+import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.testng.annotations.Test;
 
@@ -42,7 +43,7 @@ public class TestLight {
         Light bean = (Light) Light.meta().builder()
                 .setString("number", "12")
                 .setString("street", "Park Lane")
-                .setString("city", "Smallville")
+                .set(StandaloneMetaProperty.of("city", Light.meta(), String.class), "Smallville")
                 .set("owner", person)
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
@@ -81,7 +82,7 @@ public class TestLight {
         MutableLight bean = (MutableLight) MutableLight.meta().builder()
                 .setString("number", "12")
                 .setString("text", "Park Lane")
-                .setString("city", "London")
+                .set(StandaloneMetaProperty.of("city", MutableLight.meta(), String.class), "London")
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
                 .build();
