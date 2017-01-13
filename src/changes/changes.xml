@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.9.2" date="SNAPSHOT" description="v1.9.2">
       <action dev="jodastephen" type="fix">
+        Avoid generating methods that have no advantage in private builders.
+        Fixes #143.
+      </action>
+      <action dev="jodastephen" type="fix">
         Light bean setters fail to work via bean abstraction.
         Fixes #142.
       </action>

@@ -340,26 +340,8 @@ public final class ImmMinimalMetaBuilder implements ImmutableBean {
         }
 
         @Override
-        public Builder set(MetaProperty<?> property, Object value) {
-            super.set(property, value);
-            return this;
-        }
-
-        @Override
         public Builder setString(String propertyName, String value) {
             setString(ImmMinimalMetaBuilder.Meta.INSTANCE.metaProperty(propertyName), value);
-            return this;
-        }
-
-        @Override
-        public Builder setString(MetaProperty<?> property, String value) {
-            super.setString(property, value);
-            return this;
-        }
-
-        @Override
-        public Builder setAll(Map<String, ? extends Object> propertyValueMap) {
-            super.setAll(propertyValueMap);
             return this;
         }
 

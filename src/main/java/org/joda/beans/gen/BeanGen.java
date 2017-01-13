@@ -1191,12 +1191,14 @@ class BeanGen {
     }
 
     private void generateBuilderOtherSets() {
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(MetaProperty<?> property, Object value) {");
-        insertRegion.add("\t\t\tsuper.set(property, value);");
-        insertRegion.add("\t\t\treturn this;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        if (data.isEffectiveBuilderScopeVisible()) {
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(MetaProperty<?> property, Object value) {");
+            insertRegion.add("\t\t\tsuper.set(property, value);");
+            insertRegion.add("\t\t\treturn this;");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+        }
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(String propertyName, String value) {");
         if (data.isMetaScopePrivate()) {
@@ -1207,18 +1209,20 @@ class BeanGen {
         insertRegion.add("\t\t\treturn this;");
         insertRegion.add("\t\t}");
         insertRegion.add("");
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(MetaProperty<?> property, String value) {");
-        insertRegion.add("\t\t\tsuper.setString(property, value);");
-        insertRegion.add("\t\t\treturn this;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setAll(Map<String, ? extends Object> propertyValueMap) {");
-        insertRegion.add("\t\t\tsuper.setAll(propertyValueMap);");
-        insertRegion.add("\t\t\treturn this;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        if (data.isEffectiveBuilderScopeVisible()) {
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(MetaProperty<?> property, String value) {");
+            insertRegion.add("\t\t\tsuper.setString(property, value);");
+            insertRegion.add("\t\t\treturn this;");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setAll(Map<String, ? extends Object> propertyValueMap) {");
+            insertRegion.add("\t\t\tsuper.setAll(propertyValueMap);");
+            insertRegion.add("\t\t\treturn this;");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+        }
     }
 
     private void generateBuilderBuilder() {

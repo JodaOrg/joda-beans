@@ -256,26 +256,8 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
         }
 
         @Override
-        public Builder<T> set(MetaProperty<?> property, Object value) {
-            super.set(property, value);
-            return this;
-        }
-
-        @Override
         public Builder<T> setString(String propertyName, String value) {
             setString(meta().metaProperty(propertyName), value);
-            return this;
-        }
-
-        @Override
-        public Builder<T> setString(MetaProperty<?> property, String value) {
-            super.setString(property, value);
-            return this;
-        }
-
-        @Override
-        public Builder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-            super.setAll(propertyValueMap);
             return this;
         }
 
