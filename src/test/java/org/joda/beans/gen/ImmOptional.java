@@ -84,6 +84,7 @@ public final class ImmOptional implements ImmutableBean {
      * @param optLongGetter  the value of the property
      * @param optIntGetter  the value of the property
      * @param optDoubleGetter  the value of the property
+     * @return the instance
      */
     public static ImmOptional of(
             Optional<String> optString,

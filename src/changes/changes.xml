@@ -14,6 +14,10 @@
         Fixes #145.
       </action>
       <action dev="jodastephen" type="fix">
+        Generated factory methods do not have Javadoc @return.
+        Fixes #146.
+      </action>
+      <action dev="jodastephen" type="fix">
         Ensure light bean builder handles arbitrary meta property implementations.
         Fixes #144.
       </action>

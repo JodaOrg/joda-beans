@@ -92,6 +92,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
      * @param listWildBuilder1  the value of the property, not null
      * @param listWildBuilder2  the value of the property, not null
      * @param mapWildBuilder1  the value of the property, not null
+     * @return the instance
      */
     public static <T extends Comparable<T>> ImmTypes<T> of(
             List<?> listWild,

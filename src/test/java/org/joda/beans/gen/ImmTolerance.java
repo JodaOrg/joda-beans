@@ -67,6 +67,7 @@ public final class ImmTolerance implements ImmutableBean {
      * Obtains an instance.
      * @param value  the value of the property
      * @param array  the value of the property
+     * @return the instance
      */
     public static ImmTolerance create(
             double value,

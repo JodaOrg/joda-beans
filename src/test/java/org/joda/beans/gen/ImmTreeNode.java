@@ -81,6 +81,7 @@ public final class ImmTreeNode implements ImmutableBean{
      * @param child2  the value of the property
      * @param child3  the value of the property
      * @param childList  the value of the property, not null
+     * @return the instance
      */
     public static ImmTreeNode of(
             String name,

@@ -208,6 +208,7 @@ class BeanGen {
                     insertRegion.add("\t * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
                 }
             }
+            insertRegion.add("\t * @return the instance");
             insertRegion.add("\t */");
             if (nonDerived.isEmpty()) {
                 insertRegion.add("\tpublic static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "() {");

@@ -72,6 +72,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      * Obtains an instance.
      * @param <T>  the type
      * @param errorMessage  the value of the property, not null
+     * @return the instance
      */
     public static <T> ImmUnusedGeneric<T> of(
             String errorMessage) {

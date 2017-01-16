@@ -73,6 +73,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
      * Obtains an instance.
      * @param <T>  the type
      * @param value  the value of the property, not null
+     * @return the instance
      */
     public static <T extends Address> ImmGeneric<T> of(
             T value) {
