@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.9.2" date="SNAPSHOT" description="v1.9.2">
+    <release version="1.10" date="2017-01-16" description="v1.10">
       <action dev="jodastephen" type="add">
         Allow mutable light beans to control constructor scope.
         Fixes #145.
