@@ -27,10 +27,10 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
-import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -285,7 +285,7 @@ public final class ImmMinimal implements ImmutableBean {
     /**
      * The bean-builder for {@code ImmMinimal}.
      */
-    private static final class Builder extends DirectFieldsBeanBuilder<ImmMinimal> {
+    private static final class Builder extends DirectPrivateBeanBuilder<ImmMinimal> {
 
         private int number;
         private String street;
@@ -296,6 +296,7 @@ public final class ImmMinimal implements ImmutableBean {
          * Restricted constructor.
          */
         private Builder() {
+            super(meta());
         }
 
         //-----------------------------------------------------------------------
@@ -333,12 +334,6 @@ public final class ImmMinimal implements ImmutableBean {
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
-            return this;
-        }
-
-        @Override
-        public Builder setString(String propertyName, String value) {
-            setString(meta().metaProperty(propertyName), value);
             return this;
         }
 

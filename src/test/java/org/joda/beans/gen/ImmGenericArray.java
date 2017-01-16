@@ -27,10 +27,10 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
-import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
 
 /**
  * Mock JavaBean, used for testing.
@@ -221,7 +221,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
      * The bean-builder for {@code ImmGenericArray}.
      * @param <T>  the type
      */
-    private static final class Builder<T extends Address> extends DirectFieldsBeanBuilder<ImmGenericArray<T>> {
+    private static final class Builder<T extends Address> extends DirectPrivateBeanBuilder<ImmGenericArray<T>> {
 
         private T[] values;
 
@@ -229,6 +229,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
          * Restricted constructor.
          */
         private Builder() {
+            super(meta());
         }
 
         //-----------------------------------------------------------------------
@@ -252,12 +253,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
-            return this;
-        }
-
-        @Override
-        public Builder<T> setString(String propertyName, String value) {
-            setString(meta().metaProperty(propertyName), value);
             return this;
         }
 

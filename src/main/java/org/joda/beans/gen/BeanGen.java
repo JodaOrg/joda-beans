@@ -39,6 +39,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
 import org.joda.beans.impl.light.LightMetaBean;
 
 /**
@@ -1062,9 +1063,12 @@ class BeanGen {
         String superBuilder;
         if (data.isSubClass()) {
             superBuilder = data.getSuperTypeRaw() + ".Builder" + data.getSuperTypeGeneric(true);
-        } else {
+        } else if (data.isEffectiveBuilderScopeVisible()) {
             data.ensureImport(DirectFieldsBeanBuilder.class);
             superBuilder = "DirectFieldsBeanBuilder<" + data.getTypeNoExtends() + ">";
+        } else {
+            data.ensureImport(DirectPrivateBeanBuilder.class);
+            superBuilder = "DirectPrivateBeanBuilder<" + data.getTypeNoExtends() + ">";
         }
         if (data.isConstructable()) {
             insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + finalType +
@@ -1100,6 +1104,9 @@ class BeanGen {
         insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
         insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder() {");
+        if (!data.isEffectiveBuilderScopeVisible()) {
+            insertRegion.add("\t\t\tsuper(meta());");
+        }
         if (data.getImmutableDefaults() != null) {
             insertRegion.add("\t\t\t" + data.getImmutableDefaults() + "(this);");
         }
@@ -1198,18 +1205,16 @@ class BeanGen {
             insertRegion.add("\t\t\treturn this;");
             insertRegion.add("\t\t}");
             insertRegion.add("");
-        }
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(String propertyName, String value) {");
-        if (data.isMetaScopePrivate()) {
-            insertRegion.add("\t\t\tsetString(" + data.getTypeRaw() + ".Meta.INSTANCE.metaProperty(propertyName), value);");
-        } else {
-            insertRegion.add("\t\t\tsetString(meta().metaProperty(propertyName), value);");
-        }
-        insertRegion.add("\t\t\treturn this;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
-        if (data.isEffectiveBuilderScopeVisible()) {
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(String propertyName, String value) {");
+            if (data.isMetaScopePrivate()) {
+                insertRegion.add("\t\t\tsetString(" + data.getTypeRaw() + ".Meta.INSTANCE.metaProperty(propertyName), value);");
+            } else {
+                insertRegion.add("\t\t\tsetString(meta().metaProperty(propertyName), value);");
+            }
+            insertRegion.add("\t\t\treturn this;");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
             insertRegion.add("\t\t@Override");
             insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(MetaProperty<?> property, String value) {");
             insertRegion.add("\t\t\tsuper.setString(property, value);");
