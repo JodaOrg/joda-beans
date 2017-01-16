@@ -527,7 +527,6 @@
       <activation>
         <property>
           <name>oss.repo</name>
-          <value>true</value>
         </property>
       </activation>
       <build>
