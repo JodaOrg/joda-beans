@@ -20,6 +20,8 @@ import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
 import org.joda.beans.ser.json.JodaBeanJsonReader;
 import org.joda.beans.ser.json.JodaBeanJsonWriter;
+import org.joda.beans.ser.json.JodaBeanSimpleJsonReader;
+import org.joda.beans.ser.json.JodaBeanSimpleJsonWriter;
 import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
 import org.joda.convert.StringConvert;
@@ -285,6 +287,40 @@ public final class JodaBeanSer {
      */
     public JodaBeanJsonReader jsonReader() {
         return new JodaBeanJsonReader(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a simple JSON writer.
+     * <p>
+     * A new instance of the writer must be created for each message.
+     * The simple writer omits all metadata.
+     * It is suitable for simple beans as often found in data-transfer protocols.
+     * <p>
+     * Not all beans can be used with the simple JSON writer as no type information is written.
+     * If a bean has subclasses, or the declared type of a property or collection is
+     * {@code Object}, then the JSON will not round trip. Where the type cannot be determined,
+     * the reader will return {@code Boolean}, {@code Integer}, {@code Double}, {@code String},
+     * {@code ArrayList} or string keyed {@code HashMap}.
+     * Maps must have keys that can be written as a string.
+     * 
+     * @return the simple JSON writer, not null
+     */
+    public JodaBeanSimpleJsonWriter simpleJsonWriter() {
+        return new JodaBeanSimpleJsonWriter(this);
+    }
+
+    /**
+     * Creates a simple JSON reader.
+     * <p>
+     * A new instance of the reader must be created for each message.
+     * The simple reader is designed to operate with the simple writer.
+     * It will not operate well with the output of {@link #jsonWriter()}.
+     * 
+     * @return the simple JSON reader, not null
+     */
+    public JodaBeanSimpleJsonReader simpleJsonReader() {
+        return new JodaBeanSimpleJsonReader(this);
     }
 
     //-----------------------------------------------------------------------

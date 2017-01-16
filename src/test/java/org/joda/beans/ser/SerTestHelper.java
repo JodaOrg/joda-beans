@@ -28,12 +28,14 @@ import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Company;
 import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
+import org.joda.beans.gen.ImmKey1;
 import org.joda.beans.gen.ImmOptional;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Person;
 import org.joda.beans.gen.PrimitiveBean;
 import org.joda.beans.gen.RiskLevel;
 import org.joda.beans.gen.RiskPerception;
+import org.joda.beans.gen.SimpleJson;
 import org.joda.collect.grid.DenseGrid;
 import org.joda.collect.grid.SparseGrid;
 
@@ -178,6 +180,44 @@ public class SerTestHelper {
             .optString(Optional.of("A"))
             .build();
         return optional;
+    }
+
+    public static SimpleJson testSimpleJson() {
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        map.put("A", Arrays.asList("B", "b"));
+        Map<String, List<Integer>> map2 = new HashMap<String, List<Integer>>();
+        map2.put("A", Arrays.asList(3, 2, 1));
+        ImmKey1 key1 = ImmKey1.builder().name("Cat").build();
+        ImmKey1 key2 = ImmKey1.builder().name("Dog").build();
+        SimpleJson result = SimpleJson.builder()
+                .primitiveChar('a')
+                .primitiveByte((byte) 23)
+                .primitiveShort((short) 12)
+                .primitiveInt(9)
+                .primitiveLong(6)
+                .primitiveFloat(3.4f)
+                .primitiveDouble(2.3d)
+                .primitiveDoubleNaN(Double.NaN)
+                .primitiveDoubleInf(Double.POSITIVE_INFINITY)
+                .abstractNumber(Integer.valueOf(29))
+                .arrayByte(new byte[] {64, 65, 66})
+                .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
+                .string("ABBA")
+                .bean(key1)
+                .object1(ImmutableList.of("a", "b", "c"))
+                .object2(ImmutableMap.of("d", 1, "12", "2"))
+                .risk(RiskLevel.LOW)
+                .riskLevel(RiskLevel.HIGH)
+                .riskLevels(EnumSet.of(RiskLevel.LOW, RiskLevel.MEDIUM))
+                .stringList(ImmutableList.of("a", "b", "c"))
+                .beanList(ImmutableList.of(key1, key2))
+                .stringMap(ImmutableMap.of("a", "A", "b", "B"))
+                .intKeyMap(ImmutableMap.of(1, "A", 2, "B"))
+                .beanMap(ImmutableMap.of("a", key1, "b", key2))
+                .listInMap(map)
+                .listNumericInMap(map2)
+                .build();
+        return result;
     }
 
 }

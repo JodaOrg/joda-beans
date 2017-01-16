@@ -17,10 +17,12 @@ package org.joda.beans.ser.json;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Collections;
 
-import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerIteratorFactory;
 
 /**
  * Provides the ability for a Joda-Bean to read from JSON.
@@ -30,28 +32,18 @@ import org.joda.beans.ser.JodaBeanSer;
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
  */
-public class JodaBeanJsonReader extends AbstractJsonReader {
+public class JodaBeanSimpleJsonReader extends AbstractJsonReader {
 
     /**
      * Creates an instance.
      * 
      * @param settings  the settings, not null
      */
-    public JodaBeanJsonReader(JodaBeanSer settings) {
+    public JodaBeanSimpleJsonReader(JodaBeanSer settings) {
         super(settings);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Reads and parses to a bean.
-     * 
-     * @param input  the input string, not null
-     * @return the bean, not null
-     */
-    public Bean read(String input) {
-        return read(input, Bean.class);
-    }
-
     /**
      * Reads and parses to a bean.
      * 
@@ -63,16 +55,6 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
     public <T> T read(String input, Class<T> rootType) {
         JodaBeanUtils.notNull(input, "input");
         return read(new StringReader(input), rootType);
-    }
-
-    /**
-     * Reads and parses to a bean.
-     * 
-     * @param input  the input reader, not null
-     * @return the bean, not null
-     */
-    public Bean read(Reader input) {
-        return read(input, Bean.class);
     }
 
     /**
@@ -94,6 +76,21 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    SerIterable parseUnknownArray(Class<?> declaredType) {
+        if (declaredType.isArray()) {
+            return SerIteratorFactory.array(declaredType.getComponentType());
+        } else {
+            return SerIteratorFactory.list(Object.class, Collections.<Class<?>>emptyList());
+        }
+    }
+
+    @Override
+    SerIterable parseUnknownObject(Class<?> declaredType) {
+        return SerIteratorFactory.map(String.class, Object.class, Collections.<Class<?>>emptyList());
     }
 
 }
