@@ -241,7 +241,7 @@ class BeanParser {
                 throw new BeanCodeGenException("Mutable beans must not specify @ImmutableConstructor: " +
                         data.getTypeRaw(), file, beanDefIndex);
             }
-            if (!"smart".equals(data.getConstructorScope())) {
+            if (!"smart".equals(data.getConstructorScope()) && !data.isBeanStyleLight()) {
                 throw new BeanCodeGenException("Mutable beans must not specify @BeanDefinition(constructorScope): " +
                                 data.getTypeRaw(), file, beanDefIndex);
             }

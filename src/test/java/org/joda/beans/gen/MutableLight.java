@@ -36,7 +36,7 @@ import com.google.common.base.Optional;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(style = "light")
+@BeanDefinition(style = "light", constructorScope = "package")
 public final class MutableLight implements Bean, Serializable {
 
     /**
@@ -94,7 +94,16 @@ public final class MutableLight implements Bean, Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    private MutableLight(
+    /**
+     * Creates an instance.
+     * @param number  the value of the property
+     * @param flag  the value of the property
+     * @param text  the value of the property
+     * @param city  the value of the property, not null
+     * @param list  the value of the property, not null
+     * @param currency  the value of the property
+     */
+    MutableLight(
             int number,
             boolean flag,
             String text,
