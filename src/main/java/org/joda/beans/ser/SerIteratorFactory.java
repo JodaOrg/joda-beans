@@ -64,6 +64,32 @@ public class SerIteratorFactory {
      * An empty list of classes.
      */
     public static final List<Class<?>> EMPTY_VALUE_TYPES = Collections.emptyList();
+    /**
+     * Map of array types.
+     */
+    private static final Map<String, Class<?>> META_TYPE_MAP = new HashMap<String, Class<?>>();
+    static {
+        META_TYPE_MAP.put("Object[]", Object.class);
+        META_TYPE_MAP.put("String[]", String.class);
+        META_TYPE_MAP.put("boolean[]", boolean.class);
+        META_TYPE_MAP.put("char[]", char.class);
+        META_TYPE_MAP.put("byte[]", byte.class);
+        META_TYPE_MAP.put("short[]", short.class);
+        META_TYPE_MAP.put("int[]", int.class);
+        META_TYPE_MAP.put("long[]", long.class);
+        META_TYPE_MAP.put("float[]", float.class);
+        META_TYPE_MAP.put("double[]", double.class);
+        META_TYPE_MAP.put("Object[][]", Object[].class);
+        META_TYPE_MAP.put("String[][]", String[].class);
+        META_TYPE_MAP.put("boolean[][]", boolean[].class);
+        META_TYPE_MAP.put("char[][]", char[].class);
+        META_TYPE_MAP.put("byte[][]", byte[].class);
+        META_TYPE_MAP.put("short[][]", short[].class);
+        META_TYPE_MAP.put("int[][]", int[].class);
+        META_TYPE_MAP.put("long[][]", long[].class);
+        META_TYPE_MAP.put("float[][]", float[].class);
+        META_TYPE_MAP.put("double[][]", double[].class);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -162,8 +188,9 @@ public class SerIteratorFactory {
             throw new IllegalArgumentException("Three-dimensional arrays cannot be parsed");
         }
         if (metaTypeDescription.endsWith("[][]")) {
-            if (metaTypeDescription.equals("Object[][]")) {
-                return array(Object[].class);
+            Class<?> type = META_TYPE_MAP.get(metaTypeDescription);
+            if (type != null) {
+                return array(type);
             }
             String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 4);
             try {
@@ -175,8 +202,9 @@ public class SerIteratorFactory {
             }
         }
         if (metaTypeDescription.endsWith("[]")) {
-            if (metaTypeDescription.equals("Object[]")) {
-                return array(Object.class);
+            Class<?> type = META_TYPE_MAP.get(metaTypeDescription);
+            if (type != null) {
+                return array(type);
             }
             String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
             try {
