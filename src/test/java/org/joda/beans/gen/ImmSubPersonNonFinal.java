@@ -271,6 +271,7 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
          * @param beanToCopy  the bean to copy from, not null
          */
         protected Builder(ImmSubPersonNonFinal beanToCopy) {
+            super(beanToCopy);
             this.middleName = beanToCopy.getMiddleName();
             this.addressList = beanToCopy.getAddressList();
         }

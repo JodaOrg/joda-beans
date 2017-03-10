@@ -271,6 +271,7 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
          * @param beanToCopy  the bean to copy from, not null
          */
         protected Builder(ImmSubPersonFromAbstract beanToCopy) {
+            super(beanToCopy);
             this.middleName = beanToCopy.getMiddleName();
             this.addressList = beanToCopy.getAddressList();
         }

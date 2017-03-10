@@ -246,6 +246,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
          * @param beanToCopy  the bean to copy from, not null
          */
         private Builder(SimpleSubPersonWithBuilderFinal beanToCopy) {
+            super(beanToCopy);
             this.middleName = beanToCopy.getMiddleName();
         }
 

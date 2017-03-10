@@ -246,6 +246,7 @@ public class SimpleSubPersonWithBuilderNonFinal extends SimplePersonWithBuilderN
          * @param beanToCopy  the bean to copy from, not null
          */
         protected Builder(SimpleSubPersonWithBuilderNonFinal beanToCopy) {
+            super(beanToCopy);
             this.middleName = beanToCopy.getMiddleName();
         }
 
