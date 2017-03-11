@@ -245,6 +245,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
          * @param beanToCopy  the bean to copy from, not null
          */
         private Builder(ImmSubSubPersonFinal beanToCopy) {
+            super(beanToCopy);
             this.codeCounts = beanToCopy.getCodeCounts();
         }
 

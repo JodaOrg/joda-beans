@@ -1124,6 +1124,9 @@ class BeanGen {
                 insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
                 insertRegion.add("\t\t */");
                 insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
+                if (data.isSubClass()) {
+                    insertRegion.add("\t\t\tsuper(beanToCopy);");
+                }
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
                 }
