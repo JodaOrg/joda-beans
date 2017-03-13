@@ -68,7 +68,7 @@ public class BasicBeanBuilder<T extends Bean>
     }
 
     @Override
-    public Object get(MetaProperty<?> metaProperty) {
+    public <P> P get(MetaProperty<P> metaProperty) {
         return metaProperty.get(bean);
     }
 

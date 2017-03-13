@@ -42,8 +42,9 @@ public interface BeanBuilder<T extends Bean> {
      * @param metaProperty  the meta-property to query, not null
      * @return the previously set value, null if none
      * @throws RuntimeException thrown if the property is invalid
+     * @param <P> the type of the property.
      */
-    public abstract Object get(MetaProperty<?> metaProperty);
+    public abstract <P> P get(MetaProperty<P> metaProperty);
 
     /**
      * Sets the value of a single property into the builder.

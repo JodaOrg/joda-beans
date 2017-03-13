@@ -56,8 +56,9 @@ class LightBeanBuilder<B extends Bean>
     }
 
     @Override
-    public Object get(MetaProperty<?> metaProperty) {
-        return data[index(metaProperty)];
+    @SuppressWarnings("unchecked")
+    public <P> P get(MetaProperty<P> metaProperty) {
+        return (P) data[index(metaProperty)];
     }
 
     //-----------------------------------------------------------------------

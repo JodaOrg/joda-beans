@@ -50,9 +50,10 @@ class MapBeanBuilder implements BeanBuilder<MapBean> {
     }
 
     @Override
-    public Object get(MetaProperty<?> metaProperty) {
+    @SuppressWarnings("unchecked")
+    public <P> P get(MetaProperty<P> metaProperty) {
         // this approach allows meta-property from one bean to be used with another
-        return bean.get(metaProperty.name());
+        return (P) bean.get(metaProperty.name());
     }
 
     //-----------------------------------------------------------------------

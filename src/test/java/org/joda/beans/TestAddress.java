@@ -76,8 +76,10 @@ public class TestAddress {
         builder.setAll(map);
         assertEquals(builder.get("street"), "Main Street");
         assertEquals(builder.get("city"), "London");
-        assertEquals(builder.get(Address.meta().street()), "Main Street");
-        assertEquals(builder.get(Address.meta().city()), "London");
+        String street = builder.get(Address.meta().street());
+        assertEquals(street, "Main Street");
+        String city = builder.get(Address.meta().city());
+        assertEquals(city, "London");
         
         Address test = builder.build();
         Address expected = new Address();
