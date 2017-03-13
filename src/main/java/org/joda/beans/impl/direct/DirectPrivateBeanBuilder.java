@@ -57,8 +57,9 @@ public abstract class DirectPrivateBeanBuilder<T extends Bean>
     }
 
     @Override
-    public Object get(MetaProperty<?> metaProperty) {
-        return get(metaProperty.name());
+    @SuppressWarnings("unchecked")
+    public <P> P get(MetaProperty<P> metaProperty) {
+        return (P) get(metaProperty.name());
     }
 
     //-----------------------------------------------------------------------
