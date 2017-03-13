@@ -111,8 +111,9 @@ public class BufferingBeanBuilder<T extends Bean>
      * @return the current value in the builder, null if not found or value is null
      */
     @Override
-    public Object get(MetaProperty<?> metaProperty) {
-        return getBuffer().get(metaProperty);
+    @SuppressWarnings("unchecked")
+    public <P> P get(MetaProperty<P> metaProperty) {
+        return (P) getBuffer().get(metaProperty);
     }
 
     //-----------------------------------------------------------------------
