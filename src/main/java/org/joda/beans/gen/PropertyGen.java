@@ -256,7 +256,6 @@ class PropertyGen {
         if (code == null) {
             return;
         }
-        // do not generate for List<List<Bar>> type elements, needs @SafeVarargs
         String argType = data.getTypeGenericsSimple();
         if (argType.equals("?")) {
             argType = "Object";
@@ -264,6 +263,7 @@ class PropertyGen {
         if (argType.startsWith("? extends ")) {
             argType = argType.substring(10);
         }
+        boolean safeVarargs = argType.length() == 1 || argType.contains("<");
         // generate based on varargs
         list.add("\t\t/**");
         list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder");
@@ -281,7 +281,11 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
+        if (safeVarargs) {
+            list.add("\t\t@SafeVarargs");
+        }
+        list.add("\t\tpublic " + (safeVarargs ? "final " : "") +
+                "Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
                 "(" + argType + "... " + data.getPropertyName() + ") {");
         if (code.contains("Arrays.asList")) {
             data.getBean().ensureImport(Arrays.class);

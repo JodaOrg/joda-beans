@@ -17,6 +17,10 @@
         Use diamond operators in generated code.
         Fixes #5.
       </action>
+      <action dev="jodastephen" type="fix">
+        Add @SafeVarargs annotation.
+        Fixes #156.
+      </action>
     </release>
     <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >

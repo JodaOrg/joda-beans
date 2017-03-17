@@ -854,7 +854,8 @@ public final class ImmPerson implements ImmutableBean {
          * @param addressesList  the new value
          * @return this, for chaining, not null
          */
-        public Builder addressesList(List<Address>... addressesList) {
+        @SafeVarargs
+        public final Builder addressesList(List<Address>... addressesList) {
             return addressesList(ImmutableList.copyOf(addressesList));
         }
 

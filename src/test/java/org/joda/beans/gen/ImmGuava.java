@@ -1821,7 +1821,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param collection  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> collection(T... collection) {
+        @SafeVarargs
+        public final Builder<T> collection(T... collection) {
             return collection(ImmutableList.copyOf(collection));
         }
 
@@ -1842,7 +1843,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param list  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> list(T... list) {
+        @SafeVarargs
+        public final Builder<T> list(T... list) {
             return list(ImmutableList.copyOf(list));
         }
 
@@ -1863,7 +1865,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param set  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> set(T... set) {
+        @SafeVarargs
+        public final Builder<T> set(T... set) {
             return set(ImmutableSet.copyOf(set));
         }
 
@@ -1884,7 +1887,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param sortedSet  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> sortedSet(T... sortedSet) {
+        @SafeVarargs
+        public final Builder<T> sortedSet(T... sortedSet) {
             return sortedSet(ImmutableSortedSet.copyOf(sortedSet));
         }
 
@@ -1993,7 +1997,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param collectionInterface  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> collectionInterface(T... collectionInterface) {
+        @SafeVarargs
+        public final Builder<T> collectionInterface(T... collectionInterface) {
             return collectionInterface(ImmutableList.copyOf(collectionInterface));
         }
 
@@ -2014,7 +2019,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param listInterface  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> listInterface(T... listInterface) {
+        @SafeVarargs
+        public final Builder<T> listInterface(T... listInterface) {
             return listInterface(ImmutableList.copyOf(listInterface));
         }
 
@@ -2035,7 +2041,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param setInterface  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> setInterface(T... setInterface) {
+        @SafeVarargs
+        public final Builder<T> setInterface(T... setInterface) {
             return setInterface(ImmutableSet.copyOf(setInterface));
         }
 
@@ -2056,7 +2063,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param sortedSetInterface  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> sortedSetInterface(T... sortedSetInterface) {
+        @SafeVarargs
+        public final Builder<T> sortedSetInterface(T... sortedSetInterface) {
             return sortedSetInterface(ImmutableSortedSet.copyOf(sortedSetInterface));
         }
 
@@ -2165,7 +2173,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param listWildExtendsT  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> listWildExtendsT(T... listWildExtendsT) {
+        @SafeVarargs
+        public final Builder<T> listWildExtendsT(T... listWildExtendsT) {
             return listWildExtendsT(ImmutableList.copyOf(listWildExtendsT));
         }
 
@@ -2207,7 +2216,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param listWildExtendsComparable  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> listWildExtendsComparable(Comparable<?>... listWildExtendsComparable) {
+        @SafeVarargs
+        public final Builder<T> listWildExtendsComparable(Comparable<?>... listWildExtendsComparable) {
             return listWildExtendsComparable(ImmutableList.copyOf(listWildExtendsComparable));
         }
 
@@ -2228,7 +2238,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param setWildExtendsT  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> setWildExtendsT(T... setWildExtendsT) {
+        @SafeVarargs
+        public final Builder<T> setWildExtendsT(T... setWildExtendsT) {
             return setWildExtendsT(ImmutableSet.copyOf(setWildExtendsT));
         }
 
@@ -2270,7 +2281,8 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
          * @param setWildExtendsComparable  the new value, not null
          * @return this, for chaining, not null
          */
-        public Builder<T> setWildExtendsComparable(Comparable<?>... setWildExtendsComparable) {
+        @SafeVarargs
+        public final Builder<T> setWildExtendsComparable(Comparable<?>... setWildExtendsComparable) {
             return setWildExtendsComparable(ImmutableSet.copyOf(setWildExtendsComparable));
         }
 

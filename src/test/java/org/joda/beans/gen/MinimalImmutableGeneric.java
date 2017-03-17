@@ -426,7 +426,8 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
          * @param list  the new value
          * @return this, for chaining, not null
          */
-        public Builder<T> list(T... list) {
+        @SafeVarargs
+        public final Builder<T> list(T... list) {
             return list(ImmutableList.copyOf(list));
         }
 
