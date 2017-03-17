@@ -21,6 +21,10 @@
         Add @SafeVarargs annotation.
         Fixes #156.
       </action>
+      <action dev="hackmann" type="update">
+        Change BeanBuilder.get to use meta property type.
+        Fixes #152.
+      </action>
     </release>
     <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >
