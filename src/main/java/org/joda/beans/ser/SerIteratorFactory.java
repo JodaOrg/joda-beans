@@ -51,11 +51,11 @@ public class SerIteratorFactory {
         try {
             Class.forName("org.joda.collect.grid.Grid");
             return new CollectSerIteratorFactory();
-        } catch (Throwable ex) {
+        } catch (Exception | LinkageError ex) {
             try {
                 Class.forName("com.google.common.collect.Multimap");
                 return new GuavaSerIteratorFactory();
-            } catch (Throwable ex2) {
+            } catch (Exception | LinkageError ex2) {
                 return new SerIteratorFactory();
             }
         }
