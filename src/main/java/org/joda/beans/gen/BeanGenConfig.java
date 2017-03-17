@@ -85,6 +85,8 @@ public final class BeanGenConfig {
         String fullFile;
         if (resourceLocator.contains("/") || resourceLocator.endsWith(".ini")) {
             fullFile = resourceLocator;
+        } else if (resourceLocator.equals("jdk6")) {  // compatibility
+            fullFile = "org/joda/beans/gen/jdk.ini";
         } else {
             fullFile = "org/joda/beans/gen/" + resourceLocator + ".ini";
         }
