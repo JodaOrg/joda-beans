@@ -16,7 +16,6 @@
 package org.joda.beans.impl.flexi;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaProperty;
@@ -98,10 +97,8 @@ class FlexiBeanBuilder implements BeanBuilder<FlexiBean> {
      */
     @Override
     @Deprecated
-    public BeanBuilder<FlexiBean> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            bean.put(entry.getKey(), entry.getValue());
-        }
+    public FlexiBeanBuilder setAll(Map<String, ? extends Object> propertyValueMap) {
+        bean.putAll(propertyValueMap);
         return this;
     }
 

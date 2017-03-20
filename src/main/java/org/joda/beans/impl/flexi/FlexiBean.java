@@ -302,7 +302,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      * 
      * @param map  the map of properties to add, not null
      */
-    public void putAll(Map<String, Object> map) {
+    public void putAll(Map<String, ? extends Object> map) {
         if (map.size() > 0) {
             for (String key : map.keySet()) {
                 if (VALID_KEY.matcher(key).matches() == false) {

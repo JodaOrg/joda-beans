@@ -16,7 +16,6 @@
 package org.joda.beans.impl.map;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaProperty;
@@ -98,10 +97,8 @@ class MapBeanBuilder implements BeanBuilder<MapBean> {
      */
     @Override
     @Deprecated
-    public BeanBuilder<MapBean> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            bean.put(entry.getKey(), entry.getValue());
-        }
+    public MapBeanBuilder setAll(Map<String, ? extends Object> propertyValueMap) {
+        bean.putAll(propertyValueMap);
         return this;
     }
 

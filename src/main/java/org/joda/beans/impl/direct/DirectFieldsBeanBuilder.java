@@ -16,7 +16,6 @@
 package org.joda.beans.impl.direct;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -85,16 +84,10 @@ public abstract class DirectFieldsBeanBuilder<T extends Bean>
         }
     }
 
-    /**
-     * @deprecated Loop in application code
-     */
     @Override
-    @Deprecated
+    @SuppressWarnings("deprecation")
     public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
-        return this;
+        return BeanBuilder.super.setAll(propertyValueMap);
     }
 
     //-----------------------------------------------------------------------

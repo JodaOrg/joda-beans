@@ -15,9 +15,6 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
@@ -88,18 +85,6 @@ public abstract class BasicImmutableBeanBuilder<T extends Bean>
     @Deprecated
     public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
         set(metaProperty.name(), JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value));
-        return this;
-    }
-
-    /**
-     * @deprecated Loop in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
         return this;
     }
 

@@ -15,7 +15,6 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -145,18 +144,6 @@ public class BufferingBeanBuilder<T extends Bean>
     public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
         Object object = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
         return set(metaProperty, object);
-    }
-
-    /**
-     * @deprecated Loop in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
-        return this;
     }
 
     @Override

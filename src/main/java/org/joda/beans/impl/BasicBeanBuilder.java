@@ -15,9 +15,6 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaProperty;
@@ -100,18 +97,6 @@ public class BasicBeanBuilder<T extends Bean>
     @Deprecated
     public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
         metaProperty.setString(bean, value);
-        return this;
-    }
-
-    /**
-     * @deprecated Loop in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
         return this;
     }
 

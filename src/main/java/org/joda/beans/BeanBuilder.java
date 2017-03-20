@@ -16,6 +16,7 @@
 package org.joda.beans;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A builder for a bean, providing a safe way to create it.
@@ -122,7 +123,12 @@ public interface BeanBuilder<T extends Bean> {
      * @deprecated Loop in application code
      */
     @Deprecated
-    public abstract BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap);
+    public default BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
+        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
+            set(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
 
     /**
      * Builds the bean from the state of the builder.
