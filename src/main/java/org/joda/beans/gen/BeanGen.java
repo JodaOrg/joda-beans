@@ -145,7 +145,6 @@ class BeanGen {
             if (data.isRootClass() && data.isExtendsDirectBean()) {
                 data.ensureImport(DirectBean.class);
             }
-            insertRegion.add("\t///CLOVER:OFF");
             generateMeta();
             generateSerializationVersionId();
             generatePropertyChangeSupportField();
@@ -166,7 +165,6 @@ class BeanGen {
             generateToString();
             generateMetaClass();
             generateBuilderClass();
-            insertRegion.add("\t///CLOVER:ON");
             resolveImports();
             resolveIndents();
         }
