@@ -27,10 +27,8 @@ import java.util.Locale;
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
-import org.joda.beans.Property;
 import org.joda.beans.PropertyStyle;
 import org.joda.beans.impl.BasicMetaProperty;
-import org.joda.beans.impl.BasicProperty;
 
 /**
  * A meta-property implemented using a {@code PropertyDescriptor}.
@@ -152,11 +150,6 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public Property<P> createProperty(Bean bean) {
-        return BasicProperty.of(bean, this);
-    }
-
     @Override
     public MetaBean metaBean() {
         return metaBean;

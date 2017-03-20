@@ -29,10 +29,8 @@ import java.util.List;
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
-import org.joda.beans.Property;
 import org.joda.beans.PropertyStyle;
 import org.joda.beans.impl.BasicMetaProperty;
-import org.joda.beans.impl.BasicProperty;
 
 /**
  * An immutable meta-property based on a getter interface.
@@ -246,11 +244,6 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    public Property<P> createProperty(Bean bean) {
-        return BasicProperty.of(bean, this);
-    }
-
     @Override
     public MetaBean metaBean() {
         return metaBean;

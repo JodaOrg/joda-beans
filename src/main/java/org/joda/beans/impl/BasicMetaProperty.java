@@ -15,15 +15,7 @@
  */
 package org.joda.beans.impl;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import org.joda.beans.Bean;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.Property;
-import org.joda.convert.StringConvert;
 
 /**
  * An abstract base meta-property.
@@ -50,56 +42,8 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
 
     //-----------------------------------------------------------------------
     @Override
-    public Property<P> createProperty(Bean bean) {
-        return BasicProperty.of(bean, this);
-    }
-
-    @Override
     public String name() {
         return name;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public P put(Bean bean, Object value) {
-        P old = get(bean);
-        set(bean, value);
-        return old;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public String getString(Bean bean) {
-        return getString(bean, JodaBeanUtils.stringConverter());
-    }
-
-    @Override
-    public String getString(Bean bean, StringConvert stringConvert) {
-        P value = get(bean);
-        return stringConvert.convertToString(propertyType(), value);
-    }
-
-    @Override
-    public void setString(Bean bean, String value) {
-        setString(bean, value, JodaBeanUtils.stringConverter());
-    }
-
-    @Override
-    public void setString(Bean bean, String value, StringConvert stringConvert) {
-        set(bean, stringConvert.convertFromString(propertyType(), value));
-    }
-
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    @Override
-    public <A extends Annotation> A annotation(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
-            if (annotationClass.isInstance(annotation)) {
-                return (A) annotation;
-            }
-        }
-        throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
     }
 
     //-----------------------------------------------------------------------

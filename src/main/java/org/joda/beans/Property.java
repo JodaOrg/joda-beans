@@ -52,7 +52,9 @@ public interface Property<P> {
      * 
      * @return the name of the property, not empty
      */
-    public abstract String name();
+    public default String name() {
+        return metaProperty().name();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -64,7 +66,9 @@ public interface Property<P> {
      * @return the value of the property on the bound bean, may be null
      * @throws UnsupportedOperationException if the property is write-only
      */
-    public abstract P get();
+    public default P get() {
+        return metaProperty().get(bean());
+    }
 
     /**
      * Sets the value of the property on the associated bean.
@@ -79,7 +83,9 @@ public interface Property<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    public abstract void set(Object value);
+    public default void set(Object value) {
+        metaProperty().set(bean(), value);
+    }
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -93,7 +99,9 @@ public interface Property<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    public abstract P put(Object value);
+    public default P put(Object value) {
+        return metaProperty().put(bean(), value);
+    }
 
     //-----------------------------------------------------------------------
     /**

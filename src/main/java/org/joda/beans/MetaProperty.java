@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.joda.beans.impl.BasicProperty;
 import org.joda.convert.StringConvert;
 
 /**
@@ -41,7 +42,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @param bean  the bean to create the property for, not null
      * @return the property, not null
      */
-    public abstract Property<P> createProperty(Bean bean);
+    public default Property<P> createProperty(Bean bean) {
+        return BasicProperty.of(bean, this);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -119,11 +122,20 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * This is typically accomplished by querying the annotations of the underlying instance variable.
      * 
      * @param <A>  the annotation type
-     * @param annotation  the annotation class to find, not null
+     * @param annotationClass  the annotation class to find, not null
      * @return the annotation, not null
      * @throws NoSuchElementException if the annotation is not specified
      */
-    public abstract <A extends Annotation> A annotation(Class<A> annotation);
+    @SuppressWarnings("unchecked")
+    public default <A extends Annotation> A annotation(Class<A> annotationClass) {
+        List<Annotation> annotations = annotations();
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return (A) annotation;
+            }
+        }
+        throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -171,7 +183,11 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    public abstract P put(Bean bean, Object value);
+    public default P put(Bean bean, Object value) {
+        P old = get(bean);
+        set(bean, value);
+        return old;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -190,7 +206,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is write-only
      * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
-    public abstract String getString(Bean bean);
+    public default String getString(Bean bean) {
+        return getString(bean, JodaBeanUtils.stringConverter());
+    }
 
     /**
      * Gets the value of the property for the specified bean converted to a string.
@@ -208,7 +226,10 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is write-only
      * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
-    public abstract String getString(Bean bean, StringConvert stringConvert);
+    public default String getString(Bean bean, StringConvert stringConvert) {
+        P value = get(bean);
+        return stringConvert.convertToString(propertyType(), value);
+    }
 
     /**
      * Sets the value of the property on the specified bean from a string by conversion.
@@ -223,7 +244,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    public abstract void setString(Bean bean, String value);
+    public default void setString(Bean bean, String value) {
+        setString(bean, value, JodaBeanUtils.stringConverter());
+    }
 
     /**
      * Sets the value of the property on the specified bean from a string by conversion.
@@ -239,7 +262,9 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    public abstract void setString(Bean bean, String value, StringConvert stringConvert);
+    public default void setString(Bean bean, String value, StringConvert stringConvert) {
+        set(bean, stringConvert.convertFromString(propertyType(), value));
+    }
 
     //-----------------------------------------------------------------------
     /**

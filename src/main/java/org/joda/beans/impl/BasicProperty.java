@@ -78,27 +78,6 @@ public final class BasicProperty<P> implements Property<P> {
         return metaProperty;
     }
 
-    @Override
-    public String name() {
-        return metaProperty.name();
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public P get() {
-        return metaProperty.get(bean);
-    }
-
-    @Override
-    public void set(Object value) {
-        metaProperty.set(bean, value);
-    }
-
-    @Override
-    public P put(Object value) {
-        return metaProperty.put(bean, value);
-    }
-
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
