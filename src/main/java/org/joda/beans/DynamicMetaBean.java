@@ -35,7 +35,7 @@ public interface DynamicMetaBean extends MetaBean {
      * @throws UnsupportedOperationException if the bean cannot be created
      */
     @Override
-    BeanBuilder<? extends DynamicBean> builder();
+    public abstract BeanBuilder<? extends DynamicBean> builder();
 
     /**
      * Get the type of the bean represented as a {@code Class}.
@@ -43,7 +43,7 @@ public interface DynamicMetaBean extends MetaBean {
      * @return the type of the bean, not null
      */
     @Override
-    Class<? extends DynamicBean> beanType();
+    public abstract Class<? extends DynamicBean> beanType();
 
     /**
      * Gets a meta-property by name.
@@ -56,7 +56,7 @@ public interface DynamicMetaBean extends MetaBean {
      * @return the meta property, not null
      */
     @Override
-    <R> MetaProperty<R> metaProperty(String propertyName);
+    public abstract <R> MetaProperty<R> metaProperty(String propertyName);
 
     //-----------------------------------------------------------------------
     /**
@@ -68,13 +68,13 @@ public interface DynamicMetaBean extends MetaBean {
      * @param propertyName  the property name to check, not empty, not null
      * @param propertyType  the property type, not null
      */
-    void metaPropertyDefine(String propertyName, Class<?> propertyType);
+    public abstract void metaPropertyDefine(String propertyName, Class<?> propertyType);
 
     /**
      * Removes a property by name.
      * 
      * @param propertyName  the property name to remove, null ignored
      */
-    void metaPropertyRemove(String propertyName);
+    public abstract void metaPropertyRemove(String propertyName);
 
 }

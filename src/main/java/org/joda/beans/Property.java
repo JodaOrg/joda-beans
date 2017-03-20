@@ -34,7 +34,7 @@ public interface Property<P> {
      * @param <B>  the bean type
      * @return the bean, not null
      */
-    <B extends Bean> B bean();
+    public abstract <B extends Bean> B bean();
 
     /**
      * Gets the meta-property representing the parts of the property that are
@@ -42,7 +42,7 @@ public interface Property<P> {
      * 
      * @return the meta-property, not null
      */
-    MetaProperty<P> metaProperty();
+    public abstract MetaProperty<P> metaProperty();
 
     /**
      * Gets the property name.
@@ -52,7 +52,7 @@ public interface Property<P> {
      * 
      * @return the name of the property, not empty
      */
-    String name();
+    public abstract String name();
 
     //-----------------------------------------------------------------------
     /**
@@ -64,7 +64,7 @@ public interface Property<P> {
      * @return the value of the property on the bound bean, may be null
      * @throws UnsupportedOperationException if the property is write-only
      */
-    P get();
+    public abstract P get();
 
     /**
      * Sets the value of the property on the associated bean.
@@ -79,7 +79,7 @@ public interface Property<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void set(Object value);
+    public abstract void set(Object value);
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -93,7 +93,7 @@ public interface Property<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    P put(Object value);
+    public abstract P put(Object value);
 
     //-----------------------------------------------------------------------
     /**
@@ -106,7 +106,7 @@ public interface Property<P> {
      * @return true if equal
      */
     @Override
-    boolean equals(Object obj);
+    public abstract boolean equals(Object obj);
 
     /**
      * Returns a suitable hash code.
@@ -114,6 +114,6 @@ public interface Property<P> {
      * @return the hash code
      */
     @Override
-    int hashCode();
+    public abstract int hashCode();
 
 }

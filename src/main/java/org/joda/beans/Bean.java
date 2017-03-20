@@ -37,7 +37,7 @@ public interface Bean {
      * 
      * @return the meta-bean, not null
      */
-    MetaBean metaBean();
+    public abstract MetaBean metaBean();
 
     /**
      * Gets a property by name.
@@ -53,7 +53,7 @@ public interface Bean {
      * @return the property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
-    <R> Property<R> property(String propertyName);
+    public abstract <R> Property<R> property(String propertyName);
 
     /**
      * Gets the set of property names.
@@ -63,6 +63,6 @@ public interface Bean {
      * 
      * @return the unmodifiable set of property names, not null
      */
-    Set<String> propertyNames();
+    public abstract Set<String> propertyNames();
 
 }

@@ -42,7 +42,7 @@ public interface MetaBean {
      * @return the bean builder, not null
      * @throws UnsupportedOperationException if the bean cannot be created
      */
-    BeanBuilder<? extends Bean> builder();
+    public abstract BeanBuilder<? extends Bean> builder();
 
     /**
      * Creates a map of properties for the specified bean.
@@ -54,7 +54,7 @@ public interface MetaBean {
      * @param bean  the bean to create the map for, not null
      * @return the created property map, not null
      */
-    PropertyMap createPropertyMap(Bean bean);
+    public abstract PropertyMap createPropertyMap(Bean bean);
 
     //-----------------------------------------------------------------------
     /**
@@ -64,7 +64,7 @@ public interface MetaBean {
      * 
      * @return the name of the bean, not empty
      */
-    String beanName();
+    public abstract String beanName();
 
     /**
      * Get the type of the bean, represented as a {@code Class}.
@@ -74,7 +74,7 @@ public interface MetaBean {
      * 
      * @return the type of the bean, not null
      */
-    Class<? extends Bean> beanType();
+    public abstract Class<? extends Bean> beanType();
 
     //-----------------------------------------------------------------------
     /**
@@ -85,7 +85,7 @@ public interface MetaBean {
      * 
      * @return the number of properties
      */
-    int metaPropertyCount();
+    public abstract int metaPropertyCount();
 
     /**
      * Checks if a property exists.
@@ -96,7 +96,7 @@ public interface MetaBean {
      * @param propertyName  the property name to check, null returns false
      * @return true if the property exists
      */
-    boolean metaPropertyExists(String propertyName);
+    public abstract boolean metaPropertyExists(String propertyName);
 
     /**
      * Gets a meta-property by name.
@@ -112,7 +112,7 @@ public interface MetaBean {
      * @return the meta property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
-    <R> MetaProperty<R> metaProperty(String propertyName);
+    public abstract <R> MetaProperty<R> metaProperty(String propertyName);
 
     /**
      * Gets an iterator of meta-properties.
@@ -123,7 +123,7 @@ public interface MetaBean {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    Iterable<MetaProperty<?>> metaPropertyIterable();
+    public abstract Iterable<MetaProperty<?>> metaPropertyIterable();
 
     /**
      * Gets the map of meta-properties, keyed by property name.
@@ -132,6 +132,6 @@ public interface MetaBean {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    Map<String, MetaProperty<?>> metaPropertyMap();
+    public abstract Map<String, MetaProperty<?>> metaPropertyMap();
 
 }

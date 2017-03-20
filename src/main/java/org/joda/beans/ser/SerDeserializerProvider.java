@@ -36,6 +36,6 @@ public interface SerDeserializerProvider {
      * @param beanType  the type being processed, not null
      * @return the deserializer, null if this provider does not support the type
      */
-    SerDeserializer findDeserializer(Class<?> beanType);
+    public abstract SerDeserializer findDeserializer(Class<?> beanType);
 
 }

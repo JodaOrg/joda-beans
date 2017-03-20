@@ -98,7 +98,7 @@ public interface SerDeserializer {
      * @param beanType  the type being processed, not null
      * @return the meta-bean, null if not a bean type
      */
-    MetaBean findMetaBean(Class<?> beanType);
+    public abstract MetaBean findMetaBean(Class<?> beanType);
 
     /**
      * Creates the stateful builder that captures state as the parse progresses.
@@ -109,7 +109,7 @@ public interface SerDeserializer {
      * @param metaBean  the meta-bean, null if not a bean type
      * @return the builder, null if not interested in the parse progress
      */
-    BeanBuilder<?> createBuilder(Class<?> beanType, MetaBean metaBean);
+    public abstract BeanBuilder<?> createBuilder(Class<?> beanType, MetaBean metaBean);
 
     /**
      * Lookup the meta-property for the specified property name.
@@ -126,7 +126,7 @@ public interface SerDeserializer {
      * @param propertyName  the property name being parsed, not null
      * @return the meta-property, null to ignore the property
      */
-    MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName);
+    public abstract MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName);
 
     /**
      * Sets the parsed value into the builder.
@@ -135,7 +135,7 @@ public interface SerDeserializer {
      * @param metaProp  the meta-property, not null
      * @param value  the parsed value, may be null
      */
-    void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value);
+    public abstract void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value);
 
     /**
      * Builds the resulting object.
@@ -148,6 +148,6 @@ public interface SerDeserializer {
      * @param builder  the builder, null if not interested in the parse progress
      * @return the final built object, may be null
      */
-    Object build(Class<?> beanType, BeanBuilder<?> builder);
+    public abstract Object build(Class<?> beanType, BeanBuilder<?> builder);
 
 }

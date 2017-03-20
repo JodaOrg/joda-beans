@@ -33,7 +33,7 @@ public interface DynamicBean extends Bean {
      * @return the meta-bean, not null
      */
     @Override
-    DynamicMetaBean metaBean();
+    public abstract DynamicMetaBean metaBean();
 
     /**
      * Gets a property by name.
@@ -46,7 +46,7 @@ public interface DynamicBean extends Bean {
      * @return the property, not null
      */
     @Override
-    <R> Property<R> property(String propertyName);
+    public abstract <R> Property<R> property(String propertyName);
 
     /**
      * Adds a property to those allowed to be stored in the bean.
@@ -57,13 +57,13 @@ public interface DynamicBean extends Bean {
      * @param propertyName  the property name to check, not empty, not null
      * @param propertyType  the property type, not null
      */
-    void propertyDefine(String propertyName, Class<?> propertyType);
+    public abstract void propertyDefine(String propertyName, Class<?> propertyType);
 
     /**
      * Removes a property by name.
      * 
      * @param propertyName  the property name to remove, null ignored
      */
-    void propertyRemove(String propertyName);
+    public abstract void propertyRemove(String propertyName);
 
 }

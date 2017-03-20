@@ -40,7 +40,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @param bean  the bean to create the property for, not null
      * @return the property, not null
      */
-    Property<P> createProperty(Bean bean);
+    public abstract Property<P> createProperty(Bean bean);
 
     //-----------------------------------------------------------------------
     /**
@@ -50,7 +50,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the meta-bean, not null
      */
-    MetaBean metaBean();
+    public abstract MetaBean metaBean();
 
     /**
      * Gets the property name.
@@ -60,7 +60,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the name of the property, not empty
      */
-    String name();
+    public abstract String name();
 
     /**
      * Get the type that declares the property, represented as a {@code Class}.
@@ -69,7 +69,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the type declaring the property, not null
      */
-    Class<?> declaringType();
+    public abstract Class<?> declaringType();
 
     /**
      * Get the type of the property represented as a {@code Class}.
@@ -79,7 +79,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the type of the property, not null
      */
-    Class<P> propertyType();
+    public abstract Class<P> propertyType();
 
     /**
      * Gets the generic types of the property.
@@ -88,7 +88,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the full generic type of the property, unmodifiable, not null
      */
-    Type propertyGenericType();
+    public abstract Type propertyGenericType();
 
     /**
      * Gets the style of the property, such as read-only, read-write or write-only.
@@ -98,7 +98,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the property style, not null
      */
-    PropertyStyle style();
+    public abstract PropertyStyle style();
 
     //-----------------------------------------------------------------------
     /**
@@ -109,7 +109,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * 
      * @return the annotations, unmodifiable, not null
      */
-    List<Annotation> annotations();
+    public abstract List<Annotation> annotations();
 
     /**
      * Gets an annotation from the property.
@@ -122,7 +122,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @return the annotation, not null
      * @throws NoSuchElementException if the annotation is not specified
      */
-    <A extends Annotation> A annotation(Class<A> annotation);
+    public abstract <A extends Annotation> A annotation(Class<A> annotation);
 
     //-----------------------------------------------------------------------
     /**
@@ -137,7 +137,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is write-only
      */
     @Override
-    P get(Bean bean);
+    public abstract P get(Bean bean);
 
     /**
      * Sets the value of the property on the specified bean.
@@ -153,7 +153,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void set(Bean bean, Object value);
+    public abstract void set(Bean bean, Object value);
 
     /**
      * Sets the value of the property on the associated bean and returns the previous value.
@@ -170,7 +170,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    P put(Bean bean, Object value);
+    public abstract P put(Bean bean, Object value);
 
     //-----------------------------------------------------------------------
     /**
@@ -189,7 +189,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is write-only
      * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
-    String getString(Bean bean);
+    public abstract String getString(Bean bean);
 
     /**
      * Gets the value of the property for the specified bean converted to a string.
@@ -207,7 +207,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is write-only
      * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
-    String getString(Bean bean, StringConvert stringConvert);
+    public abstract String getString(Bean bean, StringConvert stringConvert);
 
     /**
      * Sets the value of the property on the specified bean from a string by conversion.
@@ -222,7 +222,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void setString(Bean bean, String value);
+    public abstract void setString(Bean bean, String value);
 
     /**
      * Sets the value of the property on the specified bean from a string by conversion.
@@ -238,7 +238,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws UnsupportedOperationException if the property is read-only
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
-    void setString(Bean bean, String value, StringConvert stringConvert);
+    public abstract void setString(Bean bean, String value, StringConvert stringConvert);
 
     //-----------------------------------------------------------------------
     /**
@@ -251,7 +251,7 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @return true if equal
      */
     @Override
-    boolean equals(Object obj);
+    public abstract boolean equals(Object obj);
 
     /**
      * Returns a suitable hash code.
@@ -259,6 +259,6 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @return the hash code
      */
     @Override
-    int hashCode();
+    public abstract int hashCode();
 
 }

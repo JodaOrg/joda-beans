@@ -36,6 +36,6 @@ public interface BeanQuery<P> {
      * @throws ClassCastException if the bean is of an incorrect type
      * @throws UnsupportedOperationException if unable to query
      */
-    P get(Bean bean);
+    public abstract P get(Bean bean);
 
 }

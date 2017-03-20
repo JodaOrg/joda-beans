@@ -34,6 +34,6 @@ public interface PropertyMap extends Map<String, Property<?>> {
      * 
      * @return the unmodifiable map of property name to value, not null
      */
-    Map<String, Object> flatten();
+    public abstract Map<String, Object> flatten();
 
 }
