@@ -18,6 +18,8 @@ package org.joda.beans;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.joda.beans.impl.BasicPropertyMap;
+
 /**
  * A meta-bean, defining those aspects of a bean which are not specific
  * to a particular instance, such as the type and set of meta-properties.
@@ -56,7 +58,9 @@ public interface MetaBean {
      * @deprecated Use BasicPropertyMap.of(bean) or JodaBeanUtils.flatten(bean)
      */
     @Deprecated
-    public abstract PropertyMap createPropertyMap(Bean bean);
+    public default PropertyMap createPropertyMap(Bean bean) {
+        return BasicPropertyMap.of(bean);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -66,7 +70,9 @@ public interface MetaBean {
      * 
      * @return the name of the bean, not empty
      */
-    public abstract String beanName();
+    public default String beanName() {
+        return beanType().getName();
+    }
 
     /**
      * Get the type of the bean, represented as a {@code Class}.
@@ -87,7 +93,9 @@ public interface MetaBean {
      * 
      * @return the number of properties
      */
-    public abstract int metaPropertyCount();
+    public default int metaPropertyCount() {
+        return metaPropertyMap().size();
+    }
 
     /**
      * Checks if a property exists.
@@ -98,7 +106,9 @@ public interface MetaBean {
      * @param propertyName  the property name to check, null returns false
      * @return true if the property exists
      */
-    public abstract boolean metaPropertyExists(String propertyName);
+    public default boolean metaPropertyExists(String propertyName) {
+        return metaPropertyMap().containsKey(propertyName);
+    }
 
     /**
      * Gets a meta-property by name.
@@ -114,7 +124,14 @@ public interface MetaBean {
      * @return the meta property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
-    public abstract <R> MetaProperty<R> metaProperty(String propertyName);
+    @SuppressWarnings("unchecked")
+    public default <R> MetaProperty<R> metaProperty(String propertyName) {
+        MetaProperty<?> mp = metaPropertyMap().get(propertyName);
+        if (mp == null) {
+            throw new NoSuchElementException("Unknown property: " + propertyName);
+        }
+        return (MetaProperty<R>) mp;
+    }
 
     /**
      * Gets an iterator of meta-properties.
@@ -125,7 +142,9 @@ public interface MetaBean {
      * 
      * @return the unmodifiable map of meta property objects, not null
      */
-    public abstract Iterable<MetaProperty<?>> metaPropertyIterable();
+    public default Iterable<MetaProperty<?>> metaPropertyIterable() {
+        return metaPropertyMap().values();
+    }
 
     /**
      * Gets the map of meta-properties, keyed by property name.

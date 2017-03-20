@@ -20,15 +20,12 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyMap;
 import org.joda.beans.impl.BasicBeanBuilder;
-import org.joda.beans.impl.BasicPropertyMap;
 
 /**
  * A meta-bean implementation that uses reflection.
@@ -42,7 +39,6 @@ import org.joda.beans.impl.BasicPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@SuppressWarnings("deprecation")
 public final class ReflectiveMetaBean implements MetaBean {
 
     /** The bean type. */
@@ -123,6 +119,7 @@ public final class ReflectiveMetaBean implements MetaBean {
      * @param beanType  the bean type, not null
      * @param propertyNames  the property names, not null
      */
+    @SuppressWarnings("deprecation")
     private ReflectiveMetaBean(Class<? extends Bean> beanType, String[] propertyNames) {
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
@@ -152,45 +149,8 @@ public final class ReflectiveMetaBean implements MetaBean {
     }
 
     @Override
-    public PropertyMap createPropertyMap(Bean bean) {
-        return BasicPropertyMap.of(bean);
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public String beanName() {
-        return beanType.getName();
-    }
-
-    @Override
     public Class<? extends Bean> beanType() {
         return beanType;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public int metaPropertyCount() {
-        return metaPropertyMap.size();
-    }
-
-    @Override
-    public boolean metaPropertyExists(String propertyName) {
-        return metaPropertyMap.containsKey(propertyName);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> metaProperty = metaPropertyMap.get(propertyName);
-        if (metaProperty == null) {
-            throw new NoSuchElementException("Property not found: " + propertyName);
-        }
-        return (MetaProperty<R>) metaProperty;
-    }
-
-    @Override
-    public Iterable<MetaProperty<?>> metaPropertyIterable() {
-        return metaPropertyMap.values();
     }
 
     @Override

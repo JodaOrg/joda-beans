@@ -15,57 +15,15 @@
  */
 package org.joda.beans.impl;
 
-import java.util.NoSuchElementException;
-
-import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyMap;
 
 /**
  * Basic implementation of {@code MetaBean}.
  * 
  * @author Stephen Colebourne
  */
-@SuppressWarnings("deprecation")
 public abstract class BasicMetaBean implements MetaBean {
 
-    @Override
-    public PropertyMap createPropertyMap(Bean bean) {
-        return BasicPropertyMap.of(bean);
-    }
-
-    @Override
-    public String beanName() {
-        return beanType().getName();
-    }
-
-    @Override
-    public int metaPropertyCount() {
-        return metaPropertyMap().size();
-    }
-
-    @Override
-    public boolean metaPropertyExists(String propertyName) {
-        return metaPropertyMap().containsKey(propertyName);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyMap().get(propertyName);
-        if (mp == null) {
-            throw new NoSuchElementException("Unknown property: " + propertyName);
-        }
-        return (MetaProperty<R>) mp;
-    }
-
-    @Override
-    public Iterable<MetaProperty<?>> metaPropertyIterable() {
-        return metaPropertyMap().values();
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns a string that summarises the meta-bean.
      * 

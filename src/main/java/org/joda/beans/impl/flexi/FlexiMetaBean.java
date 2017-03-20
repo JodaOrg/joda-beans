@@ -65,11 +65,6 @@ class FlexiMetaBean implements DynamicMetaBean {
     }
 
     @Override
-    public String beanName() {
-        return FlexiBean.class.getName();
-    }
-
-    @Override
     public int metaPropertyCount() {
         return bean.size();
     }

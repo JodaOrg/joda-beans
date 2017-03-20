@@ -66,11 +66,6 @@ class MapMetaBean extends BasicMetaBean implements DynamicMetaBean {
     }
 
     @Override
-    public String beanName() {
-        return MapBean.class.getName();
-    }
-
-    @Override
     public int metaPropertyCount() {
         return bean.size();
     }
