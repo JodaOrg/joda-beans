@@ -85,16 +85,15 @@ public class SerTestHelper {
         return address;
     }
 
-    @SuppressWarnings("unchecked")
     public static ImmAddress testImmAddress() {
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        Map<String, List<String>> map = new HashMap<>();
         map.put("A", Arrays.asList("B", "b"));
-        Map<String, List<Integer>> map2 = new HashMap<String, List<Integer>>();
+        Map<String, List<Integer>> map2 = new HashMap<>();
         map2.put("A", Arrays.asList(3, 2, 1));
-        Map<String, List<List<Integer>>> map3 = new HashMap<String, List<List<Integer>>>();
+        Map<String, List<List<Integer>>> map3 = new HashMap<>();
         map3.put("A", Arrays.asList(Arrays.asList(3, 2, 1)));
-        Map<ImmPerson, Map<String, ImmPerson>> map4 = new HashMap<ImmPerson, Map<String, ImmPerson>>();
-        Map<String, List<List<Object>>> map5 = new HashMap<String, List<List<Object>>>();
+        Map<ImmPerson, Map<String, ImmPerson>> map4 = new HashMap<>();
+        Map<String, List<List<Object>>> map5 = new HashMap<>();
         PrimitiveBean primitives = new PrimitiveBean();
         primitives.setValueLong(1L);
         primitives.setValueInt(2);
@@ -108,7 +107,7 @@ public class SerTestHelper {
         List<Object> objects2 = Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2), primitives);
         map5.put("A", Arrays.asList(objects1));
         map5.put("B", Arrays.asList(objects2));
-        Map<String, Object> map6 = new HashMap<String, Object>();
+        Map<String, Object> map6 = new HashMap<>();
         map6.put("A", "Abba");
         map6.put("B", ImmutableSet.of("a", "b"));
         map6.put("C", ImmutableSet.copyOf(objects2));
@@ -184,9 +183,9 @@ public class SerTestHelper {
     }
 
     public static SimpleJson testSimpleJson() {
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        Map<String, List<String>> map = new HashMap<>();
         map.put("A", Arrays.asList("B", "b"));
-        Map<String, List<Integer>> map2 = new HashMap<String, List<Integer>>();
+        Map<String, List<Integer>> map2 = new HashMap<>();
         map2.put("A", Arrays.asList(3, 2, 1));
         ImmKey key1 = ImmKey.builder().name("Cat").build();
         ImmKey key2 = ImmKey.builder().name("Dog").build();

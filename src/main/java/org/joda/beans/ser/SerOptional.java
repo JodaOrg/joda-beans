@@ -34,7 +34,7 @@ public class SerOptional {
      */
     private static final Map<Class<?>, Object[]> OPTIONALS;
     static {
-        Map<Class<?>, Object[]> map = new HashMap<Class<?>, Object[]>();
+        Map<Class<?>, Object[]> map = new HashMap<>();
         try {
             Class<?> cls = Class.forName("com.google.common.base.Optional");
             Method create = cls.getMethod("of", Object.class);

@@ -106,7 +106,7 @@ final class FlexiPropertyMap
                     public Entry<String, Property<?>> next() {
                         String name = it.next();
                         Property<?> prop = BasicProperty.of(bean, FlexiMetaProperty.of(metaBean, name));
-                        return new SimpleImmutableEntry<String, Property<?>>(name, prop);
+                        return new SimpleImmutableEntry<>(name, prop);
                     }
                     @Override
                     public void remove() {

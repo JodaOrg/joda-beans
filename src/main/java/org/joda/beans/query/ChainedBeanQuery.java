@@ -63,7 +63,7 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
             throw new NullPointerException("BeanQuery must not be null");
         }
         List<BeanQuery<? extends Bean>> list = Collections.<BeanQuery<? extends Bean>>singletonList(prop1);
-        return new ChainedBeanQuery<P>(list, prop2);
+        return new ChainedBeanQuery<>(list, prop2);
     }
 
     /**
@@ -83,10 +83,10 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
         if (prop1 == null || prop2 == null || prop3 == null) {
             throw new NullPointerException("BeanQuery must not be null");
         }
-        List<BeanQuery<? extends Bean>> list = new ArrayList<BeanQuery<? extends Bean>>();
+        List<BeanQuery<? extends Bean>> list = new ArrayList<>();
         list.add(prop1);
         list.add(prop2);
-        return new ChainedBeanQuery<P>(list, prop3);
+        return new ChainedBeanQuery<>(list, prop3);
     }
 
     /**
@@ -107,11 +107,11 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
         if (prop1 == null || prop2 == null || prop3 == null || prop4 == null) {
             throw new NullPointerException("BeanQuery must not be null");
         }
-        List<BeanQuery<? extends Bean>> list = new ArrayList<BeanQuery<? extends Bean>>();
+        List<BeanQuery<? extends Bean>> list = new ArrayList<>();
         list.add(prop1);
         list.add(prop2);
         list.add(prop3);
-        return new ChainedBeanQuery<P>(list, prop4);
+        return new ChainedBeanQuery<>(list, prop4);
     }
 
     //-------------------------------------------------------------------------
@@ -133,7 +133,7 @@ public final class ChainedBeanQuery<P> implements BeanQuery<P> {
      * @return the list of all meta-properties being chained, not null
      */
     public List<BeanQuery<?>> getChain() {
-        List<BeanQuery<?>> list = new ArrayList<BeanQuery<?>>(chain);
+        List<BeanQuery<?>> list = new ArrayList<>(chain);
         list.add(last);
         return list;
     }

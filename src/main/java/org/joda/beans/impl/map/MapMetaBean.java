@@ -113,7 +113,7 @@ class MapMetaBean extends BasicMetaBean implements DynamicMetaBean {
 
     @Override
     public Map<String, MetaProperty<?>> metaPropertyMap() {
-        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
+        Map<String, MetaProperty<?>> map = new HashMap<>();
         for (String name : bean.keySet()) {
             map.put(name, MapBeanMetaProperty.of(this, name));
         }

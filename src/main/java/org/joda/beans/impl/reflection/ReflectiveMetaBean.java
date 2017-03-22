@@ -76,7 +76,7 @@ public final class ReflectiveMetaBean implements MetaBean {
             throw new NullPointerException("Bean class must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
+        Map<String, MetaProperty<?>> map = new HashMap<>();
         Field[] fields = beanType.getDeclaredFields();
         for (Field field : fields) {
             if (MetaProperty.class.isAssignableFrom(field.getType()) && Modifier.isStatic(field.getModifiers())) {
@@ -131,9 +131,9 @@ public final class ReflectiveMetaBean implements MetaBean {
             throw new NullPointerException("Property names must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
+        Map<String, MetaProperty<?>> map = new HashMap<>();
         for (String name : propertyNames) {
-            map.put(name, new ReflectiveMetaProperty<Object>(this, beanType, name));
+            map.put(name, new ReflectiveMetaProperty<>(this, beanType, name));
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
     }
@@ -143,7 +143,7 @@ public final class ReflectiveMetaBean implements MetaBean {
     public BeanBuilder<Bean> builder() {
         try {
             Bean bean = beanType.newInstance();
-            return new BasicBeanBuilder<Bean>(bean);
+            return new BasicBeanBuilder<>(bean);
         } catch (InstantiationException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
         } catch (IllegalAccessException ex) {

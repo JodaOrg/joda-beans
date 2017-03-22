@@ -118,7 +118,7 @@ class FlexiMetaBean implements DynamicMetaBean {
         if (bean.data.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
+        Map<String, MetaProperty<?>> map = new HashMap<>();
         for (String name : bean.data.keySet()) {
             map.put(name, FlexiMetaProperty.of(this, name));
         }

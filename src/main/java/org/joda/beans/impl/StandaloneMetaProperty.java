@@ -58,7 +58,7 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
      * @return the meta-property, not null
      */
     public static <R> StandaloneMetaProperty<R> of(String propertyName, MetaBean metaBean, Class<R> clazz) {
-        return new StandaloneMetaProperty<R>(propertyName, metaBean, clazz, clazz);
+        return new StandaloneMetaProperty<>(propertyName, metaBean, clazz, clazz);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
      * @return the meta-property, not null
      */
     public static <R> StandaloneMetaProperty<R> of(String propertyName, MetaBean metaBean, Class<R> clazz, Type type) {
-        return new StandaloneMetaProperty<R>(propertyName, metaBean, clazz, type);
+        return new StandaloneMetaProperty<>(propertyName, metaBean, clazz, type);
     }
 
     //-----------------------------------------------------------------------

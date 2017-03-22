@@ -60,7 +60,7 @@ public class JodaBeanBinReader extends MsgPack {
     /**
      * The known types.
      */
-    private Map<String, Class<?>> knownTypes = new HashMap<String, Class<?>>();
+    private Map<String, Class<?>> knownTypes = new HashMap<>();
 
     //-----------------------------------------------------------------------
     /**

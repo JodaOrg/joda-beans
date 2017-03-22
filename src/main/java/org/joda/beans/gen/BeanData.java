@@ -28,9 +28,9 @@ import java.util.TreeSet;
 class BeanData {
 
     /** The list of current imports. */
-    private final SortedSet<String> currentImports = new TreeSet<String>();
+    private final SortedSet<String> currentImports = new TreeSet<>();
     /** The list of new imports. */
-    private final SortedSet<String> newImports = new TreeSet<String>();
+    private final SortedSet<String> newImports = new TreeSet<>();
     /** The last import line. */
     private int lastImportLine;
     /** The bean style. */
@@ -80,7 +80,7 @@ class BeanData {
     /** The generic argument of the bean superclass. */
     private String superTypeGeneric;
     /** The list of properties, in the order they are declared. */
-    private List<PropertyData> properties = new ArrayList<PropertyData>();
+    private List<PropertyData> properties = new ArrayList<>();
     /** The serializable flag. */
     private boolean serializable;
     /** The manual serialization version id flag. */

@@ -32,26 +32,26 @@ import org.joda.beans.PropertyStyle;
 class PropertyData {
 
     /** Collection types. */
-    private static final Set<String> COLLECTIONS = new HashSet<String>(
+    private static final Set<String> COLLECTIONS = new HashSet<>(
             Arrays.asList(
                     "Collection", "Set", "SortedSet", "NavigableSet", "List",
                     "ArrayList", "LinkedList",
                     "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
                     "ImmutableCollection", "ImmutableList", "ImmutableSet", "ImmutableSortedSet"));
     /** Set types. */
-    private static final Set<String> SETS = new HashSet<String>(
+    private static final Set<String> SETS = new HashSet<>(
             Arrays.asList(
                     "Set", "SortedSet", "NavigableSet",
                     "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
                     "ImmutableSet", "ImmutableSortedSet"));
     /** Set types. */
-    private static final Set<String> SORTED_SETS = new HashSet<String>(
+    private static final Set<String> SORTED_SETS = new HashSet<>(
             Arrays.asList(
                     "SortedSet", "NavigableSet",
                     "TreeSet", "ConcurrentSkipListSet",
                     "ImmutableSortedSet"));
     /** Map types. */
-    private static final Set<String> MAPS = new HashSet<String>(
+    private static final Set<String> MAPS = new HashSet<>(
             Arrays.asList(
                     "Map", "SortedMap", "NavigableMap", "ConcurrentMap", "ConcurrentNavigableMap",
                     "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap",
@@ -105,7 +105,7 @@ class PropertyData {
     /** First comment about the property. */
     private String firstComment;
     /** Other comments about the property. */
-    private final List<String> comments = new ArrayList<String>();
+    private final List<String> comments = new ArrayList<>();
     /** The getter generator. */
     private GetterGen getterGen;
     /** The setter generator. */

@@ -406,7 +406,7 @@ class PropertyParser {
 
     //-----------------------------------------------------------------------
     private List<String> parseComment(List<String> content, String propertyName) {
-        List<String> comments = new ArrayList<String>();
+        List<String> comments = new ArrayList<>();
         String commentEnd = content.get(annotationIndex - 1).trim();
         if (commentEnd.equals("*/")) {
             int startCommentIndex = -1;

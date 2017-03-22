@@ -77,7 +77,7 @@ public final class JodaBeanUtils {
     /**
      * The cache of meta-beans.
      */
-    private static final ConcurrentHashMap<Class<?>, MetaBean> metaBeans = new ConcurrentHashMap<Class<?>, MetaBean>();
+    private static final ConcurrentHashMap<Class<?>, MetaBean> metaBeans = new ConcurrentHashMap<>();
     /**
      * The cache of meta-beans.
      */
@@ -507,7 +507,7 @@ public final class JodaBeanUtils {
      */
     public static Map<String, Object> flatten(Bean bean) {
         Map<String, MetaProperty<?>> propertyMap = bean.metaBean().metaPropertyMap();
-        Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
+        Map<String, Object> map = new HashMap<>(propertyMap.size());
         for (Entry<String, MetaProperty<?>> entry : propertyMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().get(bean));
         }
@@ -784,7 +784,7 @@ public final class JodaBeanUtils {
     }
 
     private static List<Class<?>> extractTypeClasses(Class<?> targetClass, Type type) {
-        List<Class<?>> result = new ArrayList<Class<?>>();
+        List<Class<?>> result = new ArrayList<>();
         if (type != null) {
             if (type instanceof ParameterizedType) {
                 ParameterizedType pt = (ParameterizedType) type;
@@ -803,7 +803,7 @@ public final class JodaBeanUtils {
 
     private static Type resolveGenerics(Class<?> targetClass, TypeVariable<?> typevar) {
         // looks up meaning of type variables like T
-        Map<Type, Type> resolved = new HashMap<Type, Type>();
+        Map<Type, Type> resolved = new HashMap<>();
         Type type = targetClass;
         while (type != null) {
             if (type instanceof Class) {
@@ -891,7 +891,7 @@ public final class JodaBeanUtils {
                 return true;
             }
             default:
-                Set<MetaProperty<?>> ignored = new HashSet<MetaProperty<?>>(Arrays.asList(properties));
+                Set<MetaProperty<?>> ignored = new HashSet<>(Arrays.asList(properties));
                 for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
                     if (ignored.contains(mp) == false
                             && JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2)) == false) {

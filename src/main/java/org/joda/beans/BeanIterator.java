@@ -35,7 +35,7 @@ final class BeanIterator implements Iterator<Bean> {
     /**
      * The stack of beans.
      */
-    private final List<Bean> stack = new ArrayList<Bean>(32);
+    private final List<Bean> stack = new ArrayList<>(32);
 
     /**
      * Creates an instance.
@@ -60,7 +60,7 @@ final class BeanIterator implements Iterator<Bean> {
         Bean current = stack.remove(stack.size() - 1);
         // temp used to reverse the order of child beans to match depth-first order
         // alternative is to insert into stack at a fixed index (lots of array copying)
-        Deque<Bean> temp = new ArrayDeque<Bean>(32);
+        Deque<Bean> temp = new ArrayDeque<>(32);
         for (MetaProperty<?> mp : current.metaBean().metaPropertyIterable()) {
             findChildBeans(mp.get(current), mp, current.getClass(), temp);
         }

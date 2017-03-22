@@ -60,7 +60,7 @@ abstract class AbstractJsonReader {
     /**
      * The known types.
      */
-    private Map<String, Class<?>> knownTypes = new HashMap<String, Class<?>>();
+    private Map<String, Class<?>> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.

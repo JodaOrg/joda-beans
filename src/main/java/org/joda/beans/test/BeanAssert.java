@@ -182,7 +182,7 @@ public final class BeanAssert {
      * @return the message, not null
      */
     private static String buildMessage(String baseMsg, int maxErrors, Bean expected, Bean actual, double tolerance) {
-        List<String> diffs = new ArrayList<String>();
+        List<String> diffs = new ArrayList<>();
         buildMessage(diffs, "", expected, actual, tolerance);
         if (diffs.size() == 0) {
             return "";

@@ -123,7 +123,7 @@ public class TestJodaBeanUtils {
 
     //-----------------------------------------------------------------------
     public void test_notEmpty_Map_ok() {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("A", "B");
         JodaBeanUtils.notEmpty(map, "name");
     }

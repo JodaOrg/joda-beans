@@ -76,7 +76,7 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add("\t/**");
             list.add("\t * Sets " + prop.getFirstComment());
             for (String comment : prop.getComments()) {
@@ -117,7 +117,7 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add(indent + "/**");
             list.add(indent + " * Sets " + prop.getFirstComment());
             for (String comment : prop.getComments()) {
@@ -187,7 +187,7 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add("\t/**");
             list.add("\t * Sets " + prop.getFirstComment());
             for (String comment : prop.getComments()) {

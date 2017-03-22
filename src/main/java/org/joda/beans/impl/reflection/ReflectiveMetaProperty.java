@@ -68,7 +68,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
      * @return the property, not null
      */
     public static <P> ReflectiveMetaProperty<P> of(Class<? extends Bean> beanType, String propertyName) {
-        return new ReflectiveMetaProperty<P>(null, beanType, propertyName);
+        return new ReflectiveMetaProperty<>(null, beanType, propertyName);
     }
 
     /**
@@ -125,7 +125,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             return beanType.getDeclaredMethod(setterName, fieldType);
         } catch (NoSuchMethodException ex) {
             Method[] methods = beanType.getMethods();
-            List<Method> potential = new ArrayList<Method>();
+            List<Method> potential = new ArrayList<>();
             for (Method method : methods) {
                 if (method.getName().equals(setterName) && method.getParameterTypes().length == 1) {
                     potential.add(method);

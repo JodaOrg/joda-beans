@@ -104,7 +104,7 @@ final class MapBeanPropertyMap
                     public Entry<String, Property<?>> next() {
                         String name = it.next();
                         Property<?> prop = BasicProperty.of(bean, MapBeanMetaProperty.of(metaBean, name));
-                        return new SimpleImmutableEntry<String, Property<?>>(name, prop);
+                        return new SimpleImmutableEntry<>(name, prop);
                     }
                     @Override
                     public void remove() {
@@ -118,7 +118,7 @@ final class MapBeanPropertyMap
     //-----------------------------------------------------------------------
     @Override
     public Map<String, Object> flatten() {
-        Map<String, Object> copy = new HashMap<String, Object>(bean);
+        Map<String, Object> copy = new HashMap<>(bean);
         return Collections.unmodifiableMap(copy);
     }
 

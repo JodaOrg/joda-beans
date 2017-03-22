@@ -137,7 +137,7 @@ public class TestFlexiBean {
     public void test_putAll() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         test.putAll(map);
         assertEquals(test.size(), 0);
         map.put("a", "x");

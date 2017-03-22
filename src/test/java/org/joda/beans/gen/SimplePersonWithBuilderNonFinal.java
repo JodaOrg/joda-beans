@@ -54,11 +54,11 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
     @PropertyDefinition
     private transient int numberOfCars;
     @PropertyDefinition
-    private final List<Address> addressList = new ArrayList<Address>();
+    private final List<Address> addressList = new ArrayList<>();
     @PropertyDefinition(validate = "notNull")
-    private final Map<String, Address> otherAddressMap = new HashMap<String, Address>();
+    private final Map<String, Address> otherAddressMap = new HashMap<>();
     @PropertyDefinition(validate = "notNull")
-    private final List<List<Address>> addressesList = new ArrayList<List<Address>>();
+    private final List<List<Address>> addressesList = new ArrayList<>();
     @PropertyDefinition
     private Address mainAddress;
 

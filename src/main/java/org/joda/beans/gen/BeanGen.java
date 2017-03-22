@@ -74,7 +74,7 @@ class BeanGen {
     /** Line separator. */
     private static final String LINE_SEPARATOR_INDENTED = "\t\t//-----------------------------------------------------------------------";
     /** Types with primitive equals. */
-    private static final Set<String> PRIMITIVE_EQUALS = new HashSet<String>();
+    private static final Set<String> PRIMITIVE_EQUALS = new HashSet<>();
     static {
         PRIMITIVE_EQUALS.add("boolean");
         PRIMITIVE_EQUALS.add("char");
@@ -1378,7 +1378,7 @@ class BeanGen {
     }
 
     private List<PropertyGen> nonDerivedProperties() {
-        List<PropertyGen> nonDerived = new ArrayList<PropertyGen>();
+        List<PropertyGen> nonDerived = new ArrayList<>();
         for (PropertyGen prop : properties) {
             if (prop.getData().isDerived() == false) {
                 nonDerived.add(prop);
@@ -1388,7 +1388,7 @@ class BeanGen {
     }
 
     private List<PropertyGen> nonDerivedEqualsHashCodeProperties() {
-        List<PropertyGen> nonDerived = new ArrayList<PropertyGen>();
+        List<PropertyGen> nonDerived = new ArrayList<>();
         for (PropertyGen prop : properties) {
             if (!prop.getData().isDerived() && !prop.getData().getEqualsHashCodeStyle().equals("omit")) {
                 nonDerived.add(prop);
@@ -1398,7 +1398,7 @@ class BeanGen {
     }
 
     private List<PropertyGen> toStringProperties() {
-        List<PropertyGen> props = new ArrayList<PropertyGen>();
+        List<PropertyGen> props = new ArrayList<>();
         for (PropertyGen prop : properties) {
             if (!prop.getData().isDerived() && !"omit".equals(prop.getData().getToStringStyle())) {
                 props.add(prop);

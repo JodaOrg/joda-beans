@@ -50,7 +50,7 @@ class PropertyGen {
     List<String> generateMetaPropertyConstant() {
         data.getBean().ensureImport(MetaProperty.class);
         data.getBean().ensureImport(DirectMetaProperty.class);
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t */");
@@ -77,7 +77,7 @@ class PropertyGen {
     }
 
     List<String> generateMetaPropertyGetCase() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -96,7 +96,7 @@ class PropertyGen {
 
     List<String> generateProperty() {
         data.getBean().ensureImport(Property.class);
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t/**");
         list.add("\t * Gets the the {@code " + data.getPropertyName() + "} property.");
         for (String comment : data.getComments()) {
@@ -115,7 +115,7 @@ class PropertyGen {
     }
 
     List<String> generateMetaProperty() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         String propertyType = propertyType();
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
@@ -139,7 +139,7 @@ class PropertyGen {
     }
 
     List<String> generatePropertyGetCase() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -156,7 +156,7 @@ class PropertyGen {
     }
 
     List<String> generatePropertySetCase() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -184,7 +184,7 @@ class PropertyGen {
     }
 
     List<String> generateBuilderFieldGet() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -194,7 +194,7 @@ class PropertyGen {
     }
 
     List<String> generateBuilderFieldSet() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -209,7 +209,7 @@ class PropertyGen {
     }
 
     List<String> generateBuilderSetMethod() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t\t/**");
         list.add("\t\t * Sets " + data.getFirstComment());
         for (String comment : data.getComments()) {

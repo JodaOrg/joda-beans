@@ -71,7 +71,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
      * @return the meta-bean, not null
      */
     public static <B extends Bean> LightMetaBean<B> of(Class<B> beanClass) {
-        return new LightMetaBean<B>(beanClass);
+        return new LightMetaBean<>(beanClass);
     }
 
     /**
@@ -84,9 +84,9 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
             throw new NullPointerException("Bean class must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
+        Map<String, MetaProperty<?>> map = new HashMap<>();
         Field[] fields = beanType.getDeclaredFields();
-        List<Class<?>> propertyTypes = new ArrayList<Class<?>>();
+        List<Class<?>> propertyTypes = new ArrayList<>();
         for (Field field : fields) {
             if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
                 PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
@@ -173,7 +173,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
             return beanType.getDeclaredMethod(setterName, fieldType);
         } catch (NoSuchMethodException ex) {
             Method[] methods = beanType.getMethods();
-            List<Method> potential = new ArrayList<Method>();
+            List<Method> potential = new ArrayList<>();
             for (Method method : methods) {
                 if (method.getName().equals(setterName) && method.getParameterTypes().length == 1) {
                     potential.add(method);
@@ -280,7 +280,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
     //-----------------------------------------------------------------------
     @Override
     public BeanBuilder<T> builder() {
-        return new LightBeanBuilder<T>(this, constructionData.clone());
+        return new LightBeanBuilder<>(this, constructionData.clone());
     }
 
     @Override

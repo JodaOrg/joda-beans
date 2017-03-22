@@ -99,7 +99,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
      */
     private Map<String, Object> dataWritable() {
         if (data == Collections.EMPTY_MAP) {
-            data = new LinkedHashMap<String, Object>();
+            data = new LinkedHashMap<>();
         }
         return data;
     }
@@ -310,7 +310,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
                 }
             }
             if (data == Collections.EMPTY_MAP) {
-                data = new LinkedHashMap<String, Object>(map);
+                data = new LinkedHashMap<>(map);
             } else {
                 data.putAll(map);
             }
@@ -327,7 +327,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
     public void putAll(FlexiBean other) {
         if (other.size() > 0) {
             if (data == Collections.EMPTY_MAP) {
-                data = new LinkedHashMap<String, Object>(other.data);
+                data = new LinkedHashMap<>(other.data);
             } else {
                 data.putAll(other.data);
             }
@@ -428,7 +428,7 @@ public final class FlexiBean extends BasicBean implements DynamicBean, Serializa
         if (size() == 0) {
             return Collections.emptyMap();
         }
-        return Collections.unmodifiableMap(new LinkedHashMap<String, Object>(data));
+        return Collections.unmodifiableMap(new LinkedHashMap<>(data));
     }
 
     //-----------------------------------------------------------------------

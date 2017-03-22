@@ -754,7 +754,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     public static final SerIterable immutableList(
             final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final List<Object> coll = new ArrayList<Object>();
+        final List<Object> coll = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
@@ -793,7 +793,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     public static final SerIterable immutableSortedSet(
             final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Set<Object> coll = new LinkedHashSet<Object>();
+        final Set<Object> coll = new LinkedHashSet<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
@@ -832,7 +832,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     public static final SerIterable immutableSet(
             final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Set<Object> coll = new LinkedHashSet<Object>();
+        final Set<Object> coll = new LinkedHashSet<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
@@ -865,7 +865,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     static SerIterable immutableMap(
             final Class<?> keyType, final Class<?> valueType,
             final List<Class<?>> valueTypeTypes) {
-        final Map<Object, Object> map = new LinkedHashMap<Object, Object>();
+        final Map<Object, Object> map = new LinkedHashMap<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {

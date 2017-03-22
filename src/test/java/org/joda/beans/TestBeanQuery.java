@@ -61,7 +61,6 @@ public class TestBeanQuery {
         assertEquals(bq.toString(), "Address:owner.Person:surname");
     }
 
-    @SuppressWarnings("unchecked")
     public void test_chained_getChain() {
         Address address = new Address();
         address.setOwner(new Person());

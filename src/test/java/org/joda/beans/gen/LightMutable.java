@@ -69,7 +69,7 @@ public final class LightMutable implements Bean, Serializable {
      * The list.
      */
     @PropertyDefinition(validate = "notNull")
-    private final List<String> list = new ArrayList<String>();
+    private final List<String> list = new ArrayList<>();
     /**
      * The currency.
      */

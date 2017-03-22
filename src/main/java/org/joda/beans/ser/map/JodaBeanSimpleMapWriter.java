@@ -81,7 +81,7 @@ public class JodaBeanSimpleMapWriter {
     //-----------------------------------------------------------------------
     // write a bean as a JSON object
     private Map<String, Object> writeBean(Bean bean, Class<?> declaredType) {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<>();
         // property information
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable()) {
@@ -128,7 +128,7 @@ public class JodaBeanSimpleMapWriter {
 
     // write list/set/array
     private Object writeArray(SerIterator itemIterator) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
             result.add(writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator));
@@ -139,7 +139,7 @@ public class JodaBeanSimpleMapWriter {
     // write map
     private Object writeMap(SerIterator itemIterator) {
         if (itemIterator.size() == 0) {
-            return new LinkedHashMap<String, Object>();
+            return new LinkedHashMap<>();
         }
         // if key type is known and convertible use short key format, else use full bean format
         if (settings.getConverter().isConvertible(itemIterator.keyType())) {
@@ -151,7 +151,7 @@ public class JodaBeanSimpleMapWriter {
 
     // write map with simple keys
     private Object writeMapSimple(SerIterator itemIterator) {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<>();
         StringConverter<Object> keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -170,7 +170,7 @@ public class JodaBeanSimpleMapWriter {
 
     // write map with complex keys
     private Object writeMapComplex(SerIterator itemIterator) {
-        Map<String, Object> result = new LinkedHashMap<String, Object>();
+        Map<String, Object> result = new LinkedHashMap<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
             Object key = itemIterator.key();
@@ -188,7 +188,7 @@ public class JodaBeanSimpleMapWriter {
 
     // write table
     private Object writeTable(SerIterator itemIterator) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
             Object outputKey = writeObject(itemIterator.keyType(), itemIterator.key(), null);
@@ -201,7 +201,7 @@ public class JodaBeanSimpleMapWriter {
 
     // write grid using sparse approach
     private Object writeGrid(SerIterator itemIterator) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         result.add(itemIterator.dimensionSize(0));
         result.add(itemIterator.dimensionSize(1));
         while (itemIterator.hasNext()) {
@@ -216,7 +216,7 @@ public class JodaBeanSimpleMapWriter {
 
     // write counted set
     private Object writeCounted(final SerIterator itemIterator) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
             Object outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);

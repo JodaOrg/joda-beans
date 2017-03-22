@@ -55,7 +55,7 @@ public class FinalFieldBean extends DirectBean {
      * The list that is final.
      */
     @PropertyDefinition
-    private final List<String> listFinal = new ArrayList<String>();
+    private final List<String> listFinal = new ArrayList<>();
     /**
      * The flexi that is final.
      */

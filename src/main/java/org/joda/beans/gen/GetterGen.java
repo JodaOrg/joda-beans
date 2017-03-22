@@ -172,7 +172,7 @@ abstract class GetterGen {
         static final GetterGen PUBLIC = new Optional8GetterGen();
         @Override
         List<String> generateGetter(PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add("\t/**");
             list.add("\t * Gets " + prop.getFirstComment());
             for (String comment : prop.getComments()) {
@@ -216,7 +216,7 @@ abstract class GetterGen {
         static final GetterGen PUBLIC = new OptionalGuavaGetterGen();
         @Override
         List<String> generateGetter(PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add("\t/**");
             list.add("\t * Gets " + prop.getFirstComment());
             for (String comment : prop.getComments()) {
@@ -263,7 +263,7 @@ abstract class GetterGen {
     }
 
     private static List<String> doGenerateGetter(PropertyData prop, String access, String prefix, String expression) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());
         for (String comment : prop.getComments()) {

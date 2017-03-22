@@ -119,7 +119,7 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      */
     public static final SerIterable grid(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
         return new SerIterable() {
-            private final List<Grid.Cell<?>> cells = new ArrayList<Grid.Cell<?>>();
+            private final List<Grid.Cell<?>> cells = new ArrayList<>();
             private int[] dimensions;
             @Override
             public SerIterator iterator() {

@@ -265,7 +265,7 @@ class BeanParser {
     }
 
     private Set<String> parseImports(int defLine) {
-        Set<String> imports = new HashSet<String>();
+        Set<String> imports = new HashSet<>();
         for (int index = 0; index < defLine; index++) {
             if (content.get(index).startsWith("import ")) {
                 String imp = content.get(index).substring(7).trim();
@@ -543,7 +543,7 @@ class BeanParser {
     }
 
     private List<PropertyGen> parseProperties(BeanData data) {
-        List<PropertyGen> props = new ArrayList<PropertyGen>();
+        List<PropertyGen> props = new ArrayList<>();
         for (int index = 0; index < content.size(); index++) {
             String line = content.get(index).trim();
             PropertyParser parser = new PropertyParser(this);

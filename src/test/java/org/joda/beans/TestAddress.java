@@ -71,7 +71,7 @@ public class TestAddress {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
         assertEquals(builder.get("street"), "Main Street");
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("city", "London");
         builder.setAll(map);
         assertEquals(builder.get("street"), "Main Street");

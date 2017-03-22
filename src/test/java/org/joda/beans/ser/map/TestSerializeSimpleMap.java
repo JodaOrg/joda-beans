@@ -90,13 +90,13 @@ public class TestSerializeSimpleMap {
 
     //-----------------------------------------------------------------------
     public void test_read_emptyFlexiBean() {
-        FlexiBean parsed = JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<String, Object>(), FlexiBean.class);
+        FlexiBean parsed = JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_read_rootTypeArgumentIncorrect() {
-        JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<String, Object>(), Integer.class);
+        JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), Integer.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -131,7 +131,7 @@ public class TestSerializeSimpleMap {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_read_nullType() {
-        new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<String, Object>(), null);
+        new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<>(), null);
     }
 
 }

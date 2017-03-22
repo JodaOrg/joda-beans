@@ -86,7 +86,7 @@ public class JodaBeanXmlWriter {
     /**
      * The known types.
      */
-    private Map<Class<?>, String> knownTypes = new HashMap<Class<?>, String>();
+    private Map<Class<?>, String> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.

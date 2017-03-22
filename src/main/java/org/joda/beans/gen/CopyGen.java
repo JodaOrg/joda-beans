@@ -64,7 +64,7 @@ abstract class CopyGen {
         }
         @Override
         List<String> generateCopyToImmutable(String indent, String fromBean, PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             final String[] split = immutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {
@@ -91,7 +91,7 @@ abstract class CopyGen {
         }
         @Override
         List<String> generateCopyToMutable(String indent, PropertyData prop, String beanToCopyFrom) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             final String[] split = mutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {

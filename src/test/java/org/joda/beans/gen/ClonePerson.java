@@ -53,7 +53,7 @@ public class ClonePerson
     @PropertyDefinition
     private Date dateOfDeath;
     @PropertyDefinition
-    private final List<Address> addresses = new ArrayList<Address>();
+    private final List<Address> addresses = new ArrayList<>();
     @PropertyDefinition
     private Company[] companies;
     @PropertyDefinition

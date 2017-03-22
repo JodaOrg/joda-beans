@@ -44,7 +44,7 @@ public final class SerTypeMapper {
      */
     private static final Map<String, Class<?>> BASIC_TYPES_REVERSED;
     static {
-        Map<Class<?>, String> map = new HashMap<Class<?>, String>();
+        Map<Class<?>, String> map = new HashMap<>();
         
         map.put(String.class, "String");
         map.put(Long.class, "Long");
@@ -65,7 +65,7 @@ public final class SerTypeMapper {
         // selection of types are the most common types suitable for reduction
         // and suitable for simple interpretation on non-Java systems
         
-        Map<String, Class<?>> reversed = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> reversed = new HashMap<>();
         for (Entry<Class<?>, String> entry : map.entrySet()) {
             reversed.put(entry.getValue(), entry.getKey());
         }

@@ -46,7 +46,7 @@ public final class BasicProperty<P> implements Property<P> {
      * @return the property, not null
      */
     public static <P> BasicProperty<P> of(Bean bean, MetaProperty<P> metaProperty) {
-        return new BasicProperty<P>(bean, metaProperty);
+        return new BasicProperty<>(bean, metaProperty);
     }
 
     /**

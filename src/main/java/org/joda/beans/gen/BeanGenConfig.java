@@ -102,7 +102,7 @@ public final class BeanGenConfig {
         if (url == null) {
             throw new IllegalArgumentException("Configuration file not found: " + fullFile);
         }
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(url.openStream(), UTF8));
@@ -128,13 +128,13 @@ public final class BeanGenConfig {
     }
 
     private static BeanGenConfig parse(List<String> lines) {
-        Map<String, String> immutableCopiers = new HashMap<String, String>();
-        Map<String, String> mutableCopiers = new HashMap<String, String>();
-        Map<String, String> immutableGetClones = new HashMap<String, String>();
-        Map<String, String> immutableVarArgs = new HashMap<String, String>();
-        Map<String, String> builderInits = new HashMap<String, String>();
-        Map<String, String> builderTypes = new HashMap<String, String>();
-        Set<String> invalidImmutableTypes = new HashSet<String>();
+        Map<String, String> immutableCopiers = new HashMap<>();
+        Map<String, String> mutableCopiers = new HashMap<>();
+        Map<String, String> immutableGetClones = new HashMap<>();
+        Map<String, String> immutableVarArgs = new HashMap<>();
+        Map<String, String> builderInits = new HashMap<>();
+        Map<String, String> builderTypes = new HashMap<>();
+        Set<String> invalidImmutableTypes = new HashSet<>();
         for (ListIterator<String> iterator = lines.listIterator(); iterator.hasNext(); ) {
             String line = iterator.next().trim();
             if (line.equals("[immutable.builder.to.immutable]")) {
@@ -245,7 +245,7 @@ public final class BeanGenConfig {
             }
         }
         // adjust to results
-        Map<String, BuilderGen> builderGenerators = new HashMap<String, BuilderGen>();
+        Map<String, BuilderGen> builderGenerators = new HashMap<>();
         for (Entry<String, String> entry : builderInits.entrySet()) {
             String type = builderTypes.get(entry.getKey());
             if (type == null) {
@@ -253,7 +253,7 @@ public final class BeanGenConfig {
             }
             builderGenerators.put(entry.getKey(), new BuilderGen.PatternBuilderGen(type, entry.getValue()));
         }
-        Map<String, CopyGen> copyGenerators = new HashMap<String, CopyGen>();
+        Map<String, CopyGen> copyGenerators = new HashMap<>();
         for (Entry<String, String> entry : immutableCopiers.entrySet()) {
             String fieldType = entry.getKey();
             String immutableCopier = entry.getValue();

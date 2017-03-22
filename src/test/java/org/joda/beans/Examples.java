@@ -77,7 +77,7 @@ public class Examples {
         System.out.println(valid ? "Valid" : "Not valid");
         
         // generics
-        Documentation<Address> d = new Documentation<Address>();
+        Documentation<Address> d = new Documentation<>();
         d.setType("ADDRESS");
         d.setContent(a);
         Property<Address> dProp = d.content();

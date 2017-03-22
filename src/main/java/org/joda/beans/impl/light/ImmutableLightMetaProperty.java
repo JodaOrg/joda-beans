@@ -69,7 +69,7 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
                 }
             }
         };
-        return new ImmutableLightMetaProperty<P>(
+        return new ImmutableLightMetaProperty<>(
                 metaBean, 
                 propertyName, 
                 (Class<P>) field.getType(), 
@@ -114,7 +114,7 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
                 }
             }
         };
-        return new ImmutableLightMetaProperty<P>(
+        return new ImmutableLightMetaProperty<>(
                 metaBean, 
                 propertyName, 
                 (Class<P>) field.getType(), 

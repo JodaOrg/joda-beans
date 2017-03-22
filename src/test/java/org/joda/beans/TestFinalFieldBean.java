@@ -89,7 +89,7 @@ public class TestFinalFieldBean {
 
     //-----------------------------------------------------------------------
     public void test_finalList() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("Hello");
         assertEquals(bean.getListFinal(), list);
         assertEquals(bean.listFinal().get(), list);
@@ -100,12 +100,12 @@ public class TestFinalFieldBean {
         assertEquals(bean.listFinal().metaProperty().propertyType(), List.class);
         
         list.add("foo");
-        List<String> expected1 = new ArrayList<String>(list);
+        List<String> expected1 = new ArrayList<>(list);
         bean.listFinal().set(list);
         assertEquals(bean.getListFinal(), expected1);
         
         list.add("bar");
-        List<String> expected2 = new ArrayList<String>(list);
+        List<String> expected2 = new ArrayList<>(list);
         bean.listFinal().metaProperty().set(bean, list);
         assertEquals(bean.getListFinal(), expected2);
     }

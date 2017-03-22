@@ -157,7 +157,7 @@ public class BeanCodeGen {
      * @return the files, not null
      */
     private static List<File> findFiles(final File parent, boolean recurse) {
-        final List<File> result = new ArrayList<File>();
+        final List<File> result = new ArrayList<>();
         if (parent.isDirectory()) {
             File[] files = parent.listFiles();
             files = (files != null ? files : new File[0]);
@@ -267,7 +267,7 @@ public class BeanCodeGen {
      * @throws Exception if an error occurs
      */
     public List<File> processFiles() throws Exception {
-        List<File> changed = new ArrayList<File>();
+        List<File> changed = new ArrayList<>();
         for (File child : files) {
             File file = processFile(child);
             if (file != null) {
@@ -286,7 +286,7 @@ public class BeanCodeGen {
      */
     private File processFile(File file) throws Exception {
         List<String> original = readFile(file);
-        List<String> content = new ArrayList<String>(original);
+        List<String> content = new ArrayList<>(original);
         BeanGen gen;
         try {
             BeanParser parser = new BeanParser(file, content, config);
@@ -332,7 +332,7 @@ public class BeanCodeGen {
 
     //-----------------------------------------------------------------------
     private List<String> readFile(File file) throws Exception {
-        List<String> content = new ArrayList<String>(100);
+        List<String> content = new ArrayList<>(100);
         BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
         try {
             String line;

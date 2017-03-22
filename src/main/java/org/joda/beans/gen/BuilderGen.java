@@ -55,7 +55,7 @@ abstract class BuilderGen {
         }
         @Override
         List<String> generateField(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             if (prop.isNotNull()) {
                 String init = this.init;
                 init = init.replace("<>", PropertyGen.resolveWildcard(prop.getTypeGenerics()));
@@ -79,7 +79,7 @@ abstract class BuilderGen {
         }
         @Override
         List<String> generateField(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
             return list;
         }

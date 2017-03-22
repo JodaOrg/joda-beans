@@ -80,8 +80,7 @@ public final class KryoJodaBeanSerializer implements SerializerFactory {
     //-------------------------------------------------------------------------
     @Override
     public Serializer makeSerializer(Kryo kryo, Class<?> type) {
-        return new JodaBeanSerializer<Object>(
-                defaultSerializerFactory.makeSerializer(kryo, type));
+        return new JodaBeanSerializer<>(defaultSerializerFactory.makeSerializer(kryo, type));
     }
 
     //-------------------------------------------------------------------------

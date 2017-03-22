@@ -45,7 +45,7 @@ public class BufferingBeanBuilder<T extends Bean>
     /**
      * The buffered data.
      */
-    private final ConcurrentMap<MetaProperty<?>, Object> buffer = new ConcurrentHashMap<MetaProperty<?>, Object>();
+    private final ConcurrentMap<MetaProperty<?>, Object> buffer = new ConcurrentHashMap<>();
 
     //-----------------------------------------------------------------------
     /**
@@ -55,7 +55,7 @@ public class BufferingBeanBuilder<T extends Bean>
      * @return a new untyped builder, not null
      */
     public static BufferingBeanBuilder<?> of(MetaBean metaBean) {
-        return new BufferingBeanBuilder<Bean>(metaBean);
+        return new BufferingBeanBuilder<>(metaBean);
     }
 
     //-----------------------------------------------------------------------

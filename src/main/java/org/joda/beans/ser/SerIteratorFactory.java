@@ -67,7 +67,7 @@ public class SerIteratorFactory {
     /**
      * Map of array types.
      */
-    private static final Map<String, Class<?>> META_TYPE_MAP = new HashMap<String, Class<?>>();
+    private static final Map<String, Class<?>> META_TYPE_MAP = new HashMap<>();
     static {
         META_TYPE_MAP.put("Object[]", Object.class);
         META_TYPE_MAP.put("String[]", String.class);
@@ -326,7 +326,7 @@ public class SerIteratorFactory {
      */
     public static final SerIterable list(
             final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final List<Object> coll = new ArrayList<Object>();
+        final List<Object> coll = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
@@ -364,7 +364,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable set(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Set<Object> coll = new HashSet<Object>();
+        final Set<Object> coll = new HashSet<>();
         return set(valueType, valueTypeTypes, coll);
     }
 
@@ -376,7 +376,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable sortedSet(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final SortedSet<Object> coll = new TreeSet<Object>();
+        final SortedSet<Object> coll = new TreeSet<>();
         return set(valueType, valueTypeTypes, coll);
     }
 
@@ -388,7 +388,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable navigableSet(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final NavigableSet<Object> coll = new TreeSet<Object>();
+        final NavigableSet<Object> coll = new TreeSet<>();
         return set(valueType, valueTypeTypes, coll);
     }
 
@@ -496,7 +496,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable map(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Map<Object, Object> map = new HashMap<Object, Object>();
+        final Map<Object, Object> map = new HashMap<>();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
@@ -509,7 +509,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable sortedMap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final SortedMap<Object, Object> map = new TreeMap<Object, Object>();
+        final SortedMap<Object, Object> map = new TreeMap<>();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
@@ -522,7 +522,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable navigableMap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final NavigableMap<Object, Object> map = new TreeMap<Object, Object>();
+        final NavigableMap<Object, Object> map = new TreeMap<>();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
@@ -640,7 +640,7 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static final SerIterable array(final Class<?> valueType) {
-        final List<Object> list = new ArrayList<Object>();
+        final List<Object> list = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {

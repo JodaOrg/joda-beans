@@ -81,7 +81,7 @@ final class MutableLightMetaProperty<P> extends LightMetaProperty<P> {
                 }
             }
         };
-        return new MutableLightMetaProperty<P>(
+        return new MutableLightMetaProperty<>(
                 metaBean, 
                 propertyName, 
                 (Class<P>) field.getType(), 
@@ -145,7 +145,7 @@ final class MutableLightMetaProperty<P> extends LightMetaProperty<P> {
             }
         };
         // special case for optional
-        return new MutableLightMetaProperty<P>(
+        return new MutableLightMetaProperty<>(
                 metaBean, 
                 propertyName, 
                 (Class<P>) field.getType(), 

@@ -56,13 +56,11 @@ public final class SerDeserializers {
     /**
      * The deserializers.
      */
-    private final ConcurrentMap<Class<?>, SerDeserializer> deserializers =
-            new ConcurrentHashMap<Class<?>, SerDeserializer>();
+    private final ConcurrentMap<Class<?>, SerDeserializer> deserializers = new ConcurrentHashMap<>();
     /**
      * The deserializer providers.
      */
-    private final CopyOnWriteArrayList<SerDeserializerProvider> providers =
-            new CopyOnWriteArrayList<SerDeserializerProvider>();
+    private final CopyOnWriteArrayList<SerDeserializerProvider> providers = new CopyOnWriteArrayList<>();
 
     /**
      * Creates an instance.

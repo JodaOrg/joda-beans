@@ -62,7 +62,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofReadWrite(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_WRITE, field);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_WRITE, field);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofReadOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY, field);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY, field);
     }
 
     /**
@@ -94,7 +94,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofWriteOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.WRITE_ONLY, field);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.WRITE_ONLY, field);
     }
 
     /**
@@ -110,7 +110,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofReadOnlyBuildable(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY_BUILDABLE, field);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY_BUILDABLE, field);
     }
 
     /**
@@ -126,7 +126,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofDerived(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, field);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, field);
     }
 
     /**
@@ -142,7 +142,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     public static <P> DirectMetaProperty<P> ofImmutable(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
         Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<P>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.IMMUTABLE, field);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.IMMUTABLE, field);
     }
 
     private static Field findField(MetaBean metaBean, String propertyName) {
