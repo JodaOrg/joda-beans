@@ -160,6 +160,15 @@ class BeanData {
     }
 
     /**
+     * Resolves the bean style.
+     */
+    public void resolveBeanStyle(String defaultStyle) {
+        if ("smart".equals(beanStyle)) {
+            setBeanStyle(defaultStyle);
+        }
+    }
+
+    /**
      * Is the bean style indicating that properties should be generated.
      * @return the flag
      */

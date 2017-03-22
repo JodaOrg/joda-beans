@@ -78,6 +78,8 @@ The command line takes the following arguments:
     -indent=tab       use a tab for indenting, default 4 spaces
     -indent=[n]       use n spaces for indenting, default 4
     -prefix=[p]       field prefix of p should be removed, no default
+    -config=[f]       config file: 'jdk'/'guava', default guava
+    -style=[s]        default bean style: 'light'/'minimal'/'full', default smart
     -verbose=[v]      output logging with verbosity from 0 to 3, default 1
     -nowrite          output messages rather than writing, default is to write
 ```
@@ -95,13 +97,12 @@ and booleans generate "is" methods rather than "get" methods. Simple generics ar
 
 The generator must be invoked every time that the source file is changed.
 Failure to do so (such as by using an IDE refactoring) could leave the auto-generated block in an invalid state.
-Normally the generator will be invoked from the IDE or a tool like Apache Ant.
+Normally the generator will be invoked from the IDE or a build tool, see the
+[Maven plugin](https://github.com/JodaOrg/joda-beans-maven-plugin).
 
 The code generator only parses and outputs based on a single source Java file.
 It does not require the file to compile and never knows that "String" actually means "java.lang.String".
 In other words, the type system in the generator is totally dumb and based solely on the short simple class name.
-
-A [Maven plugin](https://github.com/JodaOrg/joda-beans-maven-plugin) is available to generate the beans.
 
 
 ## Customisation
@@ -470,6 +471,25 @@ Internally, the bean uses reflection to implement the meta bean and builder.
 As such, it may be a little slower.
 
 Both immutable and mutable light-weight beans can be generated.
+
+
+## Minimal beans
+
+It is possible to generate a minimal bean.
+This approach has no Meta class, but does have a Builder for immutable classes.
+This is the approach with the medium amount of code generation.
+
+```
+ // superclass
+ @BeanDefinition(style = "minimal")
+ public final class MinimalBean implements ImmutableBean {
+   // code generation of a minimal immutable bean
+ }
+```
+
+Internally, the bean uses lambdas to implement the meta bean.
+
+Both immutable and mutable minimal beans can be generated.
 
 
 ## Links

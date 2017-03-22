@@ -59,7 +59,8 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
-            System.out.println("    -config=[f]       config file: jdk/guava', default guava");
+            System.out.println("    -config=[f]       config file: 'jdk'/'guava', default guava");
+            System.out.println("    -style=[s]        default bean style: 'light'/'minimal'/'full', default smart");
             System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
             System.out.println("    -nowrite          output messages rather than writing, default is to write");
             System.exit(0);
@@ -90,6 +91,7 @@ public class BeanCodeGen {
         }
         String indent = "    ";
         String prefix = "";
+        String defaultStyle = null;
         boolean recurse = false;
         int verbosity = 1;
         boolean write = true;
@@ -116,6 +118,11 @@ public class BeanCodeGen {
                     throw new IllegalArgumentException("Argument 'config' must not be specified twice: " + Arrays.toString(args));
                 }
                 config = BeanGenConfig.parse(arg.substring(8));
+            } else if (arg.startsWith("-style=")) {
+                if (defaultStyle != null) {
+                    throw new IllegalArgumentException("Argument 'style' must not be specified twice: " + Arrays.toString(args));
+                }
+                defaultStyle = arg.substring(7);
             } else if (arg.startsWith("-verbose=")) {
                 verbosity = Integer.parseInt(arg.substring(9));
             } else if (arg.startsWith("-v=")) {
@@ -135,6 +142,9 @@ public class BeanCodeGen {
         }
         config.setIndent(indent);
         config.setPrefix(prefix);
+        if (defaultStyle != null) {
+            config.setDefaultStyle(defaultStyle);
+        }
         return new BeanCodeGen(files, config, verbosity, write);
     }
 

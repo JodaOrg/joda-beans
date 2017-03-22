@@ -149,6 +149,7 @@ class BeanParser {
         data.getCurrentImports().addAll(parseImports(beanDefIndex));
         data.setImportInsertLocation(parseImportLocation(beanDefIndex));
         data.setBeanStyle(parseBeanStyle(beanDefIndex));
+        data.resolveBeanStyle(config.getDefaultStyle());
         if (data.isBeanStyleValid() == false) {
             throw new BeanCodeGenException("Invalid bean style: " + data.getBeanStyle(), file, beanDefIndex);
         }

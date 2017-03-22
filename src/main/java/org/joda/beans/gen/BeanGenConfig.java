@@ -72,6 +72,10 @@ public final class BeanGenConfig {
      * The field prefix to use.
      */
     private String prefix = "";
+    /**
+     * The default style to use.
+     */
+    private String defaultStyle = "smart";
 
     /**
      * Parses the configuration file.
@@ -378,6 +382,24 @@ public final class BeanGenConfig {
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    /**
+     * Gets the default style to use.
+     * 
+     * @return the default style, not null
+     */
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    /**
+     * Sets the default style to use.
+     * 
+     * @param defaultStyle  the default style to use, not null
+     */
+    public void setDefaultStyle(String defaultStyle) {
+        this.defaultStyle = defaultStyle;
     }
 
 }
