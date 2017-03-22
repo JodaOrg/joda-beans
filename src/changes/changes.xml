@@ -12,6 +12,7 @@
       <action dev="jodastephen" type="update">
         Move to Java 8.
         Change light beans from reflection to method handles.
+        Change minimal beans to not have generated meta-bean class and disallow subclasses.
         Fixes #155.
       </action>
       <action dev="jodastephen" type="fix">

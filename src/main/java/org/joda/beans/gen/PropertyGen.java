@@ -174,6 +174,16 @@ class PropertyGen {
         return list;
     }
 
+    String generateLambdaGetter() {
+        return "b -> b." + data.getGetterGen().generateGetInvoke(data);
+    }
+
+    String generateLambdaSetter() {
+        String propType = propertyType(data.getTypeBeanErased());
+        String cast = propType.equals("Object") ? "" : "(" + propType + ") ";
+        return "(b, v) -> b." + data.getSetterGen().generateSetInvoke(data, cast + "v");
+    }
+
     //-----------------------------------------------------------------------
     List<String> generateBuilderField() {
         return data.getBuilderGen().generateField("\t\t", data);
@@ -338,9 +348,6 @@ class PropertyGen {
 
     private String castObject() {
         String pt = propertyType();
-        if (pt.equals(data.getType())) {
-            return "(" + pt + ") ";
-        }
         return "(" + pt + ") ";
     }
 

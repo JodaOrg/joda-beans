@@ -18,12 +18,16 @@ package org.joda.beans.gen;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -33,12 +37,14 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
+import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
+import org.joda.beans.impl.direct.MinimalMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
 
 /**
@@ -236,7 +242,7 @@ class BeanGen {
                     PropertyGen prop = nonDerived.get(i);
                     insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
                 }
-                insertRegion.add("\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "(");
+                insertRegion.add("\t\treturn new " + data.getTypeWithDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.add("\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
                 }
@@ -405,21 +411,101 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateMeta() {
-        if (data.isBeanStyleLight()) {
-            data.ensureImport(TypedMetaBean.class);
-            data.ensureImport(LightMetaBean.class);
-            data.ensureImport(MethodHandles.class);
+        if (data.isBeanStyleLightOrMinimal()) {
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t */");
-            insertRegion.add("\tprivate static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
-            insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
+            boolean genericProps = data.getProperties().stream()
+                    .filter(p -> p.isGeneric())
+                    .findAny()
+                    .isPresent();
+            boolean unchecked = data.isBeanStyleMinimal() && data.isMutable() && genericProps;
+            unchecked |= data.isBeanStyleMinimal() && data.isTypeGeneric() && !data.isSkipBuilderGeneration();
+            boolean rawtypes = data.isBeanStyleMinimal() && data.isTypeGeneric();
+            if (unchecked && rawtypes) {
+                insertRegion.add("\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
+            } else if (rawtypes) {
+                insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
+            } else if (unchecked) {
+                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+            }
+            if (data.isTypeGeneric()) {
+                data.ensureImport(MetaBean.class);
+                insertRegion.add("\tprivate static final MetaBean META_BEAN =");
+            } else {
+                data.ensureImport(TypedMetaBean.class);
+                insertRegion.add("\tprivate static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
+            }
+            if (data.isBeanStyleLight()) {
+                // light
+                data.ensureImport(LightMetaBean.class);
+                data.ensureImport(MethodHandles.class);
+                insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
+            } else {
+                // minimal
+                data.ensureImport(MinimalMetaBean.class);
+                insertRegion.add("\t\t\tMinimalMetaBean.of(");
+                insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
+                List<PropertyGen> nonDerived = nonDerivedProperties();
+                String builderLambda = "\t\t\t\t\t() -> new " + data.getTypeRaw() + ".Builder()";
+                if (data.isSkipBuilderGeneration()) {
+                    data.ensureImport(BasicBeanBuilder.class);
+                    builderLambda = "\t\t\t\t\t() -> new BasicBeanBuilder<>(new " + data.getTypeWithDiamond() + "())";
+                }
+                if (nonDerived.isEmpty()) {
+                    if (data.isImmutable()) {
+                        insertRegion.add(builderLambda + ");");
+                    } else {
+                        data.ensureImport(Collections.class);
+                        data.ensureImport(Function.class);
+                        data.ensureImport(BiConsumer.class);
+                        insertRegion.add(builderLambda + ",");
+                        insertRegion.add("\t\t\t\t\tCollections.<Function<" + data.getTypeRaw() + ", Object>>emptyList(),");
+                        insertRegion.add("\t\t\t\t\tCollections.<BiConsumer<" + data.getTypeRaw() + ", Object>>emptyList());");
+                    }
+                } else {
+                    insertRegion.add(builderLambda + ",");
+                    if (data.isImmutable()) {
+                        for (int i = 0; i < nonDerived.size(); i++) {
+                            if (i < nonDerived.size() - 1) {
+                                insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + ",");
+                            } else {
+                                insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + ");");
+                            }
+                        }
+                    } else {
+                        data.ensureImport(Arrays.class);
+                        data.ensureImport(Function.class);
+                        data.ensureImport(BiConsumer.class);
+                        insertRegion.add("\t\t\t\t\tArrays.<Function<" + data.getTypeRaw() + ", Object>>asList(");
+                        for (int i = 0; i < nonDerived.size(); i++) {
+                            if (i < nonDerived.size() - 1) {
+                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + ",");
+                            } else {
+                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + "),");
+                            }
+                        }
+                        insertRegion.add("\t\t\t\t\tArrays.<BiConsumer<" + data.getTypeRaw() + ", Object>>asList(");
+                        for (int i = 0; i < nonDerived.size(); i++) {
+                            if (i < nonDerived.size() - 1) {
+                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaSetter() + ",");
+                            } else {
+                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaSetter() + "));");
+                            }
+                        }
+                    }
+                }
+            }
             insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
-            insertRegion.add("\tpublic static TypedMetaBean<" + data.getTypeNoExtends() + "> meta() {");
+            if (data.isTypeGeneric()) {
+                insertRegion.add("\tpublic static MetaBean meta() {");
+            } else {
+                insertRegion.add("\tpublic static TypedMetaBean<" + data.getTypeNoExtends() + "> meta() {");
+            }
             insertRegion.add("\t\treturn META_BEAN;");
             insertRegion.add("\t}");
             insertRegion.add("");
@@ -538,18 +624,22 @@ class BeanGen {
     }
 
     private void generateMetaBean() {
-        if (data.isMetaScopePrivate()) {
+        if (data.isMetaScopePrivate() || data.isBeanStyleMinimal()) {
             insertRegion.add("\t@Override");
-            if (data.isBeanStyleLight()) {
+            if (data.isBeanStyleLightOrMinimal()) {
                 data.ensureImport(TypedMetaBean.class);
+                if (data.isTypeGeneric()) {
+                    insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                }
                 insertRegion.add("\tpublic TypedMetaBean<" + data.getTypeNoExtends() + "> metaBean() {");
+                if (data.isTypeGeneric()) {
+                    insertRegion.add("\t\treturn (TypedMetaBean<" + data.getTypeNoExtends() + ">) META_BEAN;");
+                } else {
+                    insertRegion.add("\t\treturn META_BEAN;");
+                }
             } else {
                 data.ensureImport(MetaBean.class);
                 insertRegion.add("\tpublic MetaBean metaBean() {");
-            }
-            if (data.isBeanStyleLight()) {
-                insertRegion.add("\t\treturn META_BEAN;");
-            } else {
                 insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
             }
             insertRegion.add("\t}");
@@ -799,7 +889,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateMetaClass() {
-        if (data.isBeanStyleLight()) {
+        if (data.isBeanStyleLightOrMinimal()) {
             return;
         }
         generateSeparator();
@@ -1042,7 +1132,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateBuilderClass() {
-        if ((data.isMutable() && data.isBuilderScopeVisible() == false) || data.isBeanStyleLight()) {
+        if (data.isSkipBuilderGeneration()) {
             return;
         }
         List<PropertyGen> nonDerived = nonDerivedProperties();
@@ -1164,10 +1254,10 @@ class BeanGen {
 
     private void generateBuilderSet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
-        boolean generics = false;
-        for (PropertyData prop : data.getProperties()) {
-            generics |= (prop.isGeneric() && prop.isGenericWildcardParamType() == false);
-        }
+        boolean generics = data.getProperties().stream()
+                .filter(p -> p.isGeneric() && p.isGenericWildcardParamType() == false)
+                .findAny()
+                .isPresent();
         if (generics) {
             insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
         }
@@ -1255,15 +1345,15 @@ class BeanGen {
         }
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS) {
             if (nonDerived.size() == 0) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "();");
+                insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "();");
             } else {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "(");
+                insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
                 }
             }
         } else if (data.getConstructorStyle() == CONSTRUCTOR_BY_BUILDER) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "(this);");
+            insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "(this);");
         }
         insertRegion.add("\t\t}");
         insertRegion.add("");

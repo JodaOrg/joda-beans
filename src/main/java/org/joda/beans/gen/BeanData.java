@@ -323,6 +323,14 @@ class BeanData {
         return "public".equals(beanBuilderScope) || "package".equals(beanBuilderScope);
     }
 
+    /**
+     * Is the builder generated
+     * @return true if generated
+     */
+    public boolean isSkipBuilderGeneration() {
+        return (isMutable() && isBuilderScopeVisible() == false) || isBeanStyleLight();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the factory name.
@@ -853,6 +861,14 @@ class BeanData {
     }
 
     /**
+     * Gets the type with the diamond operator if generic.
+     * @return the type name, with generic diamond if necessary, not null
+     */
+    public String getTypeWithDiamond() {
+        return isTypeGeneric() ? getTypeRaw() + "<>" : getTypeRaw();
+    }
+
+    /**
      * Gets the name of the parameterisation of the bean, such as '{@code <T>}'.
      * @param typeParamIndex  the zero-based index of the type parameter
      * @param includeBrackets  whether to include brackets
@@ -861,6 +877,16 @@ class BeanData {
     public String getTypeGenericName(int typeParamIndex, boolean includeBrackets) {
         String result = typeGenericName[typeParamIndex];
         return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+    }
+
+    /**
+     * Gets the extends clause of the parameterisation of the bean, such as '{@code  extends Foo}'.
+     * @param typeParamIndex  the zero-based index of the type parameter
+     * @return the generic type extends clause, or a blank string if not generic or no extends, not null
+     */
+    public String getTypeGenericErased(int typeParamIndex) {
+        String extend = typeGenericExtends[typeParamIndex];
+        return extend.startsWith(" extends ") ? extend.substring(9) : "Object";
     }
 
     /**

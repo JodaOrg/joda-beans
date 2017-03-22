@@ -15,12 +15,15 @@
  */
 package org.joda.beans.gen;
 
+import static java.util.stream.Collectors.joining;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.joda.beans.PropertyStyle;
 
@@ -618,6 +621,7 @@ class PropertyData {
 
     /**
      * Checks if the property is parameterised with generics.
+     * {@code Foo<?>} will return true, {@code Foo<? extends Number> will return false}.
      * @return true if generified
      */
     public boolean isGenericWildcardParamType() {
@@ -626,6 +630,7 @@ class PropertyData {
 
     /**
      * Gets the parameterisation of the property.
+     * {@code Foo<String>} will return {@code String}.
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getGenericParamType() {
@@ -634,15 +639,6 @@ class PropertyData {
             return "";
         }
         return type.substring(pos + 1, type.length() - 1);
-    }
-
-    /**
-     * Gets the raw type of the property without generics.
-     * @return the raw type, not null
-     */
-    public String getRawType() {
-        int pos = type.indexOf("<");
-        return (pos < 0 ? type : type.substring(0, pos));
     }
 
     /**
@@ -664,6 +660,89 @@ class PropertyData {
      */
     public boolean isGeneric() {
         return isGenericParamType() || isBeanGenericType();
+    }
+
+    /**
+     * Gets the raw type of the property without generics.
+     * {@code Foo<String>} will return {@code Foo}.
+     * @return the raw type
+     */
+    public String getTypeRaw() {
+        int pos = type.indexOf("<");
+        return (pos < 0 ? type : type.substring(0, pos));
+    }
+
+    /**
+     * Gets the raw type of the property.
+     * @return the raw type
+     */
+    public String getFieldTypeRaw() {
+        int pos = fieldType.indexOf("<");
+        return (pos < 0 ? fieldType : fieldType.substring(0, pos));
+    }
+
+    /**
+     * Gets the generic part of the property type.
+     * <p>
+     * For example, "{@literal Foo<String>}" will return "{@literal <String>}".
+     * 
+     * @return the generic part of the type, not null
+     */
+    public String getTypeGenerics() {
+        final String type = getType();
+        if (type.contains("<")) {
+            return type.substring(type.indexOf('<'));
+        }
+        return "";
+    }
+
+    /**
+     * Gets the generic part of the property type.
+     * <p>
+     * For example, "{@literal Foo<String>}" will return "String".
+     * 
+     * @return the generic part of the type, empty if not generic, not null
+     */
+    public String getTypeGenericsSimple() {
+        final String type = getType();
+        if (type.contains("<")) {
+            return type.substring(type.indexOf('<') + 1, type.length() - 1);
+        }
+        return "";
+    }
+
+    /**
+     * Gets the type of the property, erasing generics attached to the bean.
+     * {@code Foo<T>} will return {@code Foo<Number>} where {@code T extends Number}.
+     * @return the raw type
+     */
+    public String getTypeBeanErased() {
+        if (isBeanGenericType()) {
+            for (int i = 0; i < bean.getTypeGenericCount(); i++) {
+                if (type.equals(bean.getTypeGenericName(i, false))) {
+                    return bean.getTypeGenericErased(i);
+                }
+            }
+        }
+        String generic = getTypeGenericsSimple();
+        if (generic.isEmpty()) {
+            return type;
+        }
+        StringTokenizer tkn = new StringTokenizer(generic, ",");
+        List<String> altered = new ArrayList<>();
+        while (tkn.hasMoreTokens()) {
+            String genericType = tkn.nextToken().trim();
+            String erased = genericType;
+            if (bean.isTypeGenerifiedBy(genericType)) {
+                for (int i = 0; i < bean.getTypeGenericCount(); i++) {
+                    if (genericType.equals(bean.getTypeGenericName(i, false))) {
+                        erased = bean.getTypeGenericErased(i);
+                    }
+                }
+            }
+            altered.add(erased);
+        }
+        return getTypeRaw() + "<" + altered.stream().collect(joining(", ")) + ">";
     }
 
     /**
@@ -892,7 +971,7 @@ class PropertyData {
      */
     public void resolveBuilderGen() {
         if (getBean().isMutable()) {
-            if (!getBean().isBuilderScopeVisible() && !getBean().isBeanStyleLight()) {
+            if (!getBean().isBuilderScopeVisible() && !getBean().isBeanStyleLightOrMinimal()) {
                 return;  // no builder
             }
         }
@@ -941,7 +1020,7 @@ class PropertyData {
      * @return true if it is a known collection type
      */
     public boolean isCollectionType() {
-        return isGeneric() && COLLECTIONS.contains(getRawType());
+        return isGeneric() && COLLECTIONS.contains(getTypeRaw());
     }
 
     /**
@@ -950,7 +1029,7 @@ class PropertyData {
      * @return true if it is a known set type
      */
     public boolean isSetType() {
-        return isGeneric() && SETS.contains(getRawType());
+        return isGeneric() && SETS.contains(getTypeRaw());
     }
 
     /**
@@ -959,7 +1038,7 @@ class PropertyData {
      * @return true if it is a known set type
      */
     public boolean isSortedSetType() {
-        return isGeneric() && SORTED_SETS.contains(getRawType());
+        return isGeneric() && SORTED_SETS.contains(getTypeRaw());
     }
 
     /**
@@ -968,7 +1047,7 @@ class PropertyData {
      * @return true if it is a known map type
      */
     public boolean isMapType() {
-        return "FlexiBean".equals(getType()) || (isGeneric() && MAPS.contains(getRawType()));
+        return "FlexiBean".equals(getType()) || (isGeneric() && MAPS.contains(getTypeRaw()));
     }
 
     /**
@@ -1050,60 +1129,6 @@ class PropertyData {
             return "JodaBeanUtils." + getValidation();
         }
         return getValidation();  // method in bean or static
-    }
-
-    /**
-     * Gets the raw type of the property.
-     * @return the raw type
-     */
-    public String getTypeRaw() {
-        final String type = getType();
-        if (type.contains("<")) {
-            return type.substring(0, type.indexOf('<'));
-        }
-        return type;
-    }
-
-    /**
-     * Gets the raw type of the property.
-     * @return the raw type
-     */
-    public String getFieldTypeRaw() {
-        final String type = getFieldType();
-        if (type.contains("<")) {
-            return type.substring(0, type.indexOf('<'));
-        }
-        return type;
-    }
-
-    /**
-     * Gets the generic part of the property type.
-     * <p>
-     * For example, "{@literal Foo<String>}" will return "{@literal <String>}".
-     * 
-     * @return the generic part of the type, not null
-     */
-    public String getTypeGenerics() {
-        final String type = getType();
-        if (type.contains("<")) {
-            return type.substring(type.indexOf('<'));
-        }
-        return "";
-    }
-
-    /**
-     * Gets the generic part of the property type.
-     * <p>
-     * For example, "{@literal Foo<String>}" will return "String".
-     * 
-     * @return the generic part of the type, not null
-     */
-    public String getTypeGenericsSimple() {
-        final String type = getType();
-        if (type.contains("<")) {
-            return type.substring(type.indexOf('<') + 1, type.length() - 1);
-        }
-        return "";
     }
 
     /**

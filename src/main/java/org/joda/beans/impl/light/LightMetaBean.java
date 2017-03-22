@@ -67,12 +67,12 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * {@link PropertyDefinition} annotation.
      * 
      * @param <B>  the type of the bean
-     * @param beanClass  the bean class, not null
+     * @param beanType  the bean type, not null
      * @param lookup  the method handle lookup, not null
      * @return the meta-bean, not null
      */
-    public static <B extends Bean> LightMetaBean<B> of(Class<B> beanClass, MethodHandles.Lookup lookup) {
-        return new LightMetaBean<>(beanClass, lookup);
+    public static <B extends Bean> LightMetaBean<B> of(Class<B> beanType, MethodHandles.Lookup lookup) {
+        return new LightMetaBean<>(beanType, lookup);
     }
 
     /**

@@ -204,6 +204,10 @@ class BeanParser {
                 throw new BeanCodeGenException(
                         "Invalid bean style: Light beans must be declared final", file, beanDefIndex);
             }
+            if (data.isBeanStyleMinimal() && !data.isTypeFinal()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Minimal beans must be declared final", file, beanDefIndex);
+            }
             if (data.isFactoryRequired() && !data.isRootClass()) {
                 throw new BeanCodeGenException(
                         "Invalid bean style: Factory method only allowed when bean has no bean superclass", file, beanDefIndex);
@@ -216,6 +220,10 @@ class BeanParser {
             if (data.isBeanStyleLight() && !data.isTypeFinal()) {
                 throw new BeanCodeGenException(
                         "Invalid bean style: Light beans must be declared final", file, beanDefIndex);
+            }
+            if (data.isBeanStyleMinimal() && !data.isTypeFinal()) {
+                throw new BeanCodeGenException(
+                        "Invalid bean style: Minimal beans must be declared final", file, beanDefIndex);
             }
             if (data.isFactoryRequired()) {
                 throw new BeanCodeGenException(
