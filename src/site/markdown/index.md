@@ -106,21 +106,23 @@ Further integration is included for MongoDB and Freemarker.
 
 ## <i></i> Releases
 
-[Release 1.14](download.html) is the current release.
-This release is considered stable and worthy of the 1.x tag.
+[Release 2.0](download.html) is the current release.
+This release is considered stable and worthy of the 2.x tag.
 
-Joda-Beans requires Java SE 6 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
+Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-beans%7C1.14%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-beans%7C2.0%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-beans</artifactId>
-  <version>1.14</version>
+  <version>2.0</version>
 </dependency>
 ```
+
+For Java SE 6 compatibility, use the [release 1.14](download.html).
 
 See the [related projects](related.html) page for Maven, Gradle and IntelliJ integration.
 
