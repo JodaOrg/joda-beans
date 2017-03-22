@@ -69,10 +69,15 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * @param <B>  the type of the bean
      * @param beanType  the bean type, not null
      * @param lookup  the method handle lookup, not null
+     * @param defaultValues  the default values, not null
      * @return the meta-bean, not null
      */
-    public static <B extends Bean> LightMetaBean<B> of(Class<B> beanType, MethodHandles.Lookup lookup) {
-        return new LightMetaBean<>(beanType, lookup);
+    public static <B extends Bean> LightMetaBean<B> of(
+            Class<B> beanType,
+            MethodHandles.Lookup lookup,
+            Object... defaultValues) {
+
+        return new LightMetaBean<>(beanType, lookup, defaultValues);
     }
 
     /**
@@ -80,12 +85,15 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * 
      * @param beanType  the bean type, not null
      */
-    private LightMetaBean(Class<T> beanType, MethodHandles.Lookup lookup) {
+    private LightMetaBean(Class<T> beanType, MethodHandles.Lookup lookup, Object[] defaultValues) {
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
         if (lookup == null) {
             throw new NullPointerException("Lookup must not be null");
+        }
+        if (defaultValues == null) {
+            throw new NullPointerException("Default values must not be null");
         }
         this.beanType = beanType;
         Map<String, MetaProperty<?>> map = new HashMap<>();
@@ -126,6 +134,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                 }
             }
         }
+        if (defaultValues.length != map.size()) {
+            throw new IllegalArgumentException("Default values must match number of properties");
+        }
         // derived
         Method[] methods = beanType.getDeclaredMethods();
         for (Method method : methods) {
@@ -141,11 +152,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                 map.put(propertyName, mp);
             }
         }
-        
         this.metaPropertyMap = Collections.unmodifiableMap(map);
-        Constructor<T> constructor = findConstructor(beanType, propertyTypes);
         this.constructor = findConstructorHandle(beanType, lookup);
-        this.constructionData = buildConstructionData(constructor);
+        this.constructionData = defaultValues;
     }
 
     // finds a method on class or public method on super-type
@@ -245,33 +254,6 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
             return match;
         }
-    }
-
-    // array used to collect data when building
-    // needs to have default values for primitives
-    private static Object[] buildConstructionData(Constructor<?> constructor) {
-        Class<?>[] parameterTypes = constructor.getParameterTypes();
-        Object[] args = new Object[parameterTypes.length];
-        for (int i = 0; i < parameterTypes.length; i++) {
-            if (parameterTypes[i] == boolean.class) {
-                args[i] = false;
-            } else if (parameterTypes[i] == int.class) {
-                args[i] = (int) 0;
-            } else if (parameterTypes[i] == long.class) {
-                args[i] = (long) 0;
-            } else if (parameterTypes[i] == short.class) {
-                args[i] = (short) 0;
-            } else if (parameterTypes[i] == byte.class) {
-                args[i] = (byte) 0;
-            } else if (parameterTypes[i] == float.class) {
-                args[i] = (float) 0;
-            } else if (parameterTypes[i] == double.class) {
-                args[i] = (double) 0;
-            } else if (parameterTypes[i] == char.class) {
-                args[i] = (char) 0;
-            }
-        }
-        return args;
     }
 
     //-----------------------------------------------------------------------

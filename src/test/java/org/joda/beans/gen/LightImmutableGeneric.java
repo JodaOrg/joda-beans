@@ -53,7 +53,11 @@ public final class LightImmutableGeneric<T extends Number> implements ImmutableB
      * The meta-bean for {@code LightImmutableGeneric}.
      */
     private static final MetaBean META_BEAN =
-            LightMetaBean.of(LightImmutableGeneric.class, MethodHandles.lookup());
+            LightMetaBean.of(
+                    LightImmutableGeneric.class,
+                    MethodHandles.lookup(),
+                    null,
+                    ImmutableList.of());
 
     /**
      * The meta-bean for {@code LightImmutableGeneric}.

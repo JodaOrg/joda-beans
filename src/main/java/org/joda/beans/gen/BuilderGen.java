@@ -36,6 +36,14 @@ abstract class BuilderGen {
     abstract List<String> generateField(String indent, PropertyData prop);
 
     /**
+     * Generates the init string.
+     * 
+     * @param prop  the property data, not null
+     * @return the generated code, not null
+     */
+    abstract String generateInit(PropertyData prop);
+
+    /**
      * Generates the builder exposed type.
      * 
      * @param prop  the property data, not null
@@ -66,6 +74,10 @@ abstract class BuilderGen {
             return list;
         }
         @Override
+        String generateInit(PropertyData prop) {
+            return init;
+        }
+        @Override
         String generateType(PropertyData prop) {
             if (!"smart".equals(prop.getBuilderTypeStyle())) {
                 return prop.getBuilderType().replace("<>", prop.getTypeGenerics());
@@ -84,6 +96,10 @@ abstract class BuilderGen {
             return list;
         }
         @Override
+        String generateInit(PropertyData prop) {
+            return defaultType(prop);
+        }
+        @Override
         String generateType(PropertyData prop) {
             return prop.getBuilderType().replace("<>", prop.getTypeGenerics());
         }
@@ -95,6 +111,31 @@ abstract class BuilderGen {
         List<String> generateField(String indent, PropertyData prop) {
             return Collections.emptyList();
         }
+        @Override
+        String generateInit(PropertyData prop) {
+            return defaultType(prop);
+        }
+    }
+
+    private static String defaultType(PropertyData prop) {
+        if (prop.getType().equals("long")) {
+            return "0L";
+        } else if (prop.getType().equals("int")) {
+            return "0";
+        } else if (prop.getType().equals("short")) {
+            return "Short.valueOf(0)";
+        } else if (prop.getType().equals("byte")) {
+            return "Byte.valueOf(0)";
+        } else if (prop.getType().equals("double")) {
+            return "0d";
+        } else if (prop.getType().equals("float")) {
+            return "0f";
+        } else if (prop.getType().equals("char")) {
+            return "Character.valueOf((char) 0)";
+        } else if (prop.getType().equals("boolean")) {
+            return "Boolean.FALSE";
+        }
+        return "null";
     }
 
 }

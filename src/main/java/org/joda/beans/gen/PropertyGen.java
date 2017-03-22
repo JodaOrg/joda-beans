@@ -185,6 +185,10 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
+    String generateInit() {
+        return data.getBuilderGen().generateInit(data);
+    }
+
     List<String> generateBuilderField() {
         return data.getBuilderGen().generateField("\t\t", data);
     }

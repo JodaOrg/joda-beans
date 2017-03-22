@@ -97,7 +97,17 @@ public final class LightImmutable implements ImmutableBean, Serializable {
      * The meta-bean for {@code LightImmutable}.
      */
     private static final TypedMetaBean<LightImmutable> META_BEAN =
-            LightMetaBean.of(LightImmutable.class, MethodHandles.lookup());
+            LightMetaBean.of(
+                    LightImmutable.class,
+                    MethodHandles.lookup(),
+                    0,
+                    Boolean.FALSE,
+                    null,
+                    null,
+                    null,
+                    null,
+                    ImmutableList.of(),
+                    null);
 
     /**
      * The meta-bean for {@code LightImmutable}.

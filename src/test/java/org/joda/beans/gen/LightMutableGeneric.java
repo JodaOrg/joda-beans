@@ -25,8 +25,10 @@ import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyDefinition;
-import org.joda.beans.impl.light.LightMetaBean;
 import org.joda.beans.TypedMetaBean;
+import org.joda.beans.impl.light.LightMetaBean;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Mock light bean, used for testing.
@@ -52,7 +54,11 @@ public final class LightMutableGeneric<T extends Number> implements Bean, Serial
      * The meta-bean for {@code LightMutableGeneric}.
      */
     private static final MetaBean META_BEAN =
-            LightMetaBean.of(LightMutableGeneric.class, MethodHandles.lookup());
+            LightMetaBean.of(
+                    LightMutableGeneric.class,
+                    MethodHandles.lookup(),
+                    null,
+                    ImmutableList.of());
 
     /**
      * The meta-bean for {@code LightMutableGeneric}.

@@ -436,17 +436,26 @@ class BeanGen {
                 data.ensureImport(TypedMetaBean.class);
                 insertRegion.add("\tprivate static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
             }
+            List<PropertyGen> nonDerived = nonDerivedProperties();
             if (data.isBeanStyleLight()) {
                 // light
                 data.ensureImport(LightMetaBean.class);
                 data.ensureImport(MethodHandles.class);
-                insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
+                insertRegion.add("\t\t\tLightMetaBean.of(");
+                insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
+                if (nonDerived.isEmpty()) {
+                    insertRegion.add("\t\t\t\t\tMethodHandles.lookup());");
+                } else {
+                    insertRegion.add("\t\t\t\t\tMethodHandles.lookup(),");
+                    for (int i = 0; i < nonDerived.size(); i++) {
+                        insertRegion.add(
+                                "\t\t\t\t\t" + nonDerived.get(i).generateInit() + (i < nonDerived.size() - 1 ? "," : ");"));
+                    }
+                }
             } else {
-                // minimal
                 data.ensureImport(MinimalMetaBean.class);
                 insertRegion.add("\t\t\tMinimalMetaBean.of(");
                 insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
-                List<PropertyGen> nonDerived = nonDerivedProperties();
                 String builderLambda = "\t\t\t\t\t() -> new " + data.getTypeRaw() + ".Builder()";
                 if (data.isSkipBuilderGeneration()) {
                     data.ensureImport(BasicBeanBuilder.class);
