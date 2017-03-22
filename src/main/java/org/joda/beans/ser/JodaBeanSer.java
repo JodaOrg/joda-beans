@@ -22,6 +22,8 @@ import org.joda.beans.ser.json.JodaBeanJsonReader;
 import org.joda.beans.ser.json.JodaBeanJsonWriter;
 import org.joda.beans.ser.json.JodaBeanSimpleJsonReader;
 import org.joda.beans.ser.json.JodaBeanSimpleJsonWriter;
+import org.joda.beans.ser.map.JodaBeanSimpleMapReader;
+import org.joda.beans.ser.map.JodaBeanSimpleMapWriter;
 import org.joda.beans.ser.xml.JodaBeanXmlReader;
 import org.joda.beans.ser.xml.JodaBeanXmlWriter;
 import org.joda.convert.StringConvert;
@@ -321,6 +323,29 @@ public final class JodaBeanSer {
      */
     public JodaBeanSimpleJsonReader simpleJsonReader() {
         return new JodaBeanSimpleJsonReader(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a simple in-memory {@code Map} writer.
+     * <p>
+     * A new instance of the writer must be created for each message.
+     * 
+     * @return the simple map writer, not null
+     */
+    public JodaBeanSimpleMapWriter simpleMapWriter() {
+        return new JodaBeanSimpleMapWriter(this);
+    }
+
+    /**
+     * Creates a simple in-memory {@code Map} reader.
+     * <p>
+     * A new instance of the reader must be created for each message.
+     * 
+     * @return the simple map reader, not null
+     */
+    public JodaBeanSimpleMapReader simpleMapReader() {
+        return new JodaBeanSimpleMapReader(this);
     }
 
     //-----------------------------------------------------------------------

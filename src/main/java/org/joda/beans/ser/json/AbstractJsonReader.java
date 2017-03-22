@@ -98,6 +98,7 @@ abstract class AbstractJsonReader {
                 // property name
                 propName = input.acceptObjectKey(event);
                 MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
+                // ignore unknown properties
                 if (metaProp == null) {
                     input.skipData();
                 } else {

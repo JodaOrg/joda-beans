@@ -138,58 +138,58 @@ public class TestSerializeJsonSimple {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_writer_nullSettings() {
-        new JodaBeanJsonWriter(null);
+        new JodaBeanSimpleJsonWriter(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_writer_write1_nullBean() {
-        new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null);
+        new JodaBeanSimpleJsonWriter(JodaBeanSer.PRETTY).write(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_writer_write2_nullBean() throws IOException {
-        new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null, new StringBuilder());
+        new JodaBeanSimpleJsonWriter(JodaBeanSer.PRETTY).write(null, new StringBuilder());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_writer_write2_nullAppendable() throws IOException {
-        new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(new FlexiBean(), null);
+        new JodaBeanSimpleJsonWriter(JodaBeanSer.PRETTY).write(new FlexiBean(), null);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_nullSettings() {
-        new JodaBeanJsonReader(null);
+        new JodaBeanSimpleJsonReader(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_readReader_null() {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null);
+        new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((Reader) null, FlexiBean.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_readString_null() {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null);
+        new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((String) null, FlexiBean.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_readReaderType_nullReader() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null, Bean.class);
+        new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((Reader) null, Bean.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_readReaderType_nullType() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read(new StringReader(""), null);
+        new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read(new StringReader(""), null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_readStringType_nullString() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null, Bean.class);
+        new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((String) null, Bean.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_reader_readStringType_nullType() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read("", null);
+        new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read("", null);
     }
 
 }
