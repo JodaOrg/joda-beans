@@ -31,6 +31,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.light.LightMetaBean;
 
 import com.google.common.base.Optional;
+import java.lang.invoke.MethodHandles;
 
 /**
  * Mock light bean, used for testing.
@@ -92,7 +93,8 @@ public final class LightMutable implements Bean, Serializable {
     /**
      * The meta-bean for {@code LightMutable}.
      */
-    private static final MetaBean META_BEAN = LightMetaBean.of(LightMutable.class);
+    private static final MetaBean META_BEAN =
+            LightMetaBean.of(LightMutable.class, MethodHandles.lookup());
 
     /**
      * The meta-bean for {@code LightMutable}.

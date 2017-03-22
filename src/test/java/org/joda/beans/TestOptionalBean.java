@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 import com.google.common.base.Optional;
 
 /**
- * Test RWOnlyBean.
+ * Test ImmOptional.
  */
 @Test
 public class TestOptionalBean extends RWOnlyBean {
@@ -50,6 +50,19 @@ public class TestOptionalBean extends RWOnlyBean {
         assertEquals(test.getOptDoubleGetter(), Optional.of(1.2d));
         assertEquals(test.getOptIntGetter(), Optional.of(3));
         assertEquals(test.getOptLongGetter(), Optional.of(4L));
+    }
+
+    public void test_optional_property() {
+        ImmOptional test = ImmOptional.builder()
+            .optStringGetter("A")
+            .build();
+        assertEquals(test.getOptStringGetter(), Optional.of("A"));
+        MetaProperty<Object> mp2 = test.metaBean().metaProperty("optStringGetter");
+        assertEquals(mp2.propertyType(), String.class);
+        assertEquals(mp2.propertyGenericType(), String.class);
+        assertEquals(mp2.declaringType(), ImmOptional.class);
+        assertEquals(mp2.get(test), "A");
+        assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
     }
 
 }

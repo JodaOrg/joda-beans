@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -409,10 +410,12 @@ class BeanGen {
         if (data.isBeanStyleLight()) {
             data.ensureImport(MetaBean.class);
             data.ensureImport(LightMetaBean.class);
+            data.ensureImport(MethodHandles.class);
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t */");
-            insertRegion.add("\tprivate static final MetaBean META_BEAN = LightMetaBean.of(" + data.getTypeRaw() + ".class);");
+            insertRegion.add("\tprivate static final MetaBean META_BEAN =");
+            insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
             insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
