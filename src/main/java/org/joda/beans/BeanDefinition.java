@@ -38,6 +38,8 @@ public @interface BeanDefinition {
      * Set to 'minimal' to generate a minimal amount of code.
      * Set to 'full' to generate the full code.
      * Set to 'light' to generate a light immutable bean using reflection internally.
+     * 
+     * @return the style, defaulted to 'smart'
      */
     String style() default "smart";
 
@@ -51,6 +53,8 @@ public @interface BeanDefinition {
      * Set to 'protected' to generate a protected constructor.
      * Set to 'public' to generate a public constructor.
      * Set to 'public@ConstructorProperties' to generate a public constructor.
+     * 
+     * @return the constructor scope, defaulted to 'smart'
      */
     String constructorScope() default "smart";
 
@@ -61,6 +65,8 @@ public @interface BeanDefinition {
      * Set to 'private' to generate a private meta-bean.
      * Set to 'package' to generate a package-scoped meta-bean.
      * Set to 'public' to generate a public meta-bean.
+     * 
+     * @return the meta scope, defaulted to 'smart'
      */
     String metaScope() default "smart";
 
@@ -72,6 +78,8 @@ public @interface BeanDefinition {
      * Set to 'private' to generate a private builder.
      * Set to 'package' to generate a package-scoped builder.
      * Set to 'public' to generate a public builder.
+     * 
+     * @return the builder scope, defaulted to 'smart'
      */
     String builderScope() default "smart";
 
@@ -80,6 +88,8 @@ public @interface BeanDefinition {
      * <p>
      * By default, this is an empty string and no factory is generated.
      * Set to 'of' to generate a factory method named 'of.
+     * 
+     * @return the factory name, defaulted to ''
      */
     String factoryName() default "";
 
@@ -88,6 +98,8 @@ public @interface BeanDefinition {
      * <p>
      * This is needed to add information that cannot be derived.
      * Set to 'immutable' for a subclass of an immutable bean.
+     * 
+     * @return the hierarchy, defaulted to ''
      */
     String hierarchy() default "";
 
@@ -103,6 +115,8 @@ public @interface BeanDefinition {
      * <li>'smart' - process intelligently, generating it for mutable and not generating for immutable
      * <li>'generate' - generate the clone method
      * </ul>
+     * 
+     * @return the clone style, defaulted to 'smart'
      */
     String cloneStyle() default "smart";
 
@@ -111,6 +125,8 @@ public @interface BeanDefinition {
      * <p>
      * Setting this to true will cause the hash code to be cached using the racy single check idiom.
      * The setting only applies to immutable beans.
+     * 
+     * @return true if the hash code is to be cached
      */
     boolean cacheHashCode() default false;
 

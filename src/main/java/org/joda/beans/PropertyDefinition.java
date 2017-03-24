@@ -41,6 +41,8 @@ public @interface PropertyDefinition {
      * will both work, as will getting and setting via an immutable bean builder.
      * <p>
      * This attribute is most useful in handling change from serialized forms.
+     * 
+     * @return the alias of the property, defaulted to ''
      */
     String alias() default "";
 
@@ -71,6 +73,8 @@ public @interface PropertyDefinition {
      * <li>'field' - generates direct access to the field, enabling a weird manual getter
      * <li>'manual' - a method named getXxx() must be manually provided at package scope or greater
      * </ul>
+     * 
+     * @return the getter style, defaulted to 'smart'
      */
     String get() default "smart";
 
@@ -107,6 +111,8 @@ public @interface PropertyDefinition {
      * '$value' for the value to copy from.<br/>
      * '&lt;&gt;' for the generics of the type including angle brackets.<br/>
      * '\n' for a new line (all lines must then include semi-colons).<br/>
+     * 
+     * @return the setter style, defaulted to 'smart'
      */
     String set() default "smart";
 
@@ -114,6 +120,8 @@ public @interface PropertyDefinition {
      * Whether the generated getter should be declared with the {@code Override} annotation.
      * <p>
      * By default, the annotation is not added.
+     * 
+     * @return true to override the generated get method
      */
     boolean overrideGet() default false;
 
@@ -121,6 +129,8 @@ public @interface PropertyDefinition {
      * Whether the generated setter should be declared with the {@code Override} annotation.
      * <p>
      * By default, the annotation is not added.
+     * 
+     * @return true to override the generated set method
      */
     boolean overrideSet() default false;
 
@@ -134,6 +144,8 @@ public @interface PropertyDefinition {
      * that should be used in public methods such as getters and setters.
      * <p>
      * By default, the declared type will be used as the exposed type.
+     * 
+     * @return the exposed type, defaulted to 'smart'
      */
     String type() default "smart";
 
@@ -149,6 +161,8 @@ public @interface PropertyDefinition {
      * By default, the declared type will be used as the exposed type.
      * <p>
      * This is typically used to add '? extends' to collection types.
+     * 
+     * @return the builder type, defaulted to 'smart'
      */
     String builderType() default "smart";
 
@@ -165,6 +179,8 @@ public @interface PropertyDefinition {
      * <li>'getter' - include in equals and hashCode using the getter
      * <li>'field' - include in equals and hashCode using the field
      * </ul>
+     * 
+     * @return the equals/hashCode style, defaulted to 'smart'
      */
     String equalsHashCodeStyle() default "smart";
 
@@ -181,6 +197,8 @@ public @interface PropertyDefinition {
      * <li>'getter' - include in equals and hashCode using the getter
      * <li>'field' - include in equals and hashCode using the field
      * </ul>
+     * 
+     * @return the toString style, defaulted to 'smart'
      */
     String toStringStyle() default "smart";
 
@@ -207,6 +225,8 @@ public @interface PropertyDefinition {
      *  calls JodaBeanUtils.notEmpty() which throws an IllegalArgumentException
      * <li>'{className}.{staticMethodName}' - a custom validation method, described above
      * </ul>
+     * 
+     * @return the validation, defaulted to ''
      */
     String validate() default "";
 
