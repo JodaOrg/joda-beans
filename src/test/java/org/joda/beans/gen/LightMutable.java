@@ -75,6 +75,11 @@ public final class LightMutable implements Bean, Serializable {
      */
     @PropertyDefinition(get = "optionalGuava")
     private Currency currency;
+    /**
+     * The hidden text.
+     */
+    @PropertyDefinition(get = "")
+    private String hiddenText;
 
     //-----------------------------------------------------------------------
     // manual getter with a different name
@@ -102,6 +107,7 @@ public final class LightMutable implements Bean, Serializable {
                     null,
                     null,
                     ImmutableList.of(),
+                    null,
                     null);
 
     /**
@@ -130,6 +136,7 @@ public final class LightMutable implements Bean, Serializable {
      * @param city  the value of the property, not null
      * @param list  the value of the property, not null
      * @param currency  the value of the property
+     * @param hiddenText  the value of the property
      */
     LightMutable(
             int number,
@@ -138,7 +145,8 @@ public final class LightMutable implements Bean, Serializable {
             String town,
             String city,
             List<String> list,
-            Currency currency) {
+            Currency currency,
+            String hiddenText) {
         setNumber(number);
         setFlag(flag);
         setStreet(street);
@@ -146,6 +154,7 @@ public final class LightMutable implements Bean, Serializable {
         setCity(city);
         setList(list);
         setCurrency(currency);
+        setHiddenText(hiddenText);
     }
 
     @Override
@@ -269,6 +278,15 @@ public final class LightMutable implements Bean, Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Sets the hidden text.
+     * @param hiddenText  the new value of the property
+     */
+    public void setHiddenText(String hiddenText) {
+        this.hiddenText = hiddenText;
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public LightMutable clone() {
         return JodaBeanUtils.cloneAlways(this);
@@ -287,7 +305,8 @@ public final class LightMutable implements Bean, Serializable {
                     JodaBeanUtils.equal(town, other.town) &&
                     JodaBeanUtils.equal(getCity(), other.getCity()) &&
                     JodaBeanUtils.equal(getList(), other.getList()) &&
-                    JodaBeanUtils.equal(currency, other.currency);
+                    JodaBeanUtils.equal(currency, other.currency) &&
+                    JodaBeanUtils.equal(hiddenText, other.hiddenText);
         }
         return false;
     }
@@ -302,12 +321,13 @@ public final class LightMutable implements Bean, Serializable {
         hash = hash * 31 + JodaBeanUtils.hashCode(getCity());
         hash = hash * 31 + JodaBeanUtils.hashCode(getList());
         hash = hash * 31 + JodaBeanUtils.hashCode(currency);
+        hash = hash * 31 + JodaBeanUtils.hashCode(hiddenText);
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(256);
+        StringBuilder buf = new StringBuilder(288);
         buf.append("LightMutable{");
         buf.append("number").append('=').append(getNumber()).append(',').append(' ');
         buf.append("flag").append('=').append(isFlag()).append(',').append(' ');
@@ -315,7 +335,8 @@ public final class LightMutable implements Bean, Serializable {
         buf.append("town").append('=').append(town).append(',').append(' ');
         buf.append("city").append('=').append(getCity()).append(',').append(' ');
         buf.append("list").append('=').append(getList()).append(',').append(' ');
-        buf.append("currency").append('=').append(JodaBeanUtils.toString(currency));
+        buf.append("currency").append('=').append(currency).append(',').append(' ');
+        buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText));
         buf.append('}');
         return buf.toString();
     }

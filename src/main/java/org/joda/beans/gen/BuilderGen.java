@@ -36,6 +36,14 @@ abstract class BuilderGen {
     abstract List<String> generateField(String indent, PropertyData prop);
 
     /**
+     * Is special initialization needed.
+     * 
+     * @param prop  the property data, not null
+     * @return true if special
+     */
+    abstract boolean isSpecialInit(PropertyData prop);
+
+    /**
      * Generates the init string.
      * 
      * @param prop  the property data, not null
@@ -74,6 +82,10 @@ abstract class BuilderGen {
             return list;
         }
         @Override
+        boolean isSpecialInit(PropertyData prop) {
+            return true;
+        }
+        @Override
         String generateInit(PropertyData prop) {
             return init;
         }
@@ -96,6 +108,10 @@ abstract class BuilderGen {
             return list;
         }
         @Override
+        boolean isSpecialInit(PropertyData prop) {
+            return false;
+        }
+        @Override
         String generateInit(PropertyData prop) {
             return defaultType(prop);
         }
@@ -110,6 +126,10 @@ abstract class BuilderGen {
         @Override
         List<String> generateField(String indent, PropertyData prop) {
             return Collections.emptyList();
+        }
+        @Override
+        boolean isSpecialInit(PropertyData prop) {
+            return false;
         }
         @Override
         String generateInit(PropertyData prop) {

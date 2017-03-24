@@ -185,6 +185,10 @@ class PropertyGen {
     }
 
     //-----------------------------------------------------------------------
+    boolean isSpecialInit() {
+        return data.getBuilderGen().isSpecialInit(data);
+    }
+
     String generateInit() {
         return data.getBuilderGen().generateInit(data);
     }

@@ -65,11 +65,14 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * <p>
      * The properties will be determined using reflection to find the
      * {@link PropertyDefinition} annotation.
+     * <p>
+     * The default values must be provided if they cannot be determined automatically.
+     * Default values for primitives are determined automatically, but empty lists and maps are not.
      * 
      * @param <B>  the type of the bean
      * @param beanType  the bean type, not null
      * @param lookup  the method handle lookup, not null
-     * @param defaultValues  the default values, not null
+     * @param defaultValues  the default values, one for each property, not null
      * @return the meta-bean, not null
      */
     public static <B extends Bean> LightMetaBean<B> of(
@@ -103,10 +106,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
                 PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
                 String name = field.getName();
-                if (pdef.get().equals("field") || pdef.get().startsWith("optional")) {
+                if (pdef.get().equals("field") || pdef.get().startsWith("optional") || pdef.get().equals("")) {
                     map.put(name, LightMetaProperty.of(this, field, lookup, name, propertyTypes.size()));
-                    propertyTypes.add(field.getType());
-                } else if (!pdef.get().equals("")) {
+                } else {
                     String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
                     Method getMethod = null;
                     if (field.getType() == boolean.class) {
@@ -130,11 +132,14 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                         }
                     }
                     map.put(name, LightMetaProperty.of(this, field, getMethod, setMethod, lookup, name, propertyTypes.size()));
-                    propertyTypes.add(field.getType());
                 }
+                propertyTypes.add(field.getType());
             }
         }
-        if (defaultValues.length != map.size()) {
+        Constructor<?> constructor = findConstructor(beanType, propertyTypes);
+        if (defaultValues.length == 0) {
+            defaultValues = buildConstructionData(constructor);
+        } else if (defaultValues.length != map.size()) {
             throw new IllegalArgumentException("Default values must match number of properties");
         }
         // derived
@@ -153,7 +158,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
-        this.constructor = findConstructorHandle(beanType, lookup);
+        this.constructor = findConstructorHandle(beanType, lookup, constructor);
         this.constructionData = defaultValues;
     }
 
@@ -195,23 +200,16 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     }
 
     // finds constructor which matches types exactly
-    public static <T extends Bean> MethodHandle findConstructorHandle(Class<T> beanType, MethodHandles.Lookup lookup) {
-        Field[] fields = beanType.getDeclaredFields();
-        List<Class<?>> propertyTypes = new ArrayList<>();
-        for (Field field : fields) {
-            if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
-                PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
-                if (!pdef.get().equals("")) {
-                    propertyTypes.add(field.getType());
-                }
-            }
-        }
-        Constructor<?> constructor = findConstructor(beanType, propertyTypes);
+    public static <T extends Bean> MethodHandle findConstructorHandle(
+            Class<T> beanType,
+            MethodHandles.Lookup lookup,
+            Constructor<?> constructor) {
+
         try {
             // spreader allows an Object[] to invoke the positional arguments
             MethodType constructorType = MethodType.methodType(Void.TYPE, constructor.getParameterTypes());
             MethodHandle baseHandle = lookup.findConstructor(beanType, constructorType)
-                    .asSpreader(Object[].class, propertyTypes.size());
+                    .asSpreader(Object[].class, constructor.getParameterTypes().length);
             // change the return type so caller can use invokeExact()
             return baseHandle.asType(baseHandle.type().changeReturnType(Bean.class));
         } catch (NoSuchMethodException ex) {
@@ -254,6 +252,34 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
             return match;
         }
+    }
+
+    // array used to collect data when building
+    // needs to have default values for primitives
+    // note that this does not handle empty collections/maps
+    private static Object[] buildConstructionData(Constructor<?> constructor) {
+        Class<?>[] parameterTypes = constructor.getParameterTypes();
+        Object[] args = new Object[parameterTypes.length];
+        for (int i = 0; i < parameterTypes.length; i++) {
+            if (parameterTypes[i] == boolean.class) {
+                args[i] = false;
+            } else if (parameterTypes[i] == int.class) {
+                args[i] = (int) 0;
+            } else if (parameterTypes[i] == long.class) {
+                args[i] = (long) 0;
+            } else if (parameterTypes[i] == short.class) {
+                args[i] = (short) 0;
+            } else if (parameterTypes[i] == byte.class) {
+                args[i] = (byte) 0;
+            } else if (parameterTypes[i] == float.class) {
+                args[i] = (float) 0;
+            } else if (parameterTypes[i] == double.class) {
+                args[i] = (double) 0;
+            } else if (parameterTypes[i] == char.class) {
+                args[i] = (char) 0;
+            }
+        }
+        return args;
     }
 
     //-----------------------------------------------------------------------

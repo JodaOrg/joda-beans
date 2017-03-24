@@ -49,6 +49,7 @@ public class TestLight {
                 .set("owner", person)
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
+                .set("hiddenText", "wow")
                 .build();
         
         assertEquals(bean.getNumber(), 12);
@@ -59,7 +60,7 @@ public class TestLight {
         assertEquals(bean.getList(), ImmutableList.of());
         
         assertEquals(bean.metaBean().beanType(), LightImmutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 9);
+        assertEquals(bean.metaBean().metaPropertyCount(), 10);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
         assertEquals(bean.metaBean().metaPropertyExists("address"), true);
@@ -85,6 +86,13 @@ public class TestLight {
         assertEquals(mp3.get(bean), "12 Park Lane Smallville");
         assertEquals(mp3.style(), PropertyStyle.DERIVED);
         
+        MetaProperty<Object> mp4 = bean.metaBean().metaProperty("hiddenText");
+        assertEquals(mp4.propertyType(), String.class);
+        assertEquals(mp4.propertyGenericType(), String.class);
+        assertEquals(mp4.declaringType(), LightImmutable.class);
+        assertEquals(mp4.get(bean), "wow");
+        assertEquals(mp4.style(), PropertyStyle.IMMUTABLE);
+        
         assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
         assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
         
@@ -103,6 +111,7 @@ public class TestLight {
                 .set(StandaloneMetaProperty.of("city", LightMutable.meta(), String.class), "Smallville")
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
+                .set("hiddenText", "wow")
                 .build();
         
         assertEquals(bean.getNumber(), 12);
@@ -122,7 +131,7 @@ public class TestLight {
         assertEquals(bean.getCity(), "London");
         
         assertEquals(bean.metaBean().beanType(), LightMutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 8);
+        assertEquals(bean.metaBean().metaPropertyCount(), 9);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
         assertEquals(bean.metaBean().metaPropertyExists("address"), true);
@@ -147,6 +156,13 @@ public class TestLight {
         assertEquals(mp3.declaringType(), LightMutable.class);
         assertEquals(mp3.get(bean), "12 Park Lane London");
         assertEquals(mp3.style(), PropertyStyle.DERIVED);
+        
+        MetaProperty<Object> mp4 = bean.metaBean().metaProperty("hiddenText");
+        assertEquals(mp4.propertyType(), String.class);
+        assertEquals(mp4.propertyGenericType(), String.class);
+        assertEquals(mp4.declaringType(), LightMutable.class);
+        assertEquals(mp4.get(bean), "wow");
+        assertEquals(mp4.style(), PropertyStyle.READ_WRITE);
         
         assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
         assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));

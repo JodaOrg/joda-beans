@@ -441,11 +441,12 @@ class BeanGen {
                 // light
                 data.ensureImport(LightMetaBean.class);
                 data.ensureImport(MethodHandles.class);
-                insertRegion.add("\t\t\tLightMetaBean.of(");
-                insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
-                if (nonDerived.isEmpty()) {
-                    insertRegion.add("\t\t\t\t\tMethodHandles.lookup());");
+                boolean specialInit = nonDerived.stream().filter(p -> p.isSpecialInit()).findAny().isPresent();
+                if (nonDerived.isEmpty() || !specialInit) {
+                    insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
                 } else {
+                    insertRegion.add("\t\t\tLightMetaBean.of(");
+                    insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
                     insertRegion.add("\t\t\t\t\tMethodHandles.lookup(),");
                     for (int i = 0; i < nonDerived.size(); i++) {
                         insertRegion.add(
