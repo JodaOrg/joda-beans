@@ -15,16 +15,14 @@
  */
 package org.joda.beans.impl.reflection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.BasicBeanBuilder;
 
 /**
@@ -38,67 +36,15 @@ import org.joda.beans.impl.BasicBeanBuilder;
  * Only one method from {@link Bean} needs to be implemented, which simply returns the meta-bean.
  * 
  * @author Stephen Colebourne
+ * @param <T>  the type of the bean
  */
-public final class ReflectiveMetaBean implements MetaBean {
+public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     /** The bean type. */
-    private final Class<? extends Bean> beanType;
+    private final Class<T> beanType;
     /** The meta-property instances of the bean. */
     private final Map<String, MetaProperty<?>> metaPropertyMap;
 
-    /**
-     * Create a meta-bean, reflecting to find meta properties.
-     * 
-     * @param <B>  the type of the bean
-     * @param beanClass  the bean class, not null
-     * @return the meta-bean, not null
-     * @deprecated Use factory that accepts the property names
-     */
-    @Deprecated
-    public static <B extends Bean> ReflectiveMetaBean of(Class<B> beanClass) {
-        return new ReflectiveMetaBean(beanClass);
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param beanType  the bean type, not null
-     * @deprecated Use constructor that accepts the property names
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    private ReflectiveMetaBean(Class<? extends Bean> beanType) {
-        if (beanType == null) {
-            throw new NullPointerException("Bean class must not be null");
-        }
-        this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<>();
-        Field[] fields = beanType.getDeclaredFields();
-        for (Field field : fields) {
-            if (MetaProperty.class.isAssignableFrom(field.getType()) && Modifier.isStatic(field.getModifiers())) {
-                field.setAccessible(true);
-                MetaProperty<Object> mp;
-                try {
-                    mp = (MetaProperty<Object>) field.get(null);
-                    if (mp instanceof ReflectiveMetaProperty) {
-                        ((ReflectiveMetaProperty<Object>) mp).setMetaBean(this);
-                    }
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
-                } catch (IllegalAccessException ex) {
-                    throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName(), ex);
-                }
-                if (mp == null) {
-                    throw new UnsupportedOperationException("MetaProperty cannot be created: " + field.getName() + ": Value must not be null");
-                }
-                map.put(mp.name(), mp);
-            }
-        }
-        
-        this.metaPropertyMap = Collections.unmodifiableMap(map);
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Create a meta-bean and meta properties.
      * <p>
@@ -109,8 +55,8 @@ public final class ReflectiveMetaBean implements MetaBean {
      * @param propertyNames  the property names, not null
      * @return the meta-bean, not null
      */
-    public static <B extends Bean> ReflectiveMetaBean of(Class<B> beanClass, String... propertyNames) {
-        return new ReflectiveMetaBean(beanClass, propertyNames);
+    public static <B extends Bean> ReflectiveMetaBean<B> of(Class<B> beanClass, String... propertyNames) {
+        return new ReflectiveMetaBean<>(beanClass, propertyNames);
     }
 
     /**
@@ -119,8 +65,7 @@ public final class ReflectiveMetaBean implements MetaBean {
      * @param beanType  the bean type, not null
      * @param propertyNames  the property names, not null
      */
-    @SuppressWarnings("deprecation")
-    private ReflectiveMetaBean(Class<? extends Bean> beanType, String[] propertyNames) {
+    private ReflectiveMetaBean(Class<T> beanType, String[] propertyNames) {
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
@@ -128,7 +73,7 @@ public final class ReflectiveMetaBean implements MetaBean {
             throw new NullPointerException("Property names must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         for (String name : propertyNames) {
             map.put(name, new ReflectiveMetaProperty<>(this, beanType, name));
         }
@@ -137,9 +82,9 @@ public final class ReflectiveMetaBean implements MetaBean {
 
     //-----------------------------------------------------------------------
     @Override
-    public BeanBuilder<Bean> builder() {
+    public BeanBuilder<T> builder() {
         try {
-            Bean bean = beanType.newInstance();
+            T bean = beanType.newInstance();
             return new BasicBeanBuilder<>(bean);
         } catch (InstantiationException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
@@ -149,7 +94,7 @@ public final class ReflectiveMetaBean implements MetaBean {
     }
 
     @Override
-    public Class<? extends Bean> beanType() {
+    public Class<T> beanType() {
         return beanType;
     }
 
@@ -162,7 +107,7 @@ public final class ReflectiveMetaBean implements MetaBean {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ReflectiveMetaBean) {
-            ReflectiveMetaBean other = (ReflectiveMetaBean) obj;
+            ReflectiveMetaBean<?> other = (ReflectiveMetaBean<?>) obj;
             return this.beanType.equals(other.beanType);
         }
         return false;

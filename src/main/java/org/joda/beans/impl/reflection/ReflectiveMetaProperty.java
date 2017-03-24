@@ -41,10 +41,8 @@ import org.joda.beans.impl.BasicMetaProperty;
  * 
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
- * @deprecated Obtain meta-property from {@link ReflectiveMetaBean} initialised using property names
  */
-@Deprecated
-public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
+final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The meta-bean. */
     private volatile MetaBean metaBean;
@@ -56,18 +54,6 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     private final Method getMethod;
     /** The setter. */
     private final Method setMethod;
-
-    /**
-     * Factory to create a meta-property avoiding duplicate generics.
-     * 
-     * @param <P>  the property type
-     * @param beanType  the bean type, not null
-     * @param propertyName  the property name, not empty
-     * @return the property, not null
-     */
-    public static <P> ReflectiveMetaProperty<P> of(Class<? extends Bean> beanType, String propertyName) {
-        return new ReflectiveMetaProperty<>(null, beanType, propertyName);
-    }
 
     /**
      * Constructor using {@code PropertyDescriptor} to find the get and set methods.

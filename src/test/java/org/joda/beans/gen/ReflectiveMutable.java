@@ -15,9 +15,9 @@
  */
 package org.joda.beans.gen;
 
+import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaBean;
-import org.joda.beans.impl.BasicBean;
+import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.reflection.ReflectiveMetaBean;
 
 /**
@@ -25,7 +25,7 @@ import org.joda.beans.impl.reflection.ReflectiveMetaBean;
  * 
  * @author Stephen Colebourne
  */
-public final class ReflectiveMutable extends BasicBean {
+public final class ReflectiveMutable implements Bean {
 
     /**
      * The number.
@@ -47,11 +47,11 @@ public final class ReflectiveMutable extends BasicBean {
     /**
      * The meta-bean.
      */
-    public static final MetaBean META_BEAN =
+    public static final TypedMetaBean<ReflectiveMutable> META_BEAN =
             ReflectiveMetaBean.of(ReflectiveMutable.class, "number", "flag", "street", "city");
 
     @Override
-    public MetaBean metaBean() {
+    public TypedMetaBean<ReflectiveMutable> metaBean() {
         return META_BEAN;
     }
 
