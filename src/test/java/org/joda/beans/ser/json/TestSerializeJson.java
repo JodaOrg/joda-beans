@@ -25,7 +25,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmEmpty;
-import org.joda.beans.gen.ImmKey1;
+import org.joda.beans.gen.ImmKey;
 import org.joda.beans.gen.ImmMappedKey;
 import org.joda.beans.gen.ImmOptional;
 import org.joda.beans.gen.ImmPerson;
@@ -288,9 +288,9 @@ public class TestSerializeJson {
     }
 
     public void test_readWriteInterfaceKeyMap() {
-        ImmKey1 key1 = ImmKey1.builder().name("Alpha").build();
+        ImmKey key1 = ImmKey.builder().name("Alpha").build();
         ImmPerson person1 = ImmPerson.builder().forename("Bob").surname("Builder").build();
-        ImmKey1 key2 = ImmKey1.builder().name("Beta").build();
+        ImmKey key2 = ImmKey.builder().name("Beta").build();
         ImmPerson person2 = ImmPerson.builder().forename("Dana").surname("Dash").build();
         ImmMappedKey mapped = ImmMappedKey.builder().data(ImmutableMap.of(key1, person1, key2, person2)).build();
         String json = JodaBeanSer.PRETTY.jsonWriter().write(mapped);

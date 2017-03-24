@@ -74,7 +74,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
     @PropertyDefinition
     private final String string;
     @PropertyDefinition
-    private final ImmKey1 bean;
+    private final ImmKey bean;
     @PropertyDefinition
     private final Object object1;
     @PropertyDefinition
@@ -88,13 +88,13 @@ public final class SimpleJson implements ImmutableBean, Serializable {
     @PropertyDefinition
     private final ImmutableList<String> stringList;
     @PropertyDefinition
-    private final ImmutableList<ImmKey1> beanList;
+    private final ImmutableList<ImmKey> beanList;
     @PropertyDefinition
     private final ImmutableMap<String, String> stringMap;
     @PropertyDefinition
     private final ImmutableMap<Integer, String> intKeyMap;
     @PropertyDefinition
-    private final ImmutableMap<String, ImmKey1> beanMap;
+    private final ImmutableMap<String, ImmKey> beanMap;
     @PropertyDefinition
     private final ImmutableMap<String, List<String>> listInMap;
     @PropertyDefinition
@@ -141,17 +141,17 @@ public final class SimpleJson implements ImmutableBean, Serializable {
             byte[] arrayByte,
             String[][] array2d,
             String string,
-            ImmKey1 bean,
+            ImmKey bean,
             Object object1,
             Object object2,
             Risk risk,
             RiskLevel riskLevel,
             Set<RiskLevel> riskLevels,
             List<String> stringList,
-            List<ImmKey1> beanList,
+            List<ImmKey> beanList,
             Map<String, String> stringMap,
             Map<Integer, String> intKeyMap,
-            Map<String, ImmKey1> beanMap,
+            Map<String, ImmKey> beanMap,
             Map<String, List<String>> listInMap,
             Map<String, List<Integer>> listNumericInMap) {
         this.primitiveChar = primitiveChar;
@@ -319,7 +319,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
      * Gets the bean.
      * @return the value of the property
      */
-    public ImmKey1 getBean() {
+    public ImmKey getBean() {
         return bean;
     }
 
@@ -382,7 +382,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
      * Gets the beanList.
      * @return the value of the property
      */
-    public ImmutableList<ImmKey1> getBeanList() {
+    public ImmutableList<ImmKey> getBeanList() {
         return beanList;
     }
 
@@ -409,7 +409,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
      * Gets the beanMap.
      * @return the value of the property
      */
-    public ImmutableMap<String, ImmKey1> getBeanMap() {
+    public ImmutableMap<String, ImmKey> getBeanMap() {
         return beanMap;
     }
 
@@ -621,8 +621,8 @@ public final class SimpleJson implements ImmutableBean, Serializable {
         /**
          * The meta-property for the {@code bean} property.
          */
-        private final MetaProperty<ImmKey1> bean = DirectMetaProperty.ofImmutable(
-                this, "bean", SimpleJson.class, ImmKey1.class);
+        private final MetaProperty<ImmKey> bean = DirectMetaProperty.ofImmutable(
+                this, "bean", SimpleJson.class, ImmKey.class);
         /**
          * The meta-property for the {@code object1} property.
          */
@@ -659,7 +659,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * The meta-property for the {@code beanList} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<ImmutableList<ImmKey1>> beanList = DirectMetaProperty.ofImmutable(
+        private final MetaProperty<ImmutableList<ImmKey>> beanList = DirectMetaProperty.ofImmutable(
                 this, "beanList", SimpleJson.class, (Class) ImmutableList.class);
         /**
          * The meta-property for the {@code stringMap} property.
@@ -677,7 +677,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * The meta-property for the {@code beanMap} property.
          */
         @SuppressWarnings({"unchecked", "rawtypes" })
-        private final MetaProperty<ImmutableMap<String, ImmKey1>> beanMap = DirectMetaProperty.ofImmutable(
+        private final MetaProperty<ImmutableMap<String, ImmKey>> beanMap = DirectMetaProperty.ofImmutable(
                 this, "beanMap", SimpleJson.class, (Class) ImmutableMap.class);
         /**
          * The meta-property for the {@code listInMap} property.
@@ -912,7 +912,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * The meta-property for the {@code bean} property.
          * @return the meta-property, not null
          */
-        public MetaProperty<ImmKey1> bean() {
+        public MetaProperty<ImmKey> bean() {
             return bean;
         }
 
@@ -968,7 +968,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * The meta-property for the {@code beanList} property.
          * @return the meta-property, not null
          */
-        public MetaProperty<ImmutableList<ImmKey1>> beanList() {
+        public MetaProperty<ImmutableList<ImmKey>> beanList() {
             return beanList;
         }
 
@@ -992,7 +992,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * The meta-property for the {@code beanMap} property.
          * @return the meta-property, not null
          */
-        public MetaProperty<ImmutableMap<String, ImmKey1>> beanMap() {
+        public MetaProperty<ImmutableMap<String, ImmKey>> beanMap() {
             return beanMap;
         }
 
@@ -1102,17 +1102,17 @@ public final class SimpleJson implements ImmutableBean, Serializable {
         private byte[] arrayByte;
         private String[][] array2d;
         private String string;
-        private ImmKey1 bean;
+        private ImmKey bean;
         private Object object1;
         private Object object2;
         private Risk risk;
         private RiskLevel riskLevel;
         private Set<RiskLevel> riskLevels;
         private List<String> stringList;
-        private List<ImmKey1> beanList;
+        private List<ImmKey> beanList;
         private Map<String, String> stringMap;
         private Map<Integer, String> intKeyMap;
-        private Map<String, ImmKey1> beanMap;
+        private Map<String, ImmKey> beanMap;
         private Map<String, List<String>> listInMap;
         private Map<String, List<Integer>> listNumericInMap;
 
@@ -1260,7 +1260,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
                     this.string = (String) newValue;
                     break;
                 case 3019696:  // bean
-                    this.bean = (ImmKey1) newValue;
+                    this.bean = (ImmKey) newValue;
                     break;
                 case -1659648814:  // object1
                     this.object1 = (Object) newValue;
@@ -1281,7 +1281,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
                     this.stringList = (List<String>) newValue;
                     break;
                 case 1321263214:  // beanList
-                    this.beanList = (List<ImmKey1>) newValue;
+                    this.beanList = (List<ImmKey>) newValue;
                     break;
                 case -189298805:  // stringMap
                     this.stringMap = (Map<String, String>) newValue;
@@ -1290,7 +1290,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
                     this.intKeyMap = (Map<Integer, String>) newValue;
                     break;
                 case -234472564:  // beanMap
-                    this.beanMap = (Map<String, ImmKey1>) newValue;
+                    this.beanMap = (Map<String, ImmKey>) newValue;
                     break;
                 case -1244601351:  // listInMap
                     this.listInMap = (Map<String, List<String>>) newValue;
@@ -1495,7 +1495,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * @param bean  the new value
          * @return this, for chaining, not null
          */
-        public Builder bean(ImmKey1 bean) {
+        public Builder bean(ImmKey bean) {
             this.bean = bean;
             return this;
         }
@@ -1585,7 +1585,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * @param beanList  the new value
          * @return this, for chaining, not null
          */
-        public Builder beanList(List<ImmKey1> beanList) {
+        public Builder beanList(List<ImmKey> beanList) {
             this.beanList = beanList;
             return this;
         }
@@ -1596,7 +1596,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * @param beanList  the new value
          * @return this, for chaining, not null
          */
-        public Builder beanList(ImmKey1... beanList) {
+        public Builder beanList(ImmKey... beanList) {
             return beanList(ImmutableList.copyOf(beanList));
         }
 
@@ -1625,7 +1625,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
          * @param beanMap  the new value
          * @return this, for chaining, not null
          */
-        public Builder beanMap(Map<String, ImmKey1> beanMap) {
+        public Builder beanMap(Map<String, ImmKey> beanMap) {
             this.beanMap = beanMap;
             return this;
         }

@@ -28,7 +28,7 @@ import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Company;
 import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.ImmAddress;
-import org.joda.beans.gen.ImmKey1;
+import org.joda.beans.gen.ImmKey;
 import org.joda.beans.gen.ImmOptional;
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.Person;
@@ -188,8 +188,8 @@ public class SerTestHelper {
         map.put("A", Arrays.asList("B", "b"));
         Map<String, List<Integer>> map2 = new HashMap<String, List<Integer>>();
         map2.put("A", Arrays.asList(3, 2, 1));
-        ImmKey1 key1 = ImmKey1.builder().name("Cat").build();
-        ImmKey1 key2 = ImmKey1.builder().name("Dog").build();
+        ImmKey key1 = ImmKey.builder().name("Cat").build();
+        ImmKey key2 = ImmKey.builder().name("Dog").build();
         SimpleJson result = SimpleJson.builder()
                 .primitiveChar('a')
                 .primitiveByte((byte) 23)
