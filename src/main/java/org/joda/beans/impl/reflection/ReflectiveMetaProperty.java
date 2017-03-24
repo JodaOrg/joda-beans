@@ -15,16 +15,17 @@
  */
 package org.joda.beans.impl.reflection;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyStyle;
@@ -51,10 +52,10 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     private final Class<?> declaringType;
     /** The type of the property. */
     private final Class<P> propertyType;
-    /** The read method. */
-    private final Method readMethod;
-    /** The write method. */
-    private final Method writeMethod;
+    /** The getter. */
+    private final Method getMethod;
+    /** The setter. */
+    private final Method setMethod;
 
     /**
      * Factory to create a meta-property avoiding duplicate generics.
@@ -77,21 +78,65 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings("unchecked")
     private ReflectiveMetaProperty(Class<? extends Bean> beanType, String propertyName) {
         super(propertyName);
-        PropertyDescriptor descriptor;
+        String getterName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        String isserName = "is" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        Method getMethod = findGetMethod(beanType, getterName);
+        Method isMethod = findGetMethod(beanType, isserName);
+        if (getMethod == null && isMethod == null) {
+            throw new IllegalArgumentException(
+                "Unable to find property getter: " + beanType.getSimpleName() + "." + getterName + "()");
+        }
+        getMethod = isMethod != null ? isMethod : getMethod;
+        Method setMethod = null;
+        if (!ImmutableBean.class.isAssignableFrom(beanType)) {
+            String setterName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+            setMethod = findSetMethod(beanType, setterName, getMethod.getReturnType());
+            if (setMethod == null) {
+                throw new IllegalArgumentException(
+                    "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
+            }
+        }
+        this.declaringType = (getMethod != null ? getMethod.getDeclaringClass() : setMethod.getDeclaringClass());
+        this.propertyType = (Class<P>) getMethod.getReturnType();
+        this.getMethod = getMethod;
+        this.setMethod = setMethod;
+    }
+
+    // finds a method on class or public method on super-type
+    private static Method findGetMethod(Class<? extends Bean> beanType, String getterName) {
         try {
-            descriptor = new PropertyDescriptor(propertyName, beanType);
-        } catch (IntrospectionException ex) {
-            throw new NoSuchFieldError("Invalid property: " + propertyName + ": " + ex.getMessage());
+            return beanType.getDeclaredMethod(getterName);
+        } catch (NoSuchMethodException ex) {
+            try {
+                return beanType.getMethod(getterName);
+            } catch (NoSuchMethodException ex2) {
+                return null;
+            }
         }
-        Method readMethod = descriptor.getReadMethod();
-        Method writeMethod = descriptor.getWriteMethod();
-        if (readMethod == null && writeMethod == null) {
-            throw new NoSuchFieldError("Invalid property: " + propertyName + ": Both read and write methods are missing");
+    }
+
+    // finds a method on class or public method on super-type
+    private static Method findSetMethod(Class<? extends Bean> beanType, String setterName, Class<?> fieldType) {
+        try {
+            return beanType.getDeclaredMethod(setterName, fieldType);
+        } catch (NoSuchMethodException ex) {
+            Method[] methods = beanType.getMethods();
+            List<Method> potential = new ArrayList<Method>();
+            for (Method method : methods) {
+                if (method.getName().equals(setterName) && method.getParameterTypes().length == 1) {
+                    potential.add(method);
+                }
+            }
+            if (potential.size() == 1) {
+                return potential.get(0);
+            }
+            for (Method method : potential) {
+                if (method.getParameterTypes()[0].equals(fieldType)) {
+                    return method;
+                }
+            }
+            return null;
         }
-        this.declaringType = (readMethod != null ? readMethod.getDeclaringClass() : writeMethod.getDeclaringClass());
-        this.propertyType = (Class<P>) descriptor.getPropertyType();
-        this.readMethod = readMethod;
-        this.writeMethod = writeMethod;
     }
 
     /**
@@ -125,24 +170,24 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Type propertyGenericType() {
-        if (readMethod != null) {
-            return readMethod.getGenericReturnType();
+        if (getMethod != null) {
+            return getMethod.getGenericReturnType();
         }
-        return writeMethod.getGenericParameterTypes()[0];
+        return setMethod.getGenericParameterTypes()[0];
     }
 
     @Override
     public PropertyStyle style() {
-        return (readMethod == null ? PropertyStyle.WRITE_ONLY :
-                (writeMethod == null ? PropertyStyle.READ_ONLY : PropertyStyle.READ_WRITE));
+        return (getMethod == null ? PropertyStyle.WRITE_ONLY :
+                (setMethod == null ? PropertyStyle.READ_ONLY : PropertyStyle.READ_WRITE));
     }
 
     @Override
     public List<Annotation> annotations() {
-        if (readMethod != null) {
-            return Arrays.asList(readMethod.getDeclaredAnnotations());
+        if (getMethod != null) {
+            return Arrays.asList(getMethod.getDeclaredAnnotations());
         }
-        return Arrays.asList(writeMethod.getDeclaredAnnotations());
+        return Arrays.asList(setMethod.getDeclaredAnnotations());
     }
 
     //-----------------------------------------------------------------------
@@ -153,7 +198,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
         try {
-            return (P) readMethod.invoke(bean, (Object[]) null);
+            return (P) getMethod.invoke(bean, (Object[]) null);
         } catch (IllegalArgumentException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + name(), ex);
         } catch (IllegalAccessException ex) {
@@ -172,9 +217,9 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
         try {
-            writeMethod.invoke(bean, value);
+            setMethod.invoke(bean, value);
         } catch (IllegalArgumentException ex) {
-            if (value == null && writeMethod.getParameterTypes()[0].isPrimitive()) {
+            if (value == null && setMethod.getParameterTypes()[0].isPrimitive()) {
                 throw new NullPointerException("Property cannot be written: " + name() + ": Cannot store null in primitive");
             }
             if (propertyType.isInstance(value) == false) {

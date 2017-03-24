@@ -15,8 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import java.beans.ConstructorProperties;
-import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,6 +53,22 @@ class BeanGen {
     static final int CONSTRUCTOR_BY_BUILDER = 1;
     /** Constructor style for argument-based. */
     static final int CONSTRUCTOR_BY_ARGS = 2;
+    /** Class constant, avoiding module dependency in Java 9. */
+    private static final Class<?> CLASS_CONSTRUCTOR_PROPERTIES;
+    /** Class constant, avoiding module dependency in Java 9. */
+    private static final Class<?> CLASS_PROPERTY_CHANGE_SUPPORT;
+    static {
+        Class<?> cls1 = null;
+        Class<?> cls2 = null;
+        try {
+            cls1 = Class.forName("java.beans.ConstructorProperties");
+            cls2 = Class.forName("java.beans.PropertyChangeSupport");
+        } catch (ClassNotFoundException ex) {
+            // ignore
+        }
+        CLASS_CONSTRUCTOR_PROPERTIES = cls1;
+        CLASS_PROPERTY_CHANGE_SUPPORT = cls2;
+    }
     /** Line separator. */
     private static final String LINE_SEPARATOR = "\t//-----------------------------------------------------------------------";
     /** Line separator. */
@@ -331,7 +345,7 @@ class BeanGen {
                     insertRegion.add("\t */");
                 }
                 if (generateAnnotation) {
-                    data.ensureImport(ConstructorProperties.class);
+                    data.ensureImport(CLASS_CONSTRUCTOR_PROPERTIES);
                     insertRegion.add("\t@ConstructorProperties({})");
                 }
                 insertRegion.add("\t" + scope + data.getTypeRaw() + "() {");
@@ -347,7 +361,7 @@ class BeanGen {
                     insertRegion.add("\t */");
                 }
                 if (generateAnnotation) {
-                    data.ensureImport(ConstructorProperties.class);
+                    data.ensureImport(CLASS_CONSTRUCTOR_PROPERTIES);
                     StringBuilder buf = new StringBuilder();
                     for (int i = 0; i < nonDerived.size(); i++) {
                         if (i > 0) {
@@ -505,7 +519,7 @@ class BeanGen {
 
     private void generatePropertyChangeSupportField() {
         if (data.isPropertyChangeSupport()) {
-            data.ensureImport(PropertyChangeSupport.class);
+            data.ensureImport(CLASS_PROPERTY_CHANGE_SUPPORT);
             insertRegion.add("\t/**");
             insertRegion.add("\t * The property change support field.");
             insertRegion.add("\t */");
