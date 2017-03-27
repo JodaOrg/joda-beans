@@ -131,4 +131,14 @@ class FlexiMetaBean implements DynamicMetaBean {
         bean.propertyRemove(propertyName);
     }
 
+    /**
+     * Returns a string that summarises the meta-bean.
+     * 
+     * @return a summary string, not null
+     */
+    @Override
+    public String toString() {
+        return "MetaBean:" + beanType().getSimpleName();
+    }
+
 }

@@ -25,7 +25,6 @@ import org.joda.beans.BeanBuilder;
 import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyMap;
-import org.joda.beans.impl.BasicMetaBean;
 
 /**
  * Implementation of a meta-bean for {@code MapBean}.
@@ -33,7 +32,7 @@ import org.joda.beans.impl.BasicMetaBean;
  * @author Stephen Colebourne
  */
 @SuppressWarnings("deprecation")
-class MapMetaBean extends BasicMetaBean implements DynamicMetaBean {
+class MapMetaBean implements DynamicMetaBean {
 
     /**
      * The bean itself.
@@ -124,6 +123,16 @@ class MapMetaBean extends BasicMetaBean implements DynamicMetaBean {
     @Override
     public void metaPropertyRemove(String propertyName) {
         bean.propertyRemove(propertyName);
+    }
+
+    /**
+     * Returns a string that summarises the meta-bean.
+     * 
+     * @return a summary string, not null
+     */
+    @Override
+    public String toString() {
+        return "MetaBean:" + beanType().getSimpleName();
     }
 
 }

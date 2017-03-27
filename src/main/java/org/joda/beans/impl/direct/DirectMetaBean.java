@@ -18,8 +18,8 @@ package org.joda.beans.impl.direct;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
+import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.impl.BasicMetaBean;
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.test.JodaBeanTests;
 
@@ -28,7 +28,7 @@ import org.joda.beans.test.JodaBeanTests;
  * 
  * @author Stephen Colebourne
  */
-public abstract class DirectMetaBean extends BasicMetaBean {
+public abstract class DirectMetaBean implements MetaBean {
     // overriding other methods has negligible effect considering DirectMetaPropertyMap
 
     /**
@@ -109,6 +109,16 @@ public abstract class DirectMetaBean extends BasicMetaBean {
      * @throws RuntimeException if a property is invalid
      */
     protected void validate(Bean bean) {
+    }
+
+    /**
+     * Returns a string that summarises the meta-bean.
+     * 
+     * @return a summary string, not null
+     */
+    @Override
+    public String toString() {
+        return "MetaBean:" + beanType().getSimpleName();
     }
 
 }

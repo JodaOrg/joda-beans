@@ -34,7 +34,6 @@ import org.joda.beans.DerivedProperty;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
-import org.joda.beans.impl.BasicMetaBean;
 
 /**
  * A meta-bean implementation designed for use by the code generator.
@@ -42,7 +41,7 @@ import org.joda.beans.impl.BasicMetaBean;
  * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
-public final class MinimalMetaBean<T extends Bean> extends BasicMetaBean implements TypedMetaBean<T> {
+public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     /** The bean type. */
     private final Class<T> beanType;

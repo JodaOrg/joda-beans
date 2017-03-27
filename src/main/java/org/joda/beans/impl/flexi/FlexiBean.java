@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import org.joda.beans.DynamicBean;
 import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.Property;
-import org.joda.beans.impl.BasicBean;
 import org.joda.beans.impl.BasicProperty;
 
 /**
@@ -44,7 +43,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
-public final class FlexiBean extends BasicBean implements DynamicBean, Serializable {
+public final class FlexiBean implements DynamicBean, Serializable {
     // Alternate way to implement this would be to create a list/map of real property
     // objects which could then be properly typed
 
