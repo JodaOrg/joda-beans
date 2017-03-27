@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ImmAddress;
@@ -38,7 +39,6 @@ import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
-import org.joda.beans.query.ChainedBeanQuery;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -49,7 +49,6 @@ import com.google.common.collect.ImmutableMultiset;
  * Test utils.
  */
 @Test
-@SuppressWarnings("deprecation")
 public class TestJodaBeanUtils {
 
     //-----------------------------------------------------------------------
@@ -615,7 +614,7 @@ public class TestJodaBeanUtils {
         Address address2 = new Address();
         address2.setOwner(new Person());
         address2.getOwner().setSurname("Beans");
-        ChainedBeanQuery<String> bq = ChainedBeanQuery.of(Address.meta().owner(), Person.meta().surname());
+        Function<Bean, String> bq = JodaBeanUtils.chain(Address.meta().owner(), Person.meta().surname());
         
         Comparator<Bean> asc = JodaBeanUtils.comparator(bq, true);
         assertEquals(asc.compare(address1, address1) == 0, true);
@@ -630,7 +629,7 @@ public class TestJodaBeanUtils {
         Address address2 = new Address();
         address2.setOwner(new Person());
         address2.getOwner().setSurname("Beans");
-        ChainedBeanQuery<String> bq = ChainedBeanQuery.of(Address.meta().owner(), Person.meta().surname());
+        Function<Bean, String> bq = JodaBeanUtils.chain(Address.meta().owner(), Person.meta().surname());
         
         Comparator<Bean> desc = JodaBeanUtils.comparator(bq, false);
         assertEquals(desc.compare(address1, address1) == 0, true);

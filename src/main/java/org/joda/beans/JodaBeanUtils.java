@@ -39,6 +39,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -921,16 +922,61 @@ public final class JodaBeanUtils {
 
     //-------------------------------------------------------------------------
     /**
+     * Chains two meta-properties together.
+     * <p>
+     * The resulting function takes an instance of a bean, queries using the first
+     * meta-property, then queries the result using the second meta-property.
+     * If the first returns null, the result will be null.
+     * 
+     * @param <P>  the type of the result of the chain
+     * @param mp1  the first meta-property, not null
+     * @param mp2  the second meta-property, not null
+     * @return the chain function, not null
+     */
+    public static <P> Function<Bean, P> chain(MetaProperty<? extends Bean> mp1, MetaProperty<P> mp2) {
+        notNull(mp1, "MetaProperty 1");
+        notNull(mp1, "MetaProperty 2");
+        return b -> {
+            Bean first = mp1.get(b);
+            return first != null ? mp2.get(first) : null;
+        };
+    }
+
+    /**
+     * Chains a function to a meta-property.
+     * <p>
+     * The resulting function takes an instance of a bean, queries using the first
+     * function, then queries the result using the second meta-property.
+     * If the first returns null, the result will be null.
+     * 
+     * @param <P>  the type of the result of the chain
+     * @param fn1  the first meta-property, not null
+     * @param mp2  the second meta-property, not null
+     * @return the chain function, not null
+     */
+    public static <P> Function<Bean, P> chain(Function<Bean, ? extends Bean> fn1, MetaProperty<P> mp2) {
+        notNull(fn1, "Function 1");
+        notNull(fn1, "MetaProperty 2");
+        return b -> {
+            Bean first = fn1.apply(b);
+            return first != null ? mp2.get(first) : null;
+        };
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Obtains a comparator for the specified bean query.
      * <p>
      * The result of the query must be {@link Comparable}.
+     * <p>
+     * To use this with a meta-property append {@code ::get} to the meta-property,
+     * for example {@code Address.meta().street()::get}.
      * 
      * @param query  the query to use, not null
      * @param ascending  true for ascending, false for descending
      * @return the comparator, not null
      */
-    @SuppressWarnings("deprecation")
-    public static Comparator<Bean> comparator(BeanQuery<?> query, boolean ascending) {
+    public static Comparator<Bean> comparator(Function<Bean, ?> query, boolean ascending) {
         return (ascending ? comparatorAscending(query) : comparatorDescending(query));
     }
 
@@ -942,8 +988,7 @@ public final class JodaBeanUtils {
      * @param query  the query to use, not null
      * @return the comparator, not null
      */
-    @SuppressWarnings("deprecation")
-    public static Comparator<Bean> comparatorAscending(BeanQuery<?> query) {
+    public static Comparator<Bean> comparatorAscending(Function<Bean, ?> query) {
         if (query == null) {
             throw new NullPointerException("BeanQuery must not be null");
         }
@@ -958,8 +1003,7 @@ public final class JodaBeanUtils {
      * @param query  the query to use, not null
      * @return the comparator, not null
      */
-    @SuppressWarnings("deprecation")
-    public static Comparator<Bean> comparatorDescending(BeanQuery<?> query) {
+    public static Comparator<Bean> comparatorDescending(Function<Bean, ?> query) {
         if (query == null) {
             throw new NullPointerException("BeanQuery must not be null");
         }
@@ -970,19 +1014,18 @@ public final class JodaBeanUtils {
     /**
      * Compare for BeanQuery.
      */
-    @SuppressWarnings("deprecation")
     private static final class Comp implements Comparator<Bean> {
-        private final BeanQuery<?> query;
+        private final Function<Bean, ?> query;
 
-        private Comp(BeanQuery<?> query) {
+        private Comp(Function<Bean, ?> query) {
             this.query = query;
         }
 
         @Override
         public int compare(Bean bean1, Bean bean2) {
             @SuppressWarnings("unchecked")
-            Comparable<Object> value1 = (Comparable<Object>) query.get(bean1);
-            Object value2 = query.get(bean2);
+            Comparable<Object> value1 = (Comparable<Object>) query.apply(bean1);
+            Object value2 = query.apply(bean2);
             return value1.compareTo(value2);
         }
     }

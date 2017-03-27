@@ -30,8 +30,7 @@ import org.joda.convert.StringConvert;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
-@SuppressWarnings("deprecation")
-public interface MetaProperty<P> extends BeanQuery<P> {
+public interface MetaProperty<P> {
 
     /**
      * Creates a property that binds this meta-property to a specific bean.
@@ -151,7 +150,6 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * @throws ClassCastException if the bean is of an incorrect type
      * @throws UnsupportedOperationException if the property is write-only
      */
-    @Override
     public abstract P get(Bean bean);
 
     /**
