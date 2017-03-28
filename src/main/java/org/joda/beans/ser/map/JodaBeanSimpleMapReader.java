@@ -137,9 +137,9 @@ public class JodaBeanSimpleMapReader {
             if (input instanceof List || input instanceof Map) {
                 SerIterable childIterable = null;
                 if (metaProp != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
+                    childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
                 } else if (parentIterable != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(parentIterable);
+                    childIterable = settings.getIteratorFactory().createIterable(parentIterable);
                 }
                 if (childIterable == null) {
                     if (input instanceof List) {

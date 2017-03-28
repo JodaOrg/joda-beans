@@ -32,7 +32,6 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
-import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -155,9 +154,9 @@ abstract class AbstractJsonReader {
             if (event == JsonEvent.OBJECT || event == JsonEvent.ARRAY) {
                 SerIterable childIterable = null;
                 if (metaProp != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
+                    childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
                 } else if (parentIterable != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(parentIterable);
+                    childIterable = settings.getIteratorFactory().createIterable(parentIterable);
                 }
                 if (childIterable == null) {
                     if (event == JsonEvent.ARRAY) {
@@ -220,7 +219,7 @@ abstract class AbstractJsonReader {
 
     private Object parseTypedMeta() throws Exception {
         String metaType = input.acceptString();
-        SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(metaType, settings, knownTypes);
+        SerIterable childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
         input.acceptEvent(JsonEvent.COMMA);
         String valueKey = input.acceptObjectKey(input.readEvent());
         if (valueKey.equals(VALUE) == false) {

@@ -30,7 +30,6 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
-import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -263,11 +262,11 @@ public class JodaBeanBinReader extends MsgPack {
             if (isMap(typeByte) || isArray(typeByte)) {
                 SerIterable childIterable = null;
                 if (metaType != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(metaType, settings, knownTypes);
+                    childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
                 } else if (metaProp != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
+                    childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
                 } else if (parentIterable != null) {
-                    childIterable = SerIteratorFactory.INSTANCE.createIterable(parentIterable);
+                    childIterable = settings.getIteratorFactory().createIterable(parentIterable);
                 }
                 if (childIterable == null) {
                     throw new IllegalArgumentException("Invalid binary data: Invalid metaType: " + metaType);

@@ -50,7 +50,6 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
-import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -286,14 +285,14 @@ public class JodaBeanXmlReader {
                         if (Bean.class.isAssignableFrom(childType)) {
                             value = parseBean(childType);
                         } else {
-                            SerIterable iterable = SerIteratorFactory.INSTANCE.createIterable(metaProp, beanType);
+                            SerIterable iterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
                             if (iterable != null) {
                                 value = parseIterable(start, iterable);
                             } else {
                                 // metatype
                                 Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                                 if (metaTypeAttr != null) {
-                                    iterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
+                                    iterable = settings.getIteratorFactory().createIterable(metaTypeAttr.getValue(), settings, knownTypes);
                                     if (iterable == null) {
                                         throw new IllegalArgumentException("Invalid metaType");
                                     }
@@ -440,14 +439,14 @@ public class JodaBeanXmlReader {
                 value = parseBean(childType);
             } else {
                 // try deep generic parameters
-                SerIterable childIterable = SerIteratorFactory.INSTANCE.createIterable(iterable);
+                SerIterable childIterable = settings.getIteratorFactory().createIterable(iterable);
                 if (childIterable != null) {
                     value = parseIterable(start, childIterable);
                 } else {
                     // metatype
                     Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                     if (metaTypeAttr != null) {
-                        childIterable = SerIteratorFactory.INSTANCE.createIterable(metaTypeAttr.getValue(), settings, knownTypes);
+                        childIterable = settings.getIteratorFactory().createIterable(metaTypeAttr.getValue(), settings, knownTypes);
                         if (childIterable == null) {
                             throw new IllegalArgumentException("Invalid metaType");
                         }
