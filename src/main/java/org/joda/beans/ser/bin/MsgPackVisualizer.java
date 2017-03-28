@@ -18,17 +18,13 @@ package org.joda.beans.ser.bin;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
  * Allows MsgPack data to be visualized.
  *
  * @author Stephen Colebourne
- * @deprecated Use {@link JodaBeanBinReader#visualize(byte[])}
  */
-@Deprecated
-public final class MsgPackVisualizer extends MsgPackInput {
+final class MsgPackVisualizer extends MsgPackInput {
 
     /**
      * The current indent.
@@ -37,18 +33,14 @@ public final class MsgPackVisualizer extends MsgPackInput {
     /**
      * The buffer.
      */
-    private StringWriter buf = new StringWriter(512);
-    /**
-     * The writer.
-     */
-    private PrintWriter writer = new PrintWriter(new StringWriter(512));
+    private StringBuilder buf = new StringBuilder(1024);
 
     /**
      * Creates an instance.
      * 
      * @param bytes  the bytes to read, not null
      */
-    public MsgPackVisualizer(byte[] bytes) {
+    MsgPackVisualizer(byte[] bytes) {
         super(bytes);
     }
 
@@ -57,7 +49,7 @@ public final class MsgPackVisualizer extends MsgPackInput {
      * 
      * @param stream  the stream to read from, not null
      */
-    public MsgPackVisualizer(InputStream stream) {
+    MsgPackVisualizer(InputStream stream) {
         super(stream);
     }
 
@@ -66,7 +58,7 @@ public final class MsgPackVisualizer extends MsgPackInput {
      * 
      * @param stream  the stream to read from, not null
      */
-    public MsgPackVisualizer(DataInputStream stream) {
+    MsgPackVisualizer(DataInputStream stream) {
         super(stream);
     }
 
@@ -74,15 +66,8 @@ public final class MsgPackVisualizer extends MsgPackInput {
     /**
      * Visualizes the data in the stream.
      */
-    public void visualize() {
-        readAll();
-        writer.flush();
-        System.out.println(buf.toString());
-    }
-
     String visualizeData() {
         readAll();
-        writer.flush();
         return buf.toString();
     }
 
@@ -110,85 +95,85 @@ public final class MsgPackVisualizer extends MsgPackInput {
 
     @Override
     protected void handleObjectStart() {
-        writer.print(indent);
+        buf.append(indent);
         indent = indent.replace("-", " ").replace("=", " ");
     }
 
     @Override
     protected void handleBoolean(boolean bool) {
-        writer.println(bool);
+        buf.append(bool).append(System.lineSeparator());
     }
 
     @Override
     protected void handleNil() {
-        writer.println("nil");
+        buf.append("nil").append(System.lineSeparator());
     }
 
     @Override
     protected void handleInt(int value) {
-        writer.println("int " + value);
+        buf.append("int " + value).append(System.lineSeparator());
     }
 
     @Override
     protected void handleUnsignedLong(long value) {
-        writer.println("int " + value + " unsigned");
+        buf.append("int " + value + " unsigned").append(System.lineSeparator());
     }
 
     @Override
     protected void handleSignedLong(long value) {
-        writer.println("int " + value + " signed");
+        buf.append("int " + value + " signed").append(System.lineSeparator());
     }
 
     @Override
     protected void handleFloat(float value) {
-        writer.println("flt " + value);
+        buf.append("flt " + value).append(System.lineSeparator());
     }
 
     @Override
     protected void handleDouble(double value) {
-        writer.println("dbl " + value);
+        buf.append("dbl " + value).append(System.lineSeparator());
     }
 
     @Override
     protected void handleUnknown(byte b) {
-        writer.println("Unknown - " + String.format("%02X ", b));
+        buf.append("Unknown - " + String.format("%02X ", b)).append(System.lineSeparator());;
     }
 
     @Override
     protected void handleString(String str) {
-        writer.println("str '" + str + '\'');
+        buf.append("str '" + str + '\'').append(System.lineSeparator());
     }
 
     @Override
     protected void handleArrayHeader(int size) {
-        writer.println("arr (" + size + ")");
+        buf.append("arr (" + size + ")").append(System.lineSeparator());
     }
 
     @Override
     protected void handleMapHeader(int size) {
-        writer.println("map (" + size + ")");
+        buf.append("map (" + size + ")").append(System.lineSeparator());
     }
 
     @Override
     protected void handleBinary(byte[] bytes) {
-        writer.print("bin '");
+        buf.append("bin '");
         for (byte b : bytes) {
-            writer.print(toHex(b));
+            buf.append(toHex(b));
         }
-        writer.println("'");
+        buf.append("'").append(System.lineSeparator());
     }
 
     @Override
     protected void handleExtension(int type, byte[] bytes) throws IOException {
         if (type == JODA_TYPE_BEAN || type == JODA_TYPE_DATA || type == JODA_TYPE_META) {
             String str = new String(bytes, UTF_8);
-            writer.println("ext type=" + type + " '" + str + "'");
+            buf.append("ext type=" + type + " '" + str + "'").append(System.lineSeparator());
         } else {
-            writer.print("ext type=" + type + " '");
+            buf.append("ext type=" + type + " '");
             for (byte b : bytes) {
-                writer.print(toHex(b));
+                buf.append(toHex(b));
             }
-            writer.println("'");
+            buf.append("'").append(System.lineSeparator());
         }
     }
 

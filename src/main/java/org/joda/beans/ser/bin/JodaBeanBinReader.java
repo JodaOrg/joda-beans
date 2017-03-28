@@ -69,7 +69,6 @@ public class JodaBeanBinReader extends MsgPack {
      * @param input  the input bytes, not null
      * @return the visualization
      */
-    @SuppressWarnings("deprecation")
     public static String visualize(byte[] input) {
         return new MsgPackVisualizer(input).visualizeData();
     }
