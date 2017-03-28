@@ -63,6 +63,19 @@ public class JodaBeanBinReader extends MsgPack {
      */
     private Map<String, Class<?>> knownTypes = new HashMap<String, Class<?>>();
 
+    //-----------------------------------------------------------------------
+    /**
+     * Visualizes the binary data, writing to system out.
+     * 
+     * @param input  the input bytes, not null
+     * @return the visualization
+     */
+    @SuppressWarnings("deprecation")
+    public static String visualize(byte[] input) {
+        return new MsgPackVisualizer(input).visualizeData();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      * 

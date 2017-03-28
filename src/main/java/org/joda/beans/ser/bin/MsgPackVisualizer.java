@@ -18,18 +18,30 @@ package org.joda.beans.ser.bin;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * Allows MsgPack data to be visualized.
  *
  * @author Stephen Colebourne
+ * @deprecated Use {@link JodaBeanBinReader#visualize(byte[])}
  */
+@Deprecated
 public final class MsgPackVisualizer extends MsgPackInput {
 
     /**
      * The current indent.
      */
     private String indent = "";
+    /**
+     * The buffer.
+     */
+    private StringWriter buf = new StringWriter(512);
+    /**
+     * The writer.
+     */
+    private PrintWriter writer = new PrintWriter(new StringWriter(512));
 
     /**
      * Creates an instance.
@@ -64,6 +76,14 @@ public final class MsgPackVisualizer extends MsgPackInput {
      */
     public void visualize() {
         readAll();
+        writer.flush();
+        System.out.println(buf.toString());
+    }
+
+    String visualizeData() {
+        readAll();
+        writer.flush();
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------
@@ -90,85 +110,85 @@ public final class MsgPackVisualizer extends MsgPackInput {
 
     @Override
     protected void handleObjectStart() {
-        System.out.print(indent);
+        writer.print(indent);
         indent = indent.replace("-", " ").replace("=", " ");
     }
 
     @Override
     protected void handleBoolean(boolean bool) {
-        System.out.println(bool);
+        writer.println(bool);
     }
 
     @Override
     protected void handleNil() {
-        System.out.println("nil");
+        writer.println("nil");
     }
 
     @Override
     protected void handleInt(int value) {
-        System.out.println("int " + value);
+        writer.println("int " + value);
     }
 
     @Override
     protected void handleUnsignedLong(long value) {
-        System.out.println("int " + value + " unsigned");
+        writer.println("int " + value + " unsigned");
     }
 
     @Override
     protected void handleSignedLong(long value) {
-        System.out.println("int " + value + " signed");
+        writer.println("int " + value + " signed");
     }
 
     @Override
     protected void handleFloat(float value) {
-        System.out.println("flt " + value);
+        writer.println("flt " + value);
     }
 
     @Override
     protected void handleDouble(double value) {
-        System.out.println("dbl " + value);
+        writer.println("dbl " + value);
     }
 
     @Override
     protected void handleUnknown(byte b) {
-        System.out.println("Unknown - " + String.format("%02X ", b));
+        writer.println("Unknown - " + String.format("%02X ", b));
     }
 
     @Override
     protected void handleString(String str) {
-        System.out.println("str '" + str + '\'');
+        writer.println("str '" + str + '\'');
     }
 
     @Override
     protected void handleArrayHeader(int size) {
-        System.out.println("arr (" + size + ")");
+        writer.println("arr (" + size + ")");
     }
 
     @Override
     protected void handleMapHeader(int size) {
-        System.out.println("map (" + size + ")");
+        writer.println("map (" + size + ")");
     }
 
     @Override
     protected void handleBinary(byte[] bytes) {
-        System.out.print("bin '");
+        writer.print("bin '");
         for (byte b : bytes) {
-            System.out.print(toHex(b));
+            writer.print(toHex(b));
         }
-        System.out.println("'");
+        writer.println("'");
     }
 
     @Override
     protected void handleExtension(int type, byte[] bytes) throws IOException {
         if (type == JODA_TYPE_BEAN || type == JODA_TYPE_DATA || type == JODA_TYPE_META) {
             String str = new String(bytes, UTF_8);
-            System.out.println("ext type=" + type + " '" + str + "'");
+            writer.println("ext type=" + type + " '" + str + "'");
         } else {
-            System.out.print("ext type=" + type + " '");
+            writer.print("ext type=" + type + " '");
             for (byte b : bytes) {
-                System.out.print(toHex(b));
+                writer.print(toHex(b));
             }
-            System.out.println("'");
+            writer.println("'");
         }
     }
 
