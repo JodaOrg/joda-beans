@@ -313,7 +313,7 @@ public class RWOnlyBean extends DirectBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(320);
+        StringBuilder buf = new StringBuilder(288);
         buf.append("RWOnlyBean{");
         int len = buf.length();
         toString(buf);
@@ -333,7 +333,6 @@ public class RWOnlyBean extends DirectBean {
         buf.append("prot").append('=').append(JodaBeanUtils.toString(getProt())).append(',').append(' ');
         buf.append("field").append('=').append(JodaBeanUtils.toString(field)).append(',').append(' ');
         buf.append("manualGet").append('=').append(JodaBeanUtils.toString(getManualGet())).append(',').append(' ');
-        buf.append("derived").append('=').append(JodaBeanUtils.toString(getDerived())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

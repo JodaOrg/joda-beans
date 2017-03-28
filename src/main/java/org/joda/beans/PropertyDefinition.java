@@ -192,7 +192,7 @@ public @interface PropertyDefinition {
      * <p>
      * Standard strings are:
      * <ul>
-     * <li>'omit' - omit this property from equals and hashCode
+     * <li>'omit' - omit this property from toString
      * <li>'smart' - process intelligently, equivalent to 'field' for immutable and 'getter' for mutable
      * <li>'getter' - include in equals and hashCode using the getter
      * <li>'field' - include in equals and hashCode using the field

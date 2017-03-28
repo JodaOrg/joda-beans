@@ -148,7 +148,7 @@ public class ImmPersonNonFinal implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(128);
+        StringBuilder buf = new StringBuilder(96);
         buf.append("ImmPersonNonFinal{");
         int len = buf.length();
         toString(buf);
@@ -162,7 +162,6 @@ public class ImmPersonNonFinal implements ImmutableBean {
     protected void toString(StringBuilder buf) {
         buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
         buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
-        buf.append("age").append('=').append(JodaBeanUtils.toString(getAge())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

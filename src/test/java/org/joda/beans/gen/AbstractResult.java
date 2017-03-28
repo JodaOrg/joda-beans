@@ -139,7 +139,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(96);
+        StringBuilder buf = new StringBuilder(64);
         buf.append("AbstractResult{");
         int len = buf.length();
         toString(buf);
@@ -152,7 +152,6 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
 
     protected void toString(StringBuilder buf) {
         buf.append("docs").append('=').append(JodaBeanUtils.toString(getDocs())).append(',').append(' ');
-        buf.append("resultType").append('=').append(JodaBeanUtils.toString(getResultType())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------

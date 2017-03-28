@@ -568,13 +568,12 @@ public final class ImmTreeNode implements ImmutableBean{
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(192);
+            StringBuilder buf = new StringBuilder(160);
             buf.append("ImmTreeNode.Builder{");
             buf.append("name").append('=').append(JodaBeanUtils.toString(name)).append(',').append(' ');
             buf.append("child1").append('=').append(JodaBeanUtils.toString(child1)).append(',').append(' ');
             buf.append("child2").append('=').append(JodaBeanUtils.toString(child2)).append(',').append(' ');
-            buf.append("child3").append('=').append(JodaBeanUtils.toString(child3)).append(',').append(' ');
-            buf.append("childList").append('=').append(JodaBeanUtils.toString(childList));
+            buf.append("child3").append('=').append(JodaBeanUtils.toString(child3));
             buf.append('}');
             return buf.toString();
         }

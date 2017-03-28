@@ -1266,7 +1266,7 @@ class BeanGen {
     }
 
     private void generateBuilderToString() {
-        List<PropertyGen> nonDerived = nonDerivedProperties();
+        List<PropertyGen> nonDerived = toStringProperties();
         if (data.isImmutable() && data.isTypeFinal()) {
             insertRegion.add("\t\t@Override");
             insertRegion.add("\t\tpublic String toString() {");
@@ -1369,7 +1369,7 @@ class BeanGen {
     private List<PropertyGen> toStringProperties() {
         List<PropertyGen> props = new ArrayList<PropertyGen>();
         for (PropertyGen prop : properties) {
-            if (!"omit".equals(prop.getData().getToStringStyle())) {
+            if (!prop.getData().isDerived() && !"omit".equals(prop.getData().getToStringStyle())) {
                 props.add(prop);
             }
         }
