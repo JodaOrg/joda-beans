@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock pair, used for testing.
@@ -60,7 +61,7 @@ public class Pair  extends  DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(Pair.Meta.INSTANCE);
+        MetaBean.register(Pair.Meta.INSTANCE);
     }
 
     @Override

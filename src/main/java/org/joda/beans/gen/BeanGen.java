@@ -520,12 +520,12 @@ class BeanGen {
             insertRegion.add("\t}");
             insertRegion.add("");
             insertRegion.add("\tstatic {");
-            insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(META_BEAN);");
+            data.ensureImport(MetaBean.class);
+            insertRegion.add("\t\tMetaBean.register(META_BEAN);");
             insertRegion.add("\t}");
             insertRegion.add("");
             
         } else {
-            data.ensureImport(JodaBeanUtils.class);
             // this cannot be generified without either Eclipse or javac complaining
             // raw types forever
             insertRegion.add("\t/**");
@@ -552,7 +552,8 @@ class BeanGen {
             
             insertRegion.add("");
             insertRegion.add("\tstatic {");
-            insertRegion.add("\t\tJodaBeanUtils.registerMetaBean(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+            data.ensureImport(MetaBean.class);
+            insertRegion.add("\t\tMetaBean.register(" + data.getTypeRaw() + ".Meta.INSTANCE);");
             insertRegion.add("\t}");
             insertRegion.add("");
         }
@@ -735,7 +736,6 @@ class BeanGen {
         if (data.isManualEqualsHashCode()) {
             return;
         }
-        data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic boolean equals(Object obj) {");
         insertRegion.add("\t\tif (obj == this) {");
@@ -754,6 +754,7 @@ class BeanGen {
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
                 String getter = equalsHashCodeFieldAccessor(prop);
+                data.ensureImport(JodaBeanUtils.class);
                 String equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
                     equals = "(" + getter + " == other." + getter + ")";
@@ -776,7 +777,6 @@ class BeanGen {
         if (data.isManualEqualsHashCode()) {
             return;
         }
-        data.ensureImport(JodaBeanUtils.class);
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic int hashCode() {");
         if (data.isCacheHashCode()) {
@@ -816,6 +816,7 @@ class BeanGen {
         for (int i = 0; i < nonDerived.size(); i++) {
             PropertyGen prop = nonDerived.get(i);
             String getter = equalsHashCodeFieldAccessor(prop);
+            data.ensureImport(JodaBeanUtils.class);
             insertRegion.add(indent + "hash = hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }
     }
@@ -845,6 +846,7 @@ class BeanGen {
                     insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(" + getter + ").append(',').append(' ');");
                 } else {
+                    data.ensureImport(JodaBeanUtils.class);
                     insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(JodaBeanUtils.toString(" + getter + "));");
                 }
@@ -880,6 +882,7 @@ class BeanGen {
         for (int i = 0; i < props.size(); i++) {
             PropertyGen prop = props.get(i);
             String getter = toStringFieldAccessor(prop);
+            data.ensureImport(JodaBeanUtils.class);
             insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                     "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }
@@ -1397,6 +1400,7 @@ class BeanGen {
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
                     String getter = nonDerived.get(i).generateBuilderFieldName();
+                    data.ensureImport(JodaBeanUtils.class);
                     String base = "\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(JodaBeanUtils.toString(" + getter + "))";
                     if (i < nonDerived.size() - 1) {
@@ -1437,6 +1441,7 @@ class BeanGen {
         for (int i = 0; i < nonDerived.size(); i++) {
             PropertyGen prop = nonDerived.get(i);
             String getter = nonDerived.get(i).generateBuilderFieldName();
+            data.ensureImport(JodaBeanUtils.class);
             insertRegion.add("\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                     "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }

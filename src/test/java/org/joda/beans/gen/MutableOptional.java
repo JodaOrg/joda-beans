@@ -30,6 +30,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.base.Optional;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock.
@@ -55,7 +56,7 @@ public final class MutableOptional implements Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(MutableOptional.Meta.INSTANCE);
+        MetaBean.register(MutableOptional.Meta.INSTANCE);
     }
 
     @Override

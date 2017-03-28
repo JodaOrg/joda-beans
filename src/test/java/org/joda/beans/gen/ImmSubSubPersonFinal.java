@@ -27,6 +27,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable person JavaBean, used for testing.
@@ -49,7 +50,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmSubSubPersonFinal.Meta.INSTANCE);
+        MetaBean.register(ImmSubSubPersonFinal.Meta.INSTANCE);
     }
 
     /**

@@ -25,6 +25,7 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock used for testing an absence of properties.
@@ -44,7 +45,7 @@ public class NoProperties extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(NoProperties.Meta.INSTANCE);
+        MetaBean.register(NoProperties.Meta.INSTANCE);
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable package scoped bean, used for testing.
@@ -50,7 +51,7 @@ final class ImmPackageScoped implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmPackageScoped.Meta.INSTANCE);
+        MetaBean.register(ImmPackageScoped.Meta.INSTANCE);
     }
 
     /**

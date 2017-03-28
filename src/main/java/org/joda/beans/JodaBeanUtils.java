@@ -38,12 +38,10 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
-import org.joda.beans.impl.map.MapBean;
 import org.joda.collect.grid.DenseGrid;
 import org.joda.collect.grid.Grid;
 import org.joda.collect.grid.ImmutableGrid;
@@ -78,10 +76,6 @@ public final class JodaBeanUtils {
     /**
      * The cache of meta-beans.
      */
-    private static final ConcurrentHashMap<Class<?>, MetaBean> metaBeans = new ConcurrentHashMap<>();
-    /**
-     * The cache of meta-beans.
-     */
     private static final StringConvert converter = new StringConvert();
 
     /**
@@ -92,61 +86,20 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the meta-bean for a class.
+     * Obtains a meta-bean from a {@code Class}.
      * <p>
-     * This only works for those beans that have registered their meta-beans.
-     * See {@link #registerMetaBean(MetaBean)}.
-     * <p>
-     * A {@code Class} may use a static initializer block to call {@code registerMetaBean}.
-     * The edge case where the class is loaded but not initialized is handled
-     * by forcing the class to be initialized if necessary.
+     * This will return a meta-bean if it has been registered, or if the class
+     * implements {@link DynamicBean} and has a no-args constructor.
+     * Note that the common case where the meta-bean is registered by a static initializer is handled.
      * 
      * @param cls  the class to get the meta-bean for, not null
      * @return the meta-bean, not null
      * @throws IllegalArgumentException if unable to obtain the meta-bean
+     * @deprecated Use {@link MetaBean#of(Class)}
      */
+    @Deprecated
     public static MetaBean metaBean(Class<?> cls) {
-        MetaBean meta = metaBeans.get(cls);
-        if (meta == null) {
-            return metaBeanLookup(cls);
-        }
-        return meta;
-    }
-
-    // lookup the MetaBean outside the fast path, aiding hotspot inlining
-    private static MetaBean metaBeanLookup(Class<?> cls) {
-        // handle dynamic beans
-        if (cls == FlexiBean.class) {
-            return new FlexiBean().metaBean();
-        } else if (cls == MapBean.class) {
-            return new MapBean().metaBean();
-        } else if (DynamicBean.class.isAssignableFrom(cls)) {
-            try {
-                return cls.asSubclass(DynamicBean.class).newInstance().metaBean();
-            } catch (InstantiationException ex) {
-                throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
-            } catch (IllegalAccessException ex) {
-                throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
-            }
-        }
-        // a Class can be loaded without being initialized
-        // in this state, the static initializers have not run, and thus the metabean not registered
-        // here initialization is forced to handle that scenario
-        Class<?> initialized;
-        try {
-            initialized = Class.forName(cls.getName(), true, cls.getClassLoader());
-        } catch (ClassNotFoundException ex) {
-            // should be impossible
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
-        } catch (Error ex) {
-            // should be impossible
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
-        }
-        MetaBean meta = metaBeans.get(initialized);
-        if (meta == null) {
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
-        }
-        return meta;
+        return MetaBean.of(cls);
     }
 
     /**
@@ -157,12 +110,11 @@ public final class JodaBeanUtils {
      * 
      * @param metaBean  the meta-bean, not null
      * @throws IllegalArgumentException if unable to register
+     * @deprecated Use {@link MetaBean#register(MetaBean)}
      */
+    @Deprecated
     public static void registerMetaBean(MetaBean metaBean) {
-        Class<? extends Bean> type = metaBean.beanType();
-        if (metaBeans.putIfAbsent(type, metaBean) != null) {
-            throw new IllegalArgumentException("Cannot register class twice: " + type.getName());
-        }
+        MetaBean.register(metaBean);
     }
 
     //-----------------------------------------------------------------------

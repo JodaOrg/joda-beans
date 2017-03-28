@@ -30,6 +30,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable bean to test cloning.
@@ -69,7 +70,7 @@ public final class ImmClone implements ImmutableBean, Serializable{
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmClone.Meta.INSTANCE);
+        MetaBean.register(ImmClone.Meta.INSTANCE);
     }
 
     /**

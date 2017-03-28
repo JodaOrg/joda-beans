@@ -17,7 +17,6 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 
@@ -34,11 +33,9 @@ import java.util.function.Function;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.ImmAddress;
 import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.MetaBeanLoad;
 import org.joda.beans.gen.Pair;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
-import org.joda.beans.impl.map.MapBean;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -50,15 +47,6 @@ import com.google.common.collect.ImmutableMultiset;
  */
 @Test
 public class TestJodaBeanUtils {
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_registerMetaBean() {
-        // register once OK
-        assertNotNull(ImmPerson.meta());
-        // register second time not OK
-        JodaBeanUtils.registerMetaBean(ImmPerson.meta());
-    }
 
     //-----------------------------------------------------------------------
     public void test_notNull_ok() {
@@ -135,26 +123,6 @@ public class TestJodaBeanUtils {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_notEmpty_Map_notOk_null() {
         JodaBeanUtils.notEmpty((Map<?, ?>) null, "name");
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_metaBean() {
-        MetaBean metaBean = JodaBeanUtils.metaBean(MetaBeanLoad.class);
-        assertNotNull(metaBean);
-        assertEquals(metaBean, MetaBeanLoad.meta());
-    }
-
-    public void test_metaBean_FlexiBean() {
-        assertEquals(JodaBeanUtils.metaBean(FlexiBean.class).builder().build().getClass(), FlexiBean.class);
-    }
-
-    public void test_metaBean_MapBean() {
-        assertEquals(JodaBeanUtils.metaBean(MapBean.class).builder().build().getClass(), MapBean.class);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_metaBean_notFound() {
-        JodaBeanUtils.metaBean(String.class);
     }
 
     //-----------------------------------------------------------------------

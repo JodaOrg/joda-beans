@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock used for test toString generation.
@@ -59,7 +60,7 @@ public class NoGenToString extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(NoGenToString.Meta.INSTANCE);
+        MetaBean.register(NoGenToString.Meta.INSTANCE);
     }
 
     @Override

@@ -32,6 +32,7 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock used for test equals.
@@ -93,7 +94,7 @@ public class FinalFieldBean extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(FinalFieldBean.Meta.INSTANCE);
+        MetaBean.register(FinalFieldBean.Meta.INSTANCE);
     }
 
     @Override

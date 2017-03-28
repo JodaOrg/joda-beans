@@ -31,6 +31,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.base.Optional;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock.
@@ -70,7 +71,7 @@ public final class ImmOptional implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmOptional.Meta.INSTANCE);
+        MetaBean.register(ImmOptional.Meta.INSTANCE);
     }
 
     /**

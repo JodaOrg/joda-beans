@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock tuple, used for testing.
@@ -79,7 +80,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(TupleImmutable.Meta.INSTANCE);
+        MetaBean.register(TupleImmutable.Meta.INSTANCE);
     }
 
     /**

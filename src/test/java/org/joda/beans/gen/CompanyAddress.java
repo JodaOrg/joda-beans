@@ -28,6 +28,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -51,7 +52,7 @@ public class CompanyAddress extends Address {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(CompanyAddress.Meta.INSTANCE);
+        MetaBean.register(CompanyAddress.Meta.INSTANCE);
     }
 
     /**

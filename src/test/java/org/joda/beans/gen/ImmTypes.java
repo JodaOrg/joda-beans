@@ -32,6 +32,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -77,7 +78,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmTypes.Meta.INSTANCE);
+        MetaBean.register(ImmTypes.Meta.INSTANCE);
     }
 
     /**

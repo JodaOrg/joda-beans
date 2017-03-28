@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -54,7 +55,7 @@ public class DocumentationHolder extends DirectBean{
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(DocumentationHolder.Meta.INSTANCE);
+        MetaBean.register(DocumentationHolder.Meta.INSTANCE);
     }
 
     @Override

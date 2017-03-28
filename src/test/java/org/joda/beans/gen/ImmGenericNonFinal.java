@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -63,7 +64,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmGenericNonFinal.Meta.INSTANCE);
+        MetaBean.register(ImmGenericNonFinal.Meta.INSTANCE);
     }
 
     /**

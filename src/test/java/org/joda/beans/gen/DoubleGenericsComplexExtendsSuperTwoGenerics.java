@@ -28,6 +28,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -89,7 +90,7 @@ public class DoubleGenericsComplexExtendsSuperTwoGenerics<T extends Comparable<T
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(DoubleGenericsComplexExtendsSuperTwoGenerics.Meta.INSTANCE);
+        MetaBean.register(DoubleGenericsComplexExtendsSuperTwoGenerics.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

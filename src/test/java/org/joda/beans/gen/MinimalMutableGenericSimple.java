@@ -73,7 +73,7 @@ public final class MinimalMutableGenericSimple<T extends Number> implements Bean
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

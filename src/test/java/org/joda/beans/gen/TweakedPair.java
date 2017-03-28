@@ -23,6 +23,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock pair, used for testing.
@@ -43,7 +44,7 @@ public class TweakedPair extends Pair {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(TweakedPair.Meta.INSTANCE);
+        MetaBean.register(TweakedPair.Meta.INSTANCE);
     }
 
     @Override

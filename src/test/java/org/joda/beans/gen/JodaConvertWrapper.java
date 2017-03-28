@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Wraps {@code JodaConvertBean}, used for testing.
@@ -62,7 +63,7 @@ public class JodaConvertWrapper extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(JodaConvertWrapper.Meta.INSTANCE);
+        MetaBean.register(JodaConvertWrapper.Meta.INSTANCE);
     }
 
     @Override

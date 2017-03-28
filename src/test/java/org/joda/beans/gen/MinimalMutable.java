@@ -33,6 +33,7 @@ import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
 
 import com.google.common.base.Optional;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock minimal bean, used for testing.
@@ -125,7 +126,7 @@ public final class MinimalMutable implements Bean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

@@ -24,6 +24,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock light bean, used for testing.
@@ -60,7 +61,7 @@ public final class LightMutableSimple implements Bean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

@@ -24,6 +24,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -78,7 +79,7 @@ public final class ImmMinimalPrivateBuilder implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     private ImmMinimalPrivateBuilder(

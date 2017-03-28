@@ -27,6 +27,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -62,7 +63,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(GenericSubWrapper.Meta.INSTANCE);
+        MetaBean.register(GenericSubWrapper.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

@@ -69,7 +69,7 @@ public final class ImmPrivateMeta implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmPrivateMeta.Meta.INSTANCE);
+        MetaBean.register(ImmPrivateMeta.Meta.INSTANCE);
     }
 
     /**

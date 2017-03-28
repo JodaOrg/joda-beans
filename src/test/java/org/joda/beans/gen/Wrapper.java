@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -66,7 +67,7 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(Wrapper.Meta.INSTANCE);
+        MetaBean.register(Wrapper.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

@@ -31,6 +31,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -56,7 +57,7 @@ public final class ImmMappedKey implements ImmutableBean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmMappedKey.Meta.INSTANCE);
+        MetaBean.register(ImmMappedKey.Meta.INSTANCE);
     }
 
     /**

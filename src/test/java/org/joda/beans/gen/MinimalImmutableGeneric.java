@@ -79,7 +79,7 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

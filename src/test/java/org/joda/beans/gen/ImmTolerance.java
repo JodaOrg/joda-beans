@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock bean for tolerance testing.
@@ -52,7 +53,7 @@ public final class ImmTolerance implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmTolerance.Meta.INSTANCE);
+        MetaBean.register(ImmTolerance.Meta.INSTANCE);
     }
 
     /**

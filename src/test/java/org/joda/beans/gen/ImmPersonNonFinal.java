@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable person JavaBean, used for testing.
@@ -60,7 +61,7 @@ public class ImmPersonNonFinal implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmPersonNonFinal.Meta.INSTANCE);
+        MetaBean.register(ImmPersonNonFinal.Meta.INSTANCE);
     }
 
     /**

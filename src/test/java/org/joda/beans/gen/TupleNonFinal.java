@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock tuple, used for testing.
@@ -80,7 +81,7 @@ public class TupleNonFinal<X, Y, Z> extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(TupleNonFinal.Meta.INSTANCE);
+        MetaBean.register(TupleNonFinal.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

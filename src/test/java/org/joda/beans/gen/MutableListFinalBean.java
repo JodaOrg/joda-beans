@@ -32,6 +32,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -57,7 +58,7 @@ public final class MutableListFinalBean implements Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(MutableListFinalBean.Meta.INSTANCE);
+        MetaBean.register(MutableListFinalBean.Meta.INSTANCE);
     }
 
     /**

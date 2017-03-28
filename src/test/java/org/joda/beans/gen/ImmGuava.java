@@ -52,6 +52,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.SortedMultiset;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -166,7 +167,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmGuava.Meta.INSTANCE);
+        MetaBean.register(ImmGuava.Meta.INSTANCE);
     }
 
     /**

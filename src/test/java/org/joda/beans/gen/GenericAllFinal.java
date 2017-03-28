@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -71,7 +72,7 @@ public class GenericAllFinal<T> implements Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(GenericAllFinal.Meta.INSTANCE);
+        MetaBean.register(GenericAllFinal.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

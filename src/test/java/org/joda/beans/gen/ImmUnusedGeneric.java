@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -62,7 +63,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmUnusedGeneric.Meta.INSTANCE);
+        MetaBean.register(ImmUnusedGeneric.Meta.INSTANCE);
     }
 
     /**

@@ -27,6 +27,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock tuple, used for testing.
@@ -65,7 +66,7 @@ public final class TupleSub<X extends Number, Y extends Number, Z> extends Tuple
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(TupleSub.Meta.INSTANCE);
+        MetaBean.register(TupleSub.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

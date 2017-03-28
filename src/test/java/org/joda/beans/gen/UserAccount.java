@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * A user account class, used to demonstrate usage of Joda-Beans.
@@ -67,7 +68,7 @@ public final class UserAccount implements Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(UserAccount.Meta.INSTANCE);
+        MetaBean.register(UserAccount.Meta.INSTANCE);
     }
 
     @Override

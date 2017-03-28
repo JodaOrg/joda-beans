@@ -68,7 +68,7 @@ public final class LightImmutableGeneric<T extends Number> implements ImmutableB
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

@@ -36,6 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -77,7 +78,7 @@ public final class Person extends DirectBean implements IPerson {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(Person.Meta.INSTANCE);
+        MetaBean.register(Person.Meta.INSTANCE);
     }
 
     @Override

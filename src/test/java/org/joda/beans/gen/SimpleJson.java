@@ -37,6 +37,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -109,7 +110,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SimpleJson.Meta.INSTANCE);
+        MetaBean.register(SimpleJson.Meta.INSTANCE);
     }
 
     /**

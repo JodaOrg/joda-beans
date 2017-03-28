@@ -27,6 +27,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock minimal bean, used for testing.
@@ -71,7 +72,7 @@ public final class MinimalMutableSimple implements Bean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

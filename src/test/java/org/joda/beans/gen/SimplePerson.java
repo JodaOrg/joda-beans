@@ -34,6 +34,7 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -81,7 +82,7 @@ public final class SimplePerson implements Cloneable, Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SimplePerson.Meta.INSTANCE);
+        MetaBean.register(SimplePerson.Meta.INSTANCE);
     }
 
     @Override

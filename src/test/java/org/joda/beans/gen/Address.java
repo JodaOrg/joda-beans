@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -68,7 +69,7 @@ public class Address extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(Address.Meta.INSTANCE);
+        MetaBean.register(Address.Meta.INSTANCE);
     }
 
     @Override

@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable person JavaBean, used for testing.
@@ -108,7 +109,7 @@ public final class ImmPerson implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmPerson.Meta.INSTANCE);
+        MetaBean.register(ImmPerson.Meta.INSTANCE);
     }
 
     /**

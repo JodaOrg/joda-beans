@@ -40,6 +40,7 @@ import org.joda.collect.grid.ImmutableGrid;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -192,7 +193,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmAddress.Meta.INSTANCE);
+        MetaBean.register(ImmAddress.Meta.INSTANCE);
     }
 
     /**

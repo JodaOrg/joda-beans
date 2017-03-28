@@ -30,6 +30,7 @@ import org.joda.beans.impl.light.LightMetaBean;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock light bean, used for testing.
@@ -124,7 +125,7 @@ public final class LightImmutable implements ImmutableBean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

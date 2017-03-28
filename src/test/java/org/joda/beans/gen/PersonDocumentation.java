@@ -27,6 +27,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -50,7 +51,7 @@ public class PersonDocumentation extends Documentation<Person> {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(PersonDocumentation.Meta.INSTANCE);
+        MetaBean.register(PersonDocumentation.Meta.INSTANCE);
     }
 
     @Override

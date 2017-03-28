@@ -38,15 +38,29 @@ public interface MetaBean {
     /**
      * Obtains a meta-bean from a {@code Class}.
      * <p>
-     * Not all classes can be represented via {@code MetaBean}.
-     * See {@link JodaBeanUtils#metaBean(Class)} for details of the process.
+     * This will return a meta-bean if it has been registered, or if the class
+     * implements {@link DynamicBean} and has a no-args constructor.
+     * Note that the common case where the meta-bean is registered by a static initializer is handled.
      * 
      * @param cls  the class to get the meta-bean for, not null
      * @return the meta-bean associated with the class, not null
      * @throws IllegalArgumentException if unable to obtain the meta-bean
      */
-    static MetaBean of(Class<?> cls) {
-        return JodaBeanUtils.metaBean(cls);
+    public static MetaBean of(Class<?> cls) {
+        return MetaBeans.lookup(cls);
+    }
+
+    /**
+     * Registers a meta-bean.
+     * <p>
+     * This should be done for all beans in a static factory where possible.
+     * If the meta-bean is dynamic, this method should not be called.
+     * 
+     * @param metaBean  the meta-bean, not null
+     * @throws IllegalArgumentException if unable to register
+     */
+    public static void register(MetaBean metaBean) {
+        MetaBeans.register(metaBean);
     }
 
     //-----------------------------------------------------------------------

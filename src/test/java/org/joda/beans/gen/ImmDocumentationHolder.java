@@ -30,6 +30,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -76,7 +77,7 @@ public final class ImmDocumentationHolder<T>
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmDocumentationHolder.Meta.INSTANCE);
+        MetaBean.register(ImmDocumentationHolder.Meta.INSTANCE);
     }
 
     /**

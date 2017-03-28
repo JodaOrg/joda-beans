@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -66,7 +67,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(WrapperToDoubleGenerics.Meta.INSTANCE);
+        MetaBean.register(WrapperToDoubleGenerics.Meta.INSTANCE);
     }
 
     /**

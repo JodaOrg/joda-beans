@@ -69,7 +69,7 @@ public final class LightMutableGeneric<T extends Number> implements Bean, Serial
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

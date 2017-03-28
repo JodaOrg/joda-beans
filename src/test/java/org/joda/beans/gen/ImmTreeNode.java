@@ -32,6 +32,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable tree node, used for iterator testing.
@@ -63,7 +64,7 @@ public final class ImmTreeNode implements ImmutableBean{
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmTreeNode.Meta.INSTANCE);
+        MetaBean.register(ImmTreeNode.Meta.INSTANCE);
     }
 
     /**

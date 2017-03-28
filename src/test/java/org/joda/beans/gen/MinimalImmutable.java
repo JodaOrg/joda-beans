@@ -33,6 +33,7 @@ import org.joda.beans.impl.direct.MinimalMetaBean;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock minimal bean, used for testing.
@@ -121,7 +122,7 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

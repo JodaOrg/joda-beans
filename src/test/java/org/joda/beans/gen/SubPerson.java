@@ -25,6 +25,7 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock sub person, a generic sub-class of a non-generic superclass.
@@ -56,7 +57,7 @@ public class SubPerson<T> extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SubPerson.Meta.INSTANCE);
+        MetaBean.register(SubPerson.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

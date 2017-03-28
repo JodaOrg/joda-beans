@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -64,7 +65,7 @@ public class SimpleName
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SimpleName.Meta.INSTANCE);
+        MetaBean.register(SimpleName.Meta.INSTANCE);
     }
 
     @Override

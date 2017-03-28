@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -64,7 +65,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmGenericArray.Meta.INSTANCE);
+        MetaBean.register(ImmGenericArray.Meta.INSTANCE);
     }
 
     private ImmGenericArray(

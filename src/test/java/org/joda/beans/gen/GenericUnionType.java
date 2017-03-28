@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -67,7 +68,7 @@ public class GenericUnionType<T extends Number & Serializable & Cloneable> imple
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(GenericUnionType.Meta.INSTANCE);
+        MetaBean.register(GenericUnionType.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

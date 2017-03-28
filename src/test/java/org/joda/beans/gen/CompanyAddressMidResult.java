@@ -23,6 +23,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -47,7 +48,7 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(CompanyAddressMidResult.Meta.INSTANCE);
+        MetaBean.register(CompanyAddressMidResult.Meta.INSTANCE);
     }
 
     @Override

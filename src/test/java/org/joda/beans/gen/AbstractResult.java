@@ -30,6 +30,7 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -68,7 +69,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(AbstractResult.Meta.INSTANCE);
+        MetaBean.register(AbstractResult.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

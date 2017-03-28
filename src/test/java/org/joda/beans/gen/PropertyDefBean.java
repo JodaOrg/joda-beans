@@ -33,6 +33,7 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.Lists;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock immutable person JavaBean, used for testing.
@@ -71,7 +72,7 @@ public final class PropertyDefBean implements Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(PropertyDefBean.Meta.INSTANCE);
+        MetaBean.register(PropertyDefBean.Meta.INSTANCE);
     }
 
     @Override

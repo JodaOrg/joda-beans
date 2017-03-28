@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Used only in one place to test meta-bean registration.
@@ -67,7 +68,7 @@ public class MetaBeanLoad
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(MetaBeanLoad.Meta.INSTANCE);
+        MetaBean.register(MetaBeanLoad.Meta.INSTANCE);
     }
 
     @Override

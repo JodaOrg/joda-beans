@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock key JavaBean, used for testing.
@@ -55,7 +56,7 @@ public final class ImmKey implements ImmutableBean, IKey, Serializable {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmKey.Meta.INSTANCE);
+        MetaBean.register(ImmKey.Meta.INSTANCE);
     }
 
     /**

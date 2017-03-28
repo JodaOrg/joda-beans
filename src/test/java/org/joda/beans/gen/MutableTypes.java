@@ -30,6 +30,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -69,7 +70,7 @@ public final class MutableTypes<T extends Comparable<T>> implements Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(MutableTypes.Meta.INSTANCE);
+        MetaBean.register(MutableTypes.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

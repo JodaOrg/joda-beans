@@ -27,6 +27,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock minimal bean, used for testing.
@@ -67,7 +68,7 @@ public final class MinimalImmutableSimple implements ImmutableBean, Serializable
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

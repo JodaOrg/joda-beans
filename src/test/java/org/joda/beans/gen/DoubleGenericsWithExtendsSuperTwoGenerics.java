@@ -29,6 +29,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock JavaBean, used for testing.
@@ -91,7 +92,7 @@ public class DoubleGenericsWithExtendsSuperTwoGenerics<T extends Serializable, U
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(DoubleGenericsWithExtendsSuperTwoGenerics.Meta.INSTANCE);
+        MetaBean.register(DoubleGenericsWithExtendsSuperTwoGenerics.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

@@ -34,6 +34,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -73,7 +74,7 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SimplePersonWithBuilderFinal.Meta.INSTANCE);
+        MetaBean.register(SimplePersonWithBuilderFinal.Meta.INSTANCE);
     }
 
     /**

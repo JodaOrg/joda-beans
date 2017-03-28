@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.ImmutableBean;
-import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
@@ -47,7 +47,7 @@ public final class ImmEmpty implements ImmutableBean
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ImmEmpty.Meta.INSTANCE);
+        MetaBean.register(ImmEmpty.Meta.INSTANCE);
     }
 
     /**

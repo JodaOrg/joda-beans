@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.BeanDefinition;
-import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
@@ -53,7 +53,7 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(MidAbstractResult.Meta.INSTANCE);
+        MetaBean.register(MidAbstractResult.Meta.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")

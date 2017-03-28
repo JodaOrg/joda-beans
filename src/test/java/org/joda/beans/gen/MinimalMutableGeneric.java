@@ -84,7 +84,7 @@ public final class MinimalMutableGeneric<T extends Number> implements Bean, Seri
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(META_BEAN);
+        MetaBean.register(META_BEAN);
     }
 
     /**

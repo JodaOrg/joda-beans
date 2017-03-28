@@ -25,6 +25,7 @@ import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -48,7 +49,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SimpleSubPersonWithBuilderFinal.Meta.INSTANCE);
+        MetaBean.register(SimpleSubPersonWithBuilderFinal.Meta.INSTANCE);
     }
 
     /**

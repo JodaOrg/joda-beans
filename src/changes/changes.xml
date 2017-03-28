@@ -48,6 +48,10 @@
         Additional meta-bean methods - isBuildable(), of(Class), annotations(), annotation(Class).
         Fixes #161.
       </action>
+      <action dev="jodastephen" type="add">
+        Register meta-beans via MetaBean.register(). Deprecate old way on JodaBeanUtils.
+        Fixes #166.
+      </action>
     </release>
     <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >

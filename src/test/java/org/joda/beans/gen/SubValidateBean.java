@@ -27,6 +27,7 @@ import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock used for subclass validation.
@@ -55,7 +56,7 @@ public class SubValidateBean extends ValidateBean {
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(SubValidateBean.Meta.INSTANCE);
+        MetaBean.register(SubValidateBean.Meta.INSTANCE);
     }
 
     @Override

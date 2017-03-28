@@ -31,6 +31,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock address JavaBean, used for testing.
@@ -74,7 +75,7 @@ public class ClonePerson
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(ClonePerson.Meta.INSTANCE);
+        MetaBean.register(ClonePerson.Meta.INSTANCE);
     }
 
     @Override

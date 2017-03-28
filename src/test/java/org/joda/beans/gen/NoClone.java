@@ -28,6 +28,7 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import org.joda.beans.MetaBean;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -54,7 +55,7 @@ public class NoClone
     }
 
     static {
-        JodaBeanUtils.registerMetaBean(NoClone.Meta.INSTANCE);
+        MetaBean.register(NoClone.Meta.INSTANCE);
     }
 
     @Override

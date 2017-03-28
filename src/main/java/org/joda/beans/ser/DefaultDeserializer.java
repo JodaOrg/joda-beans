@@ -16,7 +16,6 @@
 package org.joda.beans.ser;
 
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 
@@ -43,7 +42,7 @@ public class DefaultDeserializer implements SerDeserializer {
     //-----------------------------------------------------------------------
     @Override
     public MetaBean findMetaBean(Class<?> beanType) {
-        return JodaBeanUtils.metaBean(beanType);
+        return MetaBean.of(beanType);
     }
 
     @Override
