@@ -383,7 +383,7 @@ public class JodaBeanBinWriter {
     }
 
     //-----------------------------------------------------------------------
-    static enum RootType {
+    enum RootType {
         ROOT_WITH_TYPE,
         ROOT_WITHOUT_TYPE,
         NOT_ROOT,

@@ -37,7 +37,7 @@ abstract class MsgPackInput extends MsgPack {
      * 
      * @param bytes  the bytes to read, not null
      */
-    public MsgPackInput(byte[] bytes) {
+    MsgPackInput(byte[] bytes) {
         this(new ByteArrayInputStream(bytes));
     }
 
@@ -46,7 +46,7 @@ abstract class MsgPackInput extends MsgPack {
      * 
      * @param stream  the stream to read from, not null
      */
-    public MsgPackInput(InputStream stream) {
+    MsgPackInput(InputStream stream) {
         this(new DataInputStream(stream));
     }
 
@@ -55,7 +55,7 @@ abstract class MsgPackInput extends MsgPack {
      * 
      * @param stream  the stream to read from, not null
      */
-    public MsgPackInput(DataInputStream stream) {
+    MsgPackInput(DataInputStream stream) {
         this.input = stream;
     }
 
@@ -352,7 +352,7 @@ abstract class MsgPackInput extends MsgPack {
     }
 
     private static class Skipper extends MsgPackInput {
-        public Skipper(DataInputStream input) {
+        Skipper(DataInputStream input) {
             super(input);
         }
         void skip(int typeByte) throws IOException {

@@ -130,7 +130,7 @@ class BeanGen {
      * @param autoEndIndex  the start of the autogen area
      * @param autoStartIndex   the end of the autogen area
      */
-    public BeanGen(
+    BeanGen(
             File file, List<String> content, BeanGenConfig config,
             BeanData data, List<PropertyGen> properties, int autoStartIndex, int autoEndIndex) {
         this.file = file;

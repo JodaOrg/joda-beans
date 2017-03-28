@@ -37,7 +37,7 @@ class PropertyGen {
      * Constructor.
      * @param propData  the property data
      */
-    public PropertyGen(PropertyData propData) {
+    PropertyGen(PropertyData propData) {
         this.data = propData;
     }
 

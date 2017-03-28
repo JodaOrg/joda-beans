@@ -41,7 +41,7 @@ class BeanComparisonError extends AssertionError {
      * @param expected  the expected value, not null
      * @param actual  the actual value, not null
      */
-    public BeanComparisonError(String message, Bean expected, Bean actual) {
+    BeanComparisonError(String message, Bean expected, Bean actual) {
         super(message);
         this.expected = expected;
         this.actual = actual;
