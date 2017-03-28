@@ -108,6 +108,7 @@ Further integration is included for MongoDB and Freemarker.
 
 [Release 2.0](download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
+There are only [minor incompatibilities](http://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
 Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
