@@ -496,6 +496,23 @@ public final class JodaBeanUtils {
         return buf.toString();
     }
 
+    /**
+     * Flattens a bean to a {@code Map}.
+     * <p>
+     * The returned map will contain all the properties from the bean with their actual values.
+     * 
+     * @param bean  the bean to generate a string for, not null
+     * @return the bean as a map, not null
+     */
+    public static Map<String, Object> flatten(Bean bean) {
+        Map<String, MetaProperty<?>> propertyMap = bean.metaBean().metaPropertyMap();
+        Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
+        for (Entry<String, MetaProperty<?>> entry : propertyMap.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().get(bean));
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Clones a bean.

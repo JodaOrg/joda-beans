@@ -144,6 +144,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("deprecation")
     public void test_propertyMap() {
         Person person = new Person();
         PropertyMap test = person.metaBean().createPropertyMap(person);
@@ -154,6 +155,7 @@ public class TestPerson {
         assertEquals(test.containsKey(NUMBER_OF_CARS), true);
     }
 
+    @SuppressWarnings("deprecation")
     public void test_propertyMap_flatten() {
         Person person = new Person();
         person.setForename("A");

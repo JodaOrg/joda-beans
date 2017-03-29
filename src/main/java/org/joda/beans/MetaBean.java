@@ -53,7 +53,9 @@ public interface MetaBean {
      * 
      * @param bean  the bean to create the map for, not null
      * @return the created property map, not null
+     * @deprecated Use BasicPropertyMap.of(bean) or JodaBeanUtils.flatten(bean)
      */
+    @Deprecated
     public abstract PropertyMap createPropertyMap(Bean bean);
 
     //-----------------------------------------------------------------------

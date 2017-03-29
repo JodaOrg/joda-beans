@@ -38,6 +38,7 @@ import org.joda.beans.impl.BasicPropertyMap;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 public final class ReflectiveMetaBean implements MetaBean {
 
     /** The bean type. */

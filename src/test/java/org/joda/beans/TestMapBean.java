@@ -99,4 +99,12 @@ public class TestMapBean {
         assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
     }
 
+    @SuppressWarnings("deprecation")
+    public void test_propertyMap() {
+        MapBean mapBean = new MapBean();
+        PropertyMap test = mapBean.metaBean().createPropertyMap(mapBean);
+        
+        assertEquals(test.size(), 0);
+    }
+
 }

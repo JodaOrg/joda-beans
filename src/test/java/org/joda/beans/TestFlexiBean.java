@@ -102,6 +102,14 @@ public class TestFlexiBean {
         assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
     }
 
+    @SuppressWarnings("deprecation")
+    public void test_propertyMap() {
+        FlexiBean flexi = new FlexiBean();
+        PropertyMap test = flexi.metaBean().createPropertyMap(flexi);
+        
+        assertEquals(test.size(), 0);
+    }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_invalidProperty() {
         FlexiBean flexi = new FlexiBean();

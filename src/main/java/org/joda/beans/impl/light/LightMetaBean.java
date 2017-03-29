@@ -46,6 +46,7 @@ import org.joda.beans.impl.BasicPropertyMap;
  * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
+@SuppressWarnings("deprecation")
 public final class LightMetaBean<T extends Bean> implements MetaBean {
 
     /** The bean type. */

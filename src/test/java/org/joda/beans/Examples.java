@@ -42,7 +42,7 @@ public class Examples {
         p.numberOfCars().set(2);
         // access all the properties
         System.out.println(p.propertyNames());
-        System.out.println(p.metaBean().createPropertyMap(p).flatten());
+        System.out.println(JodaBeanUtils.flatten(p));
         System.out.println(p);
         // perform validation
         boolean valid =
@@ -52,7 +52,7 @@ public class Examples {
         // extensions
         p.getExtensions().set("suffix", "Jr");
         System.out.println(p.propertyNames());
-        System.out.println(p.metaBean().createPropertyMap(p).flatten());
+        System.out.println(JodaBeanUtils.flatten(p));
         System.out.println(p);
         
         // create the bean the hard way - could just do new Address() instead
@@ -68,7 +68,7 @@ public class Examples {
         a.number().set(22);
         // access all the properties
         System.out.println(a.propertyNames());
-        System.out.println(a.metaBean().createPropertyMap(p).flatten());
+        System.out.println(JodaBeanUtils.flatten(a));
         System.out.println(a);
         // perform validation
         valid =

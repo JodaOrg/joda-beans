@@ -24,7 +24,9 @@ import java.util.Map;
  * Alternate implementations may perform any logic to obtain the value.
  * 
  * @author Stephen Colebourne
+ * @deprecated Use BasicPropertyMap.of(bean) or JodaBeanUtils.flatten(bean)
  */
+@Deprecated
 public interface PropertyMap extends Map<String, Property<?>> {
 
     /**

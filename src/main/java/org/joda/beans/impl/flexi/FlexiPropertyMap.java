@@ -32,6 +32,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 final class FlexiPropertyMap
         extends AbstractMap<String, Property<?>> implements PropertyMap {
 

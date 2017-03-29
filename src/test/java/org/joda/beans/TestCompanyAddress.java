@@ -172,6 +172,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("deprecation")
     public void test_propertyMap() {
         CompanyAddress address = new CompanyAddress();
         PropertyMap test = address.metaBean().createPropertyMap(address);
@@ -183,6 +184,7 @@ public class TestCompanyAddress {
         assertEquals(test.containsKey(COMPANY_NAME), true);
     }
 
+    @SuppressWarnings("deprecation")
     public void test_propertyMap_flatten() {
         CompanyAddress address = new CompanyAddress();
         address.setStreet("A");

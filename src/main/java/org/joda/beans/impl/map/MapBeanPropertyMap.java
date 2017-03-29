@@ -33,6 +33,7 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 final class MapBeanPropertyMap
         extends AbstractMap<String, Property<?>> implements PropertyMap {
 

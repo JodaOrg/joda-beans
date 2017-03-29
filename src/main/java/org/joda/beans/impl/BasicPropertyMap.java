@@ -17,13 +17,12 @@ package org.joda.beans.impl;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.joda.beans.Bean;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.PropertyMap;
@@ -35,6 +34,7 @@ import org.joda.beans.PropertyMap;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 public final class BasicPropertyMap
         extends AbstractMap<String, Property<?>> implements PropertyMap {
 
@@ -117,13 +117,7 @@ public final class BasicPropertyMap
     //-----------------------------------------------------------------------
     @Override
     public Map<String, Object> flatten() {
-        // TODO: dedicated map implementation
-        Map<String, MetaProperty<?>> propertyMap = bean.metaBean().metaPropertyMap();
-        Map<String, Object> map = new HashMap<String, Object>(propertyMap.size());
-        for (Entry<String, MetaProperty<?>> entry : propertyMap.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().get(bean));
-        }
-        return Collections.unmodifiableMap(map);
+        return JodaBeanUtils.flatten(bean);
     }
 
 }

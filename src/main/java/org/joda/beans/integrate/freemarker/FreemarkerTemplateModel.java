@@ -16,6 +16,7 @@
 package org.joda.beans.integrate.freemarker;
 
 import org.joda.beans.Bean;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 
 import freemarker.ext.beans.BeanModel;
@@ -112,7 +113,7 @@ public class FreemarkerTemplateModel
      */
     @Override
     public TemplateCollectionModel values() {
-        return new SimpleCollection(bean.metaBean().createPropertyMap(bean).flatten().values(), getObjectWrapper());
+        return new SimpleCollection(JodaBeanUtils.flatten(bean).values(), getObjectWrapper());
     }
 
     /**

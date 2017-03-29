@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.joda.beans.Bean;
+import org.joda.beans.JodaBeanUtils;
 
 import com.mongodb.DBObject;
 
@@ -102,7 +103,7 @@ public class BeanMongoDBObject implements DBObject {
     @Override
     @SuppressWarnings("rawtypes")
     public Map toMap() {
-        return bean.metaBean().createPropertyMap(bean).flatten();
+        return JodaBeanUtils.flatten(bean);
     }
 
     //-----------------------------------------------------------------------

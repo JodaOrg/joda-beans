@@ -25,6 +25,9 @@
         Serialize to/from a Map of Maps.
         Fixes #159.
       </action>
+      <action dev="jodastephen" type="update">
+        Deprecate PropertyMap, use JodaBeanUtils.flatten(bean) or BasicPropertyMap.of(bean).
+      </action>
     </release>
     <release version="1.10.1" date="2017-01-23" description="v1.10.1">
       <action dev="jodastephen" type="fix">

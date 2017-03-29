@@ -32,6 +32,7 @@ import org.joda.beans.impl.BasicMetaBean;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 class MapMetaBean extends BasicMetaBean implements DynamicMetaBean {
 
     /**

@@ -195,6 +195,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("deprecation")
     public void test_propertyMap() {
         Address address = new Address();
         PropertyMap test = address.metaBean().createPropertyMap(address);
@@ -205,6 +206,7 @@ public class TestAddress {
         assertEquals(test.containsKey(NUMBER), true);
     }
 
+    @SuppressWarnings("deprecation")
     public void test_propertyMap_flatten() {
         Address address = new Address();
         address.setStreet("A");

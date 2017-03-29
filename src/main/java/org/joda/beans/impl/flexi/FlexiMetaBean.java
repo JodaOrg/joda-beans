@@ -31,6 +31,7 @@ import org.joda.beans.PropertyMap;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 class FlexiMetaBean implements DynamicMetaBean {
 
     /**

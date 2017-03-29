@@ -27,6 +27,7 @@ import org.joda.beans.PropertyMap;
  * 
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 public abstract class BasicMetaBean implements MetaBean {
 
     @Override
