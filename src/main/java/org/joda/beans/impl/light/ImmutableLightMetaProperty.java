@@ -112,17 +112,11 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
             }
         };
         // special case for optional
-        Class<P> propertyType = (Class<P>) field.getType();
-        Type propertyGenericType = field.getGenericType();
-        if (method.getReturnType().getName().contains("Optional")) {
-            propertyType = (Class<P>) method.getReturnType();
-            propertyGenericType = method.getGenericReturnType();
-        }
         return new ImmutableLightMetaProperty<P>(
                 metaBean, 
                 propertyName, 
-                propertyType, 
-                propertyGenericType, 
+                (Class<P>) field.getType(), 
+                field.getGenericType(), 
                 Arrays.asList(field.getAnnotations()), 
                 getter,
                 constructorIndex);

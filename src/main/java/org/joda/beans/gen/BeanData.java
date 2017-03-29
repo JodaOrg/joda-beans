@@ -185,6 +185,14 @@ class BeanData {
     }
 
     /**
+     * Is the bean style indicating that no meta and builder should be generated.
+     * @return the flag
+     */
+    public boolean isBeanStyleLightOrMinimal() {
+        return isBeanStyleLight() || isBeanStyleMinimal();
+    }
+
+    /**
      * Is the bean style indicating that properties should be generated.
      * @return the flag
      */

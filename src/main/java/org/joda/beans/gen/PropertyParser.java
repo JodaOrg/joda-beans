@@ -17,6 +17,7 @@ package org.joda.beans.gen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,10 +102,16 @@ class PropertyParser {
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
         data.getComments().addAll(comments.subList(1, comments.size()));
+        if (beanData.isBeanStyleLightOrMinimal() && beanData.isMutable() && data.getSetterGen() instanceof SetterGen.NoSetterGen) {
+            throw new IllegalArgumentException("Light and Minimal style beans do not support final fields");
+        }
         return new PropertyGen(data);
     }
 
     PropertyGen parseDerived(BeanData beanData, List<String> content, int lineIndex) {
+        if (beanData.isBeanStyleLightOrMinimal()) {
+            throw new IllegalArgumentException("Light and Minimal style beans do not support @DerivedProperty");
+        }
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
@@ -141,7 +148,7 @@ class PropertyParser {
     }
 
     private String makeUpperName(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
     }
 
     //-----------------------------------------------------------------------
@@ -428,7 +435,7 @@ class PropertyParser {
                 }
                 String firstLine = comments.get(0);
                 if (firstLine.length() > 0) {
-                    comments.set(0, firstLine.substring(0, 1).toLowerCase() + firstLine.substring(1));
+                    comments.set(0, firstLine.substring(0, 1).toLowerCase(Locale.ENGLISH) + firstLine.substring(1));
                 } else {
                     comments.remove(0);
                 }
@@ -438,7 +445,7 @@ class PropertyParser {
             int endPos = commentEnd.lastIndexOf("*/");
             String comment = commentEnd.substring(startPos, endPos).trim();
             if (comment.length() > 0) {
-                comments.add(comment.substring(0, 1).toLowerCase() + comment.substring(1));
+                comments.add(comment.substring(0, 1).toLowerCase(Locale.ENGLISH) + comment.substring(1));
             }
         }
         if (comments.size() == 0) {

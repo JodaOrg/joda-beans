@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Currency;
 
 import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.LightImmutable;
-import org.joda.beans.gen.LightMutable;
+import org.joda.beans.gen.MinimalImmutable;
+import org.joda.beans.gen.MinimalMutable;
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.testng.annotations.Test;
@@ -33,17 +33,17 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Test style=light.
+ * Test style=minimal.
  */
 @Test
-public class TestLight {
+public class TestMinimal {
 
     public void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        LightImmutable bean = (LightImmutable) LightImmutable.meta().builder()
+        MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
                 .setString("number", "12")
                 .setString("street", "Park Lane")
-                .set(StandaloneMetaProperty.of("city", LightImmutable.meta(), String.class), "Smallville")
+                .set(StandaloneMetaProperty.of("city", MinimalImmutable.meta(), String.class), "Smallville")
                 .set("owner", person)
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
@@ -56,7 +56,7 @@ public class TestLight {
         assertEquals(bean.getOwner(), person);
         assertEquals(bean.getList(), ImmutableList.of());
         
-        assertEquals(bean.metaBean().beanType(), LightImmutable.class);
+        assertEquals(bean.metaBean().beanType(), MinimalImmutable.class);
         assertEquals(bean.metaBean().metaPropertyCount(), 8);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
@@ -64,14 +64,14 @@ public class TestLight {
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
         assertEquals(mp.propertyType(), int.class);
-        assertEquals(mp.declaringType(), LightImmutable.class);
+        assertEquals(mp.declaringType(), MinimalImmutable.class);
         assertEquals(mp.get(bean), 12);
         assertEquals(mp.style(), PropertyStyle.IMMUTABLE);
         
         MetaProperty<Object> mp2 = bean.metaBean().metaProperty("town");
         assertEquals(mp2.propertyType(), String.class);
         assertEquals(mp2.propertyGenericType(), String.class);
-        assertEquals(mp2.declaringType(), LightImmutable.class);
+        assertEquals(mp2.declaringType(), MinimalImmutable.class);
         assertEquals(mp2.get(bean), null);
         assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
         
@@ -80,10 +80,10 @@ public class TestLight {
     }
 
     public void test_mutable() {
-        LightMutable bean = (LightMutable) LightMutable.meta().builder()
+        MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
                 .setString("number", "12")
                 .setString("street", "Park Lane")
-                .set(StandaloneMetaProperty.of("city", LightMutable.meta(), String.class), "Smallville")
+                .set(StandaloneMetaProperty.of("city", MinimalMutable.meta(), String.class), "Smallville")
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
                 .build();
@@ -104,7 +104,7 @@ public class TestLight {
         bean.metaBean().metaProperty("city").set(bean, "London");
         assertEquals(bean.getCity(), "London");
         
-        assertEquals(bean.metaBean().beanType(), LightMutable.class);
+        assertEquals(bean.metaBean().beanType(), MinimalMutable.class);
         assertEquals(bean.metaBean().metaPropertyCount(), 7);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
@@ -112,14 +112,14 @@ public class TestLight {
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
         assertEquals(mp.propertyType(), int.class);
-        assertEquals(mp.declaringType(), LightMutable.class);
+        assertEquals(mp.declaringType(), MinimalMutable.class);
         assertEquals(mp.get(bean), 12);
         assertEquals(mp.style(), PropertyStyle.READ_WRITE);
         
         MetaProperty<Object> mp2 = bean.metaBean().metaProperty("currency");
         assertEquals(mp2.propertyType(), Currency.class);
         assertEquals(mp2.propertyGenericType(), Currency.class);
-        assertEquals(mp2.declaringType(), LightMutable.class);
+        assertEquals(mp2.declaringType(), MinimalMutable.class);
         assertEquals(mp2.get(bean), Currency.getInstance("USD"));
         assertEquals(mp2.style(), PropertyStyle.READ_WRITE);
         

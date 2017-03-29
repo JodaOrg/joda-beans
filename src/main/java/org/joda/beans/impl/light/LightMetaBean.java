@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -89,7 +90,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
             if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
                 PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
                 String name = field.getName();
-                if (pdef.get().equals("field")) {
+                if (pdef.get().equals("field") || pdef.get().startsWith("optional")) {
                     field.setAccessible(true);
                     MetaProperty<Object> mp = ImmutableLightMetaProperty.of(this, field, name, propertyTypes.size());
                     if (!ImmutableBean.class.isAssignableFrom(beanType)) {
@@ -98,10 +99,10 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
                     map.put(name, mp);
                     propertyTypes.add(field.getType());
                 } else if (!pdef.get().equals("")) {
-                    String getterName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                    String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
                     Method getMethod = null;
                     if (field.getType() == boolean.class) {
-                        getMethod = findGetMethod(beanType, "is" + name.substring(0, 1).toUpperCase() + name.substring(1));
+                        getMethod = findGetMethod(beanType, "is" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1));
                     }
                     if (getMethod == null) {
                         getMethod = findGetMethod(beanType, getterName);
@@ -115,7 +116,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
                         map.put(name, ImmutableLightMetaProperty.<Object>of(this, field, getMethod, name, propertyTypes.size()));
                         
                     } else {
-                        String setterName = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                        String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
                         Method setMethod = findSetMethod(beanType, setterName, field.getType());
                         if (setMethod == null) {
                             throw new IllegalArgumentException(
