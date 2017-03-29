@@ -7,7 +7,7 @@ As is normal with the Apache 2.0 license, a NOTICE file exists for Joda-Beans:
 
 ```
 Joda Beans
-Copyright 2001-2014 Stephen Colebourne
+Copyright 2001-present Stephen Colebourne
 
 This product includes software developed by
 Joda.org (http://www.joda.org/).

@@ -47,7 +47,7 @@ Various documentation is available:
 [Release 1.10.1](http://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
-Joda-Beans requires Java SE 6 or later and depends on [Joda-Convert](https://github.com/JodaOrg/joda-convert/)
+Joda-Beans requires Java SE 6 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](http://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
 Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.10.1|jar)
