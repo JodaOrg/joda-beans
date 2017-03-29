@@ -41,8 +41,8 @@ public class TestMinimal {
     public void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
-                .setString("number", "12")
-                .setString("street", "Park Lane")
+                .set("number", 12)
+                .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", MinimalImmutable.meta(), String.class), "Smallville")
                 .set("owner", person)
                 .set("list", new ArrayList<String>())
@@ -81,8 +81,8 @@ public class TestMinimal {
 
     public void test_mutable() {
         MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
-                .setString("number", "12")
-                .setString("street", "Park Lane")
+                .set("number", 12)
+                .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", MinimalMutable.meta(), String.class), "Smallville")
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))

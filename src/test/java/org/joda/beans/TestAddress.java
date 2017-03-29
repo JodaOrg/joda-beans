@@ -66,6 +66,7 @@ public class TestAddress {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void test_builder1() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
@@ -86,6 +87,7 @@ public class TestAddress {
         assertEquals(test, expected);
     }
 
+    @SuppressWarnings("deprecation")
     public void test_builder2() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set(Address.meta().street(), "Main Street");

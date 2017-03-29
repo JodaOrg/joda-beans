@@ -84,7 +84,9 @@ public interface BeanBuilder<T extends Bean> {
      * @param value  the property value, may be null
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if the property name is invalid
+     * @deprecated Use Joda-Convert in application code
      */
+    @Deprecated
     public abstract BeanBuilder<T> setString(String propertyName, String value);
 
     /**
@@ -100,7 +102,9 @@ public interface BeanBuilder<T extends Bean> {
      * @param value  the property value, may be null
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if a property is invalid
+     * @deprecated Use Joda-Convert in application code
      */
+    @Deprecated
     public abstract BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value);
 
     /**
@@ -114,7 +118,9 @@ public interface BeanBuilder<T extends Bean> {
      * @param propertyValueMap  the property name to value map, not null
      * @return {@code this}, for chaining, not null
      * @throws RuntimeException optionally thrown if a property name is invalid
+     * @deprecated Loop in application code
      */
+    @Deprecated
     public abstract BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap);
 
     /**
