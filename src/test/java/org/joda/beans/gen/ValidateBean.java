@@ -348,7 +348,7 @@ public class ValidateBean extends DirectBean {
 
         @Override
         public BeanBuilder<? extends ValidateBean> builder() {
-            return new DirectBeanBuilder<ValidateBean>(new ValidateBean());
+            return new DirectBeanBuilder<>(new ValidateBean());
         }
 
         @Override

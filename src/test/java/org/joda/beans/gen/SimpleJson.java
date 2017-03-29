@@ -1145,7 +1145,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
             this.object2 = beanToCopy.getObject2();
             this.risk = beanToCopy.getRisk();
             this.riskLevel = beanToCopy.getRiskLevel();
-            this.riskLevels = (beanToCopy.getRiskLevels() != null ? new HashSet<RiskLevel>(beanToCopy.getRiskLevels()) : null);
+            this.riskLevels = (beanToCopy.getRiskLevels() != null ? new HashSet<>(beanToCopy.getRiskLevels()) : null);
             this.stringList = beanToCopy.getStringList();
             this.beanList = beanToCopy.getBeanList();
             this.stringMap = beanToCopy.getStringMap();

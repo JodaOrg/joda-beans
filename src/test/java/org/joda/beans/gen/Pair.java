@@ -211,7 +211,7 @@ public class Pair  extends  DirectBean {
 
         @Override
         public BeanBuilder<? extends Pair> builder() {
-            return new DirectBeanBuilder<Pair>(new Pair());
+            return new DirectBeanBuilder<>(new Pair());
         }
 
         @Override

@@ -75,7 +75,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
      * @return the builder, not null
      */
     public static <T extends Address> ImmGenericNonFinal.Builder<T> builder() {
-        return new ImmGenericNonFinal.Builder<T>();
+        return new ImmGenericNonFinal.Builder<>();
     }
 
     /**
@@ -118,7 +118,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -199,7 +199,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
 
         @Override
         public ImmGenericNonFinal.Builder<T> builder() {
-            return new ImmGenericNonFinal.Builder<T>();
+            return new ImmGenericNonFinal.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -328,7 +328,7 @@ public class ImmGenericNonFinal<T extends Address> implements ImmutableBean {
 
         @Override
         public ImmGenericNonFinal<T> build() {
-            return new ImmGenericNonFinal<T>(this);
+            return new ImmGenericNonFinal<>(this);
         }
 
         //-----------------------------------------------------------------------

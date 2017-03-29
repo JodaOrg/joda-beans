@@ -448,7 +448,7 @@ public final class Person extends DirectBean implements IPerson {
 
         @Override
         public BeanBuilder<? extends Person> builder() {
-            return new DirectBeanBuilder<Person>(new Person());
+            return new DirectBeanBuilder<>(new Person());
         }
 
         @Override

@@ -261,7 +261,7 @@ public class Documentation<T> extends DirectBean {
 
         @Override
         public BeanBuilder<? extends Documentation<T>> builder() {
-            return new DirectBeanBuilder<Documentation<T>>(new Documentation<T>());
+            return new DirectBeanBuilder<>(new Documentation<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

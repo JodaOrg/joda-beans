@@ -82,7 +82,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
      * @return the builder, not null
      */
     public static <T> ImmDocumentationResult.Builder<T> builder() {
-        return new ImmDocumentationResult.Builder<T>();
+        return new ImmDocumentationResult.Builder<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -116,7 +116,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -190,7 +190,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
 
         @Override
         public ImmDocumentationResult.Builder<T> builder() {
-            return new ImmDocumentationResult.Builder<T>();
+            return new ImmDocumentationResult.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -322,7 +322,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
 
         @Override
         public ImmDocumentationResult<T> build() {
-            return new ImmDocumentationResult<T>(this);
+            return new ImmDocumentationResult<>(this);
         }
 
         //-----------------------------------------------------------------------

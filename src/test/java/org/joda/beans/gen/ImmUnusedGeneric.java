@@ -76,7 +76,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      */
     public static <T> ImmUnusedGeneric<T> of(
             String errorMessage) {
-        return new ImmUnusedGeneric<T>(
+        return new ImmUnusedGeneric<>(
             errorMessage);
     }
 
@@ -86,7 +86,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      * @return the builder, not null
      */
     static <T> ImmUnusedGeneric.Builder<T> builder() {
-        return new ImmUnusedGeneric.Builder<T>();
+        return new ImmUnusedGeneric.Builder<>();
     }
 
     private ImmUnusedGeneric(
@@ -126,7 +126,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -198,7 +198,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
 
         @Override
         public ImmUnusedGeneric.Builder<T> builder() {
-            return new ImmUnusedGeneric.Builder<T>();
+            return new ImmUnusedGeneric.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -326,7 +326,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
 
         @Override
         public ImmUnusedGeneric<T> build() {
-            return new ImmUnusedGeneric<T>(
+            return new ImmUnusedGeneric<>(
                     errorMessage);
         }
 

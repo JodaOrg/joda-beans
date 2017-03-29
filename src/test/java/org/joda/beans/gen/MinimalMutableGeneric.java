@@ -260,7 +260,7 @@ public final class MinimalMutableGeneric<T extends Number> implements Bean, Seri
 
         @Override
         public BeanBuilder<? extends MinimalMutableGeneric<T>> builder() {
-            return new DirectBeanBuilder<MinimalMutableGeneric<T>>(new MinimalMutableGeneric<T>());
+            return new DirectBeanBuilder<>(new MinimalMutableGeneric<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

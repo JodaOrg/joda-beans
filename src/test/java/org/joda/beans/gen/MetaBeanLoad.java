@@ -193,7 +193,7 @@ public class MetaBeanLoad
 
         @Override
         public BeanBuilder<? extends MetaBeanLoad> builder() {
-            return new DirectBeanBuilder<MetaBeanLoad>(new MetaBeanLoad());
+            return new DirectBeanBuilder<>(new MetaBeanLoad());
         }
 
         @Override

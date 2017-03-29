@@ -226,7 +226,7 @@ public class JodaConvertBean extends DirectBean {
 
         @Override
         public BeanBuilder<? extends JodaConvertBean> builder() {
-            return new DirectBeanBuilder<JodaConvertBean>(new JodaConvertBean());
+            return new DirectBeanBuilder<>(new JodaConvertBean());
         }
 
         @Override

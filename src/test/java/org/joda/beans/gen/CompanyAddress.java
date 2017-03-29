@@ -176,7 +176,7 @@ public class CompanyAddress extends Address {
 
         @Override
         public BeanBuilder<? extends CompanyAddress> builder() {
-            return new DirectBeanBuilder<CompanyAddress>(new CompanyAddress());
+            return new DirectBeanBuilder<>(new CompanyAddress());
         }
 
         @Override

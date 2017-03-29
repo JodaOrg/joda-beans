@@ -116,7 +116,7 @@ public class NoProperties extends DirectBean {
 
         @Override
         public BeanBuilder<? extends NoProperties> builder() {
-            return new DirectBeanBuilder<NoProperties>(new NoProperties());
+            return new DirectBeanBuilder<>(new NoProperties());
         }
 
         @Override

@@ -211,7 +211,7 @@ public final class MutableOptional implements Bean {
 
         @Override
         public BeanBuilder<? extends MutableOptional> builder() {
-            return new DirectBeanBuilder<MutableOptional>(new MutableOptional());
+            return new DirectBeanBuilder<>(new MutableOptional());
         }
 
         @Override

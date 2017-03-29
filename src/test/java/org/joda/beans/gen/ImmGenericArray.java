@@ -172,7 +172,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
 
         @Override
         public BeanBuilder<? extends ImmGenericArray<T>> builder() {
-            return new ImmGenericArray.Builder<T>();
+            return new ImmGenericArray.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -258,7 +258,7 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
 
         @Override
         public ImmGenericArray<T> build() {
-            return new ImmGenericArray<T>(
+            return new ImmGenericArray<>(
                     values);
         }
 

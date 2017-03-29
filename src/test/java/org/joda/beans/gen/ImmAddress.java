@@ -1203,7 +1203,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             this.object2 = beanToCopy.getObject2();
             this.risk = beanToCopy.getRisk();
             this.riskLevel = beanToCopy.getRiskLevel();
-            this.riskLevels = (beanToCopy.getRiskLevels() != null ? new HashSet<RiskLevel>(beanToCopy.getRiskLevels()) : null);
+            this.riskLevels = (beanToCopy.getRiskLevels() != null ? new HashSet<>(beanToCopy.getRiskLevels()) : null);
             this.serializable = beanToCopy.getSerializable();
             this.objectInMap = beanToCopy.getObjectInMap();
             this.listInMap = beanToCopy.getListInMap();

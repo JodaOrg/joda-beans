@@ -184,7 +184,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
 
         @Override
         public BeanBuilder<? extends GenericSubWrapper<T>> builder() {
-            return new DirectBeanBuilder<GenericSubWrapper<T>>(new GenericSubWrapper<T>());
+            return new DirectBeanBuilder<>(new GenericSubWrapper<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

@@ -390,7 +390,7 @@ public final class MinimalMutable implements Bean, Serializable {
 
         @Override
         public BeanBuilder<? extends MinimalMutable> builder() {
-            return new DirectBeanBuilder<MinimalMutable>(new MinimalMutable());
+            return new DirectBeanBuilder<>(new MinimalMutable());
         }
 
         @Override

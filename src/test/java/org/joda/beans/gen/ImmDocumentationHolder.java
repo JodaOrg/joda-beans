@@ -88,7 +88,7 @@ public final class ImmDocumentationHolder<T>
      * @return the builder, not null
      */
     public static <T> ImmDocumentationHolder.Builder<T> builder() {
-        return new ImmDocumentationHolder.Builder<T>();
+        return new ImmDocumentationHolder.Builder<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public final class ImmDocumentationHolder<T>
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -195,7 +195,7 @@ public final class ImmDocumentationHolder<T>
 
         @Override
         public ImmDocumentationHolder.Builder<T> builder() {
-            return new ImmDocumentationHolder.Builder<T>();
+            return new ImmDocumentationHolder.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -324,7 +324,7 @@ public final class ImmDocumentationHolder<T>
 
         @Override
         public ImmDocumentationHolder<T> build() {
-            return new ImmDocumentationHolder<T>(
+            return new ImmDocumentationHolder<>(
                     documentation);
         }
 

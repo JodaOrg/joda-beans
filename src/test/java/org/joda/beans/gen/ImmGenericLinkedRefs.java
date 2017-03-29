@@ -79,7 +79,7 @@ public final class ImmGenericLinkedRefs<A, B extends Comparable<A>> implements I
      * @return the builder, not null
      */
     public static <A, B extends Comparable<A>> ImmGenericLinkedRefs.Builder<A, B> builder() {
-        return new ImmGenericLinkedRefs.Builder<A, B>();
+        return new ImmGenericLinkedRefs.Builder<>();
     }
 
     private ImmGenericLinkedRefs(
@@ -119,7 +119,7 @@ public final class ImmGenericLinkedRefs<A, B extends Comparable<A>> implements I
      * @return the mutable builder, not null
      */
     public Builder<A, B> toBuilder() {
-        return new Builder<A, B>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -193,7 +193,7 @@ public final class ImmGenericLinkedRefs<A, B extends Comparable<A>> implements I
 
         @Override
         public ImmGenericLinkedRefs.Builder<A, B> builder() {
-            return new ImmGenericLinkedRefs.Builder<A, B>();
+            return new ImmGenericLinkedRefs.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -323,7 +323,7 @@ public final class ImmGenericLinkedRefs<A, B extends Comparable<A>> implements I
 
         @Override
         public ImmGenericLinkedRefs<A, B> build() {
-            return new ImmGenericLinkedRefs<A, B>(
+            return new ImmGenericLinkedRefs<>(
                     value);
         }
 

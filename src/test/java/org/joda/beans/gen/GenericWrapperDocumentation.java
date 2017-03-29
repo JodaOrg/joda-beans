@@ -183,7 +183,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
 
         @Override
         public BeanBuilder<? extends GenericWrapperDocumentation<T>> builder() {
-            return new DirectBeanBuilder<GenericWrapperDocumentation<T>>(new GenericWrapperDocumentation<T>());
+            return new DirectBeanBuilder<>(new GenericWrapperDocumentation<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

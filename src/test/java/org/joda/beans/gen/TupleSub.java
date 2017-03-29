@@ -188,7 +188,7 @@ public final class TupleSub<X extends Number, Y extends Number, Z> extends Tuple
 
         @Override
         public BeanBuilder<? extends TupleSub<X, Y, Z>> builder() {
-            return new DirectBeanBuilder<TupleSub<X, Y, Z>>(new TupleSub<X, Y, Z>());
+            return new DirectBeanBuilder<>(new TupleSub<X, Y, Z>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

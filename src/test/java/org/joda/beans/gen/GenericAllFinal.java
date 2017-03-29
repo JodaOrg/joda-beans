@@ -221,7 +221,7 @@ public class GenericAllFinal<T> implements Bean {
 
         @Override
         public BeanBuilder<? extends GenericAllFinal<T>> builder() {
-            return new DirectBeanBuilder<GenericAllFinal<T>>(new GenericAllFinal<T>());
+            return new DirectBeanBuilder<>(new GenericAllFinal<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

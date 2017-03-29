@@ -121,7 +121,7 @@ public class CompanyAddressResult extends AbstractResult<CompanyAddress> {
 
         @Override
         public BeanBuilder<? extends CompanyAddressResult> builder() {
-            return new DirectBeanBuilder<CompanyAddressResult>(new CompanyAddressResult());
+            return new DirectBeanBuilder<>(new CompanyAddressResult());
         }
 
         @Override

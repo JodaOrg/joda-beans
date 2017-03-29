@@ -235,7 +235,7 @@ public class GenericUnionType<T extends Number & Serializable & Cloneable> imple
 
         @Override
         public BeanBuilder<? extends GenericUnionType<T>> builder() {
-            return new DirectBeanBuilder<GenericUnionType<T>>(new GenericUnionType<T>());
+            return new DirectBeanBuilder<>(new GenericUnionType<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

@@ -213,7 +213,7 @@ public class JodaConvertWrapper extends DirectBean {
 
         @Override
         public BeanBuilder<? extends JodaConvertWrapper> builder() {
-            return new DirectBeanBuilder<JodaConvertWrapper>(new JodaConvertWrapper());
+            return new DirectBeanBuilder<>(new JodaConvertWrapper());
         }
 
         @Override

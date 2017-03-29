@@ -264,7 +264,7 @@ public class SimpleName
 
         @Override
         public BeanBuilder<? extends SimpleName> builder() {
-            return new DirectBeanBuilder<SimpleName>(new SimpleName());
+            return new DirectBeanBuilder<>(new SimpleName());
         }
 
         @Override

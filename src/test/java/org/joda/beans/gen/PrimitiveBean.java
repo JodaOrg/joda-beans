@@ -432,7 +432,7 @@ public class PrimitiveBean extends DirectBean {
 
         @Override
         public BeanBuilder<? extends PrimitiveBean> builder() {
-            return new DirectBeanBuilder<PrimitiveBean>(new PrimitiveBean());
+            return new DirectBeanBuilder<>(new PrimitiveBean());
         }
 
         @Override

@@ -131,7 +131,7 @@ public class SubPerson<T> extends DirectBean {
 
         @Override
         public BeanBuilder<? extends SubPerson<T>> builder() {
-            return new DirectBeanBuilder<SubPerson<T>>(new SubPerson<T>());
+            return new DirectBeanBuilder<>(new SubPerson<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

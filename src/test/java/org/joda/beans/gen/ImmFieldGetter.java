@@ -81,7 +81,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
      * @return the builder, not null
      */
     public static <T> ImmFieldGetter.Builder<T> builder() {
-        return new ImmFieldGetter.Builder<T>();
+        return new ImmFieldGetter.Builder<>();
     }
 
     private ImmFieldGetter(
@@ -111,7 +111,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -183,7 +183,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
 
         @Override
         public ImmFieldGetter.Builder<T> builder() {
-            return new ImmFieldGetter.Builder<T>();
+            return new ImmFieldGetter.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -311,7 +311,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
 
         @Override
         public ImmFieldGetter<T> build() {
-            return new ImmFieldGetter<T>(
+            return new ImmFieldGetter<>(
                     value);
         }
 

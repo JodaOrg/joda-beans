@@ -101,7 +101,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
             List<?> listWildBuilder1,
             List<? extends Address> listWildBuilder2,
             Map<String, ? extends Address> mapWildBuilder1) {
-        return new ImmTypes<T>(
+        return new ImmTypes<>(
             listWild,
             listWildPublic1,
             listWildPublic2,
@@ -116,7 +116,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
      * @return the builder, not null
      */
     public static <T extends Comparable<T>> ImmTypes.Builder<T> builder() {
-        return new ImmTypes.Builder<T>();
+        return new ImmTypes.Builder<>();
     }
 
     private ImmTypes(
@@ -216,7 +216,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -349,7 +349,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
 
         @Override
         public ImmTypes.Builder<T> builder() {
-            return new ImmTypes.Builder<T>();
+            return new ImmTypes.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -563,7 +563,7 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
 
         @Override
         public ImmTypes<T> build() {
-            return new ImmTypes<T>(
+            return new ImmTypes<>(
                     listWild,
                     listWildPublic1,
                     listWildPublic2,

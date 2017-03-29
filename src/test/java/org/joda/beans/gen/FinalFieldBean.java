@@ -341,7 +341,7 @@ public class FinalFieldBean extends DirectBean {
 
         @Override
         public BeanBuilder<? extends FinalFieldBean> builder() {
-            return new DirectBeanBuilder<FinalFieldBean>(new FinalFieldBean());
+            return new DirectBeanBuilder<>(new FinalFieldBean());
         }
 
         @Override

@@ -294,7 +294,7 @@ public class Address extends DirectBean {
 
         @Override
         public BeanBuilder<? extends Address> builder() {
-            return new DirectBeanBuilder<Address>(new Address());
+            return new DirectBeanBuilder<>(new Address());
         }
 
         @Override

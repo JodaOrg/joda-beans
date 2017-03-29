@@ -122,7 +122,7 @@ public class AddressResult
 
         @Override
         public BeanBuilder<? extends AddressResult> builder() {
-            return new DirectBeanBuilder<AddressResult>(new AddressResult());
+            return new DirectBeanBuilder<>(new AddressResult());
         }
 
         @Override

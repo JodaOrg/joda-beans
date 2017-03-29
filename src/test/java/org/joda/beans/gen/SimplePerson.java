@@ -494,7 +494,7 @@ public final class SimplePerson implements Cloneable, Bean {
 
         @Override
         public BeanBuilder<? extends SimplePerson> builder() {
-            return new DirectBeanBuilder<SimplePerson>(new SimplePerson());
+            return new DirectBeanBuilder<>(new SimplePerson());
         }
 
         @Override

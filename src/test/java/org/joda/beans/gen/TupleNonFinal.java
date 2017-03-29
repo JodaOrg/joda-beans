@@ -275,7 +275,7 @@ public class TupleNonFinal<X, Y, Z> extends DirectBean {
 
         @Override
         public BeanBuilder<? extends TupleNonFinal<X, Y, Z>> builder() {
-            return new DirectBeanBuilder<TupleNonFinal<X, Y, Z>>(new TupleNonFinal<X, Y, Z>());
+            return new DirectBeanBuilder<>(new TupleNonFinal<X, Y, Z>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

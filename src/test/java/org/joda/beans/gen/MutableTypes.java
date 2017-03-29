@@ -230,7 +230,7 @@ public final class MutableTypes<T extends Comparable<T>> implements Bean {
 
         @Override
         public BeanBuilder<? extends MutableTypes<T>> builder() {
-            return new DirectBeanBuilder<MutableTypes<T>>(new MutableTypes<T>());
+            return new DirectBeanBuilder<>(new MutableTypes<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

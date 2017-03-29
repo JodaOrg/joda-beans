@@ -335,7 +335,7 @@ public class WeirdFormat
 
         @Override
         public BeanBuilder<? extends WeirdFormat> builder() {
-            return new DirectBeanBuilder<WeirdFormat>(new WeirdFormat());
+            return new DirectBeanBuilder<>(new WeirdFormat());
         }
 
         @Override

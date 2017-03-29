@@ -433,7 +433,7 @@ public class DoubleGenericsComplexExtendsSuperTwoGenerics<T extends Comparable<T
 
         @Override
         public BeanBuilder<? extends DoubleGenericsComplexExtendsSuperTwoGenerics<T, U>> builder() {
-            return new DirectBeanBuilder<DoubleGenericsComplexExtendsSuperTwoGenerics<T, U>>(new DoubleGenericsComplexExtendsSuperTwoGenerics<T, U>());
+            return new DirectBeanBuilder<>(new DoubleGenericsComplexExtendsSuperTwoGenerics<T, U>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

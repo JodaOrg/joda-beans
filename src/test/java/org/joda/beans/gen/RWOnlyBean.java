@@ -438,7 +438,7 @@ public class RWOnlyBean extends DirectBean {
 
         @Override
         public BeanBuilder<? extends RWOnlyBean> builder() {
-            return new DirectBeanBuilder<RWOnlyBean>(new RWOnlyBean());
+            return new DirectBeanBuilder<>(new RWOnlyBean());
         }
 
         @Override

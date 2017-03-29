@@ -239,7 +239,7 @@ class BeanGen {
                     PropertyGen prop = nonDerived.get(i);
                     insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
                 }
-                insertRegion.add("\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "(");
+                insertRegion.add("\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.add("\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
                 }
@@ -267,7 +267,7 @@ class BeanGen {
             } else {
                 insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + data.getTypeRaw() + ".Builder builder() {");
             }
-            insertRegion.add("\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+            insertRegion.add("\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
             insertRegion.add("\t}");
             insertRegion.add("");
         }
@@ -613,7 +613,7 @@ class BeanGen {
                         insertRegion.add("\t@Override");
                     }
                     insertRegion.add("\t" + data.getEffectiveBuilderScope() + "Builder" + data.getTypeGenericName(true) + " toBuilder() {");
-                    insertRegion.add("\t\treturn new Builder" + data.getTypeGenericName(true) + "(this);");
+                    insertRegion.add("\t\treturn new Builder" + data.getTypeGenericDiamond() + "(this);");
                     insertRegion.add("\t}");
                     insertRegion.add("");
                 }
@@ -907,14 +907,14 @@ class BeanGen {
             data.ensureImport(BeanBuilder.class);
             insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
             } else {
                 insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
         } else if (data.isImmutable() || (data.isMutable() && data.isBuilderScopeVisible())) {
             insertRegion.add("\t\tpublic " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
             if (data.isConstructable()) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + "();");
+                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
             } else {
                 insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
@@ -923,7 +923,7 @@ class BeanGen {
             insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
                 data.ensureImport(DirectBeanBuilder.class);
-                insertRegion.add("\t\t\treturn new DirectBeanBuilder<" + data.getTypeNoExtends() + ">(new " + data.getTypeNoExtends() + "());");
+                insertRegion.add("\t\t\treturn new DirectBeanBuilder<>(new " + data.getTypeNoExtends() + "());");
             } else {
                 insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
@@ -1104,7 +1104,7 @@ class BeanGen {
         generateBuilderSet();
         generateBuilderOtherSets();
         if (data.isConstructable()) {
-            generateBuilderBuilder();
+            generateBuilderBuild();
         }
         generateIndentedSeparator();
         generateBuilderPropertySetMethods();
@@ -1265,7 +1265,7 @@ class BeanGen {
         }
     }
 
-    private void generateBuilderBuilder() {
+    private void generateBuilderBuild() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         insertRegion.add("\t\t@Override");
         insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGenericName(true) + " build() {");
@@ -1274,15 +1274,15 @@ class BeanGen {
         }
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS) {
             if (nonDerived.size() == 0) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "();");
+                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "();");
             } else {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "(");
+                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
                 }
             }
         } else if (data.getConstructorStyle() == CONSTRUCTOR_BY_BUILDER) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericName(true) + "(this);");
+            insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + data.getTypeGenericDiamond() + "(this);");
         }
         insertRegion.add("\t\t}");
         insertRegion.add("");

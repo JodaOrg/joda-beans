@@ -177,7 +177,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
      * @return the builder, not null
      */
     public static <T extends Comparable<T>> ImmGuava.Builder<T> builder() {
-        return new ImmGuava.Builder<T>();
+        return new ImmGuava.Builder<>();
     }
 
     /**
@@ -637,7 +637,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -1094,7 +1094,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
         @Override
         public ImmGuava.Builder<T> builder() {
-            return new ImmGuava.Builder<T>();
+            return new ImmGuava.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -1767,7 +1767,7 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
 
         @Override
         public ImmGuava<T> build() {
-            return new ImmGuava<T>(
+            return new ImmGuava<>(
                     collection,
                     list,
                     set,

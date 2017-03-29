@@ -175,7 +175,7 @@ public class NoClone
 
         @Override
         public BeanBuilder<? extends NoClone> builder() {
-            return new DirectBeanBuilder<NoClone>(new NoClone());
+            return new DirectBeanBuilder<>(new NoClone());
         }
 
         @Override

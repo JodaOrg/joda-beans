@@ -193,7 +193,7 @@ public class Company
 
         @Override
         public BeanBuilder<? extends Company> builder() {
-            return new DirectBeanBuilder<Company>(new Company());
+            return new DirectBeanBuilder<>(new Company());
         }
 
         @Override

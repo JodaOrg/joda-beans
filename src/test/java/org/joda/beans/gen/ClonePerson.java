@@ -457,7 +457,7 @@ public class ClonePerson
 
         @Override
         public BeanBuilder<? extends ClonePerson> builder() {
-            return new DirectBeanBuilder<ClonePerson>(new ClonePerson());
+            return new DirectBeanBuilder<>(new ClonePerson());
         }
 
         @Override

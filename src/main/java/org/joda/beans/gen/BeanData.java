@@ -845,6 +845,14 @@ class BeanData {
     }
 
     /**
+     * Gets the diamond operator if generic.
+     * @return the generic type name, or a blank string if not generic, not null
+     */
+    public String getTypeGenericDiamond() {
+        return isTypeGeneric() ? "<>" : "";
+    }
+
+    /**
      * Gets the name of the parameterisation of the bean, such as '{@code <T>}'.
      * @param typeParamIndex  the zero-based index of the type parameter
      * @param includeBrackets  whether to include brackets

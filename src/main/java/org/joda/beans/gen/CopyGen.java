@@ -84,7 +84,6 @@ abstract class CopyGen {
                 line = line.replace("$type", prop.getFieldType());
                 line = line.replace("$typeRaw", prop.getTypeRaw());
                 line = line.replace("$generics", prop.getTypeGenerics());
-                line = line.replace("<>", prop.getTypeGenerics());
                 list.add(indent + line);
             }
             return list;
@@ -115,7 +114,6 @@ abstract class CopyGen {
                 line = line.replace("$type", prop.getFieldType());
                 line = line.replace("$typeRaw", prop.getTypeRaw());
                 line = line.replace("$generics", prop.getTypeGenerics());
-                line = line.replace("<>", PropertyGen.resolveWildcard(prop.getTypeGenerics()));
                 list.add(indent + line);
             }
             return list;

@@ -168,7 +168,7 @@ public class PersonDocumentation extends Documentation<Person> {
 
         @Override
         public BeanBuilder<? extends PersonDocumentation> builder() {
-            return new DirectBeanBuilder<PersonDocumentation>(new PersonDocumentation());
+            return new DirectBeanBuilder<>(new PersonDocumentation());
         }
 
         @Override

@@ -194,7 +194,7 @@ public class GenericArray<T extends Address> implements Bean {
 
         @Override
         public BeanBuilder<? extends GenericArray<T>> builder() {
-            return new DirectBeanBuilder<GenericArray<T>>(new GenericArray<T>());
+            return new DirectBeanBuilder<>(new GenericArray<T>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

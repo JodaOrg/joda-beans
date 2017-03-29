@@ -97,7 +97,7 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
      * @return the builder, not null
      */
     public static <T extends Number> MinimalImmutableGeneric.Builder<T> builder() {
-        return new MinimalImmutableGeneric.Builder<T>();
+        return new MinimalImmutableGeneric.Builder<>();
     }
 
     private MinimalImmutableGeneric(
@@ -158,7 +158,7 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -255,7 +255,7 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
 
         @Override
         public MinimalImmutableGeneric.Builder<T> builder() {
-            return new MinimalImmutableGeneric.Builder<T>();
+            return new MinimalImmutableGeneric.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -393,7 +393,7 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
 
         @Override
         public MinimalImmutableGeneric<T> build() {
-            return new MinimalImmutableGeneric<T>(
+            return new MinimalImmutableGeneric<>(
                     number,
                     list,
                     map);

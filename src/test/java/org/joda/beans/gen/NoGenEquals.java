@@ -150,7 +150,7 @@ public final class NoGenEquals extends DirectBean {
 
         @Override
         public BeanBuilder<? extends NoGenEquals> builder() {
-            return new DirectBeanBuilder<NoGenEquals>(new NoGenEquals());
+            return new DirectBeanBuilder<>(new NoGenEquals());
         }
 
         @Override

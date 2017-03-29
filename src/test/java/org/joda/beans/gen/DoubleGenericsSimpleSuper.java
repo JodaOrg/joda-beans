@@ -282,7 +282,7 @@ public class DoubleGenericsSimpleSuper<T, U>
 
         @Override
         public BeanBuilder<? extends DoubleGenericsSimpleSuper<T, U>> builder() {
-            return new DirectBeanBuilder<DoubleGenericsSimpleSuper<T, U>>(new DoubleGenericsSimpleSuper<T, U>());
+            return new DirectBeanBuilder<>(new DoubleGenericsSimpleSuper<T, U>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

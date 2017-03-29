@@ -296,7 +296,7 @@ public final class UserAccount implements Bean {
 
         @Override
         public BeanBuilder<? extends UserAccount> builder() {
-            return new DirectBeanBuilder<UserAccount>(new UserAccount());
+            return new DirectBeanBuilder<>(new UserAccount());
         }
 
         @Override

@@ -93,7 +93,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
      * @return the builder, not null
      */
     public static <X, Y, Z extends Address> TupleImmutable.Builder<X, Y, Z> builder() {
-        return new TupleImmutable.Builder<X, Y, Z>();
+        return new TupleImmutable.Builder<>();
     }
 
     private TupleImmutable(
@@ -154,7 +154,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
      * @return the mutable builder, not null
      */
     public Builder<X, Y, Z> toBuilder() {
-        return new Builder<X, Y, Z>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -253,7 +253,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
 
         @Override
         public TupleImmutable.Builder<X, Y, Z> builder() {
-            return new TupleImmutable.Builder<X, Y, Z>();
+            return new TupleImmutable.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -418,7 +418,7 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
 
         @Override
         public TupleImmutable<X, Y, Z> build() {
-            return new TupleImmutable<X, Y, Z>(
+            return new TupleImmutable<>(
                     first,
                     second,
                     third);

@@ -157,7 +157,7 @@ public class NoGenToString extends DirectBean {
 
         @Override
         public BeanBuilder<? extends NoGenToString> builder() {
-            return new DirectBeanBuilder<NoGenToString>(new NoGenToString());
+            return new DirectBeanBuilder<>(new NoGenToString());
         }
 
         @Override

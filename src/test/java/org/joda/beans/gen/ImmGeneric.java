@@ -77,7 +77,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
      */
     public static <T extends Address> ImmGeneric<T> of(
             T value) {
-        return new ImmGeneric<T>(
+        return new ImmGeneric<>(
             value);
     }
 
@@ -87,7 +87,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
      * @return the builder, not null
      */
     public static <T extends Address> ImmGeneric.Builder<T> builder() {
-        return new ImmGeneric.Builder<T>();
+        return new ImmGeneric.Builder<>();
     }
 
     private ImmGeneric(
@@ -127,7 +127,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -200,7 +200,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
 
         @Override
         public ImmGeneric.Builder<T> builder() {
-            return new ImmGeneric.Builder<T>();
+            return new ImmGeneric.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -329,7 +329,7 @@ public final class ImmGeneric<T extends Address> implements ImmutableBean {
 
         @Override
         public ImmGeneric<T> build() {
-            return new ImmGeneric<T>(
+            return new ImmGeneric<>(
                     value);
         }
 

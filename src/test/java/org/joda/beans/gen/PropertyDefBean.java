@@ -155,7 +155,7 @@ public final class PropertyDefBean implements Bean {
      * @param listCopyOfCollection  the new value of the property
      */
     public void setListCopyOfCollection(Collection<Address> listCopyOfCollection) {
-        this.listCopyOfCollection = new ArrayList<Address>(listCopyOfCollection);
+        this.listCopyOfCollection = new ArrayList<>(listCopyOfCollection);
     }
 
     /**
@@ -492,7 +492,7 @@ public final class PropertyDefBean implements Bean {
 
         @Override
         public BeanBuilder<? extends PropertyDefBean> builder() {
-            return new DirectBeanBuilder<PropertyDefBean>(new PropertyDefBean());
+            return new DirectBeanBuilder<>(new PropertyDefBean());
         }
 
         @Override

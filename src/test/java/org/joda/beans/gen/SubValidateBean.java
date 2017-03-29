@@ -174,7 +174,7 @@ public class SubValidateBean extends ValidateBean {
 
         @Override
         public BeanBuilder<? extends SubValidateBean> builder() {
-            return new DirectBeanBuilder<SubValidateBean>(new SubValidateBean());
+            return new DirectBeanBuilder<>(new SubValidateBean());
         }
 
         @Override

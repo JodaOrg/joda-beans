@@ -170,7 +170,7 @@ public class DocumentationHolder extends DirectBean{
 
         @Override
         public BeanBuilder<? extends DocumentationHolder> builder() {
-            return new DirectBeanBuilder<DocumentationHolder>(new DocumentationHolder());
+            return new DirectBeanBuilder<>(new DocumentationHolder());
         }
 
         @Override

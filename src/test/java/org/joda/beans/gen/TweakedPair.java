@@ -117,7 +117,7 @@ public class TweakedPair extends Pair {
 
         @Override
         public BeanBuilder<? extends TweakedPair> builder() {
-            return new DirectBeanBuilder<TweakedPair>(new TweakedPair());
+            return new DirectBeanBuilder<>(new TweakedPair());
         }
 
         @Override

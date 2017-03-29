@@ -121,7 +121,7 @@ public class CompanyAddressMidResult extends MidAbstractResult<CompanyAddress> {
 
         @Override
         public BeanBuilder<? extends CompanyAddressMidResult> builder() {
-            return new DirectBeanBuilder<CompanyAddressMidResult>(new CompanyAddressMidResult());
+            return new DirectBeanBuilder<>(new CompanyAddressMidResult());
         }
 
         @Override

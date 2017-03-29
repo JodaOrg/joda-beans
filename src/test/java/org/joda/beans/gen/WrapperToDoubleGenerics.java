@@ -78,7 +78,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
      * @return the builder, not null
      */
     public static <T extends DoubleGenericsSimpleSuper<String, ?>> WrapperToDoubleGenerics.Builder<T> builder() {
-        return new WrapperToDoubleGenerics.Builder<T>();
+        return new WrapperToDoubleGenerics.Builder<>();
     }
 
     /**
@@ -120,7 +120,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
      * @return the mutable builder, not null
      */
     public Builder<T> toBuilder() {
-        return new Builder<T>(this);
+        return new Builder<>(this);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
 
         @Override
         public WrapperToDoubleGenerics.Builder<T> builder() {
-            return new WrapperToDoubleGenerics.Builder<T>();
+            return new WrapperToDoubleGenerics.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -330,7 +330,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
 
         @Override
         public WrapperToDoubleGenerics<T> build() {
-            return new WrapperToDoubleGenerics<T>(this);
+            return new WrapperToDoubleGenerics<>(this);
         }
 
         //-----------------------------------------------------------------------

@@ -168,7 +168,7 @@ public class SubWrapper extends Wrapper<CompanyAddress> {
 
         @Override
         public BeanBuilder<? extends SubWrapper> builder() {
-            return new DirectBeanBuilder<SubWrapper>(new SubWrapper());
+            return new DirectBeanBuilder<>(new SubWrapper());
         }
 
         @Override

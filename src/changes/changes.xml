@@ -13,6 +13,10 @@
         Move to Java 8.
         Fixes #155.
       </action>
+      <action dev="jodastephen" type="fix">
+        Use diamond operators in generated code.
+        Fixes #5.
+      </action>
     </release>
     <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >

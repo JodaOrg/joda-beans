@@ -435,7 +435,7 @@ public class DoubleGenericsWithExtendsSuperOneGeneric<T extends Serializable, U 
 
         @Override
         public BeanBuilder<? extends DoubleGenericsWithExtendsSuperOneGeneric<T, U>> builder() {
-            return new DirectBeanBuilder<DoubleGenericsWithExtendsSuperOneGeneric<T, U>>(new DoubleGenericsWithExtendsSuperOneGeneric<T, U>());
+            return new DirectBeanBuilder<>(new DoubleGenericsWithExtendsSuperOneGeneric<T, U>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })

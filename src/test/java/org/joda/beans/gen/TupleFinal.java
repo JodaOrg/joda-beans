@@ -92,7 +92,7 @@ public final class TupleFinal<X, Y, Z> implements Bean {
      * @return the builder, not null
      */
     static <X, Y, Z> TupleFinal.Builder<X, Y, Z> builder() {
-        return new TupleFinal.Builder<X, Y, Z>();
+        return new TupleFinal.Builder<>();
     }
 
     /**
@@ -298,7 +298,7 @@ public final class TupleFinal<X, Y, Z> implements Bean {
 
         @Override
         public TupleFinal.Builder<X, Y, Z> builder() {
-            return new TupleFinal.Builder<X, Y, Z>();
+            return new TupleFinal.Builder<>();
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
@@ -471,7 +471,7 @@ public final class TupleFinal<X, Y, Z> implements Bean {
 
         @Override
         public TupleFinal<X, Y, Z> build() {
-            return new TupleFinal<X, Y, Z>(this);
+            return new TupleFinal<>(this);
         }
 
         //-----------------------------------------------------------------------

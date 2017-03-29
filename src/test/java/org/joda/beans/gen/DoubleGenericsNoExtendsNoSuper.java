@@ -443,7 +443,7 @@ public class DoubleGenericsNoExtendsNoSuper<T, U>
 
         @Override
         public BeanBuilder<? extends DoubleGenericsNoExtendsNoSuper<T, U>> builder() {
-            return new DirectBeanBuilder<DoubleGenericsNoExtendsNoSuper<T, U>>(new DoubleGenericsNoExtendsNoSuper<T, U>());
+            return new DirectBeanBuilder<>(new DoubleGenericsNoExtendsNoSuper<T, U>());
         }
 
         @SuppressWarnings({"unchecked", "rawtypes" })
