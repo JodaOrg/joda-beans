@@ -27,13 +27,13 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.DerivedProperty;
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
 
 import com.google.common.base.Optional;
-import org.joda.beans.MetaBean;
 
 /**
  * Mock minimal bean, used for testing.

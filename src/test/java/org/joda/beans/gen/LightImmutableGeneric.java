@@ -24,10 +24,10 @@ import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyDefinition;
+import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
 
 import com.google.common.collect.ImmutableList;
-import org.joda.beans.TypedMetaBean;
 
 /**
  * Mock light bean, used for testing.

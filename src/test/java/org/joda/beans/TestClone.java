@@ -19,6 +19,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotSame;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -27,8 +28,6 @@ import org.joda.beans.gen.ClonePerson;
 import org.joda.beans.gen.Company;
 import org.joda.beans.gen.NoClone;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.Method;
 
 /**
  * Test property using ClonePerson.

@@ -25,13 +25,13 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.DerivedProperty;
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import org.joda.beans.MetaBean;
 
 /**
  * Mock light bean, used for testing.

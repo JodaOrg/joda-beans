@@ -21,10 +21,10 @@ import java.lang.invoke.MethodHandles;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
-import org.joda.beans.MetaBean;
 
 /**
  * Mock light bean, used for testing.
