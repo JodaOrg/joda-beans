@@ -49,6 +49,7 @@ import com.google.common.collect.ImmutableMultiset;
  * Test utils.
  */
 @Test
+@SuppressWarnings("deprecation")
 public class TestJodaBeanUtils {
 
     //-----------------------------------------------------------------------

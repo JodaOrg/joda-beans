@@ -32,7 +32,9 @@ import org.joda.beans.MetaProperty;
  * 
  * @param <P>  the type of the result of the query
  * @author Stephen Colebourne
+ * @deprecated Use functional interfaces in Java SE 8
  */
+@Deprecated
 public final class ChainedBeanQuery<P> implements BeanQuery<P> {
 
     /**

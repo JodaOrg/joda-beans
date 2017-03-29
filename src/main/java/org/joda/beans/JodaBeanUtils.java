@@ -896,6 +896,7 @@ public final class JodaBeanUtils {
      * @param ascending  true for ascending, false for descending
      * @return the comparator, not null
      */
+    @SuppressWarnings("deprecation")
     public static Comparator<Bean> comparator(BeanQuery<?> query, boolean ascending) {
         return (ascending ? comparatorAscending(query) : comparatorDescending(query));
     }
@@ -908,6 +909,7 @@ public final class JodaBeanUtils {
      * @param query  the query to use, not null
      * @return the comparator, not null
      */
+    @SuppressWarnings("deprecation")
     public static Comparator<Bean> comparatorAscending(BeanQuery<?> query) {
         if (query == null) {
             throw new NullPointerException("BeanQuery must not be null");
@@ -923,6 +925,7 @@ public final class JodaBeanUtils {
      * @param query  the query to use, not null
      * @return the comparator, not null
      */
+    @SuppressWarnings("deprecation")
     public static Comparator<Bean> comparatorDescending(BeanQuery<?> query) {
         if (query == null) {
             throw new NullPointerException("BeanQuery must not be null");
@@ -934,6 +937,7 @@ public final class JodaBeanUtils {
     /**
      * Compare for BeanQuery.
      */
+    @SuppressWarnings("deprecation")
     private static final class Comp implements Comparator<Bean> {
         private final BeanQuery<?> query;
 

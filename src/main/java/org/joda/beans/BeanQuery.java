@@ -22,7 +22,9 @@ package org.joda.beans;
  * 
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
+ * @deprecated Use {@link MetaProperty} directly, or functional interfaces in Java SE 8
  */
+@Deprecated
 public interface BeanQuery<P> {
 
     /**

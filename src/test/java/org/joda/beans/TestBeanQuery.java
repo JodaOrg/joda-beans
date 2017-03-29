@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
  * Test query.
  */
 @Test
+@SuppressWarnings("deprecation")
 public class TestBeanQuery {
 
     public void test_simple() {

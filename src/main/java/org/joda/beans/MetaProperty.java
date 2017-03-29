@@ -29,6 +29,7 @@ import org.joda.convert.StringConvert;
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
  */
+@SuppressWarnings("deprecation")
 public interface MetaProperty<P> extends BeanQuery<P> {
 
     /**
