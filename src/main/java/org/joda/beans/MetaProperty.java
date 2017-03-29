@@ -109,7 +109,8 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * Gets the annotations of the property.
      * <p>
      * The annotations are queried from the property.
-     * This is typically accomplished by querying the annotations of the underlying instance variable.
+     * This is typically accomplished by querying the annotations of the underlying
+     * instance variable however any strategy is permitted.
      * 
      * @return the annotations, unmodifiable, not null
      */
@@ -119,7 +120,8 @@ public interface MetaProperty<P> extends BeanQuery<P> {
      * Gets an annotation from the property.
      * <p>
      * The annotations are queried from the property.
-     * This is typically accomplished by querying the annotations of the underlying instance variable.
+     * This is typically accomplished by querying the annotations of the underlying
+     * instance variable however any strategy is permitted..
      * 
      * @param <A>  the annotation type
      * @param annotationClass  the annotation class to find, not null

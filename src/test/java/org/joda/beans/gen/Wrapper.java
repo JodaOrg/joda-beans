@@ -219,6 +219,11 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         }
 
         @Override
+        public boolean isBuildable() {
+            return false;
+        }
+
+        @Override
         public BeanBuilder<? extends Wrapper<T>> builder() {
             throw new UnsupportedOperationException("Wrapper is an abstract class");
         }

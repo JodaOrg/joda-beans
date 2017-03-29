@@ -44,6 +44,10 @@
       <action dev="jodastephen" type="remove">
         Remove deprecated methods.
       </action>
+      <action dev="jodastephen" type="add">
+        Additional meta-bean methods - isBuildable(), of(Class), annotations(), annotation(Class).
+        Fixes #161.
+      </action>
     </release>
     <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >

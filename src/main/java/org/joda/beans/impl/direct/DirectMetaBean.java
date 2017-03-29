@@ -36,6 +36,11 @@ public abstract class DirectMetaBean implements MetaBean {
      */
     public static final String TEST_COVERAGE_STRING = "!ConstantUsedForTestCoveragePurposes!";
 
+    @Override
+    public boolean isBuildable() {
+        return true;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <R> MetaProperty<R> metaProperty(String propertyName) {

@@ -15,6 +15,10 @@
  */
 package org.joda.beans;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -30,6 +34,32 @@ import org.joda.beans.impl.BasicPropertyMap;
  * @author Stephen Colebourne
  */
 public interface MetaBean {
+
+    /**
+     * Obtains a meta-bean from a {@code Class}.
+     * <p>
+     * Not all classes can be represented via {@code MetaBean}.
+     * See {@link JodaBeanUtils#metaBean(Class)} for details of the process.
+     * 
+     * @param cls  the class to get the meta-bean for, not null
+     * @return the meta-bean associated with the class, not null
+     * @throws IllegalArgumentException if unable to obtain the meta-bean
+     */
+    static MetaBean of(Class<?> cls) {
+        return JodaBeanUtils.metaBean(cls);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this bean is buildable or not.
+     * <p>
+     * A buildable bean can be constructed using {@link #builder()}.
+     * If this method returns true then {@code builder()} must return a valid builder.
+     * If this method returns false then {@code builder()} must throw {@link UnsupportedOperationException}.
+     * 
+     * @return true if this bean is buildable
+     */
+    public abstract boolean isBuildable();
 
     /**
      * Creates a bean builder that can be used to create an instance of this bean.
@@ -154,5 +184,47 @@ public interface MetaBean {
      * @return the unmodifiable map of meta property objects, not null
      */
     public abstract Map<String, MetaProperty<?>> metaPropertyMap();
+
+    /**
+     * Gets the annotations associated with this bean.
+     * <p>
+     * The annotations are queried from the bean.
+     * This is typically accomplished by querying the annotations of an underlying
+     * {@link Class} however any strategy is permitted.
+     * <p>
+     * If the implementation has a mutable set of annotations, then the result of
+     * this method must stream over those annotations in existence when this method
+     * is called to avoid concurrency issues.
+     * <p>
+     * The default implementation uses the annotations from {@link #beanType()}.
+     * 
+     * @return the annotations, unmodifiable, not null
+     */
+    public default List<Annotation> annotations() {
+        return Collections.unmodifiableList(Arrays.asList(beanType().getAnnotations()));
+    }
+
+    /**
+     * Gets an annotation from the bean.
+     * <p>
+     * The annotations are queried from the bean.
+     * This is typically accomplished by querying the annotations of an underlying
+     * {@link Class} however any strategy is permitted.
+     * 
+     * @param <A>  the annotation type
+     * @param annotationClass  the annotation class to find, not null
+     * @return the annotation, not null
+     * @throws NoSuchElementException if the annotation is not specified
+     */
+    @SuppressWarnings("unchecked")
+    public default <A extends Annotation> A annotation(Class<A> annotationClass) {
+        List<Annotation> annotations = annotations();
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return (A) annotation;
+            }
+        }
+        throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+    }
 
 }

@@ -123,6 +123,11 @@ public abstract class MidAbstractResult<S extends Address> extends AbstractResul
         }
 
         @Override
+        public boolean isBuildable() {
+            return false;
+        }
+
+        @Override
         public BeanBuilder<? extends MidAbstractResult<S>> builder() {
             throw new UnsupportedOperationException("MidAbstractResult is an abstract class");
         }

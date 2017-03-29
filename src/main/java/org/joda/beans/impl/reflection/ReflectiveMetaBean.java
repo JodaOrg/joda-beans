@@ -82,6 +82,16 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isBuildable() {
+        try {
+            beanType.newInstance();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    @Override
     public BeanBuilder<T> builder() {
         try {
             T bean = beanType.newInstance();

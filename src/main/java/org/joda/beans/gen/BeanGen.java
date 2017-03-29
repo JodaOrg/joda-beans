@@ -983,6 +983,13 @@ class BeanGen {
     }
 
     private void generateMetaBuilder() {
+        if (!data.isConstructable()) {
+            insertRegion.add("\t\t@Override");
+            insertRegion.add("\t\tpublic boolean isBuildable() {");
+            insertRegion.add("\t\t\treturn false;");
+            insertRegion.add("\t\t}");
+            insertRegion.add("");
+        }
         insertRegion.add("\t\t@Override");
         if (data.isImmutable() && data.isEffectiveBuilderScopeVisible() == false) {
             data.ensureImport(BeanBuilder.class);

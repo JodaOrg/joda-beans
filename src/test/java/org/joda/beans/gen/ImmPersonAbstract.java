@@ -195,6 +195,11 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
         }
 
         @Override
+        public boolean isBuildable() {
+            return false;
+        }
+
+        @Override
         public ImmPersonAbstract.Builder builder() {
             throw new UnsupportedOperationException("ImmPersonAbstract is an abstract class");
         }

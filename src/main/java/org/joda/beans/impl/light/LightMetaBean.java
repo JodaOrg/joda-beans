@@ -297,6 +297,11 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isBuildable() {
+        return true;
+    }
+
+    @Override
     public BeanBuilder<T> builder() {
         return new LightBeanBuilder<>(this, constructionData.clone());
     }

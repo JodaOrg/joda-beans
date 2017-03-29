@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -42,6 +43,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
  * @author Stephen Colebourne
  */
 @BeanDefinition
+@XmlSeeAlso(Address.class)
 public final class Person extends DirectBean implements IPerson {
 
     /** The forename. */

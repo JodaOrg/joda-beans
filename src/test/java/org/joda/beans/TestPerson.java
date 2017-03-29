@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
+import org.joda.beans.gen.AbstractResult;
 import org.joda.beans.gen.Address;
 import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -76,8 +78,8 @@ public class TestPerson {
     public void test_metaBean() {
         MetaBean test = Person.meta();
         
+        assertEquals(test.isBuildable(), true);
         assertEquals(test.beanType(), Person.class);
-        
         assertEquals(test.beanName(), Person.class.getName());
         
         assertEquals(test.metaPropertyCount(), NUM_PROPERTIES);
@@ -107,6 +109,19 @@ public class TestPerson {
             System.out.println(ex.getMessage());
             throw ex;
         }
+    }
+
+    public void test_metaBean_abstract() {
+        MetaBean test = AbstractResult.meta();
+        
+        assertEquals(test.isBuildable(), false);
+        assertEquals(test.beanType(), AbstractResult.class);
+        assertEquals(test.beanName(), AbstractResult.class.getName());
+        
+        assertEquals(test.metaPropertyCount(), 2);
+        
+        assertEquals(test.metaPropertyExists("docs"), true);
+        assertEquals(test.metaPropertyExists("Rubbish"), false);
     }
 
     //-----------------------------------------------------------------------
@@ -261,11 +276,22 @@ public class TestPerson {
 
     public void test_metaProperty_annotations_extensions() {
         MetaProperty<FlexiBean> prop = Person.meta().extensions();
-        List<Annotation> test = prop.annotations();
+        List<Annotation> annos = prop.annotations();
         
-        assertEquals(test.size(), 2);
-        assertEquals(test.get(0) instanceof PropertyDefinition, true);
-        assertEquals(test.get(1) instanceof XmlID, true);
+        assertEquals(annos.size(), 2);
+        assertEquals(annos.get(0) instanceof PropertyDefinition, true);
+        assertEquals(annos.get(1) instanceof XmlID, true);
+        assertEquals(prop.annotation(PropertyDefinition.class).get(), "smart");
+    }
+
+    public void test_metaBean_annotations() {
+        Person.Meta meta = Person.meta();
+        List<Annotation> annos = meta.annotations();
+        
+        assertEquals(annos.size(), 2);
+        assertEquals(annos.get(0) instanceof BeanDefinition, true);
+        assertEquals(annos.get(1) instanceof XmlSeeAlso, true);
+        assertEquals(meta.annotation(BeanDefinition.class).builderScope(), "smart");
     }
 
 }

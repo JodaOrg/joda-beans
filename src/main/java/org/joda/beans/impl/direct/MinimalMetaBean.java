@@ -158,6 +158,11 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isBuildable() {
+        return true;
+    }
+
+    @Override
     public BeanBuilder<T> builder() {
         return builderSupplier.get();
     }

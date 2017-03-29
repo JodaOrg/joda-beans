@@ -202,6 +202,11 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         }
 
         @Override
+        public boolean isBuildable() {
+            return false;
+        }
+
+        @Override
         public BeanBuilder<? extends AbstractResult<T>> builder() {
             throw new UnsupportedOperationException("AbstractResult is an abstract class");
         }

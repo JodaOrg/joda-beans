@@ -15,9 +15,11 @@
  */
 package org.joda.beans.impl.map;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.Bean;
@@ -49,6 +51,11 @@ class MapMetaBean implements DynamicMetaBean {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isBuildable() {
+        return true;
+    }
+
     @Override
     public BeanBuilder<MapBean> builder() {
         return new MapBeanBuilder(bean);
@@ -123,6 +130,11 @@ class MapMetaBean implements DynamicMetaBean {
     @Override
     public void metaPropertyRemove(String propertyName) {
         bean.propertyRemove(propertyName);
+    }
+
+    @Override
+    public List<Annotation> annotations() {
+        return Collections.emptyList();
     }
 
     /**

@@ -15,9 +15,11 @@
  */
 package org.joda.beans.impl.flexi;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.Bean;
@@ -49,6 +51,11 @@ class FlexiMetaBean implements DynamicMetaBean {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public boolean isBuildable() {
+        return true;
+    }
+
     @Override
     public BeanBuilder<FlexiBean> builder() {
         return new FlexiBeanBuilder(bean);
@@ -129,6 +136,11 @@ class FlexiMetaBean implements DynamicMetaBean {
     @Override
     public void metaPropertyRemove(String propertyName) {
         bean.propertyRemove(propertyName);
+    }
+
+    @Override
+    public List<Annotation> annotations() {
+        return Collections.emptyList();
     }
 
     /**
