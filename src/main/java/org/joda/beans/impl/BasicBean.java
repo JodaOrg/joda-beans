@@ -15,11 +15,8 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Set;
-
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.Property;
 
 /**
  * Basic implementation of {@code Bean} intended for applications to subclass.
@@ -31,17 +28,6 @@ import org.joda.beans.Property;
  */
 public abstract class BasicBean implements Bean {
 
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Clones this bean, returning an independent copy.
      * 

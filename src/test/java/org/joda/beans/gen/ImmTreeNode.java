@@ -15,17 +15,16 @@
  */
 package org.joda.beans.gen;
 
+import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
@@ -33,7 +32,6 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
-import java.beans.ConstructorProperties;
 
 /**
  * Mock immutable tree node, used for iterator testing.
@@ -131,16 +129,6 @@ public final class ImmTreeNode implements ImmutableBean{
     @Override
     public ImmTreeNode.Meta metaBean() {
         return ImmTreeNode.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

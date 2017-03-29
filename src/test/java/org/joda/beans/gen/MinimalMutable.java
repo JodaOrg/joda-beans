@@ -34,8 +34,6 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.base.Optional;
-import java.util.Set;
-import org.joda.beans.Property;
 
 /**
  * Mock minimal bean, used for testing.
@@ -114,16 +112,6 @@ public final class MinimalMutable implements Bean, Serializable {
     @Override
     public MinimalMutable.Meta metaBean() {
         return MinimalMutable.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

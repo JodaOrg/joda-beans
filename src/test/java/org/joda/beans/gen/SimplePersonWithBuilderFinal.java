@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
@@ -107,16 +106,6 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
     @Override
     public SimplePersonWithBuilderFinal.Meta metaBean() {
         return SimplePersonWithBuilderFinal.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

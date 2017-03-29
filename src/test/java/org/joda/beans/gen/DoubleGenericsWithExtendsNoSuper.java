@@ -18,7 +18,6 @@ package org.joda.beans.gen;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -100,16 +99,6 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
     @Override
     public DoubleGenericsWithExtendsNoSuper.Meta<T, U> metaBean() {
         return DoubleGenericsWithExtendsNoSuper.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

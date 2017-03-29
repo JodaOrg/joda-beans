@@ -17,7 +17,6 @@ package org.joda.beans.gen;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -74,16 +73,6 @@ public final class UserAccount implements Bean {
     @Override
     public UserAccount.Meta metaBean() {
         return UserAccount.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

@@ -17,7 +17,6 @@ package org.joda.beans.gen;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -75,16 +74,6 @@ public class GenericUnionType<T extends Number & Serializable & Cloneable> imple
     @Override
     public GenericUnionType.Meta<T> metaBean() {
         return GenericUnionType.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

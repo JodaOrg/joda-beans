@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -62,16 +61,6 @@ public final class MutableOptional implements Bean {
     @Override
     public MutableOptional.Meta metaBean() {
         return MutableOptional.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

@@ -31,8 +31,6 @@ import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import java.util.Set;
-import org.joda.beans.Property;
 
 /**
  * Mock minimal bean, used for testing.
@@ -92,16 +90,6 @@ public final class MinimalMutableGeneric<T extends Number> implements Bean, Seri
     @Override
     public MinimalMutableGeneric.Meta<T> metaBean() {
         return MinimalMutableGeneric.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

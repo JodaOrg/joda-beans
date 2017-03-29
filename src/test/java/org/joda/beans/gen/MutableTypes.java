@@ -18,7 +18,6 @@ package org.joda.beans.gen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -77,16 +76,6 @@ public final class MutableTypes<T extends Comparable<T>> implements Bean {
     @Override
     public MutableTypes.Meta<T> metaBean() {
         return MutableTypes.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

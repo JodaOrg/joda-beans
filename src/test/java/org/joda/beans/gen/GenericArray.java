@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -71,16 +70,6 @@ public class GenericArray<T extends Address> implements Bean {
     @Override
     public GenericArray.Meta<T> metaBean() {
         return GenericArray.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

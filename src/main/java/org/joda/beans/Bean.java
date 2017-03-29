@@ -53,7 +53,9 @@ public interface Bean {
      * @return the property, not null
      * @throws NoSuchElementException if the property name is invalid
      */
-    public abstract <R> Property<R> property(String propertyName);
+    public default <R> Property<R> property(String propertyName) {
+        return metaBean().<R>metaProperty(propertyName).createProperty(this);
+    }
 
     /**
      * Gets the set of property names.
@@ -63,6 +65,8 @@ public interface Bean {
      * 
      * @return the unmodifiable set of property names, not null
      */
-    public abstract Set<String> propertyNames();
+    public default Set<String> propertyNames() {
+        return metaBean().metaPropertyMap().keySet();
+    }
 
 }

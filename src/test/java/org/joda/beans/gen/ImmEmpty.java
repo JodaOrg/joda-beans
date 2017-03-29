@@ -15,19 +15,17 @@
  */
 package org.joda.beans.gen;
 
+import java.beans.ConstructorProperties;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.Property;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import java.beans.ConstructorProperties;
 
 /**
  * Mock immutable empty bean, used for testing.
@@ -70,16 +68,6 @@ public final class ImmEmpty implements ImmutableBean
     @Override
     public ImmEmpty.Meta metaBean() {
         return ImmEmpty.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

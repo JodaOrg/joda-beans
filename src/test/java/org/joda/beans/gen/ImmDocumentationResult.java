@@ -17,7 +17,6 @@ package org.joda.beans.gen;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
@@ -25,7 +24,6 @@ import org.joda.beans.ImmutableBean;
 import org.joda.beans.ImmutableConstructor;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
@@ -88,16 +86,6 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
     @Override
     public ImmDocumentationResult.Meta<T> metaBean() {
         return ImmDocumentationResult.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

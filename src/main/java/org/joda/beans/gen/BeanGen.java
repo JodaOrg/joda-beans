@@ -31,7 +31,6 @@ import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.Property;
 import org.joda.beans.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
@@ -155,8 +154,6 @@ class BeanGen {
             generateArgBasedConstructor();
             generateBuilderBasedConstructor();
             generateMetaBean();
-            generatePropertyByName();
-            generatePropertyNames();
             generateGettersSetters();
             generateSeparator();
             generateImmutableToBuilder();
@@ -574,29 +571,6 @@ class BeanGen {
             if (data.isBeanStyleGenerateProperties()) {
                 insertRegion.addAll(prop.generateProperty());
             }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    private void generatePropertyByName() {
-        if (data.isRootClass() && data.isExtendsDirectBean() == false) {
-            data.ensureImport(Property.class);
-            insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic <R> Property<R> property(String propertyName) {");
-            insertRegion.add("\t\treturn metaBean().<R>metaProperty(propertyName).createProperty(this);");
-            insertRegion.add("\t}");
-            insertRegion.add("");
-        }
-    }
-
-    private void generatePropertyNames() {
-        if (data.isRootClass() && data.isExtendsDirectBean() == false) {
-            data.ensureImport(Set.class);
-            insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic Set<String> propertyNames() {");
-            insertRegion.add("\t\treturn metaBean().metaPropertyMap().keySet();");
-            insertRegion.add("\t}");
-            insertRegion.add("");
         }
     }
 

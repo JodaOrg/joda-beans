@@ -33,8 +33,6 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.util.Set;
-import org.joda.beans.Property;
 
 /**
  * Mock minimal bean, used for testing.
@@ -112,16 +110,6 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
     @Override
     public MinimalImmutableGeneric.Meta<T> metaBean() {
         return MinimalImmutableGeneric.Meta.INSTANCE;
-    }
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
     }
 
     //-----------------------------------------------------------------------

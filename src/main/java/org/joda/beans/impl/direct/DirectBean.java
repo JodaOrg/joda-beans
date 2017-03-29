@@ -15,10 +15,7 @@
  */
 package org.joda.beans.impl.direct;
 
-import java.util.Set;
-
 import org.joda.beans.Bean;
-import org.joda.beans.Property;
 
 /**
  * A bean implementation designed for use by the code generator.
@@ -29,16 +26,6 @@ import org.joda.beans.Property;
  * @author Stephen Colebourne
  */
 public abstract class DirectBean implements Bean {
-
-    @Override
-    public <R> Property<R> property(String propertyName) {
-        return metaBean().<R>metaProperty(propertyName).createProperty(this);
-    }
-
-    @Override
-    public Set<String> propertyNames() {
-        return metaBean().metaPropertyMap().keySet();
-    }
 
     @Override
     public abstract DirectBean clone();
