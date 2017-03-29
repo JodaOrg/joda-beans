@@ -43,7 +43,9 @@ import org.joda.beans.impl.BasicProperty;
  * 
  * @param <P>  the type of the property content
  * @author Stephen Colebourne
+ * @deprecated Obtain meta-property from {@link ReflectiveMetaBean} initialised using property names
  */
+@Deprecated
 public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 
     /** The meta-bean. */
@@ -66,17 +68,18 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
      * @return the property, not null
      */
     public static <P> ReflectiveMetaProperty<P> of(Class<? extends Bean> beanType, String propertyName) {
-        return new ReflectiveMetaProperty<P>(beanType, propertyName);
+        return new ReflectiveMetaProperty<P>(null, beanType, propertyName);
     }
 
     /**
      * Constructor using {@code PropertyDescriptor} to find the get and set methods.
      * 
+     * @param metaBean  the meta-bean
      * @param beanType  the bean type, not null
      * @param propertyName  the property name, not empty
      */
     @SuppressWarnings("unchecked")
-    private ReflectiveMetaProperty(Class<? extends Bean> beanType, String propertyName) {
+    ReflectiveMetaProperty(MetaBean metaBean, Class<? extends Bean> beanType, String propertyName) {
         super(propertyName);
         String getterName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
         String isserName = "is" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
@@ -96,6 +99,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
                     "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
             }
         }
+        this.metaBean = metaBean;
         this.declaringType = (getMethod != null ? getMethod.getDeclaringClass() : setMethod.getDeclaringClass());
         this.propertyType = (Class<P>) getMethod.getReturnType();
         this.getMethod = getMethod;

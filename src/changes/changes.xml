@@ -34,6 +34,10 @@
       <action dev="jodastephen" type="update">
         Deprecate BeanBuilder methods - setString() and setAll().
       </action>
+      <action dev="jodastephen" type="add">
+        Redesign reflective meta-bean.
+        Fixes #160.
+      </action>
     </release>
     <release version="1.10.1" date="2017-01-23" description="v1.10.1">
       <action dev="jodastephen" type="fix">

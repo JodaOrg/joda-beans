@@ -31,10 +31,14 @@ import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.BasicPropertyMap;
 
 /**
- * A standard meta-bean implementation.
+ * A meta-bean implementation that uses reflection.
  * <p>
- * This is the standard implementation of a meta-bean.
+ * This is implementation of a meta-bean can be used directly by applications without code generation.
  * It requires that the bean implements {@code Bean} and has a no-arguments constructor.
+ * Therefore, it is only suitable for mutable beans.
+ * <p>
+ * Typically, the meta-bean will be created as a public static final constant.
+ * Only one method from {@link Bean} needs to be implemented, which simply returns the meta-bean.
  * 
  * @author Stephen Colebourne
  */
@@ -47,12 +51,14 @@ public final class ReflectiveMetaBean implements MetaBean {
     private final Map<String, MetaProperty<?>> metaPropertyMap;
 
     /**
-     * Factory to create a meta-bean avoiding duplicate generics.
+     * Create a meta-bean, reflecting to find meta properties.
      * 
      * @param <B>  the type of the bean
      * @param beanClass  the bean class, not null
      * @return the meta-bean, not null
+     * @deprecated Use factory that accepts the property names
      */
+    @Deprecated
     public static <B extends Bean> ReflectiveMetaBean of(Class<B> beanClass) {
         return new ReflectiveMetaBean(beanClass);
     }
@@ -61,7 +67,9 @@ public final class ReflectiveMetaBean implements MetaBean {
      * Constructor.
      * 
      * @param beanType  the bean type, not null
+     * @deprecated Use constructor that accepts the property names
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     private ReflectiveMetaBean(Class<? extends Bean> beanType) {
         if (beanType == null) {
@@ -91,6 +99,42 @@ public final class ReflectiveMetaBean implements MetaBean {
             }
         }
         
+        this.metaPropertyMap = Collections.unmodifiableMap(map);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Create a meta-bean and meta properties.
+     * <p>
+     * The meta-properties will be created from the property names by searching for a getter and setter.
+     * 
+     * @param <B>  the type of the bean
+     * @param beanClass  the bean class, not null
+     * @param propertyNames  the property names, not null
+     * @return the meta-bean, not null
+     */
+    public static <B extends Bean> ReflectiveMetaBean of(Class<B> beanClass, String... propertyNames) {
+        return new ReflectiveMetaBean(beanClass, propertyNames);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param beanType  the bean type, not null
+     * @param propertyNames  the property names, not null
+     */
+    private ReflectiveMetaBean(Class<? extends Bean> beanType, String[] propertyNames) {
+        if (beanType == null) {
+            throw new NullPointerException("Bean class must not be null");
+        }
+        if (propertyNames == null) {
+            throw new NullPointerException("Property names must not be null");
+        }
+        this.beanType = beanType;
+        Map<String, MetaProperty<?>> map = new HashMap<String, MetaProperty<?>>();
+        for (String name : propertyNames) {
+            map.put(name, new ReflectiveMetaProperty<Object>(this, beanType, name));
+        }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
     }
 
