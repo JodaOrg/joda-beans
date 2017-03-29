@@ -25,8 +25,8 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanDefinition;
 import org.joda.beans.DerivedProperty;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyDefinition;
+import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
 
 import com.google.common.base.Optional;
@@ -91,14 +91,14 @@ public final class LightMutable implements Bean, Serializable {
     /**
      * The meta-bean for {@code LightMutable}.
      */
-    private static final MetaBean META_BEAN =
+    private static final TypedMetaBean<LightMutable> META_BEAN =
             LightMetaBean.of(LightMutable.class, MethodHandles.lookup());
 
     /**
      * The meta-bean for {@code LightMutable}.
      * @return the meta-bean, not null
      */
-    public static MetaBean meta() {
+    public static TypedMetaBean<LightMutable> meta() {
         return META_BEAN;
     }
 
@@ -139,7 +139,7 @@ public final class LightMutable implements Bean, Serializable {
     }
 
     @Override
-    public MetaBean metaBean() {
+    public TypedMetaBean<LightMutable> metaBean() {
         return META_BEAN;
     }
 

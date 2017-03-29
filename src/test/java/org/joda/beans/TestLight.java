@@ -42,7 +42,7 @@ public class TestLight {
 
     public void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        LightImmutable bean = (LightImmutable) LightImmutable.meta().builder()
+        LightImmutable bean = LightImmutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", LightImmutable.meta(), String.class), "Smallville")
@@ -97,7 +97,7 @@ public class TestLight {
     }
 
     public void test_mutable() {
-        LightMutable bean = (LightMutable) LightMutable.meta().builder()
+        LightMutable bean = LightMutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", LightMutable.meta(), String.class), "Smallville")

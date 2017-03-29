@@ -32,6 +32,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyDefinition;
+import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
@@ -405,20 +406,20 @@ class BeanGen {
     //-----------------------------------------------------------------------
     private void generateMeta() {
         if (data.isBeanStyleLight()) {
-            data.ensureImport(MetaBean.class);
+            data.ensureImport(TypedMetaBean.class);
             data.ensureImport(LightMetaBean.class);
             data.ensureImport(MethodHandles.class);
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t */");
-            insertRegion.add("\tprivate static final MetaBean META_BEAN =");
+            insertRegion.add("\tprivate static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
             insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
             insertRegion.add("");
             insertRegion.add("\t/**");
             insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             insertRegion.add("\t * @return the meta-bean, not null");
             insertRegion.add("\t */");
-            insertRegion.add("\tpublic static MetaBean meta() {");
+            insertRegion.add("\tpublic static TypedMetaBean<" + data.getTypeNoExtends() + "> meta() {");
             insertRegion.add("\t\treturn META_BEAN;");
             insertRegion.add("\t}");
             insertRegion.add("");
@@ -538,9 +539,14 @@ class BeanGen {
 
     private void generateMetaBean() {
         if (data.isMetaScopePrivate()) {
-            data.ensureImport(MetaBean.class);
             insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic MetaBean metaBean() {");
+            if (data.isBeanStyleLight()) {
+                data.ensureImport(TypedMetaBean.class);
+                insertRegion.add("\tpublic TypedMetaBean<" + data.getTypeNoExtends() + "> metaBean() {");
+            } else {
+                data.ensureImport(MetaBean.class);
+                insertRegion.add("\tpublic MetaBean metaBean() {");
+            }
             if (data.isBeanStyleLight()) {
                 insertRegion.add("\t\treturn META_BEAN;");
             } else {

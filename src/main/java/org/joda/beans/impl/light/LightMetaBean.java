@@ -34,9 +34,9 @@ import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.DerivedProperty;
 import org.joda.beans.ImmutableBean;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.PropertyDefinition;
+import org.joda.beans.TypedMetaBean;
 
 /**
  * A meta-bean implementation that operates using method handles.
@@ -49,10 +49,10 @@ import org.joda.beans.PropertyDefinition;
  * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
-public final class LightMetaBean<T extends Bean> implements MetaBean {
+public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     /** The bean type. */
-    private final Class<? extends Bean> beanType;
+    private final Class<T> beanType;
     /** The meta-property instances of the bean. */
     private final Map<String, MetaProperty<?>> metaPropertyMap;
     /** The constructor to use. */
@@ -294,7 +294,7 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
     }
 
     @Override
-    public Class<? extends Bean> beanType() {
+    public Class<T> beanType() {
         return beanType;
     }
 
