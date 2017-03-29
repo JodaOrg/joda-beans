@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.10.2" date="SNAPSHOT" description="v1.10.2">
+    <release version="1.11" date="2017-03-29" description="v1.11">
       <action dev="hackmann" type="fix">
         Ensure builder calls super constructor in hierarchy.
         Fixes #150.
