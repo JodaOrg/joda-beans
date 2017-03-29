@@ -20,19 +20,18 @@ import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.joda.beans.BeanDefinition;
-import org.joda.beans.DerivedProperty;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.joda.beans.gen.BeanDefinition;
+import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock minimal bean, used for testing.

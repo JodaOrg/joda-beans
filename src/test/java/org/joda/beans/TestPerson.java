@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.joda.beans.gen.AbstractResult;
 import org.joda.beans.gen.Address;
+import org.joda.beans.gen.BeanDefinition;
 import org.joda.beans.gen.Person;
+import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.testng.annotations.Test;
 

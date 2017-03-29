@@ -30,10 +30,10 @@ import java.util.stream.Stream;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.DerivedProperty;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
+import org.joda.beans.gen.DerivedProperty;
+import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * A meta-bean implementation designed for use by the code generator.

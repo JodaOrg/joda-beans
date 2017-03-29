@@ -143,11 +143,11 @@ class BeanParser {
     BeanGen parse() {
         BeanData data = new BeanData();
         beanDefIndex = parseBeanDefinition();
-        if (beanDefIndex < 0) {
-            return new BeanGen(file, content, config);
-        }
         data.getCurrentImports().addAll(parseImports(beanDefIndex));
         data.setImportInsertLocation(parseImportLocation(beanDefIndex));
+        if (beanDefIndex < 0) {
+            return new BeanGen(file, content, config, data);
+        }
         data.setBeanStyle(parseBeanStyle(beanDefIndex));
         data.resolveBeanStyle(config.getDefaultStyle());
         if (data.isBeanStyleValid() == false) {
@@ -273,8 +273,9 @@ class BeanParser {
     }
 
     private Set<String> parseImports(int defLine) {
+        int end = defLine < 0 ? content.size() : defLine;
         Set<String> imports = new HashSet<>();
-        for (int index = 0; index < defLine; index++) {
+        for (int index = 0; index < end; index++) {
             if (content.get(index).startsWith("import ")) {
                 String imp = content.get(index).substring(7).trim();
                 imp = imp.substring(0, imp.indexOf(';'));
@@ -287,8 +288,9 @@ class BeanParser {
     }
 
     private int parseImportLocation(int defLine) {
+        int end = defLine < 0 ? content.size() : defLine;
         int location = 0;
-        for (int index = 0; index < defLine; index++) {
+        for (int index = 0; index < end; index++) {
             if (content.get(index).startsWith("import ") || content.get(index).startsWith("package ")) {
                 location = index;
             }

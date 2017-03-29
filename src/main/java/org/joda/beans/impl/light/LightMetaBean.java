@@ -32,11 +32,11 @@ import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.DerivedProperty;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
+import org.joda.beans.gen.DerivedProperty;
+import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * A meta-bean implementation that operates using method handles.

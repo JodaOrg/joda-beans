@@ -26,16 +26,16 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.BeanDefinition;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyDefinition;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.DirectBean;
@@ -104,18 +104,21 @@ class BeanGen {
     private final List<PropertyGen> properties;
     /** The region to insert into. */
     private final List<String> insertRegion;
+    /** The list of removed imports. */
+    private final SortedSet<String> removedImports = new TreeSet<>();
 
     /**
      * Constructor used when file is not a bean.
      * @param file  the file, not null
      * @param content  the content to process, not null
      * @param config  the config to use, not null
+     * @param data  the parsed data
      */
-    BeanGen(File file, List<String> content, BeanGenConfig config) {
+    BeanGen(File file, List<String> content, BeanGenConfig config, BeanData data) {
         this.file = file;
         this.content = content;
         this.config = config;
-        this.data = null;
+        this.data = data;
         this.properties = null;
         this.insertRegion = null;
     }
@@ -143,6 +146,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     void process() {
+        fixImports();
         if (insertRegion != null) {
             data.ensureImport(BeanDefinition.class);
             if (properties.size() > 0) {
@@ -175,11 +179,44 @@ class BeanGen {
         }
     }
 
+    void processNonBean() {
+        fixImports();
+        resolveImports();
+    }
+
+    private void fixImports() {
+        renameImport("org.joda.beans.BeanDefinition", BeanDefinition.class);
+        renameImport("org.joda.beans.DerivedProperty", DerivedProperty.class);
+        renameImport("org.joda.beans.ImmutableConstructor", ImmutableConstructor.class);
+        renameImport("org.joda.beans.ImmutableDefaults", ImmutableDefaults.class);
+        renameImport("org.joda.beans.ImmutablePreBuild", ImmutablePreBuild.class);
+        renameImport("org.joda.beans.ImmutableValidator", ImmutableValidator.class);
+        renameImport("org.joda.beans.PropertyDefinition", PropertyDefinition.class);
+    }
+
+    private void renameImport(String old, Class<?> cls) {
+        if (data.getCurrentImports().contains(old)) {
+            removedImports.add(old);
+            data.ensureImport(cls);
+        }
+    }
+
     private void resolveImports() {
         if (data.getNewImports().size() > 0) {
             int pos = data.getImportInsertLocation() + 1;
             for (String imp : data.getNewImports()) {
                 content.add(pos++, "import " + imp + ";");
+            }
+        }
+        if (removedImports.size() > 0) {
+            for (ListIterator<String> it = content.listIterator(); it.hasNext(); ) {
+                String line = it.next().trim();
+                if (line.startsWith("import ")) {
+                    String imported = line.substring(7).trim().replace(" ", "").replace(";", "");
+                    if (removedImports.contains(imported)) {
+                        it.remove();
+                    }
+                }
             }
         }
     }
@@ -1409,7 +1446,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     boolean isBean() {
-        return data != null;
+        return properties != null;
     }
 
     BeanData getData() {

@@ -295,8 +295,27 @@ public class BeanCodeGen {
                 }
             }
         } else {
-            if (verbosity == 3) {
-                System.out.println(file + "  [ignored]");
+            gen.processNonBean();
+            if (!content.equals(original)) {
+                if (write) {
+                    if (verbosity >= 2) {
+                        System.out.println(" [writing]");
+                    } else if (verbosity == 1) {
+                        System.out.println(file + "  [writing]");
+                    }
+                    writeFile(file, content);
+                } else {
+                    if (verbosity >= 2) {
+                        System.out.println(" [changed not written]");
+                    } else if (verbosity == 1) {
+                        System.out.println(file + "  [changed not written]");
+                    }
+                }
+                return file;
+            } else {
+                if (verbosity == 3) {
+                    System.out.println(file + "  [ignored]");
+                }
             }
         }
         return null;
