@@ -172,35 +172,6 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    public void test_propertyMap() {
-        CompanyAddress address = new CompanyAddress();
-        PropertyMap test = address.metaBean().createPropertyMap(address);
-        
-        assertEquals(test.size(), NUM_PROPERTIES);
-        assertEquals(test.containsKey(STREET), true);
-        assertEquals(test.containsKey(CITY), true);
-        assertEquals(test.containsKey(NUMBER), true);
-        assertEquals(test.containsKey(COMPANY_NAME), true);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void test_propertyMap_flatten() {
-        CompanyAddress address = new CompanyAddress();
-        address.setStreet("A");
-        address.setCity("B");
-        address.setNumber(3);
-        address.setCompanyName("D");
-        Map<String, Object> test = address.metaBean().createPropertyMap(address).flatten();
-        
-        assertEquals(test.size(), NUM_PROPERTIES);
-        assertEquals(test.get(STREET), "A");
-        assertEquals(test.get(CITY), "B");
-        assertEquals(test.get(NUMBER), 3);
-        assertEquals(test.get(COMPANY_NAME), "D");
-    }
-
-    //-----------------------------------------------------------------------
     public void test_namedMetaPropertyMethod_street() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().street();

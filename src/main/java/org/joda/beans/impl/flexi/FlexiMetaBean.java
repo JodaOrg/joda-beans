@@ -22,18 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.DynamicMetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.PropertyMap;
 
 /**
  * Implementation of a meta-bean for {@code FlexiBean}.
  * 
  * @author Stephen Colebourne
  */
-@SuppressWarnings("deprecation")
 class FlexiMetaBean implements DynamicMetaBean {
 
     /**
@@ -59,11 +56,6 @@ class FlexiMetaBean implements DynamicMetaBean {
     @Override
     public BeanBuilder<FlexiBean> builder() {
         return new FlexiBeanBuilder(bean);
-    }
-
-    @Override
-    public PropertyMap createPropertyMap(Bean bean) {
-        return FlexiPropertyMap.of(beanType().cast(bean));
     }
 
     @Override

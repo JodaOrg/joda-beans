@@ -199,32 +199,6 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    public void test_propertyMap() {
-        Address address = new Address();
-        PropertyMap test = address.metaBean().createPropertyMap(address);
-        
-        assertEquals(test.size(), NUM_PROPERTIES);
-        assertEquals(test.containsKey(STREET), true);
-        assertEquals(test.containsKey(CITY), true);
-        assertEquals(test.containsKey(NUMBER), true);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void test_propertyMap_flatten() {
-        Address address = new Address();
-        address.setStreet("A");
-        address.setCity("B");
-        address.setNumber(3);
-        Map<String, Object> test = address.metaBean().createPropertyMap(address).flatten();
-        
-        assertEquals(test.size(), NUM_PROPERTIES);
-        assertEquals(test.get(STREET), "A");
-        assertEquals(test.get(CITY), "B");
-        assertEquals(test.get(NUMBER), 3);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_namedMetaPropertyMethod() {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().street();

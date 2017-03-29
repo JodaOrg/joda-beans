@@ -159,32 +159,6 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    public void test_propertyMap() {
-        Person person = new Person();
-        PropertyMap test = person.metaBean().createPropertyMap(person);
-        
-        assertEquals(test.size(), NUM_PROPERTIES);
-        assertEquals(test.containsKey(FORENAME), true);
-        assertEquals(test.containsKey(SURNAME), true);
-        assertEquals(test.containsKey(NUMBER_OF_CARS), true);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void test_propertyMap_flatten() {
-        Person person = new Person();
-        person.setForename("A");
-        person.setSurname("B");
-        person.setNumberOfCars(3);
-        Map<String, Object> test = person.metaBean().createPropertyMap(person).flatten();
-        
-        assertEquals(test.size(), NUM_PROPERTIES);
-        assertEquals(test.get(FORENAME), "A");
-        assertEquals(test.get(SURNAME), "B");
-        assertEquals(test.get(NUMBER_OF_CARS), 3);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_namedMetaPropertyMethod() {
         Person person = new Person();
         MetaProperty<String> test = Person.meta().forename();

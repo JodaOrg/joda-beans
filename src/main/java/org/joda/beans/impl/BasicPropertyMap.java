@@ -25,7 +25,6 @@ import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.PropertyMap;
 
 /**
  * A standard map of properties.
@@ -34,9 +33,8 @@ import org.joda.beans.PropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@SuppressWarnings("deprecation")
 public final class BasicPropertyMap
-        extends AbstractMap<String, Property<?>> implements PropertyMap {
+        extends AbstractMap<String, Property<?>> {
 
     /** The bean. */
     private final Bean bean;
@@ -115,7 +113,13 @@ public final class BasicPropertyMap
     }
 
     //-----------------------------------------------------------------------
-    @Override
+    /**
+     * Flattens the contents of this property map to a {@code Map}.
+     * <p>
+     * The returned map will contain all the properties from the bean with their actual values.
+     * 
+     * @return the unmodifiable map of property name to value, not null
+     */
     public Map<String, Object> flatten() {
         return JodaBeanUtils.flatten(bean);
     }

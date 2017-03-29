@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.joda.beans.impl.BasicPropertyMap;
-
 /**
  * A meta-bean, defining those aspects of a bean which are not specific
  * to a particular instance, such as the type and set of meta-properties.
@@ -89,22 +87,6 @@ public interface MetaBean {
      * @throws UnsupportedOperationException if the bean cannot be created
      */
     public abstract BeanBuilder<? extends Bean> builder();
-
-    /**
-     * Creates a map of properties for the specified bean.
-     * <p>
-     * This allows the entire set of properties of the bean to be exposed as a {@code Map}.
-     * The map is keyed by the property name and has {@link Property} instances as values.
-     * Call {@link PropertyMap#flatten()} to convert the map to hold the actual values from the bean.
-     * 
-     * @param bean  the bean to create the map for, not null
-     * @return the created property map, not null
-     * @deprecated Use BasicPropertyMap.of(bean) or JodaBeanUtils.flatten(bean)
-     */
-    @Deprecated
-    public default PropertyMap createPropertyMap(Bean bean) {
-        return BasicPropertyMap.of(bean);
-    }
 
     //-----------------------------------------------------------------------
     /**
