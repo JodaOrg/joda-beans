@@ -72,6 +72,26 @@ public class TestJodaBeanUtils {
     }
 
     //-----------------------------------------------------------------------
+    public void test_notBlank_String_ok() {
+        JodaBeanUtils.notBlank("Blah", "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_String_notOk_empty() {
+        JodaBeanUtils.notBlank("", "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_String_notOk_allWhitespace() {
+        JodaBeanUtils.notBlank(" ", "name");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_String_notOk_null() {
+        JodaBeanUtils.notBlank((String) null, "name");
+    }
+
+    //-----------------------------------------------------------------------
     public void test_notEmpty_String_ok() {
         JodaBeanUtils.notEmpty("Blah", "name");
     }

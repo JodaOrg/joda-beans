@@ -1004,7 +1004,9 @@ class PropertyData {
      * @return true if non-null
      */
     public boolean isNotNull() {
-        return getValidation().equals("notNull") || getValidation().equals("notEmpty");
+        return getValidation().equals("notNull") ||
+                getValidation().equals("notEmpty") ||
+                getValidation().equals("notBlank");
     }
 
     /**
@@ -1018,6 +1020,9 @@ class PropertyData {
         if (getValidation().equals("notEmpty")) {
             return ", not empty";
         }
+        if (getValidation().equals("notBlank")) {
+            return ", not blank";
+        }
         return "";
     }
 
@@ -1029,7 +1034,9 @@ class PropertyData {
         if (isValidated() == false) {
             throw new IllegalStateException();
         }
-        if (getValidation().equals("notNull") || getValidation().equals("notEmpty")) {
+        if (getValidation().equals("notNull") ||
+                getValidation().equals("notEmpty") ||
+                getValidation().equals("notBlank")) {
             return "JodaBeanUtils." + getValidation();
         }
         return getValidation();  // method in bean or static

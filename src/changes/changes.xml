@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.12" date="SNAPSHOT" description="v1.12">
+      <action dev="jodastephen" type="add">
+        Add notBlank validation.
+        Fixes #167.
+      </action>
+    </release>
     <release version="1.11" date="2017-03-29" description="v1.11">
       <action dev="hackmann" type="fix">
         Ensure builder calls super constructor in hierarchy.

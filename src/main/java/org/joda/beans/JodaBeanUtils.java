@@ -574,6 +574,37 @@ public final class JodaBeanUtils {
     }
 
     /**
+     * Checks if the value is not blank, throwing an exception if it is.
+     * <p>
+     * Validate that the specified argument is not null and has at least one non-whitespace character.
+     * 
+     * @param value  the value to check, may be null
+     * @param propertyName  the property name, should not be null
+     * @throws IllegalArgumentException if the value is null or empty
+     */
+    public static void notBlank(String value, String propertyName) {
+        if (isBlank(value)) {
+            throw new IllegalArgumentException(notBlank(propertyName));
+        }
+    }
+
+    private static boolean isBlank(String str) {
+        int strLen = (str != null ? str.length() : 0);
+        if (strLen != 0) {
+            for (int i = 0; i < strLen; i++) {
+                if (!Character.isWhitespace(str.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static String notBlank(String propertyName) {
+        return "Argument '" + propertyName + "' must not be empty";
+    }
+
+    /**
      * Checks if the value is not empty, throwing an exception if it is.
      * 
      * @param value  the value to check, may be null

@@ -50,6 +50,31 @@ public class TestValidateBean {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_set_null() {
+        ValidateBean test = new ValidateBean();
+        test.setFifth(null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_set_empty() {
+        ValidateBean test = new ValidateBean();
+        test.setFifth(" ");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_propertySet_null() {
+        ValidateBean test = new ValidateBean();
+        test.fifth().set(null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_notBlank_propertySet_empty() {
+        ValidateBean test = new ValidateBean();
+        test.fifth().set(" ");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_notEmpty_set_null() {
         ValidateBean test = new ValidateBean();
         test.setSecond(null);

@@ -223,6 +223,8 @@ public @interface PropertyDefinition {
      *  calls JodaBeanUtils.notNull() which throws an IllegalArgumentException
      * <li>'notEmpty' - suitable for checking that a string is non-null and non-empty,
      *  calls JodaBeanUtils.notEmpty() which throws an IllegalArgumentException
+     * <li>'notBlank' - suitable for checking that a string is non-null and non-blank,
+     *  calls JodaBeanUtils.notBlank() which throws an IllegalArgumentException
      * <li>'{className}.{staticMethodName}' - a custom validation method, described above
      * </ul>
      * 

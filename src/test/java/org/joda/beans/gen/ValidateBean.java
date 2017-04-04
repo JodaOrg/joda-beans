@@ -59,6 +59,11 @@ public class ValidateBean extends DirectBean {
      */
     @PropertyDefinition(validate = "checkInBean")
     private String fourth;
+    /**
+     * The non-blank value.
+     */
+    @PropertyDefinition(validate = "notBlank")
+    private String fifth;
 
     public ValidateBean() {
     }
@@ -193,6 +198,32 @@ public class ValidateBean extends DirectBean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the non-blank value.
+     * @return the value of the property, not blank
+     */
+    public String getFifth() {
+        return fifth;
+    }
+
+    /**
+     * Sets the non-blank value.
+     * @param fifth  the new value of the property, not blank
+     */
+    public void setFifth(String fifth) {
+        JodaBeanUtils.notBlank(fifth, "fifth");
+        this.fifth = fifth;
+    }
+
+    /**
+     * Gets the the {@code fifth} property.
+     * @return the property, not null
+     */
+    public final Property<String> fifth() {
+        return metaBean().fifth().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public ValidateBean clone() {
         return JodaBeanUtils.cloneAlways(this);
@@ -208,7 +239,8 @@ public class ValidateBean extends DirectBean {
             return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
                     JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
                     JodaBeanUtils.equal(getThird(), other.getThird()) &&
-                    JodaBeanUtils.equal(getFourth(), other.getFourth());
+                    JodaBeanUtils.equal(getFourth(), other.getFourth()) &&
+                    JodaBeanUtils.equal(getFifth(), other.getFifth());
         }
         return false;
     }
@@ -220,12 +252,13 @@ public class ValidateBean extends DirectBean {
         hash = hash * 31 + JodaBeanUtils.hashCode(getSecond());
         hash = hash * 31 + JodaBeanUtils.hashCode(getThird());
         hash = hash * 31 + JodaBeanUtils.hashCode(getFourth());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getFifth());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(160);
+        StringBuilder buf = new StringBuilder(192);
         buf.append("ValidateBean{");
         int len = buf.length();
         toString(buf);
@@ -241,6 +274,7 @@ public class ValidateBean extends DirectBean {
         buf.append("second").append('=').append(JodaBeanUtils.toString(getSecond())).append(',').append(' ');
         buf.append("third").append('=').append(JodaBeanUtils.toString(getThird())).append(',').append(' ');
         buf.append("fourth").append('=').append(JodaBeanUtils.toString(getFourth())).append(',').append(' ');
+        buf.append("fifth").append('=').append(JodaBeanUtils.toString(getFifth())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------
@@ -274,6 +308,11 @@ public class ValidateBean extends DirectBean {
         private final MetaProperty<String> fourth = DirectMetaProperty.ofReadWrite(
                 this, "fourth", ValidateBean.class, String.class);
         /**
+         * The meta-property for the {@code fifth} property.
+         */
+        private final MetaProperty<String> fifth = DirectMetaProperty.ofReadWrite(
+                this, "fifth", ValidateBean.class, String.class);
+        /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
@@ -281,7 +320,8 @@ public class ValidateBean extends DirectBean {
                 "first",
                 "second",
                 "third",
-                "fourth");
+                "fourth",
+                "fifth");
 
         /**
          * Restricted constructor.
@@ -300,6 +340,8 @@ public class ValidateBean extends DirectBean {
                     return third;
                 case -1268684262:  // fourth
                     return fourth;
+                case 97428919:  // fifth
+                    return fifth;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -352,6 +394,14 @@ public class ValidateBean extends DirectBean {
             return fourth;
         }
 
+        /**
+         * The meta-property for the {@code fifth} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<String> fifth() {
+            return fifth;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
@@ -364,6 +414,8 @@ public class ValidateBean extends DirectBean {
                     return ((ValidateBean) bean).getThird();
                 case -1268684262:  // fourth
                     return ((ValidateBean) bean).getFourth();
+                case 97428919:  // fifth
+                    return ((ValidateBean) bean).getFifth();
             }
             return super.propertyGet(bean, propertyName, quiet);
         }
@@ -383,6 +435,9 @@ public class ValidateBean extends DirectBean {
                 case -1268684262:  // fourth
                     ((ValidateBean) bean).setFourth((String) newValue);
                     return;
+                case 97428919:  // fifth
+                    ((ValidateBean) bean).setFifth((String) newValue);
+                    return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
         }
@@ -393,6 +448,7 @@ public class ValidateBean extends DirectBean {
             JodaBeanUtils.notEmpty(((ValidateBean) bean).second, "second");
             TestValidateBean.checkInTest(((ValidateBean) bean).third, "third");
             checkInBean(((ValidateBean) bean).fourth, "fourth");
+            JodaBeanUtils.notBlank(((ValidateBean) bean).fifth, "fifth");
         }
 
     }
