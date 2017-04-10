@@ -71,18 +71,30 @@ class LightBeanBuilder<B extends Bean>
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<B> setString(String propertyName, String value) {
         return setString(metaBean.metaProperty(propertyName), value);
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<B> setString(MetaProperty<?> metaProperty, String value) {
         Object object = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
         return set(metaProperty, object);
     }
 
+    /**
+     * @deprecated Loop in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<B> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
             set(entry.getKey(), entry.getValue());

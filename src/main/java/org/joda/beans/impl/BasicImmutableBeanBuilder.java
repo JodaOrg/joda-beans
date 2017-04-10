@@ -70,19 +70,31 @@ public abstract class BasicImmutableBeanBuilder<T extends Bean>
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<T> setString(String propertyName, String value) {
         setString(meta.metaProperty(propertyName), value);
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
         set(metaProperty.name(), JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value));
         return this;
     }
 
+    /**
+     * @deprecated Loop in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
             set(entry.getKey(), entry.getValue());

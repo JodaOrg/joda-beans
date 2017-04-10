@@ -69,14 +69,22 @@ class MapBeanBuilder implements BeanBuilder<MapBean> {
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public MapBeanBuilder setString(String propertyName, String value) {
         // no type information to perform a conversion
         bean.put(propertyName, value);
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public MapBeanBuilder setString(MetaProperty<?> metaProperty, String value) {
         // no type information to perform a conversion
         // this approach allows meta-property from one MapBean to be used with another
@@ -84,7 +92,11 @@ class MapBeanBuilder implements BeanBuilder<MapBean> {
         return this;
     }
 
+    /**
+     * @deprecated Loop in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<MapBean> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
             bean.put(entry.getKey(), entry.getValue());

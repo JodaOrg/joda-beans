@@ -69,14 +69,22 @@ class FlexiBeanBuilder implements BeanBuilder<FlexiBean> {
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public FlexiBeanBuilder setString(String propertyName, String value) {
         // no type information to perform a conversion
         bean.put(propertyName, value);
         return this;
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public FlexiBeanBuilder setString(MetaProperty<?> metaProperty, String value) {
         // no type information to perform a conversion
         // this approach allows meta-property from one FlexiBean to be used with another
@@ -84,7 +92,11 @@ class FlexiBeanBuilder implements BeanBuilder<FlexiBean> {
         return this;
     }
 
+    /**
+     * @deprecated Loop in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<FlexiBean> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
             bean.put(entry.getKey(), entry.getValue());

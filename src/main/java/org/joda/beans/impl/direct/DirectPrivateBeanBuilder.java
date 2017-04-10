@@ -75,7 +75,11 @@ public abstract class DirectPrivateBeanBuilder<T extends Bean>
         }
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
         try {
             Object converted = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
@@ -89,13 +93,21 @@ public abstract class DirectPrivateBeanBuilder<T extends Bean>
         }
     }
 
+    /**
+     * @deprecated Use Joda-Convert in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<T> setString(String propertyName, String value) {
         setString(metaBean.metaProperty(propertyName), value);
         return this;
     }
 
+    /**
+     * @deprecated Loop in application code
+     */
     @Override
+    @Deprecated
     public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
         for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
             set(entry.getKey(), entry.getValue());
