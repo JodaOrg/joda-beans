@@ -159,6 +159,11 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <links>
+            <link>http://www.joda.org/joda-convert/apidocs</link>
+          </links>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
