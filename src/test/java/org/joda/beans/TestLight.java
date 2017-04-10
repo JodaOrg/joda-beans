@@ -18,9 +18,11 @@ package org.joda.beans;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.NoSuchElementException;
 
 import org.joda.beans.gen.ImmPerson;
 import org.joda.beans.gen.LightImmutable;
@@ -57,9 +59,10 @@ public class TestLight {
         assertEquals(bean.getList(), ImmutableList.of());
         
         assertEquals(bean.metaBean().beanType(), LightImmutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 8);
+        assertEquals(bean.metaBean().metaPropertyCount(), 9);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
+        assertEquals(bean.metaBean().metaPropertyExists("address"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
@@ -75,8 +78,22 @@ public class TestLight {
         assertEquals(mp2.get(bean), null);
         assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
         
+        MetaProperty<Object> mp3 = bean.metaBean().metaProperty("address");
+        assertEquals(mp3.propertyType(), String.class);
+        assertEquals(mp3.propertyGenericType(), String.class);
+        assertEquals(mp3.declaringType(), LightImmutable.class);
+        assertEquals(mp3.get(bean), "12 Park Lane Smallville");
+        assertEquals(mp3.style(), PropertyStyle.DERIVED);
+        
         assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
         assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        
+        try {
+            LightImmutable.meta().builder().set(mp3, "Nothing");
+            fail();
+        } catch (NoSuchElementException ex) {
+            // expected
+        }
     }
 
     public void test_mutable() {
@@ -105,9 +122,10 @@ public class TestLight {
         assertEquals(bean.getCity(), "London");
         
         assertEquals(bean.metaBean().beanType(), LightMutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 7);
+        assertEquals(bean.metaBean().metaPropertyCount(), 8);
         assertEquals(bean.metaBean().metaPropertyExists("number"), true);
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
+        assertEquals(bean.metaBean().metaPropertyExists("address"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
@@ -123,8 +141,22 @@ public class TestLight {
         assertEquals(mp2.get(bean), Currency.getInstance("USD"));
         assertEquals(mp2.style(), PropertyStyle.READ_WRITE);
         
+        MetaProperty<Object> mp3 = bean.metaBean().metaProperty("address");
+        assertEquals(mp3.propertyType(), String.class);
+        assertEquals(mp3.propertyGenericType(), String.class);
+        assertEquals(mp3.declaringType(), LightMutable.class);
+        assertEquals(mp3.get(bean), "12 Park Lane London");
+        assertEquals(mp3.style(), PropertyStyle.DERIVED);
+        
         assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
         assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        
+        try {
+            LightImmutable.meta().builder().set(mp3, "Nothing");
+            fail();
+        } catch (NoSuchElementException ex) {
+            // expected
+        }
     }
 
 }

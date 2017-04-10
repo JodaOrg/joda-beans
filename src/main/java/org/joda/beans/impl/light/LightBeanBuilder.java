@@ -17,6 +17,7 @@ package org.joda.beans.impl.light;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -104,14 +105,18 @@ class LightBeanBuilder<B extends Bean>
 
     private int index(MetaProperty<?> metaProperty) {
         try {
-            return ((LightMetaProperty<?>) metaProperty).getConstructorIndex();
+            int index = ((LightMetaProperty<?>) metaProperty).getConstructorIndex();
+            if (index < 0) {
+                throw new NoSuchElementException("Derived property cannot be set: " + metaProperty.name());
+            }
+            return index;
         } catch (ClassCastException ex) {
             for (MetaProperty<?> mp : metaBean.metaPropertyIterable()) {
                 if (mp.equals(metaProperty)) {
                     return ((LightMetaProperty<?>) mp).getConstructorIndex();
                 }
             }
-            throw ex;
+            throw new NoSuchElementException("Unknown property: " + metaProperty.name());
         }
     }
 

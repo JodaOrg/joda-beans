@@ -103,15 +103,12 @@ class PropertyParser {
         data.setFirstComment(comments.get(0));
         data.getComments().addAll(comments.subList(1, comments.size()));
         if (beanData.isBeanStyleLightOrMinimal() && beanData.isMutable() && data.getSetterGen() instanceof SetterGen.NoSetterGen) {
-            throw new IllegalArgumentException("Light and Minimal style beans do not support final fields");
+            throw new IllegalArgumentException("Light and Minimal style beans do not support final fields when mutable");
         }
         return new PropertyGen(data);
     }
 
     PropertyGen parseDerived(BeanData beanData, List<String> content, int lineIndex) {
-        if (beanData.isBeanStyleLightOrMinimal()) {
-            throw new IllegalArgumentException("Light and Minimal style beans do not support @DerivedProperty");
-        }
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
@@ -362,11 +359,11 @@ class PropertyParser {
 
     //-----------------------------------------------------------------------
     private String parseMethodNameAsPropertyName(List<String> content) {
-        String[] parts = parseMethodDefinition(content);
-        if (parts[1].length() == 0 || Character.isUpperCase(parts[1].charAt(0)) == false) {
-            throw new BeanCodeGenException("@DerivedProperty method name invalid'", beanParser.getFile(), fieldIndex);
+        String name = parseMethodDefinition(content)[1];
+        if (name.length() == 0 || Character.isUpperCase(name.charAt(0)) == false) {
+            throw new BeanCodeGenException("@DerivedProperty method name invalid: '" + name + "'", beanParser.getFile(), fieldIndex);
         }
-        return Character.toLowerCase(parts[1].charAt(0)) + parts[1].substring(1);
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
 
     private String parseMethodType(List<String> content) {

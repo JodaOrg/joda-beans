@@ -37,6 +37,8 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
 
     /** The read method. */
     private final PropertyGetter getter;
+    /** The style. */
+    private final PropertyStyle style;
 
     //-----------------------------------------------------------------------
     /**
@@ -74,7 +76,8 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
                 field.getGenericType(), 
                 Arrays.asList(field.getAnnotations()), 
                 getter,
-                constructorIndex);
+                constructorIndex,
+                PropertyStyle.IMMUTABLE);
     }
 
     /**
@@ -111,7 +114,6 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
                 }
             }
         };
-        // special case for optional
         return new ImmutableLightMetaProperty<P>(
                 metaBean, 
                 propertyName, 
@@ -119,7 +121,52 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
                 field.getGenericType(), 
                 Arrays.asList(field.getAnnotations()), 
                 getter,
-                constructorIndex);
+                constructorIndex,
+                PropertyStyle.IMMUTABLE);
+    }
+
+    /**
+     * Creates an instance from a derived {@code Method}.
+     * 
+     * @param <P>  the property type
+     * @param metaBean  the meta bean, not null
+     * @param method  the method, not null
+     * @param constructorIndex  the index of the property
+     * @return the property, not null
+     */
+    @SuppressWarnings("unchecked")
+    static <P> ImmutableLightMetaProperty<P> of(
+            MetaBean metaBean,
+            final Method method,
+            final String propertyName,
+            int constructorIndex) {
+        
+        PropertyGetter getter = new PropertyGetter() {
+            @Override
+            public Object get(Bean bean) {
+                try {
+                    return method.invoke(bean);
+                } catch (IllegalArgumentException ex) {
+                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
+                } catch (IllegalAccessException ex) {
+                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
+                } catch (InvocationTargetException ex) {
+                    if (ex.getCause() instanceof RuntimeException) {
+                        throw (RuntimeException) ex.getCause();
+                    }
+                    throw new RuntimeException(ex);
+                }
+            }
+        };
+        return new ImmutableLightMetaProperty<P>(
+                metaBean, 
+                propertyName, 
+                (Class<P>) method.getReturnType(), 
+                method.getGenericReturnType(), 
+                Arrays.asList(method.getAnnotations()), 
+                getter,
+                constructorIndex,
+                PropertyStyle.DERIVED);
     }
 
     /**
@@ -132,6 +179,7 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
      * @param annotations  the annotations
      * @param getter  the property getter
      * @param constructorIndex  the index of the property in the constructor
+     * @param style  the style
      */
     ImmutableLightMetaProperty(
             MetaBean metaBean, 
@@ -140,16 +188,18 @@ final class ImmutableLightMetaProperty<P> extends LightMetaProperty<P> {
             Type propertyGenericType,
             List<Annotation> annotations,
             PropertyGetter getter,
-            int constructorIndex) {
+            int constructorIndex,
+            PropertyStyle style) {
         
         super(metaBean, propertyName, propertyType, propertyGenericType, annotations, constructorIndex);
         this.getter = getter;
+        this.style = style;
     }
 
     //-----------------------------------------------------------------------
     @Override
     public PropertyStyle style() {
-        return PropertyStyle.IMMUTABLE;
+        return style;
     }
 
     //-----------------------------------------------------------------------

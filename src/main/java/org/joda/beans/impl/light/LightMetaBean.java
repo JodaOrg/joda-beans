@@ -30,6 +30,7 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
+import org.joda.beans.DerivedProperty;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
@@ -129,6 +130,25 @@ public final class LightMetaBean<T extends Bean> implements MetaBean {
                 }
             }
         }
+        // derived
+        Method[] methods = beanType.getDeclaredMethods();
+        for (Method method : methods) {
+            if (!Modifier.isStatic(method.getModifiers()) &&
+                    method.getAnnotation(DerivedProperty.class) != null &&
+                    method.getName().startsWith("get") &&
+                    method.getName().length() > 3 &&
+                    Character.isUpperCase(method.getName().charAt(3)) &&
+                    method.getParameterTypes().length == 0) {
+                String methodName = method.getName();
+                String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+                if (!Modifier.isPublic(method.getModifiers())) {
+                    method.setAccessible(true);
+                }
+                MetaProperty<Object> mp = ImmutableLightMetaProperty.of(this, method, propertyName, -1);
+                map.put(propertyName, mp);
+            }
+        }
+        
         this.metaPropertyMap = Collections.unmodifiableMap(map);
         this.constructor = findConstructor(beanType, propertyTypes);
         this.constructionData = buildConstructionData(constructor);
