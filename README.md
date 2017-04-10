@@ -44,14 +44,23 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.11](http://www.joda.org/joda-beans/download.html) is the current release.
+[Release 1.12](http://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 Joda-Beans requires Java SE 6 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](http://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.11|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|1.12|jar)
 
 
 ### Support
 Please use GitHub issues and Pull Requests for support.
+
+
+### Release process
+
+* Update version (pom.xml, README.md, index.md, changes.xml)
+* Commit and push
+* `mvn clean deploy -Doss.repo -Dgpg.passphrase=""`
+* Release project in [Nexus](https://oss.sonatype.org)
+* Website will be built and released by Travis

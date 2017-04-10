@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.12" date="SNAPSHOT" description="v1.12">
+    <release version="1.12" date="2017-04-10" description="v1.12">
       <action dev="jodastephen" type="add">
         Support derived properties on light and minimal beans.
         Fixes #169.
