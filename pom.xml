@@ -9,7 +9,7 @@
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Beans</name>
-  <version>1.12</version>
+  <version>1.12.1-SNAPSHOT</version>
   <description>Beans and Properties</description>
   <url>http://www.joda.org/joda-beans/</url>
 
@@ -582,6 +582,8 @@
             </executions>
           </plugin>
           <!-- Release dist files to GitHub -->
+          <!-- This will create a tag on GitHub on deploy -->
+          <!-- The release commit must have been pushed first -->
           <plugin>
             <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
