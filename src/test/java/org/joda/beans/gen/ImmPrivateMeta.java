@@ -369,19 +369,31 @@ public final class ImmPrivateMeta implements ImmutableBean {
             return this;
         }
 
+        /**
+         * @deprecated Use Joda-Convert in application code
+         */
         @Override
+        @Deprecated
         public Builder setString(String propertyName, String value) {
             setString(ImmPrivateMeta.Meta.INSTANCE.metaProperty(propertyName), value);
             return this;
         }
 
+        /**
+         * @deprecated Use Joda-Convert in application code
+         */
         @Override
+        @Deprecated
         public Builder setString(MetaProperty<?> property, String value) {
             super.setString(property, value);
             return this;
         }
 
+        /**
+         * @deprecated Loop in application code
+         */
         @Override
+        @Deprecated
         public Builder setAll(Map<String, ? extends Object> propertyValueMap) {
             super.setAll(propertyValueMap);
             return this;

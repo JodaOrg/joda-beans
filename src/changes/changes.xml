@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.12" date="SNAPSHOT" description="v1.12">
+      <action dev="jodastephen" type="fix">
+        Avoid warnings with generated code setString() and setAll().
+        Fixes #168.
+      </action>
       <action dev="jodastephen" type="add">
         Add notBlank validation.
         Fixes #167.
