@@ -190,7 +190,6 @@ public final class ImmMinimalMetaBuilder implements ImmutableBean {
          * Restricted constructor.
          */
         private Builder() {
-            super(meta());
         }
 
         //-----------------------------------------------------------------------

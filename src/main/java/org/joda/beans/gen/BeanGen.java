@@ -1210,9 +1210,6 @@ class BeanGen {
         insertRegion.add("\t\t * Restricted constructor.");
         insertRegion.add("\t\t */");
         insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder() {");
-        if (!data.isEffectiveBuilderScopeVisible()) {
-            insertRegion.add("\t\t\tsuper(meta());");
-        }
         if (data.getImmutableDefaults() != null) {
             insertRegion.add("\t\t\t" + data.getImmutableDefaults() + "(this);");
         }
@@ -1311,45 +1308,6 @@ class BeanGen {
             insertRegion.add("\t\t@Override");
             insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(MetaProperty<?> property, Object value) {");
             insertRegion.add("\t\t\tsuper.set(property, value);");
-            insertRegion.add("\t\t\treturn this;");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
-            /**
-             * {@inheritDoc}
-             * @deprecated Use Joda-Convert in application code
-             */
-            
-            insertRegion.add("\t\t/**");
-            insertRegion.add("\t\t * @deprecated Use Joda-Convert in application code");
-            insertRegion.add("\t\t */");
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\t@Deprecated");
-            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(String propertyName, String value) {");
-            if (data.isMetaScopePrivate()) {
-                insertRegion.add("\t\t\tsetString(" + data.getTypeRaw() + ".Meta.INSTANCE.metaProperty(propertyName), value);");
-            } else {
-                insertRegion.add("\t\t\tsetString(meta().metaProperty(propertyName), value);");
-            }
-            insertRegion.add("\t\t\treturn this;");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
-            insertRegion.add("\t\t/**");
-            insertRegion.add("\t\t * @deprecated Use Joda-Convert in application code");
-            insertRegion.add("\t\t */");
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\t@Deprecated");
-            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setString(MetaProperty<?> property, String value) {");
-            insertRegion.add("\t\t\tsuper.setString(property, value);");
-            insertRegion.add("\t\t\treturn this;");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
-            insertRegion.add("\t\t/**");
-            insertRegion.add("\t\t * @deprecated Loop in application code");
-            insertRegion.add("\t\t */");
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\t@Deprecated");
-            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " setAll(Map<String, ? extends Object> propertyValueMap) {");
-            insertRegion.add("\t\t\tsuper.setAll(propertyValueMap);");
             insertRegion.add("\t\t\treturn this;");
             insertRegion.add("\t\t}");
             insertRegion.add("");

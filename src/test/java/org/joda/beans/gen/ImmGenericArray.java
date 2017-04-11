@@ -217,7 +217,6 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
          * Restricted constructor.
          */
         private Builder() {
-            super(meta());
         }
 
         //-----------------------------------------------------------------------

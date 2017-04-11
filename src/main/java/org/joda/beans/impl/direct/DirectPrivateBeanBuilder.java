@@ -17,8 +17,6 @@ package org.joda.beans.impl.direct;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.test.JodaBeanTests;
 
@@ -34,17 +32,9 @@ public abstract class DirectPrivateBeanBuilder<T extends Bean>
         implements BeanBuilder<T> {
 
     /**
-     * The meta bean.
-     */
-    private final MetaBean metaBean;
-
-    /**
      * Constructs the builder.
-     * 
-     * @param metaBean  the meta bean
      */
-    protected DirectPrivateBeanBuilder(MetaBean metaBean) {
-        this.metaBean = metaBean;
+    protected DirectPrivateBeanBuilder() {
     }
 
     //-----------------------------------------------------------------------
@@ -71,34 +61,6 @@ public abstract class DirectPrivateBeanBuilder<T extends Bean>
             }
             throw ex;
         }
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
-        try {
-            Object converted = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
-            set(metaProperty.name(), converted);
-            return this;
-        } catch (RuntimeException ex) {
-            if (value == JodaBeanTests.TEST_COVERAGE_STRING) {
-                return this;
-            }
-            throw ex;
-        }
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(String propertyName, String value) {
-        setString(metaBean.metaProperty(propertyName), value);
-        return this;
     }
 
     //-----------------------------------------------------------------------

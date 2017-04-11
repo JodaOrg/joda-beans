@@ -279,36 +279,6 @@ public final class ImmGenericLinkedRefs<A, B extends Comparable<A>> implements I
             return this;
         }
 
-        /**
-         * @deprecated Use Joda-Convert in application code
-         */
-        @Override
-        @Deprecated
-        public Builder<A, B> setString(String propertyName, String value) {
-            setString(meta().metaProperty(propertyName), value);
-            return this;
-        }
-
-        /**
-         * @deprecated Use Joda-Convert in application code
-         */
-        @Override
-        @Deprecated
-        public Builder<A, B> setString(MetaProperty<?> property, String value) {
-            super.setString(property, value);
-            return this;
-        }
-
-        /**
-         * @deprecated Loop in application code
-         */
-        @Override
-        @Deprecated
-        public Builder<A, B> setAll(Map<String, ? extends Object> propertyValueMap) {
-            super.setAll(propertyValueMap);
-            return this;
-        }
-
         @Override
         public ImmGenericLinkedRefs<A, B> build() {
             return new ImmGenericLinkedRefs<>(

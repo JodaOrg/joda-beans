@@ -18,7 +18,6 @@ package org.joda.beans.gen;
 import java.io.Serializable;
 import java.util.Currency;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.BeanDefinition;
@@ -396,36 +395,6 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
         @Override
         public Builder set(MetaProperty<?> property, Object value) {
             super.set(property, value);
-            return this;
-        }
-
-        /**
-         * @deprecated Use Joda-Convert in application code
-         */
-        @Override
-        @Deprecated
-        public Builder setString(String propertyName, String value) {
-            setString(meta().metaProperty(propertyName), value);
-            return this;
-        }
-
-        /**
-         * @deprecated Use Joda-Convert in application code
-         */
-        @Override
-        @Deprecated
-        public Builder setString(MetaProperty<?> property, String value) {
-            super.setString(property, value);
-            return this;
-        }
-
-        /**
-         * @deprecated Loop in application code
-         */
-        @Override
-        @Deprecated
-        public Builder setAll(Map<String, ? extends Object> propertyValueMap) {
-            super.setAll(propertyValueMap);
             return this;
         }
 

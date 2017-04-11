@@ -19,7 +19,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -66,14 +65,11 @@ public class TestAddress {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void test_builder1() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
         assertEquals(builder.get("street"), "Main Street");
-        Map<String, Object> map = new HashMap<>();
-        map.put("city", "London");
-        builder.setAll(map);
+        builder.set("city", "London");
         assertEquals(builder.get("street"), "Main Street");
         assertEquals(builder.get("city"), "London");
         String street = builder.get(Address.meta().street());
@@ -89,11 +85,10 @@ public class TestAddress {
         assertEquals(test, expected);
     }
 
-    @SuppressWarnings("deprecation")
     public void test_builder2() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set(Address.meta().street(), "Main Street");
-        builder.setString(Address.meta().number(), "12");
+        builder.set(Address.meta().number(), 12);
         
         Address test = builder.build();
         Address expected = new Address();

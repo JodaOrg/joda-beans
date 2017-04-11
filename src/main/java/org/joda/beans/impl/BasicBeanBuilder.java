@@ -81,25 +81,6 @@ public class BasicBeanBuilder<T extends Bean>
         return this;
     }
 
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(String propertyName, String value) {
-        return setString(bean.metaBean().metaProperty(propertyName), value);
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
-        metaProperty.setString(bean, value);
-        return this;
-    }
-
     @Override
     public T build() {
         validate(bean);

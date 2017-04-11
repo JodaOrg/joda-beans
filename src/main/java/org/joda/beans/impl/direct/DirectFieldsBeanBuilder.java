@@ -15,11 +15,8 @@
  */
 package org.joda.beans.impl.direct;
 
-import java.util.Map;
-
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.test.JodaBeanTests;
 
@@ -64,30 +61,6 @@ public abstract class DirectFieldsBeanBuilder<T extends Bean>
             }
             throw ex;
         }
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
-        try {
-            Object converted = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
-            set(metaProperty.name(), converted);
-            return this;
-        } catch (RuntimeException ex) {
-            if (value == JodaBeanTests.TEST_COVERAGE_STRING) {
-                return this;
-            }
-            throw ex;
-        }
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-        return BeanBuilder.super.setAll(propertyValueMap);
     }
 
     //-----------------------------------------------------------------------

@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 
@@ -125,25 +124,6 @@ public class BufferingBeanBuilder<T extends Bean>
     public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
         getBuffer().put(metaProperty, value);
         return this;
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(String propertyName, String value) {
-        return setString(getMetaBean().metaProperty(propertyName), value);
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
-        Object object = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
-        return set(metaProperty, object);
     }
 
     @Override

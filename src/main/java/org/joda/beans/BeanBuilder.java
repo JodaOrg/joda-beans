@@ -15,9 +15,6 @@
  */
 package org.joda.beans;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 /**
  * A builder for a bean, providing a safe way to create it.
  * <p>
@@ -72,63 +69,6 @@ public interface BeanBuilder<T extends Bean> {
      * @throws RuntimeException optionally thrown if the property is invalid
      */
     public abstract BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value);
-
-    /**
-     * Sets the value of a single property into the builder.
-     * <p>
-     * This converts the string to the correct type for the property.
-     * Conversion uses Joda-Convert.
-     * <p>
-     * This will normally behave as per a {@code Map}, however it may not
-     * and as a general rule callers should only set each property once.
-     * 
-     * @param propertyName  the property name to set, not null
-     * @param value  the property value, may be null
-     * @return {@code this}, for chaining, not null
-     * @throws RuntimeException optionally thrown if the property name is invalid
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Deprecated
-    public abstract BeanBuilder<T> setString(String propertyName, String value);
-
-    /**
-     * Sets the value of a single property into the builder.
-     * <p>
-     * This converts the string to the correct type for the property.
-     * Conversion uses Joda-Convert.
-     * <p>
-     * This will normally behave as per a {@code Map}, however it may not
-     * and as a general rule callers should only set each property once.
-     * 
-     * @param metaProperty  the meta-property name to set, not null
-     * @param value  the property value, may be null
-     * @return {@code this}, for chaining, not null
-     * @throws RuntimeException optionally thrown if a property is invalid
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Deprecated
-    public abstract BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value);
-
-    /**
-     * Sets the value of a map of properties into the builder.
-     * <p>
-     * Each map entry is used as the input to {@link #set(String, Object)}.
-     * <p>
-     * This will normally behave as per a {@code Map}, however it may not
-     * and as a general rule callers should only set each property once.
-     * 
-     * @param propertyValueMap  the property name to value map, not null
-     * @return {@code this}, for chaining, not null
-     * @throws RuntimeException optionally thrown if a property name is invalid
-     * @deprecated Loop in application code
-     */
-    @Deprecated
-    public default BeanBuilder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-        for (Entry<String, ? extends Object> entry : propertyValueMap.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
 
     /**
      * Builds the bean from the state of the builder.

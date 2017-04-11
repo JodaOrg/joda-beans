@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 
 /**
@@ -69,25 +68,6 @@ class LightBeanBuilder<B extends Bean>
     public BeanBuilder<B> set(MetaProperty<?> metaProperty, Object value) {
         data[index(metaProperty)] = value;
         return this;
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<B> setString(String propertyName, String value) {
-        return setString(metaBean.metaProperty(propertyName), value);
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<B> setString(MetaProperty<?> metaProperty, String value) {
-        Object object = JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value);
-        return set(metaProperty, object);
     }
 
     private int index(MetaProperty<?> metaProperty) {

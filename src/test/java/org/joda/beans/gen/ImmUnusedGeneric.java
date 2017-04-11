@@ -282,36 +282,6 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
             return this;
         }
 
-        /**
-         * @deprecated Use Joda-Convert in application code
-         */
-        @Override
-        @Deprecated
-        public Builder<T> setString(String propertyName, String value) {
-            setString(meta().metaProperty(propertyName), value);
-            return this;
-        }
-
-        /**
-         * @deprecated Use Joda-Convert in application code
-         */
-        @Override
-        @Deprecated
-        public Builder<T> setString(MetaProperty<?> property, String value) {
-            super.setString(property, value);
-            return this;
-        }
-
-        /**
-         * @deprecated Loop in application code
-         */
-        @Override
-        @Deprecated
-        public Builder<T> setAll(Map<String, ? extends Object> propertyValueMap) {
-            super.setAll(propertyValueMap);
-            return this;
-        }
-
         @Override
         public ImmUnusedGeneric<T> build() {
             return new ImmUnusedGeneric<>(

@@ -17,7 +17,6 @@ package org.joda.beans.impl;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
@@ -65,26 +64,6 @@ public abstract class BasicImmutableBeanBuilder<T extends Bean>
     @Override
     public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
         set(metaProperty.name(), value);
-        return this;
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(String propertyName, String value) {
-        setString(meta.metaProperty(propertyName), value);
-        return this;
-    }
-
-    /**
-     * @deprecated Use Joda-Convert in application code
-     */
-    @Override
-    @Deprecated
-    public BeanBuilder<T> setString(MetaProperty<?> metaProperty, String value) {
-        set(metaProperty.name(), JodaBeanUtils.stringConverter().convertFromString(metaProperty.propertyType(), value));
         return this;
     }
 
