@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.13" date="SNAPSHOT" description="v1.13">
+    <release version="1.13" date="2017-05-04" description="v1.13">
       <action dev="jodastephen" type="add">
         Add lenient mode for deserialization, see `SerDeserializers`.
         This allows unknown properties and some invalid types to be ignored.
