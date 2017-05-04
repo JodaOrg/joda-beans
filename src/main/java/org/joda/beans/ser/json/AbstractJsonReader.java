@@ -202,7 +202,7 @@ abstract class AbstractJsonReader {
 
     private Object parseTypedSimple(Class<?> declaredType) throws Exception {
         String typeStr = input.acceptString();
-        Class<?> effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
+        Class<?> effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
         if (declaredType.isAssignableFrom(effectiveType) == false) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
                 declaredType.getName() + " and " + effectiveType.getName());

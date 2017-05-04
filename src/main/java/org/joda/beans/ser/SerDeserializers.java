@@ -16,6 +16,7 @@
 package org.joda.beans.ser;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,8 +39,20 @@ public final class SerDeserializers {
     /**
      * Shared global instance which can be mutated.
      */
-    public static final SerDeserializers INSTANCE = new SerDeserializers();
+    public static final SerDeserializers INSTANCE = new SerDeserializers(false);
+    /**
+     * Lenient instance which can be mutated.
+     */
+    public static final SerDeserializers LENIENT = new SerDeserializers(true);
 
+    /**
+     * Whether deserialization is lenient.
+     */
+    private final boolean lenient;
+    /**
+     * The default deserializer.
+     */
+    private final SerDeserializer defaultDeserializer;
     /**
      * The deserializers.
      */
@@ -55,6 +68,8 @@ public final class SerDeserializers {
      * Creates an instance.
      */
     public SerDeserializers() {
+        this.lenient = false;
+        this.defaultDeserializer = DefaultDeserializer.INSTANCE;
     }
 
     /**
@@ -63,7 +78,21 @@ public final class SerDeserializers {
      * @param providers  the providers to use
      */
     public SerDeserializers(SerDeserializerProvider... providers) {
+        this.lenient = false;
+        this.defaultDeserializer = DefaultDeserializer.INSTANCE;
         this.providers.addAll(Arrays.asList(providers));
+    }
+
+    /**
+     * Creates an instance using additional providers.
+     * 
+     * @param lenient  whether to deserialize leniently
+     * @param providers  the providers to use
+     */
+    public SerDeserializers(boolean lenient, SerDeserializerProvider... providers) {
+        this.lenient = lenient;
+        this.providers.addAll(Arrays.asList(providers));
+        this.defaultDeserializer = lenient ? LenientDeserializer.INSTANCE : DefaultDeserializer.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +149,21 @@ public final class SerDeserializers {
                 return deser;
             }
         }
-        return DefaultDeserializer.INSTANCE;
+        return defaultDeserializer;
+    }
+
+    public Class<?> decodeType(
+            String typeStr,
+            JodaBeanSer settings,
+            String basePackage,
+            Map<String, Class<?>> knownTypes,
+            Class<?> defaultType) throws ClassNotFoundException {
+        
+        if (lenient) {
+            return SerTypeMapper.decodeType(
+                    typeStr, settings, basePackage, knownTypes, defaultType == Object.class ? String.class : defaultType);
+        }
+        return SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
     }
 
     //-----------------------------------------------------------------------

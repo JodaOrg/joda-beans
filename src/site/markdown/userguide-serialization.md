@@ -27,6 +27,9 @@ For binary, replace `xmlWriter()` by `binWriter()` and
 For JSON, replace `xmlWriter()` by `jsonWriter()` and
 `xmlReader()` by `jsonReader()`.
 
+There is also a simple JSON reader/writer that does not expose Java types,
+and a simple Map-base reader/writer for interoperation with other libraries.
+
 The serializer makes use the meta-data in the bean to minimize the output size.
 In effect, the Joda-Bean acts as a schema to interpret the data.
 
@@ -49,6 +52,21 @@ directly as part of the parsing process.
 
 Finally, the `PropertyDefinition` annotation has an "alias" attribute.
 Setting that allows the old name of a property to be retained when a property is renamed.
+
+
+## Leniency
+
+The default deserialization mechanism is relatively strict.
+If the input contains an unknown property then an error will be thrown.
+Similarly, if a Java type is not handled by `SerTypeMapper` then an exception is thrown.
+
+There is an alternative mode that is more lenient:
+
+    JodaBeanSer s = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT);
+
+This mode will ignore unknown properties received for a bean.
+If a Java type cannot be found, lenient mode will attempt to fallback to an alternative type, such as `String`.
+Together these help solve problems when integrating multiple projects/services using Joda-Beans.
 
 
 ## Links

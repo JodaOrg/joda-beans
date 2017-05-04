@@ -462,13 +462,13 @@ public class JodaBeanXmlReader {
     }
 
     //-----------------------------------------------------------------------
-    private Class<?> parseTypeAttribute(final StartElement start, final Class<?> defaultType) throws ClassNotFoundException {
+    private Class<?> parseTypeAttribute(StartElement start, Class<?> defaultType) throws ClassNotFoundException {
         Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
         if (typeAttr == null) {
             return (defaultType == Object.class ? String.class : defaultType);
         }
-        String childTypeStr = typeAttr.getValue();
-        return SerTypeMapper.decodeType(childTypeStr, settings, basePackage, knownTypes);
+        String typeStr = typeAttr.getValue();
+        return settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, defaultType);
     }
 
     // reader can be anywhere, but normally at StartDocument

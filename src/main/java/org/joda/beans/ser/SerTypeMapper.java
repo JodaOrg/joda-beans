@@ -144,7 +144,7 @@ public final class SerTypeMapper {
     }
 
     /**
-     * Decodes a class.
+     * Decodes a class, throwing an exception if not found.
      * <p>
      * This uses the context class loader.
      * This handles known simple types, like String, Integer or File, and prefixing.
@@ -157,7 +157,47 @@ public final class SerTypeMapper {
      * @return the class object, not null
      * @throws ClassNotFoundException if not found
      */
-    public static Class<?> decodeType(final String className, final JodaBeanSer settings, final String basePackage, final Map<String, Class<?>> knownTypes) throws ClassNotFoundException {
+    public static Class<?> decodeType(
+            String className,
+            JodaBeanSer settings,
+            String basePackage, 
+            Map<String, Class<?>> knownTypes) throws ClassNotFoundException {
+        
+        return decodeType0(className, settings, basePackage, knownTypes, null);
+    }
+
+    /**
+     * Decodes a class, returning a default if not found.
+     * <p>
+     * This uses the context class loader.
+     * This handles known simple types, like String, Integer or File, and prefixing.
+     * It also allows a map of message specific shorter forms.
+     * 
+     * @param className  the class name, not null
+     * @param settings  the settings object, not null
+     * @param basePackage  the base package to use with trailing dot, null if none
+     * @param knownTypes  the known types map, null if not using known type shortening
+     * @param defaultType  the type to use as a default if the type cannot be found
+     * @return the class object, not null
+     */
+    public static Class<?> decodeType(
+            String className,
+            JodaBeanSer settings,
+            String basePackage, 
+            Map<String, Class<?>> knownTypes,
+            Class<?> defaultType) throws ClassNotFoundException {
+
+        return decodeType0(className, settings, basePackage, knownTypes, defaultType);
+    }
+
+    // internal type decode
+    private static Class<?> decodeType0(
+            String className,
+            JodaBeanSer settings,
+            String basePackage, 
+            Map<String, Class<?>> knownTypes,
+            Class<?> defaultType) throws ClassNotFoundException {
+
         // basic type
         Class<?> result = BASIC_TYPES_REVERSED.get(className);
         if (result != null) {
@@ -214,7 +254,10 @@ public final class SerTypeMapper {
                 } catch (ClassNotFoundException ignored) {
                 }
             }
-            throw ex;
+            if (defaultType == null) {
+                throw ex;
+            }
+            return defaultType;
         }
     }
 

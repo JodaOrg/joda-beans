@@ -32,6 +32,7 @@ import org.joda.beans.gen.SimpleName;
 import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.Test;
@@ -171,6 +172,21 @@ public class TestSerializeXml {
         
         ImmMappedKey bean = (ImmMappedKey) JodaBeanSer.PRETTY.xmlReader().read(xml);
         BeanAssert.assertBeanEquals(bean, mapped);
+    }
+
+    public void test_read_badTypeInMap() {
+        String xml = "<bean><element metatype=\"Map\"><entry><item>work</item><item type=\"com.foo.UnknownEnum\">BIGWIG</item></entry></element></bean>";
+        FlexiBean parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).xmlReader().read(xml, FlexiBean.class);
+        FlexiBean bean = new FlexiBean();
+        bean.set("element", ImmutableMap.of("work", "BIGWIG"));  // converted to a string
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_read_ignoreProperty() {
+        String xml = "<bean><name>foo</name><wibble>ignored</wibble></bean>";
+        ImmKey parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).xmlReader().read(xml, ImmKey.class);
+        ImmKey bean = ImmKey.builder().name("foo").build();
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------

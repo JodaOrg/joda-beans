@@ -24,8 +24,6 @@ import org.joda.beans.MetaProperty;
  * Default deserializer that expects the input to match the current classpath beans.
  * <p>
  * This uses the standard {@code MetaBean}, {@code MetaProperty} and  {@code BeanBuilder}.
- * <p>
- * Implementations must be thread-safe singletons.
  *
  * @author Stephen Colebourne
  */

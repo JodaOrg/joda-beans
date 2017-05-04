@@ -36,6 +36,7 @@ import org.joda.beans.gen.PrimitiveBean;
 import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.DataProvider;
@@ -297,6 +298,23 @@ public class TestSerializeJson {
         
         ImmMappedKey bean = (ImmMappedKey) JodaBeanSer.PRETTY.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, mapped);
+    }
+
+    public void test_read_badTypeInMap() {
+        String json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":{" +
+                "\"@meta\": \"Map\"," +
+                "\"value\": [[\"work\", {\"@type\": \"com.foo.UnknownEnum\",\"value\": \"BIGWIG\"}]]}}";
+        FlexiBean parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(json, FlexiBean.class);
+        FlexiBean bean = new FlexiBean();
+        bean.set("element", ImmutableMap.of("work", "BIGWIG"));  // converted to a string
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_read_ignoreProperty() {
+        String xml = "{\"name\":\"foo\",\"wibble\":\"ignored\"}";
+        ImmKey parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(xml, ImmKey.class);
+        ImmKey bean = ImmKey.builder().name("foo").build();
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------

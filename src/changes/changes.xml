@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.13" date="SNAPSHOT" description="v1.13">
+      <action dev="jodastephen" type="add">
+        Add lenient mode for deserialization, see `SerDeserializers`.
+        This allows unknown properties and some invalid types to be ignored.
+        Fixes #170.
+      </action>
+    </release>
     <release version="1.12" date="2017-04-10" description="v1.12">
       <action dev="jodastephen" type="add">
         Support derived properties on light and minimal beans.

@@ -226,7 +226,7 @@ public class JodaBeanBinReader extends MsgPack {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
                         String typeStr = acceptStringBytes(size);
-                        effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
+                        effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
                         if (declaredType.isAssignableFrom(effectiveType) == false) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
                         }

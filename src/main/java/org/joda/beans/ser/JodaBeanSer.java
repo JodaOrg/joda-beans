@@ -213,6 +213,8 @@ public final class JodaBeanSer {
      * Returns a copy of this serializer with the specified deserializers.
      * <p>
      * The default deserializers can be modified.
+     * <p>
+     * This can be used to select a more lenient mode of parsing, see {@link SerDeserializers#LENIENT}.
      * 
      * @param deserializers  the deserializers, not null
      * @return a copy of this object with the converter changed, not null
