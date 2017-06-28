@@ -523,7 +523,7 @@ class BeanGen {
             insertRegion.add("\t/**");
             insertRegion.add("\t * The property change support field.");
             insertRegion.add("\t */");
-            insertRegion.add("\tprivate PropertyChangeSupport " + config.getPrefix() + "propertyChangeSupport = new PropertyChangeSupport(this);");
+            insertRegion.add("\tprivate final transient PropertyChangeSupport " + config.getPrefix() + "propertyChangeSupport = new PropertyChangeSupport(this);");
             insertRegion.add("");
         }
     }
