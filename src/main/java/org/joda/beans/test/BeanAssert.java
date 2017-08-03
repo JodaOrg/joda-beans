@@ -243,7 +243,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected.getClass() != actual.getClass()) {
+        if (expected != null && expected.getClass() != actual.getClass()) {
             diffs.add(prefix + ": Class differs, expected " + buildSummary(expected, true) + " but was " + buildSummary(actual, true));
             return;
         }

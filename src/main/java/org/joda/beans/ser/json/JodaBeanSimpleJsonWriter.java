@@ -92,6 +92,7 @@ public class JodaBeanSimpleJsonWriter {
      * 
      * @param bean  the bean to output, not null
      * @param output  the output appendable, not null
+     * @throws IOException if an error occurs
      */
     public void write(Bean bean, Appendable output) throws IOException {
         JodaBeanUtils.notNull(bean, "bean");

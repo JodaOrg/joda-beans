@@ -132,6 +132,7 @@ public class JodaBeanBinWriter {
      * 
      * @param bean  the bean to output, not null
      * @param output  the output stream, not null
+     * @throws IOException if an error occurs
      */
     public void write(final Bean bean, OutputStream output) throws IOException {
         write(bean, true, output);
@@ -143,6 +144,7 @@ public class JodaBeanBinWriter {
      * @param bean  the bean to output, not null
      * @param rootType  true to output the root type
      * @param output  the output stream, not null
+     * @throws IOException if an error occurs
      */
     public void write(final Bean bean, final boolean rootType, OutputStream output) throws IOException {
         if (bean == null) {

@@ -46,6 +46,7 @@ public class TestMapBean {
         assertEquals(b.get("B"), "BB");
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     public void test_equalsHashCode() {
         MapBean a1 = new MapBean();
         MapBean a2 = new MapBean();

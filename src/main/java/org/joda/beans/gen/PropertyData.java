@@ -444,6 +444,8 @@ class PropertyData {
 
     /**
      * Resolves the equals hashCode generator.
+     * @param file  the file
+     * @param lineIndex  the line index
      */
     public void resolveEqualsHashCodeStyle(File file, int lineIndex) {
         if (equalsHashCodeStyle.equals("smart")) {
@@ -476,6 +478,8 @@ class PropertyData {
 
     /**
      * Resolves the toString generator.
+     * @param file  the file
+     * @param lineIndex  the line index
      */
     public void resolveToStringStyle(File file, int lineIndex) {
         if (toStringStyle.equals("smart")) {
@@ -673,6 +677,8 @@ class PropertyData {
     //-----------------------------------------------------------------------
     /**
      * Resolves the getter generator.
+     * @param file  the file
+     * @param lineIndex  the line index
      */
     public void resolveGetterGen(File file, int lineIndex) {
         if (getGetStyle() == null) {
@@ -746,6 +752,8 @@ class PropertyData {
     //-----------------------------------------------------------------------
     /**
      * Resolves the setter generator.
+     * @param file  the file
+     * @param lineIndex  the line index
      */
     public void resolveSetterGen(File file, int lineIndex) {
         if (getSetStyle() == null) {
@@ -838,6 +846,8 @@ class PropertyData {
     //-----------------------------------------------------------------------
     /**
      * Resolves the copy generator.
+     * @param file  the file
+     * @param lineIndex  the line index
      */
     public void resolveCopyGen(File file, int lineIndex) {
         if (getBean().isMutable() && getBean().isBuilderScopeVisible() == false) {

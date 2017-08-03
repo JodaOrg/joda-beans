@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestPair {
 
+    @SuppressWarnings("unlikely-arg-type")
     public void test_equalsHashCode() {
         // even though TwekedPair adds no new properties, we treat it as different
         // this can be avoided (see Git history) but at a performance cost

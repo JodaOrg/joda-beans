@@ -53,7 +53,6 @@ abstract class LightMetaProperty<P> extends BasicMetaProperty<P> {
      * @param propertyType  the property type
      * @param propertyGenericType  the property generic type
      * @param annotations  the annotations
-     * @param getter  the property getter
      * @param constructorIndex  the index of the property in the constructor
      */
     LightMetaProperty(

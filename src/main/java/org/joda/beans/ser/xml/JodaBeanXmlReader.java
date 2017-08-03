@@ -235,6 +235,7 @@ public class JodaBeanXmlReader {
      * @param beanType  the bean type, not null
      * @return the bean, not null
      */
+    @SuppressWarnings("null")
     private Object parseBean(final Class<?> beanType) throws Exception {
         String propName = "";
         try {

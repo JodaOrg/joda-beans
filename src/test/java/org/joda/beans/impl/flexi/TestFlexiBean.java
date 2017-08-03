@@ -187,6 +187,7 @@ public class TestFlexiBean {
         assertEquals(test, base);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     public void test_equalsHashCode() {
         FlexiBean a1 = new FlexiBean();
         a1.set("a", "b");

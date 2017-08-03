@@ -49,6 +49,7 @@ public class TestFlexiBean {
         assertEquals(test, obj);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     public void test_equalsHashCode() {
         FlexiBean a1 = new FlexiBean();
         FlexiBean a2 = new FlexiBean();

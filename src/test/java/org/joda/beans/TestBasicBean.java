@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestBasicBean {
 
+    @SuppressWarnings("unlikely-arg-type")
     public void test_equals() {
         Person a1 = new Person();
         Person a2 = new Person();

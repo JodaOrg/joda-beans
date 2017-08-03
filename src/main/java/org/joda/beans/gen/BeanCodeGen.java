@@ -46,7 +46,7 @@ public class BeanCodeGen {
      * @param args  the arguments, not null
      */
     public static void main(String[] args) {
-        BeanCodeGen gen = null;
+        BeanCodeGen gen;
         try {
             gen = createFromArgs(args);
         } catch (RuntimeException ex) {
@@ -64,6 +64,7 @@ public class BeanCodeGen {
             System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
             System.out.println("    -nowrite          output messages rather than writing, default is to write");
             System.exit(0);
+            throw new InternalError("Unreachable");
         }
         try {
             int changed = gen.process();
@@ -247,6 +248,7 @@ public class BeanCodeGen {
      * The number of altered files is returned.
      * 
      * @return the number of changed files
+     * @throws Exception if an error occurs
      */
     public int process() throws Exception {
         int changed = 0;
@@ -262,6 +264,7 @@ public class BeanCodeGen {
      * The list of altered files is returned.
      * 
      * @return the list of changed files, not null
+     * @throws Exception if an error occurs
      */
     public List<File> processFiles() throws Exception {
         List<File> changed = new ArrayList<File>();
@@ -279,6 +282,7 @@ public class BeanCodeGen {
      * 
      * @param file  the file to process, not null
      * @return not-null if changed
+     * @throws Exception if an error occurs
      */
     private File processFile(File file) throws Exception {
         List<String> original = readFile(file);

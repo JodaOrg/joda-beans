@@ -131,8 +131,9 @@ public final class JodaBeanUtils {
         // a Class can be loaded without being initialized
         // in this state, the static initializers have not run, and thus the metabean not registered
         // here initialization is forced to handle that scenario
+        Class<?> initialized;
         try {
-            cls = Class.forName(cls.getName(), true, cls.getClassLoader());
+            initialized = Class.forName(cls.getName(), true, cls.getClassLoader());
         } catch (ClassNotFoundException ex) {
             // should be impossible
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
@@ -140,7 +141,7 @@ public final class JodaBeanUtils {
             // should be impossible
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
         }
-        MetaBean meta = metaBeans.get(cls);
+        MetaBean meta = metaBeans.get(initialized);
         if (meta == null) {
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
         }
@@ -588,6 +589,7 @@ public final class JodaBeanUtils {
         }
     }
 
+    @SuppressWarnings("null")
     private static boolean isBlank(String str) {
         int strLen = (str != null ? str.length() : 0);
         if (strLen != 0) {

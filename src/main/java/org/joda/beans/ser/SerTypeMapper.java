@@ -179,6 +179,7 @@ public final class SerTypeMapper {
      * @param knownTypes  the known types map, null if not using known type shortening
      * @param defaultType  the type to use as a default if the type cannot be found
      * @return the class object, not null
+     * @throws ClassNotFoundException if an error occurs
      */
     public static Class<?> decodeType(
             String className,

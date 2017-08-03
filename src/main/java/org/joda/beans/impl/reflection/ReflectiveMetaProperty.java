@@ -78,7 +78,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
      * @param beanType  the bean type, not null
      * @param propertyName  the property name, not empty
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "null"})
     ReflectiveMetaProperty(MetaBean metaBean, Class<? extends Bean> beanType, String propertyName) {
         super(propertyName);
         String getterName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
@@ -215,6 +215,7 @@ public final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
     public void set(Bean bean, Object value) {
         if (style().isWritable() == false) {

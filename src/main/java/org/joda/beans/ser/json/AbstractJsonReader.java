@@ -76,7 +76,8 @@ abstract class AbstractJsonReader {
     /**
      * Parses the root bean.
      * 
-     * @param rootType  the root type, not null
+     * @param input  the JSON input
+     * @param declaredType  the declared type, not null
      * @return the bean, not null
      * @throws Exception if an error occurs
      */

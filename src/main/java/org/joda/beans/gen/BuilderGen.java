@@ -38,7 +38,6 @@ abstract class BuilderGen {
     /**
      * Generates the builder exposed type.
      * 
-     * @param indent  the indent to use, not null
      * @param prop  the property data, not null
      * @return the generated code, not null
      */

@@ -146,6 +146,7 @@ public class JodaBeanJsonWriter {
      * 
      * @param bean  the bean to output, not null
      * @param output  the output appendable, not null
+     * @throws IOException if an error occurs
      */
     public void write(Bean bean, Appendable output) throws IOException {
         write(bean, true, output);
@@ -157,6 +158,7 @@ public class JodaBeanJsonWriter {
      * @param bean  the bean to output, not null
      * @param rootType  true to output the root type
      * @param output  the output appendable, not null
+     * @throws IOException if an error occurs
      */
     public void write(Bean bean, boolean rootType, Appendable output) throws IOException {
         JodaBeanUtils.notNull(bean, "bean");

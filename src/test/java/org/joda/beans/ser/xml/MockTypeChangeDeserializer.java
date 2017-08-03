@@ -57,19 +57,20 @@ public class MockTypeChangeDeserializer extends DefaultDeserializer {
 
     @Override
     public void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value) {
+      Object valueToSet = value;
         if (metaProp == NUMBER_OF_CARS_STRING && value != null) {
             String oldValue = value.toString();
             if (oldValue.equals("None")) {
-                value = 0;
+              valueToSet = 0;
             } else if (oldValue.equals("One")) {
-                value = 1;
+              valueToSet = 1;
             } else if (oldValue.equals("Two")) {
-                value = 2;
+              valueToSet = 2;
             } else if (oldValue.equals("Lots")) {
-                value = 3;
+              valueToSet = 3;
             }
         }
-        super.setValue(builder, metaProp, value);
+        super.setValue(builder, metaProp, valueToSet);
     }
 
 }

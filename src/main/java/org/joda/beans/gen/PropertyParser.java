@@ -139,7 +139,7 @@ class PropertyParser {
     //-----------------------------------------------------------------------
     private String makePropertyName(String name) {
         if (name.startsWith(beanParser.getFieldPrefix())) {
-            name = name.substring(beanParser.getFieldPrefix().length());
+            return name.substring(beanParser.getFieldPrefix().length());
         }
         return name;
     }
@@ -151,7 +151,7 @@ class PropertyParser {
     //-----------------------------------------------------------------------
     private int parseAnnotationStart(List<String> content, int lineIndex) {
         while (lineIndex > 0 && content.get(lineIndex - 1).trim().startsWith("@")) {
-            lineIndex--;
+            return lineIndex - 1;
         }
         return lineIndex;
     }

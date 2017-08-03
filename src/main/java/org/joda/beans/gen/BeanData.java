@@ -161,6 +161,7 @@ class BeanData {
 
     /**
      * Resolves the bean style.
+     * @param defaultStyle  the default style
      */
     public void resolveBeanStyle(String defaultStyle) {
         if ("smart".equals(beanStyle)) {
@@ -846,6 +847,7 @@ class BeanData {
     /**
      * Gets the name of the parameterisation of the bean, such as '{@code <T>}'.
      * @param typeParamIndex  the zero-based index of the type parameter
+     * @param includeBrackets  whether to include brackets
      * @return the generic type name, not null
      */
     public String getTypeGenericName(int typeParamIndex, boolean includeBrackets) {
@@ -865,6 +867,7 @@ class BeanData {
     /**
      * Gets the extends clause of the parameterisation of the bean, such as '{@code  extends Foo}'.
      * @param typeParamIndex  the zero-based index of the type parameter
+     * @param typeParamNames  the type parameter names
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
     public String getTypeGenericExtends(int typeParamIndex, String[] typeParamNames) {
@@ -914,6 +917,7 @@ class BeanData {
 
     /**
      * Checks if the type specified is one of the bean's type parameters.
+     * @param type  the type
      * @return true if a type parameter of this bean
      */
     public boolean isTypeGenerifiedBy(String type) {
