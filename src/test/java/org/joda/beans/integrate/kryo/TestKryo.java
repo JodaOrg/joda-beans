@@ -58,26 +58,12 @@ public class TestKryo {
         Kryo kryo = new Kryo();
         kryo.setDefaultSerializer(new KryoJodaBeanSerializer());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = null;
-        try {
-            output = new Output(baos);
+        try (Output output = new Output(baos)) {
             kryo.writeObject(output, obj);
-                    
-        } finally {
-            if (output != null) {
-                output.close();
-            }
         }
         byte[] bytes = baos.toByteArray();
-        Input input = null;
-        try {
-            input = new Input(bytes);
+        try (Input input = new Input(bytes)) {
             return kryo.readObject(input, type);
-                    
-        } finally {
-            if (output != null) {
-                output.close();
-            }
         }
     }
 

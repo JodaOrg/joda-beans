@@ -324,26 +324,20 @@ public class BeanCodeGen {
     //-----------------------------------------------------------------------
     private List<String> readFile(File file) throws Exception {
         List<String> content = new ArrayList<>(100);
-        BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-        try {
+        try (BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
             String line;
             while ((line = is.readLine()) != null) {
                 content.add(line);
             }
             return content;
-        } finally {
-            is.close();
         }
     }
 
     private void writeFile(File file, List<String> content) throws Exception {
-        PrintWriter os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
-        try {
+        try (PrintWriter os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")))) {
             for (String line : content) {
                 os.println(line);
             }
-        } finally {
-            os.close();
         }
     }
 

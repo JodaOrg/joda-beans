@@ -37,16 +37,16 @@ public class TestFlexiBean {
         test.put("name", "Etienne");
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(test);
-        oos.close();
-        
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object obj = ois.readObject();
-        ois.close();
-        
-        assertEquals(test, obj);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(test);
+        }
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
+            try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+                Object obj = ois.readObject();
+                assertEquals(test, obj);
+            }
+        }
     }
 
     @SuppressWarnings("unlikely-arg-type")

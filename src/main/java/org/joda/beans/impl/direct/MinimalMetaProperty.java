@@ -61,7 +61,7 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
      * @param propertyName  the property name, not empty
      * @param field  the field, not null
      * @param getter  the property getter, not null
-     * @param getter  the property setter, null if read only
+     * @param setter  the property setter, null if read only
      */
     @SuppressWarnings("unchecked")
     MinimalMetaProperty(
@@ -89,10 +89,8 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
      * Creates an instance.
      * 
      * @param metaBean  the meta bean, not null
+     * @param method  the method, not null
      * @param propertyName  the property name, not empty
-     * @param field  the field, not null
-     * @param getter  the property getter, not null
-     * @param getter  the property setter, null if read only
      */
     @SuppressWarnings("unchecked")
     MinimalMetaProperty(
