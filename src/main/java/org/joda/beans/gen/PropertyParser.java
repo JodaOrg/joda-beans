@@ -158,11 +158,12 @@ class PropertyParser {
 
     private int parseCodeIndex(List<String> content) {
         for (int index = propertyIndex; index < content.size(); index++) {
-            if (content.get(index).trim().startsWith("@") == false) {
-                if (content.get(index).trim().length() == 0) {
-                    throw new BeanCodeGenException(
-                        "Unable to locate field for property at line " + (propertyIndex + 1) + ", found blank line",
-                        beanParser.getFile(), propertyIndex + 1);
+            String line = content.get(index).trim();
+            if (line.startsWith("@") == false) {
+                if (line.length() == 0 ||
+                        line.startsWith("//") ||
+                        (index > propertyIndex && content.get(index - 1).endsWith(","))) {
+                    continue;
                 }
                 return index;
             }

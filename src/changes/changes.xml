@@ -13,6 +13,11 @@
         Generate property change as `final transient`.
         Fixes #173.
       </action>
+      <action dev="jodastephen" type="fix" >
+        Handle multi-line annotations after `@PropertyDefinition`.
+        This simply looks for a comma at the end of the previous line, which isn't perfect but better than nothing.
+        Fixes #174.
+      </action>
     </release>
     <release version="1.13" date="2017-05-04" description="v1.13">
       <action dev="jodastephen" type="add">
