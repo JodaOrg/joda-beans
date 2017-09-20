@@ -23,7 +23,6 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import org.joda.beans.gen.BeanDefinition;
 
 /**
  * Mock pair, used for testing.

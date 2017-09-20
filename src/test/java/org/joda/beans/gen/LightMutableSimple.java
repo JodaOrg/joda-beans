@@ -23,8 +23,6 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.light.LightMetaBean;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock light bean, used for testing.

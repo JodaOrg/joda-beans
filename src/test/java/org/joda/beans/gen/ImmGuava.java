@@ -51,8 +51,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.SortedMultiset;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock JavaBean, used for testing.

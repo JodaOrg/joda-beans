@@ -24,8 +24,6 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock person JavaBean, used for testing.

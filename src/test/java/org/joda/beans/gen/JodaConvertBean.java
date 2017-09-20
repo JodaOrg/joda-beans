@@ -30,8 +30,6 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * A bean that is also a Joda-Convert type, used for testing.

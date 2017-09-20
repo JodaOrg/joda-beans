@@ -21,7 +21,6 @@ import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import org.joda.beans.gen.BeanDefinition;
 
 /**
  * Mock JavaBean, used for testing.

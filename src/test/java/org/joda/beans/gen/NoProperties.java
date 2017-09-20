@@ -25,7 +25,6 @@ import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.direct.DirectBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import org.joda.beans.gen.BeanDefinition;
 
 /**
  * Mock used for testing an absence of properties.

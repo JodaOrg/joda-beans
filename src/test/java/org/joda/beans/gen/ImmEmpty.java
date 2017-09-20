@@ -25,7 +25,6 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-import org.joda.beans.gen.BeanDefinition;
 
 /**
  * Mock immutable empty bean, used for testing.

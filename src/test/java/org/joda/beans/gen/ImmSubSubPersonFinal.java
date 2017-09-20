@@ -26,8 +26,6 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock immutable person JavaBean, used for testing.

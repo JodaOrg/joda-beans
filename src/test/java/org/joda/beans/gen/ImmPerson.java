@@ -34,12 +34,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.DerivedProperty;
-import org.joda.beans.gen.ImmutableDefaults;
-import org.joda.beans.gen.ImmutablePreBuild;
-import org.joda.beans.gen.ImmutableValidator;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock immutable person JavaBean, used for testing.

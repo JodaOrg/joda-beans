@@ -30,8 +30,6 @@ import org.joda.beans.impl.direct.MinimalMetaBean;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock minimal bean, used for testing.

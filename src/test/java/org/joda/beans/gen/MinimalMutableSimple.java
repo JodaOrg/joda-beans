@@ -26,8 +26,6 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.TypedMetaBean;
 import org.joda.beans.impl.BasicBeanBuilder;
 import org.joda.beans.impl.direct.MinimalMetaBean;
-import org.joda.beans.gen.BeanDefinition;
-import org.joda.beans.gen.PropertyDefinition;
 
 /**
  * Mock minimal bean, used for testing.
