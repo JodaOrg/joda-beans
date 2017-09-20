@@ -70,6 +70,7 @@ class LightBeanBuilder<B extends Bean>
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     private int index(MetaProperty<?> metaProperty) {
         if (metaProperty instanceof LightMetaProperty) {
             int index = ((LightMetaProperty<?>) metaProperty).getConstructorIndex();
@@ -77,6 +78,22 @@ class LightBeanBuilder<B extends Bean>
                 throw new NoSuchElementException("Derived property cannot be set: " + metaProperty.name());
             }
             return index;
+        }
+        if (metaProperty instanceof AbstractLightMetaProperty) {
+            try {
+                int index = ((AbstractLightMetaProperty<?>) metaProperty).getConstructorIndex();
+                if (index < 0) {
+                    throw new NoSuchElementException("Derived property cannot be set: " + metaProperty.name());
+                }
+                return index;
+            } catch (ClassCastException ex) {
+                for (MetaProperty<?> mp : metaBean.metaPropertyIterable()) {
+                    if (mp.equals(metaProperty)) {
+                        return ((LightMetaProperty<?>) mp).getConstructorIndex();
+                    }
+                }
+                throw new NoSuchElementException("Unknown property: " + metaProperty.name());
+            }
         }
         return index(metaBean.metaProperty(metaProperty.name()));
     }

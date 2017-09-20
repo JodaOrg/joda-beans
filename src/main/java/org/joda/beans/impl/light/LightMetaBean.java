@@ -20,6 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -45,6 +48,7 @@ import org.joda.beans.gen.PropertyDefinition;
  * There must be a constructor matching the property definitions (arguments of same order and types).
  * <p>
  * This uses method handles to avoid problems with reflection {@code setAccessible()} in Java SE 9.
+ * The old reflection approach is still present, but deprecated.
  * 
  * @author Stephen Colebourne
  * @param <T>  the type of the bean
@@ -56,10 +60,153 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     /** The meta-property instances of the bean. */
     private final Map<String, MetaProperty<?>> metaPropertyMap;
     /** The constructor to use. */
-    private final MethodHandle constructor;
+    private final Function<Object[], T> constructorFn;
     /** The construction data array. */
     private final Object[] constructionData;
 
+    /**
+     * Obtains an instance of the meta-bean.
+     * <p>
+     * The properties will be determined using reflection to find the
+     * {@link PropertyDefinition} annotation.
+     * 
+     * @param <B>  the type of the bean
+     * @param beanClass  the bean class, not null
+     * @return the meta-bean, not null
+     * @deprecated Use method handles version of this method
+     */
+    @Deprecated
+    public static <B extends Bean> LightMetaBean<B> of(Class<B> beanClass) {
+        return new LightMetaBean<>(beanClass);
+    }
+
+    /**
+     * Constructor.
+     * @param beanType  the type
+     * @deprecated Use method handles version of this method
+     */
+    @Deprecated
+    private LightMetaBean(Class<T> beanType) {
+        if (beanType == null) {
+            throw new NullPointerException("Bean class must not be null");
+        }
+        this.beanType = beanType;
+        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Field[] fields = beanType.getDeclaredFields();
+        List<Class<?>> propertyTypes = new ArrayList<>();
+        for (Field field : fields) {
+            if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
+                // handle code that uses new annotation location but old meta-bean approach
+                PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
+                String name = field.getName();
+                if (pdef.get().equals("field") || pdef.get().startsWith("optional") || pdef.get().equals("")) {
+                    field.setAccessible(true);
+                    if (!ImmutableBean.class.isAssignableFrom(beanType)) {
+                        map.put(name, MutableLightMetaProperty.of(this, field, name, propertyTypes.size()));
+                    } else {
+                        map.put(name, ImmutableLightMetaProperty.of(this, field, name, propertyTypes.size()));
+                    }
+                } else {
+                    String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+                    Method getMethod = null;
+                    if (field.getType() == boolean.class) {
+                        getMethod = findGetMethod(beanType,
+                                "is" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1));
+                    }
+                    if (getMethod == null) {
+                        getMethod = findGetMethod(beanType, getterName);
+                        if (getMethod == null) {
+                            throw new IllegalArgumentException(
+                                    "Unable to find property getter: " + beanType.getSimpleName() + "." + getterName + "()");
+                        }
+                    }
+                    getMethod.setAccessible(true);
+                    if (ImmutableBean.class.isAssignableFrom(beanType)) {
+                        map.put(name, ImmutableLightMetaProperty.<Object>of(this, field, getMethod, name, propertyTypes.size()));
+
+                    } else {
+                        String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+                        Method setMethod = findSetMethod(beanType, setterName, field.getType());
+                        if (setMethod == null) {
+                            throw new IllegalArgumentException(
+                                    "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
+                        }
+                        map.put(name, MutableLightMetaProperty.of(
+                                this, field, getMethod, setMethod, name, propertyTypes.size()));
+                    }
+                }
+                propertyTypes.add(field.getType());
+
+            } else if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
+                // handle annotation moving package
+                // this is a best efforts approach
+                String name = field.getName();
+                field.setAccessible(true);
+                if (!ImmutableBean.class.isAssignableFrom(beanType) && !Modifier.isFinal(field.getModifiers())) {
+                    map.put(name, MutableLightMetaProperty.of(this, field, name, propertyTypes.size()));
+                } else {
+                    map.put(name, ImmutableLightMetaProperty.of(this, field, name, propertyTypes.size()));
+                }
+                propertyTypes.add(field.getType());
+            }
+        }
+        // derived
+        Method[] methods = beanType.getDeclaredMethods();
+        for (Method method : methods) {
+            if (!Modifier.isStatic(method.getModifiers()) &&
+                    method.getAnnotation(DerivedProperty.class) != null &&
+                    method.getName().startsWith("get") &&
+                    method.getName().length() > 3 &&
+                    Character.isUpperCase(method.getName().charAt(3)) &&
+                    method.getParameterTypes().length == 0) {
+                String methodName = method.getName();
+                String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+                if (!Modifier.isPublic(method.getModifiers())) {
+                    method.setAccessible(true);
+                }
+                MetaProperty<Object> mp = ImmutableLightMetaProperty.of(this, method, propertyName, -1);
+                map.put(propertyName, mp);
+            }
+        }
+
+        this.metaPropertyMap = Collections.unmodifiableMap(map);
+        Constructor<T> construct = findConstructor(beanType, propertyTypes);
+        construct.setAccessible(true);
+        this.constructionData = buildConstructionData(construct);
+        this.constructorFn = args -> build(construct, args);
+    }
+
+    /**
+     * Creates an instance of the bean.
+     * 
+     * @param constructor  the constructor
+     * @param args  the arguments
+     * @return the created instance
+     * @deprecated Use method handles version of this method
+     */
+    @Deprecated
+    private T build(Constructor<T> constructor, Object[] args) {
+        try {
+            return constructor.newInstance(args);
+
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(
+                    "Bean cannot be created: " + beanName() + " from " + args, ex);
+        } catch (IllegalAccessException ex) {
+            throw new UnsupportedOperationException(
+                    "Bean cannot be created: " + beanName() + " from " + args, ex);
+        } catch (InstantiationException ex) {
+            throw new UnsupportedOperationException(
+                    "Bean cannot be created: " + beanName() + " from " + args, ex);
+        } catch (InvocationTargetException ex) {
+            if (ex.getCause() instanceof RuntimeException) {
+                throw (RuntimeException) ex.getCause();
+            }
+            throw new RuntimeException(ex);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of the meta-bean.
      * <p>
@@ -158,8 +305,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
-        this.constructor = findConstructorHandle(beanType, lookup, constructor);
         this.constructionData = defaultValues;
+        MethodHandle handle = findConstructorHandle(beanType, lookup, constructor);
+        this.constructorFn = args -> build(handle, args);
     }
 
     // finds a method on class or public method on super-type
@@ -200,7 +348,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     }
 
     // finds constructor which matches types exactly
-    public static <T extends Bean> MethodHandle findConstructorHandle(
+    private static <T extends Bean> MethodHandle findConstructorHandle(
             Class<T> beanType,
             MethodHandles.Lookup lookup,
             Constructor<?> constructor) {
@@ -248,7 +396,12 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                 }
             }
             if (match == null) {
-                throw new UnsupportedOperationException("Unable to find constructor: " + beanType.getSimpleName(), ex);
+                String msg = "Unable to find constructor: " + beanType.getSimpleName() + "(";
+                for (Class<?> type : types) {
+                    msg += Objects.toString(type.getName(), "<null>");
+                }
+                msg += ")";
+                throw new UnsupportedOperationException(msg, ex);
             }
             return match;
         }
@@ -282,10 +435,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         return args;
     }
 
-    //-----------------------------------------------------------------------
-    T build(Object[] args) {
+    private T build(MethodHandle handle, Object[] args) {
         try {
-            return (T) constructor.invokeExact(args);
+            return (T) handle.invokeExact(args);
             
         } catch (Error ex) {
             throw ex;
@@ -293,6 +445,11 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             throw new IllegalArgumentException(
                     "Bean cannot be created: " + beanName() + " from " + Arrays.toString(args), ex);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    T build(Object[] args) {
+        return constructorFn.apply(args);
     }
 
     //-----------------------------------------------------------------------
