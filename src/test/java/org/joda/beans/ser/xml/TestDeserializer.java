@@ -33,14 +33,14 @@ public class TestDeserializer {
 
     @Test
     public void test_read_renamedType() {
-        String xml = "<bean type=\"org.joda.beans.FlexibleBean\"><surname>Smith</surname></bean>";
+        String xml = "<bean type=\"org.jodabeans.FlexibleBean\"><surname>Smith</surname></bean>";
         try {
             JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
             fail();
         } catch (RuntimeException ex) {
             // expected
         }
-        RenameHandler.INSTANCE.renamedType("org.joda.beans.FlexibleBean", FlexiBean.class);
+        RenameHandler.INSTANCE.renamedType("org.jodabeans.FlexibleBean", FlexiBean.class);
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
         expected.set("surname", "Smith");
@@ -50,7 +50,7 @@ public class TestDeserializer {
     @Test
     public void test_read_renamedTypeLower() {
         String xml = "<bean>" +
-                "<extra type=\"org.joda.beans.SPerson\"><surname>Smith</surname></extra>" +
+                "<extra type=\"org.jodabeans.SPerson\"><surname>Smith</surname></extra>" +
                 "<person type=\"SPerson\"><surname>Jones</surname></person>" +
                 "</bean>";
         try {
@@ -59,7 +59,7 @@ public class TestDeserializer {
         } catch (RuntimeException ex) {
             // expected
         }
-        RenameHandler.INSTANCE.renamedType("org.joda.beans.SPerson", SimplePerson.class);
+        RenameHandler.INSTANCE.renamedType("org.jodabeans.SPerson", SimplePerson.class);
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
         SimplePerson person1 = new SimplePerson();

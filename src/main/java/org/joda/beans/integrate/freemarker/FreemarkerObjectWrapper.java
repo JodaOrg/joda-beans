@@ -34,6 +34,7 @@ public class FreemarkerObjectWrapper extends DefaultObjectWrapper {
     /**
      * Creates a new instance.
      */
+    @SuppressWarnings("deprecation")
     public FreemarkerObjectWrapper() {
     }
 

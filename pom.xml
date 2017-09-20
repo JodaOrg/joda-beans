@@ -96,6 +96,25 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.5.0</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <executions>
           <execution>
@@ -269,6 +288,11 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
           <version>${maven-gpg-plugin.version}</version>
         </plugin>
@@ -375,12 +399,12 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>1.7</version>
+      <version>1.9.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>16.0.1</version>
+      <version>23.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -398,13 +422,13 @@
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
-      <version>2.3.15</version>
+      <version>2.3.23</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.esotericsoftware</groupId>
       <artifactId>kryo</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -650,27 +674,28 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Plugin version numbers -->
-    <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>2.14</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-dependency-plugin.version>3.0.0</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.0.2</maven-dependency-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
     <maven-plugin-plugin.version>3.5</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.7</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
-    <maven-repository-plugin.version>3.0.2</maven-repository-plugin.version>
+    <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.4</maven-site-plugin.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.20.1</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
