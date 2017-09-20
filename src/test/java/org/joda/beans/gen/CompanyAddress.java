@@ -58,7 +58,7 @@ public class CompanyAddress extends Address {
     /**
      * The property change support field.
      */
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    private final transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     @Override
     public CompanyAddress.Meta metaBean() {
