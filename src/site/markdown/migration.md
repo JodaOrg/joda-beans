@@ -1,4 +1,4 @@
-## Migration
+## Migration to v2.0
 
 Joda-Beans v2.0 has some incompatible changes.
 

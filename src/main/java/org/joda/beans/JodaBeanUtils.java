@@ -942,7 +942,7 @@ public final class JodaBeanUtils {
      */
     public static Comparator<Bean> comparatorAscending(Function<Bean, ?> query) {
         if (query == null) {
-            throw new NullPointerException("BeanQuery must not be null");
+            throw new NullPointerException("Function must not be null");
         }
         return new Comp(query);
     }
@@ -957,14 +957,14 @@ public final class JodaBeanUtils {
      */
     public static Comparator<Bean> comparatorDescending(Function<Bean, ?> query) {
         if (query == null) {
-            throw new NullPointerException("BeanQuery must not be null");
+            throw new NullPointerException("Function must not be null");
         }
         return Collections.reverseOrder(new Comp(query));
     }
 
     //-------------------------------------------------------------------------
     /**
-     * Compare for BeanQuery.
+     * Comparator.
      */
     private static final class Comp implements Comparator<Bean> {
         private final Function<Bean, ?> query;

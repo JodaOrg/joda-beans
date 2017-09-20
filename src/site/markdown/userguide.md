@@ -119,27 +119,6 @@ is only fully safe when using immutable beans.
 ```
 
 
-### Chained access
-
-Joda-Beans provides the ability to chain properties together using
-[ChainedBeanQuery](apidocs/org/joda/beans/query/ChainedBeanQuery.html).
-This is an immutable class that allows a list of "queries" to be passed in.
-
-Each query is an instance of [BeanQuery](apidocs/org/joda/beans/BeanQuery.html).
-All meta-properties implement this interface, thus they can be passed directly to `ChainedBeanQuery`.
-
-This feature allows the value of a nested property to be queried from the parent bean.
-For example, these two code sequences are equivalent - obviously the second would only be used within a framework
-where the query setup was separate from the actual query.
-
-```
- String city = document.getPerson().getAddress().getCity()
- 
- ChainedBeanQuery<String> query = ChainedBeanQuery.of(Document.meta().person(), Person.meta().address(), Address.meta().city());
- String city = query.get(document);
-```
-
-
 ## Code generation
 
 It is entirely possible to write a Joda-Bean by hand - the design utilises simple Java interfaces.

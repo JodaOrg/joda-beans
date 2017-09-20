@@ -492,6 +492,15 @@ Internally, the bean uses lambdas to implement the meta bean.
 Both immutable and mutable minimal beans can be generated.
 
 
+## Test coverage
+
+Code generated beans are great, but they have a side effect of creating lots of untested generated code.
+This can make the test coverage percentage produced by tools seem very low.
+One solution to this is provided by the `JodaBeanTests` class which provides methods to artificially
+provide test coverage. Of course, this can be used for good or evil! The intention is that it is used
+to highlight those parts of the codebase that really do need tests, not to stop you needing tests at all.
+
+
 ## Links
 
 Return to the [main user guide](userguide.html).
