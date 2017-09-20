@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.14" date="SNAPSHOT" description="Version 1.14">
+    <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >
         Generate property change as `final transient`.
         Fixes #173.
