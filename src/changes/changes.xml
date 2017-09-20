@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.0" date="SNAPSHOT" description="v2.0">
+    <release version="2.0" date="2017-09-20" description="v2.0">
       <action dev="jodastephen" type="update">
         Move to Java 8.
         Change light beans from reflection to method handles.
