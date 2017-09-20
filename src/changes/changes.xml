@@ -56,6 +56,11 @@
         Add methods to assist with test coverage.
         Force coverage of Joda-Beans branches so the coverage percentage is more meaningful.
       </action>
+      <action dev="jodastephen" type="add">
+        Add `Automatic-Module-Name` into `MANIFEST.MF`.
+        Locks in module name for Java SE 9.
+        Fixes #175.
+      </action>
     </release>
     <release version="1.14" date="2017-09-20" description="Version 1.14">
       <action dev="mediahype" type="fix" >
