@@ -17,8 +17,8 @@ package org.joda.beans.impl.flexi;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -112,7 +112,7 @@ class FlexiMetaBean implements DynamicMetaBean {
         if (bean.data.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         for (String name : bean.data.keySet()) {
             map.put(name, FlexiMetaProperty.of(this, name));
         }

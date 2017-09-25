@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -126,7 +126,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         this.beanType = beanType;
         this.builderSupplier = builderSupplier;
         // extract fields and match to getters
-        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         Field[] fields = Stream.of(beanType.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
                 .toArray(Field[]::new);

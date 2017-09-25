@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -91,7 +91,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             throw new NullPointerException("Bean class must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         Field[] fields = beanType.getDeclaredFields();
         List<Class<?>> propertyTypes = new ArrayList<>();
         for (Field field : fields) {
@@ -246,7 +246,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             throw new NullPointerException("Default values must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         Field[] fields = beanType.getDeclaredFields();
         List<Class<?>> propertyTypes = new ArrayList<>();
         for (Field field : fields) {

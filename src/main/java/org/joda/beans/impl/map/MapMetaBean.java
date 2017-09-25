@@ -17,8 +17,8 @@ package org.joda.beans.impl.map;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +106,7 @@ class MapMetaBean implements DynamicMetaBean {
 
     @Override
     public Map<String, MetaProperty<?>> metaPropertyMap() {
-        Map<String, MetaProperty<?>> map = new HashMap<>();
+        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         for (String name : bean.keySet()) {
             map.put(name, MapBeanMetaProperty.of(this, name));
         }

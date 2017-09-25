@@ -460,7 +460,7 @@ public final class JodaBeanUtils {
      */
     public static Map<String, Object> flatten(Bean bean) {
         Map<String, MetaProperty<?>> propertyMap = bean.metaBean().metaPropertyMap();
-        Map<String, Object> map = new HashMap<>(propertyMap.size());
+        Map<String, Object> map = new LinkedHashMap<>(propertyMap.size());
         for (Entry<String, MetaProperty<?>> entry : propertyMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().get(bean));
         }

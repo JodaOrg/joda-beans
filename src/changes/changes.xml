@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.0.1" date="SNAPSHOT" description="v2.0.1">
+      <action dev="jodastephen" type="fix">
+        Ensure that properties stay in order.
+        Use LinkedHashMap instead of HashMap where necessary.
+      </action>
+    </release>
     <release version="2.0" date="2017-09-20" description="v2.0">
       <action dev="jodastephen" type="update">
         Move to Java 8.
