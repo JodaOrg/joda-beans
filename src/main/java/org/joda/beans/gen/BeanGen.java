@@ -494,6 +494,19 @@ class BeanGen {
                 data.ensureImport(MinimalMetaBean.class);
                 insertRegion.add("\t\t\tMinimalMetaBean.of(");
                 insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
+                // field names
+                if (nonDerived.isEmpty()) {
+                    insertRegion.add("\t\t\t\t\tnew String[0],");
+                } else {
+                    insertRegion.add("\t\t\t\t\tnew String[] {");
+                    for (int i = 0; i < nonDerived.size(); i++) {
+                        if (i < nonDerived.size() - 1) {
+                            insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\",");
+                        } else {
+                            insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\"},");
+                        }
+                    }
+                }
                 String builderLambda = "\t\t\t\t\t() -> new " + data.getTypeRaw() + ".Builder()";
                 if (data.isSkipBuilderGeneration()) {
                     data.ensureImport(BasicBeanBuilder.class);

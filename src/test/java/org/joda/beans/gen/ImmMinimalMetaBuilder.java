@@ -62,6 +62,11 @@ public final class ImmMinimalMetaBuilder implements ImmutableBean {
     private static final TypedMetaBean<ImmMinimalMetaBuilder> META_BEAN =
             MinimalMetaBean.of(
                     ImmMinimalMetaBuilder.class,
+                    new String[] {
+                            "number",
+                            "street",
+                            "city",
+                            "owner"},
                     () -> new ImmMinimalMetaBuilder.Builder(),
                     b -> b.getNumber(),
                     b -> b.getStreet(),

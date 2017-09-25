@@ -99,6 +99,15 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
     private static final TypedMetaBean<MinimalImmutable> META_BEAN =
             MinimalMetaBean.of(
                     MinimalImmutable.class,
+                    new String[] {
+                            "number",
+                            "flag",
+                            "street",
+                            "town",
+                            "city",
+                            "owner",
+                            "list",
+                            "currency"},
                     () -> new MinimalImmutable.Builder(),
                     b -> b.getNumber(),
                     b -> b.isFlag(),

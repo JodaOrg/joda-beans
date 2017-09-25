@@ -18,6 +18,7 @@ package org.joda.beans.impl.direct;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -61,7 +62,9 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * @param builderSupplier  the supplier of bean builders, not null
      * @param getters  the getter functions, not null
      * @return the meta-bean, not null
+     * @deprecated Use version that takes the field names
      */
+    @Deprecated
     @SafeVarargs
     public static <B extends Bean> MinimalMetaBean<B> of(
             Class<B> beanType,
@@ -71,8 +74,34 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (getters == null) {
             throw new NullPointerException("Getter functions must not be null");
         }
-        return new MinimalMetaBean<>(
-                beanType, builderSupplier, Arrays.asList(getters), Collections.nCopies(getters.length, null));
+        return new MinimalMetaBean<>(beanType, fieldNames(beanType), builderSupplier, Arrays.asList(getters), null);
+    }
+
+    /**
+     * Obtains an instance of the meta-bean for immutable beans.
+     * <p>
+     * The properties will be determined using reflection to find the
+     * {@link PropertyDefinition} annotation.
+     * The field names must be specified as reflection does not return fields in source code order.
+     * 
+     * @param <B>  the type of the bean
+     * @param beanType  the bean type, not null
+     * @param fieldNames  the field names, not null
+     * @param builderSupplier  the supplier of bean builders, not null
+     * @param getters  the getter functions, not null
+     * @return the meta-bean, not null
+     */
+    @SafeVarargs
+    public static <B extends Bean> MinimalMetaBean<B> of(
+            Class<B> beanType,
+            String[] fieldNames,
+            Supplier<BeanBuilder<B>> builderSupplier,
+            Function<B, Object>... getters) {
+
+        if (getters == null) {
+            throw new NullPointerException("Getter functions must not be null");
+        }
+        return new MinimalMetaBean<>(beanType, fieldNames, builderSupplier, Arrays.asList(getters), null);
     }
 
     /**
@@ -87,7 +116,9 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * @param getters  the getter functions, not null
      * @param setters  the setter functions, not null
      * @return the meta-bean, not null
+     * @deprecated Use version that takes the field names
      */
+    @Deprecated
     public static <B extends Bean> MinimalMetaBean<B> of(
             Class<B> beanType,
             Supplier<BeanBuilder<B>> builderSupplier,
@@ -100,7 +131,38 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (setters == null) {
             throw new NullPointerException("Setter functions must not be null");
         }
-        return new MinimalMetaBean<>(beanType, builderSupplier, getters, setters);
+        return new MinimalMetaBean<>(beanType, fieldNames(beanType), builderSupplier, getters, setters);
+    }
+
+    /**
+     * Obtains an instance of the meta-bean for mutable beans.
+     * <p>
+     * The properties will be determined using reflection to find the
+     * {@link PropertyDefinition} annotation.
+     * The field names must be specified as reflection does not return fields in source code order.
+     * 
+     * @param <B>  the type of the bean
+     * @param beanType  the bean type, not null
+     * @param fieldNames  the field names, not null
+     * @param builderSupplier  the supplier of bean builders, not null
+     * @param getters  the getter functions, not null
+     * @param setters  the setter functions, not null
+     * @return the meta-bean, not null
+     */
+    public static <B extends Bean> MinimalMetaBean<B> of(
+            Class<B> beanType,
+            String[] fieldNames,
+            Supplier<BeanBuilder<B>> builderSupplier,
+            List<Function<B, Object>> getters,
+            List<BiConsumer<B, Object>> setters) {
+
+        if (getters == null) {
+            throw new NullPointerException("Getter functions must not be null");
+        }
+        if (setters == null) {
+            throw new NullPointerException("Setter functions must not be null");
+        }
+        return new MinimalMetaBean<>(beanType, fieldNames, builderSupplier, getters, setters);
     }
 
     /**
@@ -108,11 +170,13 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * 
      * @param beanType  the bean type, not null
      * @param builderSupplier  the supplier of bean builders, not null
+     * @param fieldNames  the field names, not null
      * @param getters  the getter functions, not null
-     * @param setters  the setter functions, all nulls if immutable
+     * @param setters  the setter functions, may be null
      */
     private MinimalMetaBean(
             Class<T> beanType,
+            String[] fieldNames,
             Supplier<BeanBuilder<T>> builderSupplier,
             List<Function<T, Object>> getters,
             List<BiConsumer<T, Object>> setters) {
@@ -123,19 +187,35 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (builderSupplier == null) {
             throw new NullPointerException("Supplier of BeanBuilder must not be null");
         }
+        if (fieldNames == null) {
+            throw new NullPointerException("Field names must not be null");
+        }
+        if (fieldNames.length != getters.size()) {
+            throw new IllegalArgumentException("Number of getter functions must match number of fields");
+        }
+        if (setters != null && fieldNames.length != setters.size()) {
+            throw new IllegalArgumentException("Number of setter functions must match number of fields");
+        }
         this.beanType = beanType;
         this.builderSupplier = builderSupplier;
-        // extract fields and match to getters
+        // extract fields and match to getters/setters
         Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        Field[] fields = Stream.of(beanType.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
-                .toArray(Field[]::new);
-        if (fields.length != getters.size()) {
-            throw new NullPointerException("Getter functions must match fields");
-        }
-        for (int i = 0; i < fields.length; i++) {
-            String name = fields[i].getName();
-            map.put(name, new MinimalMetaProperty<>(this, name, fields[i], getters.get(i), setters.get(i)));
+        for (int i = 0; i < fieldNames.length; i++) {
+            String fieldName = fieldNames[i];
+            Field field;
+            try {
+                field = beanType.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+            if (Modifier.isStatic(field.getModifiers())) {
+                throw new IllegalArgumentException("Field must not be static");
+            }
+            if (field.getAnnotation(PropertyDefinition.class) == null) {
+                throw new IllegalArgumentException("Field must have PropertyDefinition annotation");
+            }
+            map.put(fieldName, new MinimalMetaProperty<>(
+                    this, fieldName, field, getters.get(i), setters != null ? setters.get(i) : null));
         }
         // derived
         Method[] methods = beanType.getDeclaredMethods();
@@ -154,6 +234,20 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
+    }
+
+    // determine the field names by reflection
+    // this is fundamentally broken as Java does not guarantee that the field names
+    // are returned in the order defined in the source file
+    private static String[] fieldNames(Class<?> beanType) {
+        Field[] fields = Stream.of(beanType.getDeclaredFields())
+                .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
+                .toArray(Field[]::new);
+        List<String> fieldNames = new ArrayList<>();
+        for (int i = 0; i < fields.length; i++) {
+            fieldNames.add(fields[i].getName());
+        }
+        return fieldNames.toArray(new String[fieldNames.size()]);
     }
 
     //-----------------------------------------------------------------------

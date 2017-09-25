@@ -63,6 +63,10 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
     private static final MetaBean META_BEAN =
             MinimalMetaBean.of(
                     MinimalImmutableGeneric.class,
+                    new String[] {
+                            "number",
+                            "list",
+                            "map"},
                     () -> new MinimalImmutableGeneric.Builder(),
                     b -> b.getNumber(),
                     b -> b.getList(),

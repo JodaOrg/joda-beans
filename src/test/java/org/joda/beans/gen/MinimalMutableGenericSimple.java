@@ -54,6 +54,9 @@ public final class MinimalMutableGenericSimple<T extends Number> implements Bean
     private static final MetaBean META_BEAN =
             MinimalMetaBean.of(
                     MinimalMutableGenericSimple.class,
+                    new String[] {
+                            "number",
+                            "text"},
                     () -> new BasicBeanBuilder<>(new MinimalMutableGenericSimple<>()),
                     Arrays.<Function<MinimalMutableGenericSimple, Object>>asList(
                             b -> b.getNumber(),

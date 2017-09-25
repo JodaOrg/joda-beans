@@ -97,6 +97,29 @@ public class TestMinimal {
         }
     }
 
+    public void test_immutable_order() {
+        ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
+        MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
+                .set("number", 12)
+                .set("street", "Park Lane")
+                .set(StandaloneMetaProperty.of("city", MinimalImmutable.meta(), String.class), "Smallville")
+                .set("owner", person)
+                .set("list", new ArrayList<String>())
+                .set("currency", Currency.getInstance("USD"))
+                .build();
+
+        ImmutableList<MetaProperty<?>> mps = ImmutableList.copyOf(bean.metaBean().metaPropertyIterable());
+        assertEquals(mps.get(0).name(), "number");
+        assertEquals(mps.get(1).name(), "flag");
+        assertEquals(mps.get(2).name(), "street");
+        assertEquals(mps.get(3).name(), "town");
+        assertEquals(mps.get(4).name(), "city");
+        assertEquals(mps.get(5).name(), "owner");
+        assertEquals(mps.get(6).name(), "list");
+        assertEquals(mps.get(7).name(), "currency");
+        assertEquals(mps.get(8).name(), "address");
+    }
+
     public void test_mutable() {
         MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
                 .set("number", 12)
@@ -158,6 +181,26 @@ public class TestMinimal {
         } catch (NoSuchElementException ex) {
             // expected
         }
+    }
+
+    public void test_mutable_order() {
+        MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
+                .set("number", 12)
+                .set("street", "Park Lane")
+                .set(StandaloneMetaProperty.of("city", MinimalMutable.meta(), String.class), "Smallville")
+                .set("list", new ArrayList<String>())
+                .set("currency", Currency.getInstance("USD"))
+                .build();
+
+        ImmutableList<MetaProperty<?>> mps = ImmutableList.copyOf(bean.metaBean().metaPropertyIterable());
+        assertEquals(mps.get(0).name(), "number");
+        assertEquals(mps.get(1).name(), "flag");
+        assertEquals(mps.get(2).name(), "street");
+        assertEquals(mps.get(3).name(), "town");
+        assertEquals(mps.get(4).name(), "city");
+        assertEquals(mps.get(5).name(), "list");
+        assertEquals(mps.get(6).name(), "currency");
+        assertEquals(mps.get(7).name(), "address");
     }
 
 }

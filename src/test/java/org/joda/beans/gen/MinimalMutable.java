@@ -96,6 +96,14 @@ public final class MinimalMutable implements Bean, Serializable {
     private static final TypedMetaBean<MinimalMutable> META_BEAN =
             MinimalMetaBean.of(
                     MinimalMutable.class,
+                    new String[] {
+                            "number",
+                            "flag",
+                            "street",
+                            "town",
+                            "city",
+                            "list",
+                            "currency"},
                     () -> new BasicBeanBuilder<>(new MinimalMutable()),
                     Arrays.<Function<MinimalMutable, Object>>asList(
                             b -> b.getNumber(),

@@ -52,6 +52,9 @@ public final class MinimalImmutableSimple implements ImmutableBean, Serializable
     private static final TypedMetaBean<MinimalImmutableSimple> META_BEAN =
             MinimalMetaBean.of(
                     MinimalImmutableSimple.class,
+                    new String[] {
+                            "number",
+                            "text"},
                     () -> new MinimalImmutableSimple.Builder(),
                     b -> b.getNumber(),
                     b -> b.getText());

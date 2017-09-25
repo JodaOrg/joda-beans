@@ -53,6 +53,9 @@ public final class MinimalMutableSimple implements Bean, Serializable {
     private static final TypedMetaBean<MinimalMutableSimple> META_BEAN =
             MinimalMetaBean.of(
                     MinimalMutableSimple.class,
+                    new String[] {
+                            "number",
+                            "text"},
                     () -> new BasicBeanBuilder<>(new MinimalMutableSimple()),
                     Arrays.<Function<MinimalMutableSimple, Object>>asList(
                             b -> b.getNumber(),
