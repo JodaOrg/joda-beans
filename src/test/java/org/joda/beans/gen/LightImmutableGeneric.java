@@ -54,6 +54,9 @@ public final class LightImmutableGeneric<T extends Number> implements ImmutableB
             LightMetaBean.of(
                     LightImmutableGeneric.class,
                     MethodHandles.lookup(),
+                    new String[] {
+                            "number",
+                            "list"},
                     null,
                     ImmutableList.of());
 

@@ -103,6 +103,16 @@ public final class LightImmutable implements ImmutableBean, Serializable {
             LightMetaBean.of(
                     LightImmutable.class,
                     MethodHandles.lookup(),
+                    new String[] {
+                            "number",
+                            "flag",
+                            "street",
+                            "town",
+                            "city",
+                            "owner",
+                            "list",
+                            "currency",
+                            "hiddenText"},
                     0,
                     Boolean.FALSE,
                     null,

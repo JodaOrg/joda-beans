@@ -99,6 +99,15 @@ public final class LightMutable implements Bean, Serializable {
             LightMetaBean.of(
                     LightMutable.class,
                     MethodHandles.lookup(),
+                    new String[] {
+                            "number",
+                            "flag",
+                            "street",
+                            "town",
+                            "city",
+                            "list",
+                            "currency",
+                            "hiddenText"},
                     0,
                     Boolean.FALSE,
                     null,

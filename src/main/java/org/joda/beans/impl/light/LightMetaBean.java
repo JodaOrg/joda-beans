@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -54,6 +55,11 @@ import org.joda.beans.gen.PropertyDefinition;
  * @param <T>  the type of the bean
  */
 public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
+
+    /**
+     * The empty object array.
+     */
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
     /** The bean type. */
     private final Class<T> beanType;
@@ -208,7 +214,31 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of the meta-bean.
+     * Obtains an instance of the meta-bean using standard default values.
+     * <p>
+     * The properties will be determined using reflection to find the fields.
+     * Each field must have a {@link PropertyDefinition} annotation.
+     * The order of the properties is undefined as Java fields are not necessarily
+     * returned in source code order.
+     * <p>
+     * The default values for primitives are determined automatically.
+     * If the bean has non-primitive values like lists and maps that need defaulting
+     * then {@link #of(Class, java.lang.invoke.MethodHandles.Lookup, String[], Object...)}
+     * must be used.
+     * 
+     * @param <B>  the type of the bean
+     * @param beanType  the bean type, not null
+     * @param lookup  the method handle lookup, not null
+     * @return the meta-bean, not null
+     */
+    public static <B extends Bean> LightMetaBean<B> of(Class<B> beanType, MethodHandles.Lookup lookup) {
+        // the field name order is undefined
+        // but since they are not being matched against default values that is OK
+        return new LightMetaBean<>(beanType, lookup, fieldNames(beanType), EMPTY_OBJECT_ARRAY);
+    }
+
+    /**
+     * Obtains an instance of the meta-bean specifying default values.
      * <p>
      * The properties will be determined using reflection to find the
      * {@link PropertyDefinition} annotation.
@@ -221,13 +251,55 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * @param lookup  the method handle lookup, not null
      * @param defaultValues  the default values, one for each property, not null
      * @return the meta-bean, not null
+     * @deprecated Use version with field names, because no way to determine order of fields by reflection
      */
+    @Deprecated
     public static <B extends Bean> LightMetaBean<B> of(
             Class<B> beanType,
             MethodHandles.Lookup lookup,
             Object... defaultValues) {
 
-        return new LightMetaBean<>(beanType, lookup, defaultValues);
+        // the field name order is undefined (not source code order)
+        // this is fundamentally broken as they are being matched against default values (in source code order)
+        return new LightMetaBean<>(beanType, lookup, fieldNames(beanType), defaultValues);
+    }
+
+    // determine the field names by reflection
+    private static String[] fieldNames(Class<?> beanType) {
+        Field[] fields = Stream.of(beanType.getDeclaredFields())
+                .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
+                .toArray(Field[]::new);
+        List<String> fieldNames = new ArrayList<>();
+        for (int i = 0; i < fields.length; i++) {
+            fieldNames.add(fields[i].getName());
+        }
+        return fieldNames.toArray(new String[fieldNames.size()]);
+    }
+
+    /**
+     * Obtains an instance of the meta-bean specifying default values.
+     * <p>
+     * The properties will be determined using reflection to find the
+     * {@link PropertyDefinition} annotation.
+     * <p>
+     * The field names must be specified as reflection does not return fields in source code order.
+     * The default values must be provided if they cannot be determined automatically.
+     * Default values for primitives are determined automatically, but empty lists and maps are not.
+     * 
+     * @param <B>  the type of the bean
+     * @param beanType  the bean type, not null
+     * @param lookup  the method handle lookup, not null
+     * @param fieldNames  the field names, one for each property, not null
+     * @param defaultValues  the default values, one for each property, not null
+     * @return the meta-bean, not null
+     */
+    public static <B extends Bean> LightMetaBean<B> of(
+            Class<B> beanType,
+            MethodHandles.Lookup lookup,
+            String[] fieldNames,
+            Object... defaultValues) {
+
+        return new LightMetaBean<>(beanType, lookup, fieldNames, defaultValues);
     }
 
     /**
@@ -235,59 +307,75 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * 
      * @param beanType  the bean type, not null
      */
-    private LightMetaBean(Class<T> beanType, MethodHandles.Lookup lookup, Object[] defaultValues) {
+    private LightMetaBean(Class<T> beanType, MethodHandles.Lookup lookup, String[] fieldNames, Object[] defaultValues) {
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
         if (lookup == null) {
             throw new NullPointerException("Lookup must not be null");
         }
+        if (fieldNames == null) {
+            throw new NullPointerException("Field names array must not be null");
+        }
         if (defaultValues == null) {
-            throw new NullPointerException("Default values must not be null");
+            throw new NullPointerException("Default values array must not be null");
+        }
+        if (defaultValues.length > 0 && defaultValues.length != fieldNames.length) {
+            throw new IllegalArgumentException("Number of default values must match number of fields");
         }
         this.beanType = beanType;
+        // handle ordered or random
         Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        Field[] fields = beanType.getDeclaredFields();
         List<Class<?>> propertyTypes = new ArrayList<>();
-        for (Field field : fields) {
-            if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
-                PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
-                String name = field.getName();
-                if (pdef.get().equals("field") || pdef.get().startsWith("optional") || pdef.get().equals("")) {
-                    map.put(name, LightMetaProperty.of(this, field, lookup, name, propertyTypes.size()));
-                } else {
-                    String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
-                    Method getMethod = null;
-                    if (field.getType() == boolean.class) {
-                        getMethod = findGetMethod(
-                                beanType, "is" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1));
-                    }
-                    if (getMethod == null) {
-                        getMethod = findGetMethod(beanType, getterName);
-                        if (getMethod == null) {
-                            throw new IllegalArgumentException(
-                                "Unable to find property getter: " + beanType.getSimpleName() + "." + getterName + "()");
-                        }
-                    }
-                    Method setMethod = null;
-                    if (!ImmutableBean.class.isAssignableFrom(beanType)) {
-                        String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
-                        setMethod = findSetMethod(beanType, setterName, field.getType());
-                        if (setMethod == null) {
-                            throw new IllegalArgumentException(
-                                "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
-                        }
-                    }
-                    map.put(name, LightMetaProperty.of(this, field, getMethod, setMethod, lookup, name, propertyTypes.size()));
-                }
-                propertyTypes.add(field.getType());
+        for (int i = 0; i < fieldNames.length; i++) {
+            String fieldName = fieldNames[i];
+            Field field;
+            try {
+                field = beanType.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException ex) {
+                throw new IllegalArgumentException(ex);
             }
+            if (Modifier.isStatic(field.getModifiers())) {
+                throw new IllegalArgumentException("Field must not be static");
+            }
+            if (field.getAnnotation(PropertyDefinition.class) == null) {
+                throw new IllegalArgumentException("Field must have PropertyDefinition annotation");
+            }
+            PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
+            String name = field.getName();
+            if (pdef.get().equals("field") || pdef.get().startsWith("optional") || pdef.get().equals("")) {
+                map.put(name, LightMetaProperty.of(this, field, lookup, name, propertyTypes.size()));
+            } else {
+                String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+                Method getMethod = null;
+                if (field.getType() == boolean.class) {
+                    getMethod = findGetMethod(
+                            beanType, "is" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1));
+                }
+                if (getMethod == null) {
+                    getMethod = findGetMethod(beanType, getterName);
+                    if (getMethod == null) {
+                        throw new IllegalArgumentException(
+                                "Unable to find property getter: " + beanType.getSimpleName() + "." + getterName + "()");
+                    }
+                }
+                Method setMethod = null;
+                if (!ImmutableBean.class.isAssignableFrom(beanType)) {
+                    String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+                    setMethod = findSetMethod(beanType, setterName, field.getType());
+                    if (setMethod == null) {
+                        throw new IllegalArgumentException(
+                                "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
+                    }
+                }
+                map.put(name,
+                        LightMetaProperty.of(this, field, getMethod, setMethod, lookup, name, propertyTypes.size()));
+            }
+            propertyTypes.add(field.getType());
         }
         Constructor<?> constructor = findConstructor(beanType, propertyTypes);
         if (defaultValues.length == 0) {
             defaultValues = buildConstructionData(constructor);
-        } else if (defaultValues.length != map.size()) {
-            throw new IllegalArgumentException("Default values must match number of properties");
         }
         // derived
         Method[] methods = beanType.getDeclaredMethods();

@@ -55,6 +55,9 @@ public final class LightMutableGeneric<T extends Number> implements Bean, Serial
             LightMetaBean.of(
                     LightMutableGeneric.class,
                     MethodHandles.lookup(),
+                    new String[] {
+                            "number",
+                            "list"},
                     null,
                     ImmutableList.of());
 

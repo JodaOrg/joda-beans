@@ -48,7 +48,13 @@ public final class LightMutableSimple implements Bean, Serializable {
      * The meta-bean for {@code LightMutableSimple}.
      */
     private static final TypedMetaBean<LightMutableSimple> META_BEAN =
-            LightMetaBean.of(LightMutableSimple.class, MethodHandles.lookup());
+            LightMetaBean.of(
+                    LightMutableSimple.class,
+                    MethodHandles.lookup(),
+                    new String[] {
+                            "number",
+                            "text"},
+                    new Object[0]);
 
     /**
      * The meta-bean for {@code LightMutableSimple}.

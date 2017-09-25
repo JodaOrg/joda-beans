@@ -479,34 +479,27 @@ class BeanGen {
                 data.ensureImport(LightMetaBean.class);
                 data.ensureImport(MethodHandles.class);
                 boolean specialInit = nonDerived.stream().filter(p -> p.isSpecialInit()).findAny().isPresent();
-                if (nonDerived.isEmpty() || !specialInit) {
+                if (nonDerived.isEmpty()) {
                     insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
                 } else {
                     insertRegion.add("\t\t\tLightMetaBean.of(");
                     insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
                     insertRegion.add("\t\t\t\t\tMethodHandles.lookup(),");
-                    for (int i = 0; i < nonDerived.size(); i++) {
-                        insertRegion.add(
-                                "\t\t\t\t\t" + nonDerived.get(i).generateInit() + (i < nonDerived.size() - 1 ? "," : ");"));
+                    generateFieldNames(nonDerived);
+                    if (specialInit) {
+                        for (int i = 0; i < nonDerived.size(); i++) {
+                            insertRegion.add(
+                                    "\t\t\t\t\t" + nonDerived.get(i).generateInit() + (i < nonDerived.size() - 1 ? "," : ");"));
+                        }
+                    } else {
+                        insertRegion.add("\t\t\t\t\tnew Object[0]);");
                     }
                 }
             } else {
                 data.ensureImport(MinimalMetaBean.class);
                 insertRegion.add("\t\t\tMinimalMetaBean.of(");
                 insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
-                // field names
-                if (nonDerived.isEmpty()) {
-                    insertRegion.add("\t\t\t\t\tnew String[0],");
-                } else {
-                    insertRegion.add("\t\t\t\t\tnew String[] {");
-                    for (int i = 0; i < nonDerived.size(); i++) {
-                        if (i < nonDerived.size() - 1) {
-                            insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\",");
-                        } else {
-                            insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\"},");
-                        }
-                    }
-                }
+                generateFieldNames(nonDerived);
                 String builderLambda = "\t\t\t\t\t() -> new " + data.getTypeRaw() + ".Builder()";
                 if (data.isSkipBuilderGeneration()) {
                     data.ensureImport(BasicBeanBuilder.class);
@@ -606,6 +599,21 @@ class BeanGen {
             insertRegion.add("\t\tMetaBean.register(" + data.getTypeRaw() + ".Meta.INSTANCE);");
             insertRegion.add("\t}");
             insertRegion.add("");
+        }
+    }
+
+    private void generateFieldNames(List<PropertyGen> nonDerived) {
+        if (nonDerived.isEmpty()) {
+            insertRegion.add("\t\t\t\t\tnew String[0],");
+        } else {
+            insertRegion.add("\t\t\t\t\tnew String[] {");
+            for (int i = 0; i < nonDerived.size(); i++) {
+                if (i < nonDerived.size() - 1) {
+                    insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\",");
+                } else {
+                    insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\"},");
+                }
+            }
         }
     }
 
