@@ -44,14 +44,14 @@ Various documentation is available:
 
 
 ### Releases
-[Release 2.0](http://www.joda.org/joda-beans/download.html) is the current release.
+[Release 2.0.1](http://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
 There are only [minor incompatibilities](http://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
 Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](http://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|2.0|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|2.0.1|jar)
 
 For Java SE 6 compatibility, use the [release 1.14](download.html).
 
