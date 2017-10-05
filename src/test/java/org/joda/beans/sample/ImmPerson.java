@@ -115,7 +115,7 @@ public final class ImmPerson implements ImmutableBean {
     /**
      * The cached hash code, using the racy single-check idiom.
      */
-    private int cachedHashCode;
+    private transient int cacheHashCode;
 
     /**
      * Returns a builder used to create an instance of the bean.
@@ -281,7 +281,7 @@ public final class ImmPerson implements ImmutableBean {
 
     @Override
     public int hashCode() {
-        int hash = cachedHashCode;
+        int hash = cacheHashCode;
         if (hash == 0) {
             hash = getClass().hashCode();
             hash = hash * 31 + JodaBeanUtils.hashCode(forename);
@@ -294,7 +294,7 @@ public final class ImmPerson implements ImmutableBean {
             hash = hash * 31 + JodaBeanUtils.hashCode(addressesList);
             hash = hash * 31 + JodaBeanUtils.hashCode(mainAddress);
             hash = hash * 31 + JodaBeanUtils.hashCode(codeCounts);
-            cachedHashCode = hash;
+            cacheHashCode = hash;
         }
         return hash;
     }

@@ -70,7 +70,7 @@ public final class ImmTreeNode implements ImmutableBean{
     /**
      * The cached hash code, using the racy single-check idiom.
      */
-    private int cachedHashCode;
+    private transient int cacheHashCode;
 
     /**
      * Obtains an instance.
@@ -203,14 +203,14 @@ public final class ImmTreeNode implements ImmutableBean{
 
     @Override
     public int hashCode() {
-        int hash = cachedHashCode;
+        int hash = cacheHashCode;
         if (hash == 0) {
             hash = getClass().hashCode();
             hash = hash * 31 + JodaBeanUtils.hashCode(name);
             hash = hash * 31 + JodaBeanUtils.hashCode(getChild1());
             hash = hash * 31 + JodaBeanUtils.hashCode(getChild2());
             hash = hash * 31 + JodaBeanUtils.hashCode(child3);
-            cachedHashCode = hash;
+            cacheHashCode = hash;
         }
         return hash;
     }

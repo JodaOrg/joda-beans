@@ -687,7 +687,7 @@ class BeanGen {
             insertRegion.add("\t/**");
             insertRegion.add("\t * The cached hash code, using the racy single-check idiom.");
             insertRegion.add("\t */");
-            insertRegion.add("\tprivate int " + config.getPrefix() + "cachedHashCode;");
+            insertRegion.add("\tprivate transient int " + config.getPrefix() + "cacheHashCode;");
             insertRegion.add("");
         }
     }
@@ -838,7 +838,7 @@ class BeanGen {
         insertRegion.add("\t@Override");
         insertRegion.add("\tpublic int hashCode() {");
         if (data.isCacheHashCode()) {
-            insertRegion.add("\t\tint hash = " + config.getPrefix() + "cachedHashCode;");
+            insertRegion.add("\t\tint hash = " + config.getPrefix() + "cacheHashCode;");
             insertRegion.add("\t\tif (hash == 0) {");
             if (data.isSubClass()) {
                 insertRegion.add("\t\t\thash = 7;");
@@ -849,7 +849,7 @@ class BeanGen {
             if (data.isSubClass()) {
                 insertRegion.add("\t\t\thash = hash ^ super.hashCode();");
             }
-            insertRegion.add("\t\t\t" + config.getPrefix() + "cachedHashCode = hash;");
+            insertRegion.add("\t\t\t" + config.getPrefix() + "cacheHashCode = hash;");
             insertRegion.add("\t\t}");
             insertRegion.add("\t\treturn hash;");
         } else {

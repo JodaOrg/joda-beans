@@ -59,7 +59,7 @@ public final class ImmTolerance implements ImmutableBean {
     /**
      * The cached hash code, using the racy single-check idiom.
      */
-    private int cachedHashCode;
+    private transient int cacheHashCode;
 
     /**
      * Obtains an instance.
@@ -137,12 +137,12 @@ public final class ImmTolerance implements ImmutableBean {
 
     @Override
     public int hashCode() {
-        int hash = cachedHashCode;
+        int hash = cacheHashCode;
         if (hash == 0) {
             hash = getClass().hashCode();
             hash = hash * 31 + JodaBeanUtils.hashCode(value);
             hash = hash * 31 + JodaBeanUtils.hashCode(array);
-            cachedHashCode = hash;
+            cacheHashCode = hash;
         }
         return hash;
     }
