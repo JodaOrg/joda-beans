@@ -20,12 +20,12 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.joda.beans.gen.AbstractResult;
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.AddressResult;
-import org.joda.beans.gen.CompanyAddress;
-import org.joda.beans.gen.CompanyAddressMidResult;
-import org.joda.beans.gen.CompanyAddressResult;
+import org.joda.beans.sample.AbstractResult;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.AddressResult;
+import org.joda.beans.sample.CompanyAddress;
+import org.joda.beans.sample.CompanyAddressMidResult;
+import org.joda.beans.sample.CompanyAddressResult;
 import org.testng.annotations.Test;
 
 /**

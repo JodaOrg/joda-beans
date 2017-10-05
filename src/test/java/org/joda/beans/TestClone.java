@@ -23,10 +23,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ClonePerson;
-import org.joda.beans.gen.Company;
-import org.joda.beans.gen.NoClone;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ClonePerson;
+import org.joda.beans.sample.Company;
+import org.joda.beans.sample.NoClone;
 import org.testng.annotations.Test;
 
 /**

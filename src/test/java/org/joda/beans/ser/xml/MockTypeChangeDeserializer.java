@@ -18,8 +18,8 @@ package org.joda.beans.ser.xml;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.StandaloneMetaProperty;
+import org.joda.beans.sample.SimplePerson;
 import org.joda.beans.ser.DefaultDeserializer;
 import org.joda.beans.ser.SerDeserializer;
 

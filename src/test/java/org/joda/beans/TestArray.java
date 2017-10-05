@@ -17,7 +17,7 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
-import org.joda.beans.gen.SimpleName;
+import org.joda.beans.sample.SimpleName;
 import org.testng.annotations.Test;
 
 /**

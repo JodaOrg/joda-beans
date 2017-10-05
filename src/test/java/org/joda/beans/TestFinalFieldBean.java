@@ -21,9 +21,9 @@ import static org.testng.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.beans.gen.FinalFieldBean;
-import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.FinalFieldBean;
+import org.joda.beans.sample.Person;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

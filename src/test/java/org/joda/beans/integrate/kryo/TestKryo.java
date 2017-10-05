@@ -18,9 +18,9 @@ package org.joda.beans.integrate.kryo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ImmAddress;
-import org.joda.beans.gen.ImmOptional;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.Test;

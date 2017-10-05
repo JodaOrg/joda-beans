@@ -17,8 +17,8 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
-import org.joda.beans.gen.ImmOptional;
-import org.joda.beans.gen.RWOnlyBean;
+import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.RWOnlyBean;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Optional;

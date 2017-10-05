@@ -30,12 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ImmAddress;
-import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.Pair;
-import org.joda.beans.gen.Person;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.Pair;
+import org.joda.beans.sample.Person;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;

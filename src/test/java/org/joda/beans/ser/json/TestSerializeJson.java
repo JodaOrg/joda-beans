@@ -22,19 +22,19 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.joda.beans.Bean;
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ImmAddress;
-import org.joda.beans.gen.ImmEmpty;
-import org.joda.beans.gen.ImmKey;
-import org.joda.beans.gen.ImmMappedKey;
-import org.joda.beans.gen.ImmOptional;
-import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.JodaConvertBean;
-import org.joda.beans.gen.JodaConvertWrapper;
-import org.joda.beans.gen.Person;
-import org.joda.beans.gen.PrimitiveBean;
-import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmEmpty;
+import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmMappedKey;
+import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.JodaConvertBean;
+import org.joda.beans.sample.JodaConvertWrapper;
+import org.joda.beans.sample.Person;
+import org.joda.beans.sample.PrimitiveBean;
+import org.joda.beans.sample.SimplePerson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
@@ -86,7 +86,8 @@ public class TestSerializeJson {
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
-        assertEquals(json, "{\n \"@bean\": \"org.joda.beans.impl.flexi.FlexiBean\",\n \"element\": \"Test\",\n \"child\": {\n  \"@bean\": \"org.joda.beans.gen.ImmEmpty\"\n }\n}\n");
+        assertEquals(json,
+                "{\n \"@bean\": \"org.joda.beans.impl.flexi.FlexiBean\",\n \"element\": \"Test\",\n \"child\": {\n  \"@bean\": \"org.joda.beans.sample.ImmEmpty\"\n }\n}\n");
         FlexiBean parsed = JodaBeanSer.PRETTY.jsonReader().read(json, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -96,7 +97,8 @@ public class TestSerializeJson {
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
         String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":\"Test\",\"child\":{\"@bean\":\"org.joda.beans.gen.ImmEmpty\"}}");
+        assertEquals(json,
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":\"Test\",\"child\":{\"@bean\":\"org.joda.beans.sample.ImmEmpty\"}}");
         FlexiBean parsed = JodaBeanSer.COMPACT.jsonReader().read(json, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -107,7 +109,8 @@ public class TestSerializeJson {
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
         String json = JodaBeanSer.COMPACT.jsonWriter().write(wrapper);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.gen.JodaConvertWrapper\",\"bean\":\"Hello:9\",\"description\":\"Weird\"}");
+        assertEquals(json,
+                "{\"@bean\":\"org.joda.beans.sample.JodaConvertWrapper\",\"bean\":\"Hello:9\",\"description\":\"Weird\"}");
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
@@ -115,7 +118,7 @@ public class TestSerializeJson {
     public void test_readWriteJodaConvertBean() {
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
         String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.gen.JodaConvertBean\",\"base\":\"Hello\",\"extra\":9}");
+        assertEquals(json, "{\"@bean\":\"org.joda.beans.sample.JodaConvertBean\",\"base\":\"Hello\",\"extra\":9}");
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -186,7 +189,7 @@ public class TestSerializeJson {
     public void test_readWrite_float_NaN_asNull() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueFloat(Float.NaN);
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueFloat\":null}";
+        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":null}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -237,42 +240,43 @@ public class TestSerializeJson {
     public void test_read_double_fromInteger() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueDouble(6d);
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":6}";
+        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":6}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_read_double_fromIntegerTooBig() {
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":123456789123456789}";
+        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":123456789123456789}";
         JodaBeanSer.COMPACT.jsonReader().read(json);
     }
 
     public void test_read_float_fromInteger() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueFloat(6f);
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueFloat\":6}";
+        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":6}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_read_float_fromIntegerTooBig() {
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueFloat\":123456789123456789}";
+        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":123456789123456789}";
         JodaBeanSer.COMPACT.jsonReader().read(json);
     }
 
     public void test_read_double_NaN_asNull() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueDouble(Double.NaN);
-        String json = "{\"@bean\":\"org.joda.beans.gen.PrimitiveBean\",\"valueDouble\":null}";
+        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":null}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------
     public void test_read_nonStandard_JodaConvertWrapper_expanded() {
-        String json = "{\"@bean\":\"org.joda.beans.gen.JodaConvertWrapper\",\"bean\":{\"base\":\"Hello\",\"extra\":9},\"description\":\"Weird\"}";
+        String json =
+                "{\"@bean\":\"org.joda.beans.sample.JodaConvertWrapper\",\"bean\":{\"base\":\"Hello\",\"extra\":9},\"description\":\"Weird\"}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         JodaConvertWrapper wrapper = new JodaConvertWrapper();
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
@@ -282,7 +286,7 @@ public class TestSerializeJson {
     }
 
     public void test_read_nonStandard_JodaConvertBean_flattened() {
-        String json = "{\"@type\":\"org.joda.beans.gen.JodaConvertBean\",\"value\":\"Hello:9\"}";
+        String json = "{\"@type\":\"org.joda.beans.sample.JodaConvertBean\",\"value\":\"Hello:9\"}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
         BeanAssert.assertBeanEquals(bean, parsed);

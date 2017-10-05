@@ -17,8 +17,8 @@ package org.joda.beans.ser.xml;
 
 import static org.testng.Assert.fail;
 
-import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.SimplePerson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.test.BeanAssert;
@@ -76,8 +76,8 @@ public class TestDeserializer {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockSemanticChangeDeserializer.INSTANCE);
         String xml = "<bean>" +
-                "<person1 type=\"org.joda.beans.gen.SimplePerson\"><forename>John</forename><surname>Smith</surname></person1>" +
-                "<person2 type=\"org.joda.beans.gen.SimplePerson\"><forename>Stephen</forename><surname>Colebourne</surname></person2>" +
+                "<person1 type=\"org.joda.beans.sample.SimplePerson\"><forename>John</forename><surname>Smith</surname></person1>" +
+                "<person2 type=\"org.joda.beans.sample.SimplePerson\"><forename>Stephen</forename><surname>Colebourne</surname></person2>" +
                 "</bean>";
         FlexiBean parsed = JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -97,8 +97,8 @@ public class TestDeserializer {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockRenameDeserializer.INSTANCE);
         String xml = "<bean>" +
-                "<person1 type=\"org.joda.beans.gen.SimplePerson\"><firstName>John</firstName><surname>Smith</surname></person1>" +
-                "<person2 type=\"org.joda.beans.gen.SimplePerson\"><firstName>Stephen</firstName><surname>Colebourne</surname></person2>" +
+                "<person1 type=\"org.joda.beans.sample.SimplePerson\"><firstName>John</firstName><surname>Smith</surname></person1>" +
+                "<person2 type=\"org.joda.beans.sample.SimplePerson\"><firstName>Stephen</firstName><surname>Colebourne</surname></person2>" +
                 "</bean>";
         FlexiBean parsed = JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -118,8 +118,8 @@ public class TestDeserializer {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockTypeChangeDeserializer.INSTANCE);
         String xml = "<bean>" +
-                "<person1 type=\"org.joda.beans.gen.SimplePerson\"><numberOfCars>None</numberOfCars><surname>Smith</surname></person1>" +
-                "<person2 type=\"org.joda.beans.gen.SimplePerson\"><numberOfCars>Two</numberOfCars><surname>Colebourne</surname></person2>" +
+                "<person1 type=\"org.joda.beans.sample.SimplePerson\"><numberOfCars>None</numberOfCars><surname>Smith</surname></person1>" +
+                "<person2 type=\"org.joda.beans.sample.SimplePerson\"><numberOfCars>Two</numberOfCars><surname>Colebourne</surname></person2>" +
                 "</bean>";
         FlexiBean parsed = JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -144,8 +144,8 @@ public class TestDeserializer {
             xml += "<!ENTITY  x" + i + " \"&x" + (i + 1) + ";&x" + (i + 1) + ";\">";
         }
         xml += "]><bean>" +
-                "<person1 type=\"org.joda.beans.gen.SimplePerson\"><numberOfCars>None</numberOfCars><surname>Smith &x1;</surname></person1>" +
-                "<person2 type=\"org.joda.beans.gen.SimplePerson\"><numberOfCars>Two</numberOfCars><surname>Colebourne</surname></person2>" +
+                "<person1 type=\"org.joda.beans.sample.SimplePerson\"><numberOfCars>None</numberOfCars><surname>Smith &x1;</surname></person1>" +
+                "<person2 type=\"org.joda.beans.sample.SimplePerson\"><numberOfCars>Two</numberOfCars><surname>Colebourne</surname></person2>" +
                 "</bean>";
         JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(xml, FlexiBean.class);
     }

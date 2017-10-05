@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.NoSuchElementException;
 
-import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.LightImmutable;
-import org.joda.beans.gen.LightMutable;
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.impl.light.LightMetaBean;
+import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.LightImmutable;
+import org.joda.beans.sample.LightMutable;
 import org.joda.beans.ser.JodaBeanSer;
 import org.testng.annotations.Test;
 

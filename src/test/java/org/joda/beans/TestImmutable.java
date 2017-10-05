@@ -21,13 +21,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.NoSuchElementException;
 
-import org.joda.beans.gen.ImmAddress;
-import org.joda.beans.gen.ImmAddress.Builder;
-import org.joda.beans.gen.ImmGuava;
-import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.ImmPersonNonFinal;
-import org.joda.beans.gen.ImmSubPersonNonFinal;
-import org.joda.beans.gen.ImmSubSubPersonFinal;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmGuava;
+import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.ImmPersonNonFinal;
+import org.joda.beans.sample.ImmSubPersonNonFinal;
+import org.joda.beans.sample.ImmSubSubPersonFinal;
+import org.joda.beans.sample.ImmAddress.Builder;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;

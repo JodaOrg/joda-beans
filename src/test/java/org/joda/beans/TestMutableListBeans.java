@@ -17,8 +17,8 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
-import org.joda.beans.gen.MutableListFinalBean;
-import org.joda.beans.gen.MutableListNonFinalBean;
+import org.joda.beans.sample.MutableListFinalBean;
+import org.joda.beans.sample.MutableListNonFinalBean;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;

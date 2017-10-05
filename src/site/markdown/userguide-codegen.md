@@ -41,7 +41,7 @@ public final class UserAccount implements Bean {
 
 The code generator will create getters, setters, equals, hashCode, toString, metaBean and properties.
 To see the generated code for this class,
-[click here](https://github.com/JodaOrg/joda-beans/blob/v1.4/src/test/java/org/joda/beans/gen/UserAccount.java#L34).
+[click here](https://github.com/JodaOrg/joda-beans/blob/v1.4/src/test/java/org/joda/beans/sample/UserAccount.java#L34).
 
 Note that the equals, hashCode and toString methods are only generated if they do not exist already.
 As such, it is easy to write your own versions of these methods if necessary.

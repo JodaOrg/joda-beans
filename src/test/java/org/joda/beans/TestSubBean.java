@@ -17,7 +17,7 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
-import org.joda.beans.gen.ImmSubPersonNonFinal;
+import org.joda.beans.sample.ImmSubPersonNonFinal;
 import org.testng.annotations.Test;
 
 /**

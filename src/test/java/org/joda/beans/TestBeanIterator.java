@@ -20,10 +20,10 @@ import static org.testng.Assert.assertSame;
 
 import java.util.Iterator;
 
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ImmEmpty;
-import org.joda.beans.gen.ImmTreeNode;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmEmpty;
+import org.joda.beans.sample.ImmTreeNode;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;

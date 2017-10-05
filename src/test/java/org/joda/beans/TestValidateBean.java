@@ -17,8 +17,8 @@ package org.joda.beans;
 
 import static org.testng.Assert.assertEquals;
 
-import org.joda.beans.gen.SubValidateBean;
-import org.joda.beans.gen.ValidateBean;
+import org.joda.beans.sample.SubValidateBean;
+import org.joda.beans.sample.ValidateBean;
 import org.testng.annotations.Test;
 
 /**

@@ -20,7 +20,7 @@ import static org.testng.Assert.assertSame;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.gen.Person;
+import org.joda.beans.sample.Person;
 import org.testng.annotations.Test;
 
 /**

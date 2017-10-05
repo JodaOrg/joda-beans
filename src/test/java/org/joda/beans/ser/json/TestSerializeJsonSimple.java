@@ -23,11 +23,11 @@ import java.io.StringReader;
 import java.util.HashMap;
 
 import org.joda.beans.Bean;
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ImmOptional;
-import org.joda.beans.gen.Person;
-import org.joda.beans.gen.SimpleJson;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.Person;
+import org.joda.beans.sample.SimpleJson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;

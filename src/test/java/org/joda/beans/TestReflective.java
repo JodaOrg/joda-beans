@@ -18,8 +18,8 @@ package org.joda.beans;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.joda.beans.gen.ReflectiveMutable;
 import org.joda.beans.impl.StandaloneMetaProperty;
+import org.joda.beans.sample.ReflectiveMutable;
 import org.joda.beans.ser.JodaBeanSer;
 import org.testng.annotations.Test;
 

@@ -18,10 +18,10 @@ package org.joda.beans;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.MetaBeanLoad;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
+import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.MetaBeanLoad;
 import org.testng.annotations.Test;
 
 /**

@@ -18,19 +18,19 @@ package org.joda.beans.ser.xml;
 import static org.testng.Assert.assertEquals;
 
 import org.joda.beans.Bean;
-import org.joda.beans.gen.Address;
-import org.joda.beans.gen.ImmAddress;
-import org.joda.beans.gen.ImmEmpty;
-import org.joda.beans.gen.ImmKey;
-import org.joda.beans.gen.ImmMappedKey;
-import org.joda.beans.gen.ImmOptional;
-import org.joda.beans.gen.ImmPerson;
-import org.joda.beans.gen.JodaConvertBean;
-import org.joda.beans.gen.JodaConvertWrapper;
-import org.joda.beans.gen.Person;
-import org.joda.beans.gen.SimpleName;
-import org.joda.beans.gen.SimplePerson;
 import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmEmpty;
+import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmMappedKey;
+import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.JodaConvertBean;
+import org.joda.beans.sample.JodaConvertWrapper;
+import org.joda.beans.sample.Person;
+import org.joda.beans.sample.SimpleName;
+import org.joda.beans.sample.SimplePerson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
@@ -83,7 +83,8 @@ public class TestSerializeXml {
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
-        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bean type=\"org.joda.beans.impl.flexi.FlexiBean\">\n <element>Test</element>\n <child type=\"org.joda.beans.gen.ImmEmpty\"/>\n</bean>\n");
+        assertEquals(xml,
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bean type=\"org.joda.beans.impl.flexi.FlexiBean\">\n <element>Test</element>\n <child type=\"org.joda.beans.sample.ImmEmpty\"/>\n</bean>\n");
         FlexiBean parsed = JodaBeanSer.PRETTY.xmlReader().read(xml, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -93,7 +94,8 @@ public class TestSerializeXml {
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
         String xml = JodaBeanSer.COMPACT.xmlWriter().write(bean);
-        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.impl.flexi.FlexiBean\"><element>Test</element><child type=\"org.joda.beans.gen.ImmEmpty\"/></bean>");
+        assertEquals(xml,
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.impl.flexi.FlexiBean\"><element>Test</element><child type=\"org.joda.beans.sample.ImmEmpty\"/></bean>");
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -104,7 +106,8 @@ public class TestSerializeXml {
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
         String xml = JodaBeanSer.COMPACT.xmlWriter().write(wrapper);
-        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertWrapper\"><bean>Hello:9</bean><description>Weird</description></bean>");
+        assertEquals(xml,
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.sample.JodaConvertWrapper\"><bean>Hello:9</bean><description>Weird</description></bean>");
         Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
@@ -112,14 +115,16 @@ public class TestSerializeXml {
     public void test_readWriteJodaConvertBean() {
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
         String xml = JodaBeanSer.COMPACT.xmlWriter().write(bean);
-        assertEquals(xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertBean\"><base>Hello</base><extra>9</extra></bean>");
+        assertEquals(xml,
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.sample.JodaConvertBean\"><base>Hello</base><extra>9</extra></bean>");
         Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------
     public void test_read_nonStandard_JodaConvertWrapper_expanded() {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertWrapper\"><bean><base>Hello</base><extra>9</extra></bean><description>Weird</description></bean>";
+        String xml =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.sample.JodaConvertWrapper\"><bean><base>Hello</base><extra>9</extra></bean><description>Weird</description></bean>";
         Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
         JodaConvertWrapper wrapper = new JodaConvertWrapper();
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
@@ -129,7 +134,8 @@ public class TestSerializeXml {
     }
 
     public void test_read_nonStandard_JodaConvertBean_flattened() {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.JodaConvertBean\">Hello:9</bean>";
+        String xml =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.sample.JodaConvertBean\">Hello:9</bean>";
         Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -153,7 +159,7 @@ public class TestSerializeXml {
 
     //-----------------------------------------------------------------------
     public void test_read_aliased() {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.gen.SimpleName\">" +
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.sample.SimpleName\">" +
         		"<firstName>A</firstName><givenName>B</givenName></bean>";
         Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
         SimpleName bean = new SimpleName();

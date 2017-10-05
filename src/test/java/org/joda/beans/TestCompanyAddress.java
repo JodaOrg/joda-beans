@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.joda.beans.gen.CompanyAddress;
 import org.joda.beans.gen.PropertyDefinition;
+import org.joda.beans.sample.CompanyAddress;
 import org.testng.annotations.Test;
 
 /**
