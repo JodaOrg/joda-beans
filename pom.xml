@@ -9,7 +9,7 @@
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Beans</name>
-  <version>2.0.2</version>
+  <version>2.0.3-SNAPSHOT</version>
   <description>Beans and Properties</description>
   <url>http://www.joda.org/joda-beans/</url>
 
