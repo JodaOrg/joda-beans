@@ -21,16 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to test annotation parsing.
+ * Used to test annotations.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface SimpleAnnotation {
+@Target(ElementType.TYPE)
+public @interface ClassAnnotation {
 
-    String first() default "";
-
-    String second() default "";
-
-    String third() default "";
+    Class<?> value();
 
 }

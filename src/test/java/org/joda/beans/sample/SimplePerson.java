@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
@@ -64,7 +62,7 @@ public final class SimplePerson implements Cloneable, Bean {
     @Deprecated
     @PropertyDefinition
     private final FlexiBean propDefAnnotationSecondDeprecated = new FlexiBean();
-    @XmlElement(name = "additionalAttributes")
+    @SimpleAnnotation(first = "additionalAttributes")
     @PropertyDefinition(get = "manual")
     private Map<String, String> propDefAnnotationSecondManual;
 

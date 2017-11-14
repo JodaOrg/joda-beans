@@ -26,15 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSeeAlso;
-
 import org.joda.beans.gen.BeanDefinition;
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.AbstractResult;
 import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ClassAnnotation;
 import org.joda.beans.sample.Person;
+import org.joda.beans.sample.SimpleAnnotation;
 import org.testng.annotations.Test;
 
 /**
@@ -256,7 +255,7 @@ public class TestPerson {
         
         assertEquals(annos.size(), 2);
         assertEquals(annos.get(0) instanceof PropertyDefinition, true);
-        assertEquals(annos.get(1) instanceof XmlID, true);
+        assertEquals(annos.get(1) instanceof SimpleAnnotation, true);
         assertEquals(prop.annotation(PropertyDefinition.class).get(), "smart");
     }
 
@@ -266,7 +265,7 @@ public class TestPerson {
         
         assertEquals(annos.size(), 2);
         assertEquals(annos.get(0) instanceof BeanDefinition, true);
-        assertEquals(annos.get(1) instanceof XmlSeeAlso, true);
+        assertEquals(annos.get(1) instanceof ClassAnnotation, true);
         assertEquals(meta.annotation(BeanDefinition.class).builderScope(), "smart");
     }
 
