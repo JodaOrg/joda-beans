@@ -14,6 +14,10 @@
         These are now available as separate Maven artifacts, see https://github.com/JodaOrg/joda-beans-integrate.
       </action>
       <action dev="jodastephen" type="add">
+        Add module-info for Java 9.
+        Fixes #180.
+      </action>
+      <action dev="jodastephen" type="add">
         Allow serialization of derived properties.
         Use JodaBeanSer::withIncludeDerived(true).
         Fixes #183.
