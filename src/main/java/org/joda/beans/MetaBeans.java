@@ -15,6 +15,7 @@
  */
 package org.joda.beans;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -67,10 +68,8 @@ final class MetaBeans {
             return new MapBean().metaBean();
         } else if (DynamicBean.class.isAssignableFrom(cls)) {
             try {
-                return cls.asSubclass(DynamicBean.class).newInstance().metaBean();
-            } catch (InstantiationException ex) {
-                throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
-            } catch (IllegalAccessException ex) {
+                return cls.asSubclass(DynamicBean.class).getDeclaredConstructor().newInstance().metaBean();
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
                 throw new IllegalArgumentException("Unable to find meta-bean for a DynamicBean: " + cls.getName(), ex);
             }
         }
@@ -79,10 +78,7 @@ final class MetaBeans {
         // here initialization is forced to handle that scenario
         try {
             cls = Class.forName(cls.getName(), true, cls.getClassLoader());
-        } catch (ClassNotFoundException ex) {
-            // should be impossible
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
-        } catch (Error ex) {
+        } catch (ClassNotFoundException | Error ex) {
             // should be impossible
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
         }

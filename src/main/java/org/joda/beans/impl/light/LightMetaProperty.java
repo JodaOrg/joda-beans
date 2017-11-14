@@ -78,22 +78,14 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
         MethodHandle getter;
         try {
             getter = lookup.findGetter(field.getDeclaringClass(), field.getName(), field.getType());
-        } catch (IllegalArgumentException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-        } catch (NoSuchFieldException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalArgumentException | NoSuchFieldException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
         }
         MethodHandle setter = null;
         if (!Modifier.isFinal(field.getModifiers())) {
             try {
                 setter = lookup.findSetter(field.getDeclaringClass(), field.getName(), field.getType());
-            } catch (IllegalArgumentException ex) {
-                throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-            } catch (NoSuchFieldException ex) {
-                throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-            } catch (IllegalAccessException ex) {
+            } catch (IllegalArgumentException | NoSuchFieldException | IllegalAccessException ex) {
                 throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
             }
         }
@@ -133,11 +125,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
         try {
             MethodType type = MethodType.methodType(getMethod.getReturnType(), getMethod.getParameterTypes());
             getter = lookup.findVirtual(field.getDeclaringClass(), getMethod.getName(), type);
-        } catch (IllegalArgumentException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-        } catch (NoSuchMethodException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
         }
         MethodHandle setter = null;
@@ -145,11 +133,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
             try {
                 MethodType type = MethodType.methodType(void.class, setMethod.getParameterTypes());
                 setter = lookup.findVirtual(field.getDeclaringClass(), setMethod.getName(), type);
-            } catch (IllegalArgumentException ex) {
-                throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
-            } catch (NoSuchMethodException ex) {
-                throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
-            } catch (IllegalAccessException ex) {
+            } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException ex) {
                 throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
             }
         }
@@ -192,9 +176,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
         MethodHandle getter;
         try {
             getter = lookup.unreflect(getMethod);
-        } catch (IllegalArgumentException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
         }
         return new LightMetaProperty<>(

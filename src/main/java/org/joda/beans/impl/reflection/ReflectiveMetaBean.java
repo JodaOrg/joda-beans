@@ -15,6 +15,7 @@
  */
 package org.joda.beans.impl.reflection;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -84,7 +85,7 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
     @Override
     public boolean isBuildable() {
         try {
-            beanType.newInstance();
+            beanType.getDeclaredConstructor().newInstance();
             return true;
         } catch (Exception ex) {
             return false;
@@ -94,11 +95,9 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
     @Override
     public BeanBuilder<T> builder() {
         try {
-            T bean = beanType.newInstance();
+            T bean = beanType.getDeclaredConstructor().newInstance();
             return new BasicBeanBuilder<>(bean);
-        } catch (InstantiationException ex) {
-            throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
-        } catch (IllegalAccessException ex) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);
         }
     }

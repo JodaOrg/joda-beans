@@ -152,7 +152,7 @@ public class TestJodaBeanUtils {
 
     //-------------------------------------------------------------------------
     public void test_equal() {
-        assertEquals(JodaBeanUtils.equal("A", new Character('A').toString()), true);
+        assertEquals(JodaBeanUtils.equal("A", "AA".substring(0, 1)), true);
         assertEquals(JodaBeanUtils.equal("A", "B"), false);
         assertEquals(JodaBeanUtils.equal("A", null), false);
         assertEquals(JodaBeanUtils.equal(null, "A"), false);

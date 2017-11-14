@@ -64,9 +64,7 @@ final class ImmutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public Object get(Bean bean) {
                 try {
                     return field.get(bean);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
                 }
             }
@@ -104,9 +102,7 @@ final class ImmutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public Object get(Bean bean) {
                 try {
                     return method.invoke(bean);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
                 } catch (InvocationTargetException ex) {
                     if (ex.getCause() instanceof RuntimeException) {
@@ -148,9 +144,7 @@ final class ImmutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public Object get(Bean bean) {
                 try {
                     return method.invoke(bean);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
                 } catch (InvocationTargetException ex) {
                     if (ex.getCause() instanceof RuntimeException) {

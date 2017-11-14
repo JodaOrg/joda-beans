@@ -182,9 +182,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
         }
         try {
             return (P) getMethod.invoke(bean, (Object[]) null);
-        } catch (IllegalArgumentException ex) {
-            throw new UnsupportedOperationException("Property cannot be read: " + name(), ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + name(), ex);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {

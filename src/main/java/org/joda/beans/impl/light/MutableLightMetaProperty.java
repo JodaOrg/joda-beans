@@ -64,9 +64,7 @@ final class MutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public Object get(Bean bean) {
                 try {
                     return field.get(bean);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
                 }
             }
@@ -76,9 +74,7 @@ final class MutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public void set(Bean bean, Object value) {
                 try {
                     field.set(bean, value);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
                 }
             }
@@ -117,9 +113,7 @@ final class MutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public Object get(Bean bean) {
                 try {
                     return getMethod.invoke(bean);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
                 } catch (InvocationTargetException ex) {
                     if (ex.getCause() instanceof RuntimeException) {
@@ -134,9 +128,7 @@ final class MutableLightMetaProperty<P> extends AbstractLightMetaProperty<P> {
             public void set(Bean bean, Object value) {
                 try {
                     setMethod.invoke(bean, value);
-                } catch (IllegalArgumentException ex) {
-                    throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
                     throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
                 } catch (InvocationTargetException ex) {
                     if (ex.getCause() instanceof RuntimeException) {
