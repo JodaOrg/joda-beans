@@ -170,7 +170,6 @@ public final class JodaBeanTests {
     }
 
     // cover parts of a bean that are property-based
-    @SuppressWarnings("deprecation")
     private static void coverProperties(Bean bean) {
         MetaBean metaBean = bean.metaBean();
         Map<String, MetaProperty<?>> metaPropMap = metaBean.metaPropertyMap();
@@ -231,7 +230,6 @@ public final class JodaBeanTests {
     }
 
     // cover parts of a bean that are not property-based
-    @SuppressWarnings("deprecation")
     private static void coverNonProperties(Bean bean) {
         MetaBean metaBean = bean.metaBean();
         assertFalse(metaBean.metaPropertyExists(""));
