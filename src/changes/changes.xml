@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.1" date="SNAPSHOT" description="v2.1">
+      <action dev="jodastephen" type="add">
+        Update and redesign build to support Java 9.
+      </action>
+    </release>
     <release version="2.0.2" date="2017-10-05" description="v2.0.2">
       <action dev="jodastephen" type="fix">
         Fix cached hash code to be transient.
