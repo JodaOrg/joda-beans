@@ -62,8 +62,7 @@ Please use GitHub issues and Pull Requests for support.
 
 ### Release process
 
-* Update version (pom.xml, README.md, index.md, changes.xml)
+* Update version (README.md, index.md, changes.xml)
 * Commit and push
-* `mvn clean deploy -Doss.repo -Dgpg.passphrase=""`
-* Release project in [Nexus](https://oss.sonatype.org)
+* `mvn clean release:clean release:prepare release:perform`
 * Website will be built and released by Travis
