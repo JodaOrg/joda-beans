@@ -180,7 +180,7 @@ public class JodaBeanSimpleMapReader {
         if (input instanceof Map) {
             for (Entry<String, Object> entry : ((Map<String, Object>) input).entrySet()) {
                 String keyStr = entry.getKey();
-                Object key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
+                Object key = convertText(keyStr, iterable.keyType());
                 Object value = parseObject(entry.getValue(), iterable.valueType(), null, null, iterable);
                 iterable.add(key, null, value, 1);
             }
@@ -272,10 +272,7 @@ public class JodaBeanSimpleMapReader {
             }
         }
         if (input instanceof String) {
-            if (type == String.class || type == Object.class) {
-                return input;
-            }
-            return settings.getConverter().convertFromString(type, (String) input);
+            return convertText(input, type);
         }
         if (input instanceof Boolean) {
             return input;
@@ -320,6 +317,13 @@ public class JodaBeanSimpleMapReader {
             return input;
         }
         throw new IllegalArgumentException("Invalid data: Expected simple type but found " + input);
+    }
+
+    private Object convertText(Object input, Class<?> type) {
+        if (type == Object.class || type.isAssignableFrom(String.class)) {
+            return input;
+        }
+        return settings.getConverter().convertFromString(type, (String) input);
     }
 
     private Object convertInteger(long value, Class<?> type) {

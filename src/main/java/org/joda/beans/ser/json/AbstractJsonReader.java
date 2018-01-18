@@ -250,7 +250,7 @@ abstract class AbstractJsonReader {
             event = input.readEvent();
             while (event != JsonEvent.OBJECT_END) {
                 String keyStr = input.acceptObjectKey(event);
-                Object key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
+                Object key = parseText(keyStr, iterable.keyType());
                 Object value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
                 iterable.add(key, null, value, 1);
                 event = input.acceptObjectSeparator();
@@ -345,10 +345,7 @@ abstract class AbstractJsonReader {
         switch (event) {
             case STRING: {
                 String text = input.parseString();
-                if (type == String.class || type == Object.class) {
-                    return text;
-                }
-                return settings.getConverter().convertFromString(type, text);
+                return parseText(text, type);
             }
             case NUMBER_INTEGRAL: {
                 long value = input.parseNumberIntegral();
@@ -412,6 +409,13 @@ abstract class AbstractJsonReader {
             default:
                 throw new IllegalArgumentException("Invalid JSON data: Expected simple type but found " + event);
         }
+    }
+
+    private Object parseText(String text, Class<?> type) {
+        if (type == Object.class || type.isAssignableFrom(String.class)) {
+            return text;
+        }
+        return settings.getConverter().convertFromString(type, text);
     }
 
 }

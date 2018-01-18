@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.SimpleJson;
@@ -54,6 +55,17 @@ public class TestSerializeSimpleMap {
 //        System.out.println(map);
         
         ImmOptional parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmOptional.class);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_writeCollections() {
+        ImmGuava<String> bean = SerTestHelper.testCollections();
+        Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
+//        System.out.println(map);
+        
+        @SuppressWarnings("unchecked")
+        ImmGuava<String> parsed = (ImmGuava<String>) JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmGuava.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }

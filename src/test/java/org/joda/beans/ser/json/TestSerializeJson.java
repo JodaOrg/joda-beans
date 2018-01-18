@@ -26,6 +26,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmEmpty;
+import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmMappedKey;
 import org.joda.beans.sample.ImmOptional;
@@ -76,6 +77,17 @@ public class TestSerializeJson {
 //        System.out.println(json);
         
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    public void test_writeCollections() {
+        ImmGuava<String> optional = SerTestHelper.testCollections();
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
+//        System.out.println(json);
+        
+        @SuppressWarnings("unchecked")
+        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.jsonReader().read(json);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }

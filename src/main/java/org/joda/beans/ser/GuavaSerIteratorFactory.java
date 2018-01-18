@@ -36,6 +36,7 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
@@ -229,6 +230,12 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return immutableSet(valueType, valueTypeTypes);
+        }
+        if (ImmutableSortedMap.class.isAssignableFrom(prop.propertyType())) {
+            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return immutableSortedMap(keyType, valueType, valueTypeTypes);
         }
         if (ImmutableMap.class.isAssignableFrom(prop.propertyType())) {
             Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
@@ -884,6 +891,48 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             @Override
             public Object build() {
                 return ImmutableMap.copyOf(map);
+            }
+            @Override
+            public SerCategory category() {
+                return SerCategory.MAP;
+            }
+            @Override
+            public Class<?> keyType() {
+                return keyType;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return valueTypeTypes;
+            }
+        };
+    }
+
+    static SerIterable immutableSortedMap(
+            final Class<?> keyType, final Class<?> valueType,
+            final List<Class<?>> valueTypeTypes) {
+        final Map<Object, Object> map = new LinkedHashMap<>();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return map(map, Object.class, keyType, valueType, valueTypeTypes);
+            }
+            @Override
+            public void add(Object key, Object column, Object value, int count) {
+                if (key == null) {
+                    throw new IllegalArgumentException("Missing key");
+                }
+                if (count != 1) {
+                    throw new IllegalArgumentException("Unexpected count");
+                }
+                map.put(key, value);
+            }
+            @Override
+            public Object build() {
+                return ImmutableSortedMap.copyOf(map);
             }
             @Override
             public SerCategory category() {

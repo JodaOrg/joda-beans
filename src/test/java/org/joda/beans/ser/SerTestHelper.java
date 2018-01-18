@@ -28,6 +28,7 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.CompanyAddress;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
@@ -41,10 +42,13 @@ import org.joda.collect.grid.SparseGrid;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ImmutableTable;
 
 /**
@@ -180,6 +184,29 @@ public class SerTestHelper {
             .optString(Optional.of("A"))
             .build();
         return optional;
+    }
+
+    public static ImmGuava<String> testCollections() {
+        ImmutableList<String> list = ImmutableList.of("A", "B");
+        ImmutableSet<String> set = ImmutableSet.of("A", "B");
+        ImmutableSortedSet<String> sortedSet = ImmutableSortedSet.of("A", "B");
+        ImmutableMap<String, String> map = ImmutableMap.of("A", "AA", "B", "BB");
+        ImmutableSortedMap<String, String> sortedMap = ImmutableSortedMap.of("A", "AA", "B", "BB");
+        ImmutableBiMap<String, String> bimap = ImmutableBiMap.of("A", "AA", "B", "BB");
+        return ImmGuava.<String> builder()
+            .list(list)
+            .listInterface(list)
+            .set(set)
+            .setInterface(set)
+            .sortedSet(sortedSet)
+            .sortedSetInterface(sortedSet)
+            .map(map)
+            .mapInterface(map)
+            .sortedMap(sortedMap)
+            .sortedMapInterface(sortedMap)
+            .biMap(bimap)
+            .biMapInterface(bimap)
+            .build();
     }
 
     public static SimpleJson testSimpleJson() {

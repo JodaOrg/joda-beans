@@ -418,6 +418,8 @@ public class JodaBeanXmlReader {
         Class<?> childType = parseTypeAttribute(start, iterable.keyType());
         if (Bean.class.isAssignableFrom(childType) || settings.getConverter().isConvertible(childType)) {
             return parseBean(childType);
+        } else if (childType.isAssignableFrom(String.class)) {
+            return parseBean(String.class);
         } else {
             throw new IllegalArgumentException("Unable to read map as parsed key type is neither a bean nor a simple type: " + childType.getName());
         }

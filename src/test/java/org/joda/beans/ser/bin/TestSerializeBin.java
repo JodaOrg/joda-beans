@@ -26,6 +26,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.JodaConvertBean;
 import org.joda.beans.sample.JodaConvertWrapper;
@@ -68,6 +69,17 @@ public class TestSerializeBin {
 //        new MsgPackVisualizer(bytes).visualize();
 
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.binReader().read(bytes);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    public void test_writeCollections() {
+        ImmGuava<String> optional = SerTestHelper.testCollections();
+        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
+//        new MsgPackVisualizer(bytes).visualize();
+        
+        @SuppressWarnings("unchecked")
+        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }

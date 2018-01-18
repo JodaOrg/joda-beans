@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.1" date="SNAPSHOT" description="v2.1">
       <action dev="jodastephen" type="add">
+        Fix serialization issues for collections.
+        ImmutableSortedMap now works.
+        Collections where the generic is `Comparable` now work.
+      </action>
+      <action dev="jodastephen" type="add">
         Update and redesign build to support Java 9.
       </action>
     </release>
