@@ -55,16 +55,16 @@ A key point is that the code generator may be run again and again on the Java fi
   @BeanDefinition
   public final class Foo implements Bean {
     /** The forename. */
-     @PropertyDefinition
-     private String forename;
+    @PropertyDefinition
+    private String forename;
 
-     /** The surname. */
-     @PropertyDefinition(validate = "notNull")
-     private String surname;
+    /** The surname. */
+    @PropertyDefinition(validate = "notNull")
+    private String surname;
 
-     /** The address of the person. */
-     @PropertyDefinition
-     private Address address;
+    /** The address of the person. */
+    @PropertyDefinition
+    private Address address;
     
     // Joda-Beans will code generate all getters, setters, equals, hashCode, toString and property accessors
   }
