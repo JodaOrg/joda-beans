@@ -53,7 +53,7 @@ There are a number of [optional dependencies](http://www.joda.org/joda-beans/dep
 
 Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|2.0.2|jar)
 
-For Java SE 6 compatibility, use the [release 1.14](download.html).
+For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-beans/releases/tag/v1.14).
 
 
 ### Support

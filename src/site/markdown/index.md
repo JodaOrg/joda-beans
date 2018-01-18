@@ -123,7 +123,7 @@ Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda
 </dependency>
 ```
 
-For Java SE 6 compatibility, use the [release 1.14](download.html).
+For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-beans/releases/tag/v1.14).
 
 See the [related projects](related.html) page for Maven, Gradle and IntelliJ integration.
 
