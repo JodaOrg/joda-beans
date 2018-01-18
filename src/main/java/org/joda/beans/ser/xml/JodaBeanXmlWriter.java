@@ -251,12 +251,12 @@ public class JodaBeanXmlWriter {
             try {
                 rowConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
             } catch (RuntimeException ex) {
-                throw new IllegalArgumentException("Unable to write map as declared key type is neither a bean nor a simple type: " + itemIterator.keyType().getName(), ex);
+                throw new IllegalArgumentException("Unable to write table/grid as declared key type is not a simple type: " + itemIterator.keyType().getName(), ex);
             }
             try {
                 columnConverter = settings.getConverter().findConverterNoGenerics(itemIterator.columnType());
             } catch (RuntimeException ex) {
-                throw new IllegalArgumentException("Unable to write map as declared column type is neither a bean nor a simple type: " + itemIterator.columnType().getName(), ex);
+                throw new IllegalArgumentException("Unable to write table/grid as declared column type is not a simple type: " + itemIterator.columnType().getName(), ex);
             }
         } else if (itemIterator.category() == SerCategory.MAP) {
             // if key type is known and convertible use short key format, else use full bean format
