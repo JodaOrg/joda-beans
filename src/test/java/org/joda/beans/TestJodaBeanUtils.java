@@ -33,6 +33,7 @@ import java.util.function.Function;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.Person;
@@ -502,6 +503,13 @@ public class TestJodaBeanUtils {
         
         assertEquals(JodaBeanUtils.mapKeyType(test, Person.class), null);
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), null);
+    }
+
+    public void test_mapType_wildcard() {
+        MetaProperty<Map<? extends Number, String>> test = ImmGuava.meta().mapWildKey();
+
+        assertEquals(JodaBeanUtils.mapKeyType(test, ImmGuava.class), Number.class);
+        assertEquals(JodaBeanUtils.mapValueType(test, ImmGuava.class), String.class);
     }
 
     //-------------------------------------------------------------------------

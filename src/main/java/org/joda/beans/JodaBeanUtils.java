@@ -20,6 +20,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -727,6 +728,12 @@ public final class JodaBeanUtils {
             Type[] types = pt.getActualTypeArguments();
             if (types.length == size) {
                 Type type = types[index];
+                if (type instanceof WildcardType) {
+                    WildcardType wtype = (WildcardType) type;
+                    if (wtype.getLowerBounds().length == 0 && wtype.getUpperBounds().length > 0) {
+                        type = wtype.getUpperBounds()[0];
+                    }
+                }
                 if (type instanceof TypeVariable) {
                     type = resolveGenerics(targetClass, (TypeVariable<?>) type);
                 }
