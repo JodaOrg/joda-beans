@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.1" date="SNAPSHOT" description="v2.1">
       <action dev="jodastephen" type="fix">
+        Avoid NPE when parsing JSON.
+        If the generic type of the key could not be decoded, NPE could result.
+        Fixes #184.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix error message for table/grid.
         Fixes #179.
       </action>

@@ -119,8 +119,14 @@ abstract class AbstractJsonReader {
     // parse object, event passed in
     private Object parseObject(
             JsonEvent event,
-            Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType,
-            SerIterable parentIterable, boolean rootType) throws Exception {
+            Class<?> inputDeclaredType,
+            MetaProperty<?> metaProp,
+            Class<?> beanType,
+            SerIterable parentIterable,
+            boolean rootType) throws Exception {
+
+        // avoid nulls
+        Class<?> declaredType = (inputDeclaredType == null ? Object.class : inputDeclaredType);
         // establish type
         if (event == JsonEvent.OBJECT) {
             event = input.readEvent();
