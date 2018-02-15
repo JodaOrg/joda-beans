@@ -340,7 +340,7 @@ class PropertyParser {
         if (line.contains("=")) {
             line = line.substring(0, line.indexOf("=")).trim() + ";";
         }
-        return line;
+        return line.replace("  ", " ");
     }
 
     private String parseFieldInitializer(List<String> content) {

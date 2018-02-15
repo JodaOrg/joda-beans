@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.1" date="SNAPSHOT" description="v2.1">
       <action dev="jodastephen" type="fix">
+        Handle double space in field definitions.
+        Fixes #182.
+      </action>
+      <action dev="jodastephen" type="fix">
         Handle wildcards better when looking up generic types.
         Fixes #185.
       </action>

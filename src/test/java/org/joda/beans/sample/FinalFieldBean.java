@@ -46,7 +46,7 @@ public class FinalFieldBean extends DirectBean {
      * The field that is final.
      */
     @PropertyDefinition
-    private final String fieldFinal;
+    private final String  fieldFinal;
     /**
      * The field that is not final.
      */
