@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="2.1" date="SNAPSHOT" description="v2.1">
+      <action dev="jodastephen" type="remove">
+        Remove integration projects - Freemarker, Kryo, Mongo.
+        These are now available as separate Maven artifacts, see https://github.com/JodaOrg/joda-beans-integrate.
+      </action>
       <action dev="jodastephen" type="add">
         Allow serialization of derived properties.
         Use JodaBeanSer::withIncludeDerived(true).

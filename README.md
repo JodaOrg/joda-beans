@@ -41,6 +41,7 @@ Various documentation is available:
 * The helpful [user guide](http://www.joda.org/joda-beans/userguide.html)
 * The [Javadoc](http://www.joda.org/joda-beans/apidocs/index.html)
 * The change notes for the [releases](http://www.joda.org/joda-beans/changes-report.html)
+* The [related projects](related.html) including Maven, Gradle and IntelliJ integration
 
 
 ### Releases
