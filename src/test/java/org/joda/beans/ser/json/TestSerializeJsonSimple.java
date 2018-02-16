@@ -20,11 +20,14 @@ import static org.testng.Assert.assertEquals;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.Person;
@@ -35,41 +38,67 @@ import org.joda.beans.test.BeanAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.google.common.io.Resources;
+
 /**
  * Test property roundtrip using JSON.
  */
 @Test
 public class TestSerializeJsonSimple {
 
-    public void test_writeSimpleJson() {
+    public void test_writeSimpleJson() throws IOException {
         SimpleJson bean = SerTestHelper.testSimpleJson();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/SimpleJson.simplejson");
         
         SimpleJson parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, SimpleJson.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
-    public void test_writeImmOptional() {
+    public void test_writeImmOptional()  throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.simplejson");
         
         ImmOptional parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmOptional.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
-    public void test_writeCollections() {
+    public void test_writeImmArrays() throws IOException {
+        ImmArrays bean = ImmArrays.of(
+                new int[] {1, 3, 2},
+                new long[] {1, 4, 3},
+                new double[] {1.1, 2.2, 3.3},
+                new boolean[] {true, false});
+        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
+//        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.simplejson");
+        
+        ImmArrays parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    public void test_writeCollections()  throws IOException {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(optional);
 //        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.simplejson");
         
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    private void assertEqualsSerialization(String json, String expectedResource) throws IOException {
+        URL url = TestSerializeJson.class.getResource(expectedResource);
+        String expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        assertEquals(json.trim().replace(System.lineSeparator(), "\n"), expected.trim().replace(System.lineSeparator(), "\n"));
     }
 
     //-----------------------------------------------------------------------

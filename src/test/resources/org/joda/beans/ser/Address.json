@@ -1,0 +1,67 @@
+{
+ "@bean": "org.joda.beans.sample.Address",
+ "number": 251,
+ "street": "Big Road",
+ "city": "London & Capital of the World <!>",
+ "owner": {
+  "forename": "Etienne",
+  "surname": "Colebourne",
+  "numberOfCars": 0,
+  "addressList": [{
+   "number": 65432,
+   "street": "Big Road",
+   "city": "Bigton"
+  }, null, {
+   "@bean": "CompanyAddress",
+   "number": 185,
+   "street": "Park Street",
+   "city": "London",
+   "companyName": "OpenGamma"
+  }],
+  "otherAddressMap": {
+   "other": null,
+   "work": {
+    "@bean": "CompanyAddress",
+    "number": 185,
+    "street": "Park Street",
+    "city": "London",
+    "companyName": "OpenGamma"
+   },
+   "home": {
+    "number": 65432,
+    "street": "Big Road",
+    "city": "Bigton"
+   }
+  },
+  "addressesList": [[{
+   "number": 65432,
+   "street": "Big Road",
+   "city": "Bigton"
+  }, {
+   "@bean": "CompanyAddress",
+   "number": 185,
+   "street": "Park Street",
+   "city": "London",
+   "companyName": "OpenGamma"
+  }]],
+  "mainAddress": {
+   "@bean": "CompanyAddress",
+   "number": 185,
+   "street": "Park Street",
+   "city": "London",
+   "companyName": "OpenGamma"
+  },
+  "extensions": {
+   "interests": "joda",
+   "conferenceCount": 21,
+   "quality": {
+    "@type": "Character",
+    "value": "B"
+   },
+   "company": {
+    "@bean": "Company",
+    "companyName": "OpenGamma"
+   }
+  }
+ }
+}

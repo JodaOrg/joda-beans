@@ -1,0 +1,54 @@
+{
+ "primitiveChar": "a",
+ "primitiveByte": 23,
+ "primitiveShort": 12,
+ "primitiveInt": 9,
+ "primitiveLong": 6,
+ "primitiveFloat": 3.4,
+ "primitiveDouble": 2.3,
+ "primitiveDoubleNaN": null,
+ "primitiveDoubleInf": "Infinity",
+ "abstractNumber": 29,
+ "arrayByte": "QEFC",
+ "array2d": [["a"], [], ["b", "c"]],
+ "string": "ABBA",
+ "bean": {
+  "name": "Cat"
+ },
+ "object1": ["a", "b", "c"],
+ "object2": {
+  "d": 1,
+  "12": "2"
+ },
+ "risk": "LOW",
+ "riskLevel": "HIGH",
+ "riskLevels": ["LOW", "MEDIUM"],
+ "stringList": ["a", "b", "c"],
+ "beanList": [{
+  "name": "Cat"
+ }, {
+  "name": "Dog"
+ }],
+ "stringMap": {
+  "a": "A",
+  "b": "B"
+ },
+ "intKeyMap": {
+  "1": "A",
+  "2": "B"
+ },
+ "beanMap": {
+  "a": {
+   "name": "Cat"
+  },
+  "b": {
+   "name": "Dog"
+  }
+ },
+ "listInMap": {
+  "A": ["B", "b"]
+ },
+ "listNumericInMap": {
+  "A": [3, 2, 1]
+ }
+}

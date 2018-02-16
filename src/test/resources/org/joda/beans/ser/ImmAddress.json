@@ -1,0 +1,214 @@
+{
+ "@bean": "org.joda.beans.sample.ImmAddress",
+ "number": 185,
+ "street": "Park Street",
+ "city": "London & Capital of the World <!>\n",
+ "abstractNumber": {
+  "@type": "Short",
+  "value": 89
+ },
+ "array2d": {
+  "@meta": "String[][]",
+  "value": [{
+   "@meta": "String[]",
+   "value": ["a"]
+  }, {
+   "@meta": "String[]",
+   "value": []
+  }, {
+   "@meta": "String[]",
+   "value": ["b", "c"]
+  }]
+ },
+ "owner": {
+  "forename": "Etienne",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": ["K", "T"],
+  "addressList": [{
+   "number": 0
+  }],
+  "codeCounts": [["A", 2], ["B", 1]]
+ },
+ "object1": {
+  "@meta": "List",
+  "value": ["a", "b", "c"]
+ },
+ "object2": {
+  "@meta": "Map",
+  "value": [["d", 1], [{
+   "@type": "java.util.Currency",
+   "value": "GBP"
+  }, 2]]
+ },
+ "serializable": {
+  "@meta": "List",
+  "value": ["a", "b", "c"]
+ },
+ "objectInMap": {
+  "A": "Abba",
+  "B": {
+   "@meta": "Set",
+   "value": ["a", "b"]
+  },
+  "C": {
+   "@meta": "Set",
+   "value": [{
+    "@type": "Locale",
+    "value": "fr_CA"
+   }, {
+    "@type": "Long",
+    "value": 2
+   }, {
+    "@bean": "PrimitiveBean",
+    "valueLong": 1,
+    "valueInt": 2,
+    "valueShort": 3,
+    "valueByte": 4,
+    "valueDouble": 5.0,
+    "valueFloat": 6.0,
+    "valueChar": "7",
+    "valueBoolean": true
+   }]
+  },
+  "D": {
+   "@meta": "Map",
+   "value": [["d", 1], ["e", 2]]
+  }
+ },
+ "listInMap": {
+  "A": ["B", "b"]
+ },
+ "listNumericInMap": {
+  "A": [3, 2, 1]
+ },
+ "listInListInMap": {
+  "A": [{
+   "@meta": "List",
+   "value": [3, 2, 1]
+  }]
+ },
+ "objectListInListInMap": {
+  "A": [{
+   "@meta": "List",
+   "value": [{
+    "@type": "Currency",
+    "value": "GBP"
+   }, {
+    "@type": "java.util.TimeZone",
+    "value": "Europe/London"
+   }]
+  }],
+  "B": [{
+   "@meta": "List",
+   "value": [{
+    "@type": "Locale",
+    "value": "fr_CA"
+   }, {
+    "@type": "Long",
+    "value": 2
+   }, {
+    "@bean": "PrimitiveBean",
+    "valueLong": 1,
+    "valueInt": 2,
+    "valueShort": 3,
+    "valueByte": 4,
+    "valueDouble": 5.0,
+    "valueFloat": 6.0,
+    "valueChar": "7",
+    "valueBoolean": true
+   }]
+  }]
+ },
+ "mapInMap": [[{
+  "forename": "Etiennette",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }, {
+  "sibling": {
+   "forename": "Kylie",
+   "surname": "Colebourne",
+   "numberOfCars": 1,
+   "middleNames": []
+  }
+ }]],
+ "simpleTable": [[1, 1, "Hello"]],
+ "compoundTable": [[1, 1, {
+  "forename": "Etienne",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": ["K", "T"],
+  "addressList": [{
+   "number": 0
+  }],
+  "codeCounts": [["A", 2], ["B", 1]]
+ }], [1, 2, {
+  "forename": "Etiennette",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }], [2, 1, {
+  "forename": "Kylie",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }]],
+ "sparseGrid": [5, 5, [1, 1, {
+  "forename": "Kylie",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }]],
+ "denseGrid": [2, 3, [0, 0, {
+  "forename": "Etiennette",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }], [1, 1, {
+  "forename": "Kylie",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }]],
+ "beanBeanMap": [[{
+  "forename": "Etiennette",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }, {
+  "number": 185,
+  "street": "Park Street",
+  "city": "London",
+  "data": "QEFC",
+  "owner": {
+   "forename": "Etiennette",
+   "surname": "Colebourne",
+   "numberOfCars": 1,
+   "middleNames": []
+  },
+  "object1": {
+   "@type": "Risk",
+   "value": "MEDIUM"
+  },
+  "object2": {
+   "@type": "RiskPerception",
+   "value": "LOW"
+  },
+  "risk": "LOW",
+  "riskLevel": "HIGH",
+  "riskLevels": ["LOW", "MEDIUM"],
+  "objectInMap": {},
+  "listInMap": {},
+  "listNumericInMap": {},
+  "listInListInMap": {},
+  "objectListInListInMap": {},
+  "mapInMap": [],
+  "beanBeanMap": []
+ }]],
+ "doubleVector": "1.1,2.2,3.3",
+ "matrix": {
+  "@meta": "double[][]",
+  "value": ["1.1,2.2", "3.2"]
+ }
+}

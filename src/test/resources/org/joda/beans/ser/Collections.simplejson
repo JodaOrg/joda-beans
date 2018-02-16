@@ -1,0 +1,55 @@
+{
+ "collection": [],
+ "list": ["A", "B"],
+ "set": ["A", "B"],
+ "sortedSet": ["A", "B"],
+ "map": {
+  "A": "AA",
+  "B": "BB"
+ },
+ "sortedMap": {
+  "A": "AA",
+  "B": "BB"
+ },
+ "biMap": {
+  "A": "AA",
+  "B": "BB"
+ },
+ "multimap": {},
+ "listMultimap": {},
+ "setMultimap": {},
+ "multiset": [],
+ "sortedMultiset": [],
+ "collectionInterface": [],
+ "listInterface": ["A", "B"],
+ "setInterface": ["A", "B"],
+ "sortedSetInterface": ["A", "B"],
+ "mapInterface": {
+  "A": "AA",
+  "B": "BB"
+ },
+ "sortedMapInterface": {
+  "A": "AA",
+  "B": "BB"
+ },
+ "biMapInterface": {
+  "A": "AA",
+  "B": "BB"
+ },
+ "multimapInterface": {},
+ "listMultimapInterface": {},
+ "setMultimapInterface": {},
+ "multisetInterface": [],
+ "sortedMultisetInterface": [],
+ "listWildExtendsT": [],
+ "listWildExtendsNumber": [],
+ "listWildExtendsComparable": [],
+ "setWildExtendsT": [],
+ "setWildExtendsNumber": [],
+ "setWildExtendsComparable": [],
+ "listWildBuilder1": [],
+ "listWildBuilder2": [],
+ "mapWildBuilder1": {},
+ "mapWildKey": {}
+}
+

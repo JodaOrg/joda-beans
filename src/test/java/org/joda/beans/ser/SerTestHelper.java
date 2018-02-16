@@ -174,6 +174,7 @@ public class SerTestHelper {
             .sparseGrid(sparseGrid)
             .denseGrid(denseGrid)
             .beanBeanMap(ImmutableMap.of(child, childAddress))
+            .doubleVector(new double[] {1.1, 2.2, 3.3})
             .matrix(new double[][] {{1.1, 2.2}, {3.2}})
             .build();
         return address;

@@ -179,6 +179,11 @@ public final class ImmAddress implements ImmutableBean, Serializable {
      * The array.
      */
     @PropertyDefinition
+    private final double[] doubleVector;
+    /**
+     * The matrix.
+     */
+    @PropertyDefinition
 
     private final double[][] matrix;
     // blank line above is ignored
@@ -234,6 +239,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             Grid<ImmPerson> sparseGrid,
             Grid<ImmPerson> denseGrid,
             Map<ImmPerson, ImmAddress> beanBeanMap,
+            double[] doubleVector,
             double[][] matrix) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
@@ -269,6 +275,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         this.sparseGrid = (sparseGrid != null ? ImmutableGrid.copyOf(sparseGrid) : null);
         this.denseGrid = (denseGrid != null ? ImmutableGrid.copyOf(denseGrid) : null);
         this.beanBeanMap = ImmutableMap.copyOf(beanBeanMap);
+        this.doubleVector = (doubleVector != null ? doubleVector.clone() : null);
         this.matrix = matrix;
     }
 
@@ -499,6 +506,15 @@ public final class ImmAddress implements ImmutableBean, Serializable {
      * Gets the array.
      * @return the value of the property
      */
+    public double[] getDoubleVector() {
+        return (doubleVector != null ? doubleVector.clone() : null);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the matrix.
+     * @return the value of the property
+     */
     public double[][] getMatrix() {
         return matrix;
     }
@@ -543,6 +559,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     JodaBeanUtils.equal(sparseGrid, other.sparseGrid) &&
                     JodaBeanUtils.equal(denseGrid, other.denseGrid) &&
                     JodaBeanUtils.equal(beanBeanMap, other.beanBeanMap) &&
+                    JodaBeanUtils.equal(doubleVector, other.doubleVector) &&
                     JodaBeanUtils.equal(matrix, other.matrix);
         }
         return false;
@@ -575,13 +592,14 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         hash = hash * 31 + JodaBeanUtils.hashCode(sparseGrid);
         hash = hash * 31 + JodaBeanUtils.hashCode(denseGrid);
         hash = hash * 31 + JodaBeanUtils.hashCode(beanBeanMap);
+        hash = hash * 31 + JodaBeanUtils.hashCode(doubleVector);
         hash = hash * 31 + JodaBeanUtils.hashCode(matrix);
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(832);
+        StringBuilder buf = new StringBuilder(864);
         buf.append("ImmAddress{");
         buf.append("number").append('=').append(number).append(',').append(' ');
         buf.append("street").append('=').append(street).append(',').append(' ');
@@ -607,6 +625,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         buf.append("sparseGrid").append('=').append(sparseGrid).append(',').append(' ');
         buf.append("denseGrid").append('=').append(denseGrid).append(',').append(' ');
         buf.append("beanBeanMap").append('=').append(beanBeanMap).append(',').append(' ');
+        buf.append("doubleVector").append('=').append(doubleVector).append(',').append(' ');
         buf.append("matrix").append('=').append(JodaBeanUtils.toString(matrix));
         buf.append('}');
         return buf.toString();
@@ -755,6 +774,11 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         private final MetaProperty<ImmutableMap<ImmPerson, ImmAddress>> beanBeanMap = DirectMetaProperty.ofImmutable(
                 this, "beanBeanMap", ImmAddress.class, (Class) ImmutableMap.class);
         /**
+         * The meta-property for the {@code doubleVector} property.
+         */
+        private final MetaProperty<double[]> doubleVector = DirectMetaProperty.ofImmutable(
+                this, "doubleVector", ImmAddress.class, double[].class);
+        /**
          * The meta-property for the {@code matrix} property.
          */
         private final MetaProperty<double[][]> matrix = DirectMetaProperty.ofImmutable(
@@ -788,6 +812,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                 "sparseGrid",
                 "denseGrid",
                 "beanBeanMap",
+                "doubleVector",
                 "matrix");
 
         /**
@@ -847,6 +872,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     return denseGrid;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
+                case 1118070900:  // doubleVector
+                    return doubleVector;
                 case -1081239615:  // matrix
                     return matrix;
             }
@@ -1062,6 +1089,14 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
 
         /**
+         * The meta-property for the {@code doubleVector} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<double[]> doubleVector() {
+            return doubleVector;
+        }
+
+        /**
          * The meta-property for the {@code matrix} property.
          * @return the meta-property, not null
          */
@@ -1121,6 +1156,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     return ((ImmAddress) bean).getDenseGrid();
                 case -2039203396:  // beanBeanMap
                     return ((ImmAddress) bean).getBeanBeanMap();
+                case 1118070900:  // doubleVector
+                    return ((ImmAddress) bean).getDoubleVector();
                 case -1081239615:  // matrix
                     return ((ImmAddress) bean).getMatrix();
             }
@@ -1168,6 +1205,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         private Grid<ImmPerson> sparseGrid;
         private Grid<ImmPerson> denseGrid;
         private Map<ImmPerson, ImmAddress> beanBeanMap = ImmutableMap.of();
+        private double[] doubleVector;
         private double[][] matrix;
 
         /**
@@ -1205,6 +1243,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             this.sparseGrid = beanToCopy.getSparseGrid();
             this.denseGrid = beanToCopy.getDenseGrid();
             this.beanBeanMap = beanToCopy.getBeanBeanMap();
+            this.doubleVector = (beanToCopy.getDoubleVector() != null ? beanToCopy.getDoubleVector().clone() : null);
             this.matrix = beanToCopy.getMatrix();
         }
 
@@ -1260,6 +1299,8 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     return denseGrid;
                 case -2039203396:  // beanBeanMap
                     return beanBeanMap;
+                case 1118070900:  // doubleVector
+                    return doubleVector;
                 case -1081239615:  // matrix
                     return matrix;
                 default:
@@ -1343,6 +1384,9 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                 case -2039203396:  // beanBeanMap
                     this.beanBeanMap = (Map<ImmPerson, ImmAddress>) newValue;
                     break;
+                case 1118070900:  // doubleVector
+                    this.doubleVector = (double[]) newValue;
+                    break;
                 case -1081239615:  // matrix
                     this.matrix = (double[][]) newValue;
                     break;
@@ -1385,6 +1429,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
                     sparseGrid,
                     denseGrid,
                     beanBeanMap,
+                    doubleVector,
                     matrix);
         }
 
@@ -1652,6 +1697,16 @@ public final class ImmAddress implements ImmutableBean, Serializable {
 
         /**
          * Sets the array.
+         * @param doubleVector  the new value
+         * @return this, for chaining, not null
+         */
+        public Builder doubleVector(double... doubleVector) {
+            this.doubleVector = doubleVector;
+            return this;
+        }
+
+        /**
+         * Sets the matrix.
          * @param matrix  the new value
          * @return this, for chaining, not null
          */
@@ -1663,7 +1718,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(832);
+            StringBuilder buf = new StringBuilder(864);
             buf.append("ImmAddress.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
@@ -1689,6 +1744,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             buf.append("sparseGrid").append('=').append(JodaBeanUtils.toString(sparseGrid)).append(',').append(' ');
             buf.append("denseGrid").append('=').append(JodaBeanUtils.toString(denseGrid)).append(',').append(' ');
             buf.append("beanBeanMap").append('=').append(JodaBeanUtils.toString(beanBeanMap)).append(',').append(' ');
+            buf.append("doubleVector").append('=').append(JodaBeanUtils.toString(doubleVector)).append(',').append(' ');
             buf.append("matrix").append('=').append(JodaBeanUtils.toString(matrix));
             buf.append('}');
             return buf.toString();

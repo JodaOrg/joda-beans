@@ -1,0 +1,121 @@
+{
+ "@bean": "org.joda.beans.sample.ImmGuava",
+ "collection": {
+  "@meta": "List",
+  "value": []
+ },
+ "list": [{
+  "@type": "String",
+  "value": "A"
+ }, {
+  "@type": "String",
+  "value": "B"
+ }],
+ "set": [{
+  "@type": "String",
+  "value": "A"
+ }, {
+  "@type": "String",
+  "value": "B"
+ }],
+ "sortedSet": [{
+  "@type": "String",
+  "value": "A"
+ }, {
+  "@type": "String",
+  "value": "B"
+ }],
+ "map": [[{
+  "@type": "String",
+  "value": "A"
+ }, "AA"], [{
+  "@type": "String",
+  "value": "B"
+ }, "BB"]],
+ "sortedMap": [[{
+  "@type": "String",
+  "value": "A"
+ }, "AA"], [{
+  "@type": "String",
+  "value": "B"
+ }, "BB"]],
+ "biMap": [[{
+  "@type": "String",
+  "value": "A"
+ }, "AA"], [{
+  "@type": "String",
+  "value": "B"
+ }, "BB"]],
+ "multimap": {
+  "@meta": "ListMultimap",
+  "value": []
+ },
+ "listMultimap": [],
+ "setMultimap": [],
+ "multiset": [],
+ "sortedMultiset": [],
+ "collectionInterface": {
+  "@meta": "List",
+  "value": []
+ },
+ "listInterface": [{
+  "@type": "String",
+  "value": "A"
+ }, {
+  "@type": "String",
+  "value": "B"
+ }],
+ "setInterface": [{
+  "@type": "String",
+  "value": "A"
+ }, {
+  "@type": "String",
+  "value": "B"
+ }],
+ "sortedSetInterface": [{
+  "@type": "String",
+  "value": "A"
+ }, {
+  "@type": "String",
+  "value": "B"
+ }],
+ "mapInterface": [[{
+  "@type": "String",
+  "value": "A"
+ }, "AA"], [{
+  "@type": "String",
+  "value": "B"
+ }, "BB"]],
+ "sortedMapInterface": [[{
+  "@type": "String",
+  "value": "A"
+ }, "AA"], [{
+  "@type": "String",
+  "value": "B"
+ }, "BB"]],
+ "biMapInterface": [[{
+  "@type": "String",
+  "value": "A"
+ }, "AA"], [{
+  "@type": "String",
+  "value": "B"
+ }, "BB"]],
+ "multimapInterface": {
+  "@meta": "ListMultimap",
+  "value": []
+ },
+ "listMultimapInterface": [],
+ "setMultimapInterface": [],
+ "multisetInterface": [],
+ "sortedMultisetInterface": [],
+ "listWildExtendsT": [],
+ "listWildExtendsNumber": [],
+ "listWildExtendsComparable": [],
+ "setWildExtendsT": [],
+ "setWildExtendsNumber": [],
+ "setWildExtendsComparable": [],
+ "listWildBuilder1": [],
+ "listWildBuilder2": [],
+ "mapWildBuilder1": {},
+ "mapWildKey": []
+}
