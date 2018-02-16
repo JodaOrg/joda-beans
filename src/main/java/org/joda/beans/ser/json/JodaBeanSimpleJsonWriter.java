@@ -120,7 +120,7 @@ public class JodaBeanSimpleJsonWriter {
                             writeBean((Bean) value, propType);
                         }
                     } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
                         if (itemIterator != null) {
                             writeElements(itemIterator);
                         } else {

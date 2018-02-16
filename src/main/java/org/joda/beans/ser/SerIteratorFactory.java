@@ -98,9 +98,28 @@ public class SerIteratorFactory {
      * @param value  the possible collection-like object, not null
      * @param prop  the meta-property defining the value, not null
      * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @param allowPrimitiveArrays  whether to allow primitive arrays
      * @return the iterator, null if not a collection-like type
      */
-    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+    public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass, boolean allowPrimitiveArrays) {
+        if (allowPrimitiveArrays &&
+                value.getClass().isArray() &&
+                value.getClass().getComponentType().isPrimitive() &&
+                value.getClass().getComponentType() != byte.class) {
+            return arrayPrimitive(value, prop.propertyType(), value.getClass().getComponentType());
+        }
+        return create(value, prop, beanClass);
+    }
+
+    /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param value  the possible collection-like object, not null
+     * @param prop  the meta-property defining the value, not null
+     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @return the iterator, null if not a collection-like type
+     */
+    public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass) {
         Class<?> declaredType = prop.propertyType();
         if (value instanceof Collection) {
             Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
@@ -130,7 +149,7 @@ public class SerIteratorFactory {
      * @param parent  the parent iterator, not null
      * @return the iterator, null if not a collection-like type
      */
-    public SerIterator createChild(final Object value, final SerIterator parent) {
+    public SerIterator createChild(Object value, SerIterator parent) {
         Class<?> declaredType = parent.valueType();
         List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof Collection) {
@@ -171,7 +190,7 @@ public class SerIteratorFactory {
      * @param knownTypes  the known types map, null if not using known type shortening
      * @return the iterable, null if not a collection-like type
      */
-    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings, final Map<String, Class<?>> knownTypes) {
+    public SerIterable createIterable(String metaTypeDescription, JodaBeanSer settings, Map<String, Class<?>> knownTypes) {
         if (metaTypeDescription.equals("Set")) {
             return set(Object.class, EMPTY_VALUE_TYPES);
         }
@@ -203,16 +222,15 @@ public class SerIteratorFactory {
         }
         if (metaTypeDescription.endsWith("[]")) {
             Class<?> type = META_TYPE_MAP.get(metaTypeDescription);
-            if (type != null) {
-                return array(type);
+            if (type == null) {
+                String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
+                try {
+                    type = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
-            String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
-            try {
-                Class<?> cls = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
-                return array(cls);
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
+            return type.isPrimitive() ? arrayPrimitive(type) : array(type);
         }
         return null;
     }
@@ -257,8 +275,12 @@ public class SerIteratorFactory {
                 }
                 return map(Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
-            if (valueType.isArray() && valueType.getComponentType().isPrimitive() == false) {
-                return array(valueType.getComponentType());
+            if (valueType.isArray()) {
+                if (valueType.getComponentType().isPrimitive()) {
+                    return arrayPrimitive(valueType.getComponentType());
+                } else {
+                    return array(valueType.getComponentType());
+                }
             }
         }
         return null;
@@ -269,9 +291,27 @@ public class SerIteratorFactory {
      * 
      * @param prop  the meta-property defining the value, not null
      * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @param allowPrimitiveArrays  whether to allow primitive arrays
      * @return the iterable, null if not a collection-like type
      */
-    public SerIterable createIterable(final MetaProperty<?> prop, final Class<?> beanClass) {
+    public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass, boolean allowPrimitiveArrays) {
+        if (allowPrimitiveArrays &&
+                prop.propertyType().isArray() &&
+                prop.propertyType().getComponentType().isPrimitive() &&
+                prop.propertyType().getComponentType() != byte.class) {
+            return arrayPrimitive(prop.propertyType().getComponentType());
+        }
+        return createIterable(prop, beanClass);
+    }
+
+    /**
+     * Creates an iterator wrapper for a meta-property value.
+     * 
+     * @param prop  the meta-property defining the value, not null
+     * @param beanClass  the class of the bean, not the meta-property, for better generics, not null
+     * @return the iterable, null if not a collection-like type
+     */
+    public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass) {
         if (NavigableSet.class.isAssignableFrom(prop.propertyType())) {
             Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
             List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
@@ -634,7 +674,7 @@ public class SerIteratorFactory {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an iterable wrapper for an array.
+     * Gets an iterable wrapper for an object array.
      * 
      * @param valueType  the value type, not null
      * @return the iterable, not null
@@ -675,7 +715,51 @@ public class SerIteratorFactory {
     }
 
     /**
-     * Gets an iterator wrapper for an array.
+     * Gets an iterable wrapper for a primitive array.
+     * 
+     * @param valueType  the value type, not null
+     * @return the iterable, not null
+     */
+    static final SerIterable arrayPrimitive(final Class<?> valueType) {
+        final List<Object> list = new ArrayList<>();
+        return new SerIterable() {
+            @Override
+            public SerIterator iterator() {
+                return arrayPrimitive(build(), Object.class, valueType);
+            }
+            @Override
+            public void add(Object key, Object column, Object value, int count) {
+                if (key != null) {
+                    throw new IllegalArgumentException("Unexpected key");
+                }
+                if (count != 1) {
+                    throw new IllegalArgumentException("Unexpected count");
+                }
+                for (int i = 0; i < count; i++) {
+                    list.add(value);
+                }
+            }
+            @Override
+            public Object build() {
+                Object array = Array.newInstance(valueType, list.size());
+                for (int i = 0; i < list.size(); i++) {
+                    Array.set(array, i, list.get(i));
+                }
+                return array;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return EMPTY_VALUE_TYPES;
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for an object array.
      * 
      * @param array  the array, not null
      * @param declaredType  the declared type, not null
@@ -736,6 +820,73 @@ public class SerIteratorFactory {
             @Override
             public Object value() {
                 return array[index];
+            }
+        };
+    }
+
+    /**
+     * Gets an iterator wrapper for a primitive array.
+     * 
+     * @param array  the array, not null
+     * @param declaredType  the declared type, not null
+     * @param valueType  the value type, not null
+     * @return the iterator, not null
+     */
+    static final SerIterator arrayPrimitive(
+            final Object array, final Class<?> declaredType, final Class<?> valueType) {
+        final int arrayLength = Array.getLength(array);
+        return new SerIterator() {
+            private int index = -1;
+
+            @Override
+            public String metaTypeName() {
+                return metaTypeNameBase(valueType);
+            }
+            private String metaTypeNameBase(Class<?> arrayType) {
+                if (arrayType.isArray()) {
+                    return metaTypeNameBase(arrayType.getComponentType()) + "[]";
+                }
+                if (arrayType == Object.class) {
+                    return "Object[]";
+                }
+                if (arrayType == String.class) {
+                    return "String[]";
+                }
+                return arrayType.getName() + "[]";
+            }
+            @Override
+            public boolean metaTypeRequired() {
+                if (valueType == Object.class) {
+                    return Object[].class.isAssignableFrom(declaredType) == false;
+                }
+                if (valueType == String.class) {
+                    return String[].class.isAssignableFrom(declaredType) == false;
+                }
+                return true;
+            }
+            @Override
+            public int size() {
+                return arrayLength;
+            }
+            @Override
+            public boolean hasNext() {
+                return (index + 1) < arrayLength;
+            }
+            @Override
+            public void next() {
+                index++;
+            }
+            @Override
+            public Class<?> valueType() {
+                return valueType;
+            }
+            @Override
+            public List<Class<?>> valueTypeTypes() {
+                return Collections.emptyList();
+            }
+            @Override
+            public Object value() {
+                return Array.get(array, index);
             }
         };
     }

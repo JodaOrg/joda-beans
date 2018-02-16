@@ -161,7 +161,7 @@ abstract class AbstractJsonReader {
             if (event == JsonEvent.OBJECT || event == JsonEvent.ARRAY) {
                 SerIterable childIterable = null;
                 if (metaProp != null) {
-                    childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
+                    childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType, true);
                 } else if (parentIterable != null) {
                     childIterable = settings.getIteratorFactory().createIterable(parentIterable);
                 }

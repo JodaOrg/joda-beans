@@ -96,7 +96,7 @@ public class JodaBeanSimpleMapWriter {
                             outputValue = writeBean((Bean) value, propType);
                         }
                     } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
                         if (itemIterator != null) {
                             outputValue = writeElements(itemIterator);
                         } else {
