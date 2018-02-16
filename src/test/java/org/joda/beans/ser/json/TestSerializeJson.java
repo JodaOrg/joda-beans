@@ -78,7 +78,7 @@ public class TestSerializeJson {
 
     public void test_writeImmOptional() throws IOException {
         ImmOptional optional = SerTestHelper.testImmOptional();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
+        String json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(optional);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.json");
         

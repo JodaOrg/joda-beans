@@ -108,7 +108,7 @@ public class JodaBeanSimpleJsonWriter {
         output.writeObjectStart();
         // property information
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable()) {
+            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
                 Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     output.writeObjectKey(prop.name());

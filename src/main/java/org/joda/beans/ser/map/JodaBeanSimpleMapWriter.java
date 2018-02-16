@@ -84,7 +84,7 @@ public class JodaBeanSimpleMapWriter {
         Map<String, Object> result = new LinkedHashMap<>();
         // property information
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable()) {
+            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
                 Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     Object outputValue = null;

@@ -59,8 +59,8 @@ public class TestSerializeJsonSimple {
 
     public void test_writeImmOptional()  throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
-        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
-//        System.out.println(json);
+        String json = JodaBeanSer.PRETTY.withIncludeDerived(true).simpleJsonWriter().write(bean);
+        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.simplejson");
         
         ImmOptional parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmOptional.class);

@@ -178,7 +178,7 @@ public class JodaBeanXmlWriter {
     private boolean writeBean(final Bean bean, final String currentIndent) {
         boolean output = false;
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable()) {
+            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
                 output = true;
                 Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {

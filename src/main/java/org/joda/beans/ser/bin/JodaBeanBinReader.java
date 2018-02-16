@@ -177,7 +177,7 @@ public class JodaBeanBinReader extends MsgPack {
                 // property name
                 propName = acceptString(input.readByte());
                 MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
-                if (metaProp == null) {
+                if (metaProp == null || metaProp.style().isDerived()) {
                     MsgPackInput.skipObject(input);
                 } else {
                     Object value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);

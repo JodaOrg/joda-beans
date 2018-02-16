@@ -70,7 +70,7 @@ public class TestSerializeXml {
 
     public void test_writeImmOptional() {
         ImmOptional optional = SerTestHelper.testImmOptional();
-        String xml = JodaBeanSer.PRETTY.xmlWriter().write(optional);
+        String xml = JodaBeanSer.PRETTY.withIncludeDerived(true).xmlWriter().write(optional);
 //        System.out.println(xml);
         
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.xmlReader().read(xml);

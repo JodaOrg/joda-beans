@@ -268,7 +268,7 @@ public class JodaBeanXmlReader {
                     StartElement start = event.asStartElement();
                     propName = start.getName().getLocalPart();
                     MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
-                    if (metaProp == null) {
+                    if (metaProp == null || metaProp.style().isDerived()) {
                         int depth = 0;
                         event = nextEvent(" skip ");
                         while (event.isEndElement() == false || depth > 0) {

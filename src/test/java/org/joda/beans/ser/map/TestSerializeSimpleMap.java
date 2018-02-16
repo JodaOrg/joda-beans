@@ -51,7 +51,7 @@ public class TestSerializeSimpleMap {
 
     public void test_writeImmOptional() {
         ImmOptional bean = SerTestHelper.testImmOptional();
-        Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
+        Map<String, Object> map = JodaBeanSer.PRETTY.withIncludeDerived(true).simpleMapWriter().write(bean);
 //        System.out.println(map);
         
         ImmOptional parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmOptional.class);

@@ -65,7 +65,7 @@ public class TestSerializeBin {
 
     public void test_writeImmOptional() {
         ImmOptional optional = SerTestHelper.testImmOptional();
-        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
+        byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(optional);
 //        new MsgPackVisualizer(bytes).visualize();
 
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.binReader().read(bytes);

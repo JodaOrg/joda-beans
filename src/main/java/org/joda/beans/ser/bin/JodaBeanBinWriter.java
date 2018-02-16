@@ -170,7 +170,7 @@ public class JodaBeanBinWriter {
         Object[] values = new Object[count];
         int size = 0;
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable()) {
+            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
                 Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     props[size] = prop;

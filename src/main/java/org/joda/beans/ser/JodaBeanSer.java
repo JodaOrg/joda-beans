@@ -42,12 +42,12 @@ public final class JodaBeanSer {
      * Obtains the singleton compact instance.
      */
     public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE);
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
     /**
      * Obtains the singleton pretty-printing instance.
      */
     public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE);
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
 
     /**
      * The indent to use.
@@ -73,6 +73,10 @@ public final class JodaBeanSer {
      * The deserializers.
      */
     private final SerDeserializers deserializers;
+    /**
+     * Whether to include derived properties.
+     */
+    private final boolean includeDerived;
 
     /**
      * Creates an instance.
@@ -85,13 +89,14 @@ public final class JodaBeanSer {
      * @param deserializers  the deserializers to use, not null
      */
     private JodaBeanSer(String indent, String newLine, StringConvert converter,
-                SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers) {
+                SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers, boolean includeDerived) {
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
         this.iteratorFactory = iteratorFactory;
         this.shortTypes = shortTypes;
         this.deserializers = deserializers;
+        this.includeDerived = includeDerived;
     }
 
     //-----------------------------------------------------------------------
@@ -112,7 +117,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIndent(String indent) {
         JodaBeanUtils.notNull(indent, "indent");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
     /**
@@ -132,7 +137,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withNewLine(String newLine) {
         JodaBeanUtils.notNull(newLine, "newLine");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
     /**
@@ -156,7 +161,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withConverter(StringConvert converter) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
     /**
@@ -176,7 +181,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
     /**
@@ -195,7 +200,7 @@ public final class JodaBeanSer {
      * @return a copy of this object with the short types flag changed, not null
      */
     public JodaBeanSer withShortTypes(boolean shortTypes) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
     /**
@@ -221,7 +226,33 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withDeserializers(SerDeserializers deserializers) {
         JodaBeanUtils.notNull(deserializers, "deserializers");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+    }
+
+    /**
+     * Gets the include derived flag.
+     * <p>
+     * The default deserializers can be modified.
+     * 
+     * @return the converter, not null
+     */
+    public boolean isIncludeDerived() {
+        return includeDerived;
+    }
+
+    /**
+     * Returns a copy of this serializer with the specified include derived flag.
+     * <p>
+     * The default deserializers can be modified.
+     * <p>
+     * This is used to set the output to include derived properties.
+     * 
+     * @param includeDerived  whether to include derived properties on output
+     * @return a copy of this object with the converter changed, not null
+     */
+    public JodaBeanSer withIncludeDerived(boolean includeDerived) {
+        JodaBeanUtils.notNull(deserializers, "deserializers");
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
     //-----------------------------------------------------------------------

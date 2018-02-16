@@ -10,6 +10,11 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.1" date="SNAPSHOT" description="v2.1">
       <action dev="jodastephen" type="add">
+        Allow serialization of derived properties.
+        Use JodaBeanSer::withIncludeDerived(true).
+        Fixes #183.
+      </action>
+      <action dev="jodastephen" type="add">
         Change serialization format of simple JSON.
         Primitive arrays are now output in standard JSON format, not as a string.
         Any byte arrays are still output as base-64.

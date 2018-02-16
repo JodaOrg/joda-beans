@@ -1,4 +1,5 @@
 {
  "@bean": "org.joda.beans.sample.ImmOptional",
- "optString": "A"
+ "optString": "A",
+ "twelve": 12
 }

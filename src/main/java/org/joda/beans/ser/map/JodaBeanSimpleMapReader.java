@@ -103,7 +103,7 @@ public class JodaBeanSimpleMapReader {
                 propName = entry.getKey();
                 MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                 // ignore unknown properties
-                if (metaProp != null) {
+                if (metaProp != null && !metaProp.style().isDerived()) {
                     Object value = parseObject(
                             entry.getValue(), SerOptional.extractType(metaProp, beanType), metaProp, beanType, null);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));

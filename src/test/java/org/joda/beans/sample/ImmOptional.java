@@ -24,6 +24,7 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.gen.BeanDefinition;
+import org.joda.beans.gen.DerivedProperty;
 import org.joda.beans.gen.ImmutableDefaults;
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
@@ -55,6 +56,11 @@ public final class ImmOptional implements ImmutableBean {
     @PropertyDefinition(get = "optionalGuava")
     private final Double optDoubleGetter;
 
+    @DerivedProperty
+    public int getTwelve() {
+        return 12;
+    }
+    
     @ImmutableDefaults
     private static void applyDefaults(Builder builder) {
         builder.optString = Optional.absent();
@@ -279,6 +285,11 @@ public final class ImmOptional implements ImmutableBean {
         private final MetaProperty<Double> optDoubleGetter = DirectMetaProperty.ofImmutable(
                 this, "optDoubleGetter", ImmOptional.class, Double.class);
         /**
+         * The meta-property for the {@code twelve} property.
+         */
+        private final MetaProperty<Integer> twelve = DirectMetaProperty.ofDerived(
+                this, "twelve", ImmOptional.class, Integer.TYPE);
+        /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
@@ -288,7 +299,8 @@ public final class ImmOptional implements ImmutableBean {
                 "optStringGetter",
                 "optLongGetter",
                 "optIntGetter",
-                "optDoubleGetter");
+                "optDoubleGetter",
+                "twelve");
 
         /**
          * Restricted constructor.
@@ -311,6 +323,8 @@ public final class ImmOptional implements ImmutableBean {
                     return optIntGetter;
                 case 224984719:  // optDoubleGetter
                     return optDoubleGetter;
+                case -860970343:  // twelve
+                    return twelve;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -379,6 +393,14 @@ public final class ImmOptional implements ImmutableBean {
             return optDoubleGetter;
         }
 
+        /**
+         * The meta-property for the {@code twelve} property.
+         * @return the meta-property, not null
+         */
+        public MetaProperty<Integer> twelve() {
+            return twelve;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
@@ -395,6 +417,8 @@ public final class ImmOptional implements ImmutableBean {
                     return ((ImmOptional) bean).optIntGetter;
                 case 224984719:  // optDoubleGetter
                     return ((ImmOptional) bean).optDoubleGetter;
+                case -860970343:  // twelve
+                    return ((ImmOptional) bean).getTwelve();
             }
             return super.propertyGet(bean, propertyName, quiet);
         }
