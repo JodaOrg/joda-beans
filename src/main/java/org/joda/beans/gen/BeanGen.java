@@ -236,82 +236,80 @@ class BeanGen {
         if (insertRegion.size() > 0 && insertRegion.get(insertRegion.size() - 1).equals(LINE_SEPARATOR)) {
             return;
         }
-        insertRegion.add(LINE_SEPARATOR);
+        addLine(0, LINE_SEPARATOR);
     }
 
     private void generateIndentedSeparator() {
         if (insertRegion.size() > 0 && insertRegion.get(insertRegion.size() - 1).equals(LINE_SEPARATOR_INDENTED)) {
             return;
         }
-        insertRegion.add(LINE_SEPARATOR_INDENTED);
+        addLine(0, LINE_SEPARATOR_INDENTED);
     }
 
     private void generateFactory() {
         if (data.isFactoryRequired()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * Obtains an instance.");
+            addLine(1, "/**");
+            addLine(1, " * Obtains an instance.");
             if (nonDerived.size() > 0) {
                 if (data.isTypeGeneric()) {
                     for (int j = 0; j < data.getTypeGenericCount(); j++) {
-                        insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+                        addLine(1, " * @param " + data.getTypeGenericName(j, true) + "  the type");
                     }
                 }
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyData prop = nonDerived.get(i).getData();
-                    insertRegion.add("\t * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
+                    addLine(1, " * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
                 }
             }
-            insertRegion.add("\t * @return the instance");
-            insertRegion.add("\t */");
+            addLine(1, " * @return the instance");
+            addLine(1, " */");
             if (nonDerived.isEmpty()) {
-                insertRegion.add("\tpublic static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "() {");
-                insertRegion.add("\t\treturn new " + data.getTypeNoExtends() + "();");
+                addLine(1, "public static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "() {");
+                addLine(2, "return new " + data.getTypeNoExtends() + "();");
                 
             } else {
                 if (data.isTypeGeneric()) {
-                    insertRegion.add("\tpublic static " + data.getTypeGeneric(true) + " " +
+                    addLine(1, "public static " + data.getTypeGeneric(true) + " " +
                                     data.getTypeNoExtends() + " " + data.getFactoryName() + "(");
                 } else {
-                    insertRegion.add("\tpublic static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "(");
+                    addLine(1, "public static " + data.getTypeNoExtends() + " " + data.getFactoryName() + "(");
                 }
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
-                    insertRegion.add("\t\t\t" +
-                            prop.getBuilderType() + " " + prop.getData().getPropertyName() + joinComma(i, nonDerived, ") {"));
+                    addLine(3, prop.getBuilderType() + " " + prop.getData().getPropertyName() + joinComma(i, nonDerived, ") {"));
                 }
-                insertRegion.add("\t\treturn new " + data.getTypeWithDiamond() + "(");
+                addLine(2, "return new " + data.getTypeWithDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.add("\t\t\t" +
-                            nonDerived.get(i).generateBuilderFieldName() + joinComma(i, nonDerived, ");"));
+                    addLine(3, nonDerived.get(i).generateBuilderFieldName() + joinComma(i, nonDerived, ");"));
                 }
             }
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(1, "}");
+            addBlankLine();
         }
     }
 
     private void generateImmutableBuilderMethod() {
         if (data.isConstructable() &&
                 ((data.isImmutable() && data.isEffectiveBuilderScopeVisible()) || (data.isMutable() && data.isBuilderScopeVisible()))) {
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * Returns a builder used to create an instance of the bean.");
+            addLine(1, "/**");
+            addLine(1, " * Returns a builder used to create an instance of the bean.");
             if (data.isTypeGeneric()) {
                 for (int j = 0; j < data.getTypeGenericCount(); j++) {
-                    insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+                    addLine(1, " * @param " + data.getTypeGenericName(j, true) + "  the type");
                 }
             }
-            insertRegion.add("\t * @return the builder, not null");
-            insertRegion.add("\t */");
+            addLine(1, " * @return the builder, not null");
+            addLine(1, " */");
             if (data.isTypeGeneric()) {
-                insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + data.getTypeGeneric(true) +
+                addLine(1, data.getEffectiveBuilderScope() + "static " + data.getTypeGeneric(true) +
                                 " " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
             } else {
-                insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + data.getTypeRaw() + ".Builder builder() {");
+                addLine(1, data.getEffectiveBuilderScope() + "static " + data.getTypeRaw() + ".Builder builder() {");
             }
-            insertRegion.add("\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(2, "return new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
+            addLine(1, "}");
+            addBlankLine();
         }
     }
 
@@ -321,19 +319,19 @@ class BeanGen {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             String scope = (data.isTypeFinal() ? "private" : "protected");
             // signature
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * Restricted constructor.");
-            insertRegion.add("\t * @param builder  the builder to copy from, not null");
-            insertRegion.add("\t */");
-            insertRegion.add("\t" + scope + " " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder) {");
+            addLine(1, "/**");
+            addLine(1, " * Restricted constructor.");
+            addLine(1, " * @param builder  the builder to copy from, not null");
+            addLine(1, " */");
+            addLine(1, scope + " " + data.getTypeRaw() + "(" + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder) {");
             // super
             if (data.isSubClass()) {
-                insertRegion.add("\t\tsuper(builder);");
+                addLine(2, "super(builder);");
             }
             // validate
             for (PropertyGen prop : properties) {
                 if (prop.getData().isValidated()) {
-                    insertRegion.add("\t\t" + prop.getData().getValidationMethodName() +
+                    addLine(2, prop.getData().getValidationMethodName() +
                             "(builder." + prop.generateBuilderFieldName() +
                             ", \"" + prop.getData().getPropertyName() + "\");");
                 }
@@ -342,7 +340,7 @@ class BeanGen {
             if (data.isImmutable()) {
                 // assign
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.addAll(nonDerived.get(i).generateConstructorAssign("builder."));
+                    addLines(nonDerived.get(i).generateConstructorAssign("builder."));
                 }
             } else {
                 for (int i = 0; i < nonDerived.size(); i++) {
@@ -350,26 +348,26 @@ class BeanGen {
                     PropertyData prop = propGen.getData();
                     if (prop.isCollectionType()) {
                         if (prop.isNotNull()) {
-                            insertRegion.add("\t\tthis." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
+                            addLine(2, "this." + prop.getPropertyName() + ".addAll(builder." + propGen.generateBuilderFieldName() + ");");
                         } else {
-                            insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
+                            addLine(2, "this." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                         }
                     } else if (prop.isMapType()) {
                         if (prop.isNotNull()) {
-                            insertRegion.add("\t\tthis." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
+                            addLine(2, "this." + prop.getPropertyName() + ".putAll(builder." + propGen.generateBuilderFieldName() + ");");
                         } else {
-                            insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
+                            addLine(2, "this." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                         }
                     } else {
-                        insertRegion.add("\t\tthis." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
+                        addLine(2, "this." + prop.getPropertyName() + " = builder." + propGen.generateBuilderFieldName() + ";");
                     }
                 }
             }
             if (data.getImmutableValidator() != null) {
-                insertRegion.add("\t\t" + data.getImmutableValidator() + "();");
+                addLine(2, data.getImmutableValidator() + "();");
             }
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(1, "}");
+            addBlankLine();
         }
     }
 
@@ -382,25 +380,25 @@ class BeanGen {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (nonDerived.size() == 0) {
                 if (generateJavadoc) {
-                    insertRegion.add("\t/**");
-                    insertRegion.add("\t * Creates an instance.");
-                    insertRegion.add("\t */");
+                    addLine(1, "/**");
+                    addLine(1, " * Creates an instance.");
+                    addLine(1, " */");
                 }
                 if (generateAnnotation) {
                     data.ensureImport(CLASS_CONSTRUCTOR_PROPERTIES);
-                    insertRegion.add("\t@ConstructorProperties({})");
+                    addLine(1, "@ConstructorProperties({})");
                 }
-                insertRegion.add("\t" + scope + data.getTypeRaw() + "() {");
+                addLine(1, scope + data.getTypeRaw() + "() {");
             } else {
                 // signature
                 if (generateJavadoc) {
-                    insertRegion.add("\t/**");
-                    insertRegion.add("\t * Creates an instance.");
+                    addLine(1, "/**");
+                    addLine(1, " * Creates an instance.");
                     for (int i = 0; i < nonDerived.size(); i++) {
                         PropertyData prop = nonDerived.get(i).getData();
-                        insertRegion.add("\t * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
+                        addLine(1, " * @param " + prop.getPropertyName() + "  the value of the property" + prop.getNotNullJavadoc());
                     }
-                    insertRegion.add("\t */");
+                    addLine(1, " */");
                 }
                 if (generateAnnotation) {
                     data.ensureImport(CLASS_CONSTRUCTOR_PROPERTIES);
@@ -409,19 +407,18 @@ class BeanGen {
                         buf.append('"').append(nonDerived.get(i).getData().getPropertyName()).append('"');
                         buf.append(join(i, nonDerived, ", ", ""));
                     }
-                    insertRegion.add("\t@ConstructorProperties({" + buf.toString() + "})");
+                    addLine(1, "@ConstructorProperties({" + buf.toString() + "})");
                 }
-                insertRegion.add("\t" + scope + data.getTypeRaw() + "(");
+                addLine(1, scope + data.getTypeRaw() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
-                    insertRegion.add("\t\t\t" +
-                            prop.getBuilderType() + " " + prop.getData().getPropertyName() + joinComma(i, nonDerived, ") {"));
+                    addLine(3, prop.getBuilderType() + " " + prop.getData().getPropertyName() + joinComma(i, nonDerived, ") {"));
                 }
                 // validate (mutable light beans call setters which validate)
                 if (!(data.isMutable() && data.isBeanStyleLight())) {
                     for (PropertyGen prop : properties) {
                         if (prop.getData().isValidated()) {
-                            insertRegion.add("\t\t" + prop.getData().getValidationMethodName() +
+                            addLine(2, prop.getData().getValidationMethodName() +
                                     "(" + prop.getData().getPropertyName() +
                                     ", \"" + prop.getData().getPropertyName() + "\");");
                         }
@@ -433,26 +430,26 @@ class BeanGen {
                     if (data.isMutable() && data.isBeanStyleLight()) {
                         String generateSetInvoke = prop.getData().getSetterGen().generateSetInvoke(
                                 prop.getData(), prop.getData().getPropertyName());
-                        insertRegion.add("\t\t" + generateSetInvoke + ";");
+                        addLine(2, generateSetInvoke + ";");
                     } else {
-                        insertRegion.addAll(prop.generateConstructorAssign(""));
+                        addLines(prop.generateConstructorAssign(""));
                     }
                 }
             }
             if (data.getImmutableValidator() != null) {
-                insertRegion.add("\t\t" + data.getImmutableValidator() + "();");
+                addLine(2, data.getImmutableValidator() + "();");
             }
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(1, "}");
+            addBlankLine();
         }
     }
 
     //-----------------------------------------------------------------------
     private void generateMeta() {
         if (data.isBeanStyleLightOrMinimal()) {
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
-            insertRegion.add("\t */");
+            addLine(1, "/**");
+            addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            addLine(1, " */");
             boolean genericProps = data.getProperties().stream()
                     .filter(p -> p.isGeneric())
                     .findAny()
@@ -461,18 +458,18 @@ class BeanGen {
             unchecked |= data.isBeanStyleMinimal() && data.isTypeGeneric() && !data.isSkipBuilderGeneration();
             boolean rawtypes = data.isBeanStyleMinimal() && data.isTypeGeneric();
             if (unchecked && rawtypes) {
-                insertRegion.add("\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
+                addLine(1, "@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
             } else if (rawtypes) {
-                insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
+                addLine(1, "@SuppressWarnings(\"rawtypes\")");
             } else if (unchecked) {
-                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                addLine(1, "@SuppressWarnings(\"unchecked\")");
             }
             if (data.isTypeGeneric()) {
                 data.ensureImport(MetaBean.class);
-                insertRegion.add("\tprivate static final MetaBean META_BEAN =");
+                addLine(1, "private static final MetaBean META_BEAN =");
             } else {
                 data.ensureImport(TypedMetaBean.class);
-                insertRegion.add("\tprivate static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
+                addLine(1, "private static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
             }
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (data.isBeanStyleLight()) {
@@ -481,25 +478,25 @@ class BeanGen {
                 data.ensureImport(MethodHandles.class);
                 boolean specialInit = nonDerived.stream().filter(p -> p.isSpecialInit()).findAny().isPresent();
                 if (nonDerived.isEmpty()) {
-                    insertRegion.add("\t\t\tLightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
+                    addLine(3, "LightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
                 } else {
-                    insertRegion.add("\t\t\tLightMetaBean.of(");
-                    insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
-                    insertRegion.add("\t\t\t\t\tMethodHandles.lookup(),");
+                    addLine(3, "LightMetaBean.of(");
+                    addLine(5, data.getTypeRaw() + ".class,");
+                    addLine(5, "MethodHandles.lookup(),");
                     generateFieldNames(nonDerived);
                     if (specialInit) {
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            insertRegion.add(
-                                    "\t\t\t\t\t" + nonDerived.get(i).generateInit() + joinComma(i, nonDerived, ");"));
+                            addLine(
+                                    0, "\t\t\t\t\t" + nonDerived.get(i).generateInit() + joinComma(i, nonDerived, ");"));
                         }
                     } else {
-                        insertRegion.add("\t\t\t\t\tnew Object[0]);");
+                        addLine(5, "new Object[0]);");
                     }
                 }
             } else {
                 data.ensureImport(MinimalMetaBean.class);
-                insertRegion.add("\t\t\tMinimalMetaBean.of(");
-                insertRegion.add("\t\t\t\t\t" + data.getTypeRaw() + ".class,");
+                addLine(3, "MinimalMetaBean.of(");
+                addLine(5, data.getTypeRaw() + ".class,");
                 generateFieldNames(nonDerived);
                 String builderLambda = "\t\t\t\t\t() -> new " + data.getTypeRaw() + ".Builder()";
                 if (data.isSkipBuilderGeneration()) {
@@ -508,100 +505,96 @@ class BeanGen {
                 }
                 if (nonDerived.isEmpty()) {
                     if (data.isImmutable()) {
-                        insertRegion.add(builderLambda + ");");
+                        addLine(0, builderLambda + ");");
                     } else {
                         data.ensureImport(Collections.class);
                         data.ensureImport(Function.class);
                         data.ensureImport(BiConsumer.class);
-                        insertRegion.add(builderLambda + ",");
-                        insertRegion.add("\t\t\t\t\tCollections.<Function<" + data.getTypeRaw() + ", Object>>emptyList(),");
-                        insertRegion.add("\t\t\t\t\tCollections.<BiConsumer<" + data.getTypeRaw() + ", Object>>emptyList());");
+                        addLine(0, builderLambda + ",");
+                        addLine(5, "Collections.<Function<" + data.getTypeRaw() + ", Object>>emptyList(),");
+                        addLine(5, "Collections.<BiConsumer<" + data.getTypeRaw() + ", Object>>emptyList());");
                     }
                 } else {
-                    insertRegion.add(builderLambda + ",");
+                    addLine(0, builderLambda + ",");
                     if (data.isImmutable()) {
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            insertRegion.add("\t\t\t\t\t" +
-                                    nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, ");"));
+                            addLine(5, nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, ");"));
                         }
                     } else {
                         data.ensureImport(Arrays.class);
                         data.ensureImport(Function.class);
                         data.ensureImport(BiConsumer.class);
-                        insertRegion.add("\t\t\t\t\tArrays.<Function<" + data.getTypeRaw() + ", Object>>asList(");
+                        addLine(5, "Arrays.<Function<" + data.getTypeRaw() + ", Object>>asList(");
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            insertRegion.add("\t\t\t\t\t\t\t" +
-                                    nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, "),"));
+                            addLine(7, nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, "),"));
                         }
-                        insertRegion.add("\t\t\t\t\tArrays.<BiConsumer<" + data.getTypeRaw() + ", Object>>asList(");
+                        addLine(5, "Arrays.<BiConsumer<" + data.getTypeRaw() + ", Object>>asList(");
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            insertRegion.add("\t\t\t\t\t\t\t" +
-                                    nonDerived.get(i).generateLambdaSetter() + joinComma(i, nonDerived, "));"));
+                            addLine(7, nonDerived.get(i).generateLambdaSetter() + joinComma(i, nonDerived, "));"));
                         }
                     }
                 }
             }
-            insertRegion.add("");
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
-            insertRegion.add("\t * @return the meta-bean, not null");
-            insertRegion.add("\t */");
+            addBlankLine();
+            addLine(1, "/**");
+            addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            addLine(1, " * @return the meta-bean, not null");
+            addLine(1, " */");
             if (data.isTypeGeneric()) {
-                insertRegion.add("\tpublic static MetaBean meta() {");
+                addLine(1, "public static MetaBean meta() {");
             } else {
-                insertRegion.add("\tpublic static TypedMetaBean<" + data.getTypeNoExtends() + "> meta() {");
+                addLine(1, "public static TypedMetaBean<" + data.getTypeNoExtends() + "> meta() {");
             }
-            insertRegion.add("\t\treturn META_BEAN;");
-            insertRegion.add("\t}");
-            insertRegion.add("");
-            insertRegion.add("\tstatic {");
+            addLine(2, "return META_BEAN;");
+            addLine(1, "}");
+            addBlankLine();
+            addLine(1, "static {");
             data.ensureImport(MetaBean.class);
-            insertRegion.add("\t\tMetaBean.register(META_BEAN);");
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(2, "MetaBean.register(META_BEAN);");
+            addLine(1, "}");
+            addBlankLine();
             
         } else {
             // this cannot be generified without either Eclipse or javac complaining
             // raw types forever
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
-            insertRegion.add("\t * @return the meta-bean, not null");
+            addLine(1, "/**");
+            addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+            addLine(1, " * @return the meta-bean, not null");
             if (data.isMetaScopePrivate()) {
                 data.ensureImport(MetaBean.class);
-                insertRegion.add("\t */");
-                insertRegion.add("\tpublic static MetaBean meta() {");
+                addLine(1, " */");
+                addLine(1, "public static MetaBean meta() {");
             } else if (data.isTypeGeneric()) {
-                insertRegion.add("\t */");
-                insertRegion.add("\t@SuppressWarnings(\"rawtypes\")");
-                insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
+                addLine(1, " */");
+                addLine(1, "@SuppressWarnings(\"rawtypes\")");
+                addLine(1, "public static " + data.getTypeRaw() + ".Meta meta() {");
             } else {
-                insertRegion.add("\t */");
-                insertRegion.add("\tpublic static " + data.getTypeRaw() + ".Meta meta() {");
+                addLine(1, " */");
+                addLine(1, "public static " + data.getTypeRaw() + ".Meta meta() {");
             }
-            insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
-            insertRegion.add("\t}");
+            addLine(2, "return " + data.getTypeRaw() + ".Meta.INSTANCE;");
+            addLine(1, "}");
             
             if (data.isTypeGeneric()) {
                 generateMetaForGenericType();
             }
             
-            insertRegion.add("");
-            insertRegion.add("\tstatic {");
+            addBlankLine();
+            addLine(1, "static {");
             data.ensureImport(MetaBean.class);
-            insertRegion.add("\t\tMetaBean.register(" + data.getTypeRaw() + ".Meta.INSTANCE);");
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(2, "MetaBean.register(" + data.getTypeRaw() + ".Meta.INSTANCE);");
+            addLine(1, "}");
+            addBlankLine();
         }
     }
 
     private void generateFieldNames(List<PropertyGen> nonDerived) {
         if (nonDerived.isEmpty()) {
-            insertRegion.add("\t\t\t\t\tnew String[0],");
+            addLine(5, "new String[0],");
         } else {
-            insertRegion.add("\t\t\t\t\tnew String[] {");
+            addLine(5, "new String[] {");
             for (int i = 0; i < nonDerived.size(); i++) {
-                insertRegion.add("\t\t\t\t\t\t\t\"" +
-                        nonDerived.get(i).getData().getFieldName() + join(i, nonDerived, "\",", "\"},"));
+                addLine(7, "\"" + nonDerived.get(i).getData().getFieldName() + join(i, nonDerived, "\",", "\"},"));
             }
         }
     }
@@ -609,121 +602,121 @@ class BeanGen {
     private void generateMetaForGenericType() {
         // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
         // long name needed for uniqueness as static overriding is borked
-        insertRegion.add("");
-        insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+        addBlankLine();
+        addLine(1, "/**");
+        addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         if (data.getTypeGenericCount() == 1) {
-            insertRegion.add("\t * @param <R>  the bean's generic type");
-            insertRegion.add("\t * @param cls  the bean's generic type");
+            addLine(1, " * @param <R>  the bean's generic type");
+            addLine(1, " * @param cls  the bean's generic type");
         } else if (data.getTypeGenericCount() == 2) {
-            insertRegion.add("\t * @param <R>  the first generic type");
-            insertRegion.add("\t * @param <S>  the second generic type");
-            insertRegion.add("\t * @param cls1  the first generic type");
-            insertRegion.add("\t * @param cls2  the second generic type");
+            addLine(1, " * @param <R>  the first generic type");
+            addLine(1, " * @param <S>  the second generic type");
+            addLine(1, " * @param cls1  the first generic type");
+            addLine(1, " * @param cls2  the second generic type");
         } else if (data.getTypeGenericCount() == 3) {
-            insertRegion.add("\t * @param <R>  the first generic type");
-            insertRegion.add("\t * @param <S>  the second generic type");
-            insertRegion.add("\t * @param <T>  the second generic type");
-            insertRegion.add("\t * @param cls1  the first generic type");
-            insertRegion.add("\t * @param cls2  the second generic type");
-            insertRegion.add("\t * @param cls3  the third generic type");
+            addLine(1, " * @param <R>  the first generic type");
+            addLine(1, " * @param <S>  the second generic type");
+            addLine(1, " * @param <T>  the second generic type");
+            addLine(1, " * @param cls1  the first generic type");
+            addLine(1, " * @param cls2  the second generic type");
+            addLine(1, " * @param cls3  the third generic type");
         }
-        insertRegion.add("\t * @return the meta-bean, not null");
-        insertRegion.add("\t */");
-        insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+        addLine(1, " * @return the meta-bean, not null");
+        addLine(1, " */");
+        addLine(1, "@SuppressWarnings(\"unchecked\")");
         String[] typeNames = new String[] {"R", "S", "T"};
         if (data.getTypeGenericCount() == 1) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
+            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
                     "> " + data.getTypeRaw() + ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
         } else if (data.getTypeGenericCount() == 2) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
+            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
                     ", S" + data.getTypeGenericExtends(1, typeNames) + "> " + data.getTypeRaw() +
                     ".Meta<R, S> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2) {");
         } else if (data.getTypeGenericCount() == 3) {
-            insertRegion.add("\tpublic static <R" + data.getTypeGenericExtends(0, typeNames) +
+            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
                     ", S" + data.getTypeGenericExtends(1, typeNames) +
                     ", T" + data.getTypeGenericExtends(2, typeNames) +
                     "> " + data.getTypeRaw() +
                     ".Meta<R, S, T> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2, Class<T> cls3) {");
         }
-        insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
-        insertRegion.add("\t}");
+        addLine(2, "return " + data.getTypeRaw() + ".Meta.INSTANCE;");
+        addLine(1, "}");
     }
 
     private void generateSerializationVersionId() {
         if (data.isSerializable() && !data.isManualSerializationId()) {
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The serialization version id.");
-            insertRegion.add("\t */");
-            insertRegion.add("\tprivate static final long serialVersionUID = 1L;");
-            insertRegion.add("");
+            addLine(1, "/**");
+            addLine(1, " * The serialization version id.");
+            addLine(1, " */");
+            addLine(1, "private static final long serialVersionUID = 1L;");
+            addBlankLine();
         }
     }
 
     private void generatePropertyChangeSupportField() {
         if (data.isPropertyChangeSupport()) {
             data.ensureImport(CLASS_PROPERTY_CHANGE_SUPPORT);
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The property change support field.");
-            insertRegion.add("\t */");
-            insertRegion.add("\tprivate final transient PropertyChangeSupport " + config.getPrefix() + "propertyChangeSupport = new PropertyChangeSupport(this);");
-            insertRegion.add("");
+            addLine(1, "/**");
+            addLine(1, " * The property change support field.");
+            addLine(1, " */");
+            addLine(1, "private final transient PropertyChangeSupport " + config.getPrefix() + "propertyChangeSupport = new PropertyChangeSupport(this);");
+            addBlankLine();
         }
     }
 
     private void generateHashCodeField() {
         if (data.isCacheHashCode()) {
-            insertRegion.add("\t/**");
-            insertRegion.add("\t * The cached hash code, using the racy single-check idiom.");
-            insertRegion.add("\t */");
-            insertRegion.add("\tprivate transient int " + config.getPrefix() + "cacheHashCode;");
-            insertRegion.add("");
+            addLine(1, "/**");
+            addLine(1, " * The cached hash code, using the racy single-check idiom.");
+            addLine(1, " */");
+            addLine(1, "private transient int " + config.getPrefix() + "cacheHashCode;");
+            addBlankLine();
         }
     }
 
     private void generateMetaBean() {
         if (data.isMetaScopePrivate() || data.isBeanStyleMinimal()) {
-            insertRegion.add("\t@Override");
+            addLine(1, "@Override");
             if (data.isBeanStyleLightOrMinimal()) {
                 data.ensureImport(TypedMetaBean.class);
                 if (data.isTypeGeneric()) {
-                    insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                    addLine(1, "@SuppressWarnings(\"unchecked\")");
                 }
-                insertRegion.add("\tpublic TypedMetaBean<" + data.getTypeNoExtends() + "> metaBean() {");
+                addLine(1, "public TypedMetaBean<" + data.getTypeNoExtends() + "> metaBean() {");
                 if (data.isTypeGeneric()) {
-                    insertRegion.add("\t\treturn (TypedMetaBean<" + data.getTypeNoExtends() + ">) META_BEAN;");
+                    addLine(2, "return (TypedMetaBean<" + data.getTypeNoExtends() + ">) META_BEAN;");
                 } else {
-                    insertRegion.add("\t\treturn META_BEAN;");
+                    addLine(2, "return META_BEAN;");
                 }
             } else {
                 data.ensureImport(MetaBean.class);
-                insertRegion.add("\tpublic MetaBean metaBean() {");
-                insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
+                addLine(1, "public MetaBean metaBean() {");
+                addLine(2, "return " + data.getTypeRaw() + ".Meta.INSTANCE;");
             }
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(1, "}");
+            addBlankLine();
         } else {
             if (data.isTypeGeneric()) {
-                insertRegion.add("\t@SuppressWarnings(\"unchecked\")");
+                addLine(1, "@SuppressWarnings(\"unchecked\")");
             }
-            insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic " + data.getTypeRaw() +
+            addLine(1, "@Override");
+            addLine(1, "public " + data.getTypeRaw() +
                     ".Meta" + data.getTypeGenericName(true) + " metaBean() {");
-            insertRegion.add("\t\treturn " + data.getTypeRaw() + ".Meta.INSTANCE;");
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(2, "return " + data.getTypeRaw() + ".Meta.INSTANCE;");
+            addLine(1, "}");
+            addBlankLine();
         }
     }
 
     private void generateGettersSetters() {
         for (PropertyGen prop : properties) {
             generateSeparator();
-            insertRegion.addAll(prop.generateGetter());
+            addLines(prop.generateGetter());
             if (data.isMutable()) {
-                insertRegion.addAll(prop.generateSetter());
+                addLines(prop.generateSetter());
             }
             if (data.isBeanStyleGenerateProperties()) {
-                insertRegion.addAll(prop.generateProperty());
+                addLines(prop.generateProperty());
             }
         }
     }
@@ -734,28 +727,28 @@ class BeanGen {
             if (data.isConstructable()) {
                 List<PropertyGen> nonDerived = nonDerivedProperties();
                 if (nonDerived.size() > 0) {
-                    insertRegion.add("\t/**");
-                    insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
-                    insertRegion.add("\t * @return the mutable builder, not null");
-                    insertRegion.add("\t */");
+                    addLine(1, "/**");
+                    addLine(1, " * Returns a builder that allows this bean to be mutated.");
+                    addLine(1, " * @return the mutable builder, not null");
+                    addLine(1, " */");
                     if (data.isRootClass() == false) {
-                        insertRegion.add("\t@Override");
+                        addLine(1, "@Override");
                     }
-                    insertRegion.add("\t" + data.getEffectiveBuilderScope() + "Builder" + data.getTypeGenericName(true) + " toBuilder() {");
-                    insertRegion.add("\t\treturn new Builder" + data.getTypeGenericDiamond() + "(this);");
-                    insertRegion.add("\t}");
-                    insertRegion.add("");
+                    addLine(1, data.getEffectiveBuilderScope() + "Builder" + data.getTypeGenericName(true) + " toBuilder() {");
+                    addLine(2, "return new Builder" + data.getTypeGenericDiamond() + "(this);");
+                    addLine(1, "}");
+                    addBlankLine();
                 }
             } else {
-                insertRegion.add("\t/**");
-                insertRegion.add("\t * Returns a builder that allows this bean to be mutated.");
-                insertRegion.add("\t * @return the mutable builder, not null");
-                insertRegion.add("\t */");
+                addLine(1, "/**");
+                addLine(1, " * Returns a builder that allows this bean to be mutated.");
+                addLine(1, " * @return the mutable builder, not null");
+                addLine(1, " */");
                 if (data.isRootClass() == false) {
-                    insertRegion.add("\t@Override");
+                    addLine(1, "@Override");
                 }
-                insertRegion.add("\tpublic abstract Builder" + data.getTypeGenericName(true) + " toBuilder();");
-                insertRegion.add("");
+                addLine(1, "public abstract Builder" + data.getTypeGenericName(true) + " toBuilder();");
+                addBlankLine();
             }
         }
     }
@@ -766,38 +759,38 @@ class BeanGen {
                 (data.isRootClass() == false && data.isConstructable() == false)) {
             return;
         }
-        insertRegion.add("\t@Override");
+        addLine(1, "@Override");
         if (data.isImmutable()) {
-            insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
-            insertRegion.add("\t\treturn this;");
+            addLine(1, "public " + data.getTypeNoExtends() + " clone() {");
+            addLine(2, "return this;");
         } else {
             data.ensureImport(JodaBeanUtils.class);
-            insertRegion.add("\tpublic " + data.getTypeNoExtends() + " clone() {");
-            insertRegion.add("\t\treturn JodaBeanUtils.cloneAlways(this);");
+            addLine(1, "public " + data.getTypeNoExtends() + " clone() {");
+            addLine(2, "return JodaBeanUtils.cloneAlways(this);");
         }
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(1, "}");
+        addBlankLine();
     }
 
     private void generateEquals() {
         if (data.isManualEqualsHashCode()) {
             return;
         }
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic boolean equals(Object obj) {");
-        insertRegion.add("\t\tif (obj == this) {");
-        insertRegion.add("\t\t\treturn true;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("\t\tif (obj != null && obj.getClass() == this.getClass()) {");
+        addLine(1, "@Override");
+        addLine(1, "public boolean equals(Object obj) {");
+        addLine(2, "if (obj == this) {");
+        addLine(3, "return true;");
+        addLine(2, "}");
+        addLine(2, "if (obj != null && obj.getClass() == this.getClass()) {");
         List<PropertyGen> nonDerived = nonDerivedEqualsHashCodeProperties();
         if (nonDerived.size() == 0) {
             if (data.isSubClass()) {
-                insertRegion.add("\t\t\treturn super.equals(obj);");
+                addLine(3, "return super.equals(obj);");
             } else {
-                insertRegion.add("\t\t\treturn true;");
+                addLine(3, "return true;");
             }
         } else {
-            insertRegion.add("\t\t\t" + data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
+            addLine(3, data.getTypeWildcard() + " other = (" + data.getTypeWildcard() + ") obj;");
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
                 String getter = equalsHashCodeFieldAccessor(prop);
@@ -806,56 +799,56 @@ class BeanGen {
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
                     equals = "(" + getter + " == other." + getter + ")";
                 }
-                insertRegion.add(
-                        (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +
+                addLine(
+                        0, (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +
                         (data.isSubClass() || i < nonDerived.size() - 1 ? " &&" : ";"));
             }
             if (data.isSubClass()) {
-                insertRegion.add("\t\t\t\t\tsuper.equals(obj);");
+                addLine(5, "super.equals(obj);");
             }
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("\t\treturn false;");
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addLine(2, "return false;");
+        addLine(1, "}");
+        addBlankLine();
     }
 
     private void generateHashCode() {
         if (data.isManualEqualsHashCode()) {
             return;
         }
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic int hashCode() {");
+        addLine(1, "@Override");
+        addLine(1, "public int hashCode() {");
         if (data.isCacheHashCode()) {
-            insertRegion.add("\t\tint hash = " + config.getPrefix() + "cacheHashCode;");
-            insertRegion.add("\t\tif (hash == 0) {");
+            addLine(2, "int hash = " + config.getPrefix() + "cacheHashCode;");
+            addLine(2, "if (hash == 0) {");
             if (data.isSubClass()) {
-                insertRegion.add("\t\t\thash = 7;");
+                addLine(3, "hash = 7;");
             } else {
-                insertRegion.add("\t\t\thash = getClass().hashCode();");
+                addLine(3, "hash = getClass().hashCode();");
             }
             generateHashCodeContent("\t\t\t");
             if (data.isSubClass()) {
-                insertRegion.add("\t\t\thash = hash ^ super.hashCode();");
+                addLine(3, "hash = hash ^ super.hashCode();");
             }
-            insertRegion.add("\t\t\t" + config.getPrefix() + "cacheHashCode = hash;");
-            insertRegion.add("\t\t}");
-            insertRegion.add("\t\treturn hash;");
+            addLine(3, config.getPrefix() + "cacheHashCode = hash;");
+            addLine(2, "}");
+            addLine(2, "return hash;");
         } else {
             if (data.isSubClass()) {
-                insertRegion.add("\t\tint hash = 7;");
+                addLine(2, "int hash = 7;");
             } else {
-                insertRegion.add("\t\tint hash = getClass().hashCode();");
+                addLine(2, "int hash = getClass().hashCode();");
             }
             generateHashCodeContent("\t\t");
             if (data.isSubClass()) {
-                insertRegion.add("\t\treturn hash ^ super.hashCode();");
+                addLine(2, "return hash ^ super.hashCode();");
             } else {
-                insertRegion.add("\t\treturn hash;");
+                addLine(2, "return hash;");
             }
         }
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(1, "}");
+        addBlankLine();
     }
 
     private void generateHashCodeContent(String indent) {
@@ -864,7 +857,7 @@ class BeanGen {
             PropertyGen prop = nonDerived.get(i);
             String getter = equalsHashCodeFieldAccessor(prop);
             data.ensureImport(JodaBeanUtils.class);
-            insertRegion.add(indent + "hash = hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
+            addLine(0, indent + "hash = hash * 31 + JodaBeanUtils.hashCode(" + getter + ");");
         }
     }
 
@@ -882,58 +875,58 @@ class BeanGen {
         }
         List<PropertyGen> props = toStringProperties();
         if (data.isRootClass() && data.isTypeFinal()) {
-            insertRegion.add("\t@Override");
-            insertRegion.add("\tpublic String toString() {");
-            insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
-            insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
+            addLine(1, "@Override");
+            addLine(1, "public String toString() {");
+            addLine(2, "StringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
+            addLine(2, "buf.append(\"" + data.getTypeRaw() + "{\");");
             if (props.size() > 0) {
                 data.ensureImport(JodaBeanUtils.class);
                 for (int i = 0; i < props.size(); i++) {
                     PropertyGen prop = props.get(i);
                     String getter = toStringFieldAccessor(prop);
-                    insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() + "\").append('=')" + 
+                    addLine(2, "buf.append(\"" + prop.getData().getPropertyName() + "\").append('=')" + 
                             join(i, props,
                                     ".append(" + getter + ").append(',').append(' ');",
                                     ".append(JodaBeanUtils.toString(" + getter + "));"));
                 }
             }
-            insertRegion.add("\t\tbuf.append('}');");
-            insertRegion.add("\t\treturn buf.toString();");
-            insertRegion.add("\t}");
-            insertRegion.add("");
+            addLine(2, "buf.append('}');");
+            addLine(2, "return buf.toString();");
+            addLine(1, "}");
+            addBlankLine();
             return;
         }
         
-        insertRegion.add("\t@Override");
-        insertRegion.add("\tpublic String toString() {");
-        insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
-        insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
-        insertRegion.add("\t\tint len = buf.length();");
-        insertRegion.add("\t\ttoString(buf);");
-        insertRegion.add("\t\tif (buf.length() > len) {");
-        insertRegion.add("\t\t\tbuf.setLength(buf.length() - 2);");
-        insertRegion.add("\t\t}");
-        insertRegion.add("\t\tbuf.append('}');");
-        insertRegion.add("\t\treturn buf.toString();");
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(1, "@Override");
+        addLine(1, "public String toString() {");
+        addLine(2, "StringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
+        addLine(2, "buf.append(\"" + data.getTypeRaw() + "{\");");
+        addLine(2, "int len = buf.length();");
+        addLine(2, "toString(buf);");
+        addLine(2, "if (buf.length() > len) {");
+        addLine(3, "buf.setLength(buf.length() - 2);");
+        addLine(2, "}");
+        addLine(2, "buf.append('}');");
+        addLine(2, "return buf.toString();");
+        addLine(1, "}");
+        addBlankLine();
         
         if (data.isSubClass()) {
-            insertRegion.add("\t@Override");
+            addLine(1, "@Override");
         }
-        insertRegion.add("\tprotected void toString(StringBuilder buf) {");
+        addLine(1, "protected void toString(StringBuilder buf) {");
         if (data.isSubClass()) {
-            insertRegion.add("\t\tsuper.toString(buf);");
+            addLine(2, "super.toString(buf);");
         }
         for (int i = 0; i < props.size(); i++) {
             PropertyGen prop = props.get(i);
             String getter = toStringFieldAccessor(prop);
             data.ensureImport(JodaBeanUtils.class);
-            insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
+            addLine(2, "buf.append(\"" + prop.getData().getPropertyName() +
                     "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(1, "}");
+        addBlankLine();
     }
 
     private String toStringFieldAccessor(PropertyGen prop) {
@@ -952,14 +945,14 @@ class BeanGen {
             return;
         }
         generateSeparator();
-        insertRegion.add("\t/**");
-        insertRegion.add("\t * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+        addLine(1, "/**");
+        addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
         if (data.isTypeGeneric()) {
             for (int j = 0; j < data.getTypeGenericCount(); j++) {
-                insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+                addLine(1, " * @param " + data.getTypeGenericName(j, true) + "  the type");
             }
         }
-        insertRegion.add("\t */");
+        addLine(1, " */");
         String superMeta;
         if (data.isSubClass()) {
             superMeta = data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true);
@@ -969,28 +962,28 @@ class BeanGen {
         }
         String finalType = data.isTypeFinal() ? "final " : "";
         if (data.isTypeGeneric()) {
-            insertRegion.add("\t" + data.getEffectiveMetaScope() + "static " + finalType + 
+            addLine(1, data.getEffectiveMetaScope() + "static " + finalType + 
                     "class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
         } else {
-            insertRegion.add("\t" + data.getEffectiveMetaScope() + "static " + finalType + 
+            addLine(1, data.getEffectiveMetaScope() + "static " + finalType + 
                     "class Meta extends " + superMeta + " {");
         }
-        insertRegion.add("\t\t/**");
-        insertRegion.add("\t\t * The singleton instance of the meta-bean.");
-        insertRegion.add("\t\t */");
+        addLine(2, "/**");
+        addLine(2, " * The singleton instance of the meta-bean.");
+        addLine(2, " */");
         if (data.isTypeGeneric()) {
-            insertRegion.add("\t\t@SuppressWarnings(\"rawtypes\")");
+            addLine(2, "@SuppressWarnings(\"rawtypes\")");
         }
-        insertRegion.add("\t\tstatic final Meta INSTANCE = new Meta();");
-        insertRegion.add("");
+        addLine(2, "static final Meta INSTANCE = new Meta();");
+        addBlankLine();
         generateMetaPropertyConstants();
         generateMetaPropertyMapSetup();
-        insertRegion.add("\t\t/**");
-        insertRegion.add("\t\t * Restricted constructor.");
-        insertRegion.add("\t\t */");
-        insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Meta() {");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "/**");
+        addLine(2, " * Restricted constructor.");
+        addLine(2, " */");
+        addLine(2, data.getNestedClassConstructorScope() + " Meta() {");
+        addLine(2, "}");
+        addBlankLine();
         generateMetaPropertyGet();
         generateMetaBuilder();
         generateMetaBeanType();
@@ -1001,116 +994,116 @@ class BeanGen {
         generateMetaGetPropertyValue();
         generateMetaSetPropertyValue();
         generateMetaValidate();
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(1, "}");
+        addBlankLine();
     }
 
     private void generateMetaPropertyConstants() {
         for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generateMetaPropertyConstant());
+            addLines(prop.generateMetaPropertyConstant());
         }
     }
 
     private void generateMetaPropertyMapSetup() {
         data.ensureImport(MetaProperty.class);
         data.ensureImport(DirectMetaPropertyMap.class);
-        insertRegion.add("\t\t/**");
-        insertRegion.add("\t\t * The meta-properties.");
-        insertRegion.add("\t\t */");
-        insertRegion.add("\t\tprivate final Map<String, MetaProperty<?>> " + config.getPrefix() + "metaPropertyMap$ = new DirectMetaPropertyMap(");
+        addLine(2, "/**");
+        addLine(2, " * The meta-properties.");
+        addLine(2, " */");
+        addLine(2, "private final Map<String, MetaProperty<?>> " + config.getPrefix() + "metaPropertyMap$ = new DirectMetaPropertyMap(");
         if (data.isSubClass()) {
-            insertRegion.add("\t\t\t\tthis, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
+            addLine(4, "this, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
         } else {
-            insertRegion.add("\t\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
+            addLine(4, "this, null" + (properties.size() == 0 ? ");" : ","));
         }
         for (int i = 0; i < properties.size(); i++) {
-            insertRegion.add("\t\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"" + joinComma(i, properties, ");"));
+            addLine(4, "\"" + properties.get(i).getData().getPropertyName() + "\"" + joinComma(i, properties, ");"));
         }
-        insertRegion.add("");
+        addBlankLine();
     }
 
     private void generateMetaBuilder() {
         if (!data.isConstructable()) {
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tpublic boolean isBuildable() {");
-            insertRegion.add("\t\t\treturn false;");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
+            addLine(2, "@Override");
+            addLine(2, "public boolean isBuildable() {");
+            addLine(3, "return false;");
+            addLine(2, "}");
+            addBlankLine();
         }
-        insertRegion.add("\t\t@Override");
+        addLine(2, "@Override");
         if (data.isImmutable() && data.isEffectiveBuilderScopeVisible() == false) {
             data.ensureImport(BeanBuilder.class);
-            insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
+            addLine(2, "public BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
+                addLine(3, "return new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
             } else {
-                insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+                addLine(3, "throw new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
         } else if (data.isImmutable() || (data.isMutable() && data.isBuilderScopeVisible())) {
-            insertRegion.add("\t\tpublic " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
+            addLine(2, "public " + data.getTypeRaw() + ".Builder" + data.getTypeGenericName(true) + " builder() {");
             if (data.isConstructable()) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
+                addLine(3, "return new " + data.getTypeRaw() + ".Builder" + data.getTypeGenericDiamond() + "();");
             } else {
-                insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+                addLine(3, "throw new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
         } else {
             data.ensureImport(BeanBuilder.class);
-            insertRegion.add("\t\tpublic BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
+            addLine(2, "public BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
                 data.ensureImport(DirectBeanBuilder.class);
-                insertRegion.add("\t\t\treturn new DirectBeanBuilder<>(new " + data.getTypeNoExtends() + "());");
+                addLine(3, "return new DirectBeanBuilder<>(new " + data.getTypeNoExtends() + "());");
             } else {
-                insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
+                addLine(3, "throw new UnsupportedOperationException(\"" + data.getTypeRaw() + " is an abstract class\");");
             }
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateMetaBeanType() {
         if (data.isTypeGeneric()) {
-            insertRegion.add("\t\t@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
+            addLine(2, "@SuppressWarnings({\"unchecked\", \"rawtypes\" })");
         }
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Class<? extends " + data.getTypeNoExtends() + "> beanType() {");
+        addLine(2, "@Override");
+        addLine(2, "public Class<? extends " + data.getTypeNoExtends() + "> beanType() {");
         if (data.isTypeGeneric()) {
-            insertRegion.add("\t\t\treturn (Class) " + data.getTypeRaw() + ".class;");
+            addLine(3, "return (Class) " + data.getTypeRaw() + ".class;");
         } else {
-            insertRegion.add("\t\t\treturn " + data.getTypeNoExtends() + ".class;");
+            addLine(3, "return " + data.getTypeNoExtends() + ".class;");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateMetaPropertyGet() {
         if (properties.size() > 0) {
             data.ensureImport(MetaProperty.class);
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tprotected MetaProperty<?> metaPropertyGet(String propertyName) {");
-            insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+            addLine(2, "@Override");
+            addLine(2, "protected MetaProperty<?> metaPropertyGet(String propertyName) {");
+            addLine(3, "switch (propertyName.hashCode()) {");
             for (PropertyGen prop : properties) {
-                insertRegion.addAll(prop.generateMetaPropertyGetCase());
+                addLines(prop.generateMetaPropertyGetCase());
             }
-            insertRegion.add("\t\t\t}");
-            insertRegion.add("\t\t\treturn super.metaPropertyGet(propertyName);");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
+            addLine(3, "}");
+            addLine(3, "return super.metaPropertyGet(propertyName);");
+            addLine(2, "}");
+            addBlankLine();
         }
     }
 
     private void generateMetaPropertyMap() {
         data.ensureImport(Map.class);
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Map<String, MetaProperty<?>> metaPropertyMap() {");
-        insertRegion.add("\t\t\treturn " + config.getPrefix() + "metaPropertyMap$;");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "@Override");
+        addLine(2, "public Map<String, MetaProperty<?>> metaPropertyMap() {");
+        addLine(3, "return " + config.getPrefix() + "metaPropertyMap$;");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateMetaPropertyMethods() {
         if (data.isBeanStyleGenerateMetaProperties()) {
             for (PropertyGen prop : properties) {
-                insertRegion.addAll(prop.generateMetaProperty());
+                addLines(prop.generateMetaProperty());
             }
         }
     }
@@ -1121,16 +1114,16 @@ class BeanGen {
             return;
         }
         data.ensureImport(Bean.class);
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tprotected Object propertyGet(Bean bean, String propertyName, boolean quiet) {");
-        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+        addLine(2, "@Override");
+        addLine(2, "protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {");
+        addLine(3, "switch (propertyName.hashCode()) {");
         for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generatePropertyGetCase());
+            addLines(prop.generatePropertyGetCase());
         }
-        insertRegion.add("\t\t\t}");
-        insertRegion.add("\t\t\treturn super.propertyGet(bean, propertyName, quiet);");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(3, "}");
+        addLine(3, "return super.propertyGet(bean, propertyName, quiet);");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateMetaSetPropertyValue() {
@@ -1139,15 +1132,15 @@ class BeanGen {
         }
         data.ensureImport(Bean.class);
         if (data.isImmutable()) {
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tprotected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {");
-            insertRegion.add("\t\t\tmetaProperty(propertyName);");
-            insertRegion.add("\t\t\tif (quiet) {");
-            insertRegion.add("\t\t\t\treturn;");
-            insertRegion.add("\t\t\t}");
-            insertRegion.add("\t\t\tthrow new UnsupportedOperationException(\"Property cannot be written: \" + propertyName);");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
+            addLine(2, "@Override");
+            addLine(2, "protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {");
+            addLine(3, "metaProperty(propertyName);");
+            addLine(3, "if (quiet) {");
+            addLine(4, "return;");
+            addLine(3, "}");
+            addLine(3, "throw new UnsupportedOperationException(\"Property cannot be written: \" + propertyName);");
+            addLine(2, "}");
+            addBlankLine();
             return;
         }
         
@@ -1157,18 +1150,18 @@ class BeanGen {
                     ((prop.isGeneric() && prop.isGenericWildcardParamType() == false) || data.isTypeGeneric()));
         }
         if (generics) {
-            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+            addLine(2, "@SuppressWarnings(\"unchecked\")");
         }
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tprotected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {");
-        insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+        addLine(2, "@Override");
+        addLine(2, "protected void propertySet(Bean bean, String propertyName, Object newValue, boolean quiet) {");
+        addLine(3, "switch (propertyName.hashCode()) {");
         for (PropertyGen prop : properties) {
-            insertRegion.addAll(prop.generatePropertySetCase());
+            addLines(prop.generatePropertySetCase());
         }
-        insertRegion.add("\t\t\t}");
-        insertRegion.add("\t\t\tsuper.propertySet(bean, propertyName, newValue, quiet);");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(3, "}");
+        addLine(3, "super.propertySet(bean, propertyName, newValue, quiet);");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateMetaValidate() {
@@ -1176,22 +1169,22 @@ class BeanGen {
             return;
         }
         data.ensureImport(Bean.class);
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tprotected void validate(Bean bean) {");
+        addLine(2, "@Override");
+        addLine(2, "protected void validate(Bean bean) {");
         if (data.isValidated()) {
             for (PropertyGen prop : properties) {
                 if (prop.getData().isValidated()) {
-                    insertRegion.add("\t\t\t" + prop.getData().getValidationMethodName() +
+                    addLine(3, prop.getData().getValidationMethodName() +
                             "(((" + data.getTypeWildcard() + ") bean)." + prop.getData().getFieldName() +
                             ", \"" + prop.getData().getPropertyName() + "\");");
                 }
             }
         }
         if (data.isSubClass()) {
-            insertRegion.add("\t\t\tsuper.validate(bean);");
+            addLine(3, "super.validate(bean);");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     //-----------------------------------------------------------------------
@@ -1202,14 +1195,14 @@ class BeanGen {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         generateSeparator();
         String finalType = data.isTypeFinal() ? "final " : "";
-        insertRegion.add("\t/**");
-        insertRegion.add("\t * The bean-builder for {@code " + data.getTypeRaw() + "}.");
+        addLine(1, "/**");
+        addLine(1, " * The bean-builder for {@code " + data.getTypeRaw() + "}.");
         if (data.isTypeGeneric()) {
             for (int j = 0; j < data.getTypeGenericCount(); j++) {
-                insertRegion.add("\t * @param " + data.getTypeGenericName(j, true) + "  the type");
+                addLine(1, " * @param " + data.getTypeGenericName(j, true) + "  the type");
             }
         }
-        insertRegion.add("\t */");
+        addLine(1, " */");
         String superBuilder;
         if (data.isSubClass()) {
             superBuilder = data.getSuperTypeRaw() + ".Builder" + data.getSuperTypeGeneric(true);
@@ -1221,17 +1214,17 @@ class BeanGen {
             superBuilder = "DirectPrivateBeanBuilder<" + data.getTypeNoExtends() + ">";
         }
         if (data.isConstructable()) {
-            insertRegion.add("\t" + data.getEffectiveBuilderScope() + "static " + finalType +
+            addLine(1, data.getEffectiveBuilderScope() + "static " + finalType +
                     "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
         } else {
-            insertRegion.add("\t" + data.getEffectiveBuilderScope() + "abstract static " + finalType +
+            addLine(1, data.getEffectiveBuilderScope() + "abstract static " + finalType +
                     "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
         }
         if (nonDerived.size() > 0) {
-            insertRegion.add("");
+            addBlankLine();
             generateBuilderProperties();
         }
-        insertRegion.add("");
+        addBlankLine();
         generateBuilderConstructorNoArgs();
         generateBuilderConstructorCopy();
         generateIndentedSeparator();
@@ -1245,72 +1238,72 @@ class BeanGen {
         generateBuilderPropertySetMethods();
         generateIndentedSeparator();
         generateBuilderToString();
-        insertRegion.add("\t}");
-        insertRegion.add("");
+        addLine(1, "}");
+        addBlankLine();
     }
 
     private void generateBuilderConstructorNoArgs() {
-        insertRegion.add("\t\t/**");
-        insertRegion.add("\t\t * Restricted constructor.");
-        insertRegion.add("\t\t */");
-        insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder() {");
+        addLine(2, "/**");
+        addLine(2, " * Restricted constructor.");
+        addLine(2, " */");
+        addLine(2, data.getNestedClassConstructorScope() + " Builder() {");
         if (data.getImmutableDefaults() != null) {
-            insertRegion.add("\t\t\t" + data.getImmutableDefaults() + "(this);");
+            addLine(3, data.getImmutableDefaults() + "(this);");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateBuilderConstructorCopy() {
         if (data.isEffectiveBuilderScopeVisible()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             if (nonDerived.size() > 0) {
-                insertRegion.add("\t\t/**");
-                insertRegion.add("\t\t * Restricted copy constructor.");
-                insertRegion.add("\t\t * @param beanToCopy  the bean to copy from, not null");
-                insertRegion.add("\t\t */");
-                insertRegion.add("\t\t" + data.getNestedClassConstructorScope() + " Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
+                addLine(2, "/**");
+                addLine(2, " * Restricted copy constructor.");
+                addLine(2, " * @param beanToCopy  the bean to copy from, not null");
+                addLine(2, " */");
+                addLine(2, data.getNestedClassConstructorScope() + " Builder(" + data.getTypeNoExtends() + " beanToCopy) {");
                 if (data.isSubClass()) {
-                    insertRegion.add("\t\t\tsuper(beanToCopy);");
+                    addLine(3, "super(beanToCopy);");
                 }
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.addAll(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
+                    addLines(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
                 }
-                insertRegion.add("\t\t}");
-                insertRegion.add("");
+                addLine(2, "}");
+                addBlankLine();
             }
         }
     }
 
     private void generateBuilderProperties() {
         for (PropertyGen prop : nonDerivedProperties()) {
-            insertRegion.addAll(prop.generateBuilderField());
+            addLines(prop.generateBuilderField());
         }
     }
 
     private void generateBuilderGet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Object get(String propertyName) {");
+        addLine(2, "@Override");
+        addLine(2, "public Object get(String propertyName) {");
         if (nonDerived.size() > 0) {
-            insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+            addLine(3, "switch (propertyName.hashCode()) {");
             for (PropertyGen prop : nonDerived) {
-                insertRegion.addAll(prop.generateBuilderFieldGet());
+                addLines(prop.generateBuilderFieldGet());
             }
-            insertRegion.add("\t\t\t\tdefault:");
+            addLine(4, "default:");
             if (data.isRootClass()) {
                 data.ensureImport(NoSuchElementException.class);
-                insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+                addLine(5, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
             } else {
-                insertRegion.add("\t\t\t\t\treturn super.get(propertyName);");
+                addLine(5, "return super.get(propertyName);");
             }
-            insertRegion.add("\t\t\t}");
+            addLine(3, "}");
         } else {
             data.ensureImport(NoSuchElementException.class);
-            insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateBuilderSet() {
@@ -1320,71 +1313,71 @@ class BeanGen {
                 .findAny()
                 .isPresent();
         if (generics) {
-            insertRegion.add("\t\t@SuppressWarnings(\"unchecked\")");
+            addLine(2, "@SuppressWarnings(\"unchecked\")");
         }
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(String propertyName, Object newValue) {");
+        addLine(2, "@Override");
+        addLine(2, "public Builder" + data.getTypeGenericName(true) + " set(String propertyName, Object newValue) {");
         if (nonDerived.size() > 0) {
-            insertRegion.add("\t\t\tswitch (propertyName.hashCode()) {");
+            addLine(3, "switch (propertyName.hashCode()) {");
             for (PropertyGen prop : nonDerived) {
-                insertRegion.addAll(prop.generateBuilderFieldSet());
+                addLines(prop.generateBuilderFieldSet());
             }
-            insertRegion.add("\t\t\t\tdefault:");
+            addLine(4, "default:");
             if (data.isRootClass()) {
                 data.ensureImport(NoSuchElementException.class);
-                insertRegion.add("\t\t\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+                addLine(5, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
             } else {
-                insertRegion.add("\t\t\t\t\tsuper.set(propertyName, newValue);");
-                insertRegion.add("\t\t\t\t\tbreak;");
+                addLine(5, "super.set(propertyName, newValue);");
+                addLine(5, "break;");
             }
-            insertRegion.add("\t\t\t}");
-            insertRegion.add("\t\t\treturn this;");
+            addLine(3, "}");
+            addLine(3, "return this;");
         } else {
             data.ensureImport(NoSuchElementException.class);
-            insertRegion.add("\t\t\tthrow new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateBuilderOtherSets() {
         if (data.isEffectiveBuilderScopeVisible()) {
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tpublic Builder" + data.getTypeGenericName(true) + " set(MetaProperty<?> property, Object value) {");
-            insertRegion.add("\t\t\tsuper.set(property, value);");
-            insertRegion.add("\t\t\treturn this;");
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
+            addLine(2, "@Override");
+            addLine(2, "public Builder" + data.getTypeGenericName(true) + " set(MetaProperty<?> property, Object value) {");
+            addLine(3, "super.set(property, value);");
+            addLine(3, "return this;");
+            addLine(2, "}");
+            addBlankLine();
         }
     }
 
     private void generateBuilderBuild() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic " + data.getTypeRaw() + data.getTypeGenericName(true) + " build() {");
+        addLine(2, "@Override");
+        addLine(2, "public " + data.getTypeRaw() + data.getTypeGenericName(true) + " build() {");
         if (data.getImmutablePreBuild() != null) {
-            insertRegion.add("\t\t\t" + data.getImmutablePreBuild() + "(this);");
+            addLine(3, data.getImmutablePreBuild() + "(this);");
         }
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS) {
             if (nonDerived.size() == 0) {
-                insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "();");
+                addLine(3, "return new " + data.getTypeWithDiamond() + "();");
             } else {
-                insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "(");
+                addLine(3, "return new " + data.getTypeWithDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + joinComma(i, nonDerived, ");"));
+                    addLine(5, nonDerived.get(i).generateBuilderFieldName() + joinComma(i, nonDerived, ");"));
                 }
             }
         } else if (data.getConstructorStyle() == CONSTRUCTOR_BY_BUILDER) {
-            insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "(this);");
+            addLine(3, "return new " + data.getTypeWithDiamond() + "(this);");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     private void generateBuilderPropertySetMethods() {
         if (data.isEffectiveBuilderScopeVisible()) {
             for (PropertyGen prop : nonDerivedProperties()) {
-                insertRegion.addAll(prop.generateBuilderSetMethod());
+                addLines(prop.generateBuilderSetMethod());
             }
         }
     }
@@ -1392,62 +1385,79 @@ class BeanGen {
     private void generateBuilderToString() {
         List<PropertyGen> nonDerived = toStringProperties();
         if (data.isImmutable() && data.isTypeFinal()) {
-            insertRegion.add("\t\t@Override");
-            insertRegion.add("\t\tpublic String toString() {");
+            addLine(2, "@Override");
+            addLine(2, "public String toString() {");
             if (nonDerived.size() == 0) {
-                insertRegion.add("\t\t\treturn \"" + data.getTypeRaw() + ".Builder{}\";");
+                addLine(3, "return \"" + data.getTypeRaw() + ".Builder{}\";");
             } else {
-                insertRegion.add("\t\t\tStringBuilder buf = new StringBuilder(" + (nonDerived.size() * 32 + 32) + ");");
-                insertRegion.add("\t\t\tbuf.append(\"" + data.getTypeRaw() + ".Builder{\");");
+                addLine(3, "StringBuilder buf = new StringBuilder(" + (nonDerived.size() * 32 + 32) + ");");
+                addLine(3, "buf.append(\"" + data.getTypeRaw() + ".Builder{\");");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
                     String getter = nonDerived.get(i).generateBuilderFieldName();
                     data.ensureImport(JodaBeanUtils.class);
                     String base = "\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(JodaBeanUtils.toString(" + getter + "))";
-                    insertRegion.add(base + join(i, nonDerived, ".append(',').append(' ');", ";"));
+                    addLine(0, base + join(i, nonDerived, ".append(',').append(' ');", ";"));
                 }
-                insertRegion.add("\t\t\tbuf.append('}');");
-                insertRegion.add("\t\t\treturn buf.toString();");
+                addLine(3, "buf.append('}');");
+                addLine(3, "return buf.toString();");
             }
-            insertRegion.add("\t\t}");
-            insertRegion.add("");
+            addLine(2, "}");
+            addBlankLine();
             return;
         }
         
-        insertRegion.add("\t\t@Override");
-        insertRegion.add("\t\tpublic String toString() {");
-        insertRegion.add("\t\t\tStringBuilder buf = new StringBuilder(" + (nonDerived.size() * 32 + 32) + ");");
-        insertRegion.add("\t\t\tbuf.append(\"" + data.getTypeRaw() + ".Builder{\");");
-        insertRegion.add("\t\t\tint len = buf.length();");
-        insertRegion.add("\t\t\ttoString(buf);");
-        insertRegion.add("\t\t\tif (buf.length() > len) {");
-        insertRegion.add("\t\t\t\tbuf.setLength(buf.length() - 2);");
-        insertRegion.add("\t\t\t}");
-        insertRegion.add("\t\t\tbuf.append('}');");
-        insertRegion.add("\t\t\treturn buf.toString();");
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "@Override");
+        addLine(2, "public String toString() {");
+        addLine(3, "StringBuilder buf = new StringBuilder(" + (nonDerived.size() * 32 + 32) + ");");
+        addLine(3, "buf.append(\"" + data.getTypeRaw() + ".Builder{\");");
+        addLine(3, "int len = buf.length();");
+        addLine(3, "toString(buf);");
+        addLine(3, "if (buf.length() > len) {");
+        addLine(4, "buf.setLength(buf.length() - 2);");
+        addLine(3, "}");
+        addLine(3, "buf.append('}');");
+        addLine(3, "return buf.toString();");
+        addLine(2, "}");
+        addBlankLine();
         
         if (data.isSubClass()) {
-            insertRegion.add("\t\t@Override");
+            addLine(2, "@Override");
         }
-        insertRegion.add("\t\tprotected void toString(StringBuilder buf) {");
+        addLine(2, "protected void toString(StringBuilder buf) {");
         if (data.isSubClass()) {
-            insertRegion.add("\t\t\tsuper.toString(buf);");
+            addLine(3, "super.toString(buf);");
         }
         for (int i = 0; i < nonDerived.size(); i++) {
             PropertyGen prop = nonDerived.get(i);
             String getter = nonDerived.get(i).generateBuilderFieldName();
             data.ensureImport(JodaBeanUtils.class);
-            insertRegion.add("\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
+            addLine(3, "buf.append(\"" + prop.getData().getPropertyName() +
                     "\").append('=').append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');");
         }
-        insertRegion.add("\t\t}");
-        insertRegion.add("");
+        addLine(2, "}");
+        addBlankLine();
     }
 
     //-----------------------------------------------------------------------
+    private void addLines(List<String> lines) {
+        insertRegion.addAll(lines);
+    }
+
+    private void addLine(int tabCount, String line) {
+        StringBuilder buf = new StringBuilder(line.length() + tabCount);
+        for (int i = 0; i < tabCount; i++) {
+            buf.append('\t');
+        }
+        buf.append(line);
+        insertRegion.add(buf.toString());
+    }
+
+    private void addBlankLine() {
+        insertRegion.add("");
+    }
+
     private static String join(int i, List<?> list, String join, String end) {
         return (i < list.size() - 1 ? join : end);
     }
