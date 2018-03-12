@@ -277,11 +277,13 @@ class BeanGen {
                 }
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
-                    insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
+                    insertRegion.add("\t\t\t" +
+                            prop.getBuilderType() + " " + prop.getData().getPropertyName() + joinComma(i, nonDerived, ") {"));
                 }
                 insertRegion.add("\t\treturn new " + data.getTypeWithDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.add("\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
+                    insertRegion.add("\t\t\t" +
+                            nonDerived.get(i).generateBuilderFieldName() + joinComma(i, nonDerived, ");"));
                 }
             }
             insertRegion.add("\t}");
@@ -404,17 +406,16 @@ class BeanGen {
                     data.ensureImport(CLASS_CONSTRUCTOR_PROPERTIES);
                     StringBuilder buf = new StringBuilder();
                     for (int i = 0; i < nonDerived.size(); i++) {
-                        if (i > 0) {
-                            buf.append(", ");
-                        }
                         buf.append('"').append(nonDerived.get(i).getData().getPropertyName()).append('"');
+                        buf.append(join(i, nonDerived, ", ", ""));
                     }
                     insertRegion.add("\t@ConstructorProperties({" + buf.toString() + "})");
                 }
                 insertRegion.add("\t" + scope + data.getTypeRaw() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
                     PropertyGen prop = nonDerived.get(i);
-                    insertRegion.add("\t\t\t" + prop.getBuilderType() + " " + prop.getData().getPropertyName() + (i < nonDerived.size() - 1 ? "," : ") {"));
+                    insertRegion.add("\t\t\t" +
+                            prop.getBuilderType() + " " + prop.getData().getPropertyName() + joinComma(i, nonDerived, ") {"));
                 }
                 // validate (mutable light beans call setters which validate)
                 if (!(data.isMutable() && data.isBeanStyleLight())) {
@@ -489,7 +490,7 @@ class BeanGen {
                     if (specialInit) {
                         for (int i = 0; i < nonDerived.size(); i++) {
                             insertRegion.add(
-                                    "\t\t\t\t\t" + nonDerived.get(i).generateInit() + (i < nonDerived.size() - 1 ? "," : ");"));
+                                    "\t\t\t\t\t" + nonDerived.get(i).generateInit() + joinComma(i, nonDerived, ");"));
                         }
                     } else {
                         insertRegion.add("\t\t\t\t\tnew Object[0]);");
@@ -520,11 +521,8 @@ class BeanGen {
                     insertRegion.add(builderLambda + ",");
                     if (data.isImmutable()) {
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            if (i < nonDerived.size() - 1) {
-                                insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + ",");
-                            } else {
-                                insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + ");");
-                            }
+                            insertRegion.add("\t\t\t\t\t" +
+                                    nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, ");"));
                         }
                     } else {
                         data.ensureImport(Arrays.class);
@@ -532,19 +530,13 @@ class BeanGen {
                         data.ensureImport(BiConsumer.class);
                         insertRegion.add("\t\t\t\t\tArrays.<Function<" + data.getTypeRaw() + ", Object>>asList(");
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            if (i < nonDerived.size() - 1) {
-                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + ",");
-                            } else {
-                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaGetter() + "),");
-                            }
+                            insertRegion.add("\t\t\t\t\t\t\t" +
+                                    nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, "),"));
                         }
                         insertRegion.add("\t\t\t\t\tArrays.<BiConsumer<" + data.getTypeRaw() + ", Object>>asList(");
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            if (i < nonDerived.size() - 1) {
-                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaSetter() + ",");
-                            } else {
-                                insertRegion.add("\t\t\t\t\t\t\t" + nonDerived.get(i).generateLambdaSetter() + "));");
-                            }
+                            insertRegion.add("\t\t\t\t\t\t\t" +
+                                    nonDerived.get(i).generateLambdaSetter() + joinComma(i, nonDerived, "));"));
                         }
                     }
                 }
@@ -608,11 +600,8 @@ class BeanGen {
         } else {
             insertRegion.add("\t\t\t\t\tnew String[] {");
             for (int i = 0; i < nonDerived.size(); i++) {
-                if (i < nonDerived.size() - 1) {
-                    insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\",");
-                } else {
-                    insertRegion.add("\t\t\t\t\t\t\t\"" + nonDerived.get(i).getData().getFieldName() + "\"},");
-                }
+                insertRegion.add("\t\t\t\t\t\t\t\"" +
+                        nonDerived.get(i).getData().getFieldName() + join(i, nonDerived, "\",", "\"},"));
             }
         }
     }
@@ -897,16 +886,15 @@ class BeanGen {
             insertRegion.add("\tpublic String toString() {");
             insertRegion.add("\t\tStringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
             insertRegion.add("\t\tbuf.append(\"" + data.getTypeRaw() + "{\");");
-            for (int i = 0; i < props.size(); i++) {
-                PropertyGen prop = props.get(i);
-                String getter = toStringFieldAccessor(prop);
-                if (i < props.size() - 1) {
-                    insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
-                            "\").append('=').append(" + getter + ").append(',').append(' ');");
-                } else {
-                    data.ensureImport(JodaBeanUtils.class);
-                    insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() +
-                            "\").append('=').append(JodaBeanUtils.toString(" + getter + "));");
+            if (props.size() > 0) {
+                data.ensureImport(JodaBeanUtils.class);
+                for (int i = 0; i < props.size(); i++) {
+                    PropertyGen prop = props.get(i);
+                    String getter = toStringFieldAccessor(prop);
+                    insertRegion.add("\t\tbuf.append(\"" + prop.getData().getPropertyName() + "\").append('=')" + 
+                            join(i, props,
+                                    ".append(" + getter + ").append(',').append(' ');",
+                                    ".append(JodaBeanUtils.toString(" + getter + "));"));
                 }
             }
             insertRegion.add("\t\tbuf.append('}');");
@@ -1036,9 +1024,7 @@ class BeanGen {
             insertRegion.add("\t\t\t\tthis, null" + (properties.size() == 0 ? ");" : ","));
         }
         for (int i = 0; i < properties.size(); i++) {
-            String line = "\t\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"";
-            line += (i + 1 == properties.size() ? ");" : ",");
-            insertRegion.add(line);
+            insertRegion.add("\t\t\t\t\"" + properties.get(i).getData().getPropertyName() + "\"" + joinComma(i, properties, ");"));
         }
         insertRegion.add("");
     }
@@ -1385,7 +1371,7 @@ class BeanGen {
             } else {
                 insertRegion.add("\t\t\treturn new " + data.getTypeWithDiamond() + "(");
                 for (int i = 0; i < nonDerived.size(); i++) {
-                    insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + (i < nonDerived.size() - 1 ? "," : ");"));
+                    insertRegion.add("\t\t\t\t\t" + nonDerived.get(i).generateBuilderFieldName() + joinComma(i, nonDerived, ");"));
                 }
             }
         } else if (data.getConstructorStyle() == CONSTRUCTOR_BY_BUILDER) {
@@ -1419,11 +1405,7 @@ class BeanGen {
                     data.ensureImport(JodaBeanUtils.class);
                     String base = "\t\t\tbuf.append(\"" + prop.getData().getPropertyName() +
                             "\").append('=').append(JodaBeanUtils.toString(" + getter + "))";
-                    if (i < nonDerived.size() - 1) {
-                        insertRegion.add(base + ".append(',').append(' ');");
-                    } else {
-                        insertRegion.add(base + ";");
-                    }
+                    insertRegion.add(base + join(i, nonDerived, ".append(',').append(' ');", ";"));
                 }
                 insertRegion.add("\t\t\tbuf.append('}');");
                 insertRegion.add("\t\t\treturn buf.toString();");
@@ -1466,6 +1448,14 @@ class BeanGen {
     }
 
     //-----------------------------------------------------------------------
+    private static String join(int i, List<?> list, String join, String end) {
+        return (i < list.size() - 1 ? join : end);
+    }
+
+    private static String joinComma(int i, List<?> list, String end) {
+        return join(i, list, ",", end);
+    }
+
     boolean isBean() {
         return properties != null;
     }
