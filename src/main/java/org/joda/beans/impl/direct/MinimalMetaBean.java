@@ -21,9 +21,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -50,6 +52,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     private final Supplier<BeanBuilder<T>> builderSupplier;
     /** The meta-property instances of the bean. */
     private final Map<String, MetaProperty<?>> metaPropertyMap;
+    /** The aliases. */
+    private final Map<String, String> aliasMap;
 
     /**
      * Obtains an instance of the meta-bean for immutable beans.
@@ -234,6 +238,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
+        this.aliasMap = new HashMap<>();
     }
 
     // determine the field names by reflection
@@ -250,6 +255,39 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         return fieldNames.toArray(new String[fieldNames.size()]);
     }
 
+    private MinimalMetaBean(
+            Class<T> beanType,
+            Supplier<BeanBuilder<T>> builderSupplier,
+            Map<String, MetaProperty<?>> metaPropertyMap,
+            Map<String, String> aliasMap) {
+
+        this.beanType = beanType;
+        this.builderSupplier = builderSupplier;
+        this.metaPropertyMap = metaPropertyMap;
+        this.aliasMap = aliasMap;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adds an alias to the meta-bean.
+     * <p>
+     * When using {@link #metaProperty(String)}, the alias will return the
+     * meta-property of the real name.
+     * 
+     * @param alias  the alias
+     * @param realName  the real name
+     * @return the new meta-bean instance
+     * @throws IllegalArgumentException if the realName is invalid
+     */
+    public MinimalMetaBean<T> withAlias(String alias, String realName) {
+        if (!metaPropertyMap.containsKey(realName)) {
+            throw new IllegalArgumentException("Invalid property name: " + realName);
+        }
+        Map<String, String> aliasMap = new HashMap<>(this.aliasMap);
+        aliasMap.put(alias, realName);
+        return new MinimalMetaBean<>(beanType, builderSupplier, metaPropertyMap, aliasMap);
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public boolean isBuildable() {
@@ -264,6 +302,16 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     @Override
     public Class<T> beanType() {
         return beanType;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> MetaProperty<R> metaProperty(String propertyName) {
+        MetaProperty<?> mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
+        if (mp == null) {
+            throw new NoSuchElementException("Unknown property: " + propertyName);
+        }
+        return (MetaProperty<R>) mp;
     }
 
     @Override

@@ -65,7 +65,7 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
     /**
      * The city.
      */
-    @PropertyDefinition(validate = "notNull")
+    @PropertyDefinition(validate = "notNull", alias = "place")
     private final String city;
     /**
      * The owner.
@@ -119,7 +119,8 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
                     b -> b.getCity(),
                     b -> b.getOwner(),
                     b -> b.getList(),
-                    b -> b.currency);
+                    b -> b.currency)
+                    .withAlias("place", "city");
 
     /**
      * The meta-bean for {@code MinimalImmutable}.
@@ -355,6 +356,7 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
                 case 3566226:  // town
                     return town;
                 case 3053931:  // city
+                case 106748167:  // place (alias)
                     return city;
                 case 106164915:  // owner
                     return owner;
@@ -384,6 +386,7 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
                     this.town = (String) newValue;
                     break;
                 case 3053931:  // city
+                case 106748167:  // place (alias)
                     this.city = (String) newValue;
                     break;
                 case 106164915:  // owner

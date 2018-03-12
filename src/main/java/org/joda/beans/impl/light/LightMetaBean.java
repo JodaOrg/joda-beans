@@ -26,10 +26,12 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -65,6 +67,8 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     private final Class<T> beanType;
     /** The meta-property instances of the bean. */
     private final Map<String, MetaProperty<?>> metaPropertyMap;
+    /** The aliases. */
+    private final Map<String, String> aliasMap;
     /** The constructor to use. */
     private final Function<Object[], T> constructorFn;
     /** The construction data array. */
@@ -176,6 +180,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         }
 
         this.metaPropertyMap = Collections.unmodifiableMap(map);
+        this.aliasMap = new HashMap<>();
         Constructor<T> construct = findConstructor(beanType, propertyTypes);
         construct.setAccessible(true);
         this.constructionData = buildConstructionData(construct);
@@ -298,10 +303,13 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     /**
      * Constructor.
-     * 
-     * @param beanType  the bean type, not null
      */
-    private LightMetaBean(Class<T> beanType, MethodHandles.Lookup lookup, String[] fieldNames, Object[] defaultValues) {
+    private LightMetaBean(
+            Class<T> beanType,
+            MethodHandles.Lookup lookup,
+            String[] fieldNames,
+            Object[] defaultValues) {
+
         if (beanType == null) {
             throw new NullPointerException("Bean class must not be null");
         }
@@ -387,9 +395,27 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
+        this.aliasMap = new HashMap<>();
         this.constructionData = defaultValues;
         MethodHandle handle = findConstructorHandle(beanType, lookup, constructor);
         this.constructorFn = args -> build(handle, args);
+    }
+
+    /**
+     * Constructor used internally.
+     */
+    private LightMetaBean(
+            Class<T> beanType,
+            Map<String, MetaProperty<?>> metaPropertyMap,
+            Map<String, String> aliasMap,
+            Function<Object[], T> constructorFn,
+            Object[] constructionData) {
+        
+        this.beanType = beanType;
+        this.metaPropertyMap = metaPropertyMap;
+        this.aliasMap = aliasMap;
+        this.constructorFn = constructorFn;
+        this.constructionData = constructionData;
     }
 
     // finds a method on class or public method on super-type
@@ -535,6 +561,27 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Adds an alias to the meta-bean.
+     * <p>
+     * When using {@link #metaProperty(String)}, the alias will return the
+     * meta-property of the real name.
+     * 
+     * @param alias  the alias
+     * @param realName  the real name
+     * @return the new meta-bean instance
+     * @throws IllegalArgumentException if the realName is invalid
+     */
+    public LightMetaBean<T> withAlias(String alias, String realName) {
+        if (!metaPropertyMap.containsKey(realName)) {
+            throw new IllegalArgumentException("Invalid property name: " + realName);
+        }
+        Map<String, String> aliasMap = new HashMap<>(this.aliasMap);
+        aliasMap.put(alias, realName);
+        return new LightMetaBean<>(beanType, metaPropertyMap, aliasMap, constructorFn, constructionData);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean isBuildable() {
         return true;
@@ -548,6 +595,16 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     @Override
     public Class<T> beanType() {
         return beanType;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> MetaProperty<R> metaProperty(String propertyName) {
+        MetaProperty<?> mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
+        if (mp == null) {
+            throw new NoSuchElementException("Unknown property: " + propertyName);
+        }
+        return (MetaProperty<R>) mp;
     }
 
     @Override

@@ -66,6 +66,15 @@ public class TestMinimal {
         assertEquals(bean.metaBean().metaPropertyExists("address"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
         
+        assertEquals(bean.metaBean().metaPropertyExists("place"), false);
+        assertEquals(bean.metaBean().metaProperty("place"), bean.metaBean().metaProperty("city"));
+        MinimalImmutable builtWithAlias = MinimalImmutable.meta().builder()
+                .set("place", "Place")
+                .set("street", "Park Lane")
+                .set("owner", person)
+                .build();
+        assertEquals(builtWithAlias.getCity(), "Place");
+        
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
         assertEquals(mp.propertyType(), int.class);
         assertEquals(mp.declaringType(), MinimalImmutable.class);
@@ -151,6 +160,14 @@ public class TestMinimal {
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
         assertEquals(bean.metaBean().metaPropertyExists("address"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        
+        assertEquals(bean.metaBean().metaPropertyExists("place"), false);
+        assertEquals(bean.metaBean().metaProperty("place"), bean.metaBean().metaProperty("city"));
+        MinimalMutable builtWithAlias = MinimalMutable.meta().builder()
+                .set("place", "Place")
+                .set("street", "Park Lane")
+                .build();
+        assertEquals(builtWithAlias.getCity(), "Place");
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
         assertEquals(mp.propertyType(), int.class);

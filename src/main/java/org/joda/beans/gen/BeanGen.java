@@ -15,6 +15,8 @@
  */
 package org.joda.beans.gen;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -472,6 +474,8 @@ class BeanGen {
                 addLine(1, "private static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
             }
             List<PropertyGen> nonDerived = nonDerivedProperties();
+            List<PropertyGen> aliases = nonDerived.stream().filter(p -> p.getData().getAlias() != null).collect(toList());
+            boolean hasAliases = aliases.isEmpty();
             if (data.isBeanStyleLight()) {
                 // light
                 data.ensureImport(LightMetaBean.class);
@@ -486,11 +490,16 @@ class BeanGen {
                     generateFieldNames(nonDerived);
                     if (specialInit) {
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            addLine(
-                                    0, "\t\t\t\t\t" + nonDerived.get(i).generateInit() + joinComma(i, nonDerived, ");"));
+                            addLine(5, nonDerived.get(i).generateInit() +
+                                    joinComma(i, nonDerived, ")" + (hasAliases ? ";" : "")));
                         }
                     } else {
-                        addLine(5, "new Object[0]);");
+                        addLine(5, "new Object[0])" + (hasAliases ? ";" : ""));
+                    }
+                    for (int i = 0; i < aliases.size(); i++) {
+                        PropertyGen prop = aliases.get(i);
+                        addLine(5, ".withAlias(\"" + prop.getData().getAlias() + "\", \"" +
+                                prop.getData().getPropertyName() + "\")" + join(i, aliases, "", ";"));
                     }
                 }
             } else {
@@ -498,27 +507,28 @@ class BeanGen {
                 addLine(3, "MinimalMetaBean.of(");
                 addLine(5, data.getTypeRaw() + ".class,");
                 generateFieldNames(nonDerived);
-                String builderLambda = "\t\t\t\t\t() -> new " + data.getTypeRaw() + ".Builder()";
+                String builderLambda = "() -> new " + data.getTypeRaw() + ".Builder()";
                 if (data.isSkipBuilderGeneration()) {
                     data.ensureImport(BasicBeanBuilder.class);
-                    builderLambda = "\t\t\t\t\t() -> new BasicBeanBuilder<>(new " + data.getTypeWithDiamond() + "())";
+                    builderLambda = "() -> new BasicBeanBuilder<>(new " + data.getTypeWithDiamond() + "())";
                 }
                 if (nonDerived.isEmpty()) {
                     if (data.isImmutable()) {
-                        addLine(0, builderLambda + ");");
+                        addLine(5, builderLambda + ");");
                     } else {
                         data.ensureImport(Collections.class);
                         data.ensureImport(Function.class);
                         data.ensureImport(BiConsumer.class);
-                        addLine(0, builderLambda + ",");
+                        addLine(5, builderLambda + ",");
                         addLine(5, "Collections.<Function<" + data.getTypeRaw() + ", Object>>emptyList(),");
                         addLine(5, "Collections.<BiConsumer<" + data.getTypeRaw() + ", Object>>emptyList());");
                     }
                 } else {
-                    addLine(0, builderLambda + ",");
+                    addLine(5, builderLambda + ",");
                     if (data.isImmutable()) {
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            addLine(5, nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, ");"));
+                            addLine(5, nonDerived.get(i).generateLambdaGetter() + joinComma(i, nonDerived, ")" +
+                                    (hasAliases ? ";" : "")));
                         }
                     } else {
                         data.ensureImport(Arrays.class);
@@ -530,8 +540,14 @@ class BeanGen {
                         }
                         addLine(5, "Arrays.<BiConsumer<" + data.getTypeRaw() + ", Object>>asList(");
                         for (int i = 0; i < nonDerived.size(); i++) {
-                            addLine(7, nonDerived.get(i).generateLambdaSetter() + joinComma(i, nonDerived, "));"));
+                            addLine(7, nonDerived.get(i).generateLambdaSetter() +
+                                    joinComma(i, nonDerived, "))" + (hasAliases ? ";" : "")));
                         }
+                    }
+                    for (int i = 0; i < aliases.size(); i++) {
+                        PropertyGen prop = aliases.get(i);
+                        addLine(5, ".withAlias(\"" + prop.getData().getAlias() + "\", \"" +
+                                prop.getData().getPropertyName() + "\")" + join(i, aliases, "", ";"));
                     }
                 }
             }

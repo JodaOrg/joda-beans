@@ -66,7 +66,7 @@ public final class MinimalMutable implements Bean, Serializable {
     /**
      * The city.
      */
-    @PropertyDefinition(validate = "notNull")
+    @PropertyDefinition(validate = "notNull", alias = "place")
     private String city;
     /**
      * The list.
@@ -123,7 +123,8 @@ public final class MinimalMutable implements Bean, Serializable {
                             (b, v) -> b.setTown((String) v),
                             (b, v) -> b.setCity((String) v),
                             (b, v) -> b.setList((List<String>) v),
-                            (b, v) -> b.setCurrency((Currency) v)));
+                            (b, v) -> b.setCurrency((Currency) v)))
+                    .withAlias("place", "city");
 
     /**
      * The meta-bean for {@code MinimalMutable}.

@@ -67,6 +67,15 @@ public class TestLight {
         assertEquals(bean.metaBean().metaPropertyExists("address"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
         
+        assertEquals(bean.metaBean().metaPropertyExists("place"), false);
+        assertEquals(bean.metaBean().metaProperty("place"), bean.metaBean().metaProperty("city"));
+        LightImmutable builtWithAlias = LightImmutable.meta().builder()
+                .set("place", "Place")
+                .set("street", "Park Lane")
+                .set("owner", person)
+                .build();
+        assertEquals(builtWithAlias.getCity(), "Place");
+        
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
         assertEquals(mp.propertyType(), int.class);
         assertEquals(mp.declaringType(), LightImmutable.class);
@@ -161,6 +170,14 @@ public class TestLight {
         assertEquals(bean.metaBean().metaPropertyExists("town"), true);
         assertEquals(bean.metaBean().metaPropertyExists("address"), true);
         assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        
+        assertEquals(bean.metaBean().metaPropertyExists("place"), false);
+        assertEquals(bean.metaBean().metaProperty("place"), bean.metaBean().metaProperty("city"));
+        LightMutable builtWithAlias = LightMutable.meta().builder()
+                .set("place", "Place")
+                .set("street", "Park Lane")
+                .build();
+        assertEquals(builtWithAlias.getCity(), "Place");
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
         assertEquals(mp.propertyType(), int.class);

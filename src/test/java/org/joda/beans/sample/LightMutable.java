@@ -64,7 +64,7 @@ public final class LightMutable implements Bean, Serializable {
     /**
      * The city.
      */
-    @PropertyDefinition(validate = "notNull")
+    @PropertyDefinition(validate = "notNull", alias = "place")
     private String city;
     /**
      * The list.
@@ -118,7 +118,8 @@ public final class LightMutable implements Bean, Serializable {
                     null,
                     ImmutableList.of(),
                     null,
-                    null);
+                    null)
+                    .withAlias("place", "city");
 
     /**
      * The meta-bean for {@code LightMutable}.
