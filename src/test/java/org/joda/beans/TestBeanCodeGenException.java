@@ -15,21 +15,21 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
 import org.joda.beans.gen.BeanCodeGenException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test exception, message is parsed by plugins.
  */
-@Test
 public class TestBeanCodeGenException {
 
     private static final File FILE = new File(".");
 
+    @Test
     public void testMessage() {
         BeanCodeGenException test = new BeanCodeGenException("rubbish", FILE, 123);
         assertEquals(test.getMessage(), "Error in bean: " + FILE.toString() + ", Line: 123, Message: rubbish");

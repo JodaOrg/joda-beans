@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -26,14 +26,14 @@ import org.joda.beans.sample.AddressResult;
 import org.joda.beans.sample.CompanyAddress;
 import org.joda.beans.sample.CompanyAddressMidResult;
 import org.joda.beans.sample.CompanyAddressResult;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test property using Person.
  */
-@Test
 public class TestResult {
 
+    @Test
     public void test_bean() {
         Bean test = new AddressResult();
         
@@ -43,7 +43,7 @@ public class TestResult {
         assertEquals(test.property("docs").name(), "docs");
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
         Bean test = AddressResult.meta().builder().build();
         try {
@@ -55,6 +55,7 @@ public class TestResult {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaBean() {
         MetaBean test = AddressResult.meta();
         assertEquals(test.beanType(), AddressResult.class);
@@ -66,7 +67,7 @@ public class TestResult {
         assertEquals(test.metaProperty("resultType").name(), "resultType");
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_metaBean_invalidPropertyName() {
         MetaBean test = AddressResult.meta();
         try {
@@ -78,6 +79,7 @@ public class TestResult {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_genericType_abstract() {
         @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> test = AbstractResult.meta();
@@ -85,6 +87,7 @@ public class TestResult {
         assertEquals(JodaBeanUtils.collectionType(test.docs(), AbstractResult.class), Address.class);
     }
 
+    @Test
     public void test_genericType_Address() {
         AddressResult obj = new AddressResult();
         AddressResult.Meta test = AddressResult.meta();
@@ -93,6 +96,7 @@ public class TestResult {
         assertEquals(JodaBeanUtils.collectionType(test.docs(), AddressResult.class), Address.class);
     }
 
+    @Test
     public void test_genericType_CompanyAddress() {
         CompanyAddressResult obj = new CompanyAddressResult();
         CompanyAddressResult.Meta test = CompanyAddressResult.meta();
@@ -102,6 +106,7 @@ public class TestResult {
         assertEquals(JodaBeanUtils.collectionType(test.docs(), CompanyAddressResult.class), CompanyAddress.class);
     }
 
+    @Test
     public void test_genericType_CompanyAddressMid() {
         CompanyAddressMidResult obj = new CompanyAddressMidResult();
         CompanyAddressMidResult.Meta test = CompanyAddressMidResult.meta();

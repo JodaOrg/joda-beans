@@ -15,39 +15,41 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.RWOnlyBean;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test RWOnlyBean.
  */
-@Test
 public class TestRWOnlyBean extends RWOnlyBean {
 
+    @Test
     public void test_ro() {
         assertEquals(getRo(), null);
         assertEquals(ro().get(), null);
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void test_wo1() {
         setWo("woo");
         property("wo").get();
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void test_wo2() {
         setWo("woo");
         wo().get();
     }
 
+    @Test
     public void test_manualGet() {
         assertEquals(getManualGet(), "goo");
         assertEquals(manualGet().get(), "goo");
     }
 
+    @Test
     public void test_derived() {
         assertEquals(getDerived(), "drv");
         assertEquals(derived().get(), "drv");

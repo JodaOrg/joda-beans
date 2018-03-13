@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -25,12 +25,11 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.sample.CompanyAddress;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test property using Person.
  */
-@Test
 public class TestCompanyAddress {
 
     private static final int NUM_PROPERTIES = 5;
@@ -39,6 +38,7 @@ public class TestCompanyAddress {
     private static final String NUMBER = "number";
     private static final String COMPANY_NAME = "companyName";
 
+    @Test
     public void test_bean() {
         Bean test = CompanyAddress.meta().builder().build();
         
@@ -58,7 +58,7 @@ public class TestCompanyAddress {
         assertEquals(test.property(COMPANY_NAME).name(), COMPANY_NAME);
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
         Bean test = CompanyAddress.meta().builder().build();
         try {
@@ -70,6 +70,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaBean() {
         MetaBean test = CompanyAddress.meta();
         
@@ -95,7 +96,7 @@ public class TestCompanyAddress {
         assertEquals(map.containsKey(NUMBER), true);
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_metaBean_invalidPropertyName() {
         MetaBean test = CompanyAddress.meta();
         try {
@@ -107,6 +108,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_namedPropertyMethod_street() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.street();
@@ -123,6 +125,7 @@ public class TestCompanyAddress {
         assertEquals(test.get(), "C");
     }
 
+    @Test
     public void test_namedPropertyMethod_companyName() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.companyName();
@@ -140,6 +143,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_property_String_street() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.property(STREET);
@@ -156,6 +160,7 @@ public class TestCompanyAddress {
         assertEquals(test.get(), "C");
     }
 
+    @Test
     public void test_property_String_companyName() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.property(COMPANY_NAME);
@@ -173,6 +178,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_namedMetaPropertyMethod_street() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().street();
@@ -191,6 +197,7 @@ public class TestCompanyAddress {
         assertEquals(test.get(address), "C");
     }
 
+    @Test
     public void test_namedMetaPropertyMethod_companyName() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().companyName();
@@ -210,6 +217,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_String_street() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().metaProperty(STREET);
@@ -228,6 +236,7 @@ public class TestCompanyAddress {
         assertEquals(test.get(address), "C");
     }
 
+    @Test
     public void test_metaProperty_String_companyName() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().metaProperty(COMPANY_NAME);
@@ -247,6 +256,7 @@ public class TestCompanyAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_types() {
         MetaProperty<String> test = CompanyAddress.meta().companyName();
         
@@ -255,6 +265,7 @@ public class TestCompanyAddress {
         assertEquals(test.propertyGenericType(), String.class);
     }
 
+    @Test
     public void test_metaProperty_annotations() {
         MetaProperty<String> prop = CompanyAddress.meta().companyName();
         List<Annotation> test = prop.annotations();

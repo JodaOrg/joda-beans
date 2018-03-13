@@ -15,19 +15,19 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.TweakedPair;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test Pair.
  */
-@Test
 public class TestPair {
 
     @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void test_equalsHashCode() {
         // even though TwekedPair adds no new properties, we treat it as different
         // this can be avoided (see Git history) but at a performance cost
@@ -52,6 +52,7 @@ public class TestPair {
         assertEquals(b.equals(null), false);
     }
 
+    @Test
     public void test_toString() {
         Pair test = new Pair();
         test.setFirst("A");

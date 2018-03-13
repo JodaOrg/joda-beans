@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -25,12 +25,11 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.sample.Address;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test property using Person.
  */
-@Test
 public class TestAddress {
 
     private static final int NUM_PROPERTIES = 4;
@@ -38,6 +37,7 @@ public class TestAddress {
     private static final String CITY = "city";
     private static final String NUMBER = "number";
 
+    @Test
     public void test_bean() {
         Bean test = new Address();
         
@@ -55,7 +55,7 @@ public class TestAddress {
         assertEquals(test.property(NUMBER).name(), NUMBER);
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
         Bean test = Address.meta().builder().build();
         try {
@@ -66,6 +66,7 @@ public class TestAddress {
         }
     }
 
+    @Test
     public void test_builder1() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
@@ -86,6 +87,7 @@ public class TestAddress {
         assertEquals(test, expected);
     }
 
+    @Test
     public void test_builder2() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set(Address.meta().street(), "Main Street");
@@ -99,7 +101,7 @@ public class TestAddress {
         assertEquals(test, expected);
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_builder_getInvalidPropertyName() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         try {
@@ -110,7 +112,7 @@ public class TestAddress {
         }
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_builder_setInvalidPropertyName() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         try {
@@ -122,6 +124,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaBean() {
         MetaBean test = Address.meta();
         
@@ -149,7 +152,7 @@ public class TestAddress {
         assertEquals(map.get(STREET), Address.meta().street());
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_metaBean_invalidPropertyName() {
         MetaBean test = Address.meta();
         try {
@@ -161,6 +164,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_namedPropertyMethod() {
         Address address = new Address();
         Property<String> test = address.street();
@@ -178,6 +182,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_property_String() {
         Address address = new Address();
         Property<String> test = address.property(STREET);
@@ -195,6 +200,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_namedMetaPropertyMethod() {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().street();
@@ -214,6 +220,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_String() {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().metaProperty(STREET);
@@ -233,6 +240,7 @@ public class TestAddress {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_types() {
         MetaProperty<String> test = Address.meta().street();
         
@@ -241,6 +249,7 @@ public class TestAddress {
         assertEquals(test.propertyGenericType(), String.class);
     }
 
+    @Test
     public void test_metaProperty_annotations() {
         MetaProperty<String> prop = Address.meta().street();
         List<Annotation> test = prop.annotations();

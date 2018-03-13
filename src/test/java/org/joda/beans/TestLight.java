@@ -15,10 +15,10 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -30,7 +30,7 @@ import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.LightImmutable;
 import org.joda.beans.sample.LightMutable;
 import org.joda.beans.ser.JodaBeanSer;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -38,9 +38,9 @@ import com.google.common.collect.ImmutableList;
 /**
  * Test style=light.
  */
-@Test
 public class TestLight {
 
+    @Test
     public void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         LightImmutable bean = LightImmutable.meta().builder()
@@ -114,6 +114,7 @@ public class TestLight {
         }
     }
 
+    @Test
     public void test_immutable_order() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         LightImmutable bean = (LightImmutable) LightImmutable.meta().builder()
@@ -138,6 +139,7 @@ public class TestLight {
         assertEquals(mps.get(9).name(), "address");
     }
 
+    @Test
     public void test_mutable() {
         LightMutable bean = LightMutable.meta().builder()
                 .set("number", 12)
@@ -218,6 +220,7 @@ public class TestLight {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_immutableOld() {
         @SuppressWarnings("deprecation")
         LightMetaBean<LightImmutable> oldMeta = LightMetaBean.of(LightImmutable.class);

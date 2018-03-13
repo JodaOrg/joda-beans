@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +24,18 @@ import java.util.List;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.FinalFieldBean;
 import org.joda.beans.sample.Person;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test FinalFieldBean.
  */
-@Test
 public class TestFinalFieldBean {
 
     /** Bean. */
     private FinalFieldBean bean;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         bean = new FinalFieldBean("Hello");
         bean.setFieldNonFinal("Hello");
@@ -46,6 +45,7 @@ public class TestFinalFieldBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_finalString() {
         assertEquals(bean.getFieldFinal(), "Hello");
         assertEquals(bean.fieldFinal().get(), "Hello");
@@ -70,6 +70,7 @@ public class TestFinalFieldBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_nonFinalString() {
         assertEquals(bean.getFieldNonFinal(), "Hello");
         assertEquals(bean.fieldNonFinal().get(), "Hello");
@@ -88,6 +89,7 @@ public class TestFinalFieldBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_finalList() {
         List<String> list = new ArrayList<>();
         list.add("Hello");
@@ -111,6 +113,7 @@ public class TestFinalFieldBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_finalBean() {
         FlexiBean flexi = new FlexiBean();
         flexi.append("Hello", "World");
@@ -134,6 +137,7 @@ public class TestFinalFieldBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_finalPerson() {
         Person person = new Person();
         person.setSurname("Hello");

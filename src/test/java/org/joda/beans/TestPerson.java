@@ -15,9 +15,9 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -34,12 +34,11 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ClassAnnotation;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.SimpleAnnotation;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test property using Person.
  */
-@Test
 public class TestPerson {
 
     private static final int NUM_PROPERTIES = 8;
@@ -47,6 +46,7 @@ public class TestPerson {
     private static final String SURNAME = "surname";
     private static final String NUMBER_OF_CARS = "numberOfCars";
 
+    @Test
     public void test_bean() {
         Bean test = Person.meta().builder().build();
         
@@ -64,7 +64,7 @@ public class TestPerson {
         assertEquals(test.property(NUMBER_OF_CARS).name(), NUMBER_OF_CARS);
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_bean_invalidPropertyName() {
         Bean test = Person.meta().builder().build();
         try {
@@ -76,6 +76,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaBean() {
         MetaBean test = Person.meta();
         
@@ -101,7 +102,7 @@ public class TestPerson {
         assertEquals(map.containsKey(NUMBER_OF_CARS), true);
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_metaBean_invalidPropertyName() {
         MetaBean test = Person.meta();
         try {
@@ -112,6 +113,7 @@ public class TestPerson {
         }
     }
 
+    @Test
     public void test_metaBean_abstract() {
         MetaBean test = AbstractResult.meta();
         
@@ -126,6 +128,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_namedPropertyMethod() {
         Person person = new Person();
         Property<String> test = person.forename();
@@ -143,6 +146,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_property_String() {
         Person person = new Person();
         Property<String> test = person.property(FORENAME);
@@ -160,6 +164,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_namedMetaPropertyMethod() {
         Person person = new Person();
         MetaProperty<String> test = Person.meta().forename();
@@ -179,6 +184,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_String() {
         Person person = new Person();
         MetaProperty<String> test = Person.meta().metaProperty(FORENAME);
@@ -198,6 +204,7 @@ public class TestPerson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_types_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
@@ -212,6 +219,7 @@ public class TestPerson {
         assertEquals(actualTypes[0], Address.class);
     }
 
+    @Test
     public void test_BeanUtils_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
@@ -226,6 +234,7 @@ public class TestPerson {
         assertEquals(actualTypes[0], Address.class);
     }
 
+    @Test
     public void test_metaProperty_types_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
@@ -241,6 +250,7 @@ public class TestPerson {
         assertEquals(actualTypes[1], Address.class);
     }
 
+    @Test
     public void test_metaProperty_annotations_addressList() {
         MetaProperty<List<Address>> prop = Person.meta().addressList();
         List<Annotation> test = prop.annotations();
@@ -249,6 +259,7 @@ public class TestPerson {
         assertEquals(test.get(0) instanceof PropertyDefinition, true);
     }
 
+    @Test
     public void test_metaProperty_annotations_extensions() {
         MetaProperty<FlexiBean> prop = Person.meta().extensions();
         List<Annotation> annos = prop.annotations();
@@ -259,6 +270,7 @@ public class TestPerson {
         assertEquals(prop.annotation(PropertyDefinition.class).get(), "smart");
     }
 
+    @Test
     public void test_metaBean_annotations() {
         Person.Meta meta = Person.meta();
         List<Annotation> annos = meta.annotations();

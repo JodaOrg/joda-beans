@@ -15,10 +15,10 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.Person;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -46,87 +46,92 @@ import com.google.common.collect.ImmutableMultiset;
 /**
  * Test utils.
  */
-@Test
 public class TestJodaBeanUtils {
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_notNull_ok() {
         JodaBeanUtils.notNull("", "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notNull_notOk() {
         JodaBeanUtils.notNull(null, "name");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_notBlank_String_ok() {
         JodaBeanUtils.notBlank("Blah", "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notBlank_String_notOk_empty() {
         JodaBeanUtils.notBlank("", "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notBlank_String_notOk_allWhitespace() {
         JodaBeanUtils.notBlank(" ", "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notBlank_String_notOk_null() {
         JodaBeanUtils.notBlank((String) null, "name");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_notEmpty_String_ok() {
         JodaBeanUtils.notEmpty("Blah", "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notEmpty_String_notOk_empty() {
         JodaBeanUtils.notEmpty("", "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notEmpty_String_notOk_null() {
         JodaBeanUtils.notEmpty((String) null, "name");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_notEmpty_Collection_ok() {
         JodaBeanUtils.notEmpty(Arrays.asList("Blah"), "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notEmpty_Collection_notOk_empty() {
         JodaBeanUtils.notEmpty(new ArrayList<String>(), "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notEmpty_Collection_notOk_null() {
         JodaBeanUtils.notEmpty((Collection<?>) null, "name");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_notEmpty_Map_ok() {
         Map<String, String> map = new HashMap<>();
         map.put("A", "B");
         JodaBeanUtils.notEmpty(map, "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notEmpty_Map_notOk_empty() {
         JodaBeanUtils.notEmpty(new HashMap<String, String>(), "name");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_notEmpty_Map_notOk_null() {
         JodaBeanUtils.notEmpty((Map<?, ?>) null, "name");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_propertiesEqual_propertiesHashCode() {
         Pair a = new Pair();
         a.setFirst("A");
@@ -152,6 +157,7 @@ public class TestJodaBeanUtils {
     }
 
     //-------------------------------------------------------------------------
+    @Test
     public void test_equal() {
         assertEquals(JodaBeanUtils.equal("A", "AA".substring(0, 1)), true);
         assertEquals(JodaBeanUtils.equal("A", "B"), false);
@@ -159,6 +165,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(null, "A"), false);
     }
 
+    @Test
     public void test_equal_ObjectArray() {
         Object[] a1 = new Object[] {1, 2, 3};
         Object[] a2 = new Object[] {1, 2, 3};
@@ -170,6 +177,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_IntegerArray() {
         Object[] a1 = new Integer[] {1, 2, 3};
         Object[] a2 = new Integer[] {1, 2, 3};
@@ -181,6 +189,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_IntegerNumberArray() {
         Object[] a = new Integer[] {1, 2, 3};
         Object[] b = new Number[] {1, 2, 3};
@@ -188,6 +197,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a), false);
     }
 
+    @Test
     public void test_equal_IntegerIntArray() {
         Object[] a = new Integer[] {1, 2, 3};
         int[] b = new int[] {1, 2, 3};
@@ -195,6 +205,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a), false);
     }
 
+    @Test
     public void test_equal_IntArray() {
         int[] a1 = new int[] {1, 2, 3};
         int[] a2 = new int[] {1, 2, 3};
@@ -206,6 +217,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_MixedArrays() {
         byte[] b = new byte[] {1, 2, 3};
         short[] s = new short[] {1, 2, 3};
@@ -225,6 +237,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(d, i), false);
     }
 
+    @Test
     public void test_equal_LongArray() {
         long[] a1 = new long[] {1, 2, 3};
         long[] a2 = new long[] {1, 2, 3};
@@ -236,6 +249,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_DoubleArray() {
         double[] a1 = new double[] {1, 2, 3};
         double[] a2 = new double[] {1, 2, 3};
@@ -247,6 +261,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_FloatArray() {
         float[] a1 = new float[] {1, 2, 3};
         float[] a2 = new float[] {1, 2, 3};
@@ -258,6 +273,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_ShortArray() {
         short[] a1 = new short[] {1, 2, 3};
         short[] a2 = new short[] {1, 2, 3};
@@ -269,6 +285,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_CharArray() {
         char[] a1 = new char[] {1, 2, 3};
         char[] a2 = new char[] {1, 2, 3};
@@ -280,6 +297,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_ByteArray() {
         byte[] a1 = new byte[] {1, 2, 3};
         byte[] a2 = new byte[] {1, 2, 3};
@@ -291,6 +309,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(b, a1), false);
     }
 
+    @Test
     public void test_equal_BooleanArray() {
         boolean[] a1 = new boolean[] {true, false};
         boolean[] a2 = new boolean[] {true, false};
@@ -303,11 +322,13 @@ public class TestJodaBeanUtils {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_equal_floats() {
         assertEquals(JodaBeanUtils.equal(1.01f, 1.01f), true);
         assertEquals(JodaBeanUtils.equal(1.0f, 1.2f), false);
     }
 
+    @Test
     public void test_equalWithTolerance_floats_zeroTolerance() {
         double tolerance = 0d;
         assertEquals(JodaBeanUtils.equalWithTolerance(1.01f, 1.01f, tolerance), true);
@@ -326,6 +347,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equalWithTolerance(-Float.MAX_VALUE, Float.NEGATIVE_INFINITY, tolerance), false);
     }
 
+    @Test
     public void test_equalWithTolerance_floats_someTolerance() {
         double tolerance = 0.125d;
         assertEquals(JodaBeanUtils.equalWithTolerance(1f, 1.250001f, tolerance), false);
@@ -350,6 +372,7 @@ public class TestJodaBeanUtils {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_equal_doubles() {
         assertEquals(JodaBeanUtils.equal(1.01d, 1.01d), true);
         assertEquals(JodaBeanUtils.equal(1.0d, 1.2d), false);
@@ -367,6 +390,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equal(-Double.MAX_VALUE, Double.NEGATIVE_INFINITY), false);
     }
 
+    @Test
     public void test_equalWithTolerance_doubles_zeroTolerance() {
         double tolerance = 0d;
         assertEquals(JodaBeanUtils.equalWithTolerance(1.01d, 1.01d, tolerance), true);
@@ -385,6 +409,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.equalWithTolerance(-Double.MAX_VALUE, Double.NEGATIVE_INFINITY, tolerance), false);
     }
 
+    @Test
     public void test_equalWithTolerance_doubles_someTolerance() {
         double tolerance = 0.125d;
         assertEquals(JodaBeanUtils.equalWithTolerance(1d, 1.250001d, tolerance), false);
@@ -409,6 +434,7 @@ public class TestJodaBeanUtils {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_hashCode_Object() {
         assertEquals(JodaBeanUtils.hashCode("A"), "A".hashCode());
         assertEquals(JodaBeanUtils.hashCode(null), 0);
@@ -423,6 +449,7 @@ public class TestJodaBeanUtils {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_clone() {
         Person p = new Person();
         p.setForename("Stephen");
@@ -437,24 +464,28 @@ public class TestJodaBeanUtils {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_listType_Person_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
         assertEquals(JodaBeanUtils.collectionType(test, Person.class), Address.class);
     }
 
+    @Test
     public void test_listType_Person_addressesList() {
         MetaProperty<List<List<Address>>> test = Person.meta().addressesList();
         
         assertEquals(JodaBeanUtils.collectionType(test, Person.class), List.class);
     }
 
+    @Test
     public void test_multisetType_Person_otherAddressMap() {
         MetaProperty<ImmutableMultiset<String>> test = ImmPerson.meta().codeCounts();
         
         assertEquals(JodaBeanUtils.collectionType(test, Person.class), String.class);
     }
 
+    @Test
     public void test_integerType_Person_collectionTypeInvalid() {
         MetaProperty<Integer> test = ImmPerson.meta().age();
         
@@ -462,6 +493,7 @@ public class TestJodaBeanUtils {
     }
 
     //-------------------------------------------------------------------------
+    @Test
     public void test_collectionTypeTypes_valid() {
         MetaProperty<List<List<Address>>> test = Person.meta().addressesList();
         
@@ -469,6 +501,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.collectionTypeTypes(test, Person.class), expected);
     }
 
+    @Test
     public void test_collectionTypeTypes_invalidNoGenerics() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
@@ -476,6 +509,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.collectionTypeTypes(test, Person.class), expected);
     }
 
+    @Test
     public void test_collectionTypeTypes_invalidNotCollection() {
         MetaProperty<ImmutableMap<String, List<Integer>>> test = ImmAddress.meta().listNumericInMap();
         
@@ -484,6 +518,7 @@ public class TestJodaBeanUtils {
     }
 
     //-------------------------------------------------------------------------
+    @Test
     public void test_mapType_Person_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
@@ -491,6 +526,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), Address.class);
     }
 
+    @Test
     public void test_integerType_Person_mapKeyTypeInvalid() {
         MetaProperty<Integer> test = ImmPerson.meta().age();
         
@@ -498,6 +534,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), null);
     }
 
+    @Test
     public void test_collectionType_Person_mapKeyTypeInvalid() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
@@ -505,6 +542,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.mapValueType(test, Person.class), null);
     }
 
+    @Test
     public void test_mapType_wildcard() {
         MetaProperty<Map<? extends Number, String>> test = ImmGuava.meta().mapWildKey();
 
@@ -513,6 +551,7 @@ public class TestJodaBeanUtils {
     }
 
     //-------------------------------------------------------------------------
+    @Test
     public void test_mapValueTypeTypes_valid() {
         MetaProperty<ImmutableMap<String, List<Integer>>> test = ImmAddress.meta().listNumericInMap();
         
@@ -520,6 +559,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.mapValueTypeTypes(test, ImmAddress.class), expected);
     }
 
+    @Test
     public void test_mapValueTypeTypes_invalidNoGenerics() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
@@ -527,6 +567,7 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.mapValueTypeTypes(test, Person.class), expected);
     }
 
+    @Test
     public void test_mapValueTypeTypes_invalidNotMap() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
@@ -556,19 +597,19 @@ public class TestJodaBeanUtils {
         assertTrue(JodaBeanUtils.equalIgnoring(bean2, bean2));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void equalIgnoring_nullFirst() {
         Bean bean = createBean("124", "321", "name1");
         JodaBeanUtils.equalIgnoring(null, bean);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void equalIgnoring_nullSecond() {
         Bean bean = createBean("124", "321", "name1");
         JodaBeanUtils.equalIgnoring(bean, null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void equalIgnoring_nullArray() {
         Bean bean = createBean("124", "321", "name1");
         JodaBeanUtils.equalIgnoring(bean, bean, (MetaProperty<?>[]) null);
@@ -583,6 +624,7 @@ public class TestJodaBeanUtils {
     }
 
     //-------------------------------------------------------------------------
+    @Test
     public void test_compare_ascending() {
         Address address1 = new Address();
         address1.setOwner(new Person());
@@ -598,6 +640,7 @@ public class TestJodaBeanUtils {
         assertEquals(asc.compare(address2, address1) < 1, true);
     }
 
+    @Test
     public void test_compare_descending() {
         Address address1 = new Address();
         address1.setOwner(new Person());
@@ -613,12 +656,12 @@ public class TestJodaBeanUtils {
         assertEquals(desc.compare(address2, address1) > 1, true);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compare_ascending_null() {
         JodaBeanUtils.comparatorAscending(null);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void test_compare_descending_null() {
         JodaBeanUtils.comparatorDescending(null);
     }

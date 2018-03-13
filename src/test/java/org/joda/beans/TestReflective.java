@@ -15,20 +15,20 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.sample.ReflectiveMutable;
 import org.joda.beans.ser.JodaBeanSer;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test {@code ReflectiveMetaBean}.
  */
-@Test
 public class TestReflective {
 
+    @Test
     public void test_mutable() {
         ReflectiveMutable bean = (ReflectiveMutable) ReflectiveMutable.META_BEAN.builder()
                 .set("number", 12)

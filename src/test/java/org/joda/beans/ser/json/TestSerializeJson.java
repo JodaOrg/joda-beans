@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser.json;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -42,18 +42,22 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test property roundtrip using JSON.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestSerializeJson {
 
+    @Test
     public void test_writeAddress() throws IOException {
         Address address = SerTestHelper.testAddress();
         String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
@@ -65,6 +69,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, address);
     }
 
+    @Test
     public void test_writeImmAddress() throws IOException {
         ImmAddress address = SerTestHelper.testImmAddress();
         String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
@@ -76,6 +81,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, address);
     }
 
+    @Test
     public void test_writeImmOptional() throws IOException {
         ImmOptional optional = SerTestHelper.testImmOptional();
         String json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(optional);
@@ -87,6 +93,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, optional);
     }
 
+    @Test
     public void test_writeCollections() throws IOException {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         String json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
@@ -106,6 +113,7 @@ public class TestSerializeJson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_readWriteBeanEmptyChild_pretty() {
         FlexiBean bean = new FlexiBean();
         bean.set("element", "Test");
@@ -117,6 +125,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWriteBeanEmptyChild_compact() {
         FlexiBean bean = new FlexiBean();
         bean.set("element", "Test");
@@ -128,6 +137,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWriteJodaConvertWrapper() {
         JodaConvertWrapper wrapper = new JodaConvertWrapper();
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
@@ -140,6 +150,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
+    @Test
     public void test_readWriteJodaConvertBean() {
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
         String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -148,6 +159,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_boolean_true() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
@@ -157,6 +169,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_boolean_false() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.FALSE);
@@ -166,6 +179,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_long() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", (long) 6);
@@ -175,6 +189,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_short() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", (short) 6);
@@ -184,6 +199,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_byte() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", (byte) 6);
@@ -193,6 +209,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_float() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", (float) 6);
@@ -202,6 +219,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_float_NaN() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Float.NaN);
@@ -211,6 +229,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_float_NaN_asNull() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueFloat(Float.NaN);
@@ -219,6 +238,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_double() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", (double) 6);
@@ -228,6 +248,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_double_alternateFormat() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", (double) 6);
@@ -236,6 +257,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_double_NaN() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Double.NaN);
@@ -245,6 +267,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_double_Infinity() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Double.POSITIVE_INFINITY);
@@ -254,6 +277,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_read_double_integer_flexiWithTypeAnnotation() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Double.valueOf(6));
@@ -262,6 +286,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_read_double_fromInteger() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueDouble(6d);
@@ -270,12 +295,13 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_double_fromIntegerTooBig() {
         String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":123456789123456789}";
         JodaBeanSer.COMPACT.jsonReader().read(json);
     }
 
+    @Test
     public void test_read_float_fromInteger() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueFloat(6f);
@@ -284,12 +310,13 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_float_fromIntegerTooBig() {
         String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":123456789123456789}";
         JodaBeanSer.COMPACT.jsonReader().read(json);
     }
 
+    @Test
     public void test_read_double_NaN_asNull() {
         PrimitiveBean bean = new PrimitiveBean();
         bean.setValueDouble(Double.NaN);
@@ -299,6 +326,7 @@ public class TestSerializeJson {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_read_nonStandard_JodaConvertWrapper_expanded() {
         String json =
                 "{\"@bean\":\"org.joda.beans.sample.JodaConvertWrapper\",\"bean\":{\"base\":\"Hello\",\"extra\":9},\"description\":\"Weird\"}";
@@ -310,6 +338,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
+    @Test
     public void test_read_nonStandard_JodaConvertBean_flattened() {
         String json = "{\"@type\":\"org.joda.beans.sample.JodaConvertBean\",\"value\":\"Hello:9\"}";
         Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
@@ -317,6 +346,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWriteInterfaceKeyMap() {
         ImmKey key1 = ImmKey.builder().name("Alpha").build();
         ImmPerson person1 = ImmPerson.builder().forename("Bob").surname("Builder").build();
@@ -329,6 +359,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, mapped);
     }
 
+    @Test
     public void test_read_badTypeInMap() {
         String json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":{" +
                 "\"@meta\": \"Map\"," +
@@ -339,6 +370,7 @@ public class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_read_ignoreProperty() {
         String xml = "{\"name\":\"foo\",\"wibble\":\"ignored\"}";
         ImmKey parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(xml, ImmKey.class);
@@ -347,32 +379,33 @@ public class TestSerializeJson {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_noTypeAttributeAtRoot() {
         JodaBeanSer.COMPACT.jsonReader().read("{}");
     }
 
+    @Test
     public void test_read_noTypeAttributeAtRootButTypeSpecified() {
         FlexiBean parsed = JodaBeanSer.COMPACT.jsonReader().read("{}", FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_rootTypeAttributeNotBean() {
         JodaBeanSer.COMPACT.jsonReader().read("{\"@bean\":\"java.lang.Integer\"}", Bean.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_rootTypeInvalid() {
         JodaBeanSer.COMPACT.jsonReader().read("{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\"}", SimplePerson.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_rootTypeArgumentInvalid() {
         JodaBeanSer.COMPACT.jsonReader().read("{}", Integer.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_write_nullKeyInMap() {
         Address address = new Address();
         Person bean = new Person();
@@ -381,8 +414,8 @@ public class TestSerializeJson {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "badFormat")
-    Object[][] data_badFormat() {
+    @DataProvider
+    public static Object[][] data_badFormat() {
         return new Object[][] {
             {"{,}"},
             {"{1,2}"},
@@ -402,64 +435,65 @@ public class TestSerializeJson {
         };
     }
 
-    @Test(dataProvider = "badFormat", expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
+    @UseDataProvider("data_badFormat")
     public void test_badFormat(String text) throws IOException {
         JodaBeanSer.COMPACT.jsonReader().read(text, FlexiBean.class);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_writer_nullSettings() {
         new JodaBeanJsonWriter(null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_writer_write1_nullBean() {
         new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_writer_write2_nullBean() throws IOException {
         new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null, new StringBuilder());
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_writer_write2_nullAppendable() throws IOException {
         new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(new FlexiBean(), null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_nullSettings() {
         new JodaBeanJsonReader(null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_readReader_null() {
         new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_readString_null() {
         new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_readReaderType_nullReader() throws IOException {
         new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null, Bean.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_readReaderType_nullType() throws IOException {
         new JodaBeanJsonReader(JodaBeanSer.PRETTY).read(new StringReader(""), null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_readStringType_nullString() throws IOException {
         new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null, Bean.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_readStringType_nullType() throws IOException {
         new JodaBeanJsonReader(JodaBeanSer.PRETTY).read("", null);
     }

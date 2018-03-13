@@ -15,11 +15,12 @@
  */
 package org.joda.beans.ser.bin;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -34,14 +35,14 @@ import org.joda.beans.sample.Person;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test property roundtrip using binary.
  */
-@Test
 public class TestSerializeBin {
 
+    @Test
     public void test_writeAddress() throws IOException {
         Address address = SerTestHelper.testAddress();
 
@@ -53,6 +54,7 @@ public class TestSerializeBin {
         BeanAssert.assertBeanEquals(bean, address);
     }
 
+    @Test
     public void test_writeImmAddress() throws IOException {
         ImmAddress address = SerTestHelper.testImmAddress();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
@@ -63,6 +65,7 @@ public class TestSerializeBin {
         BeanAssert.assertBeanEquals(bean, address);
     }
 
+    @Test
     public void test_writeImmOptional() {
         ImmOptional optional = SerTestHelper.testImmOptional();
         byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(optional);
@@ -73,6 +76,7 @@ public class TestSerializeBin {
         BeanAssert.assertBeanEquals(bean, optional);
     }
 
+    @Test
     public void test_writeCollections() {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
@@ -85,6 +89,7 @@ public class TestSerializeBin {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_readWrite_primitives() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -132,11 +137,12 @@ public class TestSerializeBin {
         bean.set("flt", Float.valueOf(1.2f));
         bean.set("dbl", Double.valueOf(1.8d));
         byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(bean, false);
-        assertEquals(bytes, expected);
+        assertTrue(Arrays.equals(bytes, expected));
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWriteJodaConvertWrapper() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -159,11 +165,12 @@ public class TestSerializeBin {
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
         byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(wrapper, false);
-        assertEquals(bytes, expected);
+        assertTrue(Arrays.equals(bytes, expected));
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, JodaConvertWrapper.class);
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
+    @Test
     public void test_readWriteJodaConvertBean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -182,12 +189,13 @@ public class TestSerializeBin {
 
         JodaConvertBean bean = new JodaConvertBean("Hello:9");
         byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(bean, false);
-        assertEquals(bytes, expected);
+        assertTrue(Arrays.equals(bytes, expected));
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, JodaConvertBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_read_nonStandard_JodaConvertWrapper_expanded() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -219,6 +227,7 @@ public class TestSerializeBin {
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
+    @Test
     public void test_read_nonStandard_JodaConvertBean_flattened() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -236,7 +245,7 @@ public class TestSerializeBin {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -247,7 +256,7 @@ public class TestSerializeBin {
         JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_wrongVersion() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -271,7 +280,7 @@ public class TestSerializeBin {
         JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_rootTypeNotSpecified_Bean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -300,7 +309,7 @@ public class TestSerializeBin {
         JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_rootTypeInvalid_Bean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -317,7 +326,7 @@ public class TestSerializeBin {
         JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_rootTypeInvalid_incompatible() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -334,7 +343,7 @@ public class TestSerializeBin {
         JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_invalidFormat_noNilValueAfterType() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -351,7 +360,7 @@ public class TestSerializeBin {
         JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_write_nullKeyInMap() {
         Address address = new Address();
         Person bean = new Person();

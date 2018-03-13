@@ -15,25 +15,29 @@
  */
 package org.joda.beans.ser.json;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test.
  */
-@Test
+@RunWith(DataProviderRunner.class)
 public class TestJsonOutput {
 
     private StringBuilder buf;
     private JsonOutput outputCompact;
     private JsonOutput outputPretty;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         buf = new StringBuilder();
         outputCompact = new JsonOutput(buf);
@@ -41,8 +45,8 @@ public class TestJsonOutput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "string")
-    Object[][] data_string() {
+    @DataProvider(format = "%m[%i]")
+    public static Object[][] data_string() {
         return new Object[][] {
             {"", ""},
             {"\"", "\\\""},
@@ -60,15 +64,16 @@ public class TestJsonOutput {
         };
     }
 
-    @Test(dataProvider = "string")
+    @Test
+    @UseDataProvider("data_string")
     public void test_writeString(String input, String expected) throws IOException {
         outputCompact.writeString(input);
         assertEquals(buf.toString(), '"' + expected + '"');
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name = "int")
-    Object[][] data_int() {
+    @DataProvider
+    public static Object[][] data_int() {
         return new Object[][] {
             {0, "0"},
             {1, "1"},
@@ -79,14 +84,15 @@ public class TestJsonOutput {
         };
     }
 
-    @Test(dataProvider = "int")
+    @Test
+    @UseDataProvider("data_int")
     public void test_writeInt(int input, String expected) throws IOException {
         outputCompact.writeInt(input);
         assertEquals(buf.toString(), expected);
     }
 
-    @DataProvider(name = "long")
-    Object[][] data_long() {
+    @DataProvider
+    public static Object[][] data_long() {
         return new Object[][] {
             {0, "0"},
             {1, "1"},
@@ -97,14 +103,15 @@ public class TestJsonOutput {
         };
     }
 
-    @Test(dataProvider = "long")
+    @Test
+    @UseDataProvider("data_long")
     public void test_writeLong(long input, String expected) throws IOException {
         outputCompact.writeLong(input);
         assertEquals(buf.toString(), expected);
     }
 
-    @DataProvider(name = "double")
-    Object[][] data_double() {
+    @DataProvider
+    public static Object[][] data_double() {
         return new Object[][] {
             {0d, "0.0"},
             {1d, "1.0"},
@@ -120,14 +127,15 @@ public class TestJsonOutput {
         };
     }
 
-    @Test(dataProvider = "double")
+    @Test
+    @UseDataProvider("data_double")
     public void test_writeDouble(double input, String expected) throws IOException {
         outputCompact.writeDouble(input);
         assertEquals(buf.toString(), expected);
     }
 
-    @DataProvider(name = "float")
-    Object[][] data_float() {
+    @DataProvider
+    public static Object[][] data_float() {
         return new Object[][] {
             {0f, "0.0"},
             {1f, "1.0"},
@@ -143,35 +151,41 @@ public class TestJsonOutput {
         };
     }
 
-    @Test(dataProvider = "float")
+    @Test
+    @UseDataProvider("data_float")
     public void test_writeFloat(float input, String expected) throws IOException {
         outputCompact.writeFloat(input);
         assertEquals(buf.toString(), expected);
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_writeNull() throws IOException {
         outputCompact.writeNull();
         assertEquals(buf.toString(), "null");
     }
 
+    @Test
     public void test_writeBoolean_true() throws IOException {
         outputCompact.writeBoolean(true);
         assertEquals(buf.toString(), "true");
     }
 
+    @Test
     public void test_writeBoolean_false() throws IOException {
         outputCompact.writeBoolean(false);
         assertEquals(buf.toString(), "false");
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_write_array0() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayEnd();
         assertEquals(buf.toString(), "[]");
     }
 
+    @Test
     public void test_write_array1() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayItemStart();
@@ -180,6 +194,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\"]");
     }
 
+    @Test
     public void test_write_array2() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayItemStart();
@@ -190,6 +205,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\",\"b\"]");
     }
 
+    @Test
     public void test_write_array3() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayItemStart();
@@ -202,6 +218,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\",\"b\",\"c\"]");
     }
 
+    @Test
     public void test_write_arrayDeep0() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayItemStart();
@@ -215,6 +232,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\",[],\"c\"]");
     }
 
+    @Test
     public void test_write_arrayDeep1() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayItemStart();
@@ -230,6 +248,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\",[\"b1\"],\"c\"]");
     }
 
+    @Test
     public void test_write_arrayDeep2() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayItemStart();
@@ -248,12 +267,14 @@ public class TestJsonOutput {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_write_object0() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectEnd();
         assertEquals(buf.toString(), "{}");
     }
 
+    @Test
     public void test_write_object1() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectKey("a");
@@ -262,6 +283,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\"a\":\"aa\"}");
     }
 
+    @Test
     public void test_write_object2() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectKey("a");
@@ -272,6 +294,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":\"bb\"}");
     }
 
+    @Test
     public void test_write_object3() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectKeyValue("a", "aa");
@@ -281,6 +304,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":\"bb\",\"c\":\"cc\"}");
     }
 
+    @Test
     public void test_write_objectDeep0() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectKeyValue("a", "aa");
@@ -292,6 +316,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":{},\"c\":\"cc\"}");
     }
 
+    @Test
     public void test_write_objectDeep1() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectKeyValue("a", "aa");
@@ -304,6 +329,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":{\"bb\":\"bbb\"},\"c\":\"cc\"}");
     }
 
+    @Test
     public void test_write_objectDeep2() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectKeyValue("a", "aa");
@@ -318,12 +344,14 @@ public class TestJsonOutput {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_write_array0_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayEnd();
         assertEquals(buf.toString(), "[]");
     }
 
+    @Test
     public void test_write_array1_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayItemStart();
@@ -332,6 +360,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\"]");
     }
 
+    @Test
     public void test_write_array2_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayItemStart();
@@ -342,6 +371,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\", \"b\"]");
     }
 
+    @Test
     public void test_write_array3_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayItemStart();
@@ -354,6 +384,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\", \"b\", \"c\"]");
     }
 
+    @Test
     public void test_write_arrayDeep0_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayItemStart();
@@ -367,6 +398,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\", [], \"c\"]");
     }
 
+    @Test
     public void test_write_arrayDeep1_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayItemStart();
@@ -382,6 +414,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "[\"a\", [\"b1\"], \"c\"]");
     }
 
+    @Test
     public void test_write_arrayDeep2_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayItemStart();
@@ -400,12 +433,14 @@ public class TestJsonOutput {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_write_object0_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectEnd();
         assertEquals(buf.toString(), "{}");
     }
 
+    @Test
     public void test_write_object1_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectKey("a");
@@ -414,6 +449,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\n \"a\": \"aa\"\n}");
     }
 
+    @Test
     public void test_write_object2_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectKey("a");
@@ -424,6 +460,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": \"bb\"\n}");
     }
 
+    @Test
     public void test_write_object3_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectKeyValue("a", "aa");
@@ -433,6 +470,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": \"bb\",\n \"c\": \"cc\"\n}");
     }
 
+    @Test
     public void test_write_objectDeep0_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectKeyValue("a", "aa");
@@ -444,6 +482,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": {},\n \"c\": \"cc\"\n}");
     }
 
+    @Test
     public void test_write_objectDeep1_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectKeyValue("a", "aa");
@@ -456,6 +495,7 @@ public class TestJsonOutput {
         assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": {\n  \"bb\": \"bbb\"\n },\n \"c\": \"cc\"\n}");
     }
 
+    @Test
     public void test_write_objectDeep2_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectKeyValue("a", "aa");

@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser.xml;
 
-import static org.testng.Assert.fail;
+import static org.junit.Assert.fail;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.SimplePerson;
@@ -23,12 +23,11 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.test.BeanAssert;
 import org.joda.convert.RenameHandler;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test deserialization using XML.
  */
-@Test
 public class TestDeserializer {
 
     @Test
@@ -134,7 +133,7 @@ public class TestDeserializer {
         BeanAssert.assertBeanEquals(expected, parsed);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void test_read_withBadEntity() {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockTypeChangeDeserializer.INSTANCE);

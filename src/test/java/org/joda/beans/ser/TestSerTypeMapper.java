@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.BitSet;
@@ -24,17 +24,17 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test ser.
  */
-@Test
 public class TestSerTypeMapper {
 
     private static final JodaBeanSer SETTINGS = JodaBeanSer.PRETTY;
     private static final JodaBeanSer SETTINGS_NO_SHORT = JodaBeanSer.PRETTY.withShortTypes(false);
 
+    @Test
     public void test_encodeType() {
         Map<Class<?>, String> cache = new HashMap<>();
         // base package type
@@ -66,6 +66,7 @@ public class TestSerTypeMapper {
         assertEquals(cache.get(lowerCase.class), "org.joda.beans.ser.lowerCase");
     }
 
+    @Test
     public void test_encodeType_sillyNames() {
         Map<Class<?>, String> cache = new HashMap<>();
         // user type - silly name
@@ -76,6 +77,7 @@ public class TestSerTypeMapper {
         assertEquals(cache.get(lowerCase.class), "org.joda.beans.ser.lowerCase");
     }
 
+    @Test
     public void test_encodeType_noCache() {
         // user type
         assertEquals(SerTypeMapper.encodeType(AtomicIntegerArray.class, SETTINGS, "java.util.", null), "java.util.concurrent.atomic.AtomicIntegerArray");
@@ -89,6 +91,7 @@ public class TestSerTypeMapper {
         assertEquals(SerTypeMapper.encodeType(lowerCase.class, SETTINGS, "org.joda.beans.ser.", null), "org.joda.beans.ser.lowerCase");
     }
 
+    @Test
     public void test_encodeType_noBasePackage() {
         Map<Class<?>, String> cache = new HashMap<>();
         // basic type
@@ -102,6 +105,7 @@ public class TestSerTypeMapper {
         assertEquals(cache.get(AtomicReference.class), "AtomicReference");
     }
 
+    @Test
     public void test_encodeType_noShortTypes() {
         Map<Class<?>, String> cache = new HashMap<>();
         // base package type
@@ -116,6 +120,7 @@ public class TestSerTypeMapper {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_decodeType() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         // base package type
@@ -142,6 +147,7 @@ public class TestSerTypeMapper {
         assertEquals(cache.get("AtomicIntegerArray"), AtomicIntegerArray.class);
     }
 
+    @Test
     public void test_decodeType_noCache() throws Exception {
         // base package type
         assertEquals(SerTypeMapper.decodeType("BitSet", SETTINGS, "java.util.", null), BitSet.class);
@@ -151,6 +157,7 @@ public class TestSerTypeMapper {
         assertEquals(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, "java.util.", null), AtomicReference.class);
     }
 
+    @Test
     public void test_decodeType_noBasePackage() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         // basic type
@@ -159,7 +166,7 @@ public class TestSerTypeMapper {
         assertEquals(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, null, cache), AtomicReference.class);
     }
 
-    @Test(expectedExceptions = ClassNotFoundException.class)
+    @Test(expected = ClassNotFoundException.class)
     public void test_decodeType_emptyClassName() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         SerTypeMapper.decodeType("", SETTINGS, "java.util.", cache);

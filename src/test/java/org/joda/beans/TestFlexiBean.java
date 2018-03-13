@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,14 +24,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.joda.beans.impl.flexi.FlexiBean;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test FlexiBean.
  */
-@Test
 public class TestFlexiBean {
 
+    @Test
     public void test_serialization() throws Exception {
         FlexiBean test = new FlexiBean();
         test.put("name", "Etienne");
@@ -50,6 +50,7 @@ public class TestFlexiBean {
     }
 
     @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void test_equalsHashCode() {
         FlexiBean a1 = new FlexiBean();
         FlexiBean a2 = new FlexiBean();
@@ -72,6 +73,7 @@ public class TestFlexiBean {
         assertEquals(b.equals(null), false);
     }
 
+    @Test
     public void test_propertyDefine_propertyRemove() {
         FlexiBean flexi = new FlexiBean();
         assertEquals(flexi.propertyNames().size(), 0);
@@ -84,6 +86,7 @@ public class TestFlexiBean {
         assertEquals(flexi.propertyNames().size(), 0);
     }
 
+    @Test
     public void test_metaBean() {
         FlexiBean flexi = new FlexiBean();
         DynamicMetaBean meta = flexi.metaBean();
@@ -103,25 +106,25 @@ public class TestFlexiBean {
         assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
         flexi.propertyDefine("bad-name", String.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_append_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
         flexi.append("bad-name", "a");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_set_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
         flexi.set("bad-name", "a");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_put_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
         flexi.put("bad-name", "a");

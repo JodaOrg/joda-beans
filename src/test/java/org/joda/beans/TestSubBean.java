@@ -15,17 +15,17 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.ImmSubPersonNonFinal;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test beans extending other beans.
  */
-@Test
 public class TestSubBean {
 
+    @Test
     public void test_subbean_toBuilder() {
 
         // This sequence needs to be split like this as forename and surname returns ImmPersonNonFinal.Builder

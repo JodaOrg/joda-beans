@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.util.Iterator;
 
@@ -24,16 +24,16 @@ import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmEmpty;
 import org.joda.beans.sample.ImmTreeNode;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
 /**
  * Test BeanIterator.
  */
-@Test
 public class TestBeanIterator {
 
+    @Test
     public void test_iteration_noChildren() {
         ImmEmpty bean = ImmEmpty.builder().build();
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean);
@@ -42,6 +42,7 @@ public class TestBeanIterator {
         assertEquals(it.hasNext(), false);
     }
 
+    @Test
     public void test_iteration_nullChild() {
         Address bean = new Address();
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean);
@@ -50,6 +51,7 @@ public class TestBeanIterator {
         assertEquals(it.hasNext(), false);
     }
 
+    @Test
     public void test_iteration_childWithChildren() {
         ImmTreeNode node1 = ImmTreeNode.builder().name("1").build();
         ImmTreeNode node2 = ImmTreeNode.builder().name("2").build();
@@ -69,6 +71,7 @@ public class TestBeanIterator {
         assertEquals(it.hasNext(), false);
     }
 
+    @Test
     public void test_iteration_childWithChildrenOfChildren() {
         ImmTreeNode node1 = ImmTreeNode.builder().name("1").build();
         ImmTreeNode node2 = ImmTreeNode.builder().name("2").build();
@@ -94,6 +97,7 @@ public class TestBeanIterator {
         assertEquals(it.hasNext(), false);
     }
 
+    @Test
     public void test_iteration_childWithListOfChildren() {
         ImmTreeNode node1a = ImmTreeNode.builder().name("1a").build();
         ImmTreeNode node1b = ImmTreeNode.builder().name("1b").build();
@@ -137,6 +141,7 @@ public class TestBeanIterator {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_iteration_childWithNoChildren_FlexiBean() {
         FlexiBean bean1 = new FlexiBean();
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean1);
@@ -145,6 +150,7 @@ public class TestBeanIterator {
         assertEquals(it.hasNext(), false);
     }
 
+    @Test
     public void test_iteration_childWithOneChild_FlexiBean() {
         FlexiBean bean1 = new FlexiBean();
         FlexiBean bean2 = new FlexiBean();

@@ -15,18 +15,18 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.impl.map.MapBean;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test MapBean.
  */
-@Test
 public class TestMapBean {
 
+    @Test
     public void test_clone() {
         MapBean a = new MapBean();
         a.put("A", "AA");
@@ -47,6 +47,7 @@ public class TestMapBean {
     }
 
     @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void test_equalsHashCode() {
         MapBean a1 = new MapBean();
         MapBean a2 = new MapBean();
@@ -69,6 +70,7 @@ public class TestMapBean {
         assertEquals(b.equals(null), false);
     }
 
+    @Test
     public void test_propertyDefine_propertyRemove() {
         MapBean mapBean = new MapBean();
         assertEquals(mapBean.propertyNames().size(), 0);
@@ -81,6 +83,7 @@ public class TestMapBean {
         assertEquals(mapBean.propertyNames().size(), 0);
     }
 
+    @Test
     public void test_metaBean() {
         MapBean mapBean = new MapBean();
         DynamicMetaBean meta = mapBean.metaBean();

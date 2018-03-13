@@ -15,23 +15,22 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.MetaBeanLoad;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test MetaBean statics.
  */
-@Test
 public class TestMetaBean {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_registerMetaBean() {
         // register once OK
         assertNotNull(ImmPerson.meta());
@@ -40,21 +39,24 @@ public class TestMetaBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaBean() {
         MetaBean metaBean = MetaBean.of(MetaBeanLoad.class);
         assertNotNull(metaBean);
         assertEquals(metaBean, MetaBeanLoad.meta());
     }
 
+    @Test
     public void test_metaBean_FlexiBean() {
         assertEquals(MetaBean.of(FlexiBean.class).builder().build().getClass(), FlexiBean.class);
     }
 
+    @Test
     public void test_metaBean_MapBean() {
         assertEquals(MetaBean.of(MapBean.class).builder().build().getClass(), MapBean.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_metaBean_notFound() {
         MetaBean.of(String.class);
     }

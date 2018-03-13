@@ -15,17 +15,17 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.SimpleName;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test arrays using SimpleName.
  */
-@Test
 public class TestArray {
 
+    @Test
     public void test_bean() {
         SimpleName person1 = new SimpleName();
         person1.setForename("Etienne");

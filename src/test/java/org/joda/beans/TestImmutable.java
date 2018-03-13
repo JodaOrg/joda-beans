@@ -15,20 +15,20 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmAddress.Builder;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.ImmPersonNonFinal;
 import org.joda.beans.sample.ImmSubPersonNonFinal;
 import org.joda.beans.sample.ImmSubSubPersonFinal;
-import org.joda.beans.sample.ImmAddress.Builder;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultiset;
@@ -36,9 +36,9 @@ import com.google.common.collect.ImmutableMultiset;
 /**
  * Test property using Person.
  */
-@Test
 public class TestImmutable {
 
+    @Test
     public void test_bean() {
         ImmAddress address = ImmAddress.builder()
                 .number(12)
@@ -51,6 +51,7 @@ public class TestImmutable {
         assertEquals(address.getStreet(), "Park Lane");
     }
 
+    @Test
     public void test_builder() {
         Builder builder = ImmAddress.builder()
                 .set("number", 12)
@@ -69,6 +70,7 @@ public class TestImmutable {
         assertEquals(address.getStreet(), "Park Lane");
     }
 
+    @Test
     public void test_with() {
         ImmAddress address = ImmAddress.builder()
                 .set("number", 12)
@@ -84,7 +86,7 @@ public class TestImmutable {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_builder_getInvalidPropertyName() {
         BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
         try {
@@ -95,7 +97,7 @@ public class TestImmutable {
         }
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_builder_setInvalidPropertyName() {
         BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
         try {
@@ -107,6 +109,7 @@ public class TestImmutable {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_builder_subclass() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
         builder.set(ImmPersonNonFinal.meta().forename(), "Bobby");
@@ -125,7 +128,7 @@ public class TestImmutable {
         assertEquals(result.getCodeCounts(), ImmutableMultiset.of());
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_builder_subclass_getInvalidPropertyName() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
         try {
@@ -136,7 +139,7 @@ public class TestImmutable {
         }
     }
 
-    @Test(expectedExceptions=NoSuchElementException.class)
+    @Test(expected = NoSuchElementException.class)
     public void test_builder_subclass_setInvalidPropertyName() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
         try {
@@ -148,6 +151,7 @@ public class TestImmutable {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_builder_defaultValue() {
         ImmPerson person = ImmPerson.builder()
             .forename("A")
@@ -159,6 +163,7 @@ public class TestImmutable {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_builder_methodTypes() {
         Calendar cal = Calendar.getInstance();
         GregorianCalendar gcal = new GregorianCalendar(2015, 5, 30);

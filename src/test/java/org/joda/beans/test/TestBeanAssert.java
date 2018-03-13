@@ -15,23 +15,23 @@
  */
 package org.joda.beans.test;
 
+import static org.junit.Assert.assertEquals;
+
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmTolerance;
 import org.joda.beans.sample.Person;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test BeanAssert.
  */
-@Test
 public class TestBeanAssert {
 
     private Person person1;
     private Person person2;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         person1 = new Person();
         person1.setForename("Vince");
@@ -78,46 +78,52 @@ public class TestBeanAssert {
         person2.getOtherAddressMap().get("Home").setCity("Skyton");
     }
 
+    @Test
     public void test_same() {
         BeanAssert.assertBeanEquals(person1, person1);
     }
 
+    @Test
     public void test_equal() {
         BeanAssert.assertBeanEquals(person1, person2);
     }
 
+    @Test
     public void test_bean_oneField() {
         person2.setForename("Bug1");
         try {
             BeanAssert.assertBeanEquals(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_bean_twoFields() {
         person2.setForename("Bug1");
         person2.setSurname("Bug2");
         try {
             BeanAssert.assertBeanEquals(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>\n.surname: Content differs, expected String <Cable> but was <Bug2>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>\n.surname: Content differs, expected String <Cable> but was <Bug2>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_bean_bug_embedded() {
         person2.getAddressList().get(0).setNumber(234);
         person2.getMainAddress().setCity("Bug3");
         try {
             BeanAssert.assertBeanEquals(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.addressList[0].number: Content differs, expected Integer <12> but was <234>\n.mainAddress.city: Content differs, expected String <Gamesville> but was <Bug3>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.addressList[0].number: Content differs, expected Integer <12> but was <234>\n.mainAddress.city: Content differs, expected String <Gamesville> but was <Bug3>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_bean_sizes() {
         Address address = new Address();
         address.setCity("Nowhere");
@@ -126,100 +132,110 @@ public class TestBeanAssert {
         try {
             BeanAssert.assertBeanEquals(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.addressList: List size differs, expected 1 but was 0\n.otherAddressMap: Map size differs, expected 1 but was 2", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.addressList: List size differs, expected 1 but was 0\n.otherAddressMap: Map size differs, expected 1 but was 2", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_bean_map() {
         person2.getOtherAddressMap().get("Home").setCity("Bug");
         person2.getOtherAddressMap().get("Home").setOwner(new Person());
         try {
             BeanAssert.assertBeanEquals(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.otherAddressMap[Home].city: Content differs, expected String <Skyton> but was <Bug>\n.otherAddressMap[Home].owner: Expected null, but was Person <Person{forename=null, surname=null, numberOfCars=0, addre...>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.otherAddressMap[Home].city: Content differs, expected String <Skyton> but was <Bug>\n.otherAddressMap[Home].owner: Expected null, but was Person <Person{forename=null, surname=null, numberOfCars=0, addre...>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_beanFullDetail_twoFields() {
         person2.setForename("Bug1");
         person2.setSurname("Bug2");
         try {
             BeanAssert.assertBeanEqualsFullDetail(person1, person2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>\n.surname: Content differs, expected String <Cable> but was <Bug2>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.forename: Content differs, expected String <Vince> but was <Bug1>\n.surname: Content differs, expected String <Cable> but was <Bug2>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_bean_oneField_double() {
         ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
         ImmTolerance t2 = ImmTolerance.builder().value(0.016d).build();
         try {
             BeanAssert.assertBeanEquals(t1, t2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.value: Content differs, expected Double <0.015> but was <0.016>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.value: Content differs, expected Double <0.015> but was <0.016>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_bean_oneField_double_withinToleranceUp() {
         ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
         ImmTolerance t2 = ImmTolerance.builder().value(0.0151d).build();
         BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
     }
 
+    @Test
     public void test_bean_oneField_double_withinToleranceDown() {
         ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
         ImmTolerance t2 = ImmTolerance.builder().value(0.0149d).build();
         BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
     }
 
+    @Test
     public void test_bean_oneField_double_notInTolerance() {
         ImmTolerance t1 = ImmTolerance.builder().value(0.015d).build();
         ImmTolerance t2 = ImmTolerance.builder().value(0.0153d).build();
         try {
             BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.value: Double values differ by more than allowed tolerance, expected Double <0.015> but was <0.0153>", ex.getMessage());
+            assertEquals("Bean did not equal expected. Differences:\n.value: Double values differ by more than allowed tolerance, expected Double <0.015> but was <0.0153>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_bean_oneField_doubleArray() {
         ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
         ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.016d}).build();
         try {
             BeanAssert.assertBeanEquals(t1, t2);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.array: Content differs, expected " +
+            assertEquals("Bean did not equal expected. Differences:\n.array: Content differs, expected " +
             		"double[] <[0.015, 0.015]> but was <[0.015, 0.016]>", ex.getMessage());
             System.out.println(ex.getMessage());
         }
     }
 
+    @Test
     public void test_bean_oneField_doubleArray_withinToleranceUp() {
         ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
         ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0151d}).build();
         BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
     }
 
+    @Test
     public void test_bean_oneField_doubleArray_withinToleranceDown() {
         ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
         ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0149d}).build();
         BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
     }
 
+    @Test
     public void test_bean_oneField_doubleArray_notInTolerance() {
         ImmTolerance t1 = ImmTolerance.builder().array(new double[] {0.015d, 0.015d}).build();
         ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0153d}).build();
         try {
             BeanAssert.assertBeanEquals(t1, t2, 0.0002d);
         } catch (BeanComparisonError ex) {
-            Assert.assertEquals("Bean did not equal expected. Differences:\n.array: Double arrays differ by " +
+            assertEquals("Bean did not equal expected. Differences:\n.array: Double arrays differ by " +
         		"more than allowed tolerance, expected double[] <[0.015, 0.015]> but was <[0.015, 0.0153]>", ex.getMessage());
             System.out.println(ex.getMessage());
         }

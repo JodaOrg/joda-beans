@@ -15,10 +15,10 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -30,7 +30,7 @@ import org.joda.beans.sample.LightImmutable;
 import org.joda.beans.sample.MinimalImmutable;
 import org.joda.beans.sample.MinimalMutable;
 import org.joda.beans.ser.JodaBeanSer;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -38,9 +38,9 @@ import com.google.common.collect.ImmutableList;
 /**
  * Test style=minimal.
  */
-@Test
 public class TestMinimal {
 
+    @Test
     public void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
@@ -106,6 +106,7 @@ public class TestMinimal {
         }
     }
 
+    @Test
     public void test_immutable_order() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
@@ -129,6 +130,7 @@ public class TestMinimal {
         assertEquals(mps.get(8).name(), "address");
     }
 
+    @Test
     public void test_mutable() {
         MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
                 .set("number", 12)
@@ -200,6 +202,7 @@ public class TestMinimal {
         }
     }
 
+    @Test
     public void test_mutable_order() {
         MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
                 .set("number", 12)

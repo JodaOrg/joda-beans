@@ -15,18 +15,17 @@
  */
 package org.joda.beans.ser;
 
-import static org.testng.Assert.assertSame;
+import static org.junit.Assert.assertSame;
 
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.sample.Person;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test ser.
  */
-@Test
 public class TestSerDeserializerProvider {
 
     private static final SerDeserializer DESER = new SerDeserializer() {
@@ -64,6 +63,7 @@ public class TestSerDeserializerProvider {
         }
     };
 
+    @Test
     public void test_provider() {
         SerDeserializers deser = new SerDeserializers(PROVIDER);
         assertSame(deser.findDeserializer(Person.class), DESER);

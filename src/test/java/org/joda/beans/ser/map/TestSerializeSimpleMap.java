@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser.map;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +29,16 @@ import org.joda.beans.sample.SimpleJson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 
 /**
  * Test property roundtrip using JSON.
  */
-@Test
 public class TestSerializeSimpleMap {
 
+    @Test
     public void test_writeSimpleJson() {
         SimpleJson bean = SerTestHelper.testSimpleJson();
         Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
@@ -49,6 +49,7 @@ public class TestSerializeSimpleMap {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_writeImmOptional() {
         ImmOptional bean = SerTestHelper.testImmOptional();
         Map<String, Object> map = JodaBeanSer.PRETTY.withIncludeDerived(true).simpleMapWriter().write(bean);
@@ -59,6 +60,7 @@ public class TestSerializeSimpleMap {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_writeCollections() {
         ImmGuava<String> bean = SerTestHelper.testCollections();
         Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
@@ -71,6 +73,7 @@ public class TestSerializeSimpleMap {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_readWriteBeanEmptyChild() {
         FlexiBean bean = new FlexiBean();
         bean.set("element", "Test");
@@ -82,6 +85,7 @@ public class TestSerializeSimpleMap {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_readWrite_boolean_true() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
@@ -91,6 +95,7 @@ public class TestSerializeSimpleMap {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    @Test
     public void test_readWrite_boolean_false() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.FALSE);
@@ -101,17 +106,18 @@ public class TestSerializeSimpleMap {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_read_emptyFlexiBean() {
         FlexiBean parsed = JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_read_rootTypeArgumentIncorrect() {
         JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), Integer.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_write_nullKeyInMap() {
         Address address = new Address();
         Person bean = new Person();
@@ -120,28 +126,28 @@ public class TestSerializeSimpleMap {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_writer_nullSettings() {
         new JodaBeanSimpleMapWriter(null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_writer_write_nullBean() {
         new JodaBeanSimpleMapWriter(JodaBeanSer.PRETTY).write(null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_nullSettings() {
         new JodaBeanSimpleMapReader(null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_read_nullBean() {
         new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(null, FlexiBean.class);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void test_reader_read_nullType() {
         new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<>(), null);
     }

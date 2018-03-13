@@ -15,20 +15,20 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.RWOnlyBean;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.base.Optional;
 
 /**
  * Test ImmOptional.
  */
-@Test
 public class TestOptionalBean extends RWOnlyBean {
 
+    @Test
     public void test_optional_empty() {
         ImmOptional test = ImmOptional.builder()
             .optString(Optional.of("A"))
@@ -39,6 +39,7 @@ public class TestOptionalBean extends RWOnlyBean {
         assertEquals(test.getOptLongGetter(), Optional.absent());
     }
 
+    @Test
     public void test_optional_full() {
         ImmOptional test = ImmOptional.builder()
             .optString(Optional.of("A"))
@@ -52,6 +53,7 @@ public class TestOptionalBean extends RWOnlyBean {
         assertEquals(test.getOptLongGetter(), Optional.of(4L));
     }
 
+    @Test
     public void test_optional_property() {
         ImmOptional test = ImmOptional.builder()
             .optStringGetter("A")

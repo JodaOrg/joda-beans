@@ -17,19 +17,18 @@ package org.joda.beans.test;
 
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Person;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test code coverage helper.
  */
-@Test
 public class TestCoverage {
 
     private Person person1;
     private Person person2;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         person1 = new Person();
         person1.setForename("Vince");
@@ -76,6 +75,7 @@ public class TestCoverage {
         person2.getOtherAddressMap().get("Home").setCity("Skyton");
     }
 
+    @Test
     public void test_coverage() {
         JodaBeanTests.coverMutableBean(person1);
     }

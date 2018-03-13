@@ -15,20 +15,20 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.CompanyAddress;
 import org.joda.beans.sample.Person;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test BasicBean.
  */
-@Test
 public class TestBasicBean {
 
     @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void test_equals() {
         Person a1 = new Person();
         Person a2 = new Person();
@@ -50,6 +50,7 @@ public class TestBasicBean {
         assertEquals(b.equals(null), false);
     }
 
+    @Test
     public void test_hashCode() {
         Person a1 = new Person();
         Person a2 = new Person();
@@ -60,6 +61,7 @@ public class TestBasicBean {
         assertEquals(a1.hashCode(), a2.hashCode());
     }
 
+    @Test
     public void test_toString() {
         Person a = new Person();
         a.setForename("Stephen");
@@ -72,6 +74,7 @@ public class TestBasicBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_property_equals() {
         Address obj1 = new Address();
         CompanyAddress obj2 = new CompanyAddress();
@@ -84,6 +87,7 @@ public class TestBasicBean {
         assertEquals(p1, p2);
     }
 
+    @Test
     public void test_property_hashCode() {
         Person obj1 = new Person();
         Person obj2 = new Person();
@@ -96,6 +100,7 @@ public class TestBasicBean {
         assertEquals(p1.hashCode(), p2.hashCode());
     }
 
+    @Test
     public void test_property_toString() {
         Person obj1 = new Person();
         Property<String> p1 = obj1.forename();
@@ -106,6 +111,7 @@ public class TestBasicBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_metaProperty_equals() {
         MetaProperty<String> p1 = Address.meta().city();
         MetaProperty<String> p2 = CompanyAddress.meta().city();
@@ -113,6 +119,7 @@ public class TestBasicBean {
         assertEquals(p1, p2);
     }
 
+    @Test
     public void test_metaProperty_hashCode() {
         MetaProperty<String> p1 = Person.meta().forename();
         MetaProperty<String> p2 = Person.meta().forename();
@@ -120,6 +127,7 @@ public class TestBasicBean {
         assertEquals(p1.hashCode(), p2.hashCode());
     }
 
+    @Test
     public void test_metaProperty_toString() {
         MetaProperty<String> mp1 = Person.meta().forename();
         

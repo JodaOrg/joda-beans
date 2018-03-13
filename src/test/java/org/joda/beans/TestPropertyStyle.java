@@ -15,16 +15,16 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test PropertyStyle.
  */
-@Test
 public class TestPropertyStyle {
 
+    @Test
     public void test_READ_ONLY() {
         assertEquals(PropertyStyle.READ_ONLY.isReadable(), true);
         assertEquals(PropertyStyle.READ_ONLY.isWritable(), false);
@@ -34,6 +34,7 @@ public class TestPropertyStyle {
         assertEquals(PropertyStyle.READ_ONLY.isSerializable(), false);
     }
 
+    @Test
     public void test_READ_WRITE() {
         assertEquals(PropertyStyle.READ_WRITE.isReadable(), true);
         assertEquals(PropertyStyle.READ_WRITE.isWritable(), true);
@@ -43,6 +44,7 @@ public class TestPropertyStyle {
         assertEquals(PropertyStyle.READ_WRITE.isSerializable(), true);
     }
 
+    @Test
     public void test_WRITE_ONLY() {
         assertEquals(PropertyStyle.WRITE_ONLY.isReadable(), false);
         assertEquals(PropertyStyle.WRITE_ONLY.isWritable(), true);
@@ -52,6 +54,7 @@ public class TestPropertyStyle {
         assertEquals(PropertyStyle.WRITE_ONLY.isSerializable(), false);
     }
 
+    @Test
     public void test_DERIVED() {
         assertEquals(PropertyStyle.DERIVED.isReadable(), true);
         assertEquals(PropertyStyle.DERIVED.isWritable(), false);
@@ -61,6 +64,7 @@ public class TestPropertyStyle {
         assertEquals(PropertyStyle.DERIVED.isSerializable(), false);
     }
 
+    @Test
     public void test_IMMUTABLE() {
         assertEquals(PropertyStyle.IMMUTABLE.isReadable(), true);
         assertEquals(PropertyStyle.IMMUTABLE.isWritable(), false);

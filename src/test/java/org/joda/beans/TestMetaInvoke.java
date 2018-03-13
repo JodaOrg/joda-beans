@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.sample.AbstractResult;
 import org.joda.beans.sample.Address;
@@ -40,14 +40,14 @@ import org.joda.beans.sample.SubWrapper;
 import org.joda.beans.sample.TweakedPair;
 import org.joda.beans.sample.ValidateBean;
 import org.joda.beans.sample.Wrapper;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test property using Person.
  */
-@Test
 public class TestMetaInvoke {
 
+    @Test
     public void test_method_call_compiles() {
         @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> a = AbstractResult.meta();

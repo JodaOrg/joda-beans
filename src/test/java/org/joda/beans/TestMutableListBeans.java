@@ -15,35 +15,38 @@
  */
 package org.joda.beans;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.MutableListFinalBean;
 import org.joda.beans.sample.MutableListNonFinalBean;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
 /**
  * Test list with builder.
  */
-@Test
 public class TestMutableListBeans {
 
+    @Test
     public void test_finalBean_noList() {
         MutableListFinalBean test = MutableListFinalBean.builder().build();
         assertEquals(test.getStrings(), null);
     }
 
+    @Test
     public void test_finalBean_list() {
         MutableListFinalBean test = MutableListFinalBean.builder().strings("A", "B").build();
         assertEquals(test.getStrings(), ImmutableList.of("A", "B"));
     }
 
+    @Test
     public void test_nonFinalBean_noList() {
         MutableListNonFinalBean test = MutableListNonFinalBean.builder().build();
         assertEquals(test.getStrings(), null);
     }
 
+    @Test
     public void test_nonFinalBean_list() {
         MutableListNonFinalBean test = MutableListNonFinalBean.builder().strings("A", "B").build();
         assertEquals(test.getStrings(), ImmutableList.of("A", "B"));

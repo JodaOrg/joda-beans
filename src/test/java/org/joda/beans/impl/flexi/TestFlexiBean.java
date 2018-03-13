@@ -15,25 +15,26 @@
  */
 package org.joda.beans.impl.flexi;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotSame;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test FlexiBean.
  */
-@Test
 public class TestFlexiBean {
 
+    @Test
     public void test_constructor() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
     }
 
+    @Test
     public void test_constructor_copy() {
         FlexiBean base = new FlexiBean();
         base.set("a", "x");
@@ -44,6 +45,7 @@ public class TestFlexiBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_basics() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -81,6 +83,7 @@ public class TestFlexiBean {
         assertEquals(test.get("b"), null);
     }
 
+    @Test
     public void test_type_string() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -91,6 +94,7 @@ public class TestFlexiBean {
         assertEquals(test.getString("b"), null);
     }
 
+    @Test
     public void test_type_long() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -102,6 +106,7 @@ public class TestFlexiBean {
         assertEquals(test.getLong("b", 1L), 1);
     }
 
+    @Test
     public void test_type_int() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -113,6 +118,7 @@ public class TestFlexiBean {
         assertEquals(test.getInt("b", 1), 1);
     }
 
+    @Test
     public void test_type_double() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -124,6 +130,7 @@ public class TestFlexiBean {
         assertEquals(test.getDouble("b", 0.5d), 0.5d, 0.0001d);
     }
 
+    @Test
     public void test_type_boolean() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -134,6 +141,7 @@ public class TestFlexiBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_putAll() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -155,6 +163,7 @@ public class TestFlexiBean {
         assertEquals(test.contains("c"), true);
     }
 
+    @Test
     public void test_remove() {
         FlexiBean test = new FlexiBean();
         assertEquals(test.size(), 0);
@@ -165,6 +174,7 @@ public class TestFlexiBean {
         assertEquals(test.size(), 0);
     }
 
+    @Test
     public void test_toMap() {
         FlexiBean base = new FlexiBean();
         Map<String, Object> test = base.toMap();
@@ -178,6 +188,7 @@ public class TestFlexiBean {
     }
 
     //-----------------------------------------------------------------------
+    @Test
     public void test_clone() {
         FlexiBean base = new FlexiBean();
         base.set("a", "x");
@@ -188,6 +199,7 @@ public class TestFlexiBean {
     }
 
     @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void test_equalsHashCode() {
         FlexiBean a1 = new FlexiBean();
         a1.set("a", "b");
@@ -209,6 +221,7 @@ public class TestFlexiBean {
         assertEquals(b.equals(null), false);
     }
 
+    @Test
     public void test_toString() {
         FlexiBean test = new FlexiBean();
         test.set("a", "b");
