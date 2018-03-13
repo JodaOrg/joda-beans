@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.1.1" date="SNAPSHOT" description="v2.1.1">
       <action dev="jodastephen" type="fix">
+        Ensure tests and functionality work correctly on Java 9.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix light and minimal beans to respect aliases.
         Aliases are useful for handling the rename of properties.
         Fixes #187.
