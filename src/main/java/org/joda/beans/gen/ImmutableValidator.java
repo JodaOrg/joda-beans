@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * <pre>
  *   {@literal @}ImmutableValidator
  *   private void validate() {
- *     if (age != null && age {@literal <} 0) {
+ *     if (age != null &amp;&amp; age {@literal <} 0) {
  *       throw new IllegalArgumentException("Age must not be negative if specified")
  *     }
  *   }

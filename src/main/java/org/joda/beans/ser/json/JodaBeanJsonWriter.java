@@ -40,11 +40,11 @@ import org.joda.convert.StringConverter;
  * hold the type in a few places.
  * <p>
  * Beans are output using JSON objects where the key is the property name.
- * The type of the bean will be sent using the '&#64type' property name if necessary.
+ * The type of the bean will be sent using the '&#64;type' property name if necessary.
  * <p>
  * Most simple types, defined by Joda-Convert, are output as JSON strings.
  * If the simple type requires additional type information, the value is replaced by
- * a JSON object containing the keys '&#64type' and 'value'.
+ * a JSON object containing the keys '&#64;type' and 'value'.
  * <p>
  * Null values are generally omitted, but where included are sent as 'null'.
  * Boolean values are sent as 'true' and 'false'.
@@ -58,7 +58,7 @@ import org.joda.convert.StringConverter;
  * written to aid with deserialization.
  * At this level, the data read back may not be identical to that written.
  * If the collection type requires additional type information, the value is replaced by
- * a JSON object containing the keys '&#64meta' and 'value'.
+ * a JSON object containing the keys '&#64;meta' and 'value'.
  * <p>
  * Type names are shortened by the package of the root type if possible.
  * Certain basic types are also handled, such as String, Integer, File and URI.

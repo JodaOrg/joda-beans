@@ -34,7 +34,7 @@ import org.joda.beans.MetaProperty;
  * <p>
  * A renamed property can be handled by overriding the {@code lookupMetaProperty}:
  * <pre>
- *  public MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName) {
+ *  public MetaProperty&lt;?&gt; findMetaProperty(Class&lt;?&gt; beanType, MetaBean metaBean, String propertyName) {
  *    if ("firstName".equals(propertyName)) {
  *      return metaBean.metaProperty("forename");
  *    }
@@ -48,15 +48,15 @@ import org.joda.beans.MetaProperty;
  *  private MetaProperty<String> NUMBER_OF_CARS_STRING =
  *    StandaloneMetaProperty.of("numberOfCars", SimplePerson.meta(), String.class);
  *  
- *  public MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName) {
+ *  public MetaProperty&lt;?&gt; findMetaProperty(Class&lt;?&gt; beanType, MetaBean metaBean, String propertyName) {
  *    if ("numberOfCars".equals(propertyName)) {
  *      return NUMBER_OF_CARS_STRING;  // replica of the old property
  *    }
  *    return super.findMetaProperty(beanType, metaBean, propertyName);
  *  }
  *
- *  public void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value) {
- *    if (metaProp == NUMBER_OF_CARS_STRING && value != null) {
+ *  public void setValue(BeanBuilder builder, MetaProperty metaProp, Object value) {
+ *    if (metaProp == NUMBER_OF_CARS_STRING &amp;&amp; value != null) {
  *      String oldValue = value.toString();
  *      switch (oldValue) {
  *        case "One": value = 1; break;
@@ -72,13 +72,13 @@ import org.joda.beans.MetaProperty;
  * A semantic change can be handled by overriding the {@code createBuilder}
  * and {@code build}, buffering the input to process at the end of the bean:
  * <pre>
- *  public BeanBuilder<?> createBuilder(Class<?> beanType, MetaBean metaBean) {
+ *  public BeanBuilder createBuilder(Class beanType, MetaBean metaBean) {
  *    return BufferingBeanBuilder.of(metaBean);
  *  }
  *
- *  public Object build(Class<?> beanType, BeanBuilder<?> builder) {
- *    BufferingBeanBuilder<?> bld = (BufferingBeanBuilder<?>) builder;
- *    if ("Stephen".equals(bld.getBuffer().get(SimplePerson.meta().forename())) &&
+ *  public Object build(Class&lt;?&gt; beanType, BeanBuilder&lt;?&gt; builder) {
+ *    BufferingBeanBuilder&lt;?&gt; bld = (BufferingBeanBuilder&lt;?&gt;) builder;
+ *    if ("Stephen".equals(bld.getBuffer().get(SimplePerson.meta().forename())) &amp;&amp;
  *         "Colebourne".equals(bld.getBuffer().get(SimplePerson.meta().surname()))) {
  *      bld.set(SimplePerson.meta().forename(), "Steve");
  *    }
