@@ -106,20 +106,20 @@ Further integration is included for MongoDB and Freemarker.
 
 ## <i></i> Releases
 
-[Release 2.1](download.html) is the current release.
+[Release 2.2](download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
 There are only [minor incompatibilities](http://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
 Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-beans%7C2.1%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-beans%7C2.2%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-beans</artifactId>
-  <version>2.1</version>
+  <version>2.2</version>
 </dependency>
 ```
 
@@ -130,7 +130,7 @@ If you have problems with this, there is a "classic" variant you can use instead
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-beans</artifactId>
-  <version>2.1.1</version>
+  <version>2.2</version>
   <classifier>classic</classifier>
 </dependency>
 ```
