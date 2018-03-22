@@ -22,6 +22,9 @@ package org.joda.beans.ser;
  * Implementations of this interface can introspect the bean type when choosing a deserializer.
  * This allows deserializers to be provided that can handle multiple bean types, for example all beans
  * in a particular package, any bean with a particular supertype or with a particular annotation.
+ * <p>
+ * In the simple case where an exact match is needed, the class implementing {@link SerDeserializer}
+ * can also implement {@link SerDeserializerProvider} with a singleton constant instance.
  *
  * @author Stephen Colebourne
  */
