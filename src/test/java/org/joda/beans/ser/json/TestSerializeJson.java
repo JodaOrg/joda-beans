@@ -27,6 +27,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
@@ -135,6 +136,14 @@ public class TestSerializeJson {
                 "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":\"Test\",\"child\":{\"@bean\":\"org.joda.beans.sample.ImmEmpty\"}}");
         FlexiBean parsed = JodaBeanSer.COMPACT.jsonReader().read(json, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_read_primitiveTypeChanged() throws IOException {
+        String json = "{\"a\":6,\"b\":5}";
+        ImmDoubleFloat parsed = JodaBeanSer.COMPACT.jsonReader().read(json, ImmDoubleFloat.class);
+        assertEquals(6, parsed.getA(), 1e-10);
+        assertEquals(5, parsed.getB(), 1e-10);
     }
 
     @Test

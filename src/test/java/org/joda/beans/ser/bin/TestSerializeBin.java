@@ -15,6 +15,7 @@
  */
 package org.joda.beans.ser.bin;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -27,6 +28,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.JodaConvertBean;
@@ -140,6 +142,26 @@ public class TestSerializeBin {
         assertTrue(Arrays.equals(bytes, expected));
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_read_primitiveTypeChanged() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (DataOutputStream out = new DataOutputStream(baos)) {
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            out.writeByte(MsgPack.MIN_FIX_STR + 1);
+            out.writeBytes("a");
+            out.writeByte(6);
+            out.writeByte(MsgPack.MIN_FIX_STR + 1);
+            out.writeBytes("b");
+            out.writeByte(5);
+        }
+        byte[] bytes = baos.toByteArray();
+        ImmDoubleFloat parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
+        assertEquals(6, parsed.getA(), 1e-10);
+        assertEquals(5, parsed.getB(), 1e-10);
     }
 
     @Test

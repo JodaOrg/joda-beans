@@ -17,10 +17,13 @@ package org.joda.beans.ser.xml;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
@@ -138,6 +141,14 @@ public class TestSerializeXml {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bean type=\"org.joda.beans.sample.JodaConvertBean\"><base>Hello</base><extra>9</extra></bean>");
         Bean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_read_primitiveTypeChanged() throws IOException {
+        String json = "<bean><a>6</a><b>5</b></bean>}";
+        ImmDoubleFloat parsed = JodaBeanSer.COMPACT.xmlReader().read(json, ImmDoubleFloat.class);
+        assertEquals(6, parsed.getA(), 1e-10);
+        assertEquals(5, parsed.getB(), 1e-10);
     }
 
     //-----------------------------------------------------------------------

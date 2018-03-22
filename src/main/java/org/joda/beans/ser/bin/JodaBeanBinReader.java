@@ -386,6 +386,14 @@ public class JodaBeanBinReader extends MsgPack {
                 }
                 return Byte.valueOf((byte) value);
                 
+            } else if (type == Double.class || type == double.class) {
+                // handle case where property type has changed from integral to double
+                return Double.valueOf((double) value);
+                
+            } else if (type == Float.class || type == float.class) {
+                // handle case where property type has changed from integral to float
+                return Float.valueOf((float) value);
+                
             } else {
                 if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("Invalid binary data: Expected int, but was " + value);

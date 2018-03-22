@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.3" date="SNAPSHOT" description="v2.3">
+      <action dev="jodastephen" type="fix">
+        Allow primitive integral types to be deserialized into floating point properties.
+        Fixes #190.
+      </action>
+    </release>
     <release version="2.2" date="2018-03-13" description="v2.2">
       <action dev="jodastephen" type="fix">
         Ensure tests and functionality work correctly on Java 9.
