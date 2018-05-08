@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.3" date="SNAPSHOT" description="v2.3">
+    <release version="2.2.1" date="SNAPSHOT" description="v2.2.1">
       <action dev="jodastephen" type="fix">
         Allow primitive integral types to be deserialized into floating point properties.
         Fixes #190.
