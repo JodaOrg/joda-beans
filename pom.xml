@@ -92,13 +92,13 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>24.0-jre</version>
+      <version>25.0-jre</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-collect</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
       <optional>true</optional>
     </dependency>
     <dependency>

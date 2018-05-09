@@ -8,7 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.2.1" date="SNAPSHOT" description="v2.2.1">
+    <release version="2.2.2" date="SNAPSHOT" description="v2.2.2">
+      <action dev="jodastephen" type="fix">
+        Update Guava and Joda-Collect versions.
+      </action>
+    </release>
+    <release version="2.2.1" date="2018-06-08" description="v2.2.1">
       <action dev="jodastephen" type="fix">
         Allow primitive integral types to be deserialized into floating point properties.
         Fixes #190.
