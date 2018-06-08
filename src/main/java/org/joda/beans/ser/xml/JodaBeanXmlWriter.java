@@ -39,6 +39,7 @@ import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 import org.joda.convert.StringConverter;
+import org.joda.convert.TypedStringConverter;
 
 /**
  * Provides the ability for a Joda-Bean to be written to XML.
@@ -273,6 +274,15 @@ public class JodaBeanXmlWriter {
             if (keyConverter != null) {
                 String keyStr = convertToString(keyConverter, itemIterator.key(), "map key");
                 appendAttribute(attr, KEY, keyStr);
+            } else if (settings.getConverter().isConvertible(itemIterator.key().getClass())) {
+                TypedStringConverter<Object> keyConverter2 = settings.getConverter().findTypedConverterNoGenerics(itemIterator.key().getClass());
+                String keyStr = convertToString(keyConverter2, itemIterator.key(), "map key");
+                appendAttribute(attr, KEY, keyStr);
+                String typeStr = SerTypeMapper.encodeType(keyConverter2.getEffectiveType(), settings, basePackage, knownTypes);
+                appendAttribute(attr, TYPE, typeStr);
+                String tagName = itemIterator.category() == SerCategory.MAP ? ENTRY : ITEM;
+                writeValueElement(currentIndent, tagName, attr, itemIterator);
+                continue;
             }
             if (rowConverter != null) {
                 String rowStr = convertToString(rowConverter, itemIterator.key(), "table row");

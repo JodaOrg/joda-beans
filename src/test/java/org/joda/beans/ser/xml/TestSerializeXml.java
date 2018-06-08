@@ -26,7 +26,9 @@ import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
 import org.joda.beans.sample.ImmGuava;
+import org.joda.beans.sample.ImmIndex;
 import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmMappedIndex;
 import org.joda.beans.sample.ImmMappedKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
@@ -93,6 +95,18 @@ public class TestSerializeXml {
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    @Test
+    public void test_writeIndex() {
+        ImmMappedIndex mapped = ImmMappedIndex.of(ImmutableMap.of(ImmIndex.ONE, "A"));
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(mapped);
+        System.out.println(xml);
+        
+        @SuppressWarnings("unchecked")
+        ImmMappedIndex bean = (ImmMappedIndex) JodaBeanSer.PRETTY.xmlReader().read(xml);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, mapped);
     }
 
     //-----------------------------------------------------------------------
