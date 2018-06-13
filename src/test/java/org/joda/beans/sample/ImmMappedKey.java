@@ -39,7 +39,11 @@ import com.google.common.collect.ImmutableMap;
  * @author Stephen Colebourne
  */
 @BeanDefinition(constructorScope = "private")
-public final class ImmMappedKey implements ImmutableBean, Serializable {
+public final class ImmMappedKey
+        implements
+                ImmutableBean, 
+                Serializable {
+    // note each element on a new line
 
     /**
      * The map of data, keyed by an arbitrary key interface.

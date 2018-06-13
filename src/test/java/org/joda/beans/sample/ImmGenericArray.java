@@ -15,6 +15,7 @@
  */
 package org.joda.beans.sample;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -37,7 +38,11 @@ import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
  * @author Stephen Colebourne
  */
 @BeanDefinition(builderScope = "private")
-public final class ImmGenericArray<T extends Address> implements ImmutableBean {
+public final class ImmGenericArray<T extends Address>
+        implements
+            Serializable,
+            ImmutableBean {
+    // note each element on a new line
 
     /** The name. */
     @PropertyDefinition(validate = "notNull")
@@ -67,6 +72,11 @@ public final class ImmGenericArray<T extends Address> implements ImmutableBean {
     static {
         MetaBean.register(ImmGenericArray.Meta.INSTANCE);
     }
+
+    /**
+     * The serialization version id.
+     */
+    private static final long serialVersionUID = 1L;
 
     private ImmGenericArray(
             T[] values) {

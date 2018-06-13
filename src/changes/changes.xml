@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="2.2.2" date="SNAPSHOT" description="v2.2.2">
+      <action dev="jodastephen" type="add">
+        Parse class headers spread over multiple lines.
+        Fixes #191.
+      </action>
       <action dev="jodastephen" type="fix">
         Update Guava and Joda-Collect versions.
       </action>

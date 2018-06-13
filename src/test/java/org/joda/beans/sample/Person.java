@@ -15,6 +15,7 @@
  */
 package org.joda.beans.sample;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,9 @@ import org.joda.beans.impl.flexi.FlexiBean;
  */
 @BeanDefinition
 @ClassAnnotation(Address.class)
-public final class Person extends DirectBean implements IPerson {
+public final class Person extends DirectBean implements IPerson,
+        Serializable {
+    // note that Serializable is on a new line
 
     /** The forename. */
     @PropertyDefinition(overrideGet = true)
@@ -77,6 +80,11 @@ public final class Person extends DirectBean implements IPerson {
     static {
         MetaBean.register(Person.Meta.INSTANCE);
     }
+
+    /**
+     * The serialization version id.
+     */
+    private static final long serialVersionUID = 1L;
 
     @Override
     public Person.Meta metaBean() {
