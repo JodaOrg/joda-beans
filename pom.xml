@@ -243,5 +243,8 @@
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
     <joda.module.name>org.joda.beans</joda.module.name>
     <joda.artifactId>joda-beans</joda.artifactId>
+    <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+    <keepStagingRepositoryOnFailure>true</keepStagingRepositoryOnFailure>
+    <stagingProgressTimeoutMinutes>10</stagingProgressTimeoutMinutes>
   </properties>
 </project>
