@@ -245,6 +245,6 @@
     <joda.artifactId>joda-beans</joda.artifactId>
     <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
     <keepStagingRepositoryOnFailure>true</keepStagingRepositoryOnFailure>
-    <stagingProgressTimeoutMinutes>10</stagingProgressTimeoutMinutes>
+    <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
   </properties>
 </project>
