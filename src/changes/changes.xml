@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.2.3" date="SNAPSHOT" description="v2.2.3">
+      <action dev="jodastephen" type="add">
+        Avoid NullPointerException in finally block.
+      </action>
+    </release>
     <release version="2.2.2" date="2018-06-13" description="v2.2.2">
       <action dev="jodastephen" type="add">
         Parse class headers spread over multiple lines.

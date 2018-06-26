@@ -138,7 +138,9 @@ public class JodaBeanXmlReader {
                 reader = factory().createXMLEventReader(input);
                 return read(rootType);
             } finally {
-                reader.close();
+                if (reader != null) {
+                    reader.close();
+                }
             }
         } catch (RuntimeException ex) {
             throw ex;
@@ -171,7 +173,9 @@ public class JodaBeanXmlReader {
                 reader = factory().createXMLEventReader(input);
                 return read(rootType);
             } finally {
-                reader.close();
+                if (reader != null) {
+                    reader.close();
+                }
             }
         } catch (RuntimeException ex) {
             throw ex;
