@@ -14,7 +14,7 @@
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Beans</name>
-  <version>2.2.3-SNAPSHOT</version>
+  <version>2.3</version>
   <description>Beans and Properties</description>
   <url>http://www.joda.org/${joda.artifactId}/</url>
 
@@ -24,7 +24,7 @@
     <connection>scm:git:https://github.com/JodaOrg/${joda.artifactId}.git</connection>
     <developerConnection>scm:git:https://github.com/JodaOrg/${joda.artifactId}.git</developerConnection>
     <url>https://github.com/JodaOrg/${joda.artifactId}</url>
-    <tag>HEAD</tag>
+    <tag>v2.3</tag>
   </scm>
 
   <!-- ==================================================================== -->
