@@ -15,11 +15,16 @@
  */
 package org.joda.beans.ser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.Person;
 import org.junit.Test;
 
@@ -67,6 +72,30 @@ public class TestSerDeserializerProvider {
     public void test_provider() {
         SerDeserializers deser = new SerDeserializers(PROVIDER);
         assertSame(deser.findDeserializer(Person.class), DESER);
+    }
+
+    @Test
+    public void test_classpathImmKey() {
+        assertTrue(SerDeserializers.INSTANCE.getDeserializers().containsKey(ImmKey.class));
+        assertTrue(SerDeserializers.LENIENT.getDeserializers().containsKey(ImmKey.class));
+        assertTrue(new SerDeserializers(PROVIDER).getDeserializers().containsKey(ImmKey.class));
+
+        assertEquals(ImmKey.meta().name(), SerDeserializers.INSTANCE.findDeserializer(
+                ImmKey.class).findMetaProperty(ImmKey.class, ImmKey.meta(), "key"));
+        assertNull(SerDeserializers.LENIENT.findDeserializer(
+                ImmKey.class).findMetaProperty(ImmKey.class, ImmKey.meta(), "wibble"));
+    }
+
+    @Test
+    public void test_classpathPair() {
+        assertTrue(SerDeserializers.INSTANCE.getDeserializers().containsKey(Pair.class));
+        assertTrue(SerDeserializers.LENIENT.getDeserializers().containsKey(Pair.class));
+        assertTrue(new SerDeserializers(PROVIDER).getDeserializers().containsKey(Pair.class));
+
+        assertEquals(Pair.meta().first(), SerDeserializers.INSTANCE.findDeserializer(
+                Pair.class).findMetaProperty(Pair.class, Pair.meta(), "left"));
+        assertNull(SerDeserializers.LENIENT.findDeserializer(
+                Pair.class).findMetaProperty(Pair.class, ImmKey.meta(), "wibble"));
     }
 
 }

@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.2.3" date="SNAPSHOT" description="v2.2.3">
       <action dev="jodastephen" type="add">
+        Allow deserializers to be registered in config files.
+      </action>
+      <action dev="jodastephen" type="add">
         Avoid NullPointerException in finally block.
       </action>
     </release>

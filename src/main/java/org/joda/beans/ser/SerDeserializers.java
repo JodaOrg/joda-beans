@@ -15,11 +15,33 @@
  */
 package org.joda.beans.ser;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.joda.beans.Bean;
+import org.joda.beans.BeanBuilder;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
+import org.joda.convert.RenameHandler;
 
 /**
  * Manages a map of deserializers that assist with data migration.
@@ -36,6 +58,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class SerDeserializers {
 
+    /**
+     * Deserializers loaded from the classpath.
+     */
+    private static final Map<Class<?>, SerDeserializer> CLASSPATH_STRICT = loadFromClasspath();
+    /**
+     * Deserializers loaded from the classpath.
+     */
+    private static final Map<Class<?>, SerDeserializer> CLASSPATH_LENIENT = CLASSPATH_STRICT.entrySet().stream()
+            .map(e -> new SimpleEntry<>(e.getKey(), toLenient(e.getValue())))
+            .collect(toMap(e -> e.getKey(), e -> e.getValue()));
     /**
      * Shared global instance which can be mutated.
      */
@@ -68,6 +100,7 @@ public final class SerDeserializers {
     public SerDeserializers() {
         this.lenient = false;
         this.defaultDeserializer = DefaultDeserializer.INSTANCE;
+        this.deserializers.putAll(CLASSPATH_STRICT);
     }
 
     /**
@@ -76,9 +109,7 @@ public final class SerDeserializers {
      * @param providers  the providers to use
      */
     public SerDeserializers(SerDeserializerProvider... providers) {
-        this.lenient = false;
-        this.defaultDeserializer = DefaultDeserializer.INSTANCE;
-        this.providers.addAll(Arrays.asList(providers));
+        this(false, providers);
     }
 
     /**
@@ -89,8 +120,9 @@ public final class SerDeserializers {
      */
     public SerDeserializers(boolean lenient, SerDeserializerProvider... providers) {
         this.lenient = lenient;
-        this.providers.addAll(Arrays.asList(providers));
         this.defaultDeserializer = lenient ? LenientDeserializer.INSTANCE : DefaultDeserializer.INSTANCE;
+        this.deserializers.putAll(lenient ? CLASSPATH_LENIENT : CLASSPATH_STRICT);
+        this.providers.addAll(Arrays.asList(providers));
     }
 
     //-----------------------------------------------------------------------
@@ -150,6 +182,17 @@ public final class SerDeserializers {
         return defaultDeserializer;
     }
 
+    /**
+     * Decodes the type
+     * 
+     * @param typeStr  the type, not null
+     * @param settings  the settings, not null
+     * @param basePackage  the base package, not null
+     * @param knownTypes  the known types, not null
+     * @param defaultType  the default type, not null
+     * @return the decoded type
+     * @throws ClassNotFoundException if the class is not found
+     */
     public Class<?> decodeType(
             String typeStr,
             JodaBeanSer settings,
@@ -162,6 +205,133 @@ public final class SerDeserializers {
                     typeStr, settings, basePackage, knownTypes, defaultType == Object.class ? String.class : defaultType);
         }
         return SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
+    }
+
+    //-----------------------------------------------------------------------
+    // loads config files
+    private static Map<Class<?>, SerDeserializer> loadFromClasspath() {
+        // log errors to System.err, as problems in static initializers can be troublesome to diagnose
+        Map<Class<?>, SerDeserializer> result = new HashMap<>();
+        URL url = null;
+        try {
+            // this is the new location of the file, working on Java 8, Java 9 class path and Java 9 module path
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            if (loader == null) {
+                loader = RenameHandler.class.getClassLoader();
+            }
+            Enumeration<URL> en = loader.getResources("META-INF/org/joda/beans/JodaBeans.ini");
+            while (en.hasMoreElements()) {
+                url = en.nextElement();
+                List<String> lines = loadRenameFile(url);
+                parseRenameFile(lines, url, result);
+            }
+        } catch (Error | Exception ex) {
+            System.err.println("ERROR: Unable to load JodaBeans.ini: " + url + ": " + ex.getMessage());
+            ex.printStackTrace();
+            result.clear();
+        }
+        return result;
+    }
+
+    // loads a single rename file
+    private static List<String> loadRenameFile(URL url) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), UTF_8))) {
+            return reader.lines()
+                    .filter(line -> !line.isEmpty() && !line.startsWith("#"))
+                    .collect(toList());
+        }
+    }
+
+    // parses a single rename file
+    private static void parseRenameFile(List<String> lines, URL url, Map<Class<?>, SerDeserializer> map) {
+        // format allows multiple [deserializers] so file can be merged
+        boolean deserializers = false;
+        for (String line : lines) {
+            try {
+                if (line.equals("[deserializers]")) {
+                    deserializers = true;
+                } else if (deserializers) {
+                    int equalsPos = line.indexOf('=');
+                    String beanName = equalsPos >= 0 ? line.substring(0, equalsPos).trim() : line;
+                    String deserName = equalsPos >= 0 ? line.substring(equalsPos + 1).trim() : line;
+                    registerFromClasspath(beanName, deserName, map);
+                } else {
+                    throw new IllegalArgumentException("JodaBeans.ini must start with [deserializers]");
+                }
+            } catch (Exception ex) {
+                System.err.println("ERROR: Invalid JodaBeans.ini: " + url + ": " + ex.getMessage());
+            }
+        }
+    }
+
+    // parses and registers the classes
+    private static void registerFromClasspath(
+            String beanName, String deserName, Map<Class<?>, SerDeserializer> map) throws Exception {
+
+        Class<? extends Bean> beanClass = Class.forName(beanName).asSubclass(Bean.class);
+        Class<?> deserClass = Class.forName(deserName);
+
+        Field field = null;
+        SerDeserializer deser;
+        try {
+            field = deserClass.getDeclaredField("DESERIALIZER");
+            if (!Modifier.isStatic(field.getModifiers())) {
+                throw new IllegalStateException("Field " + field + " must be static");
+            }
+            deser = SerDeserializer.class.cast(field.get(null));
+        } catch (NoSuchFieldException ex) {
+            Constructor<?> cons = null;
+            try {
+                cons = deserClass.getConstructor();
+                deser = SerDeserializer.class.cast(cons.newInstance());
+            } catch (NoSuchMethodException ex2) {
+                throw new IllegalStateException(
+                        "Class " + deserClass.getName() + " must have field DESERIALIZER or a no-arg constructor");
+            } catch (IllegalAccessException ex2) {
+                cons.setAccessible(true);
+                deser = SerDeserializer.class.cast(cons.newInstance());
+            }
+        } catch (IllegalAccessException ex) {
+            field.setAccessible(true);
+            deser = SerDeserializer.class.cast(field.get(null));
+        }
+        map.put(beanClass, deser);
+    }
+
+    // makes the deserializer lenient
+    private static SerDeserializer toLenient(SerDeserializer underlying) {
+        return new SerDeserializer() {
+
+            @Override
+            public MetaBean findMetaBean(Class<?> beanType) {
+                return underlying.findMetaBean(beanType);
+            }
+
+            @Override
+            public BeanBuilder<?> createBuilder(Class<?> beanType, MetaBean metaBean) {
+                return underlying.createBuilder(beanType, metaBean);
+            }
+
+            @Override
+            public MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName) {
+                // dynamic beans force code by exception
+                try {
+                    return underlying.findMetaProperty(beanType, metaBean, propertyName);
+                } catch (NoSuchElementException ex) {
+                    return null;
+                }
+            }
+
+            @Override
+            public void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value) {
+                underlying.setValue(builder, metaProp, value);
+            }
+
+            @Override
+            public Object build(Class<?> beanType, BeanBuilder<?> builder) {
+                return underlying.build(beanType, builder);
+            }
+        };
     }
 
     //-----------------------------------------------------------------------
