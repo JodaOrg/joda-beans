@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.2.3" date="SNAPSHOT" description="v2.2.3">
+    <release version="2.3" date="2018-08-10" description="v2.3">
       <action dev="jodastephen" type="add">
         Allow deserializers to be registered in config files.
       </action>
