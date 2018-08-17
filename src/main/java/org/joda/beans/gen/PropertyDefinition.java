@@ -194,8 +194,8 @@ public @interface PropertyDefinition {
      * <ul>
      * <li>'omit' - omit this property from toString
      * <li>'smart' - process intelligently, equivalent to 'field' for immutable and 'getter' for mutable
-     * <li>'getter' - include in equals and hashCode using the getter
-     * <li>'field' - include in equals and hashCode using the field
+     * <li>'getter' - include in toString using the getter
+     * <li>'field' - include in toString using the field
      * </ul>
      * 
      * @return the toString style, defaulted to 'smart'
