@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.joda</groupId>
     <artifactId>joda-parent</artifactId>
-    <version>1.3</version>
+    <version>1.3.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>joda-beans</artifactId>
@@ -216,7 +216,6 @@
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
     <joda.module.name>org.joda.beans</joda.module.name>
     <joda.artifactId>joda-beans</joda.artifactId>
-    <joda.attach.site>false</joda.attach.site>
     <joda.surefire.moduleargs>--add-modules com.google.common --add-modules org.joda.collect --add-modules java.desktop --add-reads org.joda.beans=java.desktop --add-exports org.joda.beans/org.joda.beans.sample=org.joda.convert</joda.surefire.moduleargs>
     <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
     <revapi-maven-plugin.version>0.10.0</revapi-maven-plugin.version>
