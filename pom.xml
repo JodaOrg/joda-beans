@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.joda</groupId>
     <artifactId>joda-parent</artifactId>
-    <version>1.1.2</version>
+    <version>1.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>joda-beans</artifactId>
@@ -117,24 +117,6 @@
 
   <!-- ==================================================================== -->
   <profiles>
-    <!-- JPMS setup for testing on Java 9 and later -->
-    <profile>
-      <id>setuptesting</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>--add-modules com.google.common --add-modules org.joda.collect --add-modules java.desktop --add-reads org.joda.beans=java.desktop --add-exports org.joda.beans/org.joda.beans.sample=org.joda.convert</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <!-- Main deployment profile, activated by -Doss.repo -->
     <profile>
       <id>release-artifacts</id>
@@ -145,6 +127,31 @@
       </activation>
       <build>
         <plugins>
+          <!-- Additional jar file for systems too dozy to handle Java 9 -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>classic</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classifier>classic</classifier>
+                  <archive>
+                    <manifestEntries>
+                      <Automatic-Module-Name>${joda.module.name}</Automatic-Module-Name>
+                    </manifestEntries>
+                  </archive>
+                  <excludes>
+                    <exclude>module-info*</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!-- Create dist files -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -201,40 +208,6 @@
         </plugins>
       </build>
     </profile>
-    <!-- Check for incompatible changes -->
-    <profile>
-      <id>compat</id>
-      <activation>
-        <property>
-          <name>compat</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.revapi</groupId>
-            <artifactId>revapi-maven-plugin</artifactId>
-            <version>0.10.0</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.revapi</groupId>
-                <artifactId>revapi-java</artifactId>
-                <version>0.15.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>check</id>
-                <goals><goal>check</goal></goals>
-              </execution>
-            </executions>
-            <configuration>
-              <oldVersion>2.0</oldVersion>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <!-- ==================================================================== -->
@@ -243,8 +216,10 @@
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
     <joda.module.name>org.joda.beans</joda.module.name>
     <joda.artifactId>joda-beans</joda.artifactId>
-    <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
-    <keepStagingRepositoryOnFailure>true</keepStagingRepositoryOnFailure>
+    <joda.attach.site>false</joda.attach.site>
+    <joda.surefire.moduleargs>--add-modules com.google.common --add-modules org.joda.collect --add-modules java.desktop --add-reads org.joda.beans=java.desktop --add-exports org.joda.beans/org.joda.beans.sample=org.joda.convert</joda.surefire.moduleargs>
     <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+    <revapi-maven-plugin.version>0.10.0</revapi-maven-plugin.version>
+    <revapi-java.version>0.15.1</revapi-java.version>
   </properties>
 </project>
