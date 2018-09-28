@@ -99,7 +99,7 @@ Joda-Beans simplifies this by code generating builder classes for each immutable
 
 Once beans and properties are defined, it is possible to use them in powerful ways.
 A fast and efficient serialization mechanism is provided to read and write JSON, XML and binary
-using [Joda-Convert](http://www.joda.org/joda-convert/) for object to string conversion.
+using [Joda-Convert](/joda-convert/) for object to string conversion.
 Further integration is included for MongoDB and Freemarker.
 
 ---
@@ -108,12 +108,12 @@ Further integration is included for MongoDB and Freemarker.
 
 [Release 2.3](download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
-There are only [minor incompatibilities](http://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
+There are only [minor incompatibilities](migration.html) with the 1.x codebase.
 
-Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
+Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-beans%7C2.3%7Cjar).
+Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-beans&core=gav).
 
 ```xml
 <dependency>

@@ -7,7 +7,7 @@ An API is provided that defines a bean and property model, together with a code 
 The key concept is to allow each property on a bean to be accessed as an object.
 This enables technologies such as XPath, XML conversion, DB mappings, WebApp validation and Swing bindings.
 
-Joda-Beans is licensed under the business-friendly [Apache 2.0 licence](http://www.joda.org/joda-beans/license.html).
+Joda-Beans is licensed under the business-friendly [Apache 2.0 licence](https://www.joda.org/joda-beans/licenses.html).
 
 
 ### Why Joda Beans?
@@ -37,22 +37,22 @@ See these sample classes used for testing -
 ### Documentation
 Various documentation is available:
 
-* The [home page](http://www.joda.org/joda-beans/)
-* The helpful [user guide](http://www.joda.org/joda-beans/userguide.html)
-* The [Javadoc](http://www.joda.org/joda-beans/apidocs/index.html)
-* The change notes for the [releases](http://www.joda.org/joda-beans/changes-report.html)
+* The [home page](https://www.joda.org/joda-beans/)
+* The helpful [user guide](https://www.joda.org/joda-beans/userguide.html)
+* The [Javadoc](https://www.joda.org/joda-beans/apidocs/index.html)
+* The change notes for the [releases](https://www.joda.org/joda-beans/changes-report.html)
 * The [related projects](related.html) including Maven, Gradle and IntelliJ integration
 
 
 ### Releases
-[Release 2.3](http://www.joda.org/joda-beans/download.html) is the current release.
+[Release 2.3](https://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
-There are only [minor incompatibilities](http://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
+There are only [minor incompatibilities](https://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
-Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](http://www.joda.org/joda-convert/).
-There are a number of [optional dependencies](http://www.joda.org/joda-beans/dependencies.html) which help with integration.
+Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](https://www.joda.org/joda-convert/).
+There are a number of [optional dependencies](https://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-beans|2.3|jar)
+Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-beans&core=gav)
 
 For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-beans/releases/tag/v1.14).
 

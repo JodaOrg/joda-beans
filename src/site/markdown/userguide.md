@@ -89,7 +89,7 @@ The access to the field-level annotations provided by the meta-property is also 
 
 A Joda-Beans meta-property provides the ability to set a property from a string.
 The conversion between the string and the type of the property, such as `int` or `URI`, is handled by
-[Joda-Convert](http://www.joda.org/joda-convert/). The converter can be customised, and is exposed by `JodaBeanUtils`.
+[Joda-Convert](/joda-convert/). The converter can be customised, and is exposed by `JodaBeanUtils`.
 
 When iterating over a bean object graph, being able to determine which objects are "leaves", the simple
 types that have a direct string representation, is a very useful ability.
@@ -138,4 +138,4 @@ Joda-Beans has been integrated with Freemarker, MongoDB and Kryo.
 The integration support classes are included in the jar file but only work when the optional dependency is present.
 Note that it is entirely valid to use Joda-Beans without additional jar file dependencies apart from Joda-Convert.
 
-The beans are also widely use in the [Strata](http://strata.opengamma.io/) market risk project.
+The beans are also widely use in the [Strata](https://strata.opengamma.io/) market risk project.
