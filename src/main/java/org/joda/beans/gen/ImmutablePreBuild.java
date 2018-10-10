@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * before it is built into a bean. The action might include validation (normally done
  * using {@link ImmutableValidator}) and defaulting (normally done using {@link ImmutableDefaults}).
  * <p>
- * The special use case foe this annotation is the ability to default the value of one property
+ * The special use case for this annotation is the ability to default the value of one property
  * from the value of another. For example, consider a bean with two dates, where one is derived
  * from the other (such as the second being the first adjusted to a valid business day).
  * Use of this annotation allows the second date to be set to the same as the first date if
