@@ -17,6 +17,7 @@ package org.joda.beans.ser.xml;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.CharArrayWriter;
 import java.io.IOException;
 
 import org.joda.beans.Bean;
@@ -56,6 +57,17 @@ public class TestSerializeXml {
         
         Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, address);
+    }
+
+    @Test
+    public void test_writeToAppendable() throws IOException {
+        Address address = SerTestHelper.testAddress();
+        CharArrayWriter output = new CharArrayWriter();
+        JodaBeanSer.PRETTY.xmlWriter().write(address, output);
+        String xml = output.toString();
+
+        Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
         BeanAssert.assertBeanEquals(bean, address);
     }
 
