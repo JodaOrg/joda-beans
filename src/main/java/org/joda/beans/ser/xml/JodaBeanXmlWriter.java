@@ -179,6 +179,8 @@ public class JodaBeanXmlWriter {
      *
      * @param bean  the bean to output, not null
      * @param rootType  true to output the root type
+     * @param builder  the output appendable, not null
+     * @throws IOException if an error occurs
      */
     public void write(final Bean bean, final boolean rootType, final Appendable builder) throws IOException {
         if (bean == null) {
