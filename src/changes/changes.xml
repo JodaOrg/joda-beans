@@ -8,6 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.4" date="SNAPSHOT" description="v2.4">
+      <action dev="wjnicholson" type="add">
+        Add ability to serialize XML to an `Appendable`.
+        Deprecate existing `writeToBuffer()` methods.
+        See #196.
+      </action>
+    </release>
     <release version="2.3" date="2018-08-10" description="v2.3">
       <action dev="jodastephen" type="add">
         Allow deserializers to be registered in config files.
