@@ -82,9 +82,9 @@ class MapMetaBean implements DynamicMetaBean {
     @Override
     public Iterable<MetaProperty<?>> metaPropertyIterable() {
         return new Iterable<MetaProperty<?>>() {
-            private final Iterator<String> it = bean.keySet().iterator();
             @Override
             public Iterator<MetaProperty<?>> iterator() {
+                Iterator<String> it = bean.keySet().iterator();
                 return new Iterator<MetaProperty<?>>() {
                     @Override
                     public boolean hasNext() {

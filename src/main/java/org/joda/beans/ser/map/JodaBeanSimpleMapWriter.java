@@ -220,7 +220,7 @@ public class JodaBeanSimpleMapWriter {
         while (itemIterator.hasNext()) {
             itemIterator.next();
             Object outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            Integer outputCount = itemIterator.count();
+            int outputCount = itemIterator.count();
             result.add(Arrays.asList(outputValue, outputCount));
         }
         return result;

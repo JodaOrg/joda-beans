@@ -62,7 +62,7 @@ public class JodaBeanSimpleMapReader {
      * Reads and parses to a bean.
      * 
      * @param <T>  the root type
-     * @param input  the input string, not null
+     * @param input  the map input, not null
      * @param rootType  the root type, not null
      * @return the bean, not null
      */
@@ -82,7 +82,8 @@ public class JodaBeanSimpleMapReader {
     /**
      * Parses the root bean.
      * 
-     * @param rootType  the root type, not null
+     * @param input  the map input, not null
+     * @param declaredType  the declared type, not null
      * @return the bean, not null
      * @throws Exception if an error occurs
      */

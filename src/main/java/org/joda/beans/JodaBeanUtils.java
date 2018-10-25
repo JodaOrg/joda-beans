@@ -1079,12 +1079,9 @@ public final class JodaBeanUtils {
                 return value;
             } else if (value instanceof ImmutableMap ||
                     value instanceof ImmutableCollection ||
-                    value instanceof ImmutableMap ||
                     value instanceof ImmutableMultimap ||
                     value instanceof ImmutableTable) {
                 return value;
-            } else if (value instanceof Multiset) {
-                return cloneAlways((Bean) value);
             } else if (value instanceof SortedMultiset) {
                 SortedMultiset set = (SortedMultiset) value;
                 return cloneIterable(set, TreeMultiset.create(set.comparator()));
@@ -1092,9 +1089,7 @@ public final class JodaBeanUtils {
                 return cloneIterable((Multiset) value, LinkedHashMultiset.create());
             } else if (value instanceof SetMultimap) {
                 return cloneMultimap((Multimap) value, LinkedHashMultimap.create());
-            } else if (value instanceof ListMultimap) {
-                return cloneMultimap((Multimap) value, ArrayListMultimap.create());
-            } else if (value instanceof Multimap) {
+            } else if (value instanceof ListMultimap || value instanceof Multimap) {
                 return cloneMultimap((Multimap) value, ArrayListMultimap.create());
             } else if (value instanceof BiMap) {
                 return cloneMap((BiMap) value, HashBiMap.create());

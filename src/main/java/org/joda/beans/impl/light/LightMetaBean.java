@@ -202,7 +202,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
         } catch (IllegalArgumentException | IllegalAccessException | InstantiationException ex) {
             throw new IllegalArgumentException(
-                    "Bean cannot be created: " + beanName() + " from " + args, ex);
+                    "Bean cannot be created: " + beanName() + " from " + Arrays.toString(args), ex);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();

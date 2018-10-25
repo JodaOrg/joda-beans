@@ -85,9 +85,9 @@ class FlexiMetaBean implements DynamicMetaBean {
             return Collections.emptySet();
         }
         return new Iterable<MetaProperty<?>>() {
-            private final Iterator<String> it = bean.data.keySet().iterator();
             @Override
             public Iterator<MetaProperty<?>> iterator() {
+                Iterator<String> it = bean.data.keySet().iterator();
                 return new Iterator<MetaProperty<?>>() {
                     @Override
                     public boolean hasNext() {

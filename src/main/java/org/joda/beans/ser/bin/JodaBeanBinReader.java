@@ -147,7 +147,7 @@ public class JodaBeanBinReader extends MsgPack {
     /**
      * Parses the root bean.
      * 
-     * @param rootType  the root type, not null
+     * @param declaredType  the declared type, not null
      * @return the bean, not null
      * @throws Exception if an error occurs
      */
