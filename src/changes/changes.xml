@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.4" date="SNAPSHOT" description="v2.4">
+    <release version="2.4.0" date="2019-01-17" description="Version 2.4.0">
       <action dev="wjnicholson" type="add">
         Add ability to serialize XML to an `Appendable`.
         Deprecate existing `writeToBuffer()` methods.
@@ -18,7 +18,7 @@
         Add Tidelift commercial support and security policy.
       </action>
     </release>
-    <release version="2.3" date="2018-08-10" description="v2.3">
+    <release version="2.3" date="2018-08-10" description="Version 2.3">
       <action dev="jodastephen" type="add">
         Allow deserializers to be registered in config files.
       </action>
@@ -26,7 +26,7 @@
         Avoid NullPointerException in finally block.
       </action>
     </release>
-    <release version="2.2.2" date="2018-06-13" description="v2.2.2">
+    <release version="2.2.2" date="2018-06-13" description="Version 2.2.2">
       <action dev="jodastephen" type="add">
         Parse class headers spread over multiple lines.
         Fixes #191.
@@ -35,13 +35,13 @@
         Update Guava and Joda-Collect versions.
       </action>
     </release>
-    <release version="2.2.1" date="2018-06-08" description="v2.2.1">
+    <release version="2.2.1" date="2018-06-08" description="Version 2.2.1">
       <action dev="jodastephen" type="fix">
         Allow primitive integral types to be deserialized into floating point properties.
         Fixes #190.
       </action>
     </release>
-    <release version="2.2" date="2018-03-13" description="v2.2">
+    <release version="2.2" date="2018-03-13" description="Version 2.2">
       <action dev="jodastephen" type="fix">
         Ensure tests and functionality work correctly on Java 9.
       </action>
@@ -55,7 +55,7 @@
         Fixes #188.
       </action>
     </release>
-    <release version="2.1" date="2018-02-19" description="v2.1">
+    <release version="2.1" date="2018-02-19" description="Version 2.1">
       <action dev="jodastephen" type="remove">
         Remove integration projects - Freemarker, Kryo, Mongo.
         These are now available as separate Maven artifacts, see https://github.com/JodaOrg/joda-beans-integrate.
@@ -102,14 +102,14 @@
         Update and redesign build to support Java 9.
       </action>
     </release>
-    <release version="2.0.2" date="2017-10-05" description="v2.0.2">
+    <release version="2.0.2" date="2017-10-05" description="Version 2.0.2">
       <action dev="jodastephen" type="fix">
         Fix cached hash code to be transient.
         It must not be serialized.
         Fixes #177.
       </action>
     </release>
-    <release version="2.0.1" date="2017-09-26" description="v2.0.1">
+    <release version="2.0.1" date="2017-09-26" description="Version 2.0.1">
       <action dev="jodastephen" type="fix">
         Fix minimal and light beans.
         Code erroneously assumed reflection returns fields in source code order.
@@ -120,7 +120,7 @@
         Use LinkedHashMap instead of HashMap where necessary.
       </action>
     </release>
-    <release version="2.0" date="2017-09-20" description="v2.0">
+    <release version="2.0" date="2017-09-20" description="Version 2.0">
       <action dev="jodastephen" type="update">
         Move to Java 8.
         Change light beans from reflection to method handles.
@@ -185,14 +185,14 @@
         Fixes #174.
       </action>
     </release>
-    <release version="1.13" date="2017-05-04" description="v1.13">
+    <release version="1.13" date="2017-05-04" description="Version 1.13">
       <action dev="jodastephen" type="add">
         Add lenient mode for deserialization, see `SerDeserializers`.
         This allows unknown properties and some invalid types to be ignored.
         Fixes #170.
       </action>
     </release>
-    <release version="1.12" date="2017-04-10" description="v1.12">
+    <release version="1.12" date="2017-04-10" description="Version 1.12">
       <action dev="jodastephen" type="add">
         Support derived properties on light and minimal beans.
         Fixes #169.
@@ -206,7 +206,7 @@
         Fixes #167.
       </action>
     </release>
-    <release version="1.11" date="2017-03-29" description="v1.11">
+    <release version="1.11" date="2017-03-29" description="Version 1.11">
       <action dev="hackmann" type="fix">
         Ensure builder calls super constructor in hierarchy.
         Fixes #150.
@@ -237,13 +237,13 @@
         Fixes #160.
       </action>
     </release>
-    <release version="1.10.1" date="2017-01-23" description="v1.10.1">
+    <release version="1.10.1" date="2017-01-23" description="Version 1.10.1">
       <action dev="jodastephen" type="fix">
         JSON/binary serialization fails to read in a double[][] written with meta type.
         Fixes #147.
       </action>
     </release>
-    <release version="1.10" date="2017-01-16" description="v1.10">
+    <release version="1.10" date="2017-01-16" description="Version 1.10">
       <action dev="jodastephen" type="add">
         Allow mutable light beans to control constructor scope.
         Fixes #145.
@@ -269,13 +269,13 @@
         Fixes #141.
       </action>
     </release>
-    <release version="1.9.1" date="2017-01-11" description="v1.9.1">
+    <release version="1.9.1" date="2017-01-11" description="Version 1.9.1">
       <action dev="jodastephen" type="fix">
         Scope of meta bean and builder should match scope of main bean.
         Fixes #140.
       </action>
     </release>
-    <release version="1.9" date="2016-12-19" description="v1.9">
+    <release version="1.9" date="2016-12-19" description="Version 1.9">
       <action dev="jodastephen" type="add">
         Add deserializer providers, to allow more extensibility in deserialization.
         Fixes #128.
@@ -313,7 +313,7 @@
          Fixes #123.
       </action>
     </release>
-    <release version="1.8" date="2016-07-28" description="v1.8">
+    <release version="1.8" date="2016-07-28" description="Version 1.8">
       <action dev="jodastephen" type="add">
          Allow scope of meta-bean to be controlled.
          Fixes #127.
@@ -333,7 +333,7 @@
          Fixes #125.
       </action>
     </release>
-    <release version="1.7" date="2015-11-12" description="v1.7">
+    <release version="1.7" date="2015-11-12" description="Version 1.7">
       <action dev="jodastephen" type="add">
          Change equals/hashCode/toString to use fields, not getters, for immutable beans.
          Allow equals/hashCode/toString to be controlled , including selectively omitted.
@@ -373,7 +373,7 @@
          Fixes #119.
       </action>
     </release>
-    <release version="1.6" date="2015-07-24" description="v1.6">
+    <release version="1.6" date="2015-07-24" description="Version 1.6">
       <action dev="jodastephen" type="add">
          Add light-weight immutable bean generation.
          Light-weight code generation using reflection to implement the bean methods.
@@ -416,7 +416,7 @@
          Fixes #110.
       </action>
     </release>
-    <release version="1.5.1" date="2015-02-12" description="v1.5.1">
+    <release version="1.5.1" date="2015-02-12" description="Version 1.5.1">
       <action dev="jodastephen" type="fix">
          Enable better test coverage.
          Fixes #102.
@@ -426,7 +426,7 @@
          Fixes #101.
       </action>
     </release>
-    <release version="1.5" date="2015-01-05" description="v1.5">
+    <release version="1.5" date="2015-01-05" description="Version 1.5">
       <action dev="jodastephen" type="fix">
          Optimise internals of generated builders to use immutable collections.
          This avoids unnecessary copying and object creation.
@@ -450,7 +450,7 @@
         Fixes #97.
       </action>
     </release>
-    <release version="1.4" date="2014-12-10" description="v1.4">
+    <release version="1.4" date="2014-12-10" description="Version 1.4">
       <action dev="jodastephen" type="add">
         Add ImmutablePreBuild annotation.
         This handles the case where a property needs to be defaulted from the value of another property.
@@ -484,7 +484,7 @@
         Fixes #90.
       </action>
     </release>
-    <release version="1.3" date="2014-12-01" description="v1.3">
+    <release version="1.3" date="2014-12-01" description="Version 1.3">
       <action dev="jodastephen" type="fix">
         Fix bean generation to handle a lack of spaces in field initializers.
         Fixes #87.
@@ -513,7 +513,7 @@
         Fixes #86.
       </action>
     </release>
-    <release version="1.2" date="2014-10-10" description="v1.2">
+    <release version="1.2" date="2014-10-10" description="Version 1.2">
       <action dev="jodastephen" type="add">
         Add ability to iterate over all the beans within a bean.
         Depth-first iteration handling collections.
@@ -544,7 +544,7 @@
         Fixes #79.
       </action>
     </release>
-    <release version="1.1" date="2014-08-07" description="v1.1">
+    <release version="1.1" date="2014-08-07" description="Version 1.1">
       <action dev="jodastephen" type="remove">
         Reduce scope of serialization helper classes.
         MsgPack, MsgPackInput, MsgPackOutput and JodaBeanXml.
@@ -570,13 +570,13 @@
         Fixes #73.
       </action>
     </release>
-    <release version="1.0.2" date="2014-07-17" description="v1.0.2">
+    <release version="1.0.2" date="2014-07-17" description="Version 1.0.2">
       <action dev="jodastephen" type="fix">
         Fix serialization to handle subclasses of enums.
         Fixes #72.
       </action>
     </release>
-    <release version="1.0.1" date="2014-06-27" description="v1.0.1">
+    <release version="1.0.1" date="2014-06-27" description="Version 1.0.1">
       <action dev="jodastephen" type="fix">
         Fix immutable beans with private builders.
         Meta-Bean builder() method returned the private buidler.
@@ -591,7 +591,7 @@
         Fixes #71.
       </action>
     </release>
-    <release version="1.0" date="2014-06-26" description="v1.0">
+    <release version="1.0" date="2014-06-26" description="Version 1.0">
       <action dev="jodastephen" type="add">
         Update docs for v1.0.
       </action>
@@ -624,7 +624,7 @@
         Fixes #64.
       </action>
     </release>
-    <release version="0.9.8" date="2014-05-12" description="v0.9.8">
+    <release version="0.9.8" date="2014-05-12" description="Version 0.9.8">
       <action dev="jodastephen" type="add">
        Enable selective use of Override annotation.
        Fixes #63.
@@ -645,7 +645,7 @@
        Fixes #60.
       </action>
     </release>
-    <release version="0.9.7" date="2014-03-04" description="v0.9.7">
+    <release version="0.9.7" date="2014-03-04" description="Version 0.9.7">
       <action dev="jodastephen" type="add">
        Add support for Joda-Collect Grid interface.
        Fixes #59.
@@ -671,7 +671,7 @@
        Fixes #54.
       </action>
     </release>
-    <release version="0.9.6" date="2014-02-13" description="v0.9.6">
+    <release version="0.9.6" date="2014-02-13" description="Version 0.9.6">
       <action dev="jodastephen" type="add">
        Immutable subclass builders do not work.
        Immutable and builder-based beans will regenerate.
@@ -690,12 +690,12 @@
        Fixes #51.
       </action>
     </release>
-    <release version="0.9.5" date="2014-02-11" description="v0.9.5">
+    <release version="0.9.5" date="2014-02-11" description="Version 0.9.5">
       <action dev="jodastephen" type="fix">
        More secure XML parsing.
       </action>
     </release>
-    <release version="0.9.4" date="2014-02-07" description="v0.9.4">
+    <release version="0.9.4" date="2014-02-07" description="Version 0.9.4">
       <action dev="jodastephen" type="add">
        Add Joda-Bean binary serialization based on MessagePack.
        Fixes #49.
@@ -715,7 +715,7 @@
         Fixes #47.
       </action>
     </release>
-    <release version="0.9.3" date="2014-01-28" description="v0.9.3">
+    <release version="0.9.3" date="2014-01-28" description="Version 0.9.3">
       <action dev="jodastephen" type="fix">
         Choose known types in serialization carefully.
         Reduce the set from v0.9.2 as that set of types was too large.
@@ -726,7 +726,7 @@
         Fixes #45.
       </action>
     </release>
-    <release version="0.9.2" date="2014-01-27" description="v0.9.2">
+    <release version="0.9.2" date="2014-01-27" description="Version 0.9.2">
       <action dev="jodastephen" type="fix">
         Remove encodeClass/decodeClass from main serialization API.
         Fixes #44.
@@ -753,7 +753,7 @@
         Fixes #39.
       </action>
     </release>
-    <release version="0.9.1" date="2014-01-20" description="v0.9.1">
+    <release version="0.9.1" date="2014-01-20" description="Version 0.9.1">
       <action dev="jodastephen" type="fix">
         Fix immutable collection copies to preserve comparators.
         Affects SortedSet and SortedMap.
@@ -764,7 +764,7 @@
         Fixes #38.
       </action>
     </release>
-    <release version="0.9.0" date="2013-12-14" description="v0.9.0">
+    <release version="0.9.0" date="2013-12-14" description="Version 0.9.0">
       <action dev="jodastephen" type="fix">
         Support partially final beans and immutable subclasses.
         This support is complex and not recommended, but sometimes necessary.
@@ -793,7 +793,7 @@
         Fixes #32.
       </action>
     </release>
-    <release version="0.8.6" date="2013-11-06" description="v0.8.6">
+    <release version="0.8.6" date="2013-11-06" description="Version 0.8.6">
       <action dev="jodastephen" type="fix">
         XML generation of beans with no fields broken.
         Affected COMPACT mode, not PRETTY mode.
@@ -805,7 +805,7 @@
         Fixes #31.
       </action>
     </release>
-    <release version="0.8.5" date="2013-10-22" description="v0.8.5">
+    <release version="0.8.5" date="2013-10-22" description="Version 0.8.5">
       <action dev="jodastephen" type="fix">
         Fix code generation unchecked annotation when no writable properties.
       </action>
@@ -819,7 +819,7 @@
         Parse trailing comments on property definitions. Fixes #27.
       </action>
     </release>
-    <release version="0.8.4" date="2013-10-14" description="v0.8.4">
+    <release version="0.8.4" date="2013-10-14" description="Version 0.8.4">
       <action dev="jodastephen" type="add">
         Add setting to allow immutable builders to be private. Fixes #26.
       </action>
@@ -842,7 +842,7 @@
         Enhance handling of non-null and non-empty fields especially in immutable beans. See #20.
       </action>
     </release>
-    <release version="0.8.3" date="2013-10-09" description="v0.8.3">
+    <release version="0.8.3" date="2013-10-09" description="Version 0.8.3">
       <action dev="jodastephen" type="fix" >
         Immutable beans should handle nullable fields. Fixes #20.
       </action>
@@ -853,7 +853,7 @@
         Handle classes that are loaded but not initialized. Fixes #19.
       </action>
     </release>
-    <release version="0.8.2" date="2013-10-04" description="v0.8.2">
+    <release version="0.8.2" date="2013-10-04" description="Version 0.8.2">
       <action dev="jodastephen" type="fix" >
         Fix XML parsing of complex map entries.
       </action>
@@ -867,7 +867,7 @@
         SerIteratorFactory off by one bug.
       </action>
     </release>
-    <release version="0.8.1" date="2013-10-03" description="v0.8.1">
+    <release version="0.8.1" date="2013-10-03" description="Version 0.8.1">
       <action dev="jodastephen" type="add" >
         XML format no longer encodes tabs and newlines in elements.
       </action>
@@ -900,7 +900,7 @@
         Output Joda-Convert data whenever available.
       </action>
     </release>
-    <release version="0.8" date="2013-09-30" description="v0.8">
+    <release version="0.8" date="2013-09-30" description="Version 0.8">
       <action dev="jodastephen" type="update" >
         Move to OSGi generation via Maven plugin.
       </action>
@@ -956,7 +956,7 @@
         Home page at GitHub.
       </action>
     </release>
-    <release version="0.7.1" date="2013-07-22" description="v0.7.1">
+    <release version="0.7.1" date="2013-07-22" description="Version 0.7.1">
       <action dev="jodastephen" type="update">
         Adjust code generation so can reformat in Eclipse without changing generated code.
         Existing beans will regenerate, even though the only change is one blank line.
@@ -968,7 +968,7 @@
         Change to use m2e Maven Eclipse
       </action>
     </release>
-    <release version="0.7" date="2013-02-20" description="v0.7">
+    <release version="0.7" date="2013-02-20" description="Version 0.7">
       <action dev="jodastephen" type="fix">
         Fix indentation issue in metaPropertyMap field.
         Existing beans will regenerate, even though the only change is indentation.
@@ -980,12 +980,12 @@
         Fix command line arguments - -v -> -verbose.
       </action>
     </release>
-    <release version="0.6.2" date="2013-01-21" description="v0.6.2">
+    <release version="0.6.2" date="2013-01-21" description="Version 0.6.2">
       <action dev="cjkent" type="add">
         Add getString() and setString() overrides that take a StringConvert instance.
       </action>
     </release>
-    <release version="0.6.1" date="2013-01-08" description="v0.6.1">
+    <release version="0.6.1" date="2013-01-08" description="Version 0.6.1">
       <action dev="jodastephen" type="add">
         Add metaXxx(Class) method to work around Eclipse/javac/Intellij generics compiler issues.
         Existing beans will need regenerating.
@@ -997,7 +997,7 @@
         Set correct read/write flag for final fields.
       </action>
     </release>
-    <release version="0.6" date="2012-03-12" description="v0.6">
+    <release version="0.6" date="2012-03-12" description="Version 0.6">
       <action dev="jodastephen" type="fix">
         Make generics more correct.
       </action>
@@ -1017,7 +1017,7 @@
         Extend builder to support setting by string.
       </action>
     </release>
-    <release version="0.5" date="2011-10-27" description="v0.5">
+    <release version="0.5" date="2011-10-27" description="Version 0.5">
       <action dev="jodastephen" type="update">
         Update to Joda-Convert v1.2 and use new feature to improve string conversion.
       </action>              
@@ -1028,7 +1028,7 @@
         Add BeanQuery and comparator support.
       </action>              
     </release>
-    <release version="0.4.5" date="2011-10-05" description="v0.4.5">
+    <release version="0.4.5" date="2011-10-05" description="Version 0.4.5">
       <action dev="jodastephen" type="fix">
         Handle generic subclasses better in JodaBeanUtils collection/map type extraction.
       </action>              
@@ -1036,17 +1036,17 @@
         Handle arrays in JodaBeanUtils equals method.
       </action>              
     </release>
-    <release version="0.4.4" date="2011-09-08" description="v0.4.4">
+    <release version="0.4.4" date="2011-09-08" description="Version 0.4.4">
       <action dev="jodastephen" type="fix">
         Fix JodaBeanUtils to handle collections and sets as well as lists.
       </action>              
     </release>
-    <release version="0.4.3" date="2011-07-26" description="v0.4.3">
+    <release version="0.4.3" date="2011-07-26" description="Version 0.4.3">
       <action dev="jodastephen" type="add">
         Fix generation of non-collection final properties.
       </action>              
     </release>
-    <release version="0.4.2" date="2011-07-26" description="v0.4.2">
+    <release version="0.4.2" date="2011-07-26" description="Version 0.4.2">
       <action dev="jodastephen" type="add">
         Add JodaBeanUtils.clone().
       </action>              
@@ -1066,7 +1066,7 @@
         Allow conversion to and from a standard format string from meta-property.
       </action>              
     </release>
-    <release version="0.4" date="2011-06-03" description="v0.4">
+    <release version="0.4" date="2011-06-03" description="Version 0.4">
       <action dev="jodastephen" type="add">
         Add basic validation support.
       </action>              
@@ -1086,17 +1086,17 @@
         Enhance meta-property map.
       </action>              
     </release>
-    <release version="0.3.2" date="2011-04-06" description="v0.3.2">
+    <release version="0.3.2" date="2011-04-06" description="Version 0.3.2">
       <action dev="jodastephen" type="fix">
         Minor fixes.
       </action>              
     </release>
-    <release version="0.3" date="2010-12-13" description="v0.3">
+    <release version="0.3" date="2010-12-13" description="Version 0.3">
       <action dev="jodastephen" type="fix">
         Handle generic subclass of a generic class.
       </action>              
     </release>
-    <release version="0.2.20101111" date="2010-11-11" description="v0.2.20101111">
+    <release version="0.2.20101111" date="2010-11-11" description="Version 0.2.20101111">
       <action dev="jodastephen" type="fix">
         Handle subclass of a generic class.
       </action>              
