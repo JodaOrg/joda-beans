@@ -87,7 +87,7 @@ public @interface BeanDefinition {
      * The name of the factory method.
      * <p>
      * By default, this is an empty string and no factory is generated.
-     * Set to 'of' to generate a factory method named 'of.
+     * Set to 'of' to generate a factory method named 'of'.
      * 
      * @return the factory name, defaulted to ''
      */
