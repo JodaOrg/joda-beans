@@ -7,7 +7,7 @@ See the [main user guide](userguide.html) for a higher level introduction.
 ## Serialization
 
 The `org.joda.beans.ser` package provides support for serializing Joda-Beans via JSON, XML or MsgPack binary.
-The main class is [JodaBeanSer](apidocs/org/joda/beans/ser/JodaBeanSer.html).
+The main class is [JodaBeanSer](apidocs/org.joda.beans/org/joda/beans/ser/JodaBeanSer.html).
 It contains the relevant settings and methods to access the serialization and deserialization.
 
 ```

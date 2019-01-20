@@ -22,17 +22,17 @@ The benefits of the Joda-Beans approach mostly apply when using the code generat
 
 The Joda-Bean API is based around a model of properties in the Java programming language.
 
-All beans implement the [Bean](apidocs/org/joda/beans/Bean.html) interface.
+All beans implement the [Bean](apidocs/org.joda.beans/org/joda/beans/Bean.html) interface.
 This defines a minimal API for all beans, providing the ability to obtain the property names and a named property.
 The interface also provides access to the *meta-bean*.
 
-The [MetaBean](apidocs/org/joda/beans/MetaBean.html) interface defines the meta-bean.
+The [MetaBean](apidocs/org.joda.beans/org/joda/beans/MetaBean.html) interface defines the meta-bean.
 The "meta" name indicates that this is a higher level description of the bean itself.
 In fact, the meta-bean is the equivalent to `java.lang.Class` for beans - there is only one meta-bean object
 for all instances of the bean.
 The meta-bean API provides access to the name of the bean, it's type, a builder and the *meta-properties*.
 
-The [MetaProperty](apidocs/org/joda/beans/MetaProperty.html) interface is the main definition of a property.
+The [MetaProperty](apidocs/org.joda.beans/org/joda/beans/MetaProperty.html) interface is the main definition of a property.
 It is at the "meta" level, describing the property without holding a references to any specific instance of a bean.
 As such, it is effectively the equivalent to `java.lang.reflect.Field` for a single property on a bean - there is only
 one meta-property object for all instances of the property.
@@ -46,7 +46,7 @@ It also include methods to get and set the value, which require the bean to be p
   String surname = surnameMetaProperty.get(person);
 ```
 
-The bean itself also provides access to instances of the [Property](apidocs/org/joda/beans/Property.html) interface for each property.
+The bean itself also provides access to instances of the [Property](apidocs/org.joda.beans/org/joda/beans/Property.html) interface for each property.
 Each property object is a simple combination of the bean and the meta-property.
 This means that there are simple methods to get and set the value of the property which directly affect the underlying bean.
 The property also provides methods to get the property name, the underlying bean and the meta-property.
@@ -73,12 +73,12 @@ This is because they tend to be singletons and more efficient than using the pro
 The meta-property API is also more comprehensive than the property API.
 
 Beans are normal Java objects and can be created from scratch using constructors.
-Frameworks may wish to use the [BeanBuilder](apidocs/org/joda/beans/BeanBuilder.html) interface
+Frameworks may wish to use the [BeanBuilder](apidocs/org.joda.beans/org/joda/beans/BeanBuilder.html) interface
 which provides a standard way to build the bean.
 The builder is obtained from the meta-bean.
 Each property is then set before calling `build`.
 
-A selection of utilities is available on [JodaBeanUtils](apidocs/org/joda/beans/JodaBeanUtils.html).
+A selection of utilities is available on [JodaBeanUtils](apidocs/org.joda.beans/org/joda/beans/JodaBeanUtils.html).
 This includes the ability to lookup a meta-bean from a `java.lang.Class`, access to the Joda-Convert string
 converter and methods to extract the types of lists and maps using reflection on generics.
 

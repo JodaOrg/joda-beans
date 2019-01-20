@@ -8,7 +8,7 @@ See the [main user guide](userguide.html) for a higher level introduction.
 
 It is possible to write a Joda-Bean by hand - they are just normal Java interfaces defining an API for beans.
 There are some base classes that assist as well as some standard map-based implementations, notably
-[FlexiBean](apidocs/org/joda/beans/impl/flexi/FlexiBean.html).
+[FlexiBean](apidocs/org.joda.beans/org/joda/beans/impl/flexi/FlexiBean.html).
 It is more common to use the code generator, however the generator is optional.
 
 A code generated Joda-Bean minimises the amount of code that the developer has to write.
@@ -41,7 +41,7 @@ public final class UserAccount implements Bean {
 
 The code generator will create getters, setters, equals, hashCode, toString, metaBean and properties.
 To see the generated code for this class,
-[click here](https://github.com/JodaOrg/joda-beans/blob/v1.4/src/test/java/org/joda/beans/sample/UserAccount.java#L34).
+[click here](https://github.com/JodaOrg/joda-beans/blob/v1.4/src/test/java/org/joda/beans/gen/UserAccount.java#L34).
 
 Note that the equals, hashCode and toString methods are only generated if they do not exist already.
 As such, it is easy to write your own versions of these methods if necessary.
@@ -61,11 +61,11 @@ way that is desired, such as adding constructors and methods.
 
 The generator has the following requirements:
 
-* The class must be annotated with [BeanDefinition](apidocs/org/joda/beans/BeanDefinition.html)
-* The class must implement the [Bean](apidocs/org/joda/beans/Bean.html) interface, or extend a class that does.
-At one time it was mandatory to subclass [DirectBean](apidocs/org/joda/beans/impl/direct/DirectBean.html) but that is no longer recommended
+* The class must be annotated with [BeanDefinition](apidocs/org.joda.beans/org/joda/beans/gen/BeanDefinition.html)
+* The class must implement the [Bean](apidocs/org.joda.beans/org/joda/beans/Bean.html) interface, or extend a class that does.
+At one time it was mandatory to subclass [DirectBean](apidocs/org.joda.beans/org/joda/beans/impl/direct/DirectBean.html) but that is no longer recommended
 * The class must be a normal top-level class, nested/inner classes and multiple classes per file are not supported
-* Each property field must be annotated with [PropertyDefinition](apidocs/org/joda/beans/PropertyDefinition.html)
+* Each property field must be annotated with [PropertyDefinition](apidocs/org.joda.beans/org/joda/beans/gen/PropertyDefinition.html)
 * Each property field must be be private
 * The Javadoc of each property field should normally start with the word "The".
 
@@ -109,7 +109,7 @@ In other words, the type system in the generator is totally dumb and based solel
 
 The generator has a limited set of customisations to the core part of the generation.
 
-One key set of control is provided by [@PropertyDefinition](apidocs/org/joda/beans/PropertyDefinition.html).
+One key set of control is provided by [@PropertyDefinition](apidocs/org.joda.beans/org/joda/beans/gen/PropertyDefinition.html).
 
 The style of getter can be controlled using the annotation parameter "get".
 In most cases, the default "smart" setting is sufficient:
@@ -160,7 +160,7 @@ In most cases, the default "smart" setting is sufficient:
 * "bound" - generates a bound property with {@code PropertyChangeSupport}
 * "field" - generates direct access to the field, enabling a weird manual setter
 * "manual" - a method named `setXxx()` must be manually provided at package scope or greater
-* a pattern, see [Javadoc](apidocs/org/joda/beans/PropertyDefinition.html#set--)
+* a pattern, see [Javadoc](apidocs/org.joda.beans/org/joda/beans/gen/PropertyDefinition.html#set--)
 
 For example, to have a private setter:
 
@@ -268,7 +268,7 @@ The style of equals/hashCode/toString can be controlled using the annotation par
 It is possible to declare a property without a matching field.
 For example, an "age" property could be derived from a "dateOfBirth" field.
 
-To do this, annotate the getter of the derived property with [DerivedProperty](apidocs/org/joda/beans/DerivedProperty.html).
+To do this, annotate the getter of the derived property with [DerivedProperty](apidocs/org.joda.beans/org/joda/beans/gen/DerivedProperty.html).
 Apart from the absence of a field, a derived property is very similar to a normal read-only property.
 
 
@@ -278,7 +278,7 @@ Code generated beans may be immutable.
 
 All fields in an immutable bean must be final.
 It is recommended that immutable beans are final,
-do not extend any other bean class and directly implement [ImmutableBean](apidocs/org/joda/beans/ImmutableBean.html).
+do not extend any other bean class and directly implement [ImmutableBean](apidocs/org.joda.beans/org/joda/beans/ImmutableBean.html).
 
 ```
  @BeanDefinition
@@ -297,7 +297,7 @@ In most cases the per-property validation attribute is sufficient.
 When cross-property validation is needed, this technique can be used.
 
 Simply declare a private void method taking no arguments annotated with
-[@ImmutableValidator](apidocs/org/joda/beans/ImmutableValidator.html).
+[@ImmutableValidator](apidocs/org.joda.beans/org/joda/beans/gen/ImmutableValidator.html).
 The method will be called during the validation phase of the constructor.
 
 ```
@@ -312,7 +312,7 @@ In most cases this is not necessary, but if the bean has lots of non-null proper
 desirable to have some default values.
 
 Simply declare a private static void method taking one 'Builder' argument annotated with
-[@ImmutableDefaults](apidocs/org/joda/beans/ImmutableDefaults.html).
+[@ImmutableDefaults](apidocs/org.joda.beans/org/joda/beans/gen/ImmutableDefaults.html).
 The method will be called before the empty builder is made available for population.
 
 ```
@@ -328,7 +328,7 @@ from another property this can be useful.
 In general, use of `@ImmutableValidator` and/or `@ImmutableDefaults` should be preferred.
 
 Simply declare a private static void method taking one 'Builder' argument annotated with
-[@ImmutablePreBuild](apidocs/org/joda/beans/ImmutablePreBuild.html).
+[@ImmutablePreBuild](apidocs/org.joda.beans/org/joda/beans/gen/ImmutablePreBuild.html).
 The method will be called when `build()` is invoked on the builder.
 
 ```
@@ -343,13 +343,13 @@ In most cases this is not necessary, but there may be occasional use cases.
 In general, use of `@ImmutableValidator` and/or `@ImmutableDefaults` should be preferred.
 
 A constructor with parameters matching each property must be written and annotated with
-[@ImmutableConstructor](apidocs/org/joda/beans/ImmutableConstructor.html).
+[@ImmutableConstructor](apidocs/org.joda.beans/org/joda/beans/gen/ImmutableConstructor.html).
 It may be easier to generate the bean without the annotation and move the generated constructor out
 into user code, adding the annotation only at that point.
 
 ```
  @ImmutableConstructor
- private myBean(String surname, String forename) {
+ private MyBean(String surname, String forename) {
    // a constructor entirely under application control
  }
 ```
