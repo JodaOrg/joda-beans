@@ -62,8 +62,8 @@ way that is desired, such as adding constructors and methods.
 The generator has the following requirements:
 
 * The class must be annotated with [BeanDefinition](apidocs/org.joda.beans/org/joda/beans/gen/BeanDefinition.html)
-* The class must implement the [Bean](apidocs/org.joda.beans/org/joda/beans/Bean.html) interface, or extend a class that does.
-At one time it was mandatory to subclass [DirectBean](apidocs/org.joda.beans/org/joda/beans/impl/direct/DirectBean.html) but that is no longer recommended
+* The class must directly implement the [Bean](apidocs/org.joda.beans/org/joda/beans/Bean.html) or
+[ImmutableBean](apidocs/org.joda.beans/org/joda/beans/ImmutableBean.html) interface.
 * The class must be a normal top-level class, nested/inner classes and multiple classes per file are not supported
 * Each property field must be annotated with [PropertyDefinition](apidocs/org.joda.beans/org/joda/beans/gen/PropertyDefinition.html)
 * Each property field must be be private
