@@ -280,6 +280,14 @@ public class SimplePersonWithBuilderNonFinal implements Cloneable, Bean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a builder that allows this bean to be mutated.
+     * @return the mutable builder, not null
+     */
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
     @Override
     public SimplePersonWithBuilderNonFinal clone() {
         return JodaBeanUtils.cloneAlways(this);

@@ -327,6 +327,14 @@ class BeanData {
      * Is the builder generated
      * @return true if generated
      */
+    public boolean isBuilderGenerated() {
+        return (isImmutable() && isEffectiveBuilderScopeVisible()) || (isMutable() && isBuilderScopeVisible());
+    }
+
+    /**
+     * Is the builder generated
+     * @return true if generated
+     */
     public boolean isSkipBuilderGeneration() {
         return (isMutable() && isBuilderScopeVisible() == false) || isBeanStyleLight();
     }

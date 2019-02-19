@@ -134,6 +134,14 @@ public final class MutableListFinalBean implements Bean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a builder that allows this bean to be mutated.
+     * @return the mutable builder, not null
+     */
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
     @Override
     public MutableListFinalBean clone() {
         return JodaBeanUtils.cloneAlways(this);

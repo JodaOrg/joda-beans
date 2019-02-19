@@ -292,8 +292,7 @@ class BeanGen {
     }
 
     private void generateImmutableBuilderMethod() {
-        if (data.isConstructable() &&
-                ((data.isImmutable() && data.isEffectiveBuilderScopeVisible()) || (data.isMutable() && data.isBuilderScopeVisible()))) {
+        if (data.isConstructable() && data.isBuilderGenerated()) {
             addLine(1, "/**");
             addLine(1, " * Returns a builder used to create an instance of the bean.");
             if (data.isTypeGeneric()) {
@@ -739,10 +738,10 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateImmutableToBuilder() {
-        if (data.isImmutable() && data.isEffectiveBuilderScopeVisible()) {
+        if (data.isBuilderGenerated()) {
             if (data.isConstructable()) {
                 List<PropertyGen> nonDerived = nonDerivedProperties();
-                if (nonDerived.size() > 0) {
+                if (nonDerived.size() > 0 || !data.isTypeFinal()) {
                     addLine(1, "/**");
                     addLine(1, " * Returns a builder that allows this bean to be mutated.");
                     addLine(1, " * @return the mutable builder, not null");
@@ -1271,9 +1270,9 @@ class BeanGen {
     }
 
     private void generateBuilderConstructorCopy() {
-        if (data.isEffectiveBuilderScopeVisible()) {
+        if (data.isBuilderGenerated()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
-            if (nonDerived.size() > 0) {
+            if (nonDerived.size() > 0 || !data.isTypeFinal()) {
                 addLine(2, "/**");
                 addLine(2, " * Restricted copy constructor.");
                 addLine(2, " * @param beanToCopy  the bean to copy from, not null");

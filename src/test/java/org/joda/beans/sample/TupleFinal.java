@@ -186,6 +186,14 @@ public final class TupleFinal<X, Y, Z> implements Bean {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a builder that allows this bean to be mutated.
+     * @return the mutable builder, not null
+     */
+    Builder<X, Y, Z> toBuilder() {
+        return new Builder<>(this);
+    }
+
     @Override
     public TupleFinal<X, Y, Z> clone() {
         return JodaBeanUtils.cloneAlways(this);
