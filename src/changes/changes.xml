@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.5.0" date="SNAPSHOT" description="Version 2.5.0">
+    <release version="2.5.0" date="2019-02-28" description="Version 2.5.0">
       <action dev="jodastephen" type="add">
         Ensure that builders on mutable beans are handled correctly.
         Create `toBuilder()` methods and fix case where empty parent bean didn't compile.
