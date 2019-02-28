@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -99,9 +100,7 @@ class PropertyParser {
         data.resolveEqualsHashCodeStyle(beanParser.getFile(), lineIndex);
         data.resolveToStringStyle(beanParser.getFile(), lineIndex);
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
-        List<String> comments = parseComment(content, data.getPropertyName());
-        data.setFirstComment(comments.get(0));
-        data.getComments().addAll(comments.subList(1, comments.size()));
+        parseComments(content, data);
         if (beanData.isBeanStyleLightOrMinimal() && beanData.isMutable() && data.getSetterGen() instanceof SetterGen.NoSetterGen) {
             throw new IllegalArgumentException("Light and Minimal style beans do not support final fields when mutable");
         }
@@ -130,10 +129,25 @@ class PropertyParser {
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
         data.resolveBuilderGen();
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
+        parseComments(content, data);
+        return new PropertyGen(data);
+    }
+
+    private void parseComments(List<String> content, PropertyData data) {
         List<String> comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
         data.getComments().addAll(comments.subList(1, comments.size()));
-        return new PropertyGen(data);
+        for (Iterator<String> it = data.getComments().iterator(); it.hasNext(); ) {
+            String comment = it.next();
+            if (comment.trim().startsWith("@deprecated")) {
+                data.setDeprecatedComment(comment.trim());
+                data.setDeprecated(true);
+                it.remove();
+            }
+        }
+        if (data.isDeprecated() && data.getDeprecatedComment() == null) {
+            data.setDeprecatedComment("@deprecated Deprecated");
+        }
     }
 
     //-----------------------------------------------------------------------

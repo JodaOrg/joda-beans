@@ -179,6 +179,9 @@ abstract class GetterGen {
                 list.add("\t * " + comment);
             }
             list.add("\t * @return the optional value of the property, not null");
+            if (prop.getDeprecatedComment() != null) {
+                list.add("\t * " + prop.getDeprecatedComment());
+            }
             list.add("\t */");
             if (prop.isOverrideGet()) {
                 list.add("\t@Override");
@@ -223,6 +226,9 @@ abstract class GetterGen {
                 list.add("\t * " + comment);
             }
             list.add("\t * @return the optional value of the property, not null");
+            if (prop.getDeprecatedComment() != null) {
+                list.add("\t * " + prop.getDeprecatedComment());
+            }
             list.add("\t */");
             if (prop.isOverrideGet()) {
                 list.add("\t@Override");
@@ -270,6 +276,9 @@ abstract class GetterGen {
             list.add("\t * " + comment);
         }
         list.add("\t * @return the value of the property" + prop.getNotNullJavadoc());
+        if (prop.getDeprecatedComment() != null) {
+            list.add("\t * " + prop.getDeprecatedComment());
+        }
         list.add("\t */");
         if (prop.isOverrideGet()) {
             list.add("\t@Override");

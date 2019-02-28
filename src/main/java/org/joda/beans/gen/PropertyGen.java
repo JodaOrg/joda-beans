@@ -103,6 +103,9 @@ class PropertyGen {
             list.add("\t * " + comment);
         }
         list.add("\t * @return the property, not null");
+        if (data.getDeprecatedComment() != null) {
+            list.add("\t * " + data.getDeprecatedComment());
+        }
         list.add("\t */");
         if (data.isDeprecated()) {
             list.add("\t@Deprecated");
@@ -119,14 +122,10 @@ class PropertyGen {
         String propertyType = propertyType();
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
-        if (data.isDeprecated()) {
-            for (String comment : data.getComments()) {
-                if (comment.contains("@deprecated")) {
-                    list.add("\t\t * " + comment);
-                }
-            }
-        }
         list.add("\t\t * @return the meta-property, not null");
+        if (data.getDeprecatedComment() != null) {
+            list.add("\t\t * " + data.getDeprecatedComment());
+        }
         list.add("\t\t */");
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
@@ -235,12 +234,8 @@ class PropertyGen {
         }
         list.add("\t\t * @param " + data.getPropertyName() + "  the new value" + data.getNotNullJavadoc());
         list.add("\t\t * @return this, for chaining, not null");
-        if (data.isDeprecated()) {
-            for (String comment : data.getComments()) {
-                if (comment.contains("@deprecated")) {
-                    list.add("\t\t * " + comment);
-                }
-            }
+        if (data.getDeprecatedComment() != null) {
+            list.add("\t\t * " + data.getDeprecatedComment());
         }
         list.add("\t\t */");
         if (data.isDeprecated()) {
@@ -288,12 +283,8 @@ class PropertyGen {
         list.add("\t\t * from an array of objects.");
         list.add("\t\t * @param " + data.getPropertyName() + "  the new value" + data.getNotNullJavadoc());
         list.add("\t\t * @return this, for chaining, not null");
-        if (data.isDeprecated()) {
-            for (String comment : data.getComments()) {
-                if (comment.contains("@deprecated")) {
-                    list.add("\t\t * " + comment);
-                }
-            }
+        if (data.getDeprecatedComment() != null) {
+            list.add("\t\t * " + data.getDeprecatedComment());
         }
         list.add("\t\t */");
         if (data.isDeprecated()) {

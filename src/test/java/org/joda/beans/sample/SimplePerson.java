@@ -273,6 +273,7 @@ public final class SimplePerson implements Cloneable, Bean {
     /**
      * Gets the propDefAnnotationSecondDeprecated.
      * @return the value of the property, not null
+     * @deprecated Deprecated
      */
     @Deprecated
     public FlexiBean getPropDefAnnotationSecondDeprecated() {
@@ -282,6 +283,7 @@ public final class SimplePerson implements Cloneable, Bean {
     /**
      * Sets the propDefAnnotationSecondDeprecated.
      * @param propDefAnnotationSecondDeprecated  the new value of the property, not null
+     * @deprecated Deprecated
      */
     @Deprecated
     public void setPropDefAnnotationSecondDeprecated(FlexiBean propDefAnnotationSecondDeprecated) {
@@ -293,6 +295,7 @@ public final class SimplePerson implements Cloneable, Bean {
     /**
      * Gets the the {@code propDefAnnotationSecondDeprecated} property.
      * @return the property, not null
+     * @deprecated Deprecated
      */
     @Deprecated
     public Property<FlexiBean> propDefAnnotationSecondDeprecated() {
@@ -554,6 +557,7 @@ public final class SimplePerson implements Cloneable, Bean {
         /**
          * The meta-property for the {@code propDefAnnotationSecondDeprecated} property.
          * @return the meta-property, not null
+         * @deprecated Deprecated
          */
         @Deprecated
         public MetaProperty<FlexiBean> propDefAnnotationSecondDeprecated() {

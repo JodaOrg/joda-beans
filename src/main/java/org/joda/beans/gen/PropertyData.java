@@ -109,6 +109,8 @@ class PropertyData {
     private String firstComment;
     /** Other comments about the property. */
     private final List<String> comments = new ArrayList<>();
+    /** Deprecated comment about the property, null if not deprecated. */
+    private String deprecatedComment;
     /** The getter generator. */
     private GetterGen getterGen;
     /** The setter generator. */
@@ -586,6 +588,7 @@ class PropertyData {
         this.deprecated = deprecated;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the first comment line.
      * @return the first comment
@@ -608,6 +611,22 @@ class PropertyData {
      */
     public List<String> getComments() {
         return comments;
+    }
+
+    /**
+     * Gets the deprecated comment line.
+     * @return the deprecated comment
+     */
+    public String getDeprecatedComment() {
+        return deprecatedComment;
+    }
+
+    /**
+     * Sets the deprecated comment line.
+     * @param deprecatedComment  the deprecated comment to set
+     */
+    public void setDeprecatedComment(String deprecatedComment) {
+        this.deprecatedComment = deprecatedComment;
     }
 
     //-----------------------------------------------------------------------

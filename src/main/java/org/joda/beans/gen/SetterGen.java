@@ -83,6 +83,9 @@ abstract class SetterGen {
                 list.add("\t * " + comment);
             }
             list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
+            if (prop.getDeprecatedComment() != null) {
+                list.add("\t * " + prop.getDeprecatedComment());
+            }
             list.add("\t */");
             if (prop.isOverrideSet()) {
                 list.add("\t@Override");
@@ -124,6 +127,9 @@ abstract class SetterGen {
                 list.add(indent + " * " + comment);
             }
             list.add(indent + " * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
+            if (prop.getDeprecatedComment() != null) {
+                list.add(indent + " * " + prop.getDeprecatedComment());
+            }
             list.add(indent + " */");
             if (prop.isOverrideSet()) {
                 list.add("\t@Override");
@@ -193,6 +199,9 @@ abstract class SetterGen {
                 list.add("\t * " + comment);
             }
             list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
+            if (prop.getDeprecatedComment() != null) {
+                list.add("\t * " + prop.getDeprecatedComment());
+            }
             list.add("\t */");
             if (prop.isOverrideSet()) {
                 list.add("\t@Override");
