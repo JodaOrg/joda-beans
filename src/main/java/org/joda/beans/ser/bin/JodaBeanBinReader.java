@@ -440,12 +440,23 @@ public class JodaBeanBinReader extends MsgPack {
     }
 
     private Object parseSimple(int typeByte, Class<?> type) throws Exception {
+        if (typeByte == FIX_EXT_4) {
+            byte tempTypeByte = input.readByte();
+            if (tempTypeByte != JODA_TYPE_REF) {
+                throw new IllegalArgumentException("Invalid binary data: Expected reference, but was 0x" + toHex(tempTypeByte));
+            }
+            int reference = input.readInt();
+            return serializedReferences.get(reference);
+        }
         if (isString(typeByte)) {
             String text = acceptString(typeByte);
             if (type == String.class || type == Object.class) {
+                serializedReferences.add(text);
                 return text;
             }
-            return settings.getConverter().convertFromString(type, text);
+            Object result = settings.getConverter().convertFromString(type, text);
+            serializedReferences.add(result);
+            return result;
         }
         if (isIntegral(typeByte)) {
             long value = acceptLong(typeByte);

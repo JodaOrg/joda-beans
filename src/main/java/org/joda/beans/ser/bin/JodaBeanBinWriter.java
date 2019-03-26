@@ -183,10 +183,12 @@ public class JodaBeanBinWriter {
     }
 
     private void writeBean(final Bean bean, final Class<?> declaredType, RootType rootTypeFlag) throws IOException {
-        Integer beanRef = serializedObjects.get(bean);
-        if (beanRef != null) {
-            output.writeExtensionInt(MsgPack.JODA_TYPE_REF, beanRef);
-            return;
+        if (settings.isReferences()) {
+            Integer beanRef = serializedObjects.get(bean);
+            if (beanRef != null) {
+                output.writeExtensionInt(MsgPack.JODA_TYPE_REF, beanRef);
+                return;
+            }
         }
 
         int count = bean.metaBean().metaPropertyCount();
@@ -203,25 +205,39 @@ public class JodaBeanBinWriter {
             }
         }
         if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
-            SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(bean.getClass(), settings, basePackage, knownTypesRef);
-            if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
-                basePackage = bean.getClass().getPackage().getName() + ".";
+            if (settings.isReferences()) {
+                SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(bean.getClass(), settings, basePackage, knownTypesRef);
+                if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
+                    basePackage = bean.getClass().getPackage().getName() + ".";
+                }
+                output.writeMapHeader(size + 1);
+                output.writeExtension(MsgPack.JODA_TYPE_BEAN, type);
+                output.writeNil();
+            } else {
+                String type = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
+                if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
+                    basePackage = bean.getClass().getPackage().getName() + ".";
+                }
+                output.writeMapHeader(size + 1);
+                output.writeExtensionString(MsgPack.JODA_TYPE_BEAN, type);
+                output.writeNil();
             }
-            output.writeMapHeader(size + 1);
-            output.writeExtension(MsgPack.JODA_TYPE_BEAN, type);
-            output.writeNil();
         } else {
             output.writeMapHeader(size);
         }
         for (int i = 0; i < size; i++) {
             MetaProperty<?> prop = props[i];
             Object value = values[i];
-            Integer reference = serializedObjects.get(prop.name());
-            if (reference != null) {
-                output.writeExtensionInt(MsgPack.JODA_TYPE_PROP_NAME, reference);
+            if (settings.isReferences()) {
+                Integer reference = serializedObjects.get(prop.name());
+                if (reference != null) {
+                    output.writeExtensionInt(MsgPack.JODA_TYPE_PROP_NAME, reference);
+                } else {
+                    output.writeString(prop.name());
+                    serializedObjects.put(prop.name(), serializedObjects.size());
+                }
             } else {
                 output.writeString(prop.name());
-                serializedObjects.put(prop.name(), serializedObjects.size());
             }
             Class<?> propType = SerOptional.extractType(prop, bean.getClass());
             if (value instanceof Bean) {
@@ -240,7 +256,9 @@ public class JodaBeanBinWriter {
             }
         }
 
-        serializedObjects.put(bean, serializedObjects.size());
+        if (settings.isReferences()) {
+            serializedObjects.put(bean, serializedObjects.size());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -403,17 +421,27 @@ public class JodaBeanBinWriter {
         if (declaredType == Object.class) {
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(effectiveType, settings, basePackage, knownTypesRef);
                 output.writeMapHeader(1);
-                output.writeExtension(MsgPack.JODA_TYPE_DATA, type);
+                if (settings.isReferences()) {
+                    SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(effectiveType, settings, basePackage, knownTypesRef);
+                    output.writeExtension(MsgPack.JODA_TYPE_DATA, type);
+                } else {
+                    String type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                    output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
+                }
             } else {
                 effectiveType = realType;
             }
         } else if (settings.getConverter().isConvertible(declaredType) == false) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(effectiveType, settings, basePackage, knownTypesRef);
             output.writeMapHeader(1);
-            output.writeExtension(MsgPack.JODA_TYPE_DATA, type);
+            if (settings.isReferences()) {
+                SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(effectiveType, settings, basePackage, knownTypesRef);
+                output.writeExtension(MsgPack.JODA_TYPE_DATA, type);
+            } else {
+                String type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
+            }
         }
 
         // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
@@ -433,14 +461,28 @@ public class JodaBeanBinWriter {
 
         // write as a string
         try {
-            String converted = settings.getConverter().convertToString(effectiveType, value);
-            if (converted == null) {
-                throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
+            if (settings.isReferences()) {
+                Integer reference = serializedObjects.get(value);
+                if (reference != null) {
+                    output.writeExtensionInt(MsgPack.JODA_TYPE_REF, reference);
+                } else {
+                    writeAsString(value, effectiveType);
+                    serializedObjects.put(value, serializedObjects.size());
+                }
+            } else {
+                writeAsString(value, effectiveType);
             }
-            output.writeString(converted);
         } catch (RuntimeException ex) {
             throw new IllegalArgumentException("Unable to convert type " + effectiveType.getName() + " declared as " + declaredType.getName(), ex);
         }
+    }
+
+    private void writeAsString(Object value, Class<?> effectiveType) throws IOException {
+        String converted = settings.getConverter().convertToString(effectiveType, value);
+        if (converted == null) {
+            throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
+        }
+        output.writeString(converted);
     }
 
     //-----------------------------------------------------------------------
