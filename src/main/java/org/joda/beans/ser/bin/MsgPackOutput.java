@@ -314,7 +314,7 @@ final class MsgPackOutput extends MsgPack {
     void writeExtensionInt(int extensionType, int reference) throws IOException {
         output.write(FIX_EXT_4);
         output.write(extensionType);
-        writeInt(reference);
+        output.writeInt(reference);
     }
 
     /**

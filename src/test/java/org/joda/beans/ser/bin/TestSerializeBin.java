@@ -49,20 +49,24 @@ public class TestSerializeBin {
         Address address = SerTestHelper.testAddress();
 
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
-//        new MsgPackVisualizer(bytes).visualize();
+        new MsgPackVisualizer(bytes).visualizeData();
 
         Address bean = (Address) JodaBeanSer.PRETTY.binReader().read(bytes);
-//        System.out.println(bean);
+        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, address);
     }
 
     @Test
     public void test_writeImmAddress() throws IOException {
         ImmAddress address = SerTestHelper.testImmAddress();
-        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
-//        new MsgPackVisualizer(bytes).visualize();
+        JodaBeanBinWriter writer = JodaBeanSer.PRETTY.binWriter();
+        byte[] bytes = writer.write(address);
 
-        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.binReader().read(bytes);
+        System.out.println(bytes.length);
+//        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
+
+        JodaBeanBinReader reader = JodaBeanSer.PRETTY.binReader();
+        ImmAddress bean = reader.read(bytes, ImmAddress.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, address);
     }

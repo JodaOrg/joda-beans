@@ -63,6 +63,10 @@ public class JodaBeanBinReader extends MsgPack {
      */
     private ArrayList<SerializedType> knownTypeReferences = new ArrayList<>();
     /**
+     * The known deserialized objects, used for back reference.
+     */
+    private ArrayList<Object> serializedReferences = new ArrayList<>();
+    /**
      * The known types, used for back reference.
      */
     private Map<Class<?>, SerializedType> knownTypeMap = new HashMap<>();
@@ -193,19 +197,35 @@ public class JodaBeanBinReader extends MsgPack {
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
             for (int i = 0; i < propertyCount; i++) {
                 // property name
-//                propName = acceptPropertyName();
-//                MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
-                MetaProperty<?> metaProp = acceptProperty(metaBean, deser);
+                byte typeByte = input.readByte();
+                if (typeByte == FIX_EXT_4) {
+                    typeByte = input.readByte();
+                    if (typeByte != JODA_TYPE_PROP_NAME) {
+                        throw new IllegalArgumentException("Invalid binary data: Expected previously serialized property name reference but was: 0x" + toHex(typeByte));
+                    }
+                    int reference = input.readInt();
+                    Object ref = serializedReferences.get(reference);
+                    if (!(ref instanceof String)) {
+                        throw new IllegalArgumentException("Invalid binary data: Expected previously serialized property name reference but was: 0x" + toHex(typeByte) + ", " + ref.toString());
+                    }
+                    propName = (String) ref;
+                } else {
+                    propName = acceptString(typeByte);
+                    serializedReferences.add(propName);
+                }
+                MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
+//                MetaProperty<?> metaProp = acceptProperty(metaBean, deser);
                 if (metaProp == null || metaProp.style().isDerived()) {
                     MsgPackInput.skipObject(input);
                 } else {
-                    propName = metaProp.name();
                     Object value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
                 propName = "";
             }
-            return deser.build(beanType, builder);
+            Object bean = deser.build(beanType, builder);
+            serializedReferences.add(bean);
+            return bean;
         } catch (Exception ex) {
             throw new RuntimeException("Error parsing bean: " + beanType.getName() + "::" + propName + ", " + ex.getMessage(), ex);
         }
@@ -226,36 +246,51 @@ public class JodaBeanBinReader extends MsgPack {
             }
             return propertyName;
         } else {
-            String propertyName = acceptString(typeByte);
+            int length = input.readByte();
+            typeByte = input.readByte();
+            if (typeByte != JODA_TYPE_META) {
+                throw new IllegalArgumentException("Invalid binary data: Expected meta type name reference but was: 0x" + toHex(typeByte));
+            }
+            String propertyName = acceptStringBytes(length);
             knownPropertyNameReferences.add(propertyName);
             return propertyName;
         }
     }
 
-    private MetaProperty<?> acceptProperty(MetaBean metaBean, SerDeserializer deser) throws IOException {
-        SerializedType type = knownTypeMap.get(metaBean.beanType());
-        byte typeByte = input.readByte();
-        if (typeByte == FIX_EXT_4) {
-            typeByte = input.readByte();
-            if (typeByte != JODA_TYPE_META) {
-                throw new IllegalArgumentException("Invalid binary data: Expected meta type name reference but was: 0x" + toHex(typeByte));
-            }
-            // reference to previously serialized property name
-            int reference = acceptInteger(input.readByte());
-            return type.metaProperties.get(reference);
-        } else {
-            String propName = acceptString(typeByte);
-            MetaProperty<?> property = deser.findMetaProperty(metaBean.beanType(), metaBean, propName);
-            type.metaProperties.add(property);
-            return property;
-        }
-    }
+//    private MetaProperty<?> acceptProperty(MetaBean metaBean, SerDeserializer deser) throws IOException {
+//        SerializedType type = knownTypeMap.get(metaBean.beanType());
+//        byte typeByte = input.readByte();
+//        if (typeByte == FIX_EXT_4) {
+//            typeByte = input.readByte();
+//            if (typeByte != JODA_TYPE_META) {
+//                throw new IllegalArgumentException("Invalid binary data: Expected meta type name reference but was: 0x" + toHex(typeByte));
+//            }
+//             reference to previously serialized property name
+//            int reference = acceptInteger(input.readByte());
+//            return type.metaProperties.get(reference);
+//        } else {
+//            String propName = acceptString(typeByte);
+//            MetaProperty<?> property = deser.findMetaProperty(metaBean.beanType(), metaBean, propName);
+//            type.metaProperties.add(property);
+//            return property;
+//        }
+//    }
 
     private Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
         // establish type
         Class<?> effectiveType = declaredType;
         String metaType = null;
         int typeByte = input.readByte();
+        if (typeByte == FIX_EXT_4) {
+            input.mark(5);
+            int typeByteTemp = input.readByte();
+            int reference = input.readInt();
+            if (typeByteTemp == JODA_TYPE_REF) {
+                return serializedReferences.get(reference);
+            } else {
+                input.reset();
+            }
+        }
         if (isMap(typeByte)) {
             input.mark(8);
             int mapSize = acceptMap(typeByte);
@@ -263,7 +298,7 @@ public class JodaBeanBinReader extends MsgPack {
                 int typeByteTemp = input.readByte();
                 if (typeByteTemp == FIX_EXT_4) {
                     typeByteTemp = input.readByte();
-                    int reference = acceptInteger(input.readByte());
+                    int reference = input.readInt();
                     if (typeByteTemp == JODA_TYPE_BEAN) {
                         effectiveType = knownTypeReferences.get(reference).type;
                         return parseBean(declaredType, rootType, effectiveType, mapSize);

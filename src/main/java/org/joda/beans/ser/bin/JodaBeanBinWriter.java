@@ -183,6 +183,12 @@ public class JodaBeanBinWriter {
     }
 
     private void writeBean(final Bean bean, final Class<?> declaredType, RootType rootTypeFlag) throws IOException {
+        Integer beanRef = serializedObjects.get(bean);
+        if (beanRef != null) {
+            output.writeExtensionInt(MsgPack.JODA_TYPE_REF, beanRef);
+            return;
+        }
+
         int count = bean.metaBean().metaPropertyCount();
         MetaProperty<?>[] props = new MetaProperty<?>[count];
         Object[] values = new Object[count];
@@ -206,14 +212,17 @@ public class JodaBeanBinWriter {
             output.writeNil();
         } else {
             output.writeMapHeader(size);
-            if (!knownTypesRef.containsKey(bean.getClass())) {
-                knownTypesRef.put(bean.getClass(), new SerializedType(knownTypesRef.size()));
-            }
         }
         for (int i = 0; i < size; i++) {
             MetaProperty<?> prop = props[i];
             Object value = values[i];
-            writeMetaPropertyReference(bean.getClass(), prop);
+            Integer reference = serializedObjects.get(prop.name());
+            if (reference != null) {
+                output.writeExtensionInt(MsgPack.JODA_TYPE_PROP_NAME, reference);
+            } else {
+                output.writeString(prop.name());
+                serializedObjects.put(prop.name(), serializedObjects.size());
+            }
             Class<?> propType = SerOptional.extractType(prop, bean.getClass());
             if (value instanceof Bean) {
                 if (settings.getConverter().isConvertible(value.getClass())) {
@@ -230,11 +239,13 @@ public class JodaBeanBinWriter {
                 }
             }
         }
+
+        serializedObjects.put(bean, serializedObjects.size());
     }
 
     //-----------------------------------------------------------------------
     private void writeMetaPropertyReference(String metaTypeName) throws IOException {
-        if (knownPropertyNameRef != null) {
+        if (false && knownPropertyNameRef != null) {
             Integer reference = knownPropertyNameRef.get(metaTypeName);
             if (reference != null) {
                 output.writeExtensionInt(MsgPack.JODA_TYPE_META, reference);
@@ -247,20 +258,20 @@ public class JodaBeanBinWriter {
         }
     }
 
-    private void writeMetaPropertyReference(Class<?> objectClass, MetaProperty<?> metaType) throws IOException {
-        if (knownTypesRef != null) {
-            SerializedType type = knownTypesRef.get(objectClass);
-            Integer metaRef = type.getMetaProperty(metaType);
-            if (metaRef != null) {
-                output.writeExtensionInt(MsgPack.JODA_TYPE_META, metaRef);
-            } else {
-                output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
-                type.addMetaProperty(metaType);
-            }
-        } else {
-            output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
-        }
-    }
+//    private void writeMetaPropertyReference(Class<?> objectClass, MetaProperty<?> metaType) throws IOException {
+//        if (knownTypesRef != null) {
+//            SerializedType type = knownTypesRef.get(objectClass);
+//            Integer metaRef = type.getMetaProperty(metaType);
+//            if (metaRef != null) {
+//                output.writeExtensionInt(MsgPack.JODA_TYPE_META, metaRef);
+//            } else {
+//                output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
+//                type.addMetaProperty(metaType);
+//            }
+//        } else {
+//            output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
+//        }
+//    }
 
     private void writeElements(final SerIterator itemIterator) throws IOException {
         if (itemIterator.metaTypeRequired()) {
