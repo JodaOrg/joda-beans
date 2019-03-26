@@ -15,29 +15,22 @@
  */
 package org.joda.beans.ser.bin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.ImmutableMap;
+import org.joda.beans.Bean;
+import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.*;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerTestHelper;
+import org.joda.beans.test.BeanAssert;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.joda.beans.Bean;
-import org.joda.beans.impl.flexi.FlexiBean;
-import org.joda.beans.sample.Address;
-import org.joda.beans.sample.Company;
-import org.joda.beans.sample.ImmAddress;
-import org.joda.beans.sample.ImmDoubleFloat;
-import org.joda.beans.sample.ImmGuava;
-import org.joda.beans.sample.ImmOptional;
-import org.joda.beans.sample.JodaConvertBean;
-import org.joda.beans.sample.JodaConvertWrapper;
-import org.joda.beans.sample.Person;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerTestHelper;
-import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test property roundtrip using binary.
@@ -49,10 +42,10 @@ public class TestSerializeBin {
         Address address = SerTestHelper.testAddress();
 
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
-        new MsgPackVisualizer(bytes).visualizeData();
+//        new MsgPackVisualizer(bytes).visualize();
 
         Address bean = (Address) JodaBeanSer.PRETTY.binReader().read(bytes);
-        System.out.println(bean);
+//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, address);
     }
 
