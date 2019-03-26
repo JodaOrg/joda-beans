@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,11 +61,24 @@ public class JodaBeanBinReader extends MsgPack {
     /**
      * The known types, used for back reference.
      */
-    private ArrayList<Class<?>> knownTypeReferences = new ArrayList<>();
+    private ArrayList<SerializedType> knownTypeReferences = new ArrayList<>();
+    /**
+     * The known types, used for back reference.
+     */
+    private Map<Class<?>, SerializedType> knownTypeMap = new HashMap<>();
     /**
      * The known property names, used for back reference.
      */
     private ArrayList<String> knownPropertyNameReferences = new ArrayList<>();
+
+    public static final class SerializedType {
+        final Class<?> type;
+        final List<MetaProperty<?>> metaProperties = new ArrayList<>();
+
+        public SerializedType(Class<?> type) {
+            this.type = type;
+        }
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -179,11 +193,13 @@ public class JodaBeanBinReader extends MsgPack {
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
             for (int i = 0; i < propertyCount; i++) {
                 // property name
-                propName = acceptPropertyName();
-                MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
+//                propName = acceptPropertyName();
+//                MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
+                MetaProperty<?> metaProp = acceptProperty(metaBean, deser);
                 if (metaProp == null || metaProp.style().isDerived()) {
                     MsgPackInput.skipObject(input);
                 } else {
+                    propName = metaProp.name();
                     Object value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
@@ -216,6 +232,25 @@ public class JodaBeanBinReader extends MsgPack {
         }
     }
 
+    private MetaProperty<?> acceptProperty(MetaBean metaBean, SerDeserializer deser) throws IOException {
+        SerializedType type = knownTypeMap.get(metaBean.beanType());
+        byte typeByte = input.readByte();
+        if (typeByte == FIX_EXT_4) {
+            typeByte = input.readByte();
+            if (typeByte != JODA_TYPE_META) {
+                throw new IllegalArgumentException("Invalid binary data: Expected meta type name reference but was: 0x" + toHex(typeByte));
+            }
+            // reference to previously serialized property name
+            int reference = acceptInteger(input.readByte());
+            return type.metaProperties.get(reference);
+        } else {
+            String propName = acceptString(typeByte);
+            MetaProperty<?> property = deser.findMetaProperty(metaBean.beanType(), metaBean, propName);
+            type.metaProperties.add(property);
+            return property;
+        }
+    }
+
     private Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
         // establish type
         Class<?> effectiveType = declaredType;
@@ -230,13 +265,13 @@ public class JodaBeanBinReader extends MsgPack {
                     typeByteTemp = input.readByte();
                     int reference = acceptInteger(input.readByte());
                     if (typeByteTemp == JODA_TYPE_BEAN) {
-                        effectiveType = knownTypeReferences.get(reference);
+                        effectiveType = knownTypeReferences.get(reference).type;
                         return parseBean(declaredType, rootType, effectiveType, mapSize);
                     } else if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
-                        effectiveType = knownTypeReferences.get(reference);
+                        effectiveType = knownTypeReferences.get(reference).type;
                         if (declaredType.isAssignableFrom(effectiveType) == false) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
                         }
@@ -259,7 +294,9 @@ public class JodaBeanBinReader extends MsgPack {
                     if (typeByteTemp == JODA_TYPE_BEAN) {
                         String typeStr = acceptStringBytes(size);
                         effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
-                        knownTypeReferences.add(effectiveType);
+                        SerializedType type = new SerializedType(effectiveType);
+                        knownTypeMap.put(type.type, type);
+                        knownTypeReferences.add(type);
                         return parseBean(declaredType, rootType, effectiveType, mapSize);
                     } else if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
@@ -267,7 +304,9 @@ public class JodaBeanBinReader extends MsgPack {
                         }
                         String typeStr = acceptStringBytes(size);
                         effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
-                        knownTypeReferences.add(effectiveType);
+                        SerializedType type = new SerializedType(effectiveType);
+                        knownTypeMap.put(type.type, type);
+                        knownTypeReferences.add(type);
                         if (declaredType.isAssignableFrom(effectiveType) == false) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
                         }

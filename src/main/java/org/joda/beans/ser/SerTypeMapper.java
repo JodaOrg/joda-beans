@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser;
 
-import org.joda.beans.ser.bin.JodaBeanBinWriter.SerializedType;
+import org.joda.beans.ser.bin.SerializedType;
 import org.joda.convert.RenameHandler;
 
 import java.io.File;

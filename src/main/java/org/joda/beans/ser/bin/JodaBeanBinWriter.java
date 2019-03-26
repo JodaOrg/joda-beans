@@ -86,7 +86,7 @@ public class JodaBeanBinWriter {
      * The known types.
      * <p>
      * The values are a backreference to the size of the map the first time an object with this class was serialized, and can be
-     * reconstructed on read by storing the meta properties that aren't references as they're read.
+     * reconstructed on read by storing the classes that aren't references as they're read.
      */
     private Map<Class<?>, SerializedType> knownTypesRef = new HashMap<>();
     /**
@@ -103,38 +103,6 @@ public class JodaBeanBinWriter {
      * reconstructed on read by storing the objects that aren't references as they're read.
      */
     private IdentityHashMap<Object, Integer> serializedObjects = new IdentityHashMap<>();
-
-    public static final class SerializedType {
-        private final int reference;
-
-        /**
-         * The first incidence of each unique meta-property's serialization.
-         */
-        private final Map<MetaProperty<?>, Integer> metaProperties = new HashMap<>();
-
-        public SerializedType(int reference) {
-            this.reference = reference;
-        }
-
-        public void addMetaProperty(MetaProperty<?> metaProperty) {
-            metaProperties.put(metaProperty, metaProperties.size());
-        }
-
-        public boolean hasMetaProperty(MetaProperty<?> metaProperty) {
-            return metaProperties.containsKey(metaProperty);
-        }
-
-        public Integer getMetaProperty(MetaProperty<?> metaProperty) {
-            return metaProperties.get(metaProperty);
-        }
-
-        /**
-         * The first incidence of serialization in the output.
-         */
-        public int getReference() {
-            return reference;
-        }
-    }
 
     /**
      * Creates an instance.
