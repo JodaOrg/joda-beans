@@ -15,23 +15,19 @@
  */
 package org.joda.beans.ser.bin;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerDeserializer;
-import org.joda.beans.ser.SerIterable;
-import org.joda.beans.ser.SerOptional;
-import org.joda.beans.ser.SerTypeMapper;
+import org.joda.beans.ser.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provides the ability for a Joda-Bean to read from a binary format.
@@ -61,6 +57,14 @@ public class JodaBeanBinReader extends MsgPack {
      * The known types.
      */
     private Map<String, Class<?>> knownTypes = new HashMap<>();
+    /**
+     * The known types, used for back reference.
+     */
+    private ArrayList<Class<?>> knownTypeReferences = new ArrayList<>();
+    /**
+     * The known property names, used for back reference.
+     */
+    private ArrayList<String> knownPropertyNameReferences = new ArrayList<>();
 
     //-----------------------------------------------------------------------
     /**
@@ -159,8 +163,8 @@ public class JodaBeanBinReader extends MsgPack {
         }
         // version
         typeByte = input.readByte();
-        if (typeByte != 1) {
-            throw new IllegalArgumentException("Invalid binary data: Expected version 1, but was: 0x" + toHex(typeByte));
+        if (typeByte != 1 && typeByte != 2) {
+            throw new IllegalArgumentException("Invalid binary data: Expected version 1 or 2, but was: 0x" + toHex(typeByte));
         }
         // parse
         Object parsed = parseObject(declaredType, null, null, null, true);
@@ -175,7 +179,7 @@ public class JodaBeanBinReader extends MsgPack {
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
             for (int i = 0; i < propertyCount; i++) {
                 // property name
-                propName = acceptString(input.readByte());
+                propName = acceptPropertyName();
                 MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                 if (metaProp == null || metaProp.style().isDerived()) {
                     MsgPackInput.skipObject(input);
@@ -191,6 +195,27 @@ public class JodaBeanBinReader extends MsgPack {
         }
     }
 
+    private String acceptPropertyName() throws IOException {
+        byte typeByte = input.readByte();
+        if (typeByte == FIX_EXT_4) {
+            typeByte = input.readByte();
+            if (typeByte != JODA_TYPE_META) {
+                throw new IllegalArgumentException("Invalid binary data: Expected meta type name reference but was: 0x" + toHex(typeByte));
+            }
+            // reference to previously serialized property name
+            int reference = acceptInteger(input.readByte());
+            String propertyName = knownPropertyNameReferences.get(reference);
+            if (propertyName == null) {
+                throw new IllegalArgumentException("Invalid binary data: Expected reference to previously serialized meta property name up to " + knownPropertyNameReferences.size() + ": " + reference);
+            }
+            return propertyName;
+        } else {
+            String propertyName = acceptString(typeByte);
+            knownPropertyNameReferences.add(propertyName);
+            return propertyName;
+        }
+    }
+
     private Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
         // establish type
         Class<?> effectiveType = declaredType;
@@ -201,31 +226,48 @@ public class JodaBeanBinReader extends MsgPack {
             int mapSize = acceptMap(typeByte);
             if (mapSize > 0) {
                 int typeByteTemp = input.readByte();
-                if (typeByteTemp == EXT_8) {
+                if (typeByteTemp == FIX_EXT_4) {
+                    typeByteTemp = input.readByte();
+                    int reference = acceptInteger(input.readByte());
+                    if (typeByteTemp == JODA_TYPE_BEAN) {
+                        effectiveType = knownTypeReferences.get(reference);
+                        return parseBean(declaredType, rootType, effectiveType, mapSize);
+                    } else if (typeByteTemp == JODA_TYPE_DATA) {
+                        if (mapSize != 1) {
+                            throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
+                        }
+                        effectiveType = knownTypeReferences.get(reference);
+                        if (declaredType.isAssignableFrom(effectiveType) == false) {
+                            throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
+                        }
+                        typeByte = input.readByte();
+                    } else if (typeByteTemp == JODA_TYPE_META) {
+                        if (mapSize != 1) {
+                            throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
+                        }
+                        metaType = knownPropertyNameReferences.get(reference);
+                        if (metaType == null) {
+                            throw new IllegalArgumentException("Invalid binary data: Expected reference to prior metatype name up to " + knownPropertyNameReferences.size() + ": " + reference);
+                        }
+                        typeByte = input.readByte();
+                    } else {
+                        input.reset();
+                    }
+                } else if (typeByteTemp == EXT_8) {
                     int size = input.readUnsignedByte();
                     typeByteTemp = input.readByte();
                     if (typeByteTemp == JODA_TYPE_BEAN) {
                         String typeStr = acceptStringBytes(size);
                         effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
-                        if (rootType) {
-                            if (Bean.class.isAssignableFrom(effectiveType) == false) {
-                                throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
-                            }
-                            basePackage = effectiveType.getPackage().getName() + ".";
-                        }
-                        if (declaredType.isAssignableFrom(effectiveType) == false) {
-                            throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
-                        }
-                        if (input.readByte() != NIL) {
-                            throw new IllegalArgumentException("Invalid binary data: Expected null after bean type");
-                        }
-                        return parseBean(mapSize - 1, effectiveType);
+                        knownTypeReferences.add(effectiveType);
+                        return parseBean(declaredType, rootType, effectiveType, mapSize);
                     } else if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
                         String typeStr = acceptStringBytes(size);
                         effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
+                        knownTypeReferences.add(effectiveType);
                         if (declaredType.isAssignableFrom(effectiveType) == false) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
                         }
@@ -235,6 +277,7 @@ public class JodaBeanBinReader extends MsgPack {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
                         metaType = acceptStringBytes(size);
+                        knownPropertyNameReferences.add(metaType);
                         typeByte = input.readByte();
                     } else {
                         input.reset();
@@ -275,6 +318,22 @@ public class JodaBeanBinReader extends MsgPack {
                 return parseSimple(typeByte, effectiveType);
             }
         }
+    }
+
+    private Object parseBean(Class<?> declaredType, boolean rootType, Class<?> effectiveType, int mapSize) throws Exception {
+        if (rootType) {
+            if (Bean.class.isAssignableFrom(effectiveType) == false) {
+                throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
+            }
+            basePackage = effectiveType.getPackage().getName() + ".";
+        }
+        if (declaredType.isAssignableFrom(effectiveType) == false) {
+            throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
+        }
+        if (input.readByte() != NIL) {
+            throw new IllegalArgumentException("Invalid binary data: Expected null after bean type");
+        }
+        return parseBean(mapSize - 1, effectiveType);
     }
 
     private Object parseIterable(int typeByte, SerIterable iterable) throws Exception {
@@ -373,27 +432,27 @@ public class JodaBeanBinReader extends MsgPack {
             long value = acceptLong(typeByte);
             if (type == Long.class || type == long.class) {
                 return Long.valueOf(value);
-                
+
             } else if (type == Short.class || type == short.class) {
                 if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
                     throw new IllegalArgumentException("Invalid binary data: Expected byte, but was " + value);
                 }
                 return Short.valueOf((short) value);
-                
+
             } else if (type == Byte.class || type == byte.class) {
                 if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
                     throw new IllegalArgumentException("Invalid binary data: Expected byte, but was " + value);
                 }
                 return Byte.valueOf((byte) value);
-                
+
             } else if (type == Double.class || type == double.class) {
                 // handle case where property type has changed from integral to double
                 return Double.valueOf((double) value);
-                
+
             } else if (type == Float.class || type == float.class) {
                 // handle case where property type has changed from integral to float
                 return Float.valueOf((float) value);
-                
+
             } else {
                 if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("Invalid binary data: Expected int, but was " + value);

@@ -15,19 +15,16 @@
  */
 package org.joda.beans.ser.bin;
 
+import org.joda.beans.Bean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
-
-import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerIterator;
-import org.joda.beans.ser.SerOptional;
-import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
@@ -85,10 +82,63 @@ public class JodaBeanBinWriter {
      * The known types.
      */
     private Map<Class<?>, String> knownTypes = new HashMap<>();
+    /**
+     * The known types.
+     * <p>
+     * The values are a backreference to the size of the map the first time an object with this class was serialized, and can be
+     * reconstructed on read by storing the meta properties that aren't references as they're read.
+     */
+    private Map<Class<?>, SerializedType> knownTypesRef = new HashMap<>();
+    /**
+     * The known meta property types.
+     * <p>
+     * The values are a reference to the size of the map the first time the property was serialized, and can be
+     * reconstructed on read by storing the meta properties that aren't references as they're read.
+     */
+    private Map<String, Integer> knownPropertyNameRef = new HashMap<>();
+    /**
+     * The known objects.
+     * <p>
+     * The values are a string reference to the size of the map the first time the object was serialized, and can be
+     * reconstructed on read by storing the objects that aren't references as they're read.
+     */
+    private IdentityHashMap<Object, Integer> serializedObjects = new IdentityHashMap<>();
+
+    public static final class SerializedType {
+        private final int reference;
+
+        /**
+         * The first incidence of each unique meta-property's serialization.
+         */
+        private final Map<MetaProperty<?>, Integer> metaProperties = new HashMap<>();
+
+        public SerializedType(int reference) {
+            this.reference = reference;
+        }
+
+        public void addMetaProperty(MetaProperty<?> metaProperty) {
+            metaProperties.put(metaProperty, metaProperties.size());
+        }
+
+        public boolean hasMetaProperty(MetaProperty<?> metaProperty) {
+            return metaProperties.containsKey(metaProperty);
+        }
+
+        public Integer getMetaProperty(MetaProperty<?> metaProperty) {
+            return metaProperties.get(metaProperty);
+        }
+
+        /**
+         * The first incidence of serialization in the output.
+         */
+        public int getReference() {
+            return reference;
+        }
+    }
 
     /**
      * Creates an instance.
-     * 
+     *
      * @param settings  the settings to use, not null
      */
     public JodaBeanBinWriter(final JodaBeanSer settings) {
@@ -100,7 +150,7 @@ public class JodaBeanBinWriter {
      * Writes the bean to an array of bytes.
      * <p>
      * The type of the bean will be set in the message.
-     * 
+     *
      * @param bean  the bean to output, not null
      * @return the binary data, not null
      */
@@ -110,7 +160,7 @@ public class JodaBeanBinWriter {
 
     /**
      * Writes the bean to an array of bytes.
-     * 
+     *
      * @param bean  the bean to output, not null
      * @param rootType  true to output the root type
      * @return the binary data, not null
@@ -129,7 +179,7 @@ public class JodaBeanBinWriter {
      * Writes the bean to the {@code OutputStream}.
      * <p>
      * The type of the bean will be set in the message.
-     * 
+     *
      * @param bean  the bean to output, not null
      * @param output  the output stream, not null
      * @throws IOException if an error occurs
@@ -140,7 +190,7 @@ public class JodaBeanBinWriter {
 
     /**
      * Writes the bean to the {@code OutputStream}.
-     * 
+     *
      * @param bean  the bean to output, not null
      * @param rootType  true to output the root type
      * @param output  the output stream, not null
@@ -179,20 +229,23 @@ public class JodaBeanBinWriter {
             }
         }
         if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
-            String typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
+            SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(bean.getClass(), settings, basePackage, knownTypesRef);
             if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
                 basePackage = bean.getClass().getPackage().getName() + ".";
             }
             output.writeMapHeader(size + 1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_BEAN, typeStr);
+            output.writeExtension(MsgPack.JODA_TYPE_BEAN, type);
             output.writeNil();
         } else {
             output.writeMapHeader(size);
+            if (!knownTypesRef.containsKey(bean.getClass())) {
+                knownTypesRef.put(bean.getClass(), new SerializedType(knownTypesRef.size()));
+            }
         }
         for (int i = 0; i < size; i++) {
             MetaProperty<?> prop = props[i];
             Object value = values[i];
-            output.writeString(prop.name());
+            writeMetaPropertyReference(bean.getClass(), prop);
             Class<?> propType = SerOptional.extractType(prop, bean.getClass());
             if (value instanceof Bean) {
                 if (settings.getConverter().isConvertible(value.getClass())) {
@@ -212,10 +265,39 @@ public class JodaBeanBinWriter {
     }
 
     //-----------------------------------------------------------------------
+    private void writeMetaPropertyReference(String metaTypeName) throws IOException {
+        if (knownPropertyNameRef != null) {
+            Integer reference = knownPropertyNameRef.get(metaTypeName);
+            if (reference != null) {
+                output.writeExtensionInt(MsgPack.JODA_TYPE_META, reference);
+            } else {
+                output.writeExtensionString(MsgPack.JODA_TYPE_META, metaTypeName);
+                knownPropertyNameRef.put(metaTypeName, knownPropertyNameRef.size());
+            }
+        } else {
+            output.writeExtensionString(MsgPack.JODA_TYPE_META, metaTypeName);
+        }
+    }
+
+    private void writeMetaPropertyReference(Class<?> objectClass, MetaProperty<?> metaType) throws IOException {
+        if (knownTypesRef != null) {
+            SerializedType type = knownTypesRef.get(objectClass);
+            Integer metaRef = type.getMetaProperty(metaType);
+            if (metaRef != null) {
+                output.writeExtensionInt(MsgPack.JODA_TYPE_META, metaRef);
+            } else {
+                output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
+                type.addMetaProperty(metaType);
+            }
+        } else {
+            output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
+        }
+    }
+
     private void writeElements(final SerIterator itemIterator) throws IOException {
         if (itemIterator.metaTypeRequired()) {
             output.writeMapHeader(1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_META, itemIterator.metaTypeName());
+            writeMetaPropertyReference(itemIterator.metaTypeName());
         }
         if (itemIterator.category() == SerCategory.MAP) {
             writeMap(itemIterator);
@@ -336,25 +418,25 @@ public class JodaBeanBinWriter {
             output.writeBoolean(((Boolean) value).booleanValue());
             return;
         }
-        
+
         // handle no declared type and subclasses
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(effectiveType, settings, basePackage, knownTypesRef);
                 output.writeMapHeader(1);
-                output.writeExtensionString(MsgPack.JODA_TYPE_DATA, typeStr);
+                output.writeExtension(MsgPack.JODA_TYPE_DATA, type);
             } else {
                 effectiveType = realType;
             }
         } else if (settings.getConverter().isConvertible(declaredType) == false) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+            SerTypeMapper.EncodedType type = SerTypeMapper.encodeTypeWithReference(effectiveType, settings, basePackage, knownTypesRef);
             output.writeMapHeader(1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_DATA, typeStr);
+            output.writeExtension(MsgPack.JODA_TYPE_DATA, type);
         }
-        
+
         // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
         if (realType == Long.class) {
             output.writeLong(((Long) value).longValue());
@@ -369,7 +451,7 @@ public class JodaBeanBinWriter {
             output.writeBytes((byte[]) value);
             return;
         }
-        
+
         // write as a string
         try {
             String converted = settings.getConverter().convertToString(effectiveType, value);

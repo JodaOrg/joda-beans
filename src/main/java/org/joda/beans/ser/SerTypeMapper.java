@@ -15,18 +15,15 @@
  */
 package org.joda.beans.ser;
 
+import org.joda.beans.ser.bin.JodaBeanBinWriter.SerializedType;
+import org.joda.convert.RenameHandler;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
-
-import org.joda.convert.RenameHandler;
 
 /**
  * Type mapper for Joda-Bean serialization, used by serialization implementations.
@@ -43,9 +40,10 @@ public final class SerTypeMapper {
      * Known simple classes.
      */
     private static final Map<String, Class<?>> BASIC_TYPES_REVERSED;
+
     static {
         Map<Class<?>, String> map = new HashMap<>();
-        
+
         map.put(String.class, "String");
         map.put(Long.class, "Long");
         map.put(Integer.class, "Integer");
@@ -64,7 +62,7 @@ public final class SerTypeMapper {
         map.put(File.class, "File");
         // selection of types are the most common types suitable for reduction
         // and suitable for simple interpretation on non-Java systems
-        
+
         Map<String, Class<?>> reversed = new HashMap<>();
         for (Entry<Class<?>, String> entry : map.entrySet()) {
             reversed.put(entry.getValue(), entry.getKey());
@@ -80,12 +78,13 @@ public final class SerTypeMapper {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Encodes a basic class.
      * <p>
      * This handles known simple types, like String, Integer or File, and prefixing.
      * It also allows a map of message specific shorter forms.
-     * 
+     *
      * @param cls  the class to encode, not null
      * @param settings  the settings object, not null
      * @param basePackage  the base package to use with trailing dot, null if none
@@ -144,12 +143,70 @@ public final class SerTypeMapper {
     }
 
     /**
+     * Encodes a basic class.
+     * <p>
+     * This handles known simple types, like String, Integer or File, and prefixing.
+     * It also allows a map of message specific back references.
+     *
+     * @param cls the class to encode, not null
+     * @param settings the settings object, not null
+     * @param basePackage the base package to use with trailing dot, null if none
+     * @param knownReferences the known references map, not null
+     * @return the class object, null if not a basic type
+     */
+    public static EncodedType encodeTypeWithReference(
+            Class<?> cls,
+            final JodaBeanSer settings,
+            final String basePackage,
+            final Map<Class<?>, SerializedType> knownReferences) {
+
+        // already known
+        SerializedType type = knownReferences.get(cls);
+        if (type != null) {
+            return EncodedType.reference(type.getReference());
+        }
+        // basic type
+        String result = BASIC_TYPES.get(cls);
+        if (result != null) {
+            knownReferences.put(cls, new SerializedType(knownReferences.size()));
+            return EncodedType.full(result);
+        }
+        // handle enum subclasses
+        Class<?> supr1 = cls.getSuperclass();
+        if (supr1 != null) {
+            Class<?> supr2 = supr1.getSuperclass();
+            if (supr2 == Enum.class) {
+                cls = supr1;
+            }
+        }
+        // calculate
+        if (settings.isShortTypes()) {
+            result = cls.getName();
+            if (basePackage != null &&
+                    result.startsWith(basePackage) &&
+                    Character.isUpperCase(result.charAt(basePackage.length())) &&
+                    BASIC_TYPES_REVERSED.containsKey(result.substring(basePackage.length())) == false) {
+                // use short format
+                result = result.substring(basePackage.length());
+                knownReferences.put(cls, new SerializedType(knownReferences.size()));
+            } else {
+                // use long format
+                knownReferences.put(cls, new SerializedType(knownReferences.size()));
+            }
+        } else {
+            // not using short format so no backreferences
+            result = cls.getName();
+        }
+        return EncodedType.full(result);
+    }
+
+    /**
      * Decodes a class, throwing an exception if not found.
      * <p>
      * This uses the context class loader.
      * This handles known simple types, like String, Integer or File, and prefixing.
      * It also allows a map of message specific shorter forms.
-     * 
+     *
      * @param className  the class name, not null
      * @param settings  the settings object, not null
      * @param basePackage  the base package to use with trailing dot, null if none
@@ -160,9 +217,9 @@ public final class SerTypeMapper {
     public static Class<?> decodeType(
             String className,
             JodaBeanSer settings,
-            String basePackage, 
+            String basePackage,
             Map<String, Class<?>> knownTypes) throws ClassNotFoundException {
-        
+
         return decodeType0(className, settings, basePackage, knownTypes, null);
     }
 
@@ -172,7 +229,7 @@ public final class SerTypeMapper {
      * This uses the context class loader.
      * This handles known simple types, like String, Integer or File, and prefixing.
      * It also allows a map of message specific shorter forms.
-     * 
+     *
      * @param className  the class name, not null
      * @param settings  the settings object, not null
      * @param basePackage  the base package to use with trailing dot, null if none
@@ -184,7 +241,7 @@ public final class SerTypeMapper {
     public static Class<?> decodeType(
             String className,
             JodaBeanSer settings,
-            String basePackage, 
+            String basePackage,
             Map<String, Class<?>> knownTypes,
             Class<?> defaultType) throws ClassNotFoundException {
 
@@ -195,7 +252,7 @@ public final class SerTypeMapper {
     private static Class<?> decodeType0(
             String className,
             JodaBeanSer settings,
-            String basePackage, 
+            String basePackage,
             Map<String, Class<?>> knownTypes,
             Class<?> defaultType) throws ClassNotFoundException {
 
@@ -268,4 +325,22 @@ public final class SerTypeMapper {
         return getClass().getSimpleName();
     }
 
+    public static final class EncodedType {
+
+        public final String fullType;
+        public final int reference;
+
+        private EncodedType(String fullType, int reference) {
+            this.fullType = Objects.requireNonNull(fullType);
+            this.reference = reference;
+        }
+
+        static EncodedType full(String fullType) {
+            return new EncodedType(fullType, 0);
+        }
+
+        static EncodedType reference(int reference) {
+            return new EncodedType("", reference);
+        }
+    }
 }

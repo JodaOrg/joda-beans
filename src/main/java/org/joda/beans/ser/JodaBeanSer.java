@@ -42,12 +42,12 @@ public final class JodaBeanSer {
      * Obtains the singleton compact instance.
      */
     public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
+            SerIteratorFactory.INSTANCE, true, true, SerDeserializers.INSTANCE, false);
     /**
      * Obtains the singleton pretty-printing instance.
      */
     public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
+            SerIteratorFactory.INSTANCE, true, true, SerDeserializers.INSTANCE, false);
 
     /**
      * The indent to use.
@@ -70,6 +70,10 @@ public final class JodaBeanSer {
      */
     private final boolean shortTypes;
     /**
+     * Whether to use references.
+     */
+    private final boolean references;
+    /**
      * The deserializers.
      */
     private final SerDeserializers deserializers;
@@ -80,21 +84,23 @@ public final class JodaBeanSer {
 
     /**
      * Creates an instance.
-     * 
+     *
      * @param indent  the indent, not null
      * @param newLine  the new line, not null
      * @param converter  the converter, not null
      * @param iteratorFactory  the iterator factory, not null
      * @param shortTypes  whether to use short types
+     * @param references  whether to use back references
      * @param deserializers  the deserializers to use, not null
      */
     private JodaBeanSer(String indent, String newLine, StringConvert converter,
-                SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers, boolean includeDerived) {
+                        SerIteratorFactory iteratorFactory, boolean shortTypes, boolean references, SerDeserializers deserializers, boolean includeDerived) {
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
         this.iteratorFactory = iteratorFactory;
         this.shortTypes = shortTypes;
+        this.references = references;
         this.deserializers = deserializers;
         this.includeDerived = includeDerived;
     }
@@ -102,7 +108,7 @@ public final class JodaBeanSer {
     //-----------------------------------------------------------------------
     /**
      * Gets the pretty print indent.
-     * 
+     *
      * @return the indent, not null
      */
     public String getIndent() {
@@ -111,18 +117,18 @@ public final class JodaBeanSer {
 
     /**
      * Returns a copy of this serializer with the specified pretty print indent.
-     * 
+     *
      * @param indent  the indent, not null
      * @return a copy of this object with the indent changed, not null
      */
     public JodaBeanSer withIndent(String indent) {
         JodaBeanUtils.notNull(indent, "indent");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     /**
      * Gets the new line string.
-     * 
+     *
      * @return the newLine, not null
      */
     public String getNewLine() {
@@ -131,20 +137,20 @@ public final class JodaBeanSer {
 
     /**
      * Returns a copy of this serializer with the specified pretty print new line.
-     * 
+     *
      * @param newLine  the new line, not null
      * @return a copy of this object with the new line changed, not null
      */
     public JodaBeanSer withNewLine(String newLine) {
         JodaBeanUtils.notNull(newLine, "newLine");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     /**
      * Gets the string converter.
      * <p>
      * The default converter can be modified.
-     * 
+     *
      * @return the converter, not null
      */
     public StringConvert getConverter() {
@@ -155,18 +161,18 @@ public final class JodaBeanSer {
      * Returns a copy of this serializer with the specified string converter.
      * <p>
      * The default converter can be modified.
-     * 
+     *
      * @param converter  the converter, not null
      * @return a copy of this object with the converter changed, not null
      */
     public JodaBeanSer withConverter(StringConvert converter) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     /**
      * Gets the iterator factory.
-     * 
+     *
      * @return the iterator factory, not null
      */
     public SerIteratorFactory getIteratorFactory() {
@@ -175,18 +181,18 @@ public final class JodaBeanSer {
 
     /**
      * Returns a copy of this serializer with the specified iterator factory.
-     * 
+     *
      * @param iteratorFactory  the iterator factory, not null
      * @return a copy of this object with the iterator factory changed, not null
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     /**
      * Gets whether to use short types.
-     * 
+     *
      * @return the short types flag, not null
      */
     public boolean isShortTypes() {
@@ -195,19 +201,38 @@ public final class JodaBeanSer {
 
     /**
      * Returns a copy of this serializer with the short types flag set.
-     * 
+     *
      * @param shortTypes  whether to use short types, not null
      * @return a copy of this object with the short types flag changed, not null
      */
     public JodaBeanSer withShortTypes(boolean shortTypes) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
+    }
+
+    /**
+     * Gets whether to use references.
+     *
+     * @return the references flag, not null
+     */
+    public boolean isReferences() {
+        return references;
+    }
+
+    /**
+     * Returns a copy of this serializer with the references flag set.
+     *
+     * @param references  whether to use references, not null
+     * @return a copy of this object with the short types flag changed, not null
+     */
+    public JodaBeanSer withReferences(boolean references) {
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     /**
      * Gets the deserializers.
      * <p>
      * The default deserializers can be modified.
-     * 
+     *
      * @return the converter, not null
      */
     public SerDeserializers getDeserializers() {
@@ -220,20 +245,20 @@ public final class JodaBeanSer {
      * The default deserializers can be modified.
      * <p>
      * This can be used to select a more lenient mode of parsing, see {@link SerDeserializers#LENIENT}.
-     * 
+     *
      * @param deserializers  the deserializers, not null
      * @return a copy of this object with the converter changed, not null
      */
     public JodaBeanSer withDeserializers(SerDeserializers deserializers) {
         JodaBeanUtils.notNull(deserializers, "deserializers");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     /**
      * Gets the include derived flag.
      * <p>
      * The default deserializers can be modified.
-     * 
+     *
      * @return the converter, not null
      */
     public boolean isIncludeDerived() {
@@ -246,13 +271,13 @@ public final class JodaBeanSer {
      * The default deserializers can be modified.
      * <p>
      * This is used to set the output to include derived properties.
-     * 
+     *
      * @param includeDerived  whether to include derived properties on output
      * @return a copy of this object with the converter changed, not null
      */
     public JodaBeanSer withIncludeDerived(boolean includeDerived) {
         JodaBeanUtils.notNull(deserializers, "deserializers");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, references, deserializers, includeDerived);
     }
 
     //-----------------------------------------------------------------------
@@ -260,7 +285,7 @@ public final class JodaBeanSer {
      * Creates a binary writer.
      * <p>
      * A new instance of the writer must be created for each message.
-     * 
+     *
      * @return the binary writer, not null
      */
     public JodaBeanBinWriter binWriter() {
@@ -271,7 +296,7 @@ public final class JodaBeanSer {
      * Creates a binary reader.
      * <p>
      * A new instance of the reader must be created for each message.
-     * 
+     *
      * @return the binary reader, not null
      */
     public JodaBeanBinReader binReader() {
@@ -283,7 +308,7 @@ public final class JodaBeanSer {
      * Creates an XML writer.
      * <p>
      * A new instance of the writer must be created for each message.
-     * 
+     *
      * @return the XML writer, not null
      */
     public JodaBeanXmlWriter xmlWriter() {
@@ -294,7 +319,7 @@ public final class JodaBeanSer {
      * Creates an XML reader.
      * <p>
      * A new instance of the reader must be created for each message.
-     * 
+     *
      * @return the XML reader, not null
      */
     public JodaBeanXmlReader xmlReader() {
@@ -306,7 +331,7 @@ public final class JodaBeanSer {
      * Creates a JSON writer.
      * <p>
      * A new instance of the writer must be created for each message.
-     * 
+     *
      * @return the JSON writer, not null
      */
     public JodaBeanJsonWriter jsonWriter() {
@@ -317,7 +342,7 @@ public final class JodaBeanSer {
      * Creates a JSON reader.
      * <p>
      * A new instance of the reader must be created for each message.
-     * 
+     *
      * @return the JSON reader, not null
      */
     public JodaBeanJsonReader jsonReader() {
@@ -338,7 +363,7 @@ public final class JodaBeanSer {
      * the reader will return {@code Boolean}, {@code Integer}, {@code Double}, {@code String},
      * {@code ArrayList} or string keyed {@code HashMap}.
      * Maps must have keys that can be written as a string.
-     * 
+     *
      * @return the simple JSON writer, not null
      */
     public JodaBeanSimpleJsonWriter simpleJsonWriter() {
@@ -351,7 +376,7 @@ public final class JodaBeanSer {
      * A new instance of the reader must be created for each message.
      * The simple reader is designed to operate with the simple writer.
      * It will not operate well with the output of {@link #jsonWriter()}.
-     * 
+     *
      * @return the simple JSON reader, not null
      */
     public JodaBeanSimpleJsonReader simpleJsonReader() {
@@ -363,7 +388,7 @@ public final class JodaBeanSer {
      * Creates a simple in-memory {@code Map} writer.
      * <p>
      * A new instance of the writer must be created for each message.
-     * 
+     *
      * @return the simple map writer, not null
      */
     public JodaBeanSimpleMapWriter simpleMapWriter() {
@@ -374,7 +399,7 @@ public final class JodaBeanSer {
      * Creates a simple in-memory {@code Map} reader.
      * <p>
      * A new instance of the reader must be created for each message.
-     * 
+     *
      * @return the simple map reader, not null
      */
     public JodaBeanSimpleMapReader simpleMapReader() {

@@ -201,6 +201,10 @@ abstract class MsgPack {
      * Extension type code for a Joda-Bean meta-type.
      */
     static final int JODA_TYPE_META = 34;
+    /**
+     * Extension type code for a Joda-Bean meta-type name reference.
+     */
+    static final int JODA_TYPE_META_NAME = 35;
 
     //-----------------------------------------------------------------------
     /**
