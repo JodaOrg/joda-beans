@@ -87,8 +87,7 @@ public final class SerDeserializers {
     private final SerDeserializer defaultDeserializer;
     /**
      * The deserializers.
-     */
-    private final ConcurrentMap<Class<?>, SerDeserializer> deserializers = new ConcurrentHashMap<>();
+     */private final ConcurrentMap<Class<?>, SerDeserializer> deserializers = new ConcurrentHashMap<>();
     /**
      * The deserializer providers.
      */

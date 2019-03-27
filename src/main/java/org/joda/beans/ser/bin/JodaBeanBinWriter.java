@@ -15,16 +15,21 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+
+import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
+import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerOptional;
+import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
@@ -103,6 +108,13 @@ public class JodaBeanBinWriter {
      * reconstructed on read by storing the objects that aren't references as they're read.
      */
     private IdentityHashMap<Object, Integer> serializedObjects = new IdentityHashMap<>();
+    /**
+     * The known immutable objects.
+     * <p>
+     * The values are a string reference to the size of the map the first time the object was serialized, and can be
+     * reconstructed on read by storing the objects that aren't references as they're read.
+     */
+    private Map<Object, Integer> serializedImmutableObjects = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -188,6 +200,12 @@ public class JodaBeanBinWriter {
             if (beanRef != null) {
                 output.writeExtensionInt(MsgPack.JODA_TYPE_REF, beanRef);
                 return;
+            } else if (bean instanceof ImmutableBean && settings.getImmutableClasses().contains(bean.getClass())) {
+                beanRef = serializedImmutableObjects.get(bean);
+                if (beanRef != null) {
+                    output.writeExtensionInt(MsgPack.JODA_TYPE_REF, beanRef);
+                    return;
+                }
             }
         }
 
@@ -257,13 +275,17 @@ public class JodaBeanBinWriter {
         }
 
         if (settings.isReferences()) {
-            serializedObjects.put(bean, serializedObjects.size());
+            if (bean instanceof ImmutableBean && settings.getImmutableClasses().contains(bean.getClass())) {
+                serializedImmutableObjects.put(bean, serializedImmutableObjects.size());
+            } else {
+                serializedObjects.put(bean, serializedObjects.size());
+            }
         }
     }
 
     //-----------------------------------------------------------------------
     private void writeMetaPropertyReference(String metaTypeName) throws IOException {
-        if (false && knownPropertyNameRef != null) {
+        if (settings.isReferences()) {
             Integer reference = knownPropertyNameRef.get(metaTypeName);
             if (reference != null) {
                 output.writeExtensionInt(MsgPack.JODA_TYPE_META, reference);
@@ -275,21 +297,6 @@ public class JodaBeanBinWriter {
             output.writeExtensionString(MsgPack.JODA_TYPE_META, metaTypeName);
         }
     }
-
-//    private void writeMetaPropertyReference(Class<?> objectClass, MetaProperty<?> metaType) throws IOException {
-//        if (knownTypesRef != null) {
-//            SerializedType type = knownTypesRef.get(objectClass);
-//            Integer metaRef = type.getMetaProperty(metaType);
-//            if (metaRef != null) {
-//                output.writeExtensionInt(MsgPack.JODA_TYPE_META, metaRef);
-//            } else {
-//                output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
-//                type.addMetaProperty(metaType);
-//            }
-//        } else {
-//            output.writeExtensionString(MsgPack.JODA_TYPE_META, metaType.name());
-//        }
-//    }
 
     private void writeElements(final SerIterator itemIterator) throws IOException {
         if (itemIterator.metaTypeRequired()) {
@@ -465,6 +472,14 @@ public class JodaBeanBinWriter {
                 Integer reference = serializedObjects.get(value);
                 if (reference != null) {
                     output.writeExtensionInt(MsgPack.JODA_TYPE_REF, reference);
+                } else if (settings.getImmutableClasses().contains(value.getClass())) {
+                    reference = serializedImmutableObjects.get(value);
+                    if (reference != null) {
+                        output.writeExtensionInt(MsgPack.JODA_TYPE_IMM_REF, reference);
+                    } else {
+                        writeAsString(value, effectiveType);
+                        serializedImmutableObjects.put(value, serializedImmutableObjects.size());
+                    }
                 } else {
                     writeAsString(value, effectiveType);
                     serializedObjects.put(value, serializedObjects.size());

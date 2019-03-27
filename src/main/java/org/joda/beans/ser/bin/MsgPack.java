@@ -209,6 +209,10 @@ abstract class MsgPack {
      * Extension type code for a Joda-Bean previously serialized reference.
      */
     static final int JODA_TYPE_REF = 36;
+    /**
+     * Extension type code for a Joda-Bean previously serialized immutable reference.
+     */
+    static final int JODA_TYPE_IMM_REF = 37;
 
     //-----------------------------------------------------------------------
     /**

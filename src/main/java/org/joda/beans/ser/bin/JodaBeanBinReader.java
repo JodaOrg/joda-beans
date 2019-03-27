@@ -15,12 +15,6 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
-import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -28,6 +22,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.beans.Bean;
+import org.joda.beans.BeanBuilder;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
+import org.joda.beans.ser.SerDeserializer;
+import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerOptional;
+import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to read from a binary format.
@@ -65,6 +71,10 @@ public class JodaBeanBinReader extends MsgPack {
      * The known deserialized objects, used for back reference.
      */
     private ArrayList<Object> serializedReferences = new ArrayList<>();
+    /**
+     * The known deserialized immutable objects, used for back reference.
+     */
+    private ArrayList<Object> serializedImmutableReferences = new ArrayList<>();
     /**
      * The known property names, used for back reference.
      */
@@ -194,7 +204,13 @@ public class JodaBeanBinReader extends MsgPack {
                 propName = "";
             }
             Object bean = deser.build(beanType, builder);
-            serializedReferences.add(bean);
+            if (settings.isReferences()) {
+                if (bean instanceof ImmutableBean && settings.getImmutableClasses().contains(bean.getClass())) {
+                    serializedImmutableReferences.add(bean);
+                } else {
+                    serializedReferences.add(bean);
+                }
+            }
             return bean;
         } catch (Exception ex) {
             throw new RuntimeException("Error parsing bean: " + beanType.getName() + "::" + propName + ", " + ex.getMessage(), ex);
@@ -235,6 +251,8 @@ public class JodaBeanBinReader extends MsgPack {
             int reference = input.readInt();
             if (typeByteTemp == JODA_TYPE_REF) {
                 return serializedReferences.get(reference);
+            } else if (typeByteTemp == JODA_TYPE_IMM_REF) {
+                return serializedImmutableReferences.get(reference);
             } else {
                 input.reset();
             }
@@ -442,20 +460,32 @@ public class JodaBeanBinReader extends MsgPack {
     private Object parseSimple(int typeByte, Class<?> type) throws Exception {
         if (typeByte == FIX_EXT_4) {
             byte tempTypeByte = input.readByte();
-            if (tempTypeByte != JODA_TYPE_REF) {
+            if (tempTypeByte == JODA_TYPE_REF) {
+                int reference = input.readInt();
+                return serializedReferences.get(reference);
+            } else if (tempTypeByte == JODA_TYPE_IMM_REF) {
+                int reference = input.readInt();
+                return serializedImmutableReferences.get(reference);
+            } else {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference, but was 0x" + toHex(tempTypeByte));
             }
-            int reference = input.readInt();
-            return serializedReferences.get(reference);
         }
         if (isString(typeByte)) {
             String text = acceptString(typeByte);
             if (type == String.class || type == Object.class) {
-                serializedReferences.add(text);
+                if (settings.getImmutableClasses().contains(String.class)) {
+                    serializedImmutableReferences.add(text);
+                } else {
+                    serializedReferences.add(text);
+                }
                 return text;
             }
             Object result = settings.getConverter().convertFromString(type, text);
-            serializedReferences.add(result);
+            if (settings.getImmutableClasses().contains(type)) {
+                serializedImmutableReferences.add(result);
+            } else {
+                serializedReferences.add(result);
+            }
             return result;
         }
         if (isIntegral(typeByte)) {
