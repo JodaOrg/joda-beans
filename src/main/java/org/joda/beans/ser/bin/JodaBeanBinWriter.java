@@ -203,7 +203,7 @@ public class JodaBeanBinWriter {
             } else if (bean instanceof ImmutableBean && settings.getImmutableClasses().contains(bean.getClass())) {
                 beanRef = serializedImmutableObjects.get(bean);
                 if (beanRef != null) {
-                    output.writeExtensionInt(MsgPack.JODA_TYPE_REF, beanRef);
+                    output.writeExtensionInt(MsgPack.JODA_TYPE_IMM_REF, beanRef);
                     return;
                 }
             }
