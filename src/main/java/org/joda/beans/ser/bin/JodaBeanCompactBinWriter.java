@@ -18,20 +18,17 @@ package org.joda.beans.ser.bin;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multiset;
-import com.google.common.collect.Table;
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
+import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerIterator;
-import org.joda.beans.ser.SerOptional;
-import org.joda.beans.ser.SerTypeMapper;
-import org.joda.collect.grid.Grid;
+import org.joda.beans.ser.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
@@ -217,12 +214,12 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
                 addClasses(key, objects);
                 addClasses(map.get(key), objects);
             }
-        } else if (base instanceof Table) {
-            Table table = (Table) base;
-            addClasses(table.columnMap(), objects);
-        } else if (base instanceof Grid) {
-            Grid grid = (Grid) base;
-            addClasses(grid.cells(), objects);
+            //} else if (base instanceof Table) {
+            //    Table table = (Table) base;
+            //    addClasses(table.columnMap(), objects);
+            //} else if (base instanceof Grid) {
+            //    Grid grid = (Grid) base;
+            //    addClasses(grid.cells(), objects);
         }
     }
 
@@ -243,13 +240,28 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
         if (value instanceof ImmutableBean) {
             ImmutableBean bean = (ImmutableBean) value;
-            MetaProperty<?>[] metaProperties = Iterables.toArray(bean.metaBean().metaPropertyIterable(), MetaProperty.class);
+            MetaProperty<?>[] metaProperties = Iterables.toArray(
+                    bean.metaBean().metaPropertyIterable(), MetaProperty.class);
             ClassInfo classInfo = new ClassInfo(classes.size(), value.getClass(), metaProperties);
             classes.putIfAbsent(value.getClass(), classInfo);
         } else if (value instanceof Class<?>) {
             Class<?> type = (Class<?>) value;
-            ClassInfo classInfo = new ClassInfo(classes.size(), type, new MetaProperty<?>[0]);
-            classes.putIfAbsent(type, classInfo);
+            if (ImmutableBean.class.isAssignableFrom(type)) {
+                SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
+                MetaBean metaBean = deser.findMetaBean(type);
+
+                if (metaBean != null) {
+                    MetaProperty<?>[] metaProperties = Iterables.toArray(
+                            metaBean.metaPropertyIterable(),
+                            MetaProperty.class);
+
+                    ClassInfo classInfo = new ClassInfo(classes.size(), type, metaProperties);
+                    classes.putIfAbsent(value.getClass(), classInfo);
+                }
+            } else {
+                ClassInfo classInfo = new ClassInfo(classes.size(), type, new MetaProperty<?>[0]);
+                classes.putIfAbsent(type, classInfo);
+            }
         } else {
             ClassInfo classInfo = new ClassInfo(classes.size(), value.getClass(), new MetaProperty<?>[0]);
             classes.putIfAbsent(value.getClass(), classInfo);
@@ -403,7 +415,9 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         private ClassInfo(int position, Class<?> type, MetaProperty<?>[] metaProperties) {
             this.position = position;
             this.type = type;
-            this.metaProperties = metaProperties;
+            this.metaProperties = Stream.of(metaProperties)
+                    .filter(it -> !it.style().isDerived())
+                    .toArray(MetaProperty<?>[]::new);
         }
 
         @Override

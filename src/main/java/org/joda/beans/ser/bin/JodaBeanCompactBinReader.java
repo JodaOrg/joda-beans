@@ -222,7 +222,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             MetaBean metaBean = deser.findMetaBean(classInfo.type);
             BeanBuilder<?> builder = deser.createBuilder(classInfo.type, metaBean);
             for (MetaProperty<?> metaProp : classInfo.metaProperties) {
-                if (metaProp == null || metaProp.style().isDerived()) {
+                if (metaProp == null) {
                     MsgPackInput.skipObject(input);
                 } else {
                     propName = metaProp.name();
@@ -244,24 +244,9 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         Integer ref = null;
         int typeByte = input.readByte();
 
-        if (typeByte == FIX_EXT_4) {
-            input.mark(5);
-            int typeByteTemp = input.readByte();
-            int reference = input.readInt();
-            // JODA_TYPE_REF is the only thing serialized in isolation, others are serialized as map keys or the start of an array
-            if (typeByteTemp != JODA_TYPE_REF) {
-                throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was: 0x" + toHex(typeByteTemp));
-            }
-            Object value = refs[reference];
-            if (value == null) {
-                throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
-            }
-            return value;
-        }
+        // Unwrap nested references
+        while (isMap(typeByte)) {
 
-
-        while (true)
-        if (isMap(typeByte)) {
             input.mark(18);
             int mapSize = acceptMap(typeByte);
             if (mapSize > 0) {
@@ -301,6 +286,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                         typeByte = input.readByte();
                     } else {
                         input.reset();
+                        break;
                     }
                 } else if (typeByteTemp == EXT_8) {
                     int size = input.readUnsignedByte();
@@ -339,19 +325,39 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                                 typeByte = input.readByte();
                             } else {
                                 input.reset();
+                                break;
                             }
                         } else {
                             input.reset();
+                            break;
                         }
                     } else {
                         input.reset();
+                        break;
                     }
                 } else {
                     input.reset();
+                    break;
                 }
             } else {
                 input.reset();
+                break;
             }
+        }
+
+        if (typeByte == FIX_EXT_4) {
+            input.mark(5);
+            int typeByteTemp = input.readByte();
+            int reference = input.readInt();
+            // JODA_TYPE_REF is the only thing serialized in isolation, others are serialized as map keys or the start of an array
+            if (typeByteTemp != JODA_TYPE_REF) {
+                throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was: 0x" + toHex(typeByteTemp));
+            }
+            Object value = refs[reference];
+            if (value == null) {
+                throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
+            }
+            return value;
         }
 
         if (isArray(typeByte)) {
