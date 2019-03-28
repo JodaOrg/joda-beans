@@ -15,22 +15,31 @@
  */
 package org.joda.beans.ser.bin;
 
-import com.google.common.collect.ImmutableMap;
-import org.joda.beans.Bean;
-import org.joda.beans.impl.flexi.FlexiBean;
-import org.joda.beans.sample.*;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerTestHelper;
-import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.joda.beans.Bean;
+import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.sample.Address;
+import org.joda.beans.sample.Company;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmDoubleFloat;
+import org.joda.beans.sample.ImmGuava;
+import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.JodaConvertBean;
+import org.joda.beans.sample.JodaConvertWrapper;
+import org.joda.beans.sample.Person;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerTestHelper;
+import org.joda.beans.test.BeanAssert;
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Test property roundtrip using binary.
@@ -52,11 +61,11 @@ public class TestSerializeBin {
     @Test
     public void test_writeImmAddress() throws IOException {
         ImmAddress address = SerTestHelper.testImmAddress();
-        JodaBeanBinWriter writer = JodaBeanSer.PRETTY.binWriter();
+        JodaBeanCompactBinWriter writer = JodaBeanSer.PRETTY.compactBinWriter();
         byte[] bytes = writer.write(address);
 
         System.out.println(bytes.length);
-//        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
+        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
 
         JodaBeanBinReader reader = JodaBeanSer.PRETTY.binReader();
         ImmAddress bean = reader.read(bytes, ImmAddress.class);
@@ -67,10 +76,11 @@ public class TestSerializeBin {
     @Test
     public void test_writeImmOptional() {
         ImmOptional optional = SerTestHelper.testImmOptional();
-        byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(optional);
-//        new MsgPackVisualizer(bytes).visualize();
+        byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).compactBinWriter().write(optional);
 
-        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.binReader().read(bytes);
+        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
+
+        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.compactBinReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }
@@ -78,11 +88,12 @@ public class TestSerializeBin {
     @Test
     public void test_writeCollections() {
         ImmGuava<String> optional = SerTestHelper.testCollections();
-        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
-//        new MsgPackVisualizer(bytes).visualize();
+        JodaBeanCompactBinWriter writer = JodaBeanSer.PRETTY.compactBinWriter();
+        byte[] bytes = writer.write(optional);
+        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
         
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);
+        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.compactBinReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }

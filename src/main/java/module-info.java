@@ -20,7 +20,8 @@
  * The key concept is to allow each property on a bean to be accessed as an object in its own right.
  * This provides the hook for other technologies to build on, such as serialization, mapping,
  * expression languages and validation.
- */
+ *//*
+
 module org.joda.beans {
 
     // dependency on Joda-Convert
@@ -49,3 +50,4 @@ module org.joda.beans {
     exports org.joda.beans.test;
 
 }
+*/

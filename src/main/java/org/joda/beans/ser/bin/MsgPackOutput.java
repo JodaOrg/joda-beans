@@ -15,8 +15,6 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.ser.SerTypeMapper;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -315,21 +313,6 @@ final class MsgPackOutput extends MsgPack {
         output.write(FIX_EXT_4);
         output.write(extensionType);
         output.writeInt(reference);
-    }
-
-    /**
-     * Writes an extension either by reference using FIX_EXT_4 or by string using EXT_8.
-     *
-     * @param extensionType  the type
-     * @param encodedType  the encoded type to write as the data
-     * @throws IOException if an error occurs
-     */
-    void writeExtension(int extensionType, SerTypeMapper.EncodedType encodedType) throws IOException {
-        if (encodedType.fullType.isEmpty()) {
-            writeExtensionInt(extensionType, encodedType.reference);
-        } else {
-            writeExtensionString(extensionType, encodedType.fullType);
-        }
     }
 
 }
