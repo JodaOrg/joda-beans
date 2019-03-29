@@ -15,12 +15,12 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.Bean;
-import org.joda.beans.ser.JodaBeanSer;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
+
+import org.joda.beans.Bean;
+import org.joda.beans.ser.JodaBeanSer;
 
 /**
  * Provides the ability for a Joda-Bean to read from a binary format.

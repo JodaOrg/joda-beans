@@ -15,12 +15,12 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.Bean;
-import org.joda.beans.ser.JodaBeanSer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.joda.beans.Bean;
+import org.joda.beans.ser.JodaBeanSer;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.

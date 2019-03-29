@@ -299,6 +299,9 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             if (type.equals(declaredClass)) {
                 return;
             }
+            if (Bean.class.isAssignableFrom(type) && !ImmutableBean.class.isAssignableFrom(type)) {
+                throw new IllegalArgumentException("Can only serialize immutable beans in compact binary format: " + type.getName());
+            }
             if (ImmutableBean.class.isAssignableFrom(type)) {
                 SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
                 MetaBean metaBean = deser.findMetaBean(type);
@@ -404,9 +407,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
     }
 
     @Override
-    protected Class<?> getAndSerializeEffectiveTypeIfRequired(
-        Class<?> declaredType,
-        Class<?> realType) throws IOException {
+    protected Class<?> getAndSerializeEffectiveTypeIfRequired(Class<?> declaredType, Class<?> realType) throws IOException {
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {

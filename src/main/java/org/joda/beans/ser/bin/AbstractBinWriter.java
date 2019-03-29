@@ -15,13 +15,17 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.*;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.beans.Bean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
+import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerOptional;
+import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
