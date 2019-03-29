@@ -76,8 +76,10 @@ import static java.util.stream.Collectors.toList;
  * Where the additional type information is not about a bean, a tuple is written using a size 1 map where the key is
  * the 'ext' data and the value is the data being annotated.
  * <p>
- * For references, when a value will be referred back to it is written as a map of size one with 'ext' as the key
- * and the value that should be reffered to
+ * For references, when an object will be referred back to it is written as a map of size one with 'ext' as the key
+ * and the object that should be referred to as the value.
+ * When that same object is referred back to it is written as a map of size one with 'ext' as the key and the value
+ * being the 'ext' data from the initial write.
  * <p>
  * Certain basic types are also handled, such as String, Integer, File and URI.
  *
