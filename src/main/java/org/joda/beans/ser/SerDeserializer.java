@@ -91,7 +91,7 @@ import org.joda.beans.MetaProperty;
 public interface SerDeserializer {
 
     /**
-     * Lookup the meta-bean for the speecified type.
+     * Lookup the meta-bean for the specified type.
      * <p>
      * If the type is not a bean, then null may be returned.
      * 

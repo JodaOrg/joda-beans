@@ -15,6 +15,7 @@
  */
 package org.joda.beans.ser.bin;
 
+import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 
@@ -25,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.joda.beans.Bean;
@@ -91,10 +91,13 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
      */
     private Map<Class<?>, ClassInfo> classes = new HashMap<>();
     /**
+     * The amount of time each class needs to have its type serialized.
+     */
+    private Map<Class<?>, Integer> classSerializationCount = new HashMap<>();
+    /**
      * The serialized objects that are repeated and require references.
      */
     private Map<Object, Ref> refs = new HashMap<>();
-    private List<ClassInfo> classInfoByReference;
 
     /**
      * Creates an instance.
@@ -155,6 +158,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
     private void writeClassDescriptions(ImmutableBean root) throws IOException {
         basePackage = root.getClass().getPackage().getName() + ".";
+
         buildClassAndRefMap(root);
 
         // Write out ref count first
@@ -162,23 +166,31 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         if (size == Integer.MAX_VALUE) {
             throw new RuntimeException("Bean has at least Integer.MAX_VALUE repeated objects and cannot be serialized: " + size);
         }
-
         output.writeInt(size);
 
-        classInfoByReference = classes.values().stream()
-                .sorted(comparingInt(info -> info.position))
-                .collect(toList());
-
-        // Write map of class name to a list of metatype names (which is empty if not a bean)
-        int classCount = classInfoByReference.size();
+        int classCount = classes.size();
         if (classCount == Integer.MAX_VALUE) {
             throw new RuntimeException("Bean has at least Integer.MAX_VALUE class names and cannot be serialized: " + classCount);
         }
+
+        // Reorder classes so the most repeated serialized names have the lowest number (hence the shortest extension)
+        List<ClassInfo> classInfos = classSerializationCount.entrySet().stream()
+                .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
+                .map(entry -> classes.get(entry.getKey()))
+                .collect(toList());
+
+        classes = new HashMap<>();
+        for (int position = 0; position < classInfos.size(); position++) {
+            ClassInfo classInfo = classInfos.get(position);
+            classes.put(classInfo.type, new ClassInfo(position, classInfo.type, classInfo.metaProperties));
+        }
+
+        // Write map of class name to a list of metatype names (which is empty if not a bean)
         output.writeMapHeader(classCount);
 
-        for (ClassInfo classInfo : classInfoByReference) {
+        for (ClassInfo classInfo : classInfos) {
             // Known types parameter is null as we never serialise the class names again
-            String className = SerTypeMapper.encodeType(classInfo.type, settings, null, null);
+            String className = SerTypeMapper.encodeType(classInfo.type, settings, basePackage, null);
             output.writeString(className);
 
             output.writeArrayHeader(classInfo.metaProperties.length);
@@ -192,10 +204,15 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         Multiset<Object> objects = HashMultiset.create();
 
         classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean(), root.getClass()));
+        classSerializationCount.put(root.getClass(), 1);
 
         addClasses(root, root.getClass(), objects);
 
-        for (Multiset.Entry<Object> entry : objects.entrySet()) {
+        List<Multiset.Entry<Object>> refEntries = objects.entrySet().stream()
+                .sorted(reverseOrder(comparingInt(Multiset.Entry::getCount)))
+                .collect(toList());
+
+        for (Multiset.Entry<Object> entry : refEntries) {
             // Only add refs for objects that are repeated
             if (entry.getCount() > 1) {
                 Object value = entry.getElement();
@@ -226,10 +243,6 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             }
 
             for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-                if (prop.style().isDerived()) {
-                    continue;
-                }
-
                 Object value = prop.get(bean);
                 Class<?> type = SerOptional.extractType(prop, base.getClass());
 
@@ -296,6 +309,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         }
 
         if (classes.containsKey(value.getClass())) {
+            classSerializationCount.computeIfPresent(value.getClass(), (k, i) -> i + 1);
             return;
         }
 
@@ -303,6 +317,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             ImmutableBean bean = (ImmutableBean) value;
             ClassInfo classInfo = classInfoFromMetaBean(bean.metaBean(), bean.getClass());
             classes.putIfAbsent(bean.getClass(), classInfo);
+            classSerializationCount.compute(bean.getClass(), (k, i) -> i == null ? 1 : i + 1);
         } else if (value instanceof Class<?>) {
             Class<?> type = (Class<?>) value;
             if (type.equals(declaredClass)) {
@@ -312,17 +327,21 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
                 throw new IllegalArgumentException("Can only serialize immutable beans in compact binary format: " + type.getName());
             }
             if (ImmutableBean.class.isAssignableFrom(type)) {
+                if (classes.containsKey(type)) {
+                    classSerializationCount.computeIfPresent(type, (k, i) -> i + 1);
+                    return;
+                }
                 SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
                 MetaBean metaBean = deser.findMetaBean(type);
-
-                if (metaBean != null) {
-                    ClassInfo classInfo = classInfoFromMetaBean(metaBean, type);
-                    classes.putIfAbsent(type, classInfo);
-                }
+                ClassInfo classInfo = classInfoFromMetaBean(metaBean, type);
+                classes.putIfAbsent(type, classInfo);
+                classSerializationCount.put(type, 1);
             }
         } else if (!value.getClass().equals(declaredClass)) {
-            ClassInfo classInfo = new ClassInfo(classes.size(), value.getClass(), new MetaProperty<?>[0]);
+            // Only serialize class if it will be required for
+            ClassInfo classInfo = new ClassInfo(0, value.getClass(), new MetaProperty<?>[0]);
             classes.putIfAbsent(value.getClass(), classInfo);
+            classSerializationCount.put(value.getClass(), 1);
         }
 
     }
@@ -333,7 +352,8 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
                 .filter(metaProp -> !metaProp.style().isDerived())
                 .toArray(MetaProperty<?>[]::new);
 
-        return new ClassInfo(classes.size(), aClass, metaProperties);
+        // Positions get recreated when all classes have been recorded
+        return new ClassInfo(0, aClass, metaProperties);
     }
 
     @Override
@@ -341,11 +361,11 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         Ref ref = refs.get(bean);
         if (ref != null) {
             if (ref.hasBeenSerialized) {
-                output.writeExtensionInt(MsgPack.JODA_TYPE_REF, ref.position);
+                output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF, ref.position);
                 return;
             }
             output.writeMapHeader(1);
-            output.writeExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
+            output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
         }
 
         ClassInfo classInfo = getClassInfo(bean.getClass());
@@ -362,7 +382,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
         if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
             output.writeArrayHeader(size + 1);
-            output.writeExtensionInt(MsgPack.JODA_TYPE_BEAN, classInfo.position);
+            output.writePositiveExtensionInt(MsgPack.JODA_TYPE_BEAN, classInfo.position);
         } else {
             output.writeArrayHeader(size);
         }
@@ -403,10 +423,10 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         Ref ref = refs.get(metaTypeName);
         if (ref != null) {
             if (ref.hasBeenSerialized) {
-                output.writeExtensionInt(MsgPack.JODA_TYPE_META, ref.position);
+                output.writePositiveExtensionInt(MsgPack.JODA_TYPE_META, ref.position);
             } else {
                 output.writeMapHeader(1);
-                output.writeExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
+                output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
                 output.writeExtensionString(MsgPack.JODA_TYPE_META, metaTypeName);
                 refs.put(metaTypeName, new Ref(true, ref.position));
             }
@@ -423,7 +443,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
                 ClassInfo classInfo = getClassInfo(effectiveType);
                 output.writeMapHeader(1);
-                output.writeExtensionInt(MsgPack.JODA_TYPE_DATA, classInfo.position);
+                output.writePositiveExtensionInt(MsgPack.JODA_TYPE_DATA, classInfo.position);
             } else {
                 effectiveType = realType;
             }
@@ -431,7 +451,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
             ClassInfo classInfo = getClassInfo(effectiveType);
             output.writeMapHeader(1);
-            output.writeExtensionInt(MsgPack.JODA_TYPE_DATA, classInfo.position);
+            output.writePositiveExtensionInt(MsgPack.JODA_TYPE_DATA, classInfo.position);
         }
         return effectiveType;
     }
@@ -440,7 +460,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
     protected void writeObjectAsString(Object value, Class<?> effectiveType) throws IOException {
         Ref ref = refs.get(value);
         if (ref != null && ref.hasBeenSerialized) {
-            output.writeExtensionInt(MsgPack.JODA_TYPE_REF, ref.position);
+            output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF, ref.position);
         } else {
             String converted = settings.getConverter().convertToString(effectiveType, value);
             if (converted == null) {
@@ -448,7 +468,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             }
             if (ref != null) {
                 output.writeMapHeader(1);
-                output.writeExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
+                output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
                 output.writeString(converted);
                 refs.put(value, new Ref(true, ref.position));
             } else {
@@ -470,7 +490,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
     // The info needed serialize instances of a class with a reference to the initially serialized class definition
     private static final class ClassInfo {
 
-        // The position in the initial class definition list
+        // The position in the initial class definition list, lower means serialized more often
         private final int position;
 
         // The class itself - not necessary for serialization but here for easier inspection
@@ -482,9 +502,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         private ClassInfo(int position, Class<?> type, MetaProperty<?>[] metaProperties) {
             this.position = position;
             this.type = type;
-            this.metaProperties = Stream.of(metaProperties)
-                    .filter(it -> !it.style().isDerived())
-                    .toArray(MetaProperty<?>[]::new);
+            this.metaProperties = metaProperties;
         }
 
         @Override

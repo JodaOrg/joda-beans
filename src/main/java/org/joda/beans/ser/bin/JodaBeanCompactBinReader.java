@@ -17,6 +17,7 @@ package org.joda.beans.ser.bin;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -259,9 +260,13 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             int mapSize = acceptMap(typeByte);
             if (mapSize > 0) {
                 int typeByteTemp = input.readByte();
-                if (typeByteTemp == FIX_EXT_4) {
+
+                if (isIntExtension(typeByteTemp)) {
+
+                    int nestedTypeByteTemp = typeByteTemp;
                     typeByteTemp = input.readByte();
-                    int reference = input.readInt();
+                    int reference = acceptIntExtension(nestedTypeByteTemp);
+
                     if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
@@ -311,9 +316,10 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                     mapSize = acceptMap(typeByteTemp);
                     typeByteTemp = input.readByte();
                     // Check for nested JODA_TYPE_META with a reference the key
-                    if (typeByteTemp == FIX_EXT_4) {
+                    if (isIntExtension(typeByteTemp)) {
+                        int nestedTypeByteTemp = typeByteTemp;
                         typeByteTemp = input.readByte();
-                        int reference = input.readInt();
+                        int reference = acceptIntExtension(nestedTypeByteTemp);
                         if (typeByteTemp == JODA_TYPE_REF_KEY) {
                             if (mapSize != 1) {
                                 throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
@@ -358,9 +364,11 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             int arraySize = acceptArray(typeByte);
             if (arraySize > 0) {
                 int typeByteTemp = input.readByte();
-                if (typeByteTemp == FIX_EXT_4) {
+                if (isIntExtension(typeByteTemp)) {
+                    int nestedTypeByteTemp = typeByteTemp;
                     typeByteTemp = input.readByte();
-                    int reference = input.readInt();
+                    int reference = acceptIntExtension(nestedTypeByteTemp);
+
                     if (typeByteTemp == JODA_TYPE_BEAN) {
                         classInfo = classes[reference];
                         Object bean = parseBean(declaredType, rootType, classInfo, arraySize);
@@ -379,10 +387,10 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             }
         }
 
-        if (typeByte == FIX_EXT_4) {
+        if (isIntExtension(typeByte)) {
             input.mark(5);
             int typeByteTemp = input.readByte();
-            int reference = input.readInt();
+            int reference = acceptIntExtension(typeByte);
             // JODA_TYPE_REF is the only thing serialized in isolation, others are serialized as map keys or the start of an array
             if (typeByteTemp != JODA_TYPE_REF) {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was: 0x" + toHex(typeByteTemp));
@@ -446,8 +454,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         }
     }
 
-    private Object parseBean(Class<?> declaredType, boolean rootType, ClassInfo classInfo, int arraySize) throws
-            Exception {
+    private Object parseBean(Class<?> declaredType, boolean rootType, ClassInfo classInfo, int arraySize) {
         if (rootType) {
             if (Bean.class.isAssignableFrom(classInfo.type) == false) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + classInfo.type.getName());
@@ -458,6 +465,25 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + classInfo.type.getName());
         }
         return parseBean(arraySize - 1, classInfo);
+    }
+
+    //-----------------------------------------------------------------------
+    private boolean isIntExtension(int typeByte) {
+        return typeByte == MsgPack.FIX_EXT_1 || typeByte == MsgPack.FIX_EXT_2 || typeByte == MsgPack.FIX_EXT_4;
+    }
+
+    private int acceptIntExtension(int typeByte) throws IOException {
+        if (typeByte == MsgPack.FIX_EXT_1) {
+            return input.readUnsignedByte();
+        }
+        if (typeByte == MsgPack.FIX_EXT_2) {
+            return input.readUnsignedShort();
+        }
+        if (typeByte == MsgPack.FIX_EXT_4) {
+            return input.readInt();
+        }
+        throw new IllegalArgumentException("Invalid binary data: Expected int extension type, but was: 0x" + toHex(
+            typeByte));
     }
 
     // The info needed to deserialize instances of a class with a reference to the initially serialized class definition
