@@ -43,7 +43,6 @@ public final class SerTypeMapper {
      * Known simple classes.
      */
     private static final Map<String, Class<?>> BASIC_TYPES_REVERSED;
-
     static {
         Map<Class<?>, String> map = new HashMap<>();
 
@@ -81,7 +80,6 @@ public final class SerTypeMapper {
     }
 
     //-----------------------------------------------------------------------
-
     /**
      * Encodes a basic class.
      * <p>
