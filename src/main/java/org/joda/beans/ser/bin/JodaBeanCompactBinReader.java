@@ -244,7 +244,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         Integer ref = null;
         int typeByte = input.readByte();
 
-        // Unwrap nested references
+        // Unwrap nested references and meta data
         while (isMap(typeByte)) {
 
             input.mark(18);
@@ -345,6 +345,32 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             }
         }
 
+        if (isArray(typeByte)) {
+            input.mark(11);
+            int arraySize = acceptArray(typeByte);
+            if (arraySize > 0) {
+                int typeByteTemp = input.readByte();
+                if (typeByteTemp == FIX_EXT_4) {
+                    typeByteTemp = input.readByte();
+                    int reference = input.readInt();
+                    if (typeByteTemp == JODA_TYPE_BEAN) {
+                        classInfo = classes[reference];
+                        Object bean = parseBean(declaredType, rootType, classInfo, arraySize);
+                        if (ref != null) {
+                            refs[ref] = bean;
+                        }
+                        return bean;
+                    } else {
+                        input.reset();
+                    }
+                } else {
+                    input.reset();
+                }
+            } else {
+                input.reset();
+            }
+        }
+
         if (typeByte == FIX_EXT_4) {
             input.mark(5);
             int typeByteTemp = input.readByte();
@@ -358,28 +384,6 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
             }
             return value;
-        }
-
-        if (isArray(typeByte)) {
-            input.mark(11);
-            int arraySize = acceptArray(typeByte);
-            if (arraySize > 0) {
-                int typeByteTemp = input.readByte();
-                if (typeByteTemp == FIX_EXT_4) {
-                    typeByteTemp = input.readByte();
-                    int reference = input.readInt();
-                    if (typeByteTemp == JODA_TYPE_BEAN) {
-                        classInfo = classes[reference];
-                        return parseBean(declaredType, rootType, classInfo, arraySize);
-                    } else {
-                        input.reset();
-                    }
-                } else {
-                    input.reset();
-                }
-            } else {
-                input.reset();
-            }
         }
 
         if (classInfo != null) {

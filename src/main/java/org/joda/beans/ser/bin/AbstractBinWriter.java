@@ -272,7 +272,7 @@ public class AbstractBinWriter {
         }
 
         // handle no declared type and subclasses
-        Class<?> effectiveType = getEffectiveType(declaredType, realType);
+        Class<?> effectiveType = getAndSerializeEffectiveTypeIfRequired(declaredType, realType);
 
         // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
         if (realType == Long.class) {
@@ -308,7 +308,7 @@ public class AbstractBinWriter {
      * @return the effective type of the object
      * @throws IOException if an error occurs
      */
-    protected Class<?> getEffectiveType(Class<?> declaredType, Class<?> realType) throws IOException {
+    protected Class<?> getAndSerializeEffectiveTypeIfRequired(Class<?> declaredType, Class<?> realType) throws IOException {
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {

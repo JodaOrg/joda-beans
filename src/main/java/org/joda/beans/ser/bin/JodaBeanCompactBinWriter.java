@@ -15,23 +15,32 @@
  */
 package org.joda.beans.ser.bin;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Multiset;
-import org.joda.beans.Bean;
-import org.joda.beans.ImmutableBean;
-import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.*;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toList;
+import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
+import org.joda.beans.ser.SerDeserializer;
+import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerOptional;
+import org.joda.beans.ser.SerTypeMapper;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 
 /**
  * Provides the ability for an immutable Joda-Bean to be written to a compact binary format.
@@ -172,63 +181,106 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
     private void buildClassAndRefMap(ImmutableBean root) {
         Multiset<Object> objects = HashMultiset.create();
-        addClasses(root, objects);
+
+        classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean(), root.getClass()));
+
+        addClasses(root, root.getClass(), objects);
 
         for (Multiset.Entry<Object> entry : objects.entrySet()) {
             // Only add refs for objects that are repeated
             if (entry.getCount() > 1) {
-                refs.put(entry.getElement(), new Ref(false, refs.size()));
+                Object value = entry.getElement();
+                Class<?> realType = value.getClass();
+
+                // simple types do not need references
+                if (realType != Integer.class && realType != Double.class && realType != Float.class &&
+                    realType != Boolean.class && realType != Long.class && realType != Short.class &&
+                    realType != Byte.class && realType != byte[].class) {
+
+                    refs.put(value, new Ref(false, refs.size()));
+                }
             }
         }
     }
 
-    private void addClasses(Object base, Multiset<Object> objects) {
+    private void addClasses(Object base, Class<?> declaredClass, Multiset<Object> objects) {
         if (base == null) {
             return;
         }
 
-        addClassAndRef(base, objects);
+        addClassAndRef(base, declaredClass, objects);
 
         if (base instanceof Bean) {
             Bean bean = (Bean) base;
+            if (settings.getConverter().isConvertible(bean.getClass())) {
+                return;
+            }
+
             for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
+                if (prop.style().isDerived()) {
+                    continue;
+                }
+
                 Object value = prop.get(bean);
-                addClasses(value, objects);
                 Class<?> type = SerOptional.extractType(prop, base.getClass());
-                addClassAndRef(type, objects); // In case it's a null value or optional field
 
                 if (value != null) {
                     SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
-                    if (itemIterator != null && itemIterator.metaTypeRequired()) {
-                        addClassAndRef(itemIterator.metaTypeName(), objects);
+                    if (itemIterator != null) {
+                        if (itemIterator.metaTypeRequired()) {
+                            objects.add(itemIterator.metaTypeName());
+                        }
+                        addClassesIterable(itemIterator, objects);
+                    } else {
+                        addClasses(value, type, objects);
                     }
+                } else {
+                    addClasses(type, type, objects); // In case it's a null value or optional field
                 }
             }
-        } else if (base instanceof Collection) {
-            for (Object value : ((Collection) base)) {
-                addClasses(value, objects);
-            }
-        } else if (base instanceof Map) {
-            Map map = (Map) base;
-            for (Object key : map.keySet()) {
-                addClasses(key, objects);
-                addClasses(map.get(key), objects);
-            }
-            //} else if (base instanceof Table) {
-            //    Table table = (Table) base;
-            //    addClasses(table.columnMap(), objects);
-            //} else if (base instanceof Grid) {
-            //    Grid grid = (Grid) base;
-            //    addClasses(grid.cells(), objects);
         }
     }
 
-    private void addClassAndRef(Object value, Multiset<Object> objects) {
+    private void addClassesIterable(SerIterator itemIterator, Multiset<Object> objects) {
+        if (itemIterator.category() == SerCategory.MAP) {
+            while (itemIterator.hasNext()) {
+                itemIterator.next();
+                addClasses(itemIterator.key(), itemIterator.keyType(), objects);
+                addClasses(itemIterator.value(), itemIterator.valueType(), objects);
+            }
+        } else if (itemIterator.category() == SerCategory.COUNTED) {
+            while (itemIterator.hasNext()) {
+                itemIterator.next();
+                addClasses(itemIterator.value(), itemIterator.valueType(), objects);
+            }
+        } else if (itemIterator.category() == SerCategory.TABLE) {
+            while (itemIterator.hasNext()) {
+                itemIterator.next();
+                addClasses(itemIterator.key(), itemIterator.keyType(), objects);
+                addClasses(itemIterator.column(), itemIterator.columnType(), objects);
+                addClasses(itemIterator.value(), itemIterator.valueType(), objects);
+            }
+        } else if (itemIterator.category() == SerCategory.GRID) {
+            while (itemIterator.hasNext()) {
+                itemIterator.next();
+                addClasses(itemIterator.value(), itemIterator.valueType(), objects);
+            }
+        } else {
+            while (itemIterator.hasNext()) {
+                itemIterator.next();
+                addClasses(itemIterator.value(), itemIterator.valueType(), objects);
+            }
+        }
+    }
+
+    private void addClassAndRef(Object value, Class<?> declaredClass, Multiset<Object> objects) {
         if (value == null) {
             return;
         }
 
-        objects.add(value);
+        if (!(value instanceof Class<?>)) {
+            objects.add(value);
+        }
 
         if (value instanceof Bean && !(value instanceof ImmutableBean)) {
             throw new IllegalArgumentException("Can only serialize immutable beans in compact binary format: " + value.getClass().getName());
@@ -240,33 +292,36 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
         if (value instanceof ImmutableBean) {
             ImmutableBean bean = (ImmutableBean) value;
-            MetaProperty<?>[] metaProperties = Iterables.toArray(
-                    bean.metaBean().metaPropertyIterable(), MetaProperty.class);
-            ClassInfo classInfo = new ClassInfo(classes.size(), value.getClass(), metaProperties);
-            classes.putIfAbsent(value.getClass(), classInfo);
+            ClassInfo classInfo = classInfoFromMetaBean(bean.metaBean(), bean.getClass());
+            classes.putIfAbsent(bean.getClass(), classInfo);
         } else if (value instanceof Class<?>) {
             Class<?> type = (Class<?>) value;
+            if (type.equals(declaredClass)) {
+                return;
+            }
             if (ImmutableBean.class.isAssignableFrom(type)) {
                 SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
                 MetaBean metaBean = deser.findMetaBean(type);
 
                 if (metaBean != null) {
-                    MetaProperty<?>[] metaProperties = Iterables.toArray(
-                            metaBean.metaPropertyIterable(),
-                            MetaProperty.class);
-
-                    ClassInfo classInfo = new ClassInfo(classes.size(), type, metaProperties);
-                    classes.putIfAbsent(value.getClass(), classInfo);
+                    ClassInfo classInfo = classInfoFromMetaBean(metaBean, type);
+                    classes.putIfAbsent(type, classInfo);
                 }
-            } else {
-                ClassInfo classInfo = new ClassInfo(classes.size(), type, new MetaProperty<?>[0]);
-                classes.putIfAbsent(type, classInfo);
             }
-        } else {
+        } else if (!value.getClass().equals(declaredClass)) {
             ClassInfo classInfo = new ClassInfo(classes.size(), value.getClass(), new MetaProperty<?>[0]);
             classes.putIfAbsent(value.getClass(), classInfo);
         }
 
+    }
+
+    private ClassInfo classInfoFromMetaBean(MetaBean metaBean, Class<?> aClass) {
+        MetaProperty<?>[] metaProperties =
+            StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
+                .filter(metaProp -> !metaProp.style().isDerived())
+                .toArray(MetaProperty<?>[]::new);
+
+        return new ClassInfo(classes.size(), aClass, metaProperties);
     }
 
     @Override
@@ -349,7 +404,9 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
     }
 
     @Override
-    protected Class<?> getEffectiveType(Class<?> declaredType, Class<?> realType) throws IOException {
+    protected Class<?> getAndSerializeEffectiveTypeIfRequired(
+        Class<?> declaredType,
+        Class<?> realType) throws IOException {
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {
