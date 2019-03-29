@@ -90,15 +90,8 @@ public final class JodaBeanSer {
      * @param shortTypes  whether to use short types
      * @param deserializers  the deserializers to use, not null
      */
-    private JodaBeanSer(
-        String indent,
-        String newLine,
-        StringConvert converter,
-        SerIteratorFactory iteratorFactory,
-        boolean shortTypes,
-        SerDeserializers deserializers,
-        boolean includeDerived) {
-
+    private JodaBeanSer(String indent, String newLine, StringConvert converter,
+                        SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers, boolean includeDerived) {
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
