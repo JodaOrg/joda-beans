@@ -44,12 +44,12 @@ public final class JodaBeanSer {
      * Obtains the singleton compact instance.
      */
     public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(),
-        SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
     /**
      * Obtains the singleton pretty-printing instance.
      */
     public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(),
-        SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
 
     /**
      * The indent to use.
@@ -91,7 +91,7 @@ public final class JodaBeanSer {
      * @param deserializers  the deserializers to use, not null
      */
     private JodaBeanSer(String indent, String newLine, StringConvert converter,
-                        SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers, boolean includeDerived) {
+                SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers, boolean includeDerived) {
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
@@ -281,9 +281,15 @@ public final class JodaBeanSer {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a compact binary writer, that can only serialize immutable beans.
+     * Creates a compact binary writer.
      * <p>
      * A new instance of the writer must be created for each message.
+     * <p>
+     * The writer only supports serializing ImmutableBean instances and will throw an exception if any non-immutable
+     * beans are encountered.
+     * It assumes that non-bean items present within the root bean are themselves immutable.
+     * Due to this immutability restriction it serializes references to values based on object equality, rather than
+     * based on reference equality.
      *
      * @return the compact binary writer, not null
      */
@@ -295,6 +301,8 @@ public final class JodaBeanSer {
      * Creates a compact binary reader.
      * <p>
      * A new instance of the reader must be created for each message.
+     * <p>
+     * The reader only supports deserializing ImmutableBean instances that were written using the compact binary writer.
      *
      * @return the compact binary reader, not null
      */
