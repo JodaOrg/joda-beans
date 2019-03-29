@@ -15,9 +15,11 @@
  */
 package org.joda.beans.ser.bin;
 
-import static java.util.Collections.reverseOrder;
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toList;
+import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,19 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
-import org.joda.beans.Bean;
-import org.joda.beans.ImmutableBean;
-import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerDeserializer;
-import org.joda.beans.ser.SerIterator;
-import org.joda.beans.ser.SerOptional;
-import org.joda.beans.ser.SerTypeMapper;
-
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Provides the ability for an immutable Joda-Bean to be written to a compact binary format.
@@ -108,9 +100,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         super(settings);
     }
 
-
     //-----------------------------------------------------------------------
-
 
     /**
      * Writes the bean to an array of bytes.
@@ -201,27 +191,27 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
     }
 
     private void buildClassAndRefMap(ImmutableBean root) {
-        Multiset<Object> objects = HashMultiset.create();
+        Map<Object, Integer> objects = new HashMap<>();
 
         classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean(), root.getClass()));
         classSerializationCount.put(root.getClass(), 1);
 
         addClasses(root, root.getClass(), objects);
 
-        List<Multiset.Entry<Object>> refEntries = objects.entrySet().stream()
-                .sorted(reverseOrder(comparingInt(Multiset.Entry::getCount)))
+        List<Map.Entry<Object, Integer>> refEntries = objects.entrySet().stream()
+                .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
                 .collect(toList());
 
-        for (Multiset.Entry<Object> entry : refEntries) {
+        for (Map.Entry<Object, Integer> entry : refEntries) {
             // Only add refs for objects that are repeated
-            if (entry.getCount() > 1) {
-                Object value = entry.getElement();
+            if (entry.getValue() > 1) {
+                Object value = entry.getKey();
                 Class<?> realType = value.getClass();
 
                 // simple types do not need references
                 if (realType != Integer.class && realType != Double.class && realType != Float.class &&
-                    realType != Boolean.class && realType != Long.class && realType != Short.class &&
-                    realType != Byte.class && realType != byte[].class) {
+                        realType != Boolean.class && realType != Long.class && realType != Short.class &&
+                        realType != Byte.class && realType != byte[].class) {
 
                     refs.put(value, new Ref(false, refs.size()));
                 }
@@ -229,7 +219,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         }
     }
 
-    private void addClasses(Object base, Class<?> declaredClass, Multiset<Object> objects) {
+    private void addClasses(Object base, Class<?> declaredClass, Map<Object, Integer> objects) {
         if (base == null) {
             return;
         }
@@ -250,20 +240,25 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
                     SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                     if (itemIterator != null) {
                         if (itemIterator.metaTypeRequired()) {
-                            objects.add(itemIterator.metaTypeName());
+                            objects.compute(itemIterator.metaTypeName(), JodaBeanCompactBinWriter::incrementOrOne);
                         }
                         addClassesIterable(itemIterator, objects);
                     } else {
                         addClasses(value, type, objects);
                     }
                 } else {
-                    addClasses(type, type, objects); // In case it's a null value or optional field
+                    // In case it's a null value or optional field
+                    addClasses(type, type, objects);
                 }
             }
         }
     }
 
-    private void addClassesIterable(SerIterator itemIterator, Multiset<Object> objects) {
+    private static int incrementOrOne(@SuppressWarnings("unused") Object k, Integer i) {
+        return i == null ? 1 : i + 1;
+    }
+
+    private void addClassesIterable(SerIterator itemIterator, Map<Object, Integer> objects) {
         if (itemIterator.category() == SerCategory.MAP) {
             while (itemIterator.hasNext()) {
                 itemIterator.next();
@@ -295,13 +290,13 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         }
     }
 
-    private void addClassAndRef(Object value, Class<?> declaredClass, Multiset<Object> objects) {
+    private void addClassAndRef(Object value, Class<?> declaredClass, Map<Object, Integer> objects) {
         if (value == null) {
             return;
         }
 
         if (!(value instanceof Class<?>)) {
-            objects.add(value);
+            objects.compute(value, JodaBeanCompactBinWriter::incrementOrOne);
         }
 
         if (value instanceof Bean && !(value instanceof ImmutableBean)) {
@@ -317,7 +312,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             ImmutableBean bean = (ImmutableBean) value;
             ClassInfo classInfo = classInfoFromMetaBean(bean.metaBean(), bean.getClass());
             classes.putIfAbsent(bean.getClass(), classInfo);
-            classSerializationCount.compute(bean.getClass(), (k, i) -> i == null ? 1 : i + 1);
+            classSerializationCount.compute(bean.getClass(), JodaBeanCompactBinWriter::incrementOrOne);
         } else if (value instanceof Class<?>) {
             Class<?> type = (Class<?>) value;
             if (type.equals(declaredClass)) {
@@ -337,18 +332,20 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
                 classes.putIfAbsent(type, classInfo);
                 classSerializationCount.put(type, 1);
             }
-        } else if (!value.getClass().equals(declaredClass)) {
-            // Only serialize class if it will be required for
+        } else if (declaredClass == Object.class && !value.getClass().equals(String.class)) {
+            Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
+            ClassInfo classInfo = new ClassInfo(0, value.getClass(), new MetaProperty<?>[0]);
+            classes.putIfAbsent(effectiveType, classInfo);
+            classSerializationCount.put(effectiveType, 1);
+        } else if (!settings.getConverter().isConvertible(declaredClass)) {
             ClassInfo classInfo = new ClassInfo(0, value.getClass(), new MetaProperty<?>[0]);
             classes.putIfAbsent(value.getClass(), classInfo);
             classSerializationCount.put(value.getClass(), 1);
         }
-
     }
 
     private ClassInfo classInfoFromMetaBean(MetaBean metaBean, Class<?> aClass) {
-        MetaProperty<?>[] metaProperties =
-            StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
+        MetaProperty<?>[] metaProperties = StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
                 .filter(metaProp -> !metaProp.style().isDerived())
                 .toArray(MetaProperty<?>[]::new);
 
@@ -447,7 +444,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             } else {
                 effectiveType = realType;
             }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
+        } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
             ClassInfo classInfo = getClassInfo(effectiveType);
             output.writeMapHeader(1);
@@ -485,7 +482,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         return classInfo;
     }
 
-    //-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 
     // The info needed serialize instances of a class with a reference to the initially serialized class definition
     private static final class ClassInfo {

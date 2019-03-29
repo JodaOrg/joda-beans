@@ -15,15 +15,18 @@
  */
 package org.joda.beans.ser;
 
-import org.joda.beans.ser.bin.SerializedType;
-import org.joda.convert.RenameHandler;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
+
+import org.joda.convert.RenameHandler;
 
 /**
  * Type mapper for Joda-Bean serialization, used by serialization implementations.
@@ -267,22 +270,4 @@ public final class SerTypeMapper {
         return getClass().getSimpleName();
     }
 
-    public static final class EncodedType {
-
-        public final String fullType;
-        public final int reference;
-
-        private EncodedType(String fullType, int reference) {
-            this.fullType = Objects.requireNonNull(fullType);
-            this.reference = reference;
-        }
-
-        static EncodedType full(String fullType) {
-            return new EncodedType(fullType, 0);
-        }
-
-        static EncodedType reference(int reference) {
-            return new EncodedType("", reference);
-        }
-    }
 }
