@@ -62,8 +62,8 @@ import static java.util.stream.Collectors.toList;
  * Beans are output using MessagePack arrays where the first element is a reference to the initial class map.
  * Collections are output using MessagePack maps or arrays.
  * Multisets are output as a map of value to count.
- * Items which have other references are serialized with an integer key, which is then repeated at subsequent a
- * ppearances.
+ * Items which have other references are serialized with an integer key, which is then repeated at subsequent
+ * appearances.
  * <p>
  * If a collection contains a collection then addition meta-type information is written to aid with deserialization.
  * At this level, the data read back may not be identical to that written.
