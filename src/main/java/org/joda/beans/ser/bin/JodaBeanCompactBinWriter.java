@@ -78,8 +78,7 @@ import static java.util.stream.Collectors.toList;
  * <p>
  * For references, when an object will be referred back to it is written as a map of size one with 'ext' as the key
  * and the object that should be referred to as the value.
- * When that same object is referred back to it is written as a map of size one with 'ext' as the key and the value
- * being the 'ext' data from the initial write.
+ * When that same object is referred back to it is written as 'ext' with the data from the initial 'ext'.
  * <p>
  * Certain basic types are also handled, such as String, Integer, File and URI.
  *
