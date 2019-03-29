@@ -184,7 +184,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
 
     private void parseClassMap() throws Exception {
         int refCount = acceptInteger(input.readByte());
-        if (refCount <= 0) {
+        if (refCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected count of references, but was: " + refCount);
         }
         this.refs = new Object[refCount];

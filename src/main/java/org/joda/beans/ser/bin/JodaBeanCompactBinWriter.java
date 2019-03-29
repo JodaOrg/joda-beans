@@ -147,8 +147,6 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
     }
 
     private void writeClassDescriptions(ImmutableBean root) throws IOException {
-        basePackage = root.getClass().getPackage().getName() + ".";
-
         buildClassAndRefMap(root);
 
         // Write out ref count first
@@ -180,7 +178,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
         for (ClassInfo classInfo : classInfos) {
             // Known types parameter is null as we never serialise the class names again
-            String className = SerTypeMapper.encodeType(classInfo.type, settings, basePackage, null);
+            String className = SerTypeMapper.encodeType(classInfo.type, settings, null, null);
             output.writeString(className);
 
             output.writeArrayHeader(classInfo.metaProperties.length);
