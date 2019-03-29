@@ -158,14 +158,23 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         buildClassAndRefMap(root);
 
         // Write out ref count first
-        output.writeInt(refs.size());
+        int size = refs.size();
+        if (size == Integer.MAX_VALUE) {
+            throw new RuntimeException("Bean has at least Integer.MAX_VALUE repeated objects and cannot be serialized: " + size);
+        }
+
+        output.writeInt(size);
 
         classInfoByReference = classes.values().stream()
                 .sorted(comparingInt(info -> info.position))
                 .collect(toList());
 
         // Write map of class name to a list of metatype names (which is empty if not a bean)
-        output.writeMapHeader(classInfoByReference.size());
+        int classCount = classInfoByReference.size();
+        if (classCount == Integer.MAX_VALUE) {
+            throw new RuntimeException("Bean has at least Integer.MAX_VALUE class names and cannot be serialized: " + classCount);
+        }
+        output.writeMapHeader(classCount);
 
         for (ClassInfo classInfo : classInfoByReference) {
             // Known types parameter is null as we never serialise the class names again
