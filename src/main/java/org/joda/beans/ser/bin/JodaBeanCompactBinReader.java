@@ -35,14 +35,14 @@ import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
- * Provides the ability for a Joda-Bean to read from a binary format.
+ * Provides the ability for a Joda-Bean to read from a compact binary format.
  * <p>
- * The binary format is defined by {@link JodaBeanBinWriter}.
+ * The binary format is defined by {@link JodaBeanCompactBinWriter}.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
  *
- * @author Stephen Colebourne
+ * @author Will Nicholson
  */
 public class JodaBeanCompactBinReader extends AbstractBinReader {
 

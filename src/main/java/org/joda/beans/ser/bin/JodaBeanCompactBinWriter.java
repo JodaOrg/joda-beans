@@ -43,38 +43,45 @@ import static java.util.stream.Collectors.toList;
  * This class only supports serialization of instances of ImmutableBean and other basic types, if any mutable beans
  * are encountered during traversal an exception will be thrown.
  * <p>
- * Multiple passes of the bean are used to build up a map of unique immutable beans and unique immutable instances of
- * other classes (as defined by JodaBeanSer settings), and then the property names and class name for each class is serialized up front.
- * Then subsequent bean instances are serialized with references to previously serialized items if required.
+ * An initial pass of the bean is used to build up a map of unique immutable beans and unique immutable instances of
+ * other classes (based on an equality check).
+ * Then the class and property names for each bean class is serialized up front as a map of class name to list of
+ * property names, along with class information for any class where type information would be required when parsing
+ * and is not available on the metabean for the enclosing bean object.
  * <p>
  * The binary format is based on MessagePack v2.0.
- * Each unique immutable bean is output as a list of each property value using a fixed property order previously serialized.
- * Subsequent instances of the immutable bean (defined by an equality check) are replaced by references to the first instance.
+ * Each unique immutable bean is output as a list of each property value using the fixed property order previously
+ * serialized.
+ * Subsequent instances of unique objects (defined by an equality check) are replaced by references to the first
+ * serialized instance.
  * <p>
  * Most simple types, defined by Joda-Convert, are output as MessagePack strings.
  * However, MessagePack nil, boolean, float, integral and bin types are also used
  * for null, byte[] and the Java numeric primitive types (excluding char).
  * <p>
- * Beans are output using MessagePack maps where the key is the property name.
+ * Beans are output using MessagePack arrays where the first element is a reference to the initial class map.
  * Collections are output using MessagePack maps or arrays.
  * Multisets are output as a map of value to count.
+ * Items which have other references are serialized with an integer key, which is then repeated at subsequent a
+ * ppearances.
  * <p>
- * If a collection contains a collection then addition meta-type information is
- * written to aid with deserialization.
+ * If a collection contains a collection then addition meta-type information is written to aid with deserialization.
  * At this level, the data read back may not be identical to that written.
  * <p>
- * Where necessary, the Java type is sent using an 'ext' entity.
- * Three 'ext' types are used, one each for beans, meta-type and simple.
+ * The Java type names are sent using an 'ext' entity.
+ * Five 'ext' types are used, one each for beans, meta-type and simple, reference keys and reference lookups.
  * The class name is passed as the 'ext' data.
- * The 'ext' value is sent as an additional key-value pair for beans, with the
- * 'ext' as the key and 'nil' as the value. Where the additional type information
- * is not about a bean, a tuple is written using a size 1 map where the key is the
- * 'ext' data and the value is the data being annotated.
+ * The 'ext' value is sent as the first item in an array of property values for beans, an integer referring to the
+ * location in the initial class mapping.
+ * Where the additional type information is not about a bean, a tuple is written using a size 1 map where the key is
+ * the 'ext' data and the value is the data being annotated.
  * <p>
- * Type names are shortened by the package of the root type if possible.
+ * For references, when a value will be referred back to it is written as a map of size one with 'ext' as the key
+ * and the value that should be reffered to
+ * <p>
  * Certain basic types are also handled, such as String, Integer, File and URI.
  *
- * @author Stephen Colebourne
+ * @author Will Nicholson
  */
 public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
