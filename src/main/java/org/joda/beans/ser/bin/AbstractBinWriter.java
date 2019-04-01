@@ -15,13 +15,17 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.*;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.beans.Bean;
+import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
+import org.joda.beans.ser.SerIterator;
+import org.joda.beans.ser.SerOptional;
+import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
@@ -272,7 +276,7 @@ public class AbstractBinWriter {
         }
 
         // handle no declared type and subclasses
-        Class<?> effectiveType = getAndSerializeEffectiveTypeIfRequired(declaredType, realType);
+        Class<?> effectiveType = getAndSerializeEffectiveTypeIfRequired(value, declaredType);
 
         // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
         if (realType == Long.class) {
@@ -303,12 +307,13 @@ public class AbstractBinWriter {
      * <p>
      * Needs to handle no declared type and subclass instances.
      *
+     * @param value the value to be serialized
      * @param declaredType the declared type of the object
-     * @param realType the real type of the object
      * @return the effective type of the object
      * @throws IOException if an error occurs
      */
-    protected Class<?> getAndSerializeEffectiveTypeIfRequired(Class<?> declaredType, Class<?> realType) throws IOException {
+    protected Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
+        Class<?> realType = value.getClass();
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {

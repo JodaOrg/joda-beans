@@ -73,7 +73,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
      * @return the visualization
      */
     public static String visualize(byte[] input) {
-        return new MsgPackVisualizer(input).visualizeData();
+        return new CompactMsgPackVisualizer(input).visualizeData();
     }
 
     //-----------------------------------------------------------------------
@@ -157,7 +157,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
      * @return the bean, not null
      * @throws Exception if an error occurs
      */
-    protected <T> T parseRoot(Class<T> declaredType) throws Exception {
+    private <T> T parseRoot(Class<T> declaredType) throws Exception {
         if (!ImmutableBean.class.isAssignableFrom(declaredType)) {
             throw new IllegalArgumentException("Must deserialise to an ImmutableBean instance: " + declaredType.getName());
         }
@@ -213,15 +213,17 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         if (ImmutableBean.class.isAssignableFrom(type)) {
             SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
             MetaBean metaBean = deser.findMetaBean(type);
-            for (int j = 0; j < propertyCount; j++) {
+            for (int i = 0; i < propertyCount; i++) {
                 String propertyName = acceptString(input.readByte());
-                metaProperties[j] = deser.findMetaProperty(type, metaBean, propertyName);
+                metaProperties[i] = deser.findMetaProperty(type, metaBean, propertyName);
             }
+        } else if (propertyCount != 0) {
+            throw new IllegalArgumentException("Invalid binary data: Found non immutable bean class that has meta properties defined: " + type.getName() + ", " + propertyCount + " properties");
         }
         return new ClassInfo(type, metaProperties);
     }
 
-    protected Object parseBean(int propertyCount, ClassInfo classInfo) {
+    private Object parseBean(int propertyCount, ClassInfo classInfo) {
         String propName = "";
         if (classInfo.metaProperties.length != propertyCount) {
             throw new IllegalArgumentException("Invalid binary data: Expected " + classInfo.metaProperties.length + " properties but was: " + propertyCount);
@@ -238,6 +240,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                     Object value = parseObject(SerOptional.extractType(metaProp, classInfo.type), metaProp, classInfo.type, null, false);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, classInfo.type, value));
                 }
+                propName = "";
             }
             return deser.build(classInfo.type, builder);
         } catch (Exception ex) {
@@ -315,7 +318,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                 } else if (isMap(typeByteTemp)) {
                     mapSize = acceptMap(typeByteTemp);
                     typeByteTemp = input.readByte();
-                    // Check for nested JODA_TYPE_META with a reference the key
+                    // Check for nested JODA_TYPE_META with a reference as the key
                     if (isIntExtension(typeByteTemp)) {
                         int nestedTypeByteTemp = typeByteTemp;
                         typeByteTemp = input.readByte();

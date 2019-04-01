@@ -15,17 +15,21 @@
  */
 package org.joda.beans.ser.bin;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
-import org.joda.beans.ser.*;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerCategory;
+import org.joda.beans.ser.SerDeserializer;
+import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerOptional;
+import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to read from a compact binary format.
@@ -68,60 +72,7 @@ public class AbstractBinReader extends MsgPack {
     }
 
     //-----------------------------------------------------------------------
-
-    /**
-     * Reads and parses to a bean.
-     *
-     * @param <T> the root type
-     * @param input the input stream, not null
-     * @param rootType the root type, not null
-     * @return the bean, not null
-     */
-    protected <T> T readFromStream(final InputStream input, Class<T> rootType) {
-        if (input instanceof DataInputStream) {
-            this.input = (DataInputStream) input;
-        } else {
-            this.input = new DataInputStream(input);
-        }
-        try {
-            try {
-                return parseRoot(rootType);
-            } finally {
-                input.close();
-            }
-        } catch (RuntimeException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-
-    /**
-     * Parses the root bean.
-     *
-     * @param declaredType the declared type, not null
-     * @return the bean, not null
-     * @throws Exception if an error occurs
-     */
-    protected <T> T parseRoot(final Class<T> declaredType) throws Exception {
-        // root array
-        int typeByte = input.readByte();
-        if (typeByte != MIN_FIX_ARRAY + 2) {
-            throw new IllegalArgumentException("Invalid binary data: Expected array, but was: 0x" + toHex(typeByte));
-        }
-        // version
-        typeByte = input.readByte();
-        if (typeByte != 1) {
-            throw new IllegalArgumentException("Invalid binary data: Expected version 1, but was: 0x" + toHex(typeByte));
-        }
-        // parse
-        Object parsed = parseObject(declaredType, null, null, null, true);
-        return declaredType.cast(parsed);
-    }
-
-    protected Object parseBean(int propertyCount, Class<?> beanType) throws Exception {
+    protected Object parseBean(int propertyCount, Class<?> beanType) {
         String propName = "";
         try {
             SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);

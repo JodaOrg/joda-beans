@@ -15,19 +15,27 @@
  */
 package org.joda.beans.ser.bin;
 
-import org.joda.beans.sample.ImmDoubleFloat;
-import org.joda.beans.sample.ImmGuava;
-import org.joda.beans.sample.ImmOptional;
-import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerTestHelper;
-import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.sample.Company;
+import org.joda.beans.sample.ImmDoubleFloat;
+import org.joda.beans.sample.ImmGuava;
+import org.joda.beans.sample.ImmJodaConvertBean;
+import org.joda.beans.sample.ImmJodaConvertWrapper;
+import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.ImmTreeNode;
+import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.SerTestHelper;
+import org.joda.beans.test.BeanAssert;
+import org.junit.Test;
 
 /**
  * Test property roundtrip using compact binary.
@@ -39,7 +47,7 @@ public class TestSerializeCompactBin {
         ImmOptional optional = SerTestHelper.testImmOptional();
         byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(optional);
 
-        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
+        //System.out.println(JodaBeanCompactBinReader.visualize(bytes));
 
         ImmOptional bean = (ImmOptional) JodaBeanSer.COMPACT.compactBinReader().read(bytes);
 //        System.out.println(bean);
@@ -49,14 +57,26 @@ public class TestSerializeCompactBin {
     @Test
     public void test_writeCollections() {
         ImmGuava<String> optional = SerTestHelper.testCollections();
-        JodaBeanCompactBinWriter writer = JodaBeanSer.COMPACT.compactBinWriter();
-        byte[] bytes = writer.write(optional);
-        System.out.println(new MsgPackVisualizer(bytes).visualizeData());
+        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(optional);
+        //System.out.println(JodaBeanCompactBinReader.visualize(bytes));
 
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.COMPACT.compactBinReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    @Test
+    public void test_writeTree() {
+        ImmTreeNode treeNode = SerTestHelper.testTree();
+        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(treeNode);
+        byte[] regularBytes = JodaBeanSer.COMPACT.binWriter().write(treeNode);
+        //System.out.println(JodaBeanCompactBinReader.visualize(bytes));
+
+        ImmTreeNode bean = (ImmTreeNode) JodaBeanSer.COMPACT.compactBinReader().read(bytes);
+        //System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, treeNode);
+        assertTrue(bytes.length < regularBytes.length / 2d);
     }
 
     @Test
@@ -94,7 +114,6 @@ public class TestSerializeCompactBin {
         assertEquals(5, parsed.getB(), 1e-10);
     }
 
-
     @Test(expected = RuntimeException.class)
     public void test_read_wrongVersion() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -118,57 +137,80 @@ public class TestSerializeCompactBin {
     }
 
     //-----------------------------------------------------------------------
-    /*// Replace these tests with equivalent checks using ImmutableBean classes instead of FlexiBean and DirectBean etc
     @Test
     public void test_readWriteJodaConvertWrapper() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2);
+            out.writeByte(0);
+
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmJodaConvertWrapper.class.getName().length());
+            out.writeBytes(ImmJodaConvertWrapper.class.getName());
+            out.write(MsgPack.MIN_FIX_ARRAY + 2);
             out.writeByte(MsgPack.MIN_FIX_STR + 4);
             out.writeBytes("bean");
-            out.writeByte(MsgPack.MIN_FIX_STR + 7);
-            out.writeBytes("Hello:9");
             out.writeByte(MsgPack.MIN_FIX_STR + 11);
             out.writeBytes("description");
+
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 3);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(0);
+
+            out.writeByte(MsgPack.MIN_FIX_STR + 7);
+            out.writeBytes("Hello:9");
+
             out.writeByte(MsgPack.MIN_FIX_STR + 5);
             out.writeBytes("Weird");
         }
         byte[] expected = baos.toByteArray();
 
-        JodaConvertWrapper wrapper = new JodaConvertWrapper();
-        JodaConvertBean bean = new JodaConvertBean("Hello:9");
-        wrapper.setBean(bean);
-        wrapper.setDescription("Weird");
-        byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(wrapper, false);
-        assertTrue(Arrays.equals(bytes, expected));
-//        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, JodaConvertWrapper.class);
-//        BeanAssert.assertBeanEquals(wrapper, parsed);
+        ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
+        ImmJodaConvertWrapper wrapper = ImmJodaConvertWrapper.of(bean, "Weird");
+        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(wrapper);
+        assertArrayEquals(bytes, expected);
+        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertWrapper.class);
+        BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
     @Test
     public void test_readWriteJodaConvertBean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmJodaConvertBean.class.getName().length());
+            out.writeBytes(ImmJodaConvertBean.class.getName());
+            out.write(MsgPack.MIN_FIX_ARRAY + 2);
             out.writeByte(MsgPack.MIN_FIX_STR + 4);
             out.writeBytes("base");
             out.writeByte(MsgPack.MIN_FIX_STR + 5);
-            out.writeBytes("Hello");
-            out.writeByte(MsgPack.MIN_FIX_STR + 5);
             out.writeBytes("extra");
+
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 3);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_STR + 5);
+            out.writeBytes("Hello");
             out.writeByte(9);
         }
         byte[] expected = baos.toByteArray();
 
-        JodaConvertBean bean = new JodaConvertBean("Hello:9");
-        byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(bean, false);
-        assertTrue(Arrays.equals(bytes, expected));
-//        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, JodaConvertBean.class);
-//        BeanAssert.assertBeanEquals(bean, parsed);
+        ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
+        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(bean);
+
+        assertArrayEquals(expected, bytes);
+
+        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------
@@ -176,49 +218,70 @@ public class TestSerializeCompactBin {
     public void test_read_nonStandard_JodaConvertWrapper_expanded() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2);
+            out.writeByte(0);
+
             out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmJodaConvertWrapper.class.getName().length());
+            out.writeBytes(ImmJodaConvertWrapper.class.getName());
+            out.write(MsgPack.MIN_FIX_ARRAY + 2);
             out.writeByte(MsgPack.MIN_FIX_STR + 4);
             out.writeBytes("bean");
-            out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            out.writeByte(MsgPack.MIN_FIX_STR + 11);
+            out.writeBytes("description");
+
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmJodaConvertBean.class.getName().length());
+            out.writeBytes(ImmJodaConvertBean.class.getName());
+            out.write(MsgPack.MIN_FIX_ARRAY + 2);
             out.writeByte(MsgPack.MIN_FIX_STR + 4);
             out.writeBytes("base");
             out.writeByte(MsgPack.MIN_FIX_STR + 5);
-            out.writeBytes("Hello");
-            out.writeByte(MsgPack.MIN_FIX_STR + 5);
             out.writeBytes("extra");
+
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 3);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(0);
+
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 3);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_STR + 5);
+            out.writeBytes("Hello");
             out.writeByte(9);
-            out.writeByte(MsgPack.MIN_FIX_STR + 11);
-            out.writeBytes("description");
+
             out.writeByte(MsgPack.MIN_FIX_STR + 5);
             out.writeBytes("Weird");
         }
         byte[] bytes = baos.toByteArray();
 
-//        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, JodaConvertWrapper.class);
-//        JodaConvertWrapper wrapper = new JodaConvertWrapper();
-//        JodaConvertBean bean = new JodaConvertBean("Hello:9");
-//        wrapper.setBean(bean);
-//        wrapper.setDescription("Weird");
-//        BeanAssert.assertBeanEquals(wrapper, parsed);
+
+        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertWrapper.class);
+        ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
+        ImmJodaConvertWrapper wrapper = ImmJodaConvertWrapper.of(bean, "Weird");
+        BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
     @Test
     public void test_read_nonStandard_JodaConvertBean_flattened() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_MAP);
             out.writeByte(MsgPack.MIN_FIX_STR + 7);
             out.writeBytes("Hello:9");
-            out.writeByte(9);
         }
         byte[] bytes = baos.toByteArray();
 
-//        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, JodaConvertBean.class);
-//        JodaConvertBean bean = new JodaConvertBean("Hello:9");
-//        BeanAssert.assertBeanEquals(bean, parsed);
+        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
+        ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------
@@ -227,65 +290,22 @@ public class TestSerializeCompactBin {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
-            out.writeByte(1);
+            out.writeByte(2);
         }
         byte[] bytes = baos.toByteArray();
-//        JodaBeanSer.COMPACT.compactBinReader().read(bytes, FlexiBean.class);
+        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void test_read_wrongVersion() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(-1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 0);
-        }
-        byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmDoubleFloat.class);
-    }
-
-    @Test
-    public void test_read_rootTypeNotSpecified_FlexiBean() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 0);
-        }
-        byte[] bytes = baos.toByteArray();
-//        JodaBeanSer.COMPACT.compactBinReader().read(bytes, FlexiBean.class);
-    }
-
-*//*
     @Test(expected = RuntimeException.class)
     public void test_read_rootTypeNotSpecified_Bean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
             out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 0);
+            out.writeByte(MsgPack.MIN_FIX_MAP);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, Bean.class);
-    }
-*//*
-
-    @Test
-    public void test_read_rootTypeValid_Bean() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
-            out.writeByte(FlexiBean.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
-            out.write(FlexiBean.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.NIL);
-        }
-        byte[] bytes = baos.toByteArray();
-//        JodaBeanSer.COMPACT.compactBinReader().read(bytes, Bean.class);
+        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmutableBean.class);
     }
 
     @Test(expected = RuntimeException.class)
@@ -302,49 +322,30 @@ public class TestSerializeCompactBin {
             out.writeByte(MsgPack.NIL);
         }
         byte[] bytes = baos.toByteArray();
-//        JodaBeanSer.COMPACT.compactBinReader().read(bytes, Bean.class);
+        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmutableBean.class);
     }
 
     @Test(expected = RuntimeException.class)
     public void test_read_rootTypeInvalid_incompatible() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2);
+            out.writeByte(0);
             out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
+            out.writeByte(MsgPack.STR_8);
             out.writeByte(Company.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
             out.write(Company.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.NIL);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
+            out.writeByte(MsgPack.STR_8);
+            byte[] companyName = "companyName".getBytes(MsgPack.UTF_8);
+            out.write(companyName.length);
+            out.write(companyName);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
+            out.write(MsgPack.NIL);
         }
         byte[] bytes = baos.toByteArray();
-//        JodaBeanSer.COMPACT.compactBinReader().read(bytes, FlexiBean.class);
+        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
     }
-
-    @Test(expected = RuntimeException.class)
-    public void test_read_invalidFormat_noNilValueAfterType() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (DataOutputStream out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
-            out.writeByte(FlexiBean.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
-            out.write(FlexiBean.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.TRUE);  // should be NIL
-        }
-        byte[] bytes = baos.toByteArray();
-//        JodaBeanSer.COMPACT.compactBinReader().read(bytes, Bean.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_write_nullKeyInMap() {
-        Address address = new Address();
-        Person bean = new Person();
-        bean.getOtherAddressMap().put(null, address);
-        JodaBeanSer.COMPACT.binWriter().write(bean);
-    }*/
 
 }

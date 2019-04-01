@@ -24,16 +24,16 @@ import java.io.InputStream;
  *
  * @author Stephen Colebourne
  */
-final class MsgPackVisualizer extends MsgPackInput {
+class MsgPackVisualizer extends MsgPackInput {
 
     /**
      * The current indent.
      */
-    private String indent = "";
+    protected String indent = "";
     /**
      * The buffer.
      */
-    private StringBuilder buf = new StringBuilder(1024);
+    protected StringBuilder buf = new StringBuilder(1024);
 
     /**
      * Creates an instance.

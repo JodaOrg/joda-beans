@@ -116,4 +116,27 @@ public class JodaBeanBinReader extends AbstractBinReader {
         }
     }
 
+    /**
+     * Parses the root bean.
+     *
+     * @param declaredType the declared type, not null
+     * @return the bean, not null
+     * @throws Exception if an error occurs
+     */
+    private <T> T parseRoot(final Class<T> declaredType) throws Exception {
+      // root array
+      int typeByte = input.readByte();
+      if (typeByte != MIN_FIX_ARRAY + 2) {
+        throw new IllegalArgumentException("Invalid binary data: Expected array, but was: 0x" + toHex(typeByte));
+      }
+      // version
+      typeByte = input.readByte();
+      if (typeByte != 1) {
+        throw new IllegalArgumentException("Invalid binary data: Expected version 1, but was: 0x" + toHex(typeByte));
+      }
+      // parse
+      Object parsed = parseObject(declaredType, null, null, null, true);
+      return declaredType.cast(parsed);
+    }
+
 }
