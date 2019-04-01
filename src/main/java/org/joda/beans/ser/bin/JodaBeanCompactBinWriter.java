@@ -319,7 +319,8 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         }
 
         if (value instanceof ImmutableBean) {
-            if (settings.getConverter().isConvertible(value.getClass())) {
+            boolean noNeedToSerializeTypeName = classes.containsKey(value.getClass()) && declaredClass.equals(value.getClass());
+            if (noNeedToSerializeTypeName || settings.getConverter().isConvertible(value.getClass())) {
                 return;
             }
             ImmutableBean bean = (ImmutableBean) value;
