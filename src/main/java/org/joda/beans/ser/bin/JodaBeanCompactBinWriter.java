@@ -249,27 +249,34 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             }
 
             for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-                Object value = prop.get(bean);
-                Class<?> type = SerOptional.extractType(prop, base.getClass());
+                if (shouldSerializeMetaProperty(prop)) {
+                    Object value = prop.get(bean);
+                    Class<?> type = SerOptional.extractType(prop, base.getClass());
 
-                if (value != null) {
-                    SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
-                    if (itemIterator != null) {
-                        if (itemIterator.metaTypeRequired()) {
-                            objects.compute(itemIterator.metaTypeName(), JodaBeanCompactBinWriter::incrementOrOne);
+                    if (value != null) {
+                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        if (itemIterator != null) {
+                            if (itemIterator.metaTypeRequired()) {
+                                objects.compute(itemIterator.metaTypeName(), JodaBeanCompactBinWriter::incrementOrOne);
+                            }
+                            addClassesIterable(itemIterator, objects);
+                        } else {
+                            addClasses(value, type, objects);
                         }
-                        addClassesIterable(itemIterator, objects);
                     } else {
-                        addClasses(value, type, objects);
+                        // In case it's a null value or optional field
+                        addClassInfo(type, type);
                     }
-                } else {
-                    // In case it's a null value or optional field
-                    addClasses(type, type, objects);
                 }
             }
         }
     }
 
+    private static boolean shouldSerializeMetaProperty(MetaProperty<?> prop) {
+        return prop.style().isSerializable() && !prop.style().isDerived();
+    }
+
+    // Used in Map#compute so we can initialise all the values to one and then increment
     private static int incrementOrOne(@SuppressWarnings("unused") Object k, Integer i) {
         return i == null ? 1 : i + 1;
     }
@@ -353,12 +360,14 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
 
     private ClassInfo classInfoFromMetaBean(MetaBean metaBean, Class<?> aClass) {
         MetaProperty<?>[] metaProperties = StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
-            .filter(metaProp -> !metaProp.style().isDerived() && metaProp.style().isSerializable())
+            .filter(metaProp -> shouldSerializeMetaProperty(metaProp))
             .toArray(MetaProperty<?>[]::new);
 
         // Positions get recreated when all classes have been recorded
         return new ClassInfo(0, aClass, metaProperties);
     }
+
+    //-----------------------------------------------------------------------
 
     @Override
     protected void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) throws IOException {
@@ -493,7 +502,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
         return classInfo;
     }
 
-//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
 
     // The info needed serialize instances of a class with a reference to the initially serialized class definition
     private static final class ClassInfo {
