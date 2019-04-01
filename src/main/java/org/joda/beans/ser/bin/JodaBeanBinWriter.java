@@ -18,16 +18,9 @@ package org.joda.beans.ser.bin;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.joda.beans.Bean;
-import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerIterator;
-import org.joda.beans.ser.SerOptional;
-import org.joda.beans.ser.SerTypeMapper;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
@@ -61,28 +54,11 @@ import org.joda.beans.ser.SerTypeMapper;
  * Type names are shortened by the package of the root type if possible.
  * Certain basic types are also handled, such as String, Integer, File and URI.
  */
-public class JodaBeanBinWriter {
+public class JodaBeanBinWriter extends AbstractBinWriter {
     // this binary design is not the smallest possible
     // however, placing the 'ext' for the additional type info within
     // the bean data is much more friendly for dynamic languages using
     // a standalone MessagePack parser
-
-    /**
-     * The settings to use.
-     */
-    private final JodaBeanSer settings;
-    /**
-     * The output stream.
-     */
-    private MsgPackOutput output;
-    /**
-     * The base package including the trailing dot.
-     */
-    private String basePackage;
-    /**
-     * The known types.
-     */
-    private Map<Class<?>, String> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -90,7 +66,7 @@ public class JodaBeanBinWriter {
      * @param settings  the settings to use, not null
      */
     public JodaBeanBinWriter(final JodaBeanSer settings) {
-        this.settings = settings;
+        super(settings);
     }
 
     //-----------------------------------------------------------------------
@@ -159,232 +135,6 @@ public class JodaBeanBinWriter {
     private void writeRoot(final Bean bean, final boolean rootType) throws IOException {
         output.writeArrayHeader(2);
         output.writeInt(1);  // version 1
-        writeBean(bean, bean.getClass(), rootType ? RootType.ROOT_WITH_TYPE : RootType.ROOT_WITHOUT_TYPE);
+        writeRootBean(bean, rootType);
     }
-
-    private void writeBean(final Bean bean, final Class<?> declaredType, RootType rootTypeFlag) throws IOException {
-        int count = bean.metaBean().metaPropertyCount();
-        MetaProperty<?>[] props = new MetaProperty<?>[count];
-        Object[] values = new Object[count];
-        int size = 0;
-        for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                Object value = SerOptional.extractValue(prop, bean);
-                if (value != null) {
-                    props[size] = prop;
-                    values[size++] = value;
-                }
-            }
-        }
-        if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
-            String typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
-            if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
-                basePackage = bean.getClass().getPackage().getName() + ".";
-            }
-            output.writeMapHeader(size + 1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_BEAN, typeStr);
-            output.writeNil();
-        } else {
-            output.writeMapHeader(size);
-        }
-        for (int i = 0; i < size; i++) {
-            MetaProperty<?> prop = props[i];
-            Object value = values[i];
-            output.writeString(prop.name());
-            Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-            if (value instanceof Bean) {
-                if (settings.getConverter().isConvertible(value.getClass())) {
-                    writeSimple(propType, value);
-                } else {
-                    writeBean((Bean) value, propType, RootType.NOT_ROOT);
-                }
-            } else {
-                SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
-                if (itemIterator != null) {
-                    writeElements(itemIterator);
-                } else {
-                    writeSimple(propType, value);
-                }
-            }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    private void writeElements(final SerIterator itemIterator) throws IOException {
-        if (itemIterator.metaTypeRequired()) {
-            output.writeMapHeader(1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_META, itemIterator.metaTypeName());
-        }
-        if (itemIterator.category() == SerCategory.MAP) {
-            writeMap(itemIterator);
-        } else if (itemIterator.category() == SerCategory.COUNTED) {
-            writeCounted(itemIterator);
-        } else if (itemIterator.category() == SerCategory.TABLE) {
-            writeTable(itemIterator);
-        } else if (itemIterator.category() == SerCategory.GRID) {
-            writeGrid(itemIterator);
-        } else {
-            writeArray(itemIterator);
-        }
-    }
-
-    private void writeArray(final SerIterator itemIterator) throws IOException {
-        output.writeArrayHeader(itemIterator.size());
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-    }
-
-    private void writeMap(final SerIterator itemIterator) throws IOException {
-        output.writeMapHeader(itemIterator.size());
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            Object key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
-            }
-            writeObject(itemIterator.keyType(), key, null);
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-    }
-
-    private void writeTable(final SerIterator itemIterator) throws IOException {
-        output.writeArrayHeader(itemIterator.size());
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayHeader(3);
-            writeObject(itemIterator.keyType(), itemIterator.key(), null);
-            writeObject(itemIterator.columnType(), itemIterator.column(), null);
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-    }
-
-    private void writeGrid(final SerIterator itemIterator) throws IOException {
-        int rows = itemIterator.dimensionSize(0);
-        int columns = itemIterator.dimensionSize(1);
-        int totalSize = rows * columns;
-        if (itemIterator.size() < (totalSize / 4)) {
-            // sparse
-            output.writeArrayHeader(itemIterator.size() + 2);
-            output.writeInt(rows);
-            output.writeInt(columns);
-            while (itemIterator.hasNext()) {
-                itemIterator.next();
-                output.writeArrayHeader(3);
-                output.writeInt((Integer) itemIterator.key());
-                output.writeInt((Integer) itemIterator.column());
-                writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            }
-        } else {
-            // dense
-            output.writeArrayHeader(totalSize + 2);
-            output.writeInt(rows);
-            output.writeInt(columns);
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < columns; column++) {
-                    writeObject(itemIterator.valueType(), itemIterator.value(row, column), itemIterator);
-                }
-            }
-        }
-    }
-
-    private void writeCounted(final SerIterator itemIterator) throws IOException {
-        output.writeMapHeader(itemIterator.size());
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeInt(itemIterator.count());
-        }
-    }
-
-    private void writeObject(final Class<?> declaredType, final Object obj, SerIterator parentIterator) throws IOException {
-        if (obj == null) {
-            output.writeNil();
-        } else if (settings.getConverter().isConvertible(obj.getClass())) {
-            writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean) {
-            writeBean((Bean) obj, declaredType, RootType.NOT_ROOT);
-        } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
-            if (childIterator != null) {
-                writeElements(childIterator);
-            } else {
-                writeSimple(declaredType, obj);
-            }
-        } else {
-            writeSimple(declaredType, obj);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    private void writeSimple(final Class<?> declaredType, final Object value) throws IOException {
-        // simple types have no need to write a type object
-        Class<?> realType = value.getClass();
-        if (realType == Integer.class) {
-            output.writeInt(((Integer) value).intValue());
-            return;
-        } else if (realType == Double.class) {
-            output.writeDouble(((Double) value).doubleValue());
-            return;
-        } else if (realType == Float.class) {
-            output.writeFloat(((Float) value).floatValue());
-            return;
-        } else if (realType == Boolean.class) {
-            output.writeBoolean(((Boolean) value).booleanValue());
-            return;
-        }
-        
-        // handle no declared type and subclasses
-        Class<?> effectiveType = declaredType;
-        if (declaredType == Object.class) {
-            if (realType != String.class) {
-                effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
-                output.writeMapHeader(1);
-                output.writeExtensionString(MsgPack.JODA_TYPE_DATA, typeStr);
-            } else {
-                effectiveType = realType;
-            }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
-            effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
-            output.writeMapHeader(1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_DATA, typeStr);
-        }
-        
-        // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
-        if (realType == Long.class) {
-            output.writeLong(((Long) value).longValue());
-            return;
-        } else if (realType == Short.class) {
-            output.writeInt(((Short) value).shortValue());
-            return;
-        } else if (realType == Byte.class) {
-            output.writeInt(((Byte) value).byteValue());
-            return;
-        } else if (realType == byte[].class) {
-            output.writeBytes((byte[]) value);
-            return;
-        }
-        
-        // write as a string
-        try {
-            String converted = settings.getConverter().convertToString(effectiveType, value);
-            if (converted == null) {
-                throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
-            }
-            output.writeString(converted);
-        } catch (RuntimeException ex) {
-            throw new IllegalArgumentException("Unable to convert type " + effectiveType.getName() + " declared as " + declaredType.getName(), ex);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    enum RootType {
-        ROOT_WITH_TYPE,
-        ROOT_WITHOUT_TYPE,
-        NOT_ROOT,
-    }
-
 }

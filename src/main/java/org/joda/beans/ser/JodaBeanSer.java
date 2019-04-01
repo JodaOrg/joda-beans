@@ -18,6 +18,8 @@ package org.joda.beans.ser;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
+import org.joda.beans.ser.bin.JodaBeanCompactBinReader;
+import org.joda.beans.ser.bin.JodaBeanCompactBinWriter;
 import org.joda.beans.ser.json.JodaBeanJsonReader;
 import org.joda.beans.ser.json.JodaBeanJsonWriter;
 import org.joda.beans.ser.json.JodaBeanSimpleJsonReader;
@@ -273,6 +275,37 @@ public final class JodaBeanSer {
      */
     public JodaBeanBinReader binReader() {
         return new JodaBeanBinReader(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a compact binary writer.
+     * <p>
+     * A new instance of the writer must be created for each message.
+     * <p>
+     * The writer only supports serializing ImmutableBean instances and will throw an exception if any non-immutable
+     * beans are encountered.
+     * It assumes that non-bean items present within the root bean are themselves immutable.
+     * Due to this immutability restriction it serializes references to values based on object equality, rather than
+     * based on reference equality.
+     * 
+     * @return the compact binary writer, not null
+     */
+    public JodaBeanCompactBinWriter compactBinWriter() {
+        return new JodaBeanCompactBinWriter(this);
+    }
+
+    /**
+     * Creates a compact binary reader.
+     * <p>
+     * A new instance of the reader must be created for each message.
+     * <p>
+     * The reader only supports deserializing ImmutableBean instances that were written using the compact binary writer.
+     * 
+     * @return the compact binary reader, not null
+     */
+    public JodaBeanCompactBinReader compactBinReader() {
+        return new JodaBeanCompactBinReader(this);
     }
 
     //-----------------------------------------------------------------------

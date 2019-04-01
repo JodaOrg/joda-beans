@@ -300,4 +300,30 @@ final class MsgPackOutput extends MsgPack {
         output.write(bytes);
     }
 
+    /**
+     * Writes an extension reference of a positive integer using FIX_EXT data types.
+     * 
+     * @param extensionType  the type
+     * @param reference  the positive integer reference to write as the data
+     * @throws IOException if an error occurs
+     */
+    void writePositiveExtensionInt(int extensionType, int reference) throws IOException {
+        if (reference < 0) {
+            throw new IllegalArgumentException("Can only serialize positive references: " + reference);
+        }
+        if (reference < 0xFF) {
+            output.write(FIX_EXT_1);
+            output.write(extensionType);
+            output.writeByte((byte) reference);
+        } else if (reference < 0xFFFF) {
+            output.writeByte(FIX_EXT_2);
+            output.write(extensionType);
+            output.writeShort((short) reference);
+        } else {
+            output.writeByte(FIX_EXT_4);
+            output.write(extensionType);
+            output.writeInt(reference);
+        }
+    }
+
 }
