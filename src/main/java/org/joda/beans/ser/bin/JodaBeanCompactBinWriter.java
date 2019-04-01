@@ -234,7 +234,7 @@ public class JodaBeanCompactBinWriter extends AbstractBinWriter {
             return;
         }
 
-        Integer result = objects.compute(base, JodaBeanCompactBinWriter::incrementOrOne);
+        int result = objects.compute(base, JodaBeanCompactBinWriter::incrementOrOne);
         if (result > 1) {
             // Already checked class info for an equivalent object
             return;
