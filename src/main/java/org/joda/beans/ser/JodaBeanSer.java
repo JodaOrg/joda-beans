@@ -180,7 +180,7 @@ public final class JodaBeanSer {
      * @return a copy of this object with the iterator factory changed, not null
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
-        JodaBeanUtils.notNull(converter, "converter");
+        JodaBeanUtils.notNull(iteratorFactory, "iteratorFactory");
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
@@ -251,7 +251,6 @@ public final class JodaBeanSer {
      * @return a copy of this object with the converter changed, not null
      */
     public JodaBeanSer withIncludeDerived(boolean includeDerived) {
-        JodaBeanUtils.notNull(deserializers, "deserializers");
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 

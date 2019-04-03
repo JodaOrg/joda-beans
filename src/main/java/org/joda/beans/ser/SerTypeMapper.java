@@ -45,7 +45,7 @@ public final class SerTypeMapper {
     private static final Map<String, Class<?>> BASIC_TYPES_REVERSED;
     static {
         Map<Class<?>, String> map = new HashMap<>();
-        
+
         map.put(String.class, "String");
         map.put(Long.class, "Long");
         map.put(Integer.class, "Integer");
@@ -64,7 +64,7 @@ public final class SerTypeMapper {
         map.put(File.class, "File");
         // selection of types are the most common types suitable for reduction
         // and suitable for simple interpretation on non-Java systems
-        
+
         Map<String, Class<?>> reversed = new HashMap<>();
         for (Entry<Class<?>, String> entry : map.entrySet()) {
             reversed.put(entry.getValue(), entry.getKey());
@@ -160,9 +160,9 @@ public final class SerTypeMapper {
     public static Class<?> decodeType(
             String className,
             JodaBeanSer settings,
-            String basePackage, 
+            String basePackage,
             Map<String, Class<?>> knownTypes) throws ClassNotFoundException {
-        
+
         return decodeType0(className, settings, basePackage, knownTypes, null);
     }
 
@@ -184,7 +184,7 @@ public final class SerTypeMapper {
     public static Class<?> decodeType(
             String className,
             JodaBeanSer settings,
-            String basePackage, 
+            String basePackage,
             Map<String, Class<?>> knownTypes,
             Class<?> defaultType) throws ClassNotFoundException {
 
@@ -195,7 +195,7 @@ public final class SerTypeMapper {
     private static Class<?> decodeType0(
             String className,
             JodaBeanSer settings,
-            String basePackage, 
+            String basePackage,
             Map<String, Class<?>> knownTypes,
             Class<?> defaultType) throws ClassNotFoundException {
 

@@ -83,7 +83,7 @@ public class TestSerializeBin {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
 //        new MsgPackVisualizer(bytes).visualize();
-        
+
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
