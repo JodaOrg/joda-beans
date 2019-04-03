@@ -165,7 +165,7 @@ class PropertyParser {
     //-----------------------------------------------------------------------
     private int parseAnnotationStart(List<String> content, int lineIndex) {
         while (lineIndex > 0 && content.get(lineIndex - 1).trim().startsWith("@")) {
-            return lineIndex - 1;
+            lineIndex = lineIndex - 1;
         }
         return lineIndex;
     }

@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.5.1" date="SNAPSHOT" description="Version 2.5.1">
+      <action dev="jodastephen" type="fix">
+        Ensure that annotations are parsed correctly on fields.
+      </action>
+    </release>
     <release version="2.5.0" date="2019-02-28" description="Version 2.5.0">
       <action dev="jodastephen" type="add">
         Ensure that builders on mutable beans are handled correctly.
