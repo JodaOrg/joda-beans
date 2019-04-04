@@ -30,7 +30,6 @@ import org.joda.beans.PropertyStyle;
  * One use case for this is to handle renamed properties in {@code SerDeserializer}.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
 

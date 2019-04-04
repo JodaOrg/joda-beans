@@ -53,7 +53,6 @@ import org.joda.beans.gen.PropertyDefinition;
  * This uses method handles to avoid problems with reflection {@code setAccessible()} in Java SE 9.
  * The old reflection approach is still present, but deprecated.
  * 
- * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
 public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {

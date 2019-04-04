@@ -26,8 +26,6 @@ import org.joda.beans.impl.BasicMetaProperty;
 
 /**
  * A meta-property using a {@code MapBean} for storage.
- * 
- * @author Stephen Colebourne
  */
 final class MapBeanMetaProperty extends BasicMetaProperty<Object> {
 

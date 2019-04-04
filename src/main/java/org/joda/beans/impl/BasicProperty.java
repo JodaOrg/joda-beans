@@ -28,7 +28,6 @@ import org.joda.beans.Property;
  * This implementation is also a map entry to aid performance in maps.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 public final class BasicProperty<P> implements Property<P> {
 

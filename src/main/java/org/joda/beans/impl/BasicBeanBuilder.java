@@ -25,7 +25,6 @@ import org.joda.beans.MetaProperty;
  * This approach saves creating a temporary map, but is only suitable if the
  * bean has a no-arg constructor and allows properties to be set.
  * 
- * @author Stephen Colebourne
  * @param <T>  the bean type
  */
 public class BasicBeanBuilder<T extends Bean>

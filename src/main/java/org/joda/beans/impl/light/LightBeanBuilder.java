@@ -24,7 +24,6 @@ import org.joda.beans.MetaProperty;
 /**
  * Implementation of {@code BeanBuilder} that builds light beans.
  * 
- * @author Stephen Colebourne
  * @param <B>  the bean type
  */
 class LightBeanBuilder<B extends Bean>

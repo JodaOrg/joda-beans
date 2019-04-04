@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
  * <p>
  * This annotation must be used on all private instance variables that
  * should be treated as properties.
- * 
- * @author Stephen Colebourne
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

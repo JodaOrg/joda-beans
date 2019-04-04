@@ -25,8 +25,6 @@ import org.joda.beans.test.JodaBeanTests;
 
 /**
  * A meta-bean implementation designed for use by the code generator.
- * 
- * @author Stephen Colebourne
  */
 public abstract class DirectMetaBean implements MetaBean {
     // overriding other methods has negligible effect considering DirectMetaPropertyMap

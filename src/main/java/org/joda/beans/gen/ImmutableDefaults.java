@@ -37,8 +37,6 @@ import java.lang.annotation.Target;
  *     builder.group(Group.STANDARD);  // default the group property to 'STANDARD'
  *   }
  * </pre>
- * 
- * @author Stephen Colebourne
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)

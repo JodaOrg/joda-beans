@@ -40,8 +40,6 @@ import org.joda.beans.impl.BasicProperty;
  * As such, there is one instance of meta-bean for each flexi-bean.
  * <p>
  * The keys of a flexi-bean must be simple identifiers as per '[a-zA-z_][a-zA-z0-9_]*'.
- * 
- * @author Stephen Colebourne
  */
 public final class FlexiBean implements DynamicBean, Serializable {
     // Alternate way to implement this would be to create a list/map of real property

@@ -27,8 +27,6 @@ import org.joda.beans.ser.SerIteratorFactory;
 
 /**
  * An iterator over beans.
- * 
- * @author Stephen Colebourne
  */
 final class BeanIterator implements Iterator<Bean> {
 

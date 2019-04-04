@@ -32,8 +32,6 @@ import org.joda.beans.impl.flexi.FlexiBean;
  * <p>
  * This class extends {@link HashMap}, allowing it to be used wherever a map is.
  * See {@link FlexiBean} for a map-like bean implementation that is more controlled.
- * 
- * @author Stephen Colebourne
  */
 public class MapBean extends HashMap<String, Object> implements DynamicBean {
 

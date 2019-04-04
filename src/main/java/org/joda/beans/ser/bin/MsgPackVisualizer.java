@@ -21,8 +21,6 @@ import java.io.InputStream;
 
 /**
  * Allows MsgPack data to be visualized.
- *
- * @author Stephen Colebourne
  */
 final class MsgPackVisualizer extends MsgPackInput {
 

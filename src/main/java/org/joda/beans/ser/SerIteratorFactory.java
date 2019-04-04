@@ -38,8 +38,6 @@ import org.joda.beans.MetaProperty;
 
 /**
  * A factory used to create wrappers around collection-like objects.
- *
- * @author Stephen Colebourne
  */
 public class SerIteratorFactory {
 

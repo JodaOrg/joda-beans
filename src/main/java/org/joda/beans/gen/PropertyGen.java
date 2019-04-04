@@ -25,8 +25,6 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
 
 /**
  * A property parsed from the source file.
- * 
- * @author Stephen Colebourne
  */
 class PropertyGen {
 

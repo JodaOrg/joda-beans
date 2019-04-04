@@ -34,8 +34,6 @@ import org.joda.beans.MetaProperty;
  * The meta-properties are accessed using {@link DirectMetaBean#metaPropertyGet(String)}.
  * <p>
  * This class is immutable and thread-safe.
- * 
- * @author Stephen Colebourne
  */
 @SuppressWarnings("rawtypes")
 public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>> {

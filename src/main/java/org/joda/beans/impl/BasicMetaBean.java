@@ -19,8 +19,6 @@ import org.joda.beans.MetaBean;
 
 /**
  * Basic implementation of {@code MetaBean}.
- * 
- * @author Stephen Colebourne
  */
 public abstract class BasicMetaBean implements MetaBean {
 

@@ -22,8 +22,6 @@ import java.io.InputStream;
 
 /**
  * Receives and processes MsgPack data.
- *
- * @author Stephen Colebourne
  */
 abstract class MsgPackInput extends MsgPack {
 

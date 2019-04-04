@@ -21,8 +21,6 @@ import java.io.OutputStream;
 
 /**
  * Outputter for MsgPack data.
- *
- * @author Stephen Colebourne
  */
 final class MsgPackOutput extends MsgPack {
 

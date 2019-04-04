@@ -34,7 +34,6 @@ import org.joda.beans.impl.BasicMetaProperty;
  * An immutable meta-property based on a functional interface.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
 

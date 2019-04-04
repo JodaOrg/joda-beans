@@ -24,8 +24,6 @@ import java.util.Set;
  * The implementation may be any class, but is typically a standard JavaBean
  * with get/set methods. Alternate implementations might store the properties
  * in another data structure such as a map.
- * 
- * @author Stephen Colebourne
  */
 public interface Bean {
 

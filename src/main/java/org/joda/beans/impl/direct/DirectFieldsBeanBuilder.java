@@ -25,7 +25,6 @@ import org.joda.beans.test.JodaBeanTests;
  * <p>
  * This implementation is intended to have fields generated in the subclass.
  * 
- * @author Stephen Colebourne
  * @param <T> the bean type
  */
 public abstract class DirectFieldsBeanBuilder<T extends Bean>

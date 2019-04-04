@@ -64,8 +64,6 @@ import org.joda.beans.impl.direct.DirectMetaProperty;
  * This class provides a solution, allowing bean test coverage to be artificially increased.
  * Always remember that the goal of artificially increasing coverage is so that you can
  * see what you really need to test, not to avoid writing tests altogether.
- * 
- * @author Stephen Colebourne
  */
 public final class JodaBeanTests {
 

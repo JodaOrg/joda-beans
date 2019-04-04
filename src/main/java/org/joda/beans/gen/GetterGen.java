@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * A generator of get methods.
- * 
- * @author Stephen Colebourne
  */
 abstract class GetterGen {
 

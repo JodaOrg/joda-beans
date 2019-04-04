@@ -53,8 +53,6 @@ import org.joda.convert.RenameHandler;
  * the classpath is static and fixed and the transformations are common.
  * <p>
  * Implementations must be thread-safe singletons.
- *
- * @author Stephen Colebourne
  */
 public final class SerDeserializers {
 

@@ -21,7 +21,6 @@ import org.joda.beans.MetaProperty;
  * An abstract base meta-property.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
 

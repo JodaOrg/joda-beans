@@ -33,8 +33,6 @@ import org.joda.convert.StringConvert;
  * <p>
  * Serialization of Joda-Beans uses the information in the beans to optimize
  * the size of the data output.
- *
- * @author Stephen Colebourne
  */
 public final class JodaBeanSer {
 

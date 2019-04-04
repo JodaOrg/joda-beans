@@ -21,8 +21,6 @@ package org.joda.beans;
  * A dynamic bean can have properties added or removed at any time.
  * As such, there is a different meta-bean for each dynamic bean.
  * The meta-bean allows meta-properties to be created on demand.
- * 
- * @author Stephen Colebourne
  */
 public interface DynamicMetaBean extends MetaBean {
 

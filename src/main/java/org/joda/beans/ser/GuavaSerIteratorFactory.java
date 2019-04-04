@@ -50,8 +50,6 @@ import com.google.common.collect.TreeMultiset;
 
 /**
  * Guava factory used to create wrappers around collection-like objects.
- *
- * @author Stephen Colebourne
  */
 public class GuavaSerIteratorFactory extends SerIteratorFactory {
 

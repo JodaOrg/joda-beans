@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * A generator of builder code.
- * 
- * @author Stephen Colebourne
  */
 abstract class BuilderGen {
 

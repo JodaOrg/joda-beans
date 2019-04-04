@@ -40,8 +40,6 @@ import org.joda.beans.ser.SerTypeMapper;
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
- *
- * @author Stephen Colebourne
  */
 public class JodaBeanBinReader extends MsgPack {
 

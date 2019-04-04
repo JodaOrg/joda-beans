@@ -28,8 +28,6 @@ import java.util.NoSuchElementException;
  * <p>
  * This interface can be thought of as the equivalent of {@link Class} but for beans.
  * In most cases the meta-bean will be code generated and the concrete class will have additional methods.
- * 
- * @author Stephen Colebourne
  */
 public interface MetaBean {
 

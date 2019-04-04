@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * A generator of copy code.
- * 
- * @author Stephen Colebourne
  */
 abstract class CopyGen {
 

@@ -28,8 +28,6 @@ import org.joda.beans.MetaProperty;
 
 /**
  * Implementation of a meta-bean for {@code FlexiBean}.
- * 
- * @author Stephen Colebourne
  */
 class FlexiMetaBean implements DynamicMetaBean {
 

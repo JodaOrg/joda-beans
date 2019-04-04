@@ -17,8 +17,6 @@ package org.joda.beans.ser;
 
 /**
  * Provides mime types for Joda-Beans.
- *
- * @author Stephen Colebourne
  */
 public final class JodaBeanMimeType {
 

@@ -29,8 +29,6 @@ import java.util.regex.Pattern;
 
 /**
  * Parse bean information from source file.
- * 
- * @author Stephen Colebourne
  */
 class BeanParser {
 

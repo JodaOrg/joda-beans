@@ -25,8 +25,6 @@ package org.joda.beans.ser;
  * <p>
  * In the simple case where an exact match is needed, the class implementing {@link SerDeserializer}
  * can also implement {@link SerDeserializerProvider} with a singleton constant instance.
- *
- * @author Stephen Colebourne
  */
 public interface SerDeserializerProvider {
 

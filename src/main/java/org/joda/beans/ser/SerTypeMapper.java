@@ -30,8 +30,6 @@ import org.joda.convert.RenameHandler;
 
 /**
  * Type mapper for Joda-Bean serialization, used by serialization implementations.
- *
- * @author Stephen Colebourne
  */
 public final class SerTypeMapper {
 

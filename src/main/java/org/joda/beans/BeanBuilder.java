@@ -21,7 +21,6 @@ package org.joda.beans;
  * This interface allows a bean to be created even if it is immutable.
  * 
  * @param <T>  the type of the bean
- * @author Stephen Colebourne
  */
 public interface BeanBuilder<T extends Bean> {
 

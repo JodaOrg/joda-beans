@@ -29,8 +29,6 @@ import org.joda.beans.PropertyStyle;
 
 /**
  * A bean that can be generated.
- * 
- * @author Stephen Colebourne
  */
 class PropertyData {
 

@@ -22,7 +22,6 @@ package org.joda.beans;
  * Alternate implementations may perform any logic to obtain the value.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 public interface Property<P> {
 

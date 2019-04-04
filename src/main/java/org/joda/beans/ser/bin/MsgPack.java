@@ -22,8 +22,6 @@ import java.nio.charset.Charset;
  * Constants used in MsgPack binary serialization.
  * <p>
  * This uses the v2.0 specification of MsgPack as of 2014-01-29.
- *
- * @author Stephen Colebourne
  */
 abstract class MsgPack {
 

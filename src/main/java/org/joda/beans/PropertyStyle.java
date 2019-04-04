@@ -22,8 +22,6 @@ package org.joda.beans;
  * This enumeration models those options.
  * <p>
  * It is strongly recommended to use the methods, not compare against the enum values.
- * 
- * @author Stephen Colebourne
  */
 public enum PropertyStyle {
 

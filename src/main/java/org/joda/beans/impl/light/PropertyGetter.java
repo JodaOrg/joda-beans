@@ -19,8 +19,6 @@ import org.joda.beans.Bean;
 
 /**
  * Functional interface providing the ability to get a property from a bean.
- * 
- * @author Stephen Colebourne
  */
 interface PropertyGetter {
 

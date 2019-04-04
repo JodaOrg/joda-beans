@@ -33,8 +33,6 @@ import org.joda.beans.JodaBeanUtils;
  * Code generator for the beans.
  * <p>
  * This reads in a {@code .java} file, parses it, and writes out an updated version.
- * 
- * @author Stephen Colebourne
  */
 public class BeanCodeGen {
 

@@ -63,8 +63,6 @@ import org.joda.convert.StringConverter;
  * <p>
  * Type names are shortened by the package of the root type if possible.
  * Certain basic types are also handled, such as String, Integer, File and URI.
- *
- * @author Stephen Colebourne
  */
 public class JodaBeanXmlWriter {
 

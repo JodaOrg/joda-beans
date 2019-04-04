@@ -30,8 +30,6 @@ import org.joda.beans.Property;
  * A standard map of properties.
  * <p>
  * This is the standard implementation of a map of properties derived from a meta-bean.
- * 
- * @author Stephen Colebourne
  */
 public final class BasicPropertyMap
         extends AbstractMap<String, Property<?>> {

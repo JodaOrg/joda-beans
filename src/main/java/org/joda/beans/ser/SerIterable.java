@@ -21,8 +21,6 @@ import java.util.List;
  * An abstraction over collections, lists, sets and maps.
  * <p>
  * This is a plugin point that can handle Guava collections.
- *
- * @author Stephen Colebourne
  */
 public abstract class SerIterable {
 

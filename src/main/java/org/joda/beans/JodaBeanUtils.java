@@ -69,8 +69,6 @@ import com.google.common.collect.TreeMultiset;
 
 /**
  * A set of utilities to assist when working with beans and properties.
- * 
- * @author Stephen Colebourne
  */
 public final class JodaBeanUtils {
 

@@ -36,7 +36,6 @@ import org.joda.beans.impl.BasicBeanBuilder;
  * Typically, the meta-bean will be created as a public static final constant.
  * Only one method from {@link Bean} needs to be implemented, which simply returns the meta-bean.
  * 
- * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
 public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T> {

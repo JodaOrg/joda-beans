@@ -41,7 +41,6 @@ import org.joda.beans.gen.PropertyDefinition;
 /**
  * A meta-bean implementation designed for use by the code generator.
  * 
- * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
 public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {

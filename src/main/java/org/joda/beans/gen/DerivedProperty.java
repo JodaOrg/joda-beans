@@ -27,8 +27,6 @@ import java.lang.annotation.Target;
  * provide a derived property. A derived property has no instance variable.
  * A derived property will not form part of the {@code equals()} or {@code hashCode()}
  * methods, but will be included in {@code toString()}.
- * 
- * @author Stephen Colebourne
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

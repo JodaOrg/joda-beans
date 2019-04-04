@@ -19,8 +19,6 @@ import javax.xml.namespace.QName;
 
 /**
  * Constants used in XML.
- *
- * @author Stephen Colebourne
  */
 final class JodaBeanXml {
 

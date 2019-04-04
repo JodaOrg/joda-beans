@@ -29,7 +29,6 @@ import org.joda.beans.impl.BasicProperty;
  * An immutable meta-property based on a getter interface.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  * @deprecated Replaced by method handles
  */
 @Deprecated

@@ -19,8 +19,6 @@ import org.joda.beans.Bean;
 
 /**
  * Functional interface providing the ability to set a property in a bean.
- * 
- * @author Stephen Colebourne
  */
 interface PropertySetter {
 

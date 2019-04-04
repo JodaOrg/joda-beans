@@ -22,8 +22,6 @@ import java.util.TreeSet;
 
 /**
  * A bean that can be generated.
- * 
- * @author Stephen Colebourne
  */
 class BeanData {
 

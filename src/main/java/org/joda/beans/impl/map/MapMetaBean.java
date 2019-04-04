@@ -28,8 +28,6 @@ import org.joda.beans.MetaProperty;
 
 /**
  * Implementation of a meta-bean for {@code MapBean}.
- * 
- * @author Stephen Colebourne
  */
 class MapMetaBean implements DynamicMetaBean {
 

@@ -38,8 +38,6 @@ import java.lang.annotation.Target;
  *     }
  *   }
  * </pre>
- * 
- * @author Stephen Colebourne
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)

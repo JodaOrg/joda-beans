@@ -51,8 +51,6 @@ import org.joda.beans.impl.light.LightMetaBean;
 
 /**
  * Code generator for a bean.
- * 
- * @author Stephen Colebourne
  */
 class BeanGen {
 

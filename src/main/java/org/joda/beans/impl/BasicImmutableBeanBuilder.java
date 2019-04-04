@@ -28,7 +28,6 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
  * This class has effectively been replaced by {@link DirectFieldsBeanBuilder}.
  * It is retained for situations where the builder is being implemented manually.
  * 
- * @author Stephen Colebourne
  * @param <T>  the bean type
  */
 public abstract class BasicImmutableBeanBuilder<T extends Bean>

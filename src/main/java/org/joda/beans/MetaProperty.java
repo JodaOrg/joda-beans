@@ -28,7 +28,6 @@ import org.joda.convert.StringConvert;
  * to a particular bean, such as the property type and name.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 public interface MetaProperty<P> {
 

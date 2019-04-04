@@ -19,8 +19,6 @@ package org.joda.beans;
  * An immutable bean consisting of a set of properties.
  * <p>
  * This marker interface allows immutable beans to be identified.
- * 
- * @author Stephen Colebourne
  */
 public interface ImmutableBean extends Bean {
 

@@ -34,7 +34,6 @@ import org.joda.beans.impl.BasicMetaProperty;
  * This meta-property uses reflection to find the {@code Field} to obtain the annotations.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 

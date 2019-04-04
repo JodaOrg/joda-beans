@@ -23,8 +23,6 @@ import org.joda.beans.JodaBeanUtils;
  * <p>
  * The subclass must to provide an implementation for {@link Bean#metaBean()}.
  * This returns the complete definition of the bean at the meta level.
- * 
- * @author Stephen Colebourne
  */
 public abstract class BasicBean implements Bean {
 

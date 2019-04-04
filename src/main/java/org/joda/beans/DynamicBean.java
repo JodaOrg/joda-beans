@@ -21,8 +21,6 @@ package org.joda.beans;
  * A JavaBean is defined at compile-time and cannot have additional properties added.
  * Instances of this interface allow additional properties to be added and removed
  * probably by wrapping a map
- * 
- * @author Stephen Colebourne
  */
 public interface DynamicBean extends Bean {
 

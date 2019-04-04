@@ -85,8 +85,6 @@ import org.joda.beans.MetaProperty;
  *    return bld.build();
  *  }
  * </pre>
- *
- * @author Stephen Colebourne
  */
 public interface SerDeserializer {
 

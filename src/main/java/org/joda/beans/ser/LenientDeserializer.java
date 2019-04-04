@@ -22,8 +22,6 @@ import org.joda.beans.MetaProperty;
 
 /**
  * Lenient deserializer that ignores unknown properties.
- *
- * @author Stephen Colebourne
  */
 class LenientDeserializer extends DefaultDeserializer {
 

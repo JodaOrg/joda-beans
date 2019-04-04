@@ -23,7 +23,6 @@ import org.joda.beans.impl.BasicBeanBuilder;
  * <p>
  * This implementation adds validation on top of basic builder functionality.
  * 
- * @author Stephen Colebourne
  * @param <T> the bean type
  */
 public class DirectBeanBuilder<T extends Bean> extends BasicBeanBuilder<T> {

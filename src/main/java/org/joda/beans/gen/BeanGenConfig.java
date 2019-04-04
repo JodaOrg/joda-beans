@@ -31,8 +31,6 @@ import java.util.Set;
 
 /**
  * Configuration for the code generator.
- * 
- * @author Stephen Colebourne
  */
 public final class BeanGenConfig {
 

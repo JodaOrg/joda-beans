@@ -36,7 +36,6 @@ import org.joda.beans.impl.BasicMetaProperty;
  * An immutable meta-property based on a getter interface.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 final class LightMetaProperty<P> extends BasicMetaProperty<P> {
 

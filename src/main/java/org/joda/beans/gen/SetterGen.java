@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * A generator of set methods.
- * 
- * @author Stephen Colebourne
  */
 abstract class SetterGen {
 

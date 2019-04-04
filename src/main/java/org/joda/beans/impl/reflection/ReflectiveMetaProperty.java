@@ -40,7 +40,6 @@ import org.joda.beans.impl.BasicMetaProperty;
  * one for each property, followed by a {@code ReflectiveMetaBean} declaration.
  * 
  * @param <P>  the type of the property content
- * @author Stephen Colebourne
  */
 final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
 

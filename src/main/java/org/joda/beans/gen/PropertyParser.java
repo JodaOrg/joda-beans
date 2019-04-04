@@ -24,8 +24,6 @@ import java.util.regex.Pattern;
 
 /**
  * A property parsed from the source file.
- * 
- * @author Stephen Colebourne
  */
 class PropertyParser {
 

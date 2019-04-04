@@ -22,8 +22,6 @@ import org.joda.beans.Bean;
  * <p>
  * It used to be mandatory for code generated beans to extend this class.
  * Now, beans can simply implement the {@code Bean} interface.
- * 
- * @author Stephen Colebourne
  */
 public abstract class DirectBean implements Bean {
 

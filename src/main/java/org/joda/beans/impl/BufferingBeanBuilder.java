@@ -30,7 +30,6 @@ import org.joda.beans.MetaProperty;
  * This is useful for cases where the builder data might be manipulated before
  * the final build. The buffer can be directly mutated.
  * 
- * @author Stephen Colebourne
  * @param <T>  the bean type
  */
 public class BufferingBeanBuilder<T extends Bean>

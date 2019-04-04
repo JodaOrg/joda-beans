@@ -28,8 +28,6 @@ import org.joda.collect.grid.ImmutableGrid;
 
 /**
  * Factory used to create wrappers around collection-like objects.
- *
- * @author Stephen Colebourne
  */
 public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
 

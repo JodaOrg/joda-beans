@@ -60,8 +60,6 @@ import org.joda.beans.ser.SerTypeMapper;
  * <p>
  * Type names are shortened by the package of the root type if possible.
  * Certain basic types are also handled, such as String, Integer, File and URI.
- *
- * @author Stephen Colebourne
  */
 public class JodaBeanBinWriter {
     // this binary design is not the smallest possible

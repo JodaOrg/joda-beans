@@ -21,7 +21,6 @@ package org.joda.beans;
  * It is not possible to add the generic type to all beans, as the type cannot be
  * refined in hierarchies. This interface is thus useful when there are no subclasses.
  * 
- * @author Stephen Colebourne
  * @param <T>  the type of the bean
  */
 public interface TypedMetaBean<T extends Bean> extends MetaBean {
