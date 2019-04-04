@@ -42,14 +42,14 @@ import org.junit.Test;
 /**
  * Test property roundtrip using binary.
  */
-public class TestSerializeBin {
+public class TestSerializeStandardBin {
 
     @Test
     public void test_writeAddress() throws IOException {
         Address address = SerTestHelper.testAddress();
 
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
-//        new MsgPackVisualizer(bytes).visualize();
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         Address bean = (Address) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
@@ -60,7 +60,7 @@ public class TestSerializeBin {
     public void test_writeImmAddress() throws IOException {
         ImmAddress address = SerTestHelper.testImmAddress();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
-//        new MsgPackVisualizer(bytes).visualize();
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
@@ -71,7 +71,7 @@ public class TestSerializeBin {
     public void test_writeImmOptional() {
         ImmOptional optional = SerTestHelper.testImmOptional();
         byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(optional);
-//        new MsgPackVisualizer(bytes).visualize();
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
@@ -82,7 +82,7 @@ public class TestSerializeBin {
     public void test_writeCollections() {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
-//        new MsgPackVisualizer(bytes).visualize();
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);

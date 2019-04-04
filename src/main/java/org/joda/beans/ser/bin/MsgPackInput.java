@@ -61,7 +61,7 @@ abstract class MsgPackInput extends MsgPack {
     /**
      * Reads all the data in the stream, closing the stream.
      */
-    protected void readAll() {
+    void readAll() {
         try {
             try {
                 int b = input.read();
@@ -78,7 +78,7 @@ abstract class MsgPackInput extends MsgPack {
     }
 
     //-----------------------------------------------------------------------
-    protected void readObject(int unsigned) throws IOException {
+    void readObject(int unsigned) throws IOException {
         handleObjectStart();
         byte b = (byte) unsigned;
         if (b >= MIN_FIX_INT) {  // no need to check for b <= MAX_FIX_INT
@@ -117,15 +117,15 @@ abstract class MsgPackInput extends MsgPack {
                     break;
                 }
                 case EXT_8: {
-                    extension(input.readUnsignedByte());
+                    extension(input.readUnsignedByte(), false);
                     break;
                 }
                 case EXT_16: {
-                    extension(input.readUnsignedShort());
+                    extension(input.readUnsignedShort(), false);
                     break;
                 }
                 case EXT_32: {
-                    extension(input.readInt());
+                    extension(input.readInt(), false);
                     break;
                 }
                 case FLOAT_32: {
@@ -184,23 +184,23 @@ abstract class MsgPackInput extends MsgPack {
                     break;
                 }
                 case FIX_EXT_1: {
-                    extension(1);
+                    extension(1, true);
                     break;
                 }
                 case FIX_EXT_2: {
-                    extension(2);
+                    extension(2, true);
                     break;
                 }
                 case FIX_EXT_4: {
-                    extension(4);
+                    extension(4, true);
                     break;
                 }
                 case FIX_EXT_8: {
-                    extension(8);
+                    extension(8, true);
                     break;
                 }
                 case FIX_EXT_16: {
-                    extension(16);
+                    extension(16, true);
                     break;
                 }
                 case STR_8: {
@@ -254,7 +254,7 @@ abstract class MsgPackInput extends MsgPack {
         }
     }
 
-    protected void readArrayItem() throws IOException {
+    void readArrayItem() throws IOException {
         int next = input.readUnsignedByte();
         readObject(next);
     }
@@ -267,12 +267,12 @@ abstract class MsgPackInput extends MsgPack {
         }
     }
 
-    protected void readMapKey() throws IOException {
+    void readMapKey() throws IOException {
         int next = input.readUnsignedByte();
         readObject(next);
     }
 
-    protected void readMapValue() throws IOException {
+    void readMapValue() throws IOException {
         int next = input.readUnsignedByte();
         readObject(next);
     }
@@ -286,56 +286,56 @@ abstract class MsgPackInput extends MsgPack {
         handleBinary(bytes);
     }
 
-    private void extension(int size) throws IOException {
+    private void extension(int size, boolean numeric) throws IOException {
         int type = input.readByte();
         if (size < 0) {
             throw new IllegalStateException("Extension too large");
         }
         byte[] bytes = new byte[size];
         input.readFully(bytes);
-        handleExtension(type, bytes);
+        handleExtension(type, numeric, bytes);
     }
 
-    protected void handleObjectStart() {
+    void handleObjectStart() {
     }
 
-    protected void handleBoolean(boolean bool) {
+    void handleBoolean(boolean bool) {
     }
 
-    protected void handleNil() {
+    void handleNil() {
     }
 
-    protected void handleInt(int value) {
+    void handleInt(int value) {
     }
 
-    protected void handleUnsignedLong(long value) {
+    void handleUnsignedLong(long value) {
     }
 
-    protected void handleSignedLong(long value) {
+    void handleSignedLong(long value) {
     }
 
-    protected void handleFloat(float value) {
+    void handleFloat(float value) {
     }
 
-    protected void handleDouble(double value) {
+    void handleDouble(double value) {
     }
 
-    protected void handleUnknown(byte b) {
+    void handleUnknown(byte b) {
     }
 
-    protected void handleString(String str) {
+    void handleString(String str) {
     }
 
-    protected void handleArrayHeader(int size) {
+    void handleArrayHeader(int size) {
     }
 
-    protected void handleMapHeader(int size) {
+    void handleMapHeader(int size) {
     }
 
-    protected void handleBinary(byte[] bytes) throws IOException {
+    void handleBinary(byte[] bytes) throws IOException {
     }
 
-    protected void handleExtension(int type, byte[] bytes) throws IOException {
+    void handleExtension(int type, boolean numeric, byte[] bytes) throws IOException {
     }
 
     //-----------------------------------------------------------------------

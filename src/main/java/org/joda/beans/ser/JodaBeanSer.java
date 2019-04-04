@@ -16,10 +16,9 @@
 package org.joda.beans.ser;
 
 import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
-import org.joda.beans.ser.bin.JodaBeanCompactBinReader;
-import org.joda.beans.ser.bin.JodaBeanCompactBinWriter;
 import org.joda.beans.ser.json.JodaBeanJsonReader;
 import org.joda.beans.ser.json.JodaBeanJsonWriter;
 import org.joda.beans.ser.json.JodaBeanSimpleJsonReader;
@@ -229,6 +228,7 @@ public final class JodaBeanSer {
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the include derived flag.
      * <p>
@@ -254,58 +254,57 @@ public final class JodaBeanSer {
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
+    /**
+     * Checks if the property is serialized.
+     * 
+     * @param prop  the property to check
+     * @return true if the property is seialized
+     */
+    public boolean isSerialized(MetaProperty<?> prop) {
+        return prop.style().isSerializable() || (prop.style().isDerived() && includeDerived);
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Creates a binary writer.
+     * Creates a binary writer using the standard format.
      * <p>
-     * A new instance of the writer must be created for each message.
+     * It is recommended, though not necessary, to create a new instance of the writer for each message.
      * 
      * @return the binary writer, not null
      */
     public JodaBeanBinWriter binWriter() {
-        return new JodaBeanBinWriter(this);
+        return new JodaBeanBinWriter(this, false);
     }
 
     /**
-     * Creates a binary reader.
+     * Creates a binary writer using the referencing format that typically results in a smaller output.
      * <p>
-     * A new instance of the reader must be created for each message.
+     * It is recommended, though not necessary, to create a new instance of the writer for each message.
+     * <p>
+     * The writer only supports serializing ImmutableBean instances and will throw an exception
+     * if any non-immutable beans are encountered.
+     * It assumes that non-bean items present within the root bean are themselves immutable.
+     * Due to this immutability restriction it serializes references to values based on object equality,
+     * rather than based on reference equality. When the output is parsed it may be smaller in memory
+     * as any beans that were originally equal will be returned as pointers to the same instance.
+     * <p>
+     * The reader {@link #binReader()} handles both the standard and referencing formats.
+     * 
+     * @return the referencing binary writer, not null
+     */
+    public JodaBeanBinWriter binWriterReferencing() {
+        return new JodaBeanBinWriter(this, true);
+    }
+
+    /**
+     * Creates a binary reader that handles both the standard and compact binary formats.
+     * <p>
+     * It is recommended, though not necessary, to create a new instance of the reader for each message.
      * 
      * @return the binary reader, not null
      */
     public JodaBeanBinReader binReader() {
         return new JodaBeanBinReader(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates a compact binary writer.
-     * <p>
-     * A new instance of the writer must be created for each message.
-     * <p>
-     * The writer only supports serializing ImmutableBean instances and will throw an exception if any non-immutable
-     * beans are encountered.
-     * It assumes that non-bean items present within the root bean are themselves immutable.
-     * Due to this immutability restriction it serializes references to values based on object equality, rather than
-     * based on reference equality.
-     * 
-     * @return the compact binary writer, not null
-     */
-    public JodaBeanCompactBinWriter compactBinWriter() {
-        return new JodaBeanCompactBinWriter(this);
-    }
-
-    /**
-     * Creates a compact binary reader.
-     * <p>
-     * A new instance of the reader must be created for each message.
-     * <p>
-     * The reader only supports deserializing ImmutableBean instances that were written using the compact binary writer.
-     * 
-     * @return the compact binary reader, not null
-     */
-    public JodaBeanCompactBinReader compactBinReader() {
-        return new JodaBeanCompactBinReader(this);
     }
 
     //-----------------------------------------------------------------------

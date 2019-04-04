@@ -22,16 +22,16 @@ import java.io.InputStream;
 /**
  * Allows MsgPack data to be visualized.
  */
-class MsgPackVisualizer extends MsgPackInput {
+final class MsgPackVisualizer extends MsgPackInput {
 
     /**
      * The current indent.
      */
-    protected String indent = "";
+    private String indent = "";
     /**
      * The buffer.
      */
-    protected StringBuilder buf = new StringBuilder(1024);
+    private StringBuilder buf = new StringBuilder(1024);
 
     /**
      * Creates an instance.
@@ -71,89 +71,89 @@ class MsgPackVisualizer extends MsgPackInput {
 
     //-----------------------------------------------------------------------
     @Override
-    protected void readArrayItem() throws IOException {
+    void readArrayItem() throws IOException {
         indent = indent + "- ";
         super.readArrayItem();
         indent = indent.substring(0, indent.length() - 2);
     }
 
     @Override
-    protected void readMapKey() throws IOException {
+    void readMapKey() throws IOException {
         indent = indent + "= ";
         super.readMapKey();
         indent = indent.substring(0, indent.length() - 2);
     }
 
     @Override
-    protected void readMapValue() throws IOException {
+    void readMapValue() throws IOException {
         indent = indent + "  ";
         super.readMapValue();
         indent = indent.substring(0, indent.length() - 2);
     }
 
     @Override
-    protected void handleObjectStart() {
+    void handleObjectStart() {
         buf.append(indent);
         indent = indent.replace("-", " ").replace("=", " ");
     }
 
     @Override
-    protected void handleBoolean(boolean bool) {
+    void handleBoolean(boolean bool) {
         buf.append(bool).append(System.lineSeparator());
     }
 
     @Override
-    protected void handleNil() {
+    void handleNil() {
         buf.append("nil").append(System.lineSeparator());
     }
 
     @Override
-    protected void handleInt(int value) {
+    void handleInt(int value) {
         buf.append("int " + value).append(System.lineSeparator());
     }
 
     @Override
-    protected void handleUnsignedLong(long value) {
+    void handleUnsignedLong(long value) {
         buf.append("int " + value + " unsigned").append(System.lineSeparator());
     }
 
     @Override
-    protected void handleSignedLong(long value) {
+    void handleSignedLong(long value) {
         buf.append("int " + value + " signed").append(System.lineSeparator());
     }
 
     @Override
-    protected void handleFloat(float value) {
+    void handleFloat(float value) {
         buf.append("flt " + value).append(System.lineSeparator());
     }
 
     @Override
-    protected void handleDouble(double value) {
+    void handleDouble(double value) {
         buf.append("dbl " + value).append(System.lineSeparator());
     }
 
     @Override
-    protected void handleUnknown(byte b) {
+    void handleUnknown(byte b) {
         buf.append("Unknown - " + String.format("%02X ", b)).append(System.lineSeparator());;
     }
 
     @Override
-    protected void handleString(String str) {
+    void handleString(String str) {
         buf.append("str '" + str + '\'').append(System.lineSeparator());
     }
 
     @Override
-    protected void handleArrayHeader(int size) {
+    void handleArrayHeader(int size) {
         buf.append("arr (" + size + ")").append(System.lineSeparator());
     }
 
     @Override
-    protected void handleMapHeader(int size) {
+    void handleMapHeader(int size) {
         buf.append("map (" + size + ")").append(System.lineSeparator());
     }
 
     @Override
-    protected void handleBinary(byte[] bytes) {
+    void handleBinary(byte[] bytes) {
         buf.append("bin '");
         for (byte b : bytes) {
             buf.append(toHex(b));
@@ -162,17 +162,42 @@ class MsgPackVisualizer extends MsgPackInput {
     }
 
     @Override
-    protected void handleExtension(int type, byte[] bytes) throws IOException {
-        if (type == JODA_TYPE_BEAN || type == JODA_TYPE_DATA || type == JODA_TYPE_META) {
-            String str = new String(bytes, UTF_8);
-            buf.append("ext type=" + type + " '" + str + "'").append(System.lineSeparator());
-        } else {
-            buf.append("ext type=" + type + " '");
+    void handleExtension(int type, boolean numeric, byte[] bytes) throws IOException {
+        String str;
+        if (numeric) {
+            int value = 0;
             for (byte b : bytes) {
-                buf.append(toHex(b));
+                value = (value << 8) | b;
             }
-            buf.append("'").append(System.lineSeparator());
+            str = Integer.toString(value);
+        } else {
+            str = new String(bytes, UTF_8);            
         }
+        buf.append("ext type=")
+            .append(type)
+            .append(" '")
+            .append(str)
+            .append("'");
+        switch (type) {
+            case JODA_TYPE_BEAN:
+                buf.append(" (bean)");
+                break;
+            case JODA_TYPE_DATA:
+                buf.append(" (data)");
+                break;
+            case JODA_TYPE_META:
+                buf.append(" (meta)");
+                break;
+            case JODA_TYPE_REF_KEY:
+                buf.append(" (refkey)");
+                break;
+            case JODA_TYPE_REF:
+                buf.append(" (ref)");
+                break;
+            default:
+                break;
+        }
+        buf.append(System.lineSeparator());
     }
 
 }

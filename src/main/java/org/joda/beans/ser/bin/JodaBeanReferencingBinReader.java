@@ -15,10 +15,8 @@
  */
 package org.joda.beans.ser.bin;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,22 +33,14 @@ import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
- * Provides the ability for a Joda-Bean to read from a compact binary format.
- * <p>
- * The binary format is defined by {@link JodaBeanCompactBinWriter}.
- * <p>
- * This class contains mutable state and cannot be used from multiple threads.
- * A new instance must be created for each message.
- *
- * @author Will Nicholson
+ * Provides the ability for a Joda-Bean to read from the referencing binary format.
  */
-public class JodaBeanCompactBinReader extends AbstractBinReader {
+class JodaBeanReferencingBinReader extends AbstractBinReader {
 
     /**
      * The base package including the trailing dot.
      */
-    private String basePackage;
-
+    private String overrideBasePackage;
     /**
      * The classes that have been serialized.
      */
@@ -58,83 +48,25 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
     /**
      * The classes for lookup of classInfo when the class is known and unnecessary to serialise.
      */
-    private Map<Class, ClassInfo> classMap;
+    private Map<Class<?>, ClassInfo> classMap;
     /**
      * The serialized objects that are repeated and referenced.
      */
     private Object[] refs;
 
     //-----------------------------------------------------------------------
-    /**
-     * Visualizes the binary data, writing to system out.
-     *
-     * @param input  the input bytes, not null
-     * @return the visualization
-     */
-    public static String visualize(byte[] input) {
-        return new CompactMsgPackVisualizer(input).visualizeData();
+    // creates an instance
+    JodaBeanReferencingBinReader(JodaBeanSer settings, DataInputStream input) {
+        super(settings, input);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Creates an instance.
-     *
-     * @param settings  the settings, not null
-     */
-    public JodaBeanCompactBinReader(final JodaBeanSer settings) {
-        super(settings);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Reads and parses to an immutable bean.
-     *
-     * @param input  the input bytes, not null
-     * @return the bean, not null
-     */
-    public ImmutableBean read(final byte[] input) {
-        return read(input, ImmutableBean.class);
-    }
-
-    /**
-     * Reads and parses to an immutable bean.
-     *
-     * @param <T>  the root type
-     * @param input  the input bytes, not null
-     * @param rootType  the root type, not null
-     * @return the bean, not null
-     */
-    public <T extends ImmutableBean> T read(final byte[] input, Class<T> rootType) {
-        return read(new ByteArrayInputStream(input), rootType);
-    }
-
-    /**
-     * Reads and parses to an immutable bean.
-     *
-     * @param input  the input reader, not null
-     * @return the bean, not null
-     */
-    public ImmutableBean read(final InputStream input) {
-        return read(input, ImmutableBean.class);
-    }
-
-    /**
-     * Reads and parses to an immutable bean.
-     *
-     * @param <T>  the root type
-     * @param input  the input stream, not null
-     * @param rootType  the root type, not null
-     * @return the bean, not null
-     */
-    public <T extends ImmutableBean> T read(final InputStream input, Class<T> rootType) {
-        if (input instanceof DataInputStream) {
-            this.input = (DataInputStream) input;
-        } else {
-            this.input = new DataInputStream(input);
-        }
+    // reads the input stream
+    @Override
+    <T> T read(Class<T> rootType) {
         try {
             try {
-                return parseRoot(rootType);
+                return parseRemaining(rootType);
             } finally {
                 input.close();
             }
@@ -146,44 +78,27 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Parses the root bean.
-     *
-     * @param declaredType  the declared type, not null
-     * @return the bean, not null
-     * @throws Exception if an error occurs
-     */
-    private <T> T parseRoot(Class<T> declaredType) throws Exception {
-        if (!ImmutableBean.class.isAssignableFrom(declaredType)) {
-            throw new IllegalArgumentException("Must deserialise to an ImmutableBean instance: " + declaredType.getName());
-        }
-
-        // root array
-        int typeByte = input.readByte();
-        if (typeByte != MIN_FIX_ARRAY + 4) {
-            throw new IllegalArgumentException("Invalid binary data: Expected array with 4 elements, but was: 0x" + toHex(typeByte));
-        }
-        // version
-        typeByte = input.readByte();
-        if (typeByte != 2) {
-            throw new IllegalArgumentException("Invalid binary data: Expected version 2, but was: 0x" + toHex(typeByte));
-        }
-
-        basePackage = declaredType.getPackage().getName() + ".";
+    // parses the root bean
+    @Override
+    <T> T parseRemaining(Class<T> declaredType) throws Exception {
+        // the array and version has already been read
+        overrideBasePackage = declaredType.getPackage().getName() + ".";
         // ref count + class map
-        parseClassMap();
+        parseClassDescriptions();
 
         // parse
         Object parsed = parseObject(declaredType, null, null, null, true);
         return declaredType.cast(parsed);
     }
 
-    private void parseClassMap() throws Exception {
+    //-----------------------------------------------------------------------
+    // parses the references
+    private void parseClassDescriptions() throws Exception {
         int refCount = acceptInteger(input.readByte());
         if (refCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected count of references, but was: " + refCount);
         }
-        this.refs = new Object[refCount];
+        refs = new Object[refCount];
 
         int classMapSize = acceptMap(input.readByte());
         classes = new ClassInfo[classMapSize]; // Guaranteed non-negative by acceptMap()
@@ -194,12 +109,12 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             classes[position] = classInfo;
             classMap.put(classInfo.type, classInfo);
         }
-
     }
 
+    // parses the class information
     private ClassInfo parseClassInfo() throws Exception {
         String className = acceptString(input.readByte());
-        Class<?> type = SerTypeMapper.decodeType(className, settings, basePackage, null);
+        Class<?> type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
         int propertyCount = acceptArray(input.readByte());
         if (propertyCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected array with 0 to many elements, but was: " + propertyCount);
@@ -219,6 +134,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         return new ClassInfo(type, metaProperties);
     }
 
+    // parses the bean using the class information
     private Object parseBean(int propertyCount, ClassInfo classInfo) {
         String propName = "";
         if (classInfo.metaProperties.length != propertyCount) {
@@ -244,8 +160,15 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         }
     }
 
+    //-----------------------------------------------------------------------
     @Override
-    protected Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
+    Object parseObject(
+            Class<?> declaredType,
+            MetaProperty<?> metaProp,
+            Class<?> beanType,
+            SerIterable parentIterable,
+            boolean rootType) throws Exception {
+
         // establish type
         Class<?> effectiveType = declaredType;
         ClassInfo classInfo = null;
@@ -412,7 +335,6 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         }
 
         return value;
-
     }
 
     private Object parseObject(
@@ -459,7 +381,7 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
             if (Bean.class.isAssignableFrom(classInfo.type) == false) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + classInfo.type.getName());
             }
-            basePackage = classInfo.type.getPackage().getName() + ".";
+            overrideBasePackage = classInfo.type.getPackage().getName() + ".";
         }
         if (declaredType.isAssignableFrom(classInfo.type) == false) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + classInfo.type.getName());
@@ -482,10 +404,11 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
         if (typeByte == MsgPack.FIX_EXT_4) {
             return input.readInt();
         }
-        throw new IllegalArgumentException("Invalid binary data: Expected int extension type, but was: 0x" + toHex(
-            typeByte));
+        throw new IllegalArgumentException(
+                "Invalid binary data: Expected int extension type, but was: 0x" + toHex(typeByte));
     }
 
+    //-----------------------------------------------------------------------
     // The info needed to deserialize instances of a class with a reference to the initially serialized class definition
     private static final class ClassInfo {
 
@@ -508,4 +431,5 @@ public class JodaBeanCompactBinReader extends AbstractBinReader {
                     '}';
         }
     }
+
 }

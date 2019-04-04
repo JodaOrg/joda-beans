@@ -23,17 +23,22 @@ import org.joda.beans.Bean;
 import org.joda.beans.ser.JodaBeanSer;
 
 /**
- * Provides the ability for a Joda-Bean to read from a binary format.
+ * Provides the ability for a Joda-Bean to read from binary formats.
  * <p>
- * The binary format is defined by {@link JodaBeanBinWriter}.
+ * This class is immutable and may be used from multiple threads.
  * <p>
- * This class contains mutable state and cannot be used from multiple threads.
- * A new instance must be created for each message.
+ * The binary formats are defined by {@link JodaBeanBinWriter}.
  */
-public class JodaBeanBinReader extends AbstractBinReader {
+public class JodaBeanBinReader extends MsgPack {
 
     /**
-     * Visualizes the binary data, writing to system out.
+     * Settings.
+     */
+    private final JodaBeanSer settings;  // CSIGNORE
+
+    //-----------------------------------------------------------------------
+    /**
+     * Visualizes the binary data.
      * 
      * @param input  the input bytes, not null
      * @return the visualization
@@ -48,8 +53,11 @@ public class JodaBeanBinReader extends AbstractBinReader {
      * 
      * @param settings  the settings, not null
      */
-    public JodaBeanBinReader(final JodaBeanSer settings) {
-        super(settings);
+    public JodaBeanBinReader(JodaBeanSer settings) {
+        if (settings == null) {
+            throw new NullPointerException("settings");
+        }
+        this.settings = settings;
     }
 
     //-----------------------------------------------------------------------
@@ -59,7 +67,7 @@ public class JodaBeanBinReader extends AbstractBinReader {
      * @param input  the input bytes, not null
      * @return the bean, not null
      */
-    public Bean read(final byte[] input) {
+    public Bean read(byte[] input) {
         return read(input, Bean.class);
     }
 
@@ -71,7 +79,10 @@ public class JodaBeanBinReader extends AbstractBinReader {
      * @param rootType  the root type, not null
      * @return the bean, not null
      */
-    public <T> T read(final byte[] input, Class<T> rootType) {
+    public <T> T read(byte[] input, Class<T> rootType) {
+        if (input == null) {
+            throw new NullPointerException("input");
+        }
         return read(new ByteArrayInputStream(input), rootType);
     }
 
@@ -81,7 +92,7 @@ public class JodaBeanBinReader extends AbstractBinReader {
      * @param input  the input reader, not null
      * @return the bean, not null
      */
-    public Bean read(final InputStream input) {
+    public Bean read(InputStream input) {
         return read(input, Bean.class);
     }
 
@@ -93,15 +104,22 @@ public class JodaBeanBinReader extends AbstractBinReader {
      * @param rootType  the root type, not null
      * @return the bean, not null
      */
-    public <T> T read(final InputStream input, Class<T> rootType) {
+    public <T> T read(InputStream input, Class<T> rootType) {
+        if (input == null) {
+            throw new NullPointerException("input");
+        }
+        if (rootType == null) {
+            throw new NullPointerException("rootType");
+        }
+        DataInputStream dataInput;
         if (input instanceof DataInputStream) {
-            this.input = (DataInputStream) input;
+            dataInput = (DataInputStream) input;
         } else {
-            this.input = new DataInputStream(input);
+            dataInput = new DataInputStream(input);
         }
         try {
             try {
-                return parseRoot(rootType);
+                return parseVersion(dataInput, rootType);
             } finally {
                 input.close();
             }
@@ -113,27 +131,28 @@ public class JodaBeanBinReader extends AbstractBinReader {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Parses the root bean.
-     * 
-     * @param declaredType  the declared type, not null
-     * @return the bean, not null
-     * @throws Exception if an error occurs
-     */
-    private <T> T parseRoot(final Class<T> declaredType) throws Exception {
+    // parses the version
+    private <T> T parseVersion(DataInputStream input, Class<T> declaredType) throws Exception {
         // root array
-        int typeByte = input.readByte();
-        if (typeByte != MIN_FIX_ARRAY + 2) {
-            throw new IllegalArgumentException("Invalid binary data: Expected array, but was: 0x" + toHex(typeByte));
+        int arrayByte = input.readByte();
+        int versionByte = input.readByte();
+        switch (versionByte) {
+            case 1:
+                if (arrayByte != MIN_FIX_ARRAY + 2) {
+                    throw new IllegalArgumentException(
+                            "Invalid binary data: Expected array with 2 elements, but was: 0x" + toHex(arrayByte));
+                }
+                return new JodaBeanStandardBinReader(settings, input).read(declaredType);
+            case 2:
+                if (arrayByte != MIN_FIX_ARRAY + 4) {
+                    throw new IllegalArgumentException(
+                            "Invalid binary data: Expected array with 4 elements, but was: 0x" + toHex(arrayByte));
+                }
+                return new JodaBeanReferencingBinReader(settings, input).read(declaredType);
+            default:
+                throw new IllegalArgumentException(
+                        "Invalid binary data: Expected version 1 or 2, but was: 0x" + toHex(versionByte));
         }
-        // version
-        typeByte = input.readByte();
-        if (typeByte != 1) {
-            throw new IllegalArgumentException("Invalid binary data: Expected version 1, but was: 0x" + toHex(typeByte));
-        }
-        // parse
-        Object parsed = parseObject(declaredType, null, null, null, true);
-        return declaredType.cast(parsed);
     }
 
 }

@@ -20,14 +20,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
 import org.joda.beans.ser.JodaBeanSer;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
  * <p>
- * This class contains mutable state and cannot be used from multiple threads.
- * A new instance must be created for each message.
- * <p>
+ * This class is immutable and may be used from multiple threads.
+ * 
+ * <h3>Standard format</h3>
  * The binary format is based on MessagePack v2.0.
  * Each bean is output as a map using the property name.
  * <p>
@@ -53,20 +54,71 @@ import org.joda.beans.ser.JodaBeanSer;
  * <p>
  * Type names are shortened by the package of the root type if possible.
  * Certain basic types are also handled, such as String, Integer, File and URI.
+ * 
+ * <h3>Referencing format</h3>
+ * The referencing format is based on the standard format.
+ * As a more complex format, it is intended to be consumed only by Joda-Beans
+ * (whereas the standard format could be consumed by any consumer using MsgPack).
+ * Thus this format is not fully documented and may change over time.
+ * <p>
+ * The referencing format only supports serialization of instances of {@code ImmutableBean}
+ * and other basic types. If any mutable beans are encountered during traversal an exception will be thrown.
+ * <p>
+ * An initial pass of the bean is used to build up a map of unique immutable beans
+ * and unique immutable instances of other classes (based on an equality check).
+ * Then the class and property names for each bean class is serialized up front as a map of class name to list of
+ * property names, along with class information for any class where type information would be required when parsing
+ * and is not available on the metabean for the enclosing bean object.
+ * <p>
+ * Each unique immutable bean is output as a list of each property value using the fixed
+ * property order previously serialized. Subsequent instances of unique objects (defined by an
+ * equality check) are replaced by references to the first serialized instance.
+ * <p>
+ * The Java type names are sent using an 'ext' entity.
+ * Five 'ext' types are used, one each for beans, meta-type and simple, reference keys and reference lookups.
+ * The class name is passed as the 'ext' data.
+ * The 'ext' value is sent as the first item in an array of property values for beans, an integer referring to the
+ * location in the initial class mapping.
+ * Where the additional type information is not about a bean, a tuple is written using a size 1 map where the key is
+ * the 'ext' data and the value is the data being annotated.
+ * <p>
+ * For references, when an object will be referred back to it is written as a map of size one with 'ext' as the key
+ * and the object that should be referred to as the value.
+ * When that same object is referred back to it is written as 'ext' with the data from the initial 'ext'.
  */
-public class JodaBeanBinWriter extends AbstractBinWriter {
-    // this binary design is not the smallest possible
-    // however, placing the 'ext' for the additional type info within
-    // the bean data is much more friendly for dynamic languages using
-    // a standalone MessagePack parser
+public class JodaBeanBinWriter {
 
+    /**
+     * Settings.
+     */
+    private final JodaBeanSer settings;  // CSIGNORE
+    /**
+     * Whether to use referencing.
+     */
+    private final boolean referencing;
+
+    //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      * 
      * @param settings  the settings to use, not null
      */
-    public JodaBeanBinWriter(final JodaBeanSer settings) {
-        super(settings);
+    public JodaBeanBinWriter(JodaBeanSer settings) {
+        this(settings, false);
+    }
+
+    /**
+     * Creates an instance.
+     * 
+     * @param settings  the settings to use, not null
+     * @param referencing  whether to use referencing
+     */
+    public JodaBeanBinWriter(JodaBeanSer settings, boolean referencing) {
+        if (settings == null) {
+            throw new NullPointerException("settings");
+        }
+        this.settings = settings;
+        this.referencing = referencing;
     }
 
     //-----------------------------------------------------------------------
@@ -78,7 +130,7 @@ public class JodaBeanBinWriter extends AbstractBinWriter {
      * @param bean  the bean to output, not null
      * @return the binary data, not null
      */
-    public byte[] write(final Bean bean) {
+    public byte[] write(Bean bean) {
         return write(bean, true);
     }
 
@@ -89,7 +141,7 @@ public class JodaBeanBinWriter extends AbstractBinWriter {
      * @param rootType  true to output the root type
      * @return the binary data, not null
      */
-    public byte[] write(final Bean bean, final boolean rootType) {
+    public byte[] write(Bean bean, boolean rootType) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         try {
             write(bean, rootType, baos);
@@ -108,7 +160,7 @@ public class JodaBeanBinWriter extends AbstractBinWriter {
      * @param output  the output stream, not null
      * @throws IOException if an error occurs
      */
-    public void write(final Bean bean, OutputStream output) throws IOException {
+    public void write(Bean bean, OutputStream output) throws IOException {
         write(bean, true, output);
     }
 
@@ -120,21 +172,18 @@ public class JodaBeanBinWriter extends AbstractBinWriter {
      * @param output  the output stream, not null
      * @throws IOException if an error occurs
      */
-    public void write(final Bean bean, final boolean rootType, OutputStream output) throws IOException {
+    public void write(Bean bean, boolean rootType, OutputStream output) throws IOException {
         if (bean == null) {
             throw new NullPointerException("bean");
         }
         if (output == null) {
             throw new NullPointerException("output");
         }
-        this.output = new MsgPackOutput(output);
-        writeRoot(bean, rootType);
+        if (referencing && bean instanceof ImmutableBean) {
+            new JodaBeanReferencingBinWriter(settings, output).write((ImmutableBean) bean);
+        } else {
+            new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);
+        }
     }
 
-    //-----------------------------------------------------------------------
-    private void writeRoot(final Bean bean, final boolean rootType) throws IOException {
-        output.writeArrayHeader(2);
-        output.writeInt(1);  // version 1
-        writeRootBean(bean, rootType);
-    }
 }

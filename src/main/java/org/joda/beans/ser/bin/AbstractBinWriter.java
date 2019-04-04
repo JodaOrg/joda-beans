@@ -16,6 +16,7 @@
 package org.joda.beans.ser.bin;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,67 +29,34 @@ import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
- * Provides the ability for a Joda-Bean to be written to a binary format.
+ * Provides the ability for a Joda-Bean to be written to both the standard and referencing binary formats.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
- * <p>
- * The binary format is based on MessagePack v2.0.
- * Each bean is output as a map using the property name.
- * <p>
- * Most simple types, defined by Joda-Convert, are output as MessagePack strings.
- * However, MessagePack nil, boolean, float, integral and bin types are also used
- * for null, byte[] and the Java numeric primitive types (excluding char).
- * <p>
- * Beans are output using MessagePack maps where the key is the property name.
- * Collections are output using MessagePack maps or arrays.
- * Multisets are output as a map of value to count.
- * <p>
- * If a collection contains a collection then addition meta-type information is
- * written to aid with deserialization.
- * At this level, the data read back may not be identical to that written.
- * <p>
- * Where necessary, the Java type is sent using an 'ext' entity.
- * Three 'ext' types are used, one each for beans, meta-type and simple.
- * The class name is passed as the 'ext' data.
- * The 'ext' value is sent as an additional key-value pair for beans, with the
- * 'ext' as the key and 'nil' as the value. Where the additional type information
- * is not about a bean, a tuple is written using a size 1 map where the key is the
- * 'ext' data and the value is the data being annotated.
- * <p>
- * Type names are shortened by the package of the root type if possible.
- * Certain basic types are also handled, such as String, Integer, File and URI.
  */
-public class AbstractBinWriter {
-    // this binary design is not the smallest possible
-    // however, placing the 'ext' for the additional type info within
-    // the bean data is much more friendly for dynamic languages using
-    // a standalone MessagePack parser
+abstract class AbstractBinWriter {
 
     /**
      * The settings to use.
      */
-    protected final JodaBeanSer settings;
+    final JodaBeanSer settings;  // CSIGNORE
     /**
      * The output stream.
      */
-    protected MsgPackOutput output;
+    final MsgPackOutput output;  // CSIGNORE
     /**
      * The base package including the trailing dot.
      */
-    protected String basePackage;
+    private String basePackage;
     /**
      * The known types.
      */
-    protected Map<Class<?>, String> knownTypes = new HashMap<>();
+    private Map<Class<?>, String> knownTypes = new HashMap<>();
 
-    /**
-     * Creates an instance.
-     *
-     * @param settings  the settings to use, not null
-     */
-    AbstractBinWriter(final JodaBeanSer settings) {
+    // creates an instance
+    AbstractBinWriter(JodaBeanSer settings, OutputStream output) {
         this.settings = settings;
+        this.output = new MsgPackOutput(output);
     }
 
     //-----------------------------------------------------------------------
@@ -96,13 +64,13 @@ public class AbstractBinWriter {
         writeBean(bean, bean.getClass(), rootTypeFlag ? RootType.ROOT_WITH_TYPE : RootType.ROOT_WITHOUT_TYPE);
     }
 
-    protected void writeBean(final Bean bean, final Class<?> declaredType, RootType rootTypeFlag) throws IOException {
+    void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) throws IOException {
         int count = bean.metaBean().metaPropertyCount();
         MetaProperty<?>[] props = new MetaProperty<?>[count];
         Object[] values = new Object[count];
         int size = 0;
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
+            if (settings.isSerialized(prop)) {
                 Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     props[size] = prop;
@@ -144,11 +112,11 @@ public class AbstractBinWriter {
     }
 
     //-----------------------------------------------------------------------
-    protected void writeMetaPropertyReference(String metaTypeName) throws IOException {
+    void writeMetaPropertyReference(String metaTypeName) throws IOException {
         output.writeExtensionString(MsgPack.JODA_TYPE_META, metaTypeName);
     }
 
-    protected void writeElements(final SerIterator itemIterator) throws IOException {
+    void writeElements(SerIterator itemIterator) throws IOException {
         if (itemIterator.metaTypeRequired()) {
             output.writeMapHeader(1);
             writeMetaPropertyReference(itemIterator.metaTypeName());
@@ -166,7 +134,7 @@ public class AbstractBinWriter {
         }
     }
 
-    protected void writeArray(final SerIterator itemIterator) throws IOException {
+    void writeArray(SerIterator itemIterator) throws IOException {
         output.writeArrayHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -174,7 +142,7 @@ public class AbstractBinWriter {
         }
     }
 
-    protected void writeMap(final SerIterator itemIterator) throws IOException {
+    void writeMap(SerIterator itemIterator) throws IOException {
         output.writeMapHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -187,7 +155,7 @@ public class AbstractBinWriter {
         }
     }
 
-    protected void writeTable(final SerIterator itemIterator) throws IOException {
+    void writeTable(SerIterator itemIterator) throws IOException {
         output.writeArrayHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -198,7 +166,7 @@ public class AbstractBinWriter {
         }
     }
 
-    protected void writeGrid(final SerIterator itemIterator) throws IOException {
+    void writeGrid(SerIterator itemIterator) throws IOException {
         int rows = itemIterator.dimensionSize(0);
         int columns = itemIterator.dimensionSize(1);
         int totalSize = rows * columns;
@@ -227,7 +195,7 @@ public class AbstractBinWriter {
         }
     }
 
-    protected void writeCounted(final SerIterator itemIterator) throws IOException {
+    void writeCounted(SerIterator itemIterator) throws IOException {
         output.writeMapHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -236,7 +204,7 @@ public class AbstractBinWriter {
         }
     }
 
-    protected void writeObject(final Class<?> declaredType, final Object obj, SerIterator parentIterator) throws IOException {
+    void writeObject(Class<?> declaredType, Object obj, SerIterator parentIterator) throws IOException {
         if (obj == null) {
             output.writeNil();
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
@@ -256,7 +224,7 @@ public class AbstractBinWriter {
     }
 
     //-----------------------------------------------------------------------
-    protected void writeSimple(final Class<?> declaredType, final Object value) throws IOException {
+    void writeSimple(Class<?> declaredType, Object value) throws IOException {
         // simple types have no need to write a type object
         Class<?> realType = value.getClass();
         if (realType == Integer.class) {
@@ -299,18 +267,10 @@ public class AbstractBinWriter {
         }
     }
 
-    /**
-     * Called when serializing an object in {@link #writeSimple(Class, Object)}, to get the effective type of the
-     * object and if necessary to serialize the class information.
-     * <p>
-     * Needs to handle no declared type and subclass instances.
-     *
-     * @param value  the value to be serialized
-     * @param declaredType  the declared type of the object
-     * @return the effective type of the object
-     * @throws IOException if an error occurs
-     */
-    protected Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
+    // called when serializing an object in {@link #writeSimple(Class, Object)}, to get the effective type of the
+    // object and if necessary to serialize the class information
+    // needs to handle no declared type and subclass instances
+    Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
         Class<?> realType = value.getClass();
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {
@@ -331,16 +291,9 @@ public class AbstractBinWriter {
         return effectiveType;
     }
 
-    /**
-     * Writes a value as a string.
-     * <p>
-     * Called after discerning that the value is not a simple type.
-     *
-     * @param value  the value
-     * @param effectiveType  the effective type of the value
-     * @throws IOException if an error occurs
-     */
-    protected void writeObjectAsString(Object value, Class<?> effectiveType) throws IOException {
+    // writes a value as a string
+    // called after discerning that the value is not a simple type
+    void writeObjectAsString(Object value, Class<?> effectiveType) throws IOException {
         String converted = settings.getConverter().convertToString(effectiveType, value);
         if (converted == null) {
             throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);

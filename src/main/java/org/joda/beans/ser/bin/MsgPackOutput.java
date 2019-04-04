@@ -220,7 +220,7 @@ final class MsgPackOutput extends MsgPack {
 
     private byte[] toUTF8(String value) {
         // inline common ASCII case for much better performance
-        final int size = value.length();
+        int size = value.length();
         byte[] bytes = new byte[size];
         for (int i = 0; i < size; i++) {
             char ch = value.charAt(i);

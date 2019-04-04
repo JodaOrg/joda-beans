@@ -32,44 +32,60 @@ import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
 /**
- * Provides the ability for a Joda-Bean to read from a compact binary format.
- * <p>
- * The binary format is defined by {@link JodaBeanCompactBinWriter}.
+ * Provides the ability for a Joda-Bean to read from both the standard and referencing binary formats.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
  */
-public class AbstractBinReader extends MsgPack {
+abstract class AbstractBinReader extends MsgPack {
 
     /**
      * Settings.
      */
-    protected final JodaBeanSer settings;
+    final JodaBeanSer settings;  // CSIGNORE
     /**
      * The reader.
      */
-    protected DataInputStream input;
+    final DataInputStream input;  // CSIGNORE
     /**
      * The base package including the trailing dot.
      */
-    protected String basePackage;
+    private String basePackage;
     /**
      * The known types.
      */
-    protected Map<String, Class<?>> knownTypes = new HashMap<>();
+    private Map<String, Class<?>> knownTypes = new HashMap<>();
 
     //-----------------------------------------------------------------------
-    /**
-     * Creates an instance.
-     *
-     * @param settings  the settings, not null
-     */
-    AbstractBinReader(final JodaBeanSer settings) {
+    // creates an instance
+    AbstractBinReader(JodaBeanSer settings, DataInputStream input) {
         this.settings = settings;
+        this.input = input;
     }
 
     //-----------------------------------------------------------------------
-    protected Object parseBean(int propertyCount, Class<?> beanType) {
+    // reads the input stream where the array and version bytes have been read already
+    <T> T read(Class<T> rootType) {
+        try {
+            try {
+                return parseRemaining(rootType);
+            } finally {
+                input.close();
+            }
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    <T> T parseRemaining(Class<T> declaredType) throws Exception {
+        // the array and version has already been read
+        Object parsed = parseObject(declaredType, null, null, null, true);
+        return declaredType.cast(parsed);
+    }
+
+    Object parseBean(int propertyCount, Class<?> beanType) {
         String propName = "";
         try {
             SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
@@ -93,12 +109,12 @@ public class AbstractBinReader extends MsgPack {
         }
     }
 
-    protected String acceptPropertyName() throws IOException {
+    String acceptPropertyName() throws IOException {
         byte typeByte = input.readByte();
         return acceptString(typeByte);
     }
 
-    protected Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
+    Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
         // establish type
         Class<?> effectiveType = declaredType;
         String metaType = null;
@@ -173,7 +189,7 @@ public class AbstractBinReader extends MsgPack {
         }
     }
 
-    protected Object parseBean(Class<?> declaredType, boolean rootType, Class<?> effectiveType, int mapSize) throws Exception {
+    Object parseBean(Class<?> declaredType, boolean rootType, Class<?> effectiveType, int mapSize) throws Exception {
         if (rootType) {
             if (Bean.class.isAssignableFrom(effectiveType) == false) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
@@ -189,7 +205,7 @@ public class AbstractBinReader extends MsgPack {
         return parseBean(mapSize - 1, effectiveType);
     }
 
-    protected Object parseIterable(int typeByte, SerIterable iterable) throws Exception {
+    Object parseIterable(int typeByte, SerIterable iterable) throws Exception {
         if (iterable.category() == SerCategory.MAP) {
             return parseIterableMap(typeByte, iterable);
         } else if (iterable.category() == SerCategory.COUNTED) {
@@ -203,7 +219,7 @@ public class AbstractBinReader extends MsgPack {
         }
     }
 
-    protected Object parseIterableMap(int typeByte, SerIterable iterable) throws Exception {
+    Object parseIterableMap(int typeByte, SerIterable iterable) throws Exception {
         int size = acceptMap(typeByte);
         for (int i = 0; i < size; i++) {
             Object key = parseObject(iterable.keyType(), null, null, null, false);
@@ -213,7 +229,7 @@ public class AbstractBinReader extends MsgPack {
         return iterable.build();
     }
 
-    protected Object parseIterableTable(int typeByte, SerIterable iterable) throws Exception {
+    Object parseIterableTable(int typeByte, SerIterable iterable) throws Exception {
         int size = acceptArray(typeByte);
         for (int i = 0; i < size; i++) {
             if (acceptArray(input.readByte()) != 3) {
@@ -227,7 +243,7 @@ public class AbstractBinReader extends MsgPack {
         return iterable.build();
     }
 
-    protected Object parseIterableGrid(int typeByte, SerIterable iterable) throws Exception {
+    Object parseIterableGrid(int typeByte, SerIterable iterable) throws Exception {
         int size = acceptArray(typeByte);
         int rows = acceptInteger(input.readByte());
         int columns = acceptInteger(input.readByte());
@@ -255,7 +271,7 @@ public class AbstractBinReader extends MsgPack {
         return iterable.build();
     }
 
-    protected Object parseIterableCounted(int typeByte, SerIterable iterable) throws Exception {
+    Object parseIterableCounted(int typeByte, SerIterable iterable) throws Exception {
         int size = acceptMap(typeByte);
         for (int i = 0; i < size; i++) {
             Object value = parseObject(iterable.valueType(), null, null, iterable, false);
@@ -265,7 +281,7 @@ public class AbstractBinReader extends MsgPack {
         return iterable.build();
     }
 
-    protected Object parseIterableArray(int typeByte, SerIterable iterable) throws Exception {
+    Object parseIterableArray(int typeByte, SerIterable iterable) throws Exception {
         int size = acceptArray(typeByte);
         for (int i = 0; i < size; i++) {
             iterable.add(null, null, parseObject(iterable.valueType(), null, null, iterable, false), 1);
@@ -273,7 +289,7 @@ public class AbstractBinReader extends MsgPack {
         return iterable.build();
     }
 
-    protected Object parseSimple(int typeByte, Class<?> type) throws Exception {
+    Object parseSimple(int typeByte, Class<?> type) throws Exception {
         if (isString(typeByte)) {
             String text = acceptString(typeByte);
             if (type == String.class || type == Object.class) {
@@ -331,7 +347,7 @@ public class AbstractBinReader extends MsgPack {
     }
 
     //-----------------------------------------------------------------------
-    protected int acceptMap(int typeByte) throws IOException {
+    int acceptMap(int typeByte) throws IOException {
         int size;
         if (typeByte >= MIN_FIX_MAP && typeByte <= MAX_FIX_MAP) {
             size = (typeByte - MIN_FIX_MAP);
@@ -348,7 +364,7 @@ public class AbstractBinReader extends MsgPack {
         return size;
     }
 
-    protected int acceptArray(int typeByte) throws IOException {
+    int acceptArray(int typeByte) throws IOException {
         int size;
         if (typeByte >= MIN_FIX_ARRAY && typeByte <= MAX_FIX_ARRAY) {
             size = (typeByte - MIN_FIX_ARRAY);
@@ -365,7 +381,7 @@ public class AbstractBinReader extends MsgPack {
         return size;
     }
 
-    protected String acceptString(int typeByte) throws IOException {
+    String acceptString(int typeByte) throws IOException {
         int size;
         if (typeByte >= MIN_FIX_STR && typeByte <= MAX_FIX_STR) {
             size = (typeByte - MIN_FIX_STR);
@@ -384,7 +400,7 @@ public class AbstractBinReader extends MsgPack {
         return acceptStringBytes(size);
     }
 
-    protected String acceptStringBytes(int size) throws IOException {
+    String acceptStringBytes(int size) throws IOException {
         byte[] bytes = new byte[size];
         input.readFully(bytes);
         // inline common ASCII case for much better performance
@@ -400,7 +416,7 @@ public class AbstractBinReader extends MsgPack {
         return new String(chars);
     }
 
-    protected byte[] acceptBinary(int typeByte) throws IOException {
+    byte[] acceptBinary(int typeByte) throws IOException {
         int size;
         if (typeByte == BIN_8) {
             size = input.readUnsignedByte();
@@ -419,7 +435,7 @@ public class AbstractBinReader extends MsgPack {
         return bytes;
     }
 
-    protected int acceptInteger(int typeByte) throws IOException {
+    int acceptInteger(int typeByte) throws IOException {
         if (typeByte >= MIN_FIX_INT && typeByte <= MAX_FIX_INT) {
             return typeByte;
         }
@@ -459,7 +475,7 @@ public class AbstractBinReader extends MsgPack {
         throw new IllegalArgumentException("Invalid binary data: Expected int, but was: 0x" + toHex(typeByte));
     }
 
-    protected long acceptLong(int typeByte) throws IOException {
+    long acceptLong(int typeByte) throws IOException {
         if (typeByte >= MIN_FIX_INT && typeByte <= MAX_FIX_INT) {
             return typeByte;
         }

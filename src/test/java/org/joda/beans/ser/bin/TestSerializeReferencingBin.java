@@ -38,18 +38,17 @@ import org.joda.beans.test.BeanAssert;
 import org.junit.Test;
 
 /**
- * Test property roundtrip using compact binary.
+ * Test property roundtrip using referencing binary.
  */
-public class TestSerializeCompactBin {
+public class TestSerializeReferencingBin {
 
     @Test
     public void test_writeImmOptional() {
         ImmOptional optional = SerTestHelper.testImmOptional();
-        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(optional);
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(optional);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
-        //System.out.println(JodaBeanCompactBinReader.visualize(bytes));
-
-        ImmOptional bean = (ImmOptional) JodaBeanSer.COMPACT.compactBinReader().read(bytes);
+        ImmOptional bean = (ImmOptional) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }
@@ -57,11 +56,11 @@ public class TestSerializeCompactBin {
     @Test
     public void test_writeCollections() {
         ImmGuava<String> optional = SerTestHelper.testCollections();
-        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(optional);
-        //System.out.println(JodaBeanCompactBinReader.visualize(bytes));
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(optional);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.COMPACT.compactBinReader().read(bytes);
+        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }
@@ -69,11 +68,11 @@ public class TestSerializeCompactBin {
     @Test
     public void test_writeTree() {
         ImmTreeNode treeNode = SerTestHelper.testTree();
-        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(treeNode);
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(treeNode);
         byte[] regularBytes = JodaBeanSer.COMPACT.binWriter().write(treeNode);
-        //System.out.println(JodaBeanCompactBinReader.visualize(bytes));
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
-        ImmTreeNode bean = (ImmTreeNode) JodaBeanSer.COMPACT.compactBinReader().read(bytes);
+        ImmTreeNode bean = (ImmTreeNode) JodaBeanSer.COMPACT.binReader().read(bytes);
         //System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, treeNode);
         assertTrue(bytes.length < regularBytes.length / 2d);
@@ -109,7 +108,7 @@ public class TestSerializeCompactBin {
         }
         byte[] bytes = baos.toByteArray();
 
-        ImmDoubleFloat parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmDoubleFloat.class);
+        ImmDoubleFloat parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
         assertEquals(6, parsed.getA(), 1e-10);
         assertEquals(5, parsed.getB(), 1e-10);
     }
@@ -122,7 +121,7 @@ public class TestSerializeCompactBin {
             out.writeByte(-1);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmDoubleFloat.class);
+        JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
     }
 
     @Test(expected = RuntimeException.class)
@@ -133,7 +132,7 @@ public class TestSerializeCompactBin {
             out.writeByte(3);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmDoubleFloat.class);
+        JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
     }
 
     //-----------------------------------------------------------------------
@@ -171,9 +170,9 @@ public class TestSerializeCompactBin {
 
         ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
         ImmJodaConvertWrapper wrapper = ImmJodaConvertWrapper.of(bean, "Weird");
-        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(wrapper);
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(wrapper);
         assertArrayEquals(bytes, expected);
-        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertWrapper.class);
+        Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertWrapper.class);
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
@@ -205,11 +204,11 @@ public class TestSerializeCompactBin {
         byte[] expected = baos.toByteArray();
 
         ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
-        byte[] bytes = JodaBeanSer.COMPACT.compactBinWriter().write(bean);
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(bean);
 
         assertArrayEquals(expected, bytes);
 
-        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
+        Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
@@ -260,7 +259,7 @@ public class TestSerializeCompactBin {
         byte[] bytes = baos.toByteArray();
 
 
-        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertWrapper.class);
+        Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertWrapper.class);
         ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
         ImmJodaConvertWrapper wrapper = ImmJodaConvertWrapper.of(bean, "Weird");
         BeanAssert.assertBeanEquals(wrapper, parsed);
@@ -279,7 +278,7 @@ public class TestSerializeCompactBin {
         }
         byte[] bytes = baos.toByteArray();
 
-        Bean parsed = JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
+        Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
         ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -293,7 +292,7 @@ public class TestSerializeCompactBin {
             out.writeByte(2);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
+        JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
     }
 
     @Test(expected = RuntimeException.class)
@@ -305,7 +304,7 @@ public class TestSerializeCompactBin {
             out.writeByte(MsgPack.MIN_FIX_MAP);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmutableBean.class);
+        JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class);
     }
 
     @Test(expected = RuntimeException.class)
@@ -322,7 +321,7 @@ public class TestSerializeCompactBin {
             out.writeByte(MsgPack.NIL);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmutableBean.class);
+        JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class);
     }
 
     @Test(expected = RuntimeException.class)
@@ -345,7 +344,7 @@ public class TestSerializeCompactBin {
             out.write(MsgPack.NIL);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.compactBinReader().read(bytes, ImmJodaConvertBean.class);
+        JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
     }
 
 }
