@@ -28,10 +28,16 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.CompanyAddress;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmGeneric;
+import org.joda.beans.sample.ImmGenericArray;
+import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
+import org.joda.beans.sample.ImmJodaConvertBean;
+import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
+import org.joda.beans.sample.ImmTreeNode;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
 import org.joda.beans.sample.RiskLevel;
@@ -208,6 +214,52 @@ public class SerTestHelper {
             .biMap(bimap)
             .biMapInterface(bimap)
             .build();
+    }
+
+    public static ImmGenericCollections<Map<ImmJodaConvertBean, String>> testGenericNestedCollections() {
+        return ImmGenericCollections.<Map<ImmJodaConvertBean, String>>builder()
+            .map(ImmutableMap.of(
+                "Key",
+                ImmutableMap.of(
+                    new ImmJodaConvertBean("Hello:8"), "Done",
+                    new ImmJodaConvertBean("Hello:10"), "Done2")))
+            .build();
+    }
+
+    public static ImmGenericArray<ImmGeneric<?>> testGenericArrayWithNulls() {
+        return ImmGenericArray.of(new ImmGeneric<?>[]{
+            ImmGeneric.<String>builder()
+                .value("Help")
+                .build(),
+            ImmGeneric.<ImmJodaConvertWrapper>builder()
+                .value(ImmJodaConvertWrapper.of(null, "null"))
+                .build(),
+            ImmGeneric.<ImmJodaConvertWrapper>builder()
+                .value(ImmJodaConvertWrapper.of(new ImmJodaConvertBean("Bean:5"), "null"))
+                .build()
+        });
+    }
+
+    public static ImmTreeNode testTree() {
+        ImmutableList<ImmTreeNode> childList = ImmutableList.of(
+            ImmTreeNode.builder().name("First child").build(),
+            ImmTreeNode.builder().name("Second child").build(),
+            ImmTreeNode.builder().name("Third child").build());
+        return ImmTreeNode.of(
+            "Root Node",
+            ImmTreeNode.builder().name("First child").build(),
+            ImmTreeNode.builder().name("Second child").build(),
+            ImmTreeNode.builder().name("Third child").build(),
+            ImmutableList.of(
+                ImmTreeNode.builder().name("First child").build(),
+                ImmTreeNode.builder().name("Third child").build(),
+                ImmTreeNode.builder()
+                    .name("Fourth child")
+                    .child3(ImmTreeNode.builder().name("Third child")
+                        .childList(childList)
+                        .build())
+                    .childList(childList)
+                    .build()));
     }
 
     public static SimpleJson testSimpleJson() {

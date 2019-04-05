@@ -37,8 +37,8 @@ import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition(builderScope = "private")
-public final class ImmGenericArray<T extends Address>
+@BeanDefinition(builderScope = "private", factoryName = "of")
+public final class ImmGenericArray<T>
         implements
             Serializable,
             ImmutableBean {
@@ -65,7 +65,7 @@ public final class ImmGenericArray<T extends Address>
      * @return the meta-bean, not null
      */
     @SuppressWarnings("unchecked")
-    public static <R extends Address> ImmGenericArray.Meta<R> metaImmGenericArray(Class<R> cls) {
+    public static <R> ImmGenericArray.Meta<R> metaImmGenericArray(Class<R> cls) {
         return ImmGenericArray.Meta.INSTANCE;
     }
 
@@ -77,6 +77,18 @@ public final class ImmGenericArray<T extends Address>
      * The serialization version id.
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Obtains an instance.
+     * @param <T>  the type
+     * @param values  the value of the property, not null
+     * @return the instance
+     */
+    public static <T> ImmGenericArray<T> of(
+            T[] values) {
+        return new ImmGenericArray<>(
+            values);
+    }
 
     private ImmGenericArray(
             T[] values) {
@@ -133,7 +145,7 @@ public final class ImmGenericArray<T extends Address>
      * The meta-bean for {@code ImmGenericArray}.
      * @param <T>  the type
      */
-    public static final class Meta<T extends Address> extends DirectMetaBean {
+    public static final class Meta<T> extends DirectMetaBean {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -219,7 +231,7 @@ public final class ImmGenericArray<T extends Address>
      * The bean-builder for {@code ImmGenericArray}.
      * @param <T>  the type
      */
-    private static final class Builder<T extends Address> extends DirectPrivateBeanBuilder<ImmGenericArray<T>> {
+    private static final class Builder<T> extends DirectPrivateBeanBuilder<ImmGenericArray<T>> {
 
         private T[] values;
 

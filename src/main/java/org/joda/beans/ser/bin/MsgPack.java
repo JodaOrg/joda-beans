@@ -199,6 +199,14 @@ abstract class MsgPack {
      * Extension type code for a Joda-Bean meta-type.
      */
     static final int JODA_TYPE_META = 34;
+    /**
+     * Extension type code for a Joda-Bean serialized reference.
+     */
+    static final int JODA_TYPE_REF_KEY = 35;
+    /**
+     * Extension type code for a reference to a previously serialized Joda-Bean.
+     */
+    static final int JODA_TYPE_REF = 36;
 
     //-----------------------------------------------------------------------
     /**
@@ -207,23 +215,23 @@ abstract class MsgPack {
      * @param b  the byte
      * @return the two character hex equivalent, not null
      */
-    protected static String toHex(int b) {
+    static String toHex(int b) {
         return String.format("%02X", (byte) b);
     }
 
-    protected static boolean isMap(int typeByte) throws IOException {
+    static boolean isMap(int typeByte) throws IOException {
         return (typeByte >= MIN_FIX_MAP && typeByte <= MAX_FIX_MAP) || typeByte == MAP_16 || typeByte == MAP_32;
     }
 
-    protected static boolean isArray(int typeByte) throws IOException {
+    static boolean isArray(int typeByte) throws IOException {
         return (typeByte >= MIN_FIX_ARRAY && typeByte <= MAX_FIX_ARRAY) || typeByte == ARRAY_16 || typeByte == ARRAY_32;
     }
 
-    protected static boolean isString(int typeByte) throws IOException {
+    static boolean isString(int typeByte) throws IOException {
         return (typeByte >= MIN_FIX_STR && typeByte <= MAX_FIX_STR) || typeByte == STR_8 || typeByte == STR_16 || typeByte == STR_32;
     }
 
-    protected static boolean isIntegral(int typeByte) throws IOException {
+    static boolean isIntegral(int typeByte) throws IOException {
         return (typeByte >= MIN_FIX_INT && typeByte <= MAX_FIX_INT) ||
                 typeByte == UINT_8 || typeByte == UINT_16 || typeByte == UINT_32 || typeByte == UINT_64 ||
                 typeByte == SINT_8 || typeByte == SINT_16 || typeByte == SINT_32 || typeByte == SINT_64;

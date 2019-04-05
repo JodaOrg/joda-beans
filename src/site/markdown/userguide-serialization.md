@@ -21,11 +21,11 @@ Two standard layouts are provided - COMPACT and PRETTY.
 The compact layout has no whitespace, whereas the pretty layout uses indentation and new-lines.
 Methods on `JodaBeanSer` allow for further customization.
 
-For binary, replace `xmlWriter()` by `binWriter()` and
-`xmlReader()` by `binReader()`.
+For binary, replace `xmlWriter()` by `binWriter()` and `xmlReader()` by `binReader()`.
+In many cases, it may be worth using the referencing binary writer which is typically faster/smaller,
+see `binWriterReferencing()`.
 
-For JSON, replace `xmlWriter()` by `jsonWriter()` and
-`xmlReader()` by `jsonReader()`.
+For JSON, replace `xmlWriter()` by `jsonWriter()` and `xmlReader()` by `jsonReader()`.
 
 There is also a simple JSON reader/writer that does not expose Java types,
 and a simple Map-base reader/writer for interoperation with other libraries.
