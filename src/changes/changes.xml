@@ -16,6 +16,9 @@
       <action dev="jodastephen" type="fix">
         Ensure that annotations are parsed correctly on fields.
       </action>
+      <action dev="jodastephen" type="fix">
+        Ensure that all annotations are available at runtime.
+      </action>
     </release>
     <release version="2.5.0" date="2019-02-28" description="Version 2.5.0">
       <action dev="jodastephen" type="add">

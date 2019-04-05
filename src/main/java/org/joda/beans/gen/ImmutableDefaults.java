@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
  *   }
  * </pre>
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ImmutableDefaults {
 
