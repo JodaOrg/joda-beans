@@ -84,7 +84,7 @@ final class BeanReferences {
 
         // recursively check object graph
         Map<Object, Integer> objects = new LinkedHashMap<>();
-        findReferencesBean(root, root.getClass(), objects);
+        findReferencesBean(root, root.getClass(), objects, null);
 
         // build up the list of references, but only for those instances that are repeated
         List<Map.Entry<Object, Integer>> refEntries = objects.entrySet().stream()
@@ -123,7 +123,12 @@ final class BeanReferences {
     }
 
     // recursively find the references
-    private void findReferencesBean(Object base, Class<?> declaredClass, Map<Object, Integer> objects) {
+    private void findReferencesBean(
+            Object base,
+            Class<?> declaredClass,
+            Map<Object, Integer> objects,
+            SerIterator parentIterator) {
+
         if (base == null) {
             return;
         }
@@ -134,9 +139,8 @@ final class BeanReferences {
             return;
         }
 
-        addClassInfo(base, declaredClass);
-
         if (base instanceof Bean) {
+            addClassInfo(base, declaredClass);
             Bean bean = (Bean) base;
             if (settings.getConverter().isConvertible(bean.getClass())) {
                 return;
@@ -155,7 +159,7 @@ final class BeanReferences {
                             }
                             findReferencesIterable(itemIterator, objects);
                         } else {
-                            findReferencesBean(value, type, objects);
+                            findReferencesBean(value, type, objects, null);
                         }
                     } else {
                         // In case it's a null value or optional field
@@ -163,6 +167,15 @@ final class BeanReferences {
                     }
                 }
             }
+        } else if (parentIterator != null) {
+            SerIterator childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
+            if (childIterator != null) {
+                findReferencesIterable(childIterator, objects);
+            } else {
+                addClassInfo(base, declaredClass);
+            }
+        } else {
+            addClassInfo(base, declaredClass);
         }
     }
 
@@ -171,30 +184,30 @@ final class BeanReferences {
         if (itemIterator.category() == SerCategory.MAP) {
             while (itemIterator.hasNext()) {
                 itemIterator.next();
-                findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects);
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects);
+                findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects, null);
+                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
             }
         } else if (itemIterator.category() == SerCategory.COUNTED) {
             while (itemIterator.hasNext()) {
                 itemIterator.next();
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects);
+                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
             }
         } else if (itemIterator.category() == SerCategory.TABLE) {
             while (itemIterator.hasNext()) {
                 itemIterator.next();
-                findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects);
-                findReferencesBean(itemIterator.column(), itemIterator.columnType(), objects);
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects);
+                findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects, null);
+                findReferencesBean(itemIterator.column(), itemIterator.columnType(), objects, null);
+                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
             }
         } else if (itemIterator.category() == SerCategory.GRID) {
             while (itemIterator.hasNext()) {
                 itemIterator.next();
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects);
+                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
             }
         } else {
             while (itemIterator.hasNext()) {
                 itemIterator.next();
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects);
+                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
             }
         }
     }
@@ -207,12 +220,20 @@ final class BeanReferences {
         }
 
         if (value instanceof ImmutableBean) {
-            boolean noNeedToSerializeTypeName = classes.containsKey(value.getClass()) && declaredClass.equals(value.getClass());
-            if (noNeedToSerializeTypeName || settings.getConverter().isConvertible(value.getClass())) {
+            boolean isConvertible = settings.getConverter().isConvertible(value.getClass());
+            boolean noNeedToSerializeTypeName = declaredClass.equals(value.getClass()) &&
+                    (classes.containsKey(value.getClass()) || isConvertible);
+
+            if (noNeedToSerializeTypeName) {
                 return;
             }
+
             ImmutableBean bean = (ImmutableBean) value;
-            ClassInfo classInfo = classInfoFromMetaBean(bean.metaBean(), bean.getClass());
+            // Don't need metaproperty info if it's a convertible type
+            ClassInfo classInfo = isConvertible ?
+                    new ClassInfo(value.getClass(), new MetaProperty<?>[0]) :
+                    classInfoFromMetaBean(bean.metaBean(), bean.getClass());
+
             addClassInfoAndIncrementCount(bean.getClass(), classInfo);
             
         } else if (value instanceof Class<?>) {
@@ -229,9 +250,15 @@ final class BeanReferences {
                     classSerializationCount.compute(type, BeanReferences::incrementOrOne);
                     return;
                 }
-                SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
-                MetaBean metaBean = deser.findMetaBean(type);
-                ClassInfo classInfo = classInfoFromMetaBean(metaBean, type);
+                ClassInfo classInfo;
+                if (settings.getConverter().isConvertible(type)) {
+                    // Don't need metaproperty info if it's a convertible type
+                    classInfo = new ClassInfo(type, new MetaProperty<?>[0]);
+                } else {
+                    SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
+                    MetaBean metaBean = deser.findMetaBean(type);
+                    classInfo = classInfoFromMetaBean(metaBean, type);
+                }
                 addClassInfoAndIncrementCount(type, classInfo);
             }
             

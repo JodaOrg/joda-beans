@@ -91,7 +91,7 @@ public class JodaBeanBinWriter {
     /**
      * Settings.
      */
-    private final JodaBeanSer settings;  // CSIGNORE
+    private final JodaBeanSer settings;
     /**
      * Whether to use referencing.
      */
@@ -179,7 +179,11 @@ public class JodaBeanBinWriter {
         if (output == null) {
             throw new NullPointerException("output");
         }
-        if (referencing && bean instanceof ImmutableBean) {
+        if (referencing) {
+            if (!(bean instanceof ImmutableBean)) {
+                throw new IllegalArgumentException(
+                    "Referencing binary format can only write ImmutableBean instances: " + bean.getClass().getName());
+            }
             new JodaBeanReferencingBinWriter(settings, output).write((ImmutableBean) bean);
         } else {
             new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);

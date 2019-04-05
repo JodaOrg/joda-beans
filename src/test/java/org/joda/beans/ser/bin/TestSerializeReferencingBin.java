@@ -22,11 +22,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmDoubleFloat;
+import org.joda.beans.sample.ImmGeneric;
+import org.joda.beans.sample.ImmGenericArray;
+import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
@@ -61,6 +65,31 @@ public class TestSerializeReferencingBin {
 
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.COMPACT.binReader().read(bytes);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    @Test
+    public void test_writeGenericCollections() {
+        ImmGenericCollections<Map<ImmJodaConvertBean, String>> generics = SerTestHelper.testGenericNestedCollections();
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(generics);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        @SuppressWarnings("unchecked")
+        ImmGenericCollections<Map<ImmJodaConvertBean, String>> bean =
+                (ImmGenericCollections<Map<ImmJodaConvertBean, String>>) JodaBeanSer.COMPACT.binReader().read(bytes);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, generics);
+    }
+
+    @Test
+    public void test_writeFirstInstanceOfBeanHasNullProperties() {
+        ImmGenericArray<ImmGeneric<?>> optional = SerTestHelper.testGenericArrayWithNulls();
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(optional);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        @SuppressWarnings("unchecked")
+        ImmGenericArray<ImmGeneric<?>> bean = (ImmGenericArray<ImmGeneric<?>>) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }

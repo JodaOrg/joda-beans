@@ -34,7 +34,7 @@ public class JodaBeanBinReader extends MsgPack {
     /**
      * Settings.
      */
-    private final JodaBeanSer settings;  // CSIGNORE
+    private final JodaBeanSer settings;
 
     //-----------------------------------------------------------------------
     /**

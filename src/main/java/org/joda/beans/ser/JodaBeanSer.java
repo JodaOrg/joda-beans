@@ -297,7 +297,7 @@ public final class JodaBeanSer {
     }
 
     /**
-     * Creates a binary reader that handles both the standard and compact binary formats.
+     * Creates a binary reader that handles both the standard and referencing binary formats.
      * <p>
      * It is recommended, though not necessary, to create a new instance of the reader for each message.
      * 
