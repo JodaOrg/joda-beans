@@ -78,7 +78,7 @@ final class BeanReferences {
     // finds classes and references within the bean
     private void findReferences(ImmutableBean root) {
         // handle root bean
-        classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean(), root.getClass()));
+        classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean()));
         classSerializationCount.put(root.getClass(), 1);
 
         // recursively check object graph
@@ -228,7 +228,7 @@ final class BeanReferences {
             // Don't need metaproperty info if it's a convertible type
             ClassInfo classInfo = isConvertible ?
                     new ClassInfo(value.getClass(), new MetaProperty<?>[0]) :
-                    classInfoFromMetaBean(bean.metaBean(), bean.getClass());
+                    classInfoFromMetaBean(bean.metaBean());
 
             addClassInfoAndIncrementCount(bean.getClass(), classInfo);
             
@@ -250,13 +250,13 @@ final class BeanReferences {
     }
 
     // converts a meta-bean to a ClassInfo
-    private ClassInfo classInfoFromMetaBean(MetaBean metaBean, Class<?> aClass) {
+    private ClassInfo classInfoFromMetaBean(MetaBean metaBean) {
         MetaProperty<?>[] metaProperties = StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
             .filter(metaProp -> settings.isSerialized(metaProp))
             .toArray(MetaProperty<?>[]::new);
 
         // Positions get recreated when all classes have been recorded
-        return new ClassInfo(aClass, metaProperties);
+        return new ClassInfo(metaBean.beanType(), metaProperties);
     }
 
     // Used in Map#compute so we can initialise all the values to one and then increment
