@@ -8,10 +8,13 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.6.1" date="SNAPSHOT" description="Version 2.6.1">
+    <release version="2.6.1" date="2019-05-08" description="Version 2.6.1">
       <action dev="wjnicholson" type="fix">
         Fix referencing binary format for interfaces serialized via Joda-Convert.
         Fixes #204.
+      </action>
+      <action dev="jodastephen" type="update">
+        Update Joda-Convert version.
       </action>
     </release>
     <release version="2.6.0" date="2019-04-05" description="Version 2.6.0">
