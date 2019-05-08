@@ -113,11 +113,12 @@ public class TestSerializeJson {
     public void test_writeJodaConvertInterface() {
         ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
         
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(array);
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(array);
 //        System.out.println(json);
         
         @SuppressWarnings("unchecked")
-        ImmGenericCollections<JodaConvertInterface> bean = (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.jsonReader().read(json);
+        ImmGenericCollections<JodaConvertInterface> bean =
+                (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.jsonReader().read(json);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
     }

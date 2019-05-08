@@ -108,16 +108,17 @@ public class TestSerializeXml {
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }
-    
+
     @Test
     public void test_writeJodaConvertInterface() {
         ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
         
-        String xml = JodaBeanSer.COMPACT.xmlWriter().write(array);
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(array);
 //        System.out.println(xml);
         
         @SuppressWarnings("unchecked")
-        ImmGenericCollections<JodaConvertInterface> bean = (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.xmlReader().read(xml);
+        ImmGenericCollections<JodaConvertInterface> bean =
+                (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.xmlReader().read(xml);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
     }

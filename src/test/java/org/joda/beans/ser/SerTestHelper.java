@@ -216,7 +216,7 @@ public class SerTestHelper {
             .biMapInterface(bimap)
             .build();
     }
-    
+
     public static ImmGenericCollections<JodaConvertInterface> testGenericInterfaces() {
         return ImmGenericCollections.<JodaConvertInterface>builder()
             .map(ImmutableMap.of(

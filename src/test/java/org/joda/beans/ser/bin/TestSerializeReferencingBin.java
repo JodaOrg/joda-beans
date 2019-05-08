@@ -78,7 +78,8 @@ public class TestSerializeReferencingBin {
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         @SuppressWarnings("unchecked")
-        ImmGenericCollections<JodaConvertInterface> bean = (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.binReader().read(bytes);
+        ImmGenericCollections<JodaConvertInterface> bean =
+                (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
     }
