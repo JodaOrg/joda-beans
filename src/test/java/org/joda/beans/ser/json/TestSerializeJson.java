@@ -29,12 +29,14 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
+import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmMappedKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.JodaConvertBean;
+import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.JodaConvertWrapper;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
@@ -105,6 +107,19 @@ public class TestSerializeJson {
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.jsonReader().read(json);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    @Test
+    public void test_writeJodaConvertInterface() {
+        ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
+        
+        String json = JodaBeanSer.COMPACT.jsonWriter().write(array);
+//        System.out.println(json);
+        
+        @SuppressWarnings("unchecked")
+        ImmGenericCollections<JodaConvertInterface> bean = (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.jsonReader().read(json);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, array);
     }
 
     private void assertEqualsSerialization(String json, String expectedResource) throws IOException {

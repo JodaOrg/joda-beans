@@ -38,6 +38,7 @@ import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.ImmTreeNode;
+import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
 import org.joda.beans.sample.RiskLevel;
@@ -213,6 +214,14 @@ public class SerTestHelper {
             .sortedMapInterface(sortedMap)
             .biMap(bimap)
             .biMapInterface(bimap)
+            .build();
+    }
+    
+    public static ImmGenericCollections<JodaConvertInterface> testGenericInterfaces() {
+        return ImmGenericCollections.<JodaConvertInterface>builder()
+            .map(ImmutableMap.of(
+                "First", JodaConvertInterface.of("First"),
+                "Second", JodaConvertInterface.of("Second")))
             .build();
     }
 

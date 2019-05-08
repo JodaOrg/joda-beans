@@ -29,9 +29,11 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmDoubleFloat;
+import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.JodaConvertBean;
+import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.JodaConvertWrapper;
 import org.joda.beans.sample.Person;
 import org.joda.beans.ser.JodaBeanSer;
@@ -88,6 +90,19 @@ public class TestSerializeStandardBin {
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    @Test
+    public void test_writeJodaConvertInterface() {
+        ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
+        
+        byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(array);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+        
+        @SuppressWarnings("unchecked")
+        ImmGenericCollections<JodaConvertInterface> bean = (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.binReader().read(bytes);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, array);
     }
 
     //-----------------------------------------------------------------------

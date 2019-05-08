@@ -42,8 +42,6 @@ import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Test property roundtrip using referencing binary.
  */
@@ -74,11 +72,7 @@ public class TestSerializeReferencingBin {
 
     @Test
     public void test_writeJodaConvertInterface() {
-        ImmGenericCollections<JodaConvertInterface> array = ImmGenericCollections.<JodaConvertInterface>builder()
-            .map(ImmutableMap.of(
-                "First", JodaConvertInterface.of("First"),
-                "Second", JodaConvertInterface.of("Second")))
-            .build();
+        ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
 
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(array);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));

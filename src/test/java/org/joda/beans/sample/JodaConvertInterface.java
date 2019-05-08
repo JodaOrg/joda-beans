@@ -25,9 +25,9 @@ public interface JodaConvertInterface {
 
     @FromString
     public static JodaConvertInterface of(String uniqueName) {
-        return uniqueName.equalsIgnoreCase(First.instance.toString()) ?
-            First.instance :
-            Second.instance;
+        return uniqueName.equalsIgnoreCase(First.INSTANCE.toString()) ?
+            First.INSTANCE :
+            Second.INSTANCE;
     }
 
     @ToString
@@ -35,7 +35,7 @@ public interface JodaConvertInterface {
 
     final class First implements JodaConvertInterface {
 
-        static final First instance = new First();
+        static final First INSTANCE = new First();
 
         @Override
         public String toString() {
@@ -45,7 +45,7 @@ public interface JodaConvertInterface {
 
     final class Second implements JodaConvertInterface {
 
-        static final Second instance = new Second();
+        static final Second INSTANCE = new Second();
 
         @Override
         public String toString() {
