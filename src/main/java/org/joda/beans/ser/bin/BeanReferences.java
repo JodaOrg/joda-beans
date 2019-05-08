@@ -33,7 +33,6 @@ import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 
@@ -79,7 +78,7 @@ final class BeanReferences {
     // finds classes and references within the bean
     private void findReferences(ImmutableBean root) {
         // handle root bean
-        classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean(), root.getClass()));
+        classes.put(root.getClass(), classInfoFromMetaBean(root.metaBean()));
         classSerializationCount.put(root.getClass(), 1);
 
         // recursively check object graph
@@ -161,9 +160,6 @@ final class BeanReferences {
                         } else {
                             findReferencesBean(value, type, objects, null);
                         }
-                    } else {
-                        // In case it's a null value or optional field
-                        addClassInfo(type, type);
                     }
                 }
             }
@@ -232,39 +228,13 @@ final class BeanReferences {
             // Don't need metaproperty info if it's a convertible type
             ClassInfo classInfo = isConvertible ?
                     new ClassInfo(value.getClass(), new MetaProperty<?>[0]) :
-                    classInfoFromMetaBean(bean.metaBean(), bean.getClass());
+                    classInfoFromMetaBean(bean.metaBean());
 
             addClassInfoAndIncrementCount(bean.getClass(), classInfo);
             
-        } else if (value instanceof Class<?>) {
-            Class<?> type = (Class<?>) value;
-            if (type.equals(declaredClass) || settings.getConverter().isConvertible(type)) {
-                return;
-            }
-            if (Bean.class.isAssignableFrom(type) && !ImmutableBean.class.isAssignableFrom(type)) {
-                throw new IllegalArgumentException(
-                        "Can only serialize immutable beans in referencing binary format: " + type.getName());
-            }
-            if (ImmutableBean.class.isAssignableFrom(type)) {
-                if (classes.containsKey(type)) {
-                    classSerializationCount.compute(type, BeanReferences::incrementOrOne);
-                    return;
-                }
-                ClassInfo classInfo;
-                if (settings.getConverter().isConvertible(type)) {
-                    // Don't need metaproperty info if it's a convertible type
-                    classInfo = new ClassInfo(type, new MetaProperty<?>[0]);
-                } else {
-                    SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
-                    MetaBean metaBean = deser.findMetaBean(type);
-                    classInfo = classInfoFromMetaBean(metaBean, type);
-                }
-                addClassInfoAndIncrementCount(type, classInfo);
-            }
-            
         } else if (declaredClass == Object.class && !value.getClass().equals(String.class)) {
             Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
-            ClassInfo classInfo = new ClassInfo(value.getClass(), new MetaProperty<?>[0]);
+            ClassInfo classInfo = new ClassInfo(effectiveType, new MetaProperty<?>[0]);
             addClassInfoAndIncrementCount(effectiveType, classInfo);
             
         } else if (!settings.getConverter().isConvertible(declaredClass)) {
@@ -280,13 +250,13 @@ final class BeanReferences {
     }
 
     // converts a meta-bean to a ClassInfo
-    private ClassInfo classInfoFromMetaBean(MetaBean metaBean, Class<?> aClass) {
+    private ClassInfo classInfoFromMetaBean(MetaBean metaBean) {
         MetaProperty<?>[] metaProperties = StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
             .filter(metaProp -> settings.isSerialized(metaProp))
             .toArray(MetaProperty<?>[]::new);
 
         // Positions get recreated when all classes have been recorded
-        return new ClassInfo(aClass, metaProperties);
+        return new ClassInfo(metaBean.beanType(), metaProperties);
     }
 
     // Used in Map#compute so we can initialise all the values to one and then increment
