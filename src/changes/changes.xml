@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.6.2" date="2019-05-15" description="Version 2.6.2">
+      <action dev="wjnicholson" type="fix">
+        Fix referencing binary format for serialized nulls.
+        Fixes #205.
+      </action>
+    </release>
     <release version="2.6.1" date="2019-05-08" description="Version 2.6.1">
       <action dev="wjnicholson" type="fix">
         Fix referencing binary format for interfaces serialized via Joda-Convert.
