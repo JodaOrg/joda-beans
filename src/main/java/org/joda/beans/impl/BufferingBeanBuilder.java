@@ -123,7 +123,7 @@ public class BufferingBeanBuilder<T extends Bean>
     public BeanBuilder<T> set(MetaProperty<?> metaProperty, Object value) {
         if (value == null) {
             // ConcurrentHashMap does not allow null values
-            // As setting to null is functionally equivalent to not setting can continue
+            // As setting to null is functionally equivalent to not setting can return
             return this;
         }
         getBuffer().put(metaProperty, value);
