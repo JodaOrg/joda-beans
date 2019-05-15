@@ -31,6 +31,7 @@ public interface JodaConvertInterface {
     }
 
     @ToString
+    @Override
     public abstract String toString();
 
     final class First implements JodaConvertInterface {
