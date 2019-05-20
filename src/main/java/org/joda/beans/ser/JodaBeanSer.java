@@ -266,6 +266,20 @@ public final class JodaBeanSer {
 
     //-----------------------------------------------------------------------
     /**
+     * Creates a reader that determines the file format and parses it.
+     * <p>
+     * This parser can handle XML, JSON, simple JSON, binary and binary referencing formats.
+     * <p>
+     * It is recommended, though not necessary, to create a new instance of the reader for each message.
+     * 
+     * @return the smart reader, not null
+     */
+    public JodaBeanSmartReader smartReader() {
+        return new JodaBeanSmartReader(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Creates a binary writer using the standard format.
      * <p>
      * It is recommended, though not necessary, to create a new instance of the writer for each message.

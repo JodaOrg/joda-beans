@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.7.0" date="SNAPSHOT" description="Version 2.7.0">
+      <action dev="jodastephen" type="add">
+        Add smart reader, that dynamically works out the format of the input.
+      </action>
+    </release>
     <release version="2.6.2" date="2019-05-15" description="Version 2.6.2">
       <action dev="wjnicholson" type="fix">
         Fix referencing binary format for serialized nulls.
