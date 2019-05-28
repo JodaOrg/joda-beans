@@ -167,7 +167,12 @@ final class MsgPackVisualizer extends MsgPackInput {
         if (numeric) {
             int value = 0;
             for (byte b : bytes) {
-                value = (value << 8) | b;
+                value = (value << 8) | (0xFF & b);
+            }
+            if (bytes.length == 1) {
+                value = Byte.toUnsignedInt((byte) value);
+            } else if (bytes.length == 2) {
+                value = Short.toUnsignedInt((short) value);
             }
             str = Integer.toString(value);
         } else {
