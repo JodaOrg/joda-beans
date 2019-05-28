@@ -78,6 +78,8 @@ class BeanParser {
     private static final Pattern META_SCOPE_PATTERN = Pattern.compile(".*[ ,(]metaScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The builderStyle pattern. */
+    private static final Pattern BUILDER_NAME_PATTERN = Pattern.compile(".*[ ,(]builderName[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The constructorScope pattern. */
     private static final Pattern CONSTRUCTOR_SCOPE_PATTERN = Pattern.compile(".*[ ,(]constructorScope[ ]*[=][ ]*[\"]([a-zA-Z@]*)[\"].*");
     /** The factoryName pattern. */
@@ -163,6 +165,7 @@ class BeanParser {
         if (data.isBeanBuilderScopeValid() == false) {
             throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanBuilderScope(), file, beanDefIndex);
         }
+        data.setBeanBuilderName(parseBeanBuilderName(beanDefIndex));
         data.setFactoryName(parseFactoryName(beanDefIndex));
         data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
         data.setCloneStyle(parseCloneStyle(beanDefIndex));
@@ -351,6 +354,15 @@ class BeanParser {
             return matcher.group(1);
         }
         return "smart";
+    }
+
+    private String parseBeanBuilderName(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = BUILDER_NAME_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private String parseFactoryName(int defLine) {

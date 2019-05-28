@@ -82,6 +82,18 @@ public @interface BeanDefinition {
     String builderScope() default "smart";
 
     /**
+     * The name of the manual builder class.
+     * <p>
+     * This is used when there is a desire to manually write the builder.
+     * By default, this is not set, and a builder is generated based on the scope.
+     * Set to 'FooBuilder' to generate code that expects a manually written builder named FooBuilder
+     * (which may be an inner class or a top-level class).
+     * 
+     * @return the builder scope, defaulted to ''
+     */
+    String builderName() default "";
+
+    /**
      * The name of the factory method.
      * <p>
      * By default, this is an empty string and no factory is generated.

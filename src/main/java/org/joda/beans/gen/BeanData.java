@@ -37,6 +37,8 @@ class BeanData {
     private String beanMetaScope;
     /** The bean builder scope. */
     private String beanBuilderScope;
+    /** The bean builder style. */
+    private String beanBuilderName;
     /** The factory method name. */
     private String factoryName;
     /** Whether to cache the hash code. */
@@ -334,7 +336,48 @@ class BeanData {
      * @return true if generated
      */
     public boolean isSkipBuilderGeneration() {
-        return (isMutable() && isBuilderScopeVisible() == false) || isBeanStyleLight();
+        return (isMutable() && isBuilderScopeVisible() == false) || isBeanStyleLight() || isBeanBuilderManual();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the bean builder class name.
+     * @return the class name
+     */
+    public String getBeanBuilderName() {
+        return beanBuilderName;
+    }
+
+    /**
+     * Sets the bean builder class name.
+     * @param builderName  the class name
+     */
+    public void setBeanBuilderName(String builderName) {
+        this.beanBuilderName = builderName;
+    }
+
+    /**
+     * Is the builder style manual.
+     * @return the flag
+     */
+    public boolean isBeanBuilderManual() {
+        return !beanBuilderName.isEmpty();
+    }
+
+    /**
+     * Gets the effective bean builder.
+     * @return the name
+     */
+    public String getEffectiveBeanBuilderName() {
+        return beanBuilderName.isEmpty() ? getTypeRaw() + ".Builder" : beanBuilderName;
+    }
+
+    /**
+     * Gets the effective bean builder.
+     * @return the name
+     */
+    public String getEffectiveMinimalBeanBuilderName() {
+        return beanBuilderName.isEmpty() ? "Builder" : beanBuilderName;
     }
 
     //-----------------------------------------------------------------------

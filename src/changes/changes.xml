@@ -12,6 +12,9 @@
       <action dev="jodastephen" type="add">
         Add smart reader, that dynamically works out the format of the input.
       </action>
+      <action dev="jodastephen" type="add">
+        Provide the ability to manually write a builder.
+      </action>
       <action dev="wjnicholson" type="fix">
         Fix referencing binary format for serialized nulls.
         Fixes #207.
