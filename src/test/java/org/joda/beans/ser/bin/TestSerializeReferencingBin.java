@@ -28,6 +28,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmDoubleFloat;
+import org.joda.beans.sample.ImmDefault;
 import org.joda.beans.sample.ImmGeneric;
 import org.joda.beans.sample.ImmGenericArray;
 import org.joda.beans.sample.ImmGenericCollections;
@@ -155,6 +156,36 @@ public class TestSerializeReferencingBin {
         ImmDoubleFloat parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
         assertEquals(6, parsed.getA(), 1e-10);
         assertEquals(5, parsed.getB(), 1e-10);
+    }
+
+    @Test
+    public void test_read_optionalTypeToDefaulted() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (DataOutputStream out = new DataOutputStream(baos)) {
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2); // version
+            out.writeByte(0); // refs
+
+            //classes
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmDefault.class.getName().length());
+            out.writeBytes(ImmDefault.class.getName());
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
+            out.writeByte(MsgPack.MIN_FIX_STR + 5);
+            out.writeBytes("value");
+
+            // Data
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(0);
+            out.writeByte(MsgPack.NIL); // value not set
+        }
+        byte[] bytes = baos.toByteArray();
+
+        ImmDefault parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDefault.class);
+        assertEquals("Defaulted", parsed.getValue());
     }
 
     @Test(expected = RuntimeException.class)

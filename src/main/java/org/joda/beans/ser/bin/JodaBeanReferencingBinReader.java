@@ -150,7 +150,12 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                 } else {
                     propName = metaProp.name();
                     Object value = parseObject(SerOptional.extractType(metaProp, classInfo.type), metaProp, classInfo.type, null, false);
-                    deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, classInfo.type, value));
+                    Object wrappedValue = SerOptional.wrapValue(metaProp, classInfo.type, value);
+                    if (wrappedValue != null) {
+                        // null is the same as a value not being set
+                        // in the case of defaults we want those to take precedence
+                        deser.setValue(builder, metaProp, wrappedValue);
+                    }
                 }
                 propName = "";
             }
