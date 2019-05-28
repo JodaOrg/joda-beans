@@ -12,6 +12,10 @@
       <action dev="jodastephen" type="add">
         Add smart reader, that dynamically works out the format of the input.
       </action>
+      <action dev="wjnicholson" type="fix">
+        Fix referencing binary format for serialized nulls.
+        Fixes #207.
+      </action>
     </release>
     <release version="2.6.2" date="2019-05-15" description="Version 2.6.2">
       <action dev="wjnicholson" type="fix">
