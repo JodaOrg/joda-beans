@@ -74,6 +74,10 @@ public final class BeanGenConfig {
      * The default style to use.
      */
     private String defaultStyle = "smart";
+    /**
+     * Whether to add the generated annotation.
+     */
+    private boolean generatedAnno;
 
     /**
      * Parses the configuration file.
@@ -398,6 +402,24 @@ public final class BeanGenConfig {
      */
     public void setDefaultStyle(String defaultStyle) {
         this.defaultStyle = defaultStyle;
+    }
+
+    /**
+     * Gets whether to add the generated annotation.
+     * 
+     * @return whether to add the generated annotation, not null
+     */
+    public boolean isGeneratedAnno() {
+        return generatedAnno;
+    }
+
+    /**
+     * Sets whether to add the generated annotation.
+     * 
+     * @param generatedAnno  whether to add the generated annotation
+     */
+    public void setGeneratedAnno(boolean generatedAnno) {
+        this.generatedAnno = generatedAnno;
     }
 
 }

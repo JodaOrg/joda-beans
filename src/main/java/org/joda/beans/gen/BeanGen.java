@@ -246,6 +246,12 @@ class BeanGen {
         addLine(0, LINE_SEPARATOR_INDENTED);
     }
 
+    private void generateGenerated(int tabCount) {
+        if (config.isGeneratedAnno()) {
+            addLine(tabCount, "@Generated(\"org.joda.beans.gen.BeanCodeGen\")");
+        }
+    }
+
     private void generateFactory() {
         if (data.isFactoryRequired()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
@@ -790,6 +796,7 @@ class BeanGen {
             return;
         }
         addLine(1, "@Override");
+        generateGenerated(1);
         addLine(1, "public boolean equals(Object obj) {");
         addLine(2, "if (obj == this) {");
         addLine(3, "return true;");
@@ -831,6 +838,7 @@ class BeanGen {
             return;
         }
         addLine(1, "@Override");
+        generateGenerated(1);
         addLine(1, "public int hashCode() {");
         if (data.isCacheHashCode()) {
             addLine(2, "int hash = " + config.getPrefix() + "cacheHashCode;");
@@ -889,6 +897,7 @@ class BeanGen {
         List<PropertyGen> props = toStringProperties();
         if (data.isRootClass() && data.isTypeFinal()) {
             addLine(1, "@Override");
+            generateGenerated(1);
             addLine(1, "public String toString() {");
             addLine(2, "StringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
             addLine(2, "buf.append(\"" + data.getTypeRaw() + "{\");");
@@ -911,6 +920,7 @@ class BeanGen {
         }
         
         addLine(1, "@Override");
+        generateGenerated(1);
         addLine(1, "public String toString() {");
         addLine(2, "StringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
         addLine(2, "buf.append(\"" + data.getTypeRaw() + "{\");");
@@ -927,6 +937,7 @@ class BeanGen {
         if (data.isSubClass()) {
             addLine(1, "@Override");
         }
+        generateGenerated(1);
         addLine(1, "protected void toString(StringBuilder buf) {");
         if (data.isSubClass()) {
             addLine(2, "super.toString(buf);");
@@ -966,6 +977,7 @@ class BeanGen {
             }
         }
         addLine(1, " */");
+        generateGenerated(1);
         String superMeta;
         if (data.isSubClass()) {
             superMeta = data.getSuperTypeRaw() + ".Meta" + data.getSuperTypeGeneric(true);
@@ -1216,6 +1228,7 @@ class BeanGen {
             }
         }
         addLine(1, " */");
+        generateGenerated(1);
         String superBuilder;
         if (data.isSubClass()) {
             superBuilder = data.getSuperTypeRaw() + ".Builder" + data.getSuperTypeGeneric(true);

@@ -57,6 +57,7 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
+            System.out.println("    -generated        add @Generated annotation to generated code");
             System.out.println("    -config=[f]       config file: 'jdk'/'guava', default guava");
             System.out.println("    -style=[s]        default bean style: 'light'/'minimal'/'full', default smart");
             System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
@@ -92,6 +93,7 @@ public class BeanCodeGen {
         String prefix = "";
         String defaultStyle = null;
         boolean recurse = false;
+        boolean generatedAnno = false;
         int verbosity = 1;
         boolean write = true;
         File file = null;
@@ -112,6 +114,11 @@ public class BeanCodeGen {
                 prefix = arg.substring(8);
             } else if (arg.equals("-R")) {
                 recurse = true;
+            } else if (arg.equals("-generated")) {
+                if (generatedAnno) {
+                    throw new IllegalArgumentException("Argument 'generated' must not be specified twice: " + Arrays.toString(args));
+                }
+                generatedAnno = true;
             } else if (arg.startsWith("-config=")) {
                 if (config != null) {
                     throw new IllegalArgumentException("Argument 'config' must not be specified twice: " + Arrays.toString(args));
@@ -144,6 +151,7 @@ public class BeanCodeGen {
         if (defaultStyle != null) {
             config.setDefaultStyle(defaultStyle);
         }
+        config.setGeneratedAnno(generatedAnno);
         return new BeanCodeGen(files, config, verbosity, write);
     }
 
