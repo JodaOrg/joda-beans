@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.7.0" date="SNAPSHOT" description="Version 2.7.0">
+    <release version="2.7.0" date="2019-06-03" description="Version 2.7.0">
       <action dev="jodastephen" type="add">
         Add smart reader, that dynamically works out the format of the input.
       </action>
