@@ -22,8 +22,8 @@ The compact layout has no whitespace, whereas the pretty layout uses indentation
 Methods on `JodaBeanSer` allow for further customization.
 
 For binary, replace `xmlWriter()` by `binWriter()` and `xmlReader()` by `binReader()`.
-In many cases, it may be worth using the referencing binary writer which is typically faster/smaller,
-see `binWriterReferencing()`.
+If the object model is entirely formed of immutable beans, it is usually worth using the referencing binary
+writer which is typically faster/smaller, see `binWriterReferencing()`.
 
 For JSON, replace `xmlWriter()` by `jsonWriter()` and `xmlReader()` by `jsonReader()`.
 
@@ -67,6 +67,12 @@ There is an alternative mode that is more lenient:
 This mode will ignore unknown properties received for a bean.
 If a Java type cannot be found, lenient mode will attempt to fallback to an alternative type, such as `String`.
 Together these help solve problems when integrating multiple projects/services using Joda-Beans.
+
+
+## Smart reader
+
+When reading data, it is possible to determine the type of the serialized data dynamically.
+Use `JodaBeanSer.COMPACT.smartReader()` to read an input stream that contains a JSON, XML or binary serialized bean.
 
 
 ## Links

@@ -15,6 +15,10 @@
       <action dev="jodastephen" type="add">
         Provide the ability to manually write a builder.
       </action>
+      <action dev="jodastephen" type="add">
+        New command line flag -generated to add @Generated annotation.
+        Fixes #209, #149
+      </action>
       <action dev="jodastephen" type="update">
         Change XML parsing to share factory.
         The JDK bug was fixed many years ago now, please use JDK 8u20 or later to avoid issues.

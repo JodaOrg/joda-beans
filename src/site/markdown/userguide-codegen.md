@@ -78,6 +78,7 @@ The command line takes the following arguments:
     -indent=tab       use a tab for indenting, default 4 spaces
     -indent=[n]       use n spaces for indenting, default 4
     -prefix=[p]       field prefix of p should be removed, no default
+    -generated        add @Generated annotation to generated code
     -config=[f]       config file: 'jdk'/'guava', default guava
     -style=[s]        default bean style: 'light'/'minimal'/'full', default smart
     -verbose=[v]      output logging with verbosity from 0 to 3, default 1
@@ -490,6 +491,26 @@ This is the approach with the medium amount of code generation.
 Internally, the bean uses lambdas to implement the meta bean.
 
 Both immutable and mutable minimal beans can be generated.
+
+
+## Manual builders
+
+It is possible to write the builder class manually and still have the generated code refer to it.
+A manual builder can be an inner class or top-level class.
+
+```
+ @BeanDefinition(builderName = "PersonBuilder", constructorScope = "package")
+ public final class Person implements ImmutableBean {
+   // code generation of a minimal immutable bean
+ }
+ // using `extends BasicImmutableBeanBuilder<Person>` might be a better place to start
+ public final class PersonBuilder implements BeanBuilder {
+   // manual builder code
+ }
+```
+
+A common way to approach manual builders is to generate the builder, copy the builder code,
+add the `builderName` flag and paste the builder code ready to edit.
 
 
 ## Test coverage
