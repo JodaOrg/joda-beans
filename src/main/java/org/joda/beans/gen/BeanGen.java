@@ -506,14 +506,19 @@ class BeanGen {
                     }
                 }
             } else {
+                // minimal
                 data.ensureImport(MinimalMetaBean.class);
                 addLine(3, "MinimalMetaBean.of(");
                 addLine(5, data.getTypeRaw() + ".class,");
                 generateFieldNames(nonDerived);
                 String builderLambda = "() -> new " + data.getEffectiveBeanBuilderName() + "()";
                 if (data.isSkipBuilderGeneration()) {
-                    data.ensureImport(BasicBeanBuilder.class);
-                    builderLambda = "() -> new BasicBeanBuilder<>(new " + data.getTypeWithDiamond() + "())";
+                    if (data.isBeanBuilderManual()) {
+                        builderLambda = "() -> new " + data.getEffectiveMinimalBeanBuilderName() + "()";
+                    } else {
+                        data.ensureImport(BasicBeanBuilder.class);
+                        builderLambda = "() -> new BasicBeanBuilder<>(new " + data.getTypeWithDiamond() + "())";
+                    }
                 }
                 if (nonDerived.isEmpty()) {
                     if (data.isImmutable()) {
