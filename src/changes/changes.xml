@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.8.0" date="SNAPSHOT" description="Version 2.8.0">
+      <action dev="jodastephen" type="add">
+        Provide ability to copy a bean to a builder of a different type.
+        See JodaBeanUtils.copy(Bean, Class).
+      </action>
+    </release>
     <release version="2.7.1" date="2019-06-04" description="Version 2.7.1">
       <action dev="jodastephen" type="fix">
         Fix manual builders when used with minimal style.

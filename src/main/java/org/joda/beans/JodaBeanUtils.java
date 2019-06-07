@@ -468,6 +468,55 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
+     * Copies properties from a bean to a different bean type.
+     * <p>
+     * This copies each non-null property value from the source bean to the destination builder
+     * provided that the destination builder supports the property name and the type is compatible.
+     * 
+     * @param <T>  the type of the bean to create
+     * @param sourceBean  the bean to copy from, not null
+     * @param destType  the type of the destination bean, not null
+     * @return the copied bean as a builder
+     * @throws RuntimeException if unable to copy a property
+     */
+    public static <T extends Bean> BeanBuilder<T> copy(Bean sourceBean, Class<T> destType) {
+        MetaBean destMeta = MetaBean.of(destType);
+        @SuppressWarnings("unchecked")
+        BeanBuilder<T> destBuilder = (BeanBuilder<T>) destMeta.builder();
+        return copyInto(sourceBean, destMeta, destBuilder);
+    }
+
+    /**
+     * Copies properties from a bean to a builder, which may be for a different type.
+     * <p>
+     * This copies each non-null property value from the source bean to the destination builder
+     * provided that the destination builder supports the property name and the type is compatible.
+     * 
+     * @param <T>  the type of the bean to create
+     * @param sourceBean  the bean to copy from, not null
+     * @param destMeta  the meta bean of the destination, not null
+     * @param destBuilder  the builder to populate, not null
+     * @return the updated builder
+     * @throws RuntimeException if unable to copy a property
+     */
+    public static <T extends Bean> BeanBuilder<T> copyInto(Bean sourceBean, MetaBean destMeta, BeanBuilder<T> destBuilder) {
+        MetaBean sourceMeta = sourceBean.metaBean();
+        for (MetaProperty<?> sourceProp : sourceMeta.metaPropertyIterable()) {
+            if (destMeta.metaPropertyExists(sourceProp.name())) {
+                MetaProperty<?> destProp = destMeta.metaProperty(sourceProp.name());
+                if (destProp.propertyType().isAssignableFrom(sourceProp.propertyType())) {
+                    Object sourceValue = sourceProp.get(sourceBean);
+                    if (sourceValue != null) {
+                        destBuilder.set(destProp, sourceValue);
+                    }
+                }
+            }
+        }
+        return destBuilder;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Clones a bean.
      * <p>
      * This performs a deep clone. There is no protection against cycles in

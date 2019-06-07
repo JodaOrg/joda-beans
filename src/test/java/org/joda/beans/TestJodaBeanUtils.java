@@ -18,6 +18,7 @@ package org.joda.beans;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -446,6 +447,32 @@ public class TestJodaBeanUtils {
         assertEquals(JodaBeanUtils.hashCode(new char[] {'1'}), Arrays.hashCode(new char[] {'1'}));
         assertEquals(JodaBeanUtils.hashCode(new float[] {1f}), Arrays.hashCode(new float[] {1f}));
         assertEquals(JodaBeanUtils.hashCode(new double[] {1d}), Arrays.hashCode(new double[] {1d}));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_copy() {
+        Person p = new Person();
+        p.setForename("Stephen");
+        p.setSurname("Colebourne");
+        p.setExtensions(new FlexiBean());
+        p.getExtensions().set("Foo", "bar");
+        ImmPerson copied = JodaBeanUtils.copy(p, ImmPerson.class).build();
+        assertNotSame(copied, p);
+        assertEquals(copied.getForename(), p.getForename());
+        assertEquals(copied.getSurname(), p.getSurname());
+    }
+
+    @Test
+    public void test_copyInto() {
+        Person p = new Person();
+        p.setForename("Stephen");
+        p.setExtensions(new FlexiBean());
+        p.getExtensions().set("Foo", "bar");
+        ImmPerson copied = JodaBeanUtils.copyInto(p, ImmPerson.meta(), ImmPerson.builder()).build();
+        assertNotSame(copied, p);
+        assertEquals(copied.getForename(), p.getForename());
+        assertNull(copied.getSurname());
     }
 
     //-----------------------------------------------------------------------
