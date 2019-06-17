@@ -1330,8 +1330,13 @@ class BeanGen {
             }
             addLine(3, "}");
         } else {
-            data.ensureImport(NoSuchElementException.class);
-            addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            if (!data.isRootClass()) {
+                addLine(3, "super.get(propertyName);");
+                addLine(3, "return this;");
+            } else {
+                data.ensureImport(NoSuchElementException.class);
+                addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            }
         }
         addLine(2, "}");
         addBlankLine();
@@ -1364,8 +1369,13 @@ class BeanGen {
             addLine(3, "}");
             addLine(3, "return this;");
         } else {
-            data.ensureImport(NoSuchElementException.class);
-            addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            if (!data.isRootClass()) {
+                addLine(3, "super.set(propertyName, newValue);");
+                addLine(3, "return this;");
+            } else {
+                data.ensureImport(NoSuchElementException.class);
+                addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
+            }
         }
         addLine(2, "}");
         addBlankLine();
