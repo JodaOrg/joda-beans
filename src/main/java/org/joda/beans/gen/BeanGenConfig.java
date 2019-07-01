@@ -51,6 +51,10 @@ public final class BeanGenConfig {
      */
     private final Map<String, BuilderGen> builderGenerators;
     /**
+     * The collection generators.
+     */
+    private final Map<String, CollectionGen> collectionGenerators;
+    /**
      * The invalid immutable types.
      */
     private final Set<String> invalidImmutableTypes;
@@ -96,7 +100,7 @@ public final class BeanGenConfig {
         if (loader == null) {
             throw new IllegalArgumentException("ClassLoader was null: " + fullFile);
         }
-        URL url = loader.getResource(fullFile);
+        URL url = BeanGenConfig.class.getResource("guava.ini");
         if (url == null) {
             throw new IllegalArgumentException("Configuration file not found: " + fullFile);
         }
@@ -131,6 +135,7 @@ public final class BeanGenConfig {
         Map<String, String> immutableGetClones = new HashMap<>();
         Map<String, String> immutableVarArgs = new HashMap<>();
         Map<String, String> builderInits = new HashMap<>();
+        Map<String, String> builderAdds = new HashMap<>();
         Map<String, String> builderTypes = new HashMap<>();
         Set<String> invalidImmutableTypes = new HashSet<>();
         for (ListIterator<String> iterator = lines.listIterator(); iterator.hasNext(); ) {
@@ -238,6 +243,21 @@ public final class BeanGenConfig {
                     String value = line.substring(pos + 1).trim();
                     builderInits.put(key, value);
                 }
+            } else if (line.equals("[immutable.builder.add]")){
+                while (iterator.hasNext()) {
+                    line = iterator.next().trim();
+                    if (line.startsWith("[")) {
+                        iterator.previous();
+                        break;
+                    }
+                    int pos = line.indexOf('=');
+                    if (pos <= 0) {
+                        throw new IllegalArgumentException("Invalid ini file line: " + line);
+                    }
+                    String key = line.substring(0, pos).trim();
+                    String value = line.substring(pos + 1).trim();
+                    builderAdds.put(key, value);
+                }
             } else {
                 throw new IllegalArgumentException("Invalid ini file section: " + line);
             }
@@ -261,7 +281,13 @@ public final class BeanGenConfig {
             }
             copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier));
         }
-        return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes, immutableVarArgs, immutableGetClones);
+        Map<String, CollectionGen> collectionGenerators = new HashMap<>();
+        for (Entry<String, String> entry : builderAdds.entrySet()) {
+            String fieldType = entry.getKey();
+            String adder = entry.getValue();
+            collectionGenerators.put(fieldType, new CollectionGen.PatternCollectionGen(adder));
+        }
+        return new BeanGenConfig(copyGenerators, builderGenerators, collectionGenerators, builderTypes, invalidImmutableTypes, immutableVarArgs, immutableGetClones);
     }
 
     //-----------------------------------------------------------------------
@@ -270,6 +296,7 @@ public final class BeanGenConfig {
      * 
      * @param copyGenerators  the copy generators, not null
      * @param builderGenerators  the builder generators, not null
+     * @param collectionGenerators  the collection generators, not null
      * @param builderTypes  the builder types, not null
      * @param invalidImmutableTypes  the invalid immutable types, not null
      * @param immutableVarArgs  the varargs code
@@ -278,12 +305,14 @@ public final class BeanGenConfig {
     private BeanGenConfig(
             Map<String, CopyGen> copyGenerators,
             Map<String, BuilderGen> builderGenerators,
+            Map<String, CollectionGen> collectionGenerators,
             Map<String, String> builderTypes,
             Set<String> invalidImmutableTypes,
             Map<String, String> immutableVarArgs,
             Map<String, String> immutableGetClones) {
         this.copyGenerators = copyGenerators;
         this.builderGenerators = builderGenerators;
+        this.collectionGenerators = collectionGenerators;
         this.builderTypes = builderTypes;
         this.invalidImmutableTypes = invalidImmutableTypes;
         this.immutableVarArgs = immutableVarArgs;
@@ -302,11 +331,20 @@ public final class BeanGenConfig {
 
     /**
      * The builder generators.
-     * 
+     *
      * @return the generators, not null
      */
     public Map<String, BuilderGen> getBuilderGenerators() {
         return builderGenerators;
+    }
+
+    /**
+     * The collection generators.
+     *
+     * @return the generators, not null
+     */
+    public Map<String, CollectionGen> getCollectionGenerators() {
+        return collectionGenerators;
     }
 
     /**

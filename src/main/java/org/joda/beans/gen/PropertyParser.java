@@ -95,6 +95,7 @@ class PropertyParser {
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
         data.resolveBuilderGen();
+        data.resolveCollectionGen();
         data.resolveEqualsHashCodeStyle(beanParser.getFile(), lineIndex);
         data.resolveToStringStyle(beanParser.getFile(), lineIndex);
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
@@ -126,6 +127,7 @@ class PropertyParser {
         data.resolveSetterGen(beanParser.getFile(), lineIndex);
         data.resolveCopyGen(beanParser.getFile(), lineIndex);
         data.resolveBuilderGen();
+        data.resolveCollectionGen();
         data.setMetaFieldName(beanParser.getFieldPrefix() + data.getPropertyName());
         parseComments(content, data);
         return new PropertyGen(data);
