@@ -45,7 +45,7 @@ Various documentation is available:
 
 
 ### Releases
-[Release 2.6.2](https://www.joda.org/joda-beans/download.html) is the current release.
+[Release 2.7.1](https://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
 There are only [minor incompatibilities](https://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
@@ -65,6 +65,7 @@ GitHub [issues](https://github.com/JodaOrg/joda-beans/issues) and [pull requests
 should be used when you want to help advance the project.
 Commercial support is available via the
 [Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-joda-joda-beans?utm_source=maven-org-joda-joda-beans&utm_medium=referral&utm_campaign=readme).
+Donations are also accepted via [OpenCollective](https://opencollective.com/joda).
 
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
 Tidelift will coordinate the fix and disclosure.

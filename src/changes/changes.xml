@@ -8,9 +8,35 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.7.0" date="SNAPSHOT" description="Version 2.7.0">
+    <release version="2.8.0" date="SNAPSHOT" description="Version 2.8.0">
+      <action dev="jodastephen" type="add">
+        Provide ability to copy a bean to a builder of a different type.
+        See JodaBeanUtils.copy(Bean, Class).
+      </action>
+      <action dev="jodastephen" type="add">
+        Fix mutable beans where the subclass has no properties.
+        Fixes #210.
+      </action>
+    </release>
+    <release version="2.7.1" date="2019-06-04" description="Version 2.7.1">
+      <action dev="jodastephen" type="fix">
+        Fix manual builders when used with minimal style.
+      </action>
+    </release>
+    <release version="2.7.0" date="2019-06-03" description="Version 2.7.0">
       <action dev="jodastephen" type="add">
         Add smart reader, that dynamically works out the format of the input.
+      </action>
+      <action dev="jodastephen" type="add">
+        Provide the ability to manually write a builder.
+      </action>
+      <action dev="jodastephen" type="add">
+        New command line flag -generated to add @Generated annotation.
+        Fixes #209, #149
+      </action>
+      <action dev="jodastephen" type="update">
+        Change XML parsing to share factory.
+        The JDK bug was fixed many years ago now, please use JDK 8u20 or later to avoid issues.
       </action>
       <action dev="wjnicholson" type="fix">
         Fix referencing binary format for serialized nulls.

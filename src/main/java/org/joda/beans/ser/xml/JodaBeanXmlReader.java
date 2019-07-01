@@ -63,6 +63,20 @@ import org.joda.beans.ser.SerTypeMapper;
  */
 public class JodaBeanXmlReader {
 
+    // if you get a message like
+    // "Message: JAXP00010001: The parser has encountered more than "64000" entity 
+    // expansions in this document; this is the limit imposed by the JDK."
+    // then you need to update your JDK to 8u20 or later, see JDK-8028111
+    private static final XMLInputFactory XML_FACTORY;
+    static {
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        factory.setProperty(XMLInputFactory.IS_COALESCING, true);
+        factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
+        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        XML_FACTORY = factory;
+    }
+
     /**
      * Settings.
      */
@@ -133,7 +147,7 @@ public class JodaBeanXmlReader {
     public <T> T read(final InputStream input, Class<T> rootType) {
         try {
             try {
-                reader = factory().createXMLEventReader(input);
+                reader = XML_FACTORY.createXMLEventReader(input);
                 return read(rootType);
             } finally {
                 if (reader != null) {
@@ -168,7 +182,7 @@ public class JodaBeanXmlReader {
     public <T> T read(final Reader input, Class<T> rootType) {
         try {
             try {
-                reader = factory().createXMLEventReader(input);
+                reader = XML_FACTORY.createXMLEventReader(input);
                 return read(rootType);
             } finally {
                 if (reader != null) {
@@ -180,20 +194,6 @@ public class JodaBeanXmlReader {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    /**
-     * Creates the factory.
-     * <p>
-     * Recreated each time to avoid JDK-8028111.
-     * 
-     * @return the factory, not null
-     */
-    private XMLInputFactory factory() {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        return factory;
     }
 
     //-----------------------------------------------------------------------

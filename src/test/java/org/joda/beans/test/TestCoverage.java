@@ -16,6 +16,8 @@
 package org.joda.beans.test;
 
 import org.joda.beans.sample.Address;
+import org.joda.beans.sample.MutableBaseBean;
+import org.joda.beans.sample.MutableDerivedBean;
 import org.joda.beans.sample.Person;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,59 +27,56 @@ import org.junit.Test;
  */
 public class TestCoverage {
 
-    private Person person1;
-    private Person person2;
+    private Person person;
+    private MutableBaseBean mutableBase;
+    private MutableDerivedBean mutableDerived;
 
     @Before
     public void setUp() {
-        person1 = new Person();
-        person1.setForename("Vince");
-        person1.setSurname("Cable");
-        person1.setNumberOfCars(1);
-        person1.getAddressList().add(new Address());
-        person1.getAddressList().get(0).setNumber(12);
-        person1.getAddressList().get(0).setStreet("Play Street");
-        person1.getAddressList().get(0).setCity("Toytown");
-        person1.getAddressList().get(0).setOwner(new Person());
-        person1.getAddressList().get(0).getOwner().setForename("Nick");
-        person1.getAddressList().get(0).getOwner().setSurname("Clegg");
-        person1.setMainAddress(new Address());
-        person1.getMainAddress().setStreet("Party Road");
-        person1.getMainAddress().setCity("Gamesville");
-        person1.getMainAddress().setOwner(new Person());
-        person1.getMainAddress().getOwner().setForename("Simon");
-        person1.getMainAddress().getOwner().setForename("Hughes");
-        person1.getOtherAddressMap().put("Home", new Address());
-        person1.getOtherAddressMap().get("Home").setNumber(999);
-        person1.getOtherAddressMap().get("Home").setStreet("Upper Lane");
-        person1.getOtherAddressMap().get("Home").setCity("Skyton");
-        
-        person2 = new Person();
-        person2.setForename("Vince");
-        person2.setSurname("Cable");
-        person2.setNumberOfCars(1);
-        person2.getAddressList().add(new Address());
-        person2.getAddressList().get(0).setNumber(12);
-        person2.getAddressList().get(0).setStreet("Play Street");
-        person2.getAddressList().get(0).setCity("Toytown");
-        person2.getAddressList().get(0).setOwner(new Person());
-        person2.getAddressList().get(0).getOwner().setForename("Nick");
-        person2.getAddressList().get(0).getOwner().setSurname("Clegg");
-        person2.setMainAddress(new Address());
-        person2.getMainAddress().setStreet("Party Road");
-        person2.getMainAddress().setCity("Gamesville");
-        person2.getMainAddress().setOwner(new Person());
-        person2.getMainAddress().getOwner().setForename("Simon");
-        person2.getMainAddress().getOwner().setForename("Hughes");
-        person2.getOtherAddressMap().put("Home", new Address());
-        person2.getOtherAddressMap().get("Home").setNumber(999);
-        person2.getOtherAddressMap().get("Home").setStreet("Upper Lane");
-        person2.getOtherAddressMap().get("Home").setCity("Skyton");
+        person = new Person();
+        person.setForename("Vince");
+        person.setSurname("Cable");
+        person.setNumberOfCars(1);
+        person.getAddressList().add(new Address());
+        person.getAddressList().get(0).setNumber(12);
+        person.getAddressList().get(0).setStreet("Play Street");
+        person.getAddressList().get(0).setCity("Toytown");
+        person.getAddressList().get(0).setOwner(new Person());
+        person.getAddressList().get(0).getOwner().setForename("Nick");
+        person.getAddressList().get(0).getOwner().setSurname("Clegg");
+        person.setMainAddress(new Address());
+        person.getMainAddress().setStreet("Party Road");
+        person.getMainAddress().setCity("Gamesville");
+        person.getMainAddress().setOwner(new Person());
+        person.getMainAddress().getOwner().setForename("Simon");
+        person.getMainAddress().getOwner().setForename("Hughes");
+        person.getOtherAddressMap().put("Home", new Address());
+        person.getOtherAddressMap().get("Home").setNumber(999);
+        person.getOtherAddressMap().get("Home").setStreet("Upper Lane");
+        person.getOtherAddressMap().get("Home").setCity("Skyton");
+
+        mutableBase = MutableBaseBean.builder()
+                .baseBeanString("HopeNotHate")
+                .build();
+
+        mutableDerived = (MutableDerivedBean) MutableDerivedBean.builder()
+                .baseBeanString("HopeNotHate")
+                .build();
     }
 
     @Test
-    public void test_coverage() {
-        JodaBeanTests.coverMutableBean(person1);
+    public void test_coveragePerson() {
+        JodaBeanTests.coverMutableBean(person);
+    }
+
+    @Test
+    public void test_coverageMutableBase() {
+        JodaBeanTests.coverMutableBean(mutableBase);
+    }
+
+    @Test
+    public void test_coverageMutableDerived() {
+        JodaBeanTests.coverMutableBean(mutableDerived);
     }
 
 }

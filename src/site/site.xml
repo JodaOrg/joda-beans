@@ -72,6 +72,8 @@
       <item name="Related projects" href="related.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="licensecover.html"/>
+      <item name="Donations" href="https://opencollective.com/joda"/>
+      <item name="Commercial support" href="https://tidelift.com/subscription/pkg/maven-org-joda-joda-beans?utm_source=maven-org-joda-joda-beans&amp;utm_medium=referral&amp;utm_campaign=website"/>
     </menu>
 
     <menu name="Releases">
