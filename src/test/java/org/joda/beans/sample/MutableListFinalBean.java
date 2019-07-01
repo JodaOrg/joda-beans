@@ -380,6 +380,27 @@ public final class MutableListFinalBean implements Bean {
             return this;
         }
 
+        /**
+         * Adds an element to the {@code strings} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addStrings(String value) {
+            this.strings = ImmutableList.<String>builder().addAll(this.strings == null ? ImmutableList.of() : this.strings).add(value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code numberMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putNumberMap(String key, Integer value) {
+            this.numberMap = ImmutableMap.<String, Integer>builder().putAll(this.numberMap == null ? ImmutableMap.of() : this.numberMap).put(key, value).build();
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

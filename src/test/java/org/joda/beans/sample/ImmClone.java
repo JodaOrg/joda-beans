@@ -31,6 +31,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import java.util.Arrays;
 
 /**
  * Mock immutable bean to test cloning.
@@ -647,6 +648,75 @@ public final class ImmClone implements ImmutableBean, Serializable{
          */
         public Builder array3Nullable(String... array3Nullable) {
             this.array3Nullable = array3Nullable;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array1} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addArray1(String value) {
+            this.array1 = array1 == null ? new String[1] : Arrays.copyOf(this.array1, this.array1.length + 1);
+            this.array1[this.array1.length - 1] = value;
+            JodaBeanUtils.notNull(this.array1, "array1");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array2} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addArray2(String value) {
+            this.array2 = array2 == null ? new String[1] : Arrays.copyOf(this.array2, this.array2.length + 1);
+            this.array2[this.array2.length - 1] = value;
+            JodaBeanUtils.notNull(this.array2, "array2");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array3} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addArray3(String value) {
+            this.array3 = array3 == null ? new String[1] : Arrays.copyOf(this.array3, this.array3.length + 1);
+            this.array3[this.array3.length - 1] = value;
+            JodaBeanUtils.notNull(this.array3, "array3");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array1Nullable} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addArray1Nullable(String value) {
+            this.array1Nullable = array1Nullable == null ? new String[1] : Arrays.copyOf(this.array1Nullable, this.array1Nullable.length + 1);
+            this.array1Nullable[this.array1Nullable.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array2Nullable} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addArray2Nullable(String value) {
+            this.array2Nullable = array2Nullable == null ? new String[1] : Arrays.copyOf(this.array2Nullable, this.array2Nullable.length + 1);
+            this.array2Nullable[this.array2Nullable.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array3Nullable} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addArray3Nullable(String value) {
+            this.array3Nullable = array3Nullable == null ? new String[1] : Arrays.copyOf(this.array3Nullable, this.array3Nullable.length + 1);
+            this.array3Nullable[this.array3Nullable.length - 1] = value;
             return this;
         }
 

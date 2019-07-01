@@ -535,6 +535,17 @@ public final class ImmTreeNode implements ImmutableBean{
             return childList(ImmutableList.copyOf(childList));
         }
 
+        /**
+         * Adds an element to the {@code childList} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addChildList(ImmTreeNode value) {
+            this.childList = ImmutableList.<ImmTreeNode>builder().addAll(this.childList == null ? ImmutableList.of() : this.childList).add(value).build();
+            JodaBeanUtils.notNull(this.childList, "childList");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

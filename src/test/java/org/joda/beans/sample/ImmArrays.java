@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import java.util.Arrays;
 
 /**
  * Mock bean for primitive array testing.
@@ -441,6 +442,50 @@ public final class ImmArrays implements ImmutableBean {
          */
         public Builder booleanArray(boolean... booleanArray) {
             this.booleanArray = booleanArray;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code intArray} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addIntArray(int value) {
+            this.intArray = intArray == null ? new int[1] : Arrays.copyOf(this.intArray, this.intArray.length + 1);
+            this.intArray[this.intArray.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code longArray} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addLongArray(long value) {
+            this.longArray = longArray == null ? new long[1] : Arrays.copyOf(this.longArray, this.longArray.length + 1);
+            this.longArray[this.longArray.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code doubleArray} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addDoubleArray(double value) {
+            this.doubleArray = doubleArray == null ? new double[1] : Arrays.copyOf(this.doubleArray, this.doubleArray.length + 1);
+            this.doubleArray[this.doubleArray.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code booleanArray} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addBooleanArray(boolean value) {
+            this.booleanArray = booleanArray == null ? new boolean[1] : Arrays.copyOf(this.booleanArray, this.booleanArray.length + 1);
+            this.booleanArray[this.booleanArray.length - 1] = value;
             return this;
         }
 

@@ -302,6 +302,27 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
             return this;
         }
 
+        /**
+         * Adds an element to the {@code list} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addList(T value) {
+            this.list = ImmutableList.<T>builder().addAll(this.list == null ? ImmutableList.of() : this.list).add(value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code map} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMap(String key, T value) {
+            this.map = ImmutableMap.<String, T>builder().putAll(this.map == null ? ImmutableMap.of() : this.map).put(key, value).build();
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

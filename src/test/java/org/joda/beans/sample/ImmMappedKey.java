@@ -287,6 +287,18 @@ public final class ImmMappedKey
             return this;
         }
 
+        /**
+         * Adds an entry to the {@code data} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putData(IKey key, Object value) {
+            this.data = ImmutableMap.<IKey, Object>builder().putAll(this.data == null ? ImmutableMap.of() : this.data).put(key, value).build();
+            JodaBeanUtils.notNull(this.data, "data");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

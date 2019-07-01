@@ -518,6 +518,17 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
             return this;
         }
 
+        /**
+         * Adds an element to the {@code list} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addList(String value) {
+            this.list = ImmutableList.<String>builder().addAll(this.list == null ? ImmutableList.of() : this.list).add(value).build();
+            JodaBeanUtils.notNull(this.list, "list");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

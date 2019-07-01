@@ -348,6 +348,16 @@ public class ImmSubPersonFromAbstract extends ImmPersonAbstract {
             return addressList(ImmutableList.copyOf(addressList));
         }
 
+        /**
+         * Adds an element to the {@code addressList} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addAddressList(Address value) {
+            this.addressList = ImmutableList.<Address>builder().addAll(this.addressList == null ? ImmutableList.of() : this.addressList).add(value).build();
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

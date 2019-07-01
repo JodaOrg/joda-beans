@@ -2354,6 +2354,278 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
             return this;
         }
 
+        /**
+         * Adds an element to the {@code collection} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addCollection(T value) {
+            this.collection = ImmutableList.<T>builder().addAll(this.collection == null ? ImmutableList.of() : this.collection).add(value).build();
+            JodaBeanUtils.notNull(this.collection, "collection");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code list} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addList(T value) {
+            this.list = ImmutableList.<T>builder().addAll(this.list == null ? ImmutableList.of() : this.list).add(value).build();
+            JodaBeanUtils.notNull(this.list, "list");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code set} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSet(T value) {
+            this.set = ImmutableSet.<T>builder().addAll(this.set == null ? ImmutableSet.of() : this.set).add(value).build();
+            JodaBeanUtils.notNull(this.set, "set");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code sortedSet} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSortedSet(T value) {
+            this.sortedSet = ImmutableSortedSet.<T>builder().addAll(this.sortedSet == null ? ImmutableSortedSet.of() : this.sortedSet).add(value).build();
+            JodaBeanUtils.notNull(this.sortedSet, "sortedSet");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code collectionInterface} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addCollectionInterface(T value) {
+            this.collectionInterface = ImmutableList.<T>builder().addAll(this.collectionInterface == null ? ImmutableList.of() : this.collectionInterface).add(value).build();
+            JodaBeanUtils.notNull(this.collectionInterface, "collectionInterface");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listInterface} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListInterface(T value) {
+            this.listInterface = ImmutableList.<T>builder().addAll(this.listInterface == null ? ImmutableList.of() : this.listInterface).add(value).build();
+            JodaBeanUtils.notNull(this.listInterface, "listInterface");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code setInterface} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSetInterface(T value) {
+            this.setInterface = ImmutableSet.<T>builder().addAll(this.setInterface == null ? ImmutableSet.of() : this.setInterface).add(value).build();
+            JodaBeanUtils.notNull(this.setInterface, "setInterface");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code sortedSetInterface} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSortedSetInterface(T value) {
+            this.sortedSetInterface = ImmutableSortedSet.<T>builder().addAll(this.sortedSetInterface == null ? ImmutableSortedSet.of() : this.sortedSetInterface).add(value).build();
+            JodaBeanUtils.notNull(this.sortedSetInterface, "sortedSetInterface");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildExtendsT} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildExtendsT(T value) {
+            this.listWildExtendsT = ImmutableList.<T>builder().addAll(this.listWildExtendsT == null ? ImmutableList.of() : this.listWildExtendsT).add(value).build();
+            JodaBeanUtils.notNull(this.listWildExtendsT, "listWildExtendsT");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildExtendsNumber} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildExtendsNumber(Number value) {
+            this.listWildExtendsNumber = ImmutableList.<Number>builder().addAll(this.listWildExtendsNumber == null ? ImmutableList.of() : this.listWildExtendsNumber).add(value).build();
+            JodaBeanUtils.notNull(this.listWildExtendsNumber, "listWildExtendsNumber");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildExtendsComparable} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildExtendsComparable(Comparable<?> value) {
+            this.listWildExtendsComparable = ImmutableList.<Comparable<?>>builder().addAll(this.listWildExtendsComparable == null ? ImmutableList.of() : this.listWildExtendsComparable).add(value).build();
+            JodaBeanUtils.notNull(this.listWildExtendsComparable, "listWildExtendsComparable");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code setWildExtendsT} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSetWildExtendsT(T value) {
+            this.setWildExtendsT = ImmutableSet.<T>builder().addAll(this.setWildExtendsT == null ? ImmutableSet.of() : this.setWildExtendsT).add(value).build();
+            JodaBeanUtils.notNull(this.setWildExtendsT, "setWildExtendsT");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code setWildExtendsNumber} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSetWildExtendsNumber(Number value) {
+            this.setWildExtendsNumber = ImmutableSet.<Number>builder().addAll(this.setWildExtendsNumber == null ? ImmutableSet.of() : this.setWildExtendsNumber).add(value).build();
+            JodaBeanUtils.notNull(this.setWildExtendsNumber, "setWildExtendsNumber");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code setWildExtendsComparable} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addSetWildExtendsComparable(Comparable<?> value) {
+            this.setWildExtendsComparable = ImmutableSet.<Comparable<?>>builder().addAll(this.setWildExtendsComparable == null ? ImmutableSet.of() : this.setWildExtendsComparable).add(value).build();
+            JodaBeanUtils.notNull(this.setWildExtendsComparable, "setWildExtendsComparable");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildBuilder1} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildBuilder1(Object value) {
+            this.listWildBuilder1 = ImmutableList.<Object>builder().addAll(this.listWildBuilder1 == null ? ImmutableList.of() : this.listWildBuilder1).add(value).build();
+            JodaBeanUtils.notNull(this.listWildBuilder1, "listWildBuilder1");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildBuilder2} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildBuilder2(Address value) {
+            this.listWildBuilder2 = ImmutableList.<Address>builder().addAll(this.listWildBuilder2 == null ? ImmutableList.of() : this.listWildBuilder2).add(value).build();
+            JodaBeanUtils.notNull(this.listWildBuilder2, "listWildBuilder2");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code map} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMap(T key, String value) {
+            this.map = ImmutableMap.<T, String>builder().putAll(this.map == null ? ImmutableMap.of() : this.map).put(key, value).build();
+            JodaBeanUtils.notNull(this.map, "map");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code sortedMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putSortedMap(T key, String value) {
+            this.sortedMap = ImmutableSortedMap.<T, String>naturalOrder().putAll(this.sortedMap == null ? ImmutableSortedMap.of() : this.sortedMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.sortedMap, "sortedMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code biMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putBiMap(T key, String value) {
+            this.biMap = ImmutableBiMap.<T, String>builder().putAll(this.biMap == null ? ImmutableBiMap.of() : this.biMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.biMap, "biMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code mapInterface} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMapInterface(T key, String value) {
+            this.mapInterface = ImmutableMap.<T, String>builder().putAll(this.mapInterface == null ? ImmutableMap.of() : this.mapInterface).put(key, value).build();
+            JodaBeanUtils.notNull(this.mapInterface, "mapInterface");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code sortedMapInterface} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putSortedMapInterface(T key, String value) {
+            this.sortedMapInterface = ImmutableSortedMap.<T, String>naturalOrder().putAll(this.sortedMapInterface == null ? ImmutableSortedMap.of() : this.sortedMapInterface).put(key, value).build();
+            JodaBeanUtils.notNull(this.sortedMapInterface, "sortedMapInterface");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code biMapInterface} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putBiMapInterface(T key, String value) {
+            this.biMapInterface = ImmutableBiMap.<T, String>builder().putAll(this.biMapInterface == null ? ImmutableBiMap.of() : this.biMapInterface).put(key, value).build();
+            JodaBeanUtils.notNull(this.biMapInterface, "biMapInterface");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code mapWildBuilder1} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMapWildBuilder1(String key, Address value) {
+            this.mapWildBuilder1 = ImmutableMap.<String, Address>builder().putAll(this.mapWildBuilder1 == null ? ImmutableMap.of() : this.mapWildBuilder1).put(key, value).build();
+            JodaBeanUtils.notNull(this.mapWildBuilder1, "mapWildBuilder1");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code mapWildKey} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMapWildKey(Number key, String value) {
+            this.mapWildKey = ImmutableMap.<Number, String>builder().putAll(this.mapWildKey == null ? ImmutableMap.of() : this.mapWildKey).put(key, value).build();
+            JodaBeanUtils.notNull(this.mapWildKey, "mapWildKey");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

@@ -29,6 +29,7 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
+import java.util.Arrays;
 
 /**
  * Mock bean for tolerance testing.
@@ -340,6 +341,17 @@ public final class ImmTolerance implements ImmutableBean {
          */
         public Builder array(double... array) {
             this.array = array;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code array} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addArray(double value) {
+            this.array = array == null ? new double[1] : Arrays.copyOf(this.array, this.array.length + 1);
+            this.array[this.array.length - 1] = value;
             return this;
         }
 
