@@ -450,7 +450,7 @@ To get the correct behaviour, the `BeanDefinition` annotation value
 Partially final beans can extend one another, but must all declare the builder scope.
 
 The rules as to what works and what does not are complex.
-It is recommended to keep is simple, and only have normal mutable beans or final immutable beans.
+It is recommended to keep it simple, and only have normal mutable beans or final immutable beans.
 
 
 ## Light beans
