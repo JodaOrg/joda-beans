@@ -913,7 +913,7 @@ class BeanGen {
                     String getter = toStringFieldAccessor(prop);
                     addLine(2, "buf.append(\"" + prop.getData().getPropertyName() + "\").append('=')" + 
                             join(i, props,
-                                    ".append(" + getter + ").append(',').append(' ');",
+                                    ".append(JodaBeanUtils.toString(" + getter + ")).append(',').append(' ');",
                                     ".append(JodaBeanUtils.toString(" + getter + "));"));
                 }
             }
