@@ -219,7 +219,7 @@ public @interface PropertyDefinition {
      * <li>'' - do not generate any form of validation
      * <li>'notNull' - suitable for checking that the value is non-null,
      *  calls JodaBeanUtils.notNull() which throws an IllegalArgumentException
-     * <li>'notEmpty' - suitable for checking that a string is non-null and non-empty,
+     * <li>'notEmpty' - suitable for checking that a string/collection/map is non-null and non-empty,
      *  calls JodaBeanUtils.notEmpty() which throws an IllegalArgumentException
      * <li>'notBlank' - suitable for checking that a string is non-null and non-blank,
      *  calls JodaBeanUtils.notBlank() which throws an IllegalArgumentException
