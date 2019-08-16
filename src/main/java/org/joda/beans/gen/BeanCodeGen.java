@@ -62,6 +62,7 @@ public class BeanCodeGen {
             System.out.println("    -style=[s]        default bean style: 'light'/'minimal'/'full', default smart");
             System.out.println("    -verbose=[v]      output logging with verbosity from 0 to 3, default 1");
             System.out.println("    -nowrite          output messages rather than writing, default is to write");
+            System.out.println("    -checkstyleIgnores FIXME");
             System.exit(0);
             throw new InternalError("Unreachable");
         }
@@ -96,6 +97,7 @@ public class BeanCodeGen {
         boolean generatedAnno = false;
         int verbosity = 1;
         boolean write = true;
+        boolean checkstyleIgnores = false;
         File file = null;
         BeanGenConfig config = null;
         if (args.length == 0) {
@@ -136,6 +138,8 @@ public class BeanCodeGen {
                 verbosity = Integer.parseInt(arg.substring(3));
             } else if (arg.equals("-nowrite")) {
                 write = false;
+            } else if (arg.equals("-checkstyleIgnores")) {
+                checkstyleIgnores = true;
             } else {
                 throw new IllegalArgumentException("Unknown argument: " + arg);
             }
@@ -152,6 +156,7 @@ public class BeanCodeGen {
             config.setDefaultStyle(defaultStyle);
         }
         config.setGeneratedAnno(generatedAnno);
+        config.setCheckstyleIgnores(checkstyleIgnores);
         return new BeanCodeGen(files, config, verbosity, write);
     }
 

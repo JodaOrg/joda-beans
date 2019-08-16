@@ -78,6 +78,10 @@ public final class BeanGenConfig {
      * Whether to add the generated annotation.
      */
     private boolean generatedAnno;
+    /**
+     * Checkstyle FIXME.
+     */
+    private boolean checkstyleIgnores;
 
     /**
      * Parses the configuration file.
@@ -402,6 +406,20 @@ public final class BeanGenConfig {
      */
     public void setDefaultStyle(String defaultStyle) {
         this.defaultStyle = defaultStyle;
+    }
+
+    /**
+     * Checkstyle FIXME.
+     */
+    public boolean isCheckstyleIgnores() {
+        return this.checkstyleIgnores;
+    }
+
+    /**
+     * Checkstyle FIXME.
+     */
+    public void setCheckstyleIgnores(boolean checkstyleIgnores) {
+        this.checkstyleIgnores = checkstyleIgnores;
     }
 
     /**
