@@ -155,7 +155,7 @@ public final class MinimalImmutableSimple implements ImmutableBean, Serializable
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("MinimalImmutableSimple{");
-        buf.append("number").append('=').append(number).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
         buf.append("text").append('=').append(JodaBeanUtils.toString(text));
         buf.append('}');
         return buf.toString();

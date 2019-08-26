@@ -358,13 +358,13 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(288);
         buf.append("SimplePersonWithBuilderFinal{");
-        buf.append("forename").append('=').append(getForename()).append(',').append(' ');
-        buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
-        buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
-        buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
-        buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
-        buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
-        buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
+        buf.append("forename").append('=').append(JodaBeanUtils.toString(getForename())).append(',').append(' ');
+        buf.append("surname").append('=').append(JodaBeanUtils.toString(getSurname())).append(',').append(' ');
+        buf.append("numberOfCars").append('=').append(JodaBeanUtils.toString(getNumberOfCars())).append(',').append(' ');
+        buf.append("addressList").append('=').append(JodaBeanUtils.toString(getAddressList())).append(',').append(' ');
+        buf.append("otherAddressMap").append('=').append(JodaBeanUtils.toString(getOtherAddressMap())).append(',').append(' ');
+        buf.append("addressesList").append('=').append(JodaBeanUtils.toString(getAddressesList())).append(',').append(' ');
+        buf.append("mainAddress").append('=').append(JodaBeanUtils.toString(getMainAddress())).append(',').append(' ');
         buf.append("tags").append('=').append(JodaBeanUtils.toString(getTags()));
         buf.append('}');
         return buf.toString();

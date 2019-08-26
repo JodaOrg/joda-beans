@@ -162,7 +162,7 @@ public final class MutableTypes<T extends Comparable<T>> implements Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("MutableTypes{");
-        buf.append("listWildNullable").append('=').append(getListWildNullable()).append(',').append(' ');
+        buf.append("listWildNullable").append('=').append(JodaBeanUtils.toString(getListWildNullable())).append(',').append(' ');
         buf.append("listWildPublic").append('=').append(JodaBeanUtils.toString(getListWildPublic()));
         buf.append('}');
         return buf.toString();

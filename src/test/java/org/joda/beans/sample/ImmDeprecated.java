@@ -181,9 +181,9 @@ public final class ImmDeprecated implements Cloneable, ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("ImmDeprecated{");
-        buf.append("deprecatedBoth").append('=').append(deprecatedBoth).append(',').append(' ');
-        buf.append("deprecatedJavadoc").append('=').append(deprecatedJavadoc).append(',').append(' ');
-        buf.append("deprecatedAnnotation").append('=').append(deprecatedAnnotation).append(',').append(' ');
+        buf.append("deprecatedBoth").append('=').append(JodaBeanUtils.toString(deprecatedBoth)).append(',').append(' ');
+        buf.append("deprecatedJavadoc").append('=').append(JodaBeanUtils.toString(deprecatedJavadoc)).append(',').append(' ');
+        buf.append("deprecatedAnnotation").append('=').append(JodaBeanUtils.toString(deprecatedAnnotation)).append(',').append(' ');
         buf.append("deprecatedOptional").append('=').append(JodaBeanUtils.toString(deprecatedOptional));
         buf.append('}');
         return buf.toString();

@@ -239,9 +239,9 @@ public final class MutableDeprecated implements Cloneable, Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("MutableDeprecated{");
-        buf.append("deprecatedBoth").append('=').append(getDeprecatedBoth()).append(',').append(' ');
-        buf.append("deprecatedJavadoc").append('=').append(getDeprecatedJavadoc()).append(',').append(' ');
-        buf.append("deprecatedAnnotation").append('=').append(getDeprecatedAnnotation()).append(',').append(' ');
+        buf.append("deprecatedBoth").append('=').append(JodaBeanUtils.toString(getDeprecatedBoth())).append(',').append(' ');
+        buf.append("deprecatedJavadoc").append('=').append(JodaBeanUtils.toString(getDeprecatedJavadoc())).append(',').append(' ');
+        buf.append("deprecatedAnnotation").append('=').append(JodaBeanUtils.toString(getDeprecatedAnnotation())).append(',').append(' ');
         buf.append("deprecatedOptional").append('=').append(JodaBeanUtils.toString(deprecatedOptional));
         buf.append('}');
         return buf.toString();

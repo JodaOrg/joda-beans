@@ -178,9 +178,9 @@ public final class ImmArrays implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("ImmArrays{");
-        buf.append("intArray").append('=').append(intArray).append(',').append(' ');
-        buf.append("longArray").append('=').append(longArray).append(',').append(' ');
-        buf.append("doubleArray").append('=').append(doubleArray).append(',').append(' ');
+        buf.append("intArray").append('=').append(JodaBeanUtils.toString(intArray)).append(',').append(' ');
+        buf.append("longArray").append('=').append(JodaBeanUtils.toString(longArray)).append(',').append(' ');
+        buf.append("doubleArray").append('=').append(JodaBeanUtils.toString(doubleArray)).append(',').append(' ');
         buf.append("booleanArray").append('=').append(JodaBeanUtils.toString(booleanArray));
         buf.append('}');
         return buf.toString();

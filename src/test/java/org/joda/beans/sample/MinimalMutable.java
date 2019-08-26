@@ -304,12 +304,12 @@ public final class MinimalMutable implements Bean, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(256);
         buf.append("MinimalMutable{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("flag").append('=').append(isFlag()).append(',').append(' ');
-        buf.append("street").append('=').append(street).append(',').append(' ');
-        buf.append("town").append('=').append(town).append(',').append(' ');
-        buf.append("city").append('=').append(getCity()).append(',').append(' ');
-        buf.append("list").append('=').append(getList()).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(getNumber())).append(',').append(' ');
+        buf.append("flag").append('=').append(JodaBeanUtils.toString(isFlag())).append(',').append(' ');
+        buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
+        buf.append("town").append('=').append(JodaBeanUtils.toString(town)).append(',').append(' ');
+        buf.append("city").append('=').append(JodaBeanUtils.toString(getCity())).append(',').append(' ');
+        buf.append("list").append('=').append(JodaBeanUtils.toString(getList())).append(',').append(' ');
         buf.append("currency").append('=').append(JodaBeanUtils.toString(currency));
         buf.append('}');
         return buf.toString();

@@ -160,7 +160,7 @@ public final class LightMutableGeneric<T extends Number> implements Bean, Serial
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("LightMutableGeneric{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(getNumber())).append(',').append(' ');
         buf.append("list").append('=').append(JodaBeanUtils.toString(getList()));
         buf.append('}');
         return buf.toString();

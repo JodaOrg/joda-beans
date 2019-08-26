@@ -146,7 +146,7 @@ public final class MutableOptional implements Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("MutableOptional{");
-        buf.append("optString").append('=').append(getOptString()).append(',').append(' ');
+        buf.append("optString").append('=').append(JodaBeanUtils.toString(getOptString())).append(',').append(' ');
         buf.append("optStringGetter").append('=').append(JodaBeanUtils.toString(optStringGetter));
         buf.append('}');
         return buf.toString();

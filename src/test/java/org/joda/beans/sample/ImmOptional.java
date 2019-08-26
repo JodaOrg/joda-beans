@@ -232,11 +232,11 @@ public final class ImmOptional implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(224);
         buf.append("ImmOptional{");
-        buf.append("optString").append('=').append(optString).append(',').append(' ');
-        buf.append("optStringEmpty").append('=').append(optStringEmpty).append(',').append(' ');
-        buf.append("optStringGetter").append('=').append(optStringGetter).append(',').append(' ');
-        buf.append("optLongGetter").append('=').append(optLongGetter).append(',').append(' ');
-        buf.append("optIntGetter").append('=').append(optIntGetter).append(',').append(' ');
+        buf.append("optString").append('=').append(JodaBeanUtils.toString(optString)).append(',').append(' ');
+        buf.append("optStringEmpty").append('=').append(JodaBeanUtils.toString(optStringEmpty)).append(',').append(' ');
+        buf.append("optStringGetter").append('=').append(JodaBeanUtils.toString(optStringGetter)).append(',').append(' ');
+        buf.append("optLongGetter").append('=').append(JodaBeanUtils.toString(optLongGetter)).append(',').append(' ');
+        buf.append("optIntGetter").append('=').append(JodaBeanUtils.toString(optIntGetter)).append(',').append(' ');
         buf.append("optDoubleGetter").append('=').append(JodaBeanUtils.toString(optDoubleGetter));
         buf.append('}');
         return buf.toString();

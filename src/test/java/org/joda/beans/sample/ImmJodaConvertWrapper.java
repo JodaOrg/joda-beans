@@ -146,7 +146,7 @@ public final class ImmJodaConvertWrapper implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("ImmJodaConvertWrapper{");
-        buf.append("bean").append('=').append(bean).append(',').append(' ');
+        buf.append("bean").append('=').append(JodaBeanUtils.toString(bean)).append(',').append(' ');
         buf.append("description").append('=').append(JodaBeanUtils.toString(description));
         buf.append('}');
         return buf.toString();

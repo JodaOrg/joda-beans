@@ -364,14 +364,14 @@ public final class SimplePerson implements Cloneable, Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(320);
         buf.append("SimplePerson{");
-        buf.append("forename").append('=').append(getForename()).append(',').append(' ');
-        buf.append("surname").append('=').append(getSurname()).append(',').append(' ');
-        buf.append("numberOfCars").append('=').append(getNumberOfCars()).append(',').append(' ');
-        buf.append("addressList").append('=').append(getAddressList()).append(',').append(' ');
-        buf.append("otherAddressMap").append('=').append(getOtherAddressMap()).append(',').append(' ');
-        buf.append("addressesList").append('=').append(getAddressesList()).append(',').append(' ');
-        buf.append("mainAddress").append('=').append(getMainAddress()).append(',').append(' ');
-        buf.append("propDefAnnotationSecondDeprecated").append('=').append(getPropDefAnnotationSecondDeprecated()).append(',').append(' ');
+        buf.append("forename").append('=').append(JodaBeanUtils.toString(getForename())).append(',').append(' ');
+        buf.append("surname").append('=').append(JodaBeanUtils.toString(getSurname())).append(',').append(' ');
+        buf.append("numberOfCars").append('=').append(JodaBeanUtils.toString(getNumberOfCars())).append(',').append(' ');
+        buf.append("addressList").append('=').append(JodaBeanUtils.toString(getAddressList())).append(',').append(' ');
+        buf.append("otherAddressMap").append('=').append(JodaBeanUtils.toString(getOtherAddressMap())).append(',').append(' ');
+        buf.append("addressesList").append('=').append(JodaBeanUtils.toString(getAddressesList())).append(',').append(' ');
+        buf.append("mainAddress").append('=').append(JodaBeanUtils.toString(getMainAddress())).append(',').append(' ');
+        buf.append("propDefAnnotationSecondDeprecated").append('=').append(JodaBeanUtils.toString(getPropDefAnnotationSecondDeprecated())).append(',').append(' ');
         buf.append("propDefAnnotationSecondManual").append('=').append(JodaBeanUtils.toString(getPropDefAnnotationSecondManual()));
         buf.append('}');
         return buf.toString();

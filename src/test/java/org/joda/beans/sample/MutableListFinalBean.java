@@ -172,7 +172,7 @@ public final class MutableListFinalBean implements Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("MutableListFinalBean{");
-        buf.append("strings").append('=').append(getStrings()).append(',').append(' ');
+        buf.append("strings").append('=').append(JodaBeanUtils.toString(getStrings())).append(',').append(' ');
         buf.append("numberMap").append('=').append(JodaBeanUtils.toString(getNumberMap()));
         buf.append('}');
         return buf.toString();

@@ -126,7 +126,7 @@ public final class ImmDoubleFloat implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("ImmDoubleFloat{");
-        buf.append("a").append('=').append(a).append(',').append(' ');
+        buf.append("a").append('=').append(JodaBeanUtils.toString(a)).append(',').append(' ');
         buf.append("b").append('=').append(JodaBeanUtils.toString(b));
         buf.append('}');
         return buf.toString();

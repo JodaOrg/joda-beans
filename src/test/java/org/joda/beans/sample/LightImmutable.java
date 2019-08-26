@@ -289,14 +289,14 @@ public final class LightImmutable implements ImmutableBean, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(320);
         buf.append("LightImmutable{");
-        buf.append("number").append('=').append(number).append(',').append(' ');
-        buf.append("flag").append('=').append(flag).append(',').append(' ');
-        buf.append("street").append('=').append(street).append(',').append(' ');
-        buf.append("town").append('=').append(town).append(',').append(' ');
-        buf.append("city").append('=').append(city).append(',').append(' ');
-        buf.append("owner").append('=').append(owner).append(',').append(' ');
-        buf.append("list").append('=').append(list).append(',').append(' ');
-        buf.append("currency").append('=').append(currency).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
+        buf.append("flag").append('=').append(JodaBeanUtils.toString(flag)).append(',').append(' ');
+        buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
+        buf.append("town").append('=').append(JodaBeanUtils.toString(town)).append(',').append(' ');
+        buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
+        buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
+        buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
+        buf.append("currency").append('=').append(JodaBeanUtils.toString(currency)).append(',').append(' ');
         buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText));
         buf.append('}');
         return buf.toString();

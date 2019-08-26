@@ -145,7 +145,7 @@ public final class ImmJodaConvertBean implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("ImmJodaConvertBean{");
-        buf.append("base").append('=').append(base).append(',').append(' ');
+        buf.append("base").append('=').append(JodaBeanUtils.toString(base)).append(',').append(' ');
         buf.append("extra").append('=').append(JodaBeanUtils.toString(extra));
         buf.append('}');
         return buf.toString();

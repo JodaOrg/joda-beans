@@ -172,8 +172,8 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("TupleImmutable{");
-        buf.append("first").append('=').append(first).append(',').append(' ');
-        buf.append("second").append('=').append(second).append(',').append(' ');
+        buf.append("first").append('=').append(JodaBeanUtils.toString(first)).append(',').append(' ');
+        buf.append("second").append('=').append(JodaBeanUtils.toString(second)).append(',').append(' ');
         buf.append("third").append('=').append(JodaBeanUtils.toString(third));
         buf.append('}');
         return buf.toString();

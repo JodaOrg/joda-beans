@@ -155,7 +155,7 @@ public final class MinimalMutableGenericSimple<T extends Number> implements Bean
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("MinimalMutableGenericSimple{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(getNumber())).append(',').append(' ');
         buf.append("text").append('=').append(JodaBeanUtils.toString(getText()));
         buf.append('}');
         return buf.toString();

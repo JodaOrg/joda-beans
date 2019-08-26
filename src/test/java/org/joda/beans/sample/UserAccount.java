@@ -214,9 +214,9 @@ public final class UserAccount implements Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("UserAccount{");
-        buf.append("userId").append('=').append(getUserId()).append(',').append(' ');
-        buf.append("emailAddress").append('=').append(getEmailAddress()).append(',').append(' ');
-        buf.append("numberLogins").append('=').append(getNumberLogins()).append(',').append(' ');
+        buf.append("userId").append('=').append(JodaBeanUtils.toString(getUserId())).append(',').append(' ');
+        buf.append("emailAddress").append('=').append(JodaBeanUtils.toString(getEmailAddress())).append(',').append(' ');
+        buf.append("numberLogins").append('=').append(JodaBeanUtils.toString(getNumberLogins())).append(',').append(' ');
         buf.append("lastLogin").append('=').append(JodaBeanUtils.toString(getLastLogin()));
         buf.append('}');
         return buf.toString();

@@ -178,8 +178,8 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("MinimalImmutableGeneric{");
-        buf.append("number").append('=').append(number).append(',').append(' ');
-        buf.append("list").append('=').append(list).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
+        buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
         buf.append("map").append('=').append(JodaBeanUtils.toString(map));
         buf.append('}');
         return buf.toString();

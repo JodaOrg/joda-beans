@@ -358,14 +358,14 @@ public final class PropertyDefBean implements Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(320);
         buf.append("PropertyDefBean{");
-        buf.append("stringAsCharSequence").append('=').append(getStringAsCharSequence()).append(',').append(' ');
-        buf.append("intAsInteger").append('=').append(getIntAsInteger()).append(',').append(' ');
-        buf.append("listCopyOfCollection").append('=').append(getListCopyOfCollection()).append(',').append(' ');
-        buf.append("arrayListSmart").append('=').append(getArrayListSmart()).append(',').append(' ');
-        buf.append("arrayListExposed").append('=').append(getArrayListExposed()).append(',').append(' ');
-        buf.append("arrayListAsCollection").append('=').append(getArrayListAsCollection()).append(',').append(' ');
-        buf.append("arrayList").append('=').append(getArrayList()).append(',').append(' ');
-        buf.append("listAsIterable").append('=').append(getListAsIterable()).append(',').append(' ');
+        buf.append("stringAsCharSequence").append('=').append(JodaBeanUtils.toString(getStringAsCharSequence())).append(',').append(' ');
+        buf.append("intAsInteger").append('=').append(JodaBeanUtils.toString(getIntAsInteger())).append(',').append(' ');
+        buf.append("listCopyOfCollection").append('=').append(JodaBeanUtils.toString(getListCopyOfCollection())).append(',').append(' ');
+        buf.append("arrayListSmart").append('=').append(JodaBeanUtils.toString(getArrayListSmart())).append(',').append(' ');
+        buf.append("arrayListExposed").append('=').append(JodaBeanUtils.toString(getArrayListExposed())).append(',').append(' ');
+        buf.append("arrayListAsCollection").append('=').append(JodaBeanUtils.toString(getArrayListAsCollection())).append(',').append(' ');
+        buf.append("arrayList").append('=').append(JodaBeanUtils.toString(getArrayList())).append(',').append(' ');
+        buf.append("listAsIterable").append('=').append(JodaBeanUtils.toString(getListAsIterable())).append(',').append(' ');
         buf.append("listAsIterableNoField").append('=').append(JodaBeanUtils.toString(getListAsIterableNoField()));
         buf.append('}');
         return buf.toString();

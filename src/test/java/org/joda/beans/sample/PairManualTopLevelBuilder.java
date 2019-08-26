@@ -135,7 +135,7 @@ public final class PairManualTopLevelBuilder implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("PairManualTopLevelBuilder{");
-        buf.append("first").append('=').append(first).append(',').append(' ');
+        buf.append("first").append('=').append(JodaBeanUtils.toString(first)).append(',').append(' ');
         buf.append("second").append('=').append(JodaBeanUtils.toString(second));
         buf.append('}');
         return buf.toString();

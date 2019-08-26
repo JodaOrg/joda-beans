@@ -240,11 +240,11 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(224);
         buf.append("ImmTypes{");
-        buf.append("listWild").append('=').append(listWild).append(',').append(' ');
-        buf.append("listWildPublic1").append('=').append(listWildPublic1).append(',').append(' ');
-        buf.append("listWildPublic2").append('=').append(listWildPublic2).append(',').append(' ');
-        buf.append("listWildBuilder1").append('=').append(listWildBuilder1).append(',').append(' ');
-        buf.append("listWildBuilder2").append('=').append(listWildBuilder2).append(',').append(' ');
+        buf.append("listWild").append('=').append(JodaBeanUtils.toString(listWild)).append(',').append(' ');
+        buf.append("listWildPublic1").append('=').append(JodaBeanUtils.toString(listWildPublic1)).append(',').append(' ');
+        buf.append("listWildPublic2").append('=').append(JodaBeanUtils.toString(listWildPublic2)).append(',').append(' ');
+        buf.append("listWildBuilder1").append('=').append(JodaBeanUtils.toString(listWildBuilder1)).append(',').append(' ');
+        buf.append("listWildBuilder2").append('=').append(JodaBeanUtils.toString(listWildBuilder2)).append(',').append(' ');
         buf.append("mapWildBuilder1").append('=').append(JodaBeanUtils.toString(mapWildBuilder1));
         buf.append('}');
         return buf.toString();

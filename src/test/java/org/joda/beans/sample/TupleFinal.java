@@ -226,8 +226,8 @@ public final class TupleFinal<X, Y, Z> implements Bean {
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("TupleFinal{");
-        buf.append("first").append('=').append(getFirst()).append(',').append(' ');
-        buf.append("second").append('=').append(getSecond()).append(',').append(' ');
+        buf.append("first").append('=').append(JodaBeanUtils.toString(getFirst())).append(',').append(' ');
+        buf.append("second").append('=').append(JodaBeanUtils.toString(getSecond())).append(',').append(' ');
         buf.append("third").append('=').append(JodaBeanUtils.toString(getThird()));
         buf.append('}');
         return buf.toString();

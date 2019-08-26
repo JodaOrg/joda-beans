@@ -190,8 +190,8 @@ public final class MinimalMutableGeneric<T extends Number> implements Bean, Seri
     public String toString() {
         StringBuilder buf = new StringBuilder(128);
         buf.append("MinimalMutableGeneric{");
-        buf.append("number").append('=').append(getNumber()).append(',').append(' ');
-        buf.append("list").append('=').append(getList()).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(getNumber())).append(',').append(' ');
+        buf.append("list").append('=').append(JodaBeanUtils.toString(getList())).append(',').append(' ');
         buf.append("map").append('=').append(JodaBeanUtils.toString(getMap()));
         buf.append('}');
         return buf.toString();

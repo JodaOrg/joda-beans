@@ -219,9 +219,9 @@ public final class ImmTreeNode implements ImmutableBean{
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("ImmTreeNode{");
-        buf.append("name").append('=').append(name).append(',').append(' ');
-        buf.append("child1").append('=').append(getChild1()).append(',').append(' ');
-        buf.append("child2").append('=').append(child2).append(',').append(' ');
+        buf.append("name").append('=').append(JodaBeanUtils.toString(name)).append(',').append(' ');
+        buf.append("child1").append('=').append(JodaBeanUtils.toString(getChild1())).append(',').append(' ');
+        buf.append("child2").append('=').append(JodaBeanUtils.toString(child2)).append(',').append(' ');
         buf.append("child3").append('=').append(JodaBeanUtils.toString(getChild3()));
         buf.append('}');
         return buf.toString();

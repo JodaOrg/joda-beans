@@ -303,15 +303,15 @@ public final class ImmPerson implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(352);
         buf.append("ImmPerson{");
-        buf.append("forename").append('=').append(forename).append(',').append(' ');
-        buf.append("surname").append('=').append(surname).append(',').append(' ');
-        buf.append("numberOfCars").append('=').append(numberOfCars).append(',').append(' ');
-        buf.append("dateOfBirth").append('=').append(dateOfBirth).append(',').append(' ');
-        buf.append("middleNames").append('=').append(middleNames).append(',').append(' ');
-        buf.append("addressList").append('=').append(addressList).append(',').append(' ');
-        buf.append("otherAddressMap").append('=').append(otherAddressMap).append(',').append(' ');
-        buf.append("addressesList").append('=').append(addressesList).append(',').append(' ');
-        buf.append("mainAddress").append('=').append(mainAddress).append(',').append(' ');
+        buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
+        buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
+        buf.append("numberOfCars").append('=').append(JodaBeanUtils.toString(numberOfCars)).append(',').append(' ');
+        buf.append("dateOfBirth").append('=').append(JodaBeanUtils.toString(dateOfBirth)).append(',').append(' ');
+        buf.append("middleNames").append('=').append(JodaBeanUtils.toString(middleNames)).append(',').append(' ');
+        buf.append("addressList").append('=').append(JodaBeanUtils.toString(addressList)).append(',').append(' ');
+        buf.append("otherAddressMap").append('=').append(JodaBeanUtils.toString(otherAddressMap)).append(',').append(' ');
+        buf.append("addressesList").append('=').append(JodaBeanUtils.toString(addressesList)).append(',').append(' ');
+        buf.append("mainAddress").append('=').append(JodaBeanUtils.toString(mainAddress)).append(',').append(' ');
         buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(codeCounts));
         buf.append('}');
         return buf.toString();

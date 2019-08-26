@@ -173,9 +173,9 @@ public final class ImmPrivateMeta implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(160);
         buf.append("ImmPrivateMeta{");
-        buf.append("number").append('=').append(number).append(',').append(' ');
-        buf.append("street").append('=').append(street).append(',').append(' ');
-        buf.append("city").append('=').append(city).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
+        buf.append("street").append('=').append(JodaBeanUtils.toString(street)).append(',').append(' ');
+        buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
         buf.append("owner").append('=').append(JodaBeanUtils.toString(owner));
         buf.append('}');
         return buf.toString();

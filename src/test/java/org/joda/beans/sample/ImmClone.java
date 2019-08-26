@@ -232,13 +232,13 @@ public final class ImmClone implements ImmutableBean, Serializable{
     public String toString() {
         StringBuilder buf = new StringBuilder(288);
         buf.append("ImmClone{");
-        buf.append("date").append('=').append(date).append(',').append(' ');
-        buf.append("array1").append('=').append(array1).append(',').append(' ');
-        buf.append("array2").append('=').append(array2).append(',').append(' ');
-        buf.append("array3").append('=').append(array3).append(',').append(' ');
-        buf.append("dateNullable").append('=').append(dateNullable).append(',').append(' ');
-        buf.append("array1Nullable").append('=').append(array1Nullable).append(',').append(' ');
-        buf.append("array2Nullable").append('=').append(array2Nullable).append(',').append(' ');
+        buf.append("date").append('=').append(JodaBeanUtils.toString(date)).append(',').append(' ');
+        buf.append("array1").append('=').append(JodaBeanUtils.toString(array1)).append(',').append(' ');
+        buf.append("array2").append('=').append(JodaBeanUtils.toString(array2)).append(',').append(' ');
+        buf.append("array3").append('=').append(JodaBeanUtils.toString(array3)).append(',').append(' ');
+        buf.append("dateNullable").append('=').append(JodaBeanUtils.toString(dateNullable)).append(',').append(' ');
+        buf.append("array1Nullable").append('=').append(JodaBeanUtils.toString(array1Nullable)).append(',').append(' ');
+        buf.append("array2Nullable").append('=').append(JodaBeanUtils.toString(array2Nullable)).append(',').append(' ');
         buf.append("array3Nullable").append('=').append(JodaBeanUtils.toString(array3Nullable));
         buf.append('}');
         return buf.toString();

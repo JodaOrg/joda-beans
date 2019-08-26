@@ -151,7 +151,7 @@ public final class ImmTolerance implements ImmutableBean {
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("ImmTolerance{");
-        buf.append("value").append('=').append(value).append(',').append(' ');
+        buf.append("value").append('=').append(JodaBeanUtils.toString(value)).append(',').append(' ');
         buf.append("array").append('=').append(JodaBeanUtils.toString(array));
         buf.append('}');
         return buf.toString();

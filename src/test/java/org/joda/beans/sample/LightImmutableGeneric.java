@@ -136,7 +136,7 @@ public final class LightImmutableGeneric<T extends Number> implements ImmutableB
     public String toString() {
         StringBuilder buf = new StringBuilder(96);
         buf.append("LightImmutableGeneric{");
-        buf.append("number").append('=').append(number).append(',').append(' ');
+        buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
         buf.append("list").append('=').append(JodaBeanUtils.toString(list));
         buf.append('}');
         return buf.toString();
