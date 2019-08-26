@@ -276,7 +276,7 @@ class BeanParser {
                 line = line.substring(line.indexOf(fullType) + fullType.length());
             }
             buf.append(line).append(' ');
-            if (line.trim().endsWith("{")) {
+            if (line.trim().endsWith("{") && !line.trim().startsWith("@")) {
                 break;
             }
         }
