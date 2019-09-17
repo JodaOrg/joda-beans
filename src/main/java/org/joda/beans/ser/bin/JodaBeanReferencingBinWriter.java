@@ -154,11 +154,6 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
 
     @Override
     Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
-        Ref ref = references.getReferences().get(value);
-        if (ref != null && ref.hasBeenSerialized) {
-            // Don't need to change types if using a reference
-            return declaredType;
-        }
         Class<?> realType = value.getClass();
         Class<?> effectiveType = declaredType;
         if (declaredType == Object.class) {

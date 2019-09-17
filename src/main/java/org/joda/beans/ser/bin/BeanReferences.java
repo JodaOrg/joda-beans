@@ -132,9 +132,12 @@ final class BeanReferences {
             return;
         }
 
-        // has this object been seen before, if so no need to check it again
+        // has this object been seen before, if so no need to check references again
         int result = objects.compute(base, BeanReferences::incrementOrOne);
         if (result > 1) {
+            if (parentIterator == null || settings.getIteratorFactory().createChild(base, parentIterator) == null) {
+                addClassInfo(base, declaredClass);
+            }
             return;
         }
 
@@ -232,11 +235,12 @@ final class BeanReferences {
 
             addClassInfoAndIncrementCount(bean.getClass(), classInfo);
             
-        } else if (declaredClass == Object.class && !value.getClass().equals(String.class)) {
-            Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
-            ClassInfo classInfo = new ClassInfo(effectiveType, new MetaProperty<?>[0]);
-            addClassInfoAndIncrementCount(effectiveType, classInfo);
-            
+        } else if (declaredClass == Object.class) {
+            if (!value.getClass().equals(String.class)) {
+                Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
+                ClassInfo classInfo = new ClassInfo(effectiveType, new MetaProperty<?>[0]);
+                addClassInfoAndIncrementCount(effectiveType, classInfo);
+            }
         } else if (!settings.getConverter().isConvertible(declaredClass)) {
             ClassInfo classInfo = new ClassInfo(value.getClass(), new MetaProperty<?>[0]);
             addClassInfoAndIncrementCount(value.getClass(), classInfo);

@@ -260,8 +260,8 @@ public class SerTestHelper {
             ImmTreeNode.builder().name("Second child").build(),
             ImmTreeNode.builder().name("Third child").build(),
             ImmutableList.of(
-                ImmTreeNode.builder().name("First child").build(),
-                ImmTreeNode.builder().name("Third child").build(),
+                ImmTreeNode.builder().name("First child").childList(childList).build(),
+                ImmTreeNode.builder().name("Third child").childList(childList).build(),
                 ImmTreeNode.builder()
                     .name("Fourth child")
                     .child3(ImmTreeNode.builder().name("Third child")
