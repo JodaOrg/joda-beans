@@ -367,7 +367,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
             }
             if (value != null && !(effectiveType.isAssignableFrom(value.getClass())) && value instanceof String) {
-                // May have previously deserialized into String due to an unknown reference in a deleted field
+                // May have deserialized as String due to the reference being initialized in a now deleted field
                 value = settings.getConverter().convertFromString(effectiveType, (String) value);
                 refs[reference] = value;
             }
