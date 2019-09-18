@@ -18,6 +18,7 @@ package org.joda.beans.ser.bin;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -206,6 +207,82 @@ public class TestSerializeReferencingBin {
 
         //System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
+    public void test_writeRemovedFieldReference_invalid() throws IOException {
+        // Writing imaginary older style of ImmGenericArray<Object> with first property called oldValues that is a Object[]
+        // The reference no longer makes sense as we cannot deserialize the original value
+        //
+        // ImmGenericArray<Object> array = ImmGenericArray.of(
+        //    new Object[] { MissingBean.of("First") },
+        //    new Object[] { MissingBean.of("First") }
+        // );
+      
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (DataOutputStream out = new DataOutputStream(baos)) {
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2); // version
+            out.writeByte(1); // refs
+
+            //classes
+            out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            out.writeByte(MsgPack.STR_8);
+            String name = "org.joda.beans.sample.MissingBeanClassName";
+            out.writeByte(name.length());
+            out.writeBytes(name);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY);
+
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmGenericArray.class.getName().length());
+            out.writeBytes(ImmGenericArray.class.getName());
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(MsgPack.MIN_FIX_STR + 9);
+            out.writeBytes("oldValues"); // removed field
+            out.writeByte(MsgPack.MIN_FIX_STR + 6);
+            out.writeBytes("values");
+
+            // Data
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 3);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(1);
+
+            // oldValues
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_DATA);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF_KEY);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_STR + 5);
+            out.writeBytes("First");
+
+            // values
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_DATA); 
+            out.writeByte(0);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF);
+            out.writeByte(0);
+        }
+
+        byte[] bytes = baos.toByteArray();
+        
+        try {
+          ImmGenericArray ignored = (ImmGenericArray) JodaBeanSer.COMPACT
+              .withDeserializers(SerDeserializers.LENIENT)
+              .binReader()
+              .read(bytes);
+          fail();
+        } catch (RuntimeException e) {
+          assertTrue(e.getMessage().contains("MissingBeanClassName"));
+        }
     }
 
     @Test

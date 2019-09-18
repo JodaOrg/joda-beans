@@ -17,9 +17,11 @@ package org.joda.beans.ser.bin;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.Bean;
@@ -60,6 +62,13 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
      * references.
      */
     private boolean ignoringObject;
+    /**
+     * Suppressed exceptions that occurred while parsing.
+     * <p>
+     * These will most likely come if fields have been deleted from beans and we are still trying to parse them to find 
+     * references.
+     */
+    private List<Exception> suppressedExceptions = new ArrayList<>();
 
     //-----------------------------------------------------------------------
     // creates an instance
@@ -78,9 +87,17 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                 input.close();
             }
         } catch (RuntimeException ex) {
+            addSuppressed(ex);
             throw ex;
         } catch (Exception ex) {
+            addSuppressed(ex);
             throw new RuntimeException(ex);
+        }
+    }
+
+    private void addSuppressed(Exception ex) {
+        for (Exception se : suppressedExceptions) {
+            ex.addSuppressed(se);
         }
     }
 
@@ -131,12 +148,13 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         try {
             type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
         } catch (ClassNotFoundException e) {
+            suppressedExceptions.add(e);
             // need to be able to try and parse properties of unknown beans in case they contain references
             for (int i = 0; i < propertyCount; i++) {
                 acceptString(input.readByte());
                 metaProperties[i] = null;
             }
-            return new ClassInfo(Object.class, metaProperties);
+            return new ClassInfo(Object.class, className, metaProperties);
         }
 
         if (ImmutableBean.class.isAssignableFrom(type)) {
@@ -149,7 +167,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         } else if (propertyCount != 0) {
             throw new IllegalArgumentException("Invalid binary data: Found non immutable bean class that has meta properties defined: " + type.getName() + ", " + propertyCount + " properties");
         }
-        return new ClassInfo(type, metaProperties);
+        return new ClassInfo(type, className, metaProperties);
     }
 
     // parses the bean using the class information
@@ -159,8 +177,11 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
             throw new IllegalArgumentException("Invalid binary data: Expected " + classInfo.metaProperties.length + " properties but was: " + propertyCount);
         }
         try {
-            if (classInfo.type == Object.class) {
-                // we couldn't load the class of this Bean, probably because it no longer exists
+            if (!classInfo.isValid()) {
+                if (!this.ignoringObject) {
+                    throw new IllegalArgumentException("Invalid binary data: Expected a reference to a bean however could not load the bean class definition " + classInfo.name);
+                }
+                // we couldn't load the class of this bean, probably because it no longer exists
                 for (MetaProperty<?> ignored : classInfo.metaProperties) {
                     // try to read and pick up references in case there's anything that will be referenced later
                     parseObject(Object.class, null, classInfo.type, null, false);
@@ -364,6 +385,9 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                 // only throw if we care about the result
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
             }
+            if (value != null && classInfo != null && !classInfo.isValid() && !this.ignoringObject) {
+                throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but could not deserialize original: " + classInfo.name + ", " + value);
+            }
             if (value != null && !(effectiveType.isAssignableFrom(value.getClass())) && value instanceof String) {
                 // May have deserialized as String due to the reference being initialized in a now deleted field
                 // Regular beans won't hit this as they always declare types
@@ -462,13 +486,21 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
 
         // The class itself
         private final Class<?> type;
+        
+        // The class name
+        private final String name;
 
         // The metaproperties (empty if not a bean) in the order in which they were serialized
         private final MetaProperty<?>[] metaProperties;
 
-        private ClassInfo(Class<?> type, MetaProperty<?>[] metaProperties) {
+        private ClassInfo(Class<?> type, String name, MetaProperty<?>[] metaProperties) {
             this.type = type;
+            this.name = name;
             this.metaProperties = metaProperties;
+        }
+        
+        private boolean isValid() {
+            return type.getName().endsWith(name);
         }
 
         @Override
