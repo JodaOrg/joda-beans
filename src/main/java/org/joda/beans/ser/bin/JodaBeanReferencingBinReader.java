@@ -124,7 +124,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         String className = acceptString(input.readByte());
         int propertyCount = acceptArray(input.readByte());
         if (propertyCount < 0) {
-            throw new IllegalArgumentException("Invalid binary data: Expected array or map with 0 to many elements, but was: " + propertyCount);
+            throw new IllegalArgumentException("Invalid binary data: Expected array with 0 to many elements, but was: " + propertyCount);
         }
 
         MetaProperty<?>[] metaProperties = new MetaProperty<?>[propertyCount];
