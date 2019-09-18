@@ -135,7 +135,7 @@ final class BeanReferences {
         // has this object been seen before, if so no need to check references again
         int result = objects.compute(base, BeanReferences::incrementOrOne);
         if (result > 1) {
-            if (parentIterator == null || settings.getIteratorFactory().createChild(base, parentIterator) == null) {
+            if (base instanceof Bean || parentIterator == null || settings.getIteratorFactory().createChild(base, parentIterator) == null) {
                 addClassInfo(base, declaredClass);
             }
             return;
