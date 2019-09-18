@@ -110,17 +110,16 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         int classMapSize = acceptMap(input.readByte());
         classes = new ClassInfo[classMapSize]; // Guaranteed non-negative by acceptMap()
         classMap = new HashMap<>(classMapSize);
-        Map<String, Class<?>> knownTypes = new HashMap<>();
 
         for (int position = 0; position < classMapSize; position++) {
-            ClassInfo classInfo = parseClassInfo(knownTypes);
+            ClassInfo classInfo = parseClassInfo();
             classes[position] = classInfo;
             classMap.put(classInfo.type, classInfo);
         }
     }
 
     // parses the class information
-    private ClassInfo parseClassInfo(Map<String, Class<?>> knownTypes) throws Exception {
+    private ClassInfo parseClassInfo() throws Exception {
         String className = acceptString(input.readByte());
         int propertyCount = acceptArray(input.readByte());
         if (propertyCount < 0) {
@@ -130,7 +129,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         MetaProperty<?>[] metaProperties = new MetaProperty<?>[propertyCount];
         Class<?> type;
         try {
-            type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, knownTypes);
+            type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
         } catch (ClassNotFoundException e) {
             // need to be able to try and parse properties of unknown beans in case they contain references
             for (int i = 0; i < propertyCount; i++) {
