@@ -132,17 +132,13 @@ final class BeanReferences {
             return;
         }
 
-        // has this object been seen before, if so no need to check references again
-        int result = objects.compute(base, BeanReferences::incrementOrOne);
-        if (result > 1) {
-            if (base instanceof Bean || parentIterator == null || settings.getIteratorFactory().createChild(base, parentIterator) == null) {
-                addClassInfo(base, declaredClass);
-            }
-            return;
-        }
-
         if (base instanceof Bean) {
             addClassInfo(base, declaredClass);
+            int result = objects.compute(base, BeanReferences::incrementOrOne);
+            if (result > 1) {
+                return;
+            }
+
             Bean bean = (Bean) base;
             if (settings.getConverter().isConvertible(bean.getClass())) {
                 return;
@@ -169,12 +165,17 @@ final class BeanReferences {
         } else if (parentIterator != null) {
             SerIterator childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
             if (childIterator != null) {
+                if (childIterator.metaTypeRequired()) {
+                    objects.compute(childIterator.metaTypeName(), BeanReferences::incrementOrOne);
+                }
                 findReferencesIterable(childIterator, objects);
             } else {
                 addClassInfo(base, declaredClass);
+                objects.compute(base, BeanReferences::incrementOrOne);
             }
         } else {
             addClassInfo(base, declaredClass);
+            objects.compute(base, BeanReferences::incrementOrOne);
         }
     }
 

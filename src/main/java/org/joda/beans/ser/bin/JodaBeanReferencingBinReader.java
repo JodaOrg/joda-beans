@@ -122,8 +122,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
     // parses the class information
     private ClassInfo parseClassInfo(Map<String, Class<?>> knownTypes) throws Exception {
         String className = acceptString(input.readByte());
-        byte typeByte = input.readByte();
-        int propertyCount = acceptArray(typeByte);
+        int propertyCount = acceptArray(input.readByte());
         if (propertyCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected array or map with 0 to many elements, but was: " + propertyCount);
         }
@@ -368,6 +367,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
             }
             if (value != null && !(effectiveType.isAssignableFrom(value.getClass())) && value instanceof String) {
                 // May have deserialized as String due to the reference being initialized in a now deleted field
+                // Regular beans won't hit this as they always declare types
                 value = settings.getConverter().convertFromString(effectiveType, (String) value);
                 refs[reference] = value;
             }

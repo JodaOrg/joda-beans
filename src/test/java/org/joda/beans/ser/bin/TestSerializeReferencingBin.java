@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.beans.Bean;
@@ -36,13 +37,15 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmOptional;
-import org.joda.beans.sample.ImmTreeNode;
+import org.joda.beans.sample.ImmTree;
 import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test property roundtrip using referencing binary.
@@ -112,13 +115,14 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test_writeTree() {
-        ImmTreeNode treeNode = SerTestHelper.testTree();
+        ImmTree<ImmJodaConvertBean> treeNode = SerTestHelper.testTree();
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(treeNode);
         byte[] regularBytes = JodaBeanSer.COMPACT.binWriter().write(treeNode);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
 
-        ImmTreeNode bean = (ImmTreeNode) JodaBeanSer.COMPACT.binReader().read(bytes);
+        ImmTree<ImmJodaConvertBean> bean = (ImmTree<ImmJodaConvertBean>) JodaBeanSer.COMPACT.binReader().read(bytes);
         //System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, treeNode);
         assertTrue(bytes.length < regularBytes.length / 2d);
@@ -290,7 +294,7 @@ public class TestSerializeReferencingBin {
         // Need to handle references that were initialised in now unused field in field with non-deserializable bean type
         //
         // ImmGenericArray<Object> array = ImmGenericArray.of(
-        //    new Object[] { ImmGeneric.of(ImmGenericArray.of(new String[]{ "First"} )) },
+        //    new Object[] { MissingClass.of(ImmGenericArray.of(new String[]{ "First"} )) },
         //    new Object[] { "First", ImmGenericArray.of(new String[]{"First"})}
         // );
 
@@ -388,8 +392,7 @@ public class TestSerializeReferencingBin {
     @Test
     public void test_writeRemovedFieldReference_missingNestedJodaConvert() throws IOException {
         // Writing imaginary older style of ImmGenericArray<?> with first property called oldValue
-        // Need to handle references to JodaConvert bean that were initialised in now unused field inside value with 
-        // non-deserializable bean type
+        // Need to handle references to JodaConvert bean that were initialised in now unused field
         //
         // ImmGenericArray<Object> array = ImmGenericArray.of(
         //    JodaConvertInterface.of("First"),
@@ -447,6 +450,123 @@ public class TestSerializeReferencingBin {
 
         byte[] bytes = baos.toByteArray();
 
+        //byte[] real = JodaBeanSer.COMPACT.binWriterReferencing().write(array);
+        //System.out.println(JodaBeanBinReader.visualize(real));
+        //System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        ImmGenericArray bean = JodaBeanSer.COMPACT
+            .withDeserializers(SerDeserializers.LENIENT)
+            .binReader()
+            .read(bytes, ImmGenericArray.class);
+
+        //System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
+    public void test_writeRemovedFieldReference_erasedCollectionTypes() throws IOException {
+        // Writing imaginary older style of ImmGenericArray<?> with first property called oldValue
+        // Need to handle references to JodaConvert bean that were initialised in unused field inside erased collection type
+        //
+        // List<Object> list = ImmutableList.of(JodaConvertInterface.of("First"), ImmutableList.of("Second"));
+        // ImmGenericArray<Object> array = ImmGenericArray.of(
+        //    list,
+        //    new Object[] { "First", list }
+        // );
+
+        List<Object> list = ImmutableList.of(JodaConvertInterface.of("First"), ImmutableList.of("Second"));
+        ImmGenericArray<Object> array = ImmGenericArray.of(new Object[]{ "First", list });
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (DataOutputStream out = new DataOutputStream(baos)) {
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
+            out.writeByte(2); // version
+            out.writeByte(3); // refs
+
+            //classes
+            out.writeByte(MsgPack.MIN_FIX_MAP + 2);
+            // writes JodaConvert class name since its type gets erased in the second array
+            // first since it gets referenced more
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(JodaConvertInterface.class.getName().length());
+            out.writeBytes(JodaConvertInterface.class.getName());
+            out.writeByte(MsgPack.MIN_FIX_ARRAY);
+
+            out.writeByte(MsgPack.STR_8);
+            out.writeByte(ImmGenericArray.class.getName().length());
+            out.writeBytes(ImmGenericArray.class.getName());
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(MsgPack.MIN_FIX_STR + 8);
+            out.writeBytes("oldValue"); // removed field
+            out.writeByte(MsgPack.MIN_FIX_STR + 6);
+            out.writeBytes("values");
+            
+            // Data
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 3);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_BEAN);
+            out.writeByte(1);
+
+            // oldValue
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF_KEY);
+            out.writeByte(0);
+            out.writeByte(MsgPack.EXT_8);
+            out.writeByte(4);
+            out.writeByte(MsgPack.JODA_TYPE_META);
+            out.writeBytes("List"); // erased type
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_DATA);
+            out.writeByte(0); // this is the joda convert interface (written due to erasure)
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF_KEY);
+            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_STR + 5);
+            out.writeBytes("First");
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF_KEY);
+            out.writeByte(2);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_META);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
+            out.writeByte(MsgPack.MIN_FIX_STR + 6);
+            out.writeBytes("Second");
+            
+            // values
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(MsgPack.MIN_FIX_STR + 5);
+            out.writeBytes("First");
+
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_META);
+            out.writeByte(0);
+            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_DATA);
+            out.writeByte(0);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF);
+            out.writeByte(1);
+            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_META);
+            out.writeByte(0);
+            out.writeByte(MsgPack.FIX_EXT_1);
+            out.writeByte(MsgPack.JODA_TYPE_REF);
+            out.writeByte(2);
+        }
+
+        byte[] bytes = baos.toByteArray();
         //byte[] real = JodaBeanSer.COMPACT.binWriterReferencing().write(array);
         //System.out.println(JodaBeanBinReader.visualize(real));
         //System.out.println(JodaBeanBinReader.visualize(bytes));

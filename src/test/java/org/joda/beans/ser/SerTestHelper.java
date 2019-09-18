@@ -37,7 +37,7 @@ import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
-import org.joda.beans.sample.ImmTreeNode;
+import org.joda.beans.sample.ImmTree;
 import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
@@ -249,24 +249,29 @@ public class SerTestHelper {
         });
     }
 
-    public static ImmTreeNode testTree() {
-        ImmutableList<ImmTreeNode> childList = ImmutableList.of(
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build());
-        return ImmTreeNode.of(
+    public static ImmTree<ImmJodaConvertBean> testTree() {
+        ImmJodaConvertBean bean = ImmJodaConvertBean.builder().base("Base").extra(10).build(); 
+        ImmutableList<ImmTree<ImmJodaConvertBean>> childList = ImmutableList.of(
+            ImmTree.<ImmJodaConvertBean>builder().name("First child").value(bean).build(),
+            ImmTree.<ImmJodaConvertBean>builder().name("Second child").value(bean).build(),
+            ImmTree.<ImmJodaConvertBean>builder().name("Third child").value(bean).build());
+        return ImmTree.of(
             "Root Node",
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build(),
+            bean.toBuilder().base("Root").build(),
             ImmutableList.of(
-                ImmTreeNode.builder().name("First child").childList(childList).build(),
-                ImmTreeNode.builder().name("Third child").childList(childList).build(),
-                ImmTreeNode.builder()
+                ImmTree.<ImmJodaConvertBean>builder()
+                    .name("First child")
+                    .value(ImmJodaConvertBean.builder().base("First").extra(10).build())
+                    .childList(childList)
+                    .build(),
+                ImmTree.<ImmJodaConvertBean>builder()
+                    .name("Third child")
+                    .value(ImmJodaConvertBean.builder().base("Third Child").extra(50).build())
+                    .childList(childList)
+                    .build(),
+                ImmTree.<ImmJodaConvertBean>builder()
                     .name("Fourth child")
-                    .child3(ImmTreeNode.builder().name("Third child")
-                        .childList(childList)
-                        .build())
+                    .value(ImmJodaConvertBean.builder().base("Fourth Child").extra(10).build())
                     .childList(childList)
                     .build()));
     }
