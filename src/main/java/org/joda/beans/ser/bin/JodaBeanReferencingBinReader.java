@@ -177,7 +177,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
             throw new IllegalArgumentException("Invalid binary data: Expected " + classInfo.metaProperties.length + " properties but was: " + propertyCount);
         }
         try {
-            if (!classInfo.isValid()) {
+            if (classInfo.isNotValid()) {
                 if (!this.ignoringObject) {
                     throw new IllegalArgumentException("Invalid binary data: Expected a reference to a bean however could not load the bean class definition " + classInfo.name);
                 }
@@ -385,7 +385,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                 // only throw if we care about the result
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
             }
-            if (value != null && classInfo != null && !classInfo.isValid() && !this.ignoringObject) {
+            if (value != null && classInfo != null && classInfo.isNotValid() && !this.ignoringObject) {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but could not deserialize original: " + classInfo.name + ", " + value);
             }
             if (value != null && !(effectiveType.isAssignableFrom(value.getClass())) && value instanceof String) {
@@ -499,8 +499,9 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
             this.metaProperties = metaProperties;
         }
         
-        private boolean isValid() {
-            return type.getName().endsWith(name);
+        private boolean isNotValid() {
+            // We can never serialize as Object
+            return type == Object.class;
         }
 
         @Override
