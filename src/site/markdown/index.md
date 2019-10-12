@@ -142,14 +142,24 @@ See the [related projects](related.html) page for Maven, Gradle and IntelliJ int
 
 ---
 
+### For Enterprise
+
+[Available as part of the Tidelift Subscription](https://tidelift.com/subscription/pkg/maven-org-joda-joda-beans?utm_source=maven-org-joda-joda-beans&utm_medium=referral&utm_campaign=enterprise).
+
+Joda and the maintainers of thousands of other packages are working with Tidelift to deliver one
+enterprise subscription that covers all of the open source you use.
+
+If you want the flexibility of open source and the confidence of commercial-grade software, this is for you.
+[Learn more](https://tidelift.com/subscription/pkg/maven-org-joda-joda-beans?utm_source=maven-org-joda-joda-beans&utm_medium=referral&utm_campaign=enterprise).
+
+
 ### Support
 
 Please use [Stack Overflow](https://stackoverflow.com/search?q=joda-beans) for general usage questions.
 GitHub [issues](https://github.com/JodaOrg/joda-beans/issues) and [pull requests](https://github.com/JodaOrg/joda-beans/pulls)
 should be used when you want to help advance the project.
-Commercial support is available via the
-[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-joda-joda-beans?utm_source=maven-org-joda-joda-beans&utm_medium=referral&utm_campaign=website).
-Donations are also accepted via [OpenCollective](https://opencollective.com/joda).
+
+Any donations to support the project are accepted via [OpenCollective](https://opencollective.com/joda).
 
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
 Tidelift will coordinate the fix and disclosure.

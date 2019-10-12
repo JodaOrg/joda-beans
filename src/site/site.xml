@@ -21,7 +21,7 @@
         <name>Joda-Beans</name>
         <href>index.html</href>
       </brand>
-      <topNav>Documentation|Releases|Development|Joda</topNav>
+      <topNav>Documentation|Releases|Development|Joda|For Enterprise</topNav>
       <bottomNav>
         <column>Documentation</column>
         <column>Releases</column>
@@ -73,7 +73,6 @@
       <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="licensecover.html"/>
       <item name="Donations" href="https://opencollective.com/joda"/>
-      <item name="Commercial support" href="https://tidelift.com/subscription/pkg/maven-org-joda-joda-beans?utm_source=maven-org-joda-joda-beans&amp;utm_medium=referral&amp;utm_campaign=website"/>
     </menu>
 
     <menu name="Releases">
@@ -93,6 +92,10 @@
       <item name="Convert" href="https://www.joda.org/joda-convert/"/>
       <item name="Money" href="https://www.joda.org/joda-money/"/>
       <item name="Time" href="https://www.joda.org/joda-time/"/>
+    </menu>
+
+    <menu name="For Enterprise">
+      <item name="Tidelift" href="enterprise.html"/>
     </menu>
 
     <menu name="Reports" ref="reports"/>
