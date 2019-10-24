@@ -139,6 +139,7 @@ For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-
 
 See the [related projects](related.html) page for Maven, Gradle and IntelliJ integration.
 
+Java module name: `org.joda.beans`.
 
 ---
 
