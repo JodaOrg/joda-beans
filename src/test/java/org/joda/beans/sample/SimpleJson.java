@@ -1621,6 +1621,92 @@ public final class SimpleJson implements ImmutableBean, Serializable {
             return this;
         }
 
+        /**
+         * Adds an element to the {@code arrayByte} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addArrayByte(byte value) {
+            this.arrayByte = arrayByte == null ? new byte[1] : Arrays.copyOf(this.arrayByte, this.arrayByte.length + 1);
+            this.arrayByte[this.arrayByte.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code stringList} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addStringList(String value) {
+            this.stringList = ImmutableList.<String>builder().addAll(this.stringList == null ? ImmutableList.of() : this.stringList).add(value).build();
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code beanList} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addBeanList(ImmKey value) {
+            this.beanList = ImmutableList.<ImmKey>builder().addAll(this.beanList == null ? ImmutableList.of() : this.beanList).add(value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code stringMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putStringMap(String key, String value) {
+            this.stringMap = ImmutableMap.<String, String>builder().putAll(this.stringMap == null ? ImmutableMap.of() : this.stringMap).put(key, value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code intKeyMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putIntKeyMap(Integer key, String value) {
+            this.intKeyMap = ImmutableMap.<Integer, String>builder().putAll(this.intKeyMap == null ? ImmutableMap.of() : this.intKeyMap).put(key, value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code beanMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putBeanMap(String key, ImmKey value) {
+            this.beanMap = ImmutableMap.<String, ImmKey>builder().putAll(this.beanMap == null ? ImmutableMap.of() : this.beanMap).put(key, value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code listInMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putListInMap(String key, List<String> value) {
+            this.listInMap = ImmutableMap.<String, List<String>>builder().putAll(this.listInMap == null ? ImmutableMap.of() : this.listInMap).put(key, value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code listNumericInMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putListNumericInMap(String key, List<Integer> value) {
+            this.listNumericInMap = ImmutableMap.<String, List<Integer>>builder().putAll(this.listNumericInMap == null ? ImmutableMap.of() : this.listNumericInMap).put(key, value).build();
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

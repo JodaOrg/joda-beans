@@ -40,6 +40,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
+import java.util.Arrays;
 
 /**
  * Mock immutable person JavaBean, used for testing.
@@ -834,6 +835,48 @@ public final class ImmPerson implements ImmutableBean {
          */
         public Builder codeCounts(Multiset<String> codeCounts) {
             this.codeCounts = codeCounts;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code middleNames} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addMiddleNames(String value) {
+            this.middleNames = middleNames == null ? new String[1] : Arrays.copyOf(this.middleNames, this.middleNames.length + 1);
+            this.middleNames[this.middleNames.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code addressList} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addAddressList(Address value) {
+            this.addressList = ImmutableList.<Address>builder().addAll(this.addressList == null ? ImmutableList.of() : this.addressList).add(value).build();
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code addressesList} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addAddressesList(List<Address> value) {
+            this.addressesList = ImmutableList.<List<Address>>builder().addAll(this.addressesList == null ? ImmutableList.of() : this.addressesList).add(value).build();
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code otherAddressMap} property
+         * @param key  the key of the new entry
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putOtherAddressMap(String key, Address value) {
+            this.otherAddressMap = ImmutableMap.<String, Address>builder().putAll(this.otherAddressMap == null ? ImmutableMap.of() : this.otherAddressMap).put(key, value).build();
             return this;
         }
 

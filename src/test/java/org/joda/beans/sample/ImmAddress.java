@@ -1715,6 +1715,112 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             return this;
         }
 
+        /**
+         * Adds an element to the {@code data} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addData(byte value) {
+            this.data = data == null ? new byte[1] : Arrays.copyOf(this.data, this.data.length + 1);
+            this.data[this.data.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code doubleVector} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addDoubleVector(double value) {
+            this.doubleVector = doubleVector == null ? new double[1] : Arrays.copyOf(this.doubleVector, this.doubleVector.length + 1);
+            this.doubleVector[this.doubleVector.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code objectInMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putObjectInMap(String key, Object value) {
+            this.objectInMap = ImmutableMap.<String, Object>builder().putAll(this.objectInMap == null ? ImmutableMap.of() : this.objectInMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.objectInMap, "objectInMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code listInMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putListInMap(String key, List<String> value) {
+            this.listInMap = ImmutableMap.<String, List<String>>builder().putAll(this.listInMap == null ? ImmutableMap.of() : this.listInMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.listInMap, "listInMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code listNumericInMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putListNumericInMap(String key, List<Integer> value) {
+            this.listNumericInMap = ImmutableMap.<String, List<Integer>>builder().putAll(this.listNumericInMap == null ? ImmutableMap.of() : this.listNumericInMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.listNumericInMap, "listNumericInMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code listInListInMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putListInListInMap(String key, List<List<Integer>> value) {
+            this.listInListInMap = ImmutableMap.<String, List<List<Integer>>>builder().putAll(this.listInListInMap == null ? ImmutableMap.of() : this.listInListInMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.listInListInMap, "listInListInMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code objectListInListInMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putObjectListInListInMap(String key, List<List<Object>> value) {
+            this.objectListInListInMap = ImmutableMap.<String, List<List<Object>>>builder().putAll(this.objectListInListInMap == null ? ImmutableMap.of() : this.objectListInListInMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.objectListInListInMap, "objectListInListInMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code mapInMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putMapInMap(ImmPerson key, Map<String, ImmPerson> value) {
+            this.mapInMap = ImmutableMap.<ImmPerson, Map<String, ImmPerson>>builder().putAll(this.mapInMap == null ? ImmutableMap.of() : this.mapInMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.mapInMap, "mapInMap");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code beanBeanMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putBeanBeanMap(ImmPerson key, ImmAddress value) {
+            this.beanBeanMap = ImmutableMap.<ImmPerson, ImmAddress>builder().putAll(this.beanBeanMap == null ? ImmutableMap.of() : this.beanBeanMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.beanBeanMap, "beanBeanMap");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

@@ -647,6 +647,73 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
             return this;
         }
 
+        /**
+         * Adds an element to the {@code listWild} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWild(Object value) {
+            this.listWild = ImmutableList.builder().addAll(this.listWild == null ? ImmutableList.of() : this.listWild).add(value).build();
+            JodaBeanUtils.notNull(this.listWild, "listWild");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildPublic1} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildPublic1(Object value) {
+            this.listWildPublic1 = ImmutableList.builder().addAll(this.listWildPublic1 == null ? ImmutableList.of() : this.listWildPublic1).add(value).build();
+            JodaBeanUtils.notNull(this.listWildPublic1, "listWildPublic1");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildPublic2} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildPublic2(Object value) {
+            this.listWildPublic2 = ImmutableList.builder().addAll(this.listWildPublic2 == null ? ImmutableList.of() : this.listWildPublic2).add(value).build();
+            JodaBeanUtils.notNull(this.listWildPublic2, "listWildPublic2");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildBuilder1} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildBuilder1(Object value) {
+            this.listWildBuilder1 = ImmutableList.<Object>builder().addAll(this.listWildBuilder1 == null ? ImmutableList.of() : this.listWildBuilder1).add(value).build();
+            JodaBeanUtils.notNull(this.listWildBuilder1, "listWildBuilder1");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code listWildBuilder2} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder<T> addListWildBuilder2(Address value) {
+            this.listWildBuilder2 = ImmutableList.<Address>builder().addAll(this.listWildBuilder2 == null ? ImmutableList.of() : this.listWildBuilder2).add(value).build();
+            JodaBeanUtils.notNull(this.listWildBuilder2, "listWildBuilder2");
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code mapWildBuilder1} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMapWildBuilder1(String key, Address value) {
+            this.mapWildBuilder1 = ImmutableMap.<String, Address>builder().putAll(this.mapWildBuilder1 == null ? ImmutableMap.of() : this.mapWildBuilder1).put(key, value).build();
+            JodaBeanUtils.notNull(this.mapWildBuilder1, "mapWildBuilder1");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {

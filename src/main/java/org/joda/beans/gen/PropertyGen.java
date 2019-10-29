@@ -22,6 +22,7 @@ import java.util.List;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 import org.joda.beans.impl.direct.DirectMetaProperty;
+import org.joda.beans.utils.NameUtils;
 
 /**
  * A property parsed from the source file.
@@ -242,10 +243,10 @@ class PropertyGen {
         String builderType = getBuilderType();
         if (builderType.endsWith("[]") && !builderType.endsWith("[][]") && !builderType.equals("byte[]")) {
             list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
-                    "(" + builderType.substring(0, builderType.length() - 2) + "... " + data.getPropertyName() + ") {");
+                "(" + builderType.substring(0, builderType.length() - 2) + "... " + data.getPropertyName() + ") {");
         } else {
             list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
-                    "(" + builderType + " " + data.getPropertyName() + ") {");
+                "(" + builderType + " " + data.getPropertyName() + ") {");
         }
         if (data.isValidated()) {
             list.add("\t\t\t" + data.getValidationMethodName() + "(" + data.getPropertyName() + ", \"" + data.getPropertyName() + "\");");
@@ -255,6 +256,96 @@ class PropertyGen {
         list.add("\t\t}");
         list.add("");
         generateBuilderSetCollectionMethod(list);
+        return list;
+    }
+
+    List<String> generateBuilderAddMethod() {
+        List<String> list = new ArrayList<>();
+        if (!(data.isCollectionType() || data.isArrayType())) {
+            return list;
+        }
+
+        if (data.isArrayType() && data.getFieldType().contains("[][]")) {
+            // Only 1 dimensional arrays are supported.
+            return list;
+        }
+
+        String valueParamName = "value";
+        String adderName = "add" + NameUtils.capitalize(data.getPropertyName());
+        String collectionType = getCollectionOrArrayParamType().replaceAll("\\? extends ", "");
+
+        list.add("\t\t/**");
+        list.add("\t\t * Adds an element to the {@code " + data.getPropertyName() + "} property");
+        for (String comment : data.getComments()) {
+            list.add("\t\t * " + comment);
+        }
+        list.add("\t\t * @param " + valueParamName + "  the new element" + data.getNotNullJavadoc());
+        list.add("\t\t * @return this, for chaining, not null");
+        if (data.getDeprecatedComment() != null) {
+            list.add("\t\t * " + data.getDeprecatedComment());
+        }
+        list.add("\t\t */");
+        if (data.isDeprecated()) {
+            list.add("\t\t@Deprecated");
+        }
+        list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + adderName + "(" + collectionType + " " + valueParamName + ") {");
+        if (data.isArrayType()) {
+            data.getBean().ensureImport(Arrays.class);
+            String newArray = "new " + data.getFieldType().replaceAll("\\[]", "") + "[1]";
+            list.add("\t\t\tthis." + generateBuilderFieldName() + " = " + generateBuilderFieldName() + " == null ? " + newArray + " : Arrays.copyOf(this." + data.getFieldName() + ", this." + data.getFieldName() + ".length + 1);");
+            list.add("\t\t\tthis." + generateBuilderFieldName() + "[this." + generateBuilderFieldName() + ".length - 1] = " + valueParamName + ";");
+        } else {
+            String existing = "this." + generateBuilderFieldName() + " == null ? " + data.getBuilderGen().generateInit(data) + " : this." + generateBuilderFieldName();
+            String typeParam = (data.isGenericParamType() && !data.isGenericWildcardParamType() ? "<" + data.getGenericParamType() + ">" : "").replaceAll("\\? extends ", "");
+            list.add("\t\t\tthis." + generateBuilderFieldName() + " = " + data.getCollectionGen().generateAddToCollection(existing, typeParam, valueParamName) + ";");
+        }
+        if (data.isValidated()) {
+            list.add("\t\t\t" + data.getValidationMethodName() + "(this." + data.getPropertyName() + ", \"" + data.getPropertyName() + "\");");
+        }
+        list.add("\t\t\treturn this;");
+        list.add("\t\t}");
+        list.add("");
+        return list;
+    }
+
+    List<String> generateBuilderPutMethod() {
+        List<String> list = new ArrayList<>();
+        if (!data.isMapType()) {
+            return list;
+        }
+
+        String putterName = "put" + NameUtils.capitalize(data.getPropertyName());
+        String keyType = parseMapKeyType().replaceAll("\\? extends ", "");
+        String valueType = parseMapValueType().replaceAll("\\? extends ", "");
+        String keyParamName = "key";
+        String valueParamName = "value";
+
+        list.add("\t\t/**");
+        list.add("\t\t * Adds an entry to the {@code " + data.getPropertyName() + "} property");
+        for (String comment : data.getComments()) {
+            list.add("\t\t * " + comment);
+        }
+        list.add("\t\t * @param " + keyParamName + "  the key of the new entry" + data.getNotNullJavadoc());
+        list.add("\t\t * @param " + valueParamName + "  the value of the new entry");
+        list.add("\t\t * @return this, for chaining, not null");
+        if (data.getDeprecatedComment() != null) {
+            list.add("\t\t * " + data.getDeprecatedComment());
+        }
+        list.add("\t\t */");
+        if (data.isDeprecated()) {
+            list.add("\t\t@Deprecated");
+        }
+        list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + putterName +
+            "(" + keyType + " " + keyParamName + ", " + valueType + " " + valueParamName + ") {");
+        String existing = "this." + generateBuilderFieldName() + " == null ? " + data.getBuilderGen().generateInit(data) + " : this." + generateBuilderFieldName();
+        String typeParam = (data.isGenericParamType() && !data.isGenericWildcardParamType() ? "<" + data.getGenericParamType() + ">" : "").replaceAll("\\? extends ", "");
+        list.add("\t\t\tthis." + generateBuilderFieldName() + " = " + data.getCollectionGen().generateAddToMap(existing, typeParam, keyParamName, valueParamName) + ";");
+        if (data.isValidated()) {
+            list.add("\t\t\t" + data.getValidationMethodName() + "(this." + data.getPropertyName() + ", \"" + data.getPropertyName() + "\");");
+        }
+        list.add("\t\t\treturn this;");
+        list.add("\t\t}");
+        list.add("");
         return list;
     }
 
@@ -378,6 +469,61 @@ class PropertyGen {
             return "Double";
         }
         return type;
+    }
+
+
+
+    private String getCollectionOrArrayParamType() {
+        if (!(data.isCollectionType() || data.isArrayType())) {
+            throw new IllegalStateException("Property is not a Collection or array.");
+        }
+
+        if (data.isArrayType()) {
+            return data.getFieldType().substring(0, data.getFieldType().lastIndexOf('['));
+        }
+
+        String paramType = data.getGenericParamType();
+        if (data.isGenericWildcardParamType() || paramType.isEmpty()) {
+            return "Object";
+        }
+
+        if (paramType.startsWith("< extends ")) {
+            return paramType.replaceFirst("< extends ", "");
+        }
+
+        return paramType;
+    }
+
+    private String parseMapKeyType() {
+        if (!data.isMapType()) {
+            throw new IllegalStateException("Property is not a Map.");
+        }
+
+        List<String> mapParamTypes = data.getGenericParamTypes();
+        if (mapParamTypes.isEmpty()) {
+            return "Object";
+        }
+        if (mapParamTypes.size() != 2) {
+            throw new IllegalStateException("Map should have 2 parameter types");
+        }
+
+        return mapParamTypes.get(0);
+    }
+
+    private String parseMapValueType() {
+        if (!data.isMapType()) {
+            throw new IllegalStateException("Property is not a Map.");
+        }
+
+        List<String> mapParamTypes = data.getGenericParamTypes();
+        if (mapParamTypes.isEmpty()) {
+            return "Object";
+        }
+        if (mapParamTypes.size() != 2) {
+            throw new IllegalStateException("Map should have 2 parameter types");
+        }
+
+        return mapParamTypes.get(1);
     }
 
     PropertyData getData() {

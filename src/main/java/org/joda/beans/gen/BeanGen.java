@@ -1267,6 +1267,8 @@ class BeanGen {
         }
         generateIndentedSeparator();
         generateBuilderPropertySetMethods();
+        generateBuilderPropertyAddMethods();
+        generateBuilderPropertyPutMethods();
         generateIndentedSeparator();
         generateBuilderToString();
         addLine(1, "}");
@@ -1419,6 +1421,22 @@ class BeanGen {
         if (data.isEffectiveBuilderScopeVisible()) {
             for (PropertyGen prop : nonDerivedProperties()) {
                 addLines(prop.generateBuilderSetMethod());
+            }
+        }
+    }
+
+    private void generateBuilderPropertyAddMethods() {
+        if (data.isEffectiveBuilderScopeVisible()) {
+            for (PropertyGen prop : nonDerivedProperties()) {
+                addLines(prop.generateBuilderAddMethod());
+            }
+        }
+    }
+
+    private void generateBuilderPropertyPutMethods() {
+        if (data.isEffectiveBuilderScopeVisible()) {
+            for (PropertyGen prop : nonDerivedProperties()) {
+                addLines(prop.generateBuilderPutMethod());
             }
         }
     }

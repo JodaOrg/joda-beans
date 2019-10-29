@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.joining;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,6 +120,8 @@ class PropertyData {
     private CopyGen copyGen;
     /** The builder generator. */
     private BuilderGen builderGen;
+    /** The collection generator. */
+    private CollectionGen collectionGen;
     /** The config. */
     private BeanGenConfig config;
 
@@ -659,6 +662,19 @@ class PropertyData {
     }
 
     /**
+     * Gets the parameterisations of the property.
+     * {@code Map<String, Object>} will return a list of {@code String} and {@code Object}.
+     * @return the generic types, or an empty list if not generic, not null
+     */
+    public List<String> getGenericParamTypes() {
+        String params = getGenericParamType();
+        if (params.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return separateGenericParamTypes(params);
+    }
+
+    /**
      * Checks if the type is the generic type of the bean.
      * For example, if the property is of type T or T[] in a bean of Foo[T].
      * @return true if matches
@@ -984,7 +1000,7 @@ class PropertyData {
 
     //-----------------------------------------------------------------------
     /**
-     * Resolves the copy generator.
+     * Resolves the builder generator.
      */
     public void resolveBuilderGen() {
         if (getBean().isMutable()) {
@@ -1010,6 +1026,29 @@ class PropertyData {
      */
     public BuilderGen getBuilderGen() {
         return builderGen;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Resolves the collection generator.
+     */
+    public void resolveCollectionGen() {
+        if (getBean().isMutable()) {
+            if (!getBean().isBuilderScopeVisible() && !getBean().isBeanStyleLightOrMinimal()) {
+                return;  // no builder
+            }
+        }
+        if (!isDerived()) {
+            collectionGen = config.getCollectionGenerators().get(getFieldTypeRaw());
+        }
+    }
+
+    /**
+     * Gets the collection generator.
+     * @return the collection generator
+     */
+    public CollectionGen getCollectionGen() {
+        return collectionGen;
     }
 
     //-----------------------------------------------------------------------
@@ -1157,4 +1196,35 @@ class PropertyData {
         return config.getImmutableVarArgs().get(getTypeRaw());
     }
 
+    /**
+     * Take a string of type parameters (such as (@code String, List<String>} and separate it out
+     * into the top-level types it contains.
+     *
+     * @param typesString  the param type string
+     * @return a list of the top-level types contained within the string (including their own parameter types)
+     */
+    private static List<String> separateGenericParamTypes(String typesString) {
+        List<String> types = new ArrayList<>();
+
+        StringBuilder typeBuilder = new StringBuilder();
+        int nestingDepth = 0;
+        for (Character character : typesString.toCharArray()) {
+            if (character.equals('<')) {
+                nestingDepth += 1;
+                typeBuilder.append(character);
+            } else if (character.equals('>')) {
+                nestingDepth -= 1;
+                typeBuilder.append(character);
+            } else if (character.equals(',') && nestingDepth == 0) {
+                types.add(typeBuilder.toString().trim());
+                typeBuilder = new StringBuilder();
+            } else {
+                typeBuilder.append(character);
+            }
+        }
+
+        types.add(typeBuilder.toString().trim());
+
+        return types;
+    }
 }

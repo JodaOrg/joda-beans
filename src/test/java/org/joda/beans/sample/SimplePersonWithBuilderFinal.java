@@ -35,6 +35,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
 
 /**
  * Mock person JavaBean, used for testing.
@@ -823,6 +824,51 @@ public final class SimplePersonWithBuilderFinal implements Cloneable, Bean {
          */
         public Builder tags(String... tags) {
             this.tags = tags;
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code addressList} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addAddressList(Address value) {
+            this.addressList = ImmutableList.<Address>builder().addAll(this.addressList == null ? ImmutableList.of() : this.addressList).add(value).build();
+            JodaBeanUtils.notNull(this.addressList, "addressList");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code addressesList} property
+         * @param value  the new element, not null
+         * @return this, for chaining, not null
+         */
+        public Builder addAddressesList(List<Address> value) {
+            this.addressesList = ImmutableList.<List<Address>>builder().addAll(this.addressesList == null ? ImmutableList.of() : this.addressesList).add(value).build();
+            JodaBeanUtils.notNull(this.addressesList, "addressesList");
+            return this;
+        }
+
+        /**
+         * Adds an element to the {@code tags} property
+         * @param value  the new element
+         * @return this, for chaining, not null
+         */
+        public Builder addTags(String value) {
+            this.tags = tags == null ? new String[1] : Arrays.copyOf(this.tags, this.tags.length + 1);
+            this.tags[this.tags.length - 1] = value;
+            return this;
+        }
+
+        /**
+         * Adds an entry to the {@code otherAddressMap} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder putOtherAddressMap(String key, Address value) {
+            this.otherAddressMap = ImmutableMap.<String, Address>builder().putAll(this.otherAddressMap == null ? ImmutableMap.of() : this.otherAddressMap).put(key, value).build();
+            JodaBeanUtils.notNull(this.otherAddressMap, "otherAddressMap");
             return this;
         }
 

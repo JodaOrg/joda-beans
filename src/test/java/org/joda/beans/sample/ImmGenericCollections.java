@@ -300,6 +300,18 @@ public class ImmGenericCollections<T> implements ImmutableBean {
             return this;
         }
 
+        /**
+         * Adds an entry to the {@code map} property
+         * @param key  the key of the new entry, not null
+         * @param value  the value of the new entry
+         * @return this, for chaining, not null
+         */
+        public Builder<T> putMap(String key, T value) {
+            this.map = ImmutableMap.<String, T>builder().putAll(this.map == null ? ImmutableMap.of() : this.map).put(key, value).build();
+            JodaBeanUtils.notNull(this.map, "map");
+            return this;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
