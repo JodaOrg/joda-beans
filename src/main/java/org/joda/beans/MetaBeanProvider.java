@@ -8,7 +8,7 @@ package org.joda.beans;
 /**
  *
  */
-interface MetaBeanProvider {
+public interface MetaBeanProvider {
 
     MetaBean findMetaBean(Class<?> cls);
 }
