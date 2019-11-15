@@ -15,11 +15,11 @@
  */
 package org.joda.beans;
 
-import org.joda.beans.impl.flexi.FlexiBean;
-import org.joda.beans.impl.map.MapBean;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.impl.map.MapBean;
 
 /**
  * Utilities for registered meta-beans.
@@ -99,7 +99,7 @@ final class MetaBeans {
                 return meta;
             } catch (Exception e) {
                 throw new IllegalStateException("Unable to create instance of " + providerClass.getName() +
-                        " to provide meta bean for " + cls.getName());
+                        " to provide meta bean for " + cls.getName(), e);
             }
         }
         throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
