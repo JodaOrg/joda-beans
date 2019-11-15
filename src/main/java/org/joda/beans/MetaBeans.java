@@ -15,11 +15,11 @@
  */
 package org.joda.beans;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Utilities for registered meta-beans.
@@ -86,8 +86,46 @@ final class MetaBeans {
         if (meta == null) {
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
         }
+        MetaProvider providerAnnotation = findProviderAnnotation(cls);
+        if (providerAnnotation != null) {
+            Class<? extends MetaBeanProvider> providerClass = providerAnnotation.value();
+            try {
+                MetaBeanProvider provider = providerClass.getDeclaredConstructor().newInstance();
+                meta = provider.findMetaBean(cls);
+                if (meta == null) {
+                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+                }
+                register(meta);
+                return meta;
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to create instance of " + providerClass.getName() +
+                        " to provide meta bean for " + cls.getName());
+            }
+        }
         return meta;
     }
+
+    // returns the MetaProvider annotation from the class or null if none can be found.
+    // the class and all its superclasses and interfaces are searched.
+    // if the annotation is found in multiple places then it is undefined which is returned.
+    private static MetaProvider findProviderAnnotation(Class<?> cls) {
+        MetaProvider providerAnnotation = cls.getAnnotation(MetaProvider.class);
+        if (providerAnnotation != null) {
+            return providerAnnotation;
+        }
+        for (Class<?> implementedInterface : cls.getInterfaces()) {
+            providerAnnotation = implementedInterface.getAnnotation(MetaProvider.class);
+            if (providerAnnotation != null) {
+                return providerAnnotation;
+            }
+        }
+        Class<?> superclass = cls.getSuperclass();
+        if (superclass.equals(Object.class)) {
+            return null;
+        }
+        return findProviderAnnotation(superclass);
+    }
+
 
     /**
      * Registers a meta-bean.
