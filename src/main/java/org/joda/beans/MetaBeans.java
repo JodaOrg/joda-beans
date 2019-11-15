@@ -83,8 +83,8 @@ final class MetaBeans {
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
         }
         MetaBean meta = META_BEANS.get(cls);
-        if (meta == null) {
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+        if (meta != null) {
+            return meta;
         }
         MetaProvider providerAnnotation = findProviderAnnotation(cls);
         if (providerAnnotation != null) {
@@ -102,7 +102,7 @@ final class MetaBeans {
                         " to provide meta bean for " + cls.getName());
             }
         }
-        return meta;
+        throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
     }
 
     // returns the MetaProvider annotation from the class or null if none can be found.
