@@ -32,6 +32,11 @@ final class MetaBeans {
     private static final ConcurrentHashMap<Class<?>, MetaBean> META_BEANS = new ConcurrentHashMap<>();
 
     /**
+     * The cache of meta-bean providers.
+     */
+    private static final ConcurrentHashMap<Class<?>, MetaBeanProvider> META_BEAN_PROVIDERS = new ConcurrentHashMap<>();
+
+    /**
      * Restricted constructor.
      */
     private MetaBeans() {
@@ -90,7 +95,11 @@ final class MetaBeans {
         if (providerAnnotation != null) {
             Class<? extends MetaBeanProvider> providerClass = providerAnnotation.value();
             try {
-                MetaBeanProvider provider = providerClass.getDeclaredConstructor().newInstance();
+                MetaBeanProvider provider = META_BEAN_PROVIDERS.get(providerClass);
+                if (provider == null) {
+                    provider = providerClass.getDeclaredConstructor().newInstance();
+                    META_BEAN_PROVIDERS.put(providerClass, provider);
+                }
                 meta = provider.findMetaBean(cls);
                 if (meta == null) {
                     throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
