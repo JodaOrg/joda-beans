@@ -228,9 +228,5 @@
     <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
     <revapi-maven-plugin.version>0.10.0</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
-    <!--TODO temporary-->
-    <!--<maven.compiler.compilerVersion>9</maven.compiler.compilerVersion>
-    <maven.compiler.source>9</maven.compiler.source>
-    <maven.compiler.target>9</maven.compiler.target>-->
   </properties>
 </project>
