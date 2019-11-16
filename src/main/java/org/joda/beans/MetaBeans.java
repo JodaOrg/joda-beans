@@ -135,7 +135,6 @@ final class MetaBeans {
         return findProviderAnnotation(superclass);
     }
 
-
     /**
      * Registers a meta-bean.
      * <p>
