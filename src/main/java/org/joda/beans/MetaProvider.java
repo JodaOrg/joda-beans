@@ -1,11 +1,10 @@
-/*
- * Copyright (C) 2019 - present by OpenGamma Inc. and the OpenGamma group of companies
- *
- * Please see distribution for license.
- */
 package org.joda.beans;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Specifies the type of the {@link MetaBeanProvider} that can provide a {@link MetaBean}
