@@ -41,6 +41,7 @@ public class TestResult {
         
         assertEquals(test.propertyNames().contains("docs"), true);
         assertEquals(test.property("docs").name(), "docs");
+        assertEquals(test.toString(), "AddressResult{docs=null, resultType=Address}");
     }
 
     @Test(expected = NoSuchElementException.class)
