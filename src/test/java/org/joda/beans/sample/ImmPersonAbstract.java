@@ -126,7 +126,7 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(96);
+        StringBuilder buf = new StringBuilder(128);
         buf.append("ImmPersonAbstract{");
         int len = buf.length();
         toString(buf);
@@ -140,6 +140,7 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
     protected void toString(StringBuilder buf) {
         buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
         buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
+        buf.append("age").append('=').append(JodaBeanUtils.toString(getAge())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------
@@ -347,7 +348,7 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(96);
+            StringBuilder buf = new StringBuilder(128);
             buf.append("ImmPersonAbstract.Builder{");
             int len = buf.length();
             toString(buf);
@@ -361,6 +362,7 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
         protected void toString(StringBuilder buf) {
             buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
             buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
+            buf.append("age").append('=').append(JodaBeanUtils.toString(null)).append(',').append(' ');
         }
 
     }

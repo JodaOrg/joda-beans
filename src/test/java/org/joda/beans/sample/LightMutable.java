@@ -338,7 +338,7 @@ public final class LightMutable implements Bean, Serializable {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(288);
+        StringBuilder buf = new StringBuilder(320);
         buf.append("LightMutable{");
         buf.append("number").append('=').append(JodaBeanUtils.toString(getNumber())).append(',').append(' ');
         buf.append("flag").append('=').append(JodaBeanUtils.toString(isFlag())).append(',').append(' ');
@@ -347,7 +347,8 @@ public final class LightMutable implements Bean, Serializable {
         buf.append("city").append('=').append(JodaBeanUtils.toString(getCity())).append(',').append(' ');
         buf.append("list").append('=').append(JodaBeanUtils.toString(getList())).append(',').append(' ');
         buf.append("currency").append('=').append(JodaBeanUtils.toString(currency)).append(',').append(' ');
-        buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText));
+        buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText)).append(',').append(' ');
+        buf.append("address").append('=').append(JodaBeanUtils.toString(getAddress()));
         buf.append('}');
         return buf.toString();
     }

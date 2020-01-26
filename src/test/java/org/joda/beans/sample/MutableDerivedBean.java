@@ -176,8 +176,7 @@ public class MutableDerivedBean extends MutableBaseBean {
         //-----------------------------------------------------------------------
         @Override
         public Object get(String propertyName) {
-            super.get(propertyName);
-            return this;
+            return super.get(propertyName);
         }
 
         @Override

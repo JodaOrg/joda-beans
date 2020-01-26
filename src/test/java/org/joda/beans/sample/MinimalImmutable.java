@@ -293,7 +293,7 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(288);
+        StringBuilder buf = new StringBuilder(320);
         buf.append("MinimalImmutable{");
         buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
         buf.append("flag").append('=').append(JodaBeanUtils.toString(flag)).append(',').append(' ');
@@ -302,7 +302,8 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
         buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
         buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
         buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
-        buf.append("currency").append('=').append(JodaBeanUtils.toString(currency));
+        buf.append("currency").append('=').append(JodaBeanUtils.toString(currency)).append(',').append(' ');
+        buf.append("address").append('=').append(JodaBeanUtils.toString(getAddress()));
         buf.append('}');
         return buf.toString();
     }
@@ -521,7 +522,7 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(288);
+            StringBuilder buf = new StringBuilder(320);
             buf.append("MinimalImmutable.Builder{");
             buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
             buf.append("flag").append('=').append(JodaBeanUtils.toString(flag)).append(',').append(' ');
@@ -530,7 +531,8 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
             buf.append("city").append('=').append(JodaBeanUtils.toString(city)).append(',').append(' ');
             buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
             buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
-            buf.append("currency").append('=').append(JodaBeanUtils.toString(currency));
+            buf.append("currency").append('=').append(JodaBeanUtils.toString(currency)).append(',').append(' ');
+            buf.append("address").append('=').append(JodaBeanUtils.toString(null));
             buf.append('}');
             return buf.toString();
         }

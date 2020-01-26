@@ -301,7 +301,7 @@ public final class ImmPerson implements ImmutableBean {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(352);
+        StringBuilder buf = new StringBuilder(384);
         buf.append("ImmPerson{");
         buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
         buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
@@ -312,7 +312,8 @@ public final class ImmPerson implements ImmutableBean {
         buf.append("otherAddressMap").append('=').append(JodaBeanUtils.toString(otherAddressMap)).append(',').append(' ');
         buf.append("addressesList").append('=').append(JodaBeanUtils.toString(addressesList)).append(',').append(' ');
         buf.append("mainAddress").append('=').append(JodaBeanUtils.toString(mainAddress)).append(',').append(' ');
-        buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(codeCounts));
+        buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(codeCounts)).append(',').append(' ');
+        buf.append("age").append('=').append(JodaBeanUtils.toString(getAge()));
         buf.append('}');
         return buf.toString();
     }
@@ -840,7 +841,7 @@ public final class ImmPerson implements ImmutableBean {
         //-----------------------------------------------------------------------
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(352);
+            StringBuilder buf = new StringBuilder(384);
             buf.append("ImmPerson.Builder{");
             buf.append("forename").append('=').append(JodaBeanUtils.toString(forename)).append(',').append(' ');
             buf.append("surname").append('=').append(JodaBeanUtils.toString(surname)).append(',').append(' ');
@@ -851,7 +852,8 @@ public final class ImmPerson implements ImmutableBean {
             buf.append("otherAddressMap").append('=').append(JodaBeanUtils.toString(otherAddressMap)).append(',').append(' ');
             buf.append("addressesList").append('=').append(JodaBeanUtils.toString(addressesList)).append(',').append(' ');
             buf.append("mainAddress").append('=').append(JodaBeanUtils.toString(mainAddress)).append(',').append(' ');
-            buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(codeCounts));
+            buf.append("codeCounts").append('=').append(JodaBeanUtils.toString(codeCounts)).append(',').append(' ');
+            buf.append("age").append('=').append(JodaBeanUtils.toString(null));
             buf.append('}');
             return buf.toString();
         }

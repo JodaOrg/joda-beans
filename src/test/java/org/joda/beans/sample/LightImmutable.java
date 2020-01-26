@@ -287,7 +287,7 @@ public final class LightImmutable implements ImmutableBean, Serializable {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(320);
+        StringBuilder buf = new StringBuilder(352);
         buf.append("LightImmutable{");
         buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
         buf.append("flag").append('=').append(JodaBeanUtils.toString(flag)).append(',').append(' ');
@@ -297,7 +297,8 @@ public final class LightImmutable implements ImmutableBean, Serializable {
         buf.append("owner").append('=').append(JodaBeanUtils.toString(owner)).append(',').append(' ');
         buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
         buf.append("currency").append('=').append(JodaBeanUtils.toString(currency)).append(',').append(' ');
-        buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText));
+        buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText)).append(',').append(' ');
+        buf.append("address").append('=').append(JodaBeanUtils.toString(getAddress()));
         buf.append('}');
         return buf.toString();
     }
