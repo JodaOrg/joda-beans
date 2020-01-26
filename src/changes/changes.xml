@@ -17,6 +17,10 @@
         Fix mutable beans where the subclass has no properties.
         Fixes #210, #221.
       </action>
+      <action dev="wjnicholson" type="fix">
+        Fix toString() to include derived properties.
+        Fixes #220.
+      </action>
       <action dev="jodastephen" type="fix">
         Handle repeated annotations more cleanly.
         Fixes #211.
