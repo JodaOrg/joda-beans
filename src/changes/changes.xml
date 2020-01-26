@@ -15,7 +15,7 @@
       </action>
       <action dev="jodastephen" type="add">
         Fix mutable beans where the subclass has no properties.
-        Fixes #210.
+        Fixes #210, #221.
       </action>
       <action dev="jodastephen" type="fix">
         Handle repeated annotations more cleanly.
