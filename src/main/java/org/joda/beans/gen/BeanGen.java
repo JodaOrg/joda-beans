@@ -1549,7 +1549,7 @@ class BeanGen {
     private List<PropertyGen> toStringProperties() {
         List<PropertyGen> props = new ArrayList<>();
         for (PropertyGen prop : properties) {
-            if (!prop.getData().isDerived() && !"omit".equals(prop.getData().getToStringStyle())) {
+            if (!"omit".equals(prop.getData().getToStringStyle())) {
                 props.add(prop);
             }
         }
