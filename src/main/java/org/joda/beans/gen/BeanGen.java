@@ -1331,8 +1331,7 @@ class BeanGen {
             addLine(3, "}");
         } else {
             if (!data.isRootClass()) {
-                addLine(3, "super.get(propertyName);");
-                addLine(3, "return this;");
+                addLine(3, "return super.get(propertyName);");
             } else {
                 data.ensureImport(NoSuchElementException.class);
                 addLine(3, "throw new NoSuchElementException(\"Unknown property: \" + propertyName);");
