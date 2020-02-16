@@ -48,7 +48,3 @@ jobs:
       run: |
         if [[ $GITHUB_REF =~ ^refs[/]tags[/]website.*$ ]]; then chmod +x ./.github/website.sh; .github/website.sh; fi
         if [[ $GITHUB_REF =~ ^refs[/]tags[/]v.*$ ]]; then chmod +x ./.github/website.sh; .github/website.sh; fi
-
-    - name: Before cache
-      run: |
-        rm -rf ~/.m2/repository/org/joda/beans
