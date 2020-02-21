@@ -22,8 +22,6 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
     - name: Maven cache
       uses: actions/cache@v1
       with:
@@ -42,7 +40,7 @@ jobs:
         mvn install site
 
     - name: Website
-      if: matrix.java == '11'
+      if: matrix.java == '11' && env.GITHUB_HEAD_REF == null
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
       run: |
