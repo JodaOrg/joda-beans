@@ -39,10 +39,6 @@ jobs:
       run: |
         mvn install site
 
-    - name: Test
-      if: env.GITHUB_HEAD_REF == null
-      run: |
-        echo "OK ${GITHUB_HEAD_REF}"
     - name: Website
       if: matrix.java == '11' && env.GITHUB_HEAD_REF == null
       env:
