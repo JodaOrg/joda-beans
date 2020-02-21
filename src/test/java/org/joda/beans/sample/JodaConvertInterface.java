@@ -21,7 +21,7 @@ import org.joda.convert.ToString;
 /**
  * Mock JodaConvert interface, used for testing.
  */
-public interface JodaConvertInterface {
+public interface JodaConvertInterface extends IKey {
 
     @FromString
     public static JodaConvertInterface of(String uniqueName) {
@@ -33,6 +33,11 @@ public interface JodaConvertInterface {
     @ToString
     @Override
     public abstract String toString();
+    
+    @Override
+    public default String getName() {
+        return toString();
+    }
 
     final class First implements JodaConvertInterface {
 
