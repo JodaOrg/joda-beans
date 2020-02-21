@@ -224,23 +224,26 @@ final class BeanReferences {
                 return;
             }
 
-            ImmutableBean bean = (ImmutableBean) value;
             // Don't need metaproperty info if it's a convertible type
-            ClassInfo classInfo = isConvertible ?
-                    new ClassInfo(value.getClass(), new MetaProperty<?>[0]) :
-                    classInfoFromMetaBean(bean.metaBean());
-
-            addClassInfoAndIncrementCount(bean.getClass(), classInfo);
+            if (isConvertible) {
+                addClassInfoForEffectiveType(value);
+            } else {
+                ClassInfo classInfo = classInfoFromMetaBean(((ImmutableBean) value).metaBean());
+                addClassInfoAndIncrementCount(value.getClass(), classInfo);
+            }
             
         } else if (declaredClass == Object.class && !value.getClass().equals(String.class)) {
-            Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
-            ClassInfo classInfo = new ClassInfo(effectiveType, new MetaProperty<?>[0]);
-            addClassInfoAndIncrementCount(effectiveType, classInfo);
+            addClassInfoForEffectiveType(value);
             
         } else if (!settings.getConverter().isConvertible(declaredClass)) {
-            ClassInfo classInfo = new ClassInfo(value.getClass(), new MetaProperty<?>[0]);
-            addClassInfoAndIncrementCount(value.getClass(), classInfo);
+            addClassInfoForEffectiveType(value);
         }
+    }
+
+    private void addClassInfoForEffectiveType(Object value) {
+        Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
+        ClassInfo classInfo = new ClassInfo(effectiveType, new MetaProperty<?>[0]);
+        addClassInfoAndIncrementCount(effectiveType, classInfo);
     }
 
     // adds the class, incrementing the number of times it is used

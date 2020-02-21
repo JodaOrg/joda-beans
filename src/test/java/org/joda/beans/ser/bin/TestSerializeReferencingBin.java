@@ -27,14 +27,18 @@ import java.util.Map;
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.sample.Company;
-import org.joda.beans.sample.ImmDoubleFloat;
+import org.joda.beans.sample.INamedKey;
 import org.joda.beans.sample.ImmDefault;
+import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGeneric;
 import org.joda.beans.sample.ImmGenericArray;
 import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
+import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmKeyList;
+import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmTreeNode;
 import org.joda.beans.sample.JodaConvertInterface;
@@ -83,6 +87,31 @@ public class TestSerializeReferencingBin {
                 (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
+    public void test_writeIntermediateInterface() {
+        ImmKeyList array = SerTestHelper.testIntermediateInterfaces();
+
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(array);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        ImmKeyList bean = JodaBeanSer.COMPACT.binReader().read(bytes, ImmKeyList.class);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
+    public void test_writeJodaConvert() {
+        // immutable bean that is serialized as joda convert
+        ImmNamedKey key = ImmNamedKey.of("name");
+
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(key);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        ImmNamedKey bean = (ImmNamedKey) JodaBeanSer.COMPACT.binReader().read(bytes);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, key);
     }
 
     @Test

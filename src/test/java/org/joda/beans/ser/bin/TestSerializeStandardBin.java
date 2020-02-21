@@ -32,6 +32,8 @@ import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmDefault;
 import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
+import org.joda.beans.sample.ImmKeyList;
+import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.JodaConvertBean;
 import org.joda.beans.sample.JodaConvertInterface;
@@ -105,6 +107,31 @@ public class TestSerializeStandardBin {
                 (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
+    public void test_writeIntermediateInterface() {
+        ImmKeyList array = SerTestHelper.testIntermediateInterfaces();
+
+        byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(array);
+        //        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        ImmKeyList bean = JodaBeanSer.COMPACT.binReader().read(bytes, ImmKeyList.class);
+        //        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
+    public void test_writeJodaConvert() {
+        // immutable bean that is serialized as joda convert
+        ImmNamedKey key = ImmNamedKey.of("name");
+
+        byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(key);
+        //        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        ImmNamedKey bean = (ImmNamedKey) JodaBeanSer.COMPACT.binReader().read(bytes);
+        //        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, key);
     }
 
     //-----------------------------------------------------------------------

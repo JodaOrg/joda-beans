@@ -27,6 +27,7 @@ import java.util.TimeZone;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.CompanyAddress;
+import org.joda.beans.sample.INamedKey;
 import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmGeneric;
 import org.joda.beans.sample.ImmGenericArray;
@@ -35,6 +36,8 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmKeyList;
+import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.ImmTreeNode;
@@ -222,6 +225,19 @@ public class SerTestHelper {
             .map(ImmutableMap.of(
                 "First", JodaConvertInterface.of("First"),
                 "Second", JodaConvertInterface.of("Second")))
+            .build();
+    }
+
+    public static ImmKeyList testIntermediateInterfaces() {
+        // second serialized as JodaConvertInterface, non-bean
+        // third and fourth are serialized as an intermediate Joda-Convert interface INamedKey
+        // (Root interface) IKey -> (Joda-Convert interface) INamedKey -> (Concrete Bean) ImmNamedKey 
+        return ImmKeyList.builder()
+            .keys(
+                ImmKey.builder().name("First").build(),
+                JodaConvertInterface.of("Second"),
+                INamedKey.of("Third"),
+                ImmNamedKey.of("Fourth"))
             .build();
     }
 
