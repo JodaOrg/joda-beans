@@ -32,6 +32,11 @@ final class MetaBeans {
     private static final ConcurrentHashMap<Class<?>, MetaBean> META_BEANS = new ConcurrentHashMap<>();
 
     /**
+     * The cache of meta-bean providers.
+     */
+    private static final ConcurrentHashMap<Class<?>, MetaBeanProvider> META_BEAN_PROVIDERS = new ConcurrentHashMap<>();
+
+    /**
      * Restricted constructor.
      */
     private MetaBeans() {
@@ -83,10 +88,51 @@ final class MetaBeans {
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
         }
         MetaBean meta = META_BEANS.get(cls);
-        if (meta == null) {
-            throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+        if (meta != null) {
+            return meta;
         }
-        return meta;
+        MetaProvider providerAnnotation = findProviderAnnotation(cls);
+        if (providerAnnotation != null) {
+            Class<? extends MetaBeanProvider> providerClass = providerAnnotation.value();
+            try {
+                MetaBeanProvider provider = META_BEAN_PROVIDERS.get(providerClass);
+                if (provider == null) {
+                    provider = providerClass.getDeclaredConstructor().newInstance();
+                    META_BEAN_PROVIDERS.put(providerClass, provider);
+                }
+                meta = provider.findMetaBean(cls);
+                if (meta == null) {
+                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+                }
+                register(meta);
+                return meta;
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to create instance of " + providerClass.getName() +
+                        " to provide meta bean for " + cls.getName(), e);
+            }
+        }
+        throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+    }
+
+    // returns the MetaProvider annotation from the class or null if none can be found.
+    // the class and all its superclasses and interfaces are searched.
+    // if the annotation is found in multiple places then it is undefined which is returned.
+    private static MetaProvider findProviderAnnotation(Class<?> cls) {
+        MetaProvider providerAnnotation = cls.getAnnotation(MetaProvider.class);
+        if (providerAnnotation != null) {
+            return providerAnnotation;
+        }
+        for (Class<?> implementedInterface : cls.getInterfaces()) {
+            providerAnnotation = implementedInterface.getAnnotation(MetaProvider.class);
+            if (providerAnnotation != null) {
+                return providerAnnotation;
+            }
+        }
+        Class<?> superclass = cls.getSuperclass();
+        if (superclass.equals(Object.class)) {
+            return null;
+        }
+        return findProviderAnnotation(superclass);
     }
 
     /**
