@@ -8,14 +8,21 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.8.0" date="SNAPSHOT" description="Version 2.8.0">
+    <release version="2.8.0" date="2020-02-26" description="Version 2.8.0">
       <action dev="jodastephen" type="add">
         Provide ability to copy a bean to a builder of a different type.
         See JodaBeanUtils.copy(Bean, Class).
       </action>
-      <action dev="jodastephen" type="add">
+      <action dev="cjkent" type="add">
+        Add MetaBeanProvider annotation for more flexible meta-bean lookup.
+      </action>
+      <action dev="jodastephen" type="fix">
         Fix mutable beans where the subclass has no properties.
         Fixes #210, #221.
+      </action>
+      <action dev="wjnicholson" type="fix">
+        Fix binary serialization of Joda-Convert types with intermediate interfaces in referencing format.
+        Fixes #224.
       </action>
       <action dev="wjnicholson" type="fix">
         Fix toString() to include derived properties.

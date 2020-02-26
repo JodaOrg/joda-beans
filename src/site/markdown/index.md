@@ -106,7 +106,7 @@ Further integration is included for MongoDB and Freemarker.
 
 ## <i></i> Releases
 
-[Release 2.7.1](download.html) is the current release.
+[Release 2.8.0](download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
 There are only [minor incompatibilities](migration.html) with the 1.x codebase.
 
@@ -119,7 +119,7 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-beans</artifactId>
-  <version>2.7.1</version>
+  <version>2.8.0</version>
 </dependency>
 ```
 
@@ -130,7 +130,7 @@ If you have problems with this, there is a "classic" variant you can use instead
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-beans</artifactId>
-  <version>2.7.1</version>
+  <version>2.8.0</version>
   <classifier>classic</classifier>
 </dependency>
 ```
