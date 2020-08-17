@@ -16,6 +16,8 @@
 package org.joda.beans;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -32,9 +34,9 @@ final class MetaBeans {
     private static final ConcurrentHashMap<Class<?>, MetaBean> META_BEANS = new ConcurrentHashMap<>();
 
     /**
-     * The cache of meta-bean providers.
+     * The cache of meta-bean providers; access is guarded by a lock on {@code MetaBeans.class}.
      */
-    private static final ConcurrentHashMap<Class<?>, MetaBeanProvider> META_BEAN_PROVIDERS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, MetaBeanProvider> META_BEAN_PROVIDERS = new HashMap<>();
 
     /**
      * Restricted constructor.
@@ -93,22 +95,30 @@ final class MetaBeans {
         }
         MetaProvider providerAnnotation = findProviderAnnotation(cls);
         if (providerAnnotation != null) {
-            Class<? extends MetaBeanProvider> providerClass = providerAnnotation.value();
-            try {
-                MetaBeanProvider provider = META_BEAN_PROVIDERS.get(providerClass);
-                if (provider == null) {
-                    provider = providerClass.getDeclaredConstructor().newInstance();
-                    META_BEAN_PROVIDERS.put(providerClass, provider);
+            // Synchronization is necessary to prevent a race condition where the same meta-bean is registered twice
+            synchronized (MetaBeans.class) {
+                // Re-check in case the meta-bean has been added by another thread since we checked above
+                meta = META_BEANS.get(cls);
+                if (meta != null) {
+                    return meta;
                 }
-                meta = provider.findMetaBean(cls);
-                if (meta == null) {
-                    throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
-                }
-                register(meta);
-                return meta;
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to create instance of " + providerClass.getName() +
+                Class<? extends MetaBeanProvider> providerClass = providerAnnotation.value();
+                try {
+                    MetaBeanProvider provider = META_BEAN_PROVIDERS.get(providerClass);
+                    if (provider == null) {
+                        provider = providerClass.getDeclaredConstructor().newInstance();
+                        META_BEAN_PROVIDERS.put(providerClass, provider);
+                    }
+                    meta = provider.findMetaBean(cls);
+                    if (meta == null) {
+                        throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
+                    }
+                    register(meta);
+                    return meta;
+                } catch (Exception e) {
+                    throw new IllegalStateException("Unable to create instance of " + providerClass.getName() +
                         " to provide meta bean for " + cls.getName(), e);
+                }
             }
         }
         throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName());
