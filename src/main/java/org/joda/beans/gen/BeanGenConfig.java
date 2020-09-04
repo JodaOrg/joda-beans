@@ -71,6 +71,10 @@ public final class BeanGenConfig {
      */
     private String prefix = "";
     /**
+     * The end of line separator
+     */
+    private String eol = System.lineSeparator();
+    /**
      * The default style to use.
      */
     private String defaultStyle = "smart";
@@ -384,6 +388,24 @@ public final class BeanGenConfig {
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    /**
+     * Gets the end of line separator to use.
+     * 
+     * @return the end of line, not null
+     */
+    public String getEol() {
+        return eol;
+    }
+
+    /**
+     * Sets the end of line separator to use.
+     * 
+     * @param eol  the end of line separator to use, not null
+     */
+    public void setEol(String eol) {
+        this.eol = eol;
     }
 
     /**
