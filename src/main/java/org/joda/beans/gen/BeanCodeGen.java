@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +56,7 @@ public class BeanCodeGen {
             System.out.println("    -indent=tab       use a tab for indenting, default 4 spaces");
             System.out.println("    -indent=[n]       use n spaces for indenting, default 4");
             System.out.println("    -prefix=[p]       field prefix of p should be removed, no default");
+            System.out.println("    -eol=[e]          end of line: 'lf'/'crlf'/'cr', default System.lineSeparator");
             System.out.println("    -generated        add @Generated annotation to generated code");
             System.out.println("    -config=[f]       config file: 'jdk'/'guava', default guava");
             System.out.println("    -style=[s]        default bean style: 'light'/'minimal'/'full', default smart");
@@ -91,6 +91,7 @@ public class BeanCodeGen {
         }
         String indent = "    ";
         String prefix = "";
+        String eol = System.lineSeparator();
         String defaultStyle = null;
         boolean recurse = false;
         boolean generatedAnno = false;
@@ -112,6 +113,14 @@ public class BeanCodeGen {
                 indent = "          ".substring(0, Integer.parseInt(arg.substring(8)));
             } else if (arg.startsWith("-prefix=")) {
                 prefix = arg.substring(8);
+            } else if (arg.startsWith("-eol=")) {
+            	switch(arg.substring(5)) {
+            	case "lf":   eol = "\n";   break;
+            	case "crlf": eol = "\r\n"; break;
+            	case "cr":   eol = "\r";   break;
+            	default:
+            		throw new IllegalArgumentException("Value of 'eol' must be one of: 'lf', 'crlf', 'cr'");
+            	}
             } else if (arg.equals("-R")) {
                 recurse = true;
             } else if (arg.equals("-generated")) {
@@ -148,6 +157,7 @@ public class BeanCodeGen {
         }
         config.setIndent(indent);
         config.setPrefix(prefix);
+        config.setEol(eol);
         if (defaultStyle != null) {
             config.setDefaultStyle(defaultStyle);
         }
@@ -340,9 +350,10 @@ public class BeanCodeGen {
     }
 
     private void writeFile(File file, List<String> content) throws Exception {
-        try (PrintWriter os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")))) {
+        try (BufferedWriter os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) {
             for (String line : content) {
-                os.println(line);
+                os.write(line);
+                os.write(config.getEol());
             }
         }
     }
