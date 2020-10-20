@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.8.1" date="SNAPSHOT" description="Version 2.8.1">
+    <release version="2.8.1" date="2020-10-20" description="Version 2.8.1">
       <action dev="biteytech" type="add">
         Add 'eol' command line argument to control the end-of-line character.
         Fixes #227.
