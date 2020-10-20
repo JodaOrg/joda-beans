@@ -166,6 +166,9 @@ final class BeanReferences {
         } else if (parentIterator != null) {
             SerIterator childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
             if (childIterator != null) {
+                if (childIterator.metaTypeRequired()) {
+                    objects.compute(childIterator.metaTypeName(), BeanReferences::incrementOrOne);
+                }
                 // shouldn't try and reuse references to collections
                 findReferencesIterable(childIterator, objects);
             } else {
