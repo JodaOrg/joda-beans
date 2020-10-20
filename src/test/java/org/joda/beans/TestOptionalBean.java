@@ -18,7 +18,6 @@ package org.joda.beans;
 import static org.junit.Assert.assertEquals;
 
 import org.joda.beans.sample.ImmOptional;
-import org.joda.beans.sample.RWOnlyBean;
 import org.junit.Test;
 
 import com.google.common.base.Optional;
@@ -26,7 +25,7 @@ import com.google.common.base.Optional;
 /**
  * Test ImmOptional.
  */
-public class TestOptionalBean extends RWOnlyBean {
+public class TestOptionalBean {
 
     @Test
     public void test_optional_empty() {

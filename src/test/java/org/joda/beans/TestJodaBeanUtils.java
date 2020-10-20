@@ -571,6 +571,7 @@ public class TestJodaBeanUtils {
 
     @Test
     public void test_mapType_wildcard() {
+        @SuppressWarnings("unchecked")
         MetaProperty<Map<? extends Number, String>> test = ImmGuava.meta().mapWildKey();
 
         assertEquals(JodaBeanUtils.mapKeyType(test, ImmGuava.class), Number.class);

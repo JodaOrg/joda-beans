@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans;
+package org.joda.beans.sample;
 
 import static org.junit.Assert.assertEquals;
 
-import org.joda.beans.sample.RWOnlyBean;
 import org.junit.Test;
 
 /**
