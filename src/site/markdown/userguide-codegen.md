@@ -78,6 +78,7 @@ The command line takes the following arguments:
     -indent=tab       use a tab for indenting, default 4 spaces
     -indent=[n]       use n spaces for indenting, default 4
     -prefix=[p]       field prefix of p should be removed, no default
+    -eol=[e]          end of line: 'lf'/'crlf'/'cr', default System.lineSeparator
     -generated        add @Generated annotation to generated code
     -config=[f]       config file: 'jdk'/'guava', default guava
     -style=[s]        default bean style: 'light'/'minimal'/'full', default smart
@@ -87,6 +88,8 @@ The command line takes the following arguments:
 
 The prefix is useful for teams that have a coding standard where fields must be prefixed, such as by an underscore or a letter.
 Specifying it to the generator allows that prefix to be stripped before generating the property name.
+
+The eol argument allows for configuring the line separator used to write generated files.
 
 The code generator works by reading the source file and parsing it to memory.
 The parser is deliberately simplistic and will reject complex files or unusual code formatting styles.
