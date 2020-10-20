@@ -41,24 +41,20 @@
   </developers>
   <contributors>
     <contributor>
-      <name>Kevin Vella</name>
-      <url>https://github.com/lega</url>
-    </contributor>
-    <contributor>
-      <name>Chris Kent</name>
-      <url>https://github.com/cjkent</url>
-    </contributor>
-    <contributor>
-      <name>Andreas Schilling</name>
-      <url>https://github.com/andreas-schilling</url>
-    </contributor>
-    <contributor>
       <name>bcamel</name>
       <url>https://github.com/bcamel</url>
     </contributor>
     <contributor>
+      <name>biteytech</name>
+      <url>https://github.com/biteytech</url>
+    </contributor>
+    <contributor>
       <name>Hack Kampbjorn</name>
       <url>https://github.com/hackmann</url>
+    </contributor>
+    <contributor>
+      <name>Chris Kent</name>
+      <url>https://github.com/cjkent</url>
     </contributor>
     <contributor>
       <name>mediahype</name>
@@ -73,8 +69,16 @@
       <url>https://github.com/martynassateika</url>
     </contributor>
     <contributor>
+      <name>Andreas Schilling</name>
+      <url>https://github.com/andreas-schilling</url>
+    </contributor>
+    <contributor>
       <name>troshanin</name>
       <url>https://github.com/troshanin</url>
+    </contributor>
+    <contributor>
+      <name>Kevin Vella</name>
+      <url>https://github.com/lega</url>
     </contributor>
   </contributors>
 

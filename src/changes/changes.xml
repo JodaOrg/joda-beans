@@ -8,6 +8,16 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.8.1" date="SNAPSHOT" description="Version 2.8.1">
+      <action dev="biteytech" type="add">
+        Add 'eol' command line argument to control the end-of-line character.
+        Fixes #227.
+      </action>
+      <action dev="jodastephen" type="fix">
+        Ensure meta-bean only registered once.
+        Fixes #226.
+      </action>
+    </release>
     <release version="2.8.0" date="2020-02-26" description="Version 2.8.0">
       <action dev="jodastephen" type="add">
         Provide ability to copy a bean to a builder of a different type.

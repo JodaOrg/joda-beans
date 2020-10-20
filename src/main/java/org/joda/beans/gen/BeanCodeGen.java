@@ -114,13 +114,22 @@ public class BeanCodeGen {
             } else if (arg.startsWith("-prefix=")) {
                 prefix = arg.substring(8);
             } else if (arg.startsWith("-eol=")) {
-            	switch(arg.substring(5)) {
-            	case "lf":   eol = "\n";   break;
-            	case "crlf": eol = "\r\n"; break;
-            	case "cr":   eol = "\r";   break;
-            	default:
-            		throw new IllegalArgumentException("Value of 'eol' must be one of: 'lf', 'crlf', 'cr'");
-            	}
+                switch (arg.substring(5)) {
+                    case "lf":
+                        eol = "\n";
+                        break;
+                    case "crlf":
+                        eol = "\r\n";
+                        break;
+                    case "cr":
+                        eol = "\r";
+                        break;
+                    case "system":
+                        eol = System.lineSeparator();
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Value of 'eol' must be one of: 'lf', 'crlf', 'cr', 'system'");
+                }
             } else if (arg.equals("-R")) {
                 recurse = true;
             } else if (arg.equals("-generated")) {
