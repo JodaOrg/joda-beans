@@ -88,6 +88,19 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
+    public void test_writeJodaConvertInterfaceCollections() {
+        ImmGenericCollections<?> array = SerTestHelper.testGenericInterfacesCollections();
+
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(array);
+        //System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        ImmGenericCollections<?> bean =
+                (ImmGenericCollections<?>) JodaBeanSer.COMPACT.binReader().read(bytes);
+        //System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    @Test
     public void test_writeIntermediateInterface() {
         ImmKeyList array = SerTestHelper.testIntermediateInterfaces();
 
