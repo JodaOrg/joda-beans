@@ -139,7 +139,7 @@ final class MetaBeans {
             }
         }
         Class<?> superclass = cls.getSuperclass();
-        if (superclass.equals(Object.class)) {
+        if (superclass == null || superclass.equals(Object.class)) {
             return null;
         }
         return findProviderAnnotation(superclass);
