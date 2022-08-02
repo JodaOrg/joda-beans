@@ -8,6 +8,15 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.8.3" date="2022-08-02" description="Version 2.8.3">
+      <action dev="martynassateika" type="fix">
+        Fix bug in referencing deserialization.
+        Fixes #235.
+      </action>
+      <action dev="jodastephen" type="update">
+        Update dependencies.
+      </action>
+    </release>
     <release version="2.8.2" date="2022-04-20" description="Version 2.8.2">
       <action dev="jodastephen" type="fix">
         Avoid NPE in `MetaBeans`.
