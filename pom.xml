@@ -84,6 +84,29 @@
 
   <!-- ==================================================================== -->
   <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Setup release -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+          <configuration>
+            <arguments>-Doss.repo</arguments>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
+            <localCheckout>true</localCheckout>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.kohsuke</groupId>
+              <artifactId>github-api</artifactId>
+              <version>${github-api.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <!-- Turn on Checkstyle -->
       <plugin>
@@ -103,30 +126,30 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>2.2.1</version>
+      <version>${joda-convert.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
+      <version>${guava.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-collect</artifactId>
-      <version>1.0.1</version>
+      <version>${joda-collect.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.tngtech.java</groupId>
       <artifactId>junit-dataprovider</artifactId>
-      <version>1.10.0</version>
+      <version>${junit-dataprovider.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -195,7 +218,7 @@
           <plugin>
             <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
-            <version>1.4.0</version>
+            <version>${github-release-plugin.version}</version>
             <configuration>
               <releaseName>Release v${project.version}</releaseName>
               <description>See the [change notes](https://www.joda.org/${joda.artifactId}/changes-report.html#a${project.version}) for more information.</description>
@@ -228,6 +251,15 @@
 
   <!-- ==================================================================== -->
   <properties>
+    <!-- Dependencies -->
+    <junit-dataprovider.version>1.13.1</junit-dataprovider.version>
+    <joda-collect.version>1.0.1</joda-collect.version>
+    <joda-convert.version>2.2.2</joda-convert.version>
+    <junit.version>4.13.2</junit.version>
+    <guava.version>31.1-jre</guava.version>
+    <!-- Plugins -->
+    <github-api.version>1.307</github-api.version>
+    <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <!-- Parent pom.xml control -->
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
     <joda.module.name>org.joda.beans</joda.module.name>
