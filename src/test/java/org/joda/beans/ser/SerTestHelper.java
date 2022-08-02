@@ -36,6 +36,7 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmKeyHolder;
 import org.joda.beans.sample.ImmKeyList;
 import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
@@ -285,6 +286,12 @@ public class SerTestHelper {
                         .build())
                     .childList(childList)
                     .build()));
+    }
+
+    public static ImmKeyHolder testImmKeyHolder() {
+        return ImmKeyHolder.builder()
+            .value(ImmKey.builder().name("foo").build())
+            .build();
     }
 
     public static SimpleJson testSimpleJson() {

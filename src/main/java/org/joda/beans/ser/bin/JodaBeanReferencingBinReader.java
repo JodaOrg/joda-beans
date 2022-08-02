@@ -357,7 +357,8 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         if (Bean.class.isAssignableFrom(effectiveType)) {
             if (isArray(typeByte)) {
                 int arraySize = acceptArray(typeByte);
-                return parseBean(arraySize, classMap.get(effectiveType));
+                ClassInfo classInfo = classMap.computeIfAbsent(effectiveType, this::lookupClassInfo);
+                return parseBean(arraySize, classInfo);
             } else {
                 return parseSimple(typeByte, effectiveType);
             }
@@ -379,6 +380,22 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                 return parseSimple(typeByte, effectiveType);
             }
         }
+    }
+
+    // looks up information of classes that are not known upfront, e.g. are used by custom de-serializers
+    private ClassInfo lookupClassInfo(Class<?> type) {
+        SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
+        MetaBean metaBean = deser.findMetaBean(type);
+        if (metaBean == null) {
+            throw new RuntimeException("Could not find type: " + type.getName());
+        }
+        int propertyCount = metaBean.metaPropertyCount();
+        MetaProperty<?>[] metaProperties = new MetaProperty[propertyCount];
+        int i = 0;
+        for (MetaProperty<?> metaProperty : metaBean.metaPropertyIterable()) {
+            metaProperties[i++] = metaProperty;
+        }
+        return new ClassInfo(type, metaProperties);
     }
 
     private Object parseBean(Class<?> declaredType, boolean rootType, ClassInfo classInfo, int arraySize) {

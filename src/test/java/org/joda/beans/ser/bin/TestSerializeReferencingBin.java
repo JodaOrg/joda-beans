@@ -35,6 +35,7 @@ import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
+import org.joda.beans.sample.ImmKeyHolder;
 import org.joda.beans.sample.ImmKeyList;
 import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
@@ -148,6 +149,14 @@ public class TestSerializeReferencingBin {
         //System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, treeNode);
         assertTrue(bytes.length < regularBytes.length / 2d);
+    }
+
+    @Test
+    public void test_read_deserializerReferencesUnseenClass() {
+        ImmKeyHolder immKeyHolder = SerTestHelper.testImmKeyHolder();
+        byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(immKeyHolder);
+        ImmKeyHolder bean = (ImmKeyHolder) JodaBeanSer.COMPACT.binReader().read(bytes);
+        BeanAssert.assertBeanEquals(bean, immKeyHolder);
     }
 
     @Test
