@@ -152,6 +152,11 @@
       <version>${junit-dataprovider.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+    </dependency>    
   </dependencies>
 
   <!-- ==================================================================== -->
@@ -252,6 +257,7 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
+    <assertj.version>3.23.1</assertj.version>
     <junit-dataprovider.version>1.13.1</junit-dataprovider.version>
     <joda-collect.version>1.0.1</joda-collect.version>
     <joda-convert.version>2.2.2</joda-convert.version>

@@ -15,7 +15,9 @@
  */
 package org.joda.beans.ser.map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.entry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +81,7 @@ public class TestSerializeSimpleMap {
         bean.set("element", "Test");
         bean.set("child", new HashMap<String, String>());
         Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
-        assertEquals(map, ImmutableMap.of("element", "Test", "child", ImmutableMap.of()));
+        assertThat(map).containsOnly(entry("element", "Test"), entry("child", ImmutableMap.of()));
         FlexiBean parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -90,7 +92,7 @@ public class TestSerializeSimpleMap {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
         Map<String, Object> map = JodaBeanSer.COMPACT.simpleMapWriter().write(bean);
-        assertEquals(map, ImmutableMap.of("data", Boolean.TRUE));
+        assertThat(map).containsOnly(entry("data", Boolean.TRUE));
         FlexiBean parsed = JodaBeanSer.COMPACT.simpleMapReader().read(map, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -100,7 +102,7 @@ public class TestSerializeSimpleMap {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.FALSE);
         Map<String, Object> map = JodaBeanSer.COMPACT.simpleMapWriter().write(bean);
-        assertEquals(map, ImmutableMap.of("data", Boolean.FALSE));
+        assertThat(map).containsOnly(entry("data", Boolean.FALSE));
         FlexiBean parsed = JodaBeanSer.COMPACT.simpleMapReader().read(map, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
@@ -112,44 +114,51 @@ public class TestSerializeSimpleMap {
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_read_rootTypeArgumentIncorrect() {
-        JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), Integer.class);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), Integer.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_write_nullKeyInMap() {
         Address address = new Address();
         Person bean = new Person();
         bean.getOtherAddressMap().put(null, address);
-        JodaBeanSer.COMPACT.simpleMapWriter().write(bean);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.simpleMapWriter().write(bean));
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_writer_nullSettings() {
-        new JodaBeanSimpleMapWriter(null);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new JodaBeanSimpleMapWriter(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_writer_write_nullBean() {
-        new JodaBeanSimpleMapWriter(JodaBeanSer.PRETTY).write(null);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new JodaBeanSimpleMapWriter(JodaBeanSer.PRETTY).write(null));
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_reader_nullSettings() {
-        new JodaBeanSimpleMapReader(null);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new JodaBeanSimpleMapReader(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_reader_read_nullBean() {
-        new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(null, FlexiBean.class);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(null, FlexiBean.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_reader_read_nullType() {
-        new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<>(), null);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<>(), null));
     }
 
 }

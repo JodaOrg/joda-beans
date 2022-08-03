@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser.xml;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.SimplePerson;
@@ -33,12 +33,8 @@ public class TestDeserializer {
     @Test
     public void test_read_renamedType() {
         String xml = "<bean type=\"org.jodabeans.FlexibleBean\"><surname>Smith</surname></bean>";
-        try {
-            JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
-            fail();
-        } catch (RuntimeException ex) {
-            // expected
-        }
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class));
         RenameHandler.INSTANCE.renamedType("org.jodabeans.FlexibleBean", FlexiBean.class);
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -52,12 +48,8 @@ public class TestDeserializer {
                 "<extra type=\"org.jodabeans.SPerson\"><surname>Smith</surname></extra>" +
                 "<person type=\"SPerson\"><surname>Jones</surname></person>" +
                 "</bean>";
-        try {
-            JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
-            fail();
-        } catch (RuntimeException ex) {
-            // expected
-        }
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class));
         RenameHandler.INSTANCE.renamedType("org.jodabeans.SPerson", SimplePerson.class);
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -133,7 +125,7 @@ public class TestDeserializer {
         BeanAssert.assertBeanEquals(expected, parsed);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_withBadEntity() {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockTypeChangeDeserializer.INSTANCE);
@@ -146,7 +138,9 @@ public class TestDeserializer {
                 "<person1 type=\"org.joda.beans.sample.SimplePerson\"><numberOfCars>None</numberOfCars><surname>Smith &x1;</surname></person1>" +
                 "<person2 type=\"org.joda.beans.sample.SimplePerson\"><numberOfCars>Two</numberOfCars><surname>Colebourne</surname></person2>" +
                 "</bean>";
-        JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(xml, FlexiBean.class);
+        String finalXml = xml;
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(finalXml, FlexiBean.class));
     }
 
 }

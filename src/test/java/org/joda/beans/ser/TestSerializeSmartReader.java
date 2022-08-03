@@ -15,6 +15,8 @@
  */
 package org.joda.beans.ser;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -221,11 +223,12 @@ public class TestSerializeSmartReader {
         };
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     @UseDataProvider("data_badFormat")
     public void test_badFormat(String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-        JodaBeanSer.COMPACT.smartReader().read(bytes, FlexiBean.class);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.smartReader().read(bytes, FlexiBean.class));
     }
 
     @UseDataProvider("data_badFormat")

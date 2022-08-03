@@ -15,7 +15,7 @@
  */
 package org.joda.beans.ser.json;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
@@ -68,7 +68,7 @@ public class TestJsonOutput {
     @UseDataProvider("data_string")
     public void test_writeString(String input, String expected) throws IOException {
         outputCompact.writeString(input);
-        assertEquals(buf.toString(), '"' + expected + '"');
+        assertThat(buf.toString()).isEqualTo('"' + expected + '"');
     }
 
     //-----------------------------------------------------------------------
@@ -88,7 +88,7 @@ public class TestJsonOutput {
     @UseDataProvider("data_int")
     public void test_writeInt(int input, String expected) throws IOException {
         outputCompact.writeInt(input);
-        assertEquals(buf.toString(), expected);
+        assertThat(buf.toString()).isEqualTo(expected);
     }
 
     @DataProvider
@@ -107,7 +107,7 @@ public class TestJsonOutput {
     @UseDataProvider("data_long")
     public void test_writeLong(long input, String expected) throws IOException {
         outputCompact.writeLong(input);
-        assertEquals(buf.toString(), expected);
+        assertThat(buf.toString()).isEqualTo(expected);
     }
 
     @DataProvider
@@ -131,7 +131,7 @@ public class TestJsonOutput {
     @UseDataProvider("data_double")
     public void test_writeDouble(double input, String expected) throws IOException {
         outputCompact.writeDouble(input);
-        assertEquals(buf.toString(), expected);
+        assertThat(buf.toString()).isEqualTo(expected);
     }
 
     @DataProvider
@@ -155,26 +155,26 @@ public class TestJsonOutput {
     @UseDataProvider("data_float")
     public void test_writeFloat(float input, String expected) throws IOException {
         outputCompact.writeFloat(input);
-        assertEquals(buf.toString(), expected);
+        assertThat(buf.toString()).isEqualTo(expected);
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_writeNull() throws IOException {
         outputCompact.writeNull();
-        assertEquals(buf.toString(), "null");
+        assertThat(buf.toString()).isEqualTo("null");
     }
 
     @Test
     public void test_writeBoolean_true() throws IOException {
         outputCompact.writeBoolean(true);
-        assertEquals(buf.toString(), "true");
+        assertThat(buf.toString()).isEqualTo("true");
     }
 
     @Test
     public void test_writeBoolean_false() throws IOException {
         outputCompact.writeBoolean(false);
-        assertEquals(buf.toString(), "false");
+        assertThat(buf.toString()).isEqualTo("false");
     }
 
     //-----------------------------------------------------------------------
@@ -182,7 +182,7 @@ public class TestJsonOutput {
     public void test_write_array0() throws IOException {
         outputCompact.writeArrayStart();
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[]");
+        assertThat(buf.toString()).isEqualTo("[]");
     }
 
     @Test
@@ -191,7 +191,7 @@ public class TestJsonOutput {
         outputCompact.writeArrayItemStart();
         outputCompact.writeString("a");
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\"]");
     }
 
     @Test
@@ -202,7 +202,7 @@ public class TestJsonOutput {
         outputCompact.writeArrayItemStart();
         outputCompact.writeString("b");
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\",\"b\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\",\"b\"]");
     }
 
     @Test
@@ -215,7 +215,7 @@ public class TestJsonOutput {
         outputCompact.writeArrayItemStart();
         outputCompact.writeString("c");
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\",\"b\",\"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\",\"b\",\"c\"]");
     }
 
     @Test
@@ -229,7 +229,7 @@ public class TestJsonOutput {
         outputCompact.writeArrayItemStart();
         outputCompact.writeString("c");
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\",[],\"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\",[],\"c\"]");
     }
 
     @Test
@@ -245,7 +245,7 @@ public class TestJsonOutput {
         outputCompact.writeArrayItemStart();
         outputCompact.writeString("c");
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\",[\"b1\"],\"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\",[\"b1\"],\"c\"]");
     }
 
     @Test
@@ -263,7 +263,7 @@ public class TestJsonOutput {
         outputCompact.writeArrayItemStart();
         outputCompact.writeString("c");
         outputCompact.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\",[\"b1\",\"b2\"],\"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\",[\"b1\",\"b2\"],\"c\"]");
     }
 
     //-----------------------------------------------------------------------
@@ -271,7 +271,7 @@ public class TestJsonOutput {
     public void test_write_object0() throws IOException {
         outputCompact.writeObjectStart();
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{}");
+        assertThat(buf.toString()).isEqualTo("{}");
     }
 
     @Test
@@ -280,7 +280,7 @@ public class TestJsonOutput {
         outputCompact.writeObjectKey("a");
         outputCompact.writeString("aa");
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{\"a\":\"aa\"}");
+        assertThat(buf.toString()).isEqualTo("{\"a\":\"aa\"}");
     }
 
     @Test
@@ -291,7 +291,7 @@ public class TestJsonOutput {
         outputCompact.writeObjectKey("b");
         outputCompact.writeString("bb");
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":\"bb\"}");
+        assertThat(buf.toString()).isEqualTo("{\"a\":\"aa\",\"b\":\"bb\"}");
     }
 
     @Test
@@ -301,7 +301,7 @@ public class TestJsonOutput {
         outputCompact.writeObjectKeyValue("b", "bb");
         outputCompact.writeObjectKeyValue("c", "cc");
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":\"bb\",\"c\":\"cc\"}");
+        assertThat(buf.toString()).isEqualTo("{\"a\":\"aa\",\"b\":\"bb\",\"c\":\"cc\"}");
     }
 
     @Test
@@ -313,7 +313,7 @@ public class TestJsonOutput {
         outputCompact.writeObjectEnd();
         outputCompact.writeObjectKeyValue("c", "cc");
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":{},\"c\":\"cc\"}");
+        assertThat(buf.toString()).isEqualTo("{\"a\":\"aa\",\"b\":{},\"c\":\"cc\"}");
     }
 
     @Test
@@ -326,7 +326,7 @@ public class TestJsonOutput {
         outputCompact.writeObjectEnd();
         outputCompact.writeObjectKeyValue("c", "cc");
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":{\"bb\":\"bbb\"},\"c\":\"cc\"}");
+        assertThat(buf.toString()).isEqualTo("{\"a\":\"aa\",\"b\":{\"bb\":\"bbb\"},\"c\":\"cc\"}");
     }
 
     @Test
@@ -340,7 +340,7 @@ public class TestJsonOutput {
         outputCompact.writeObjectEnd();
         outputCompact.writeObjectKeyValue("c", "cc");
         outputCompact.writeObjectEnd();
-        assertEquals(buf.toString(), "{\"a\":\"aa\",\"b\":{\"bb1\":\"bbb1\",\"bb2\":\"bbb2\"},\"c\":\"cc\"}");
+        assertThat(buf.toString()).isEqualTo("{\"a\":\"aa\",\"b\":{\"bb1\":\"bbb1\",\"bb2\":\"bbb2\"},\"c\":\"cc\"}");
     }
 
     //-----------------------------------------------------------------------
@@ -348,7 +348,7 @@ public class TestJsonOutput {
     public void test_write_array0_pretty() throws IOException {
         outputPretty.writeArrayStart();
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[]");
+        assertThat(buf.toString()).isEqualTo("[]");
     }
 
     @Test
@@ -357,7 +357,7 @@ public class TestJsonOutput {
         outputPretty.writeArrayItemStart();
         outputPretty.writeString("a");
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\"]");
     }
 
     @Test
@@ -368,7 +368,7 @@ public class TestJsonOutput {
         outputPretty.writeArrayItemStart();
         outputPretty.writeString("b");
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\", \"b\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\", \"b\"]");
     }
 
     @Test
@@ -381,7 +381,7 @@ public class TestJsonOutput {
         outputPretty.writeArrayItemStart();
         outputPretty.writeString("c");
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\", \"b\", \"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\", \"b\", \"c\"]");
     }
 
     @Test
@@ -395,7 +395,7 @@ public class TestJsonOutput {
         outputPretty.writeArrayItemStart();
         outputPretty.writeString("c");
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\", [], \"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\", [], \"c\"]");
     }
 
     @Test
@@ -411,7 +411,7 @@ public class TestJsonOutput {
         outputPretty.writeArrayItemStart();
         outputPretty.writeString("c");
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\", [\"b1\"], \"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\", [\"b1\"], \"c\"]");
     }
 
     @Test
@@ -429,7 +429,7 @@ public class TestJsonOutput {
         outputPretty.writeArrayItemStart();
         outputPretty.writeString("c");
         outputPretty.writeArrayEnd();
-        assertEquals(buf.toString(), "[\"a\", [\"b1\", \"b2\"], \"c\"]");
+        assertThat(buf.toString()).isEqualTo("[\"a\", [\"b1\", \"b2\"], \"c\"]");
     }
 
     //-----------------------------------------------------------------------
@@ -437,7 +437,7 @@ public class TestJsonOutput {
     public void test_write_object0_pretty() throws IOException {
         outputPretty.writeObjectStart();
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{}");
+        assertThat(buf.toString()).isEqualTo("{}");
     }
 
     @Test
@@ -446,7 +446,7 @@ public class TestJsonOutput {
         outputPretty.writeObjectKey("a");
         outputPretty.writeString("aa");
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{\n \"a\": \"aa\"\n}");
+        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\"\n}");
     }
 
     @Test
@@ -457,7 +457,7 @@ public class TestJsonOutput {
         outputPretty.writeObjectKey("b");
         outputPretty.writeString("bb");
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": \"bb\"\n}");
+        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\",\n \"b\": \"bb\"\n}");
     }
 
     @Test
@@ -467,7 +467,7 @@ public class TestJsonOutput {
         outputPretty.writeObjectKeyValue("b", "bb");
         outputPretty.writeObjectKeyValue("c", "cc");
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": \"bb\",\n \"c\": \"cc\"\n}");
+        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\",\n \"b\": \"bb\",\n \"c\": \"cc\"\n}");
     }
 
     @Test
@@ -479,7 +479,7 @@ public class TestJsonOutput {
         outputPretty.writeObjectEnd();
         outputPretty.writeObjectKeyValue("c", "cc");
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": {},\n \"c\": \"cc\"\n}");
+        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\",\n \"b\": {},\n \"c\": \"cc\"\n}");
     }
 
     @Test
@@ -492,7 +492,7 @@ public class TestJsonOutput {
         outputPretty.writeObjectEnd();
         outputPretty.writeObjectKeyValue("c", "cc");
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": {\n  \"bb\": \"bbb\"\n },\n \"c\": \"cc\"\n}");
+        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\",\n \"b\": {\n  \"bb\": \"bbb\"\n },\n \"c\": \"cc\"\n}");
     }
 
     @Test
@@ -506,7 +506,7 @@ public class TestJsonOutput {
         outputPretty.writeObjectEnd();
         outputPretty.writeObjectKeyValue("c", "cc");
         outputPretty.writeObjectEnd();
-        assertEquals(buf.toString(), "{\n \"a\": \"aa\",\n \"b\": " +
+        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\",\n \"b\": " +
         		"{\n  \"bb1\": \"bbb1\",\n  \"bb2\": \"bbb2\"\n }," +
         		"\n \"c\": \"cc\"\n}");
     }
