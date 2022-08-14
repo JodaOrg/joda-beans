@@ -47,19 +47,16 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test property roundtrip using JSON.
  */
-@RunWith(DataProviderRunner.class)
 public class TestSerializeJson {
 
     @Test
@@ -460,7 +457,6 @@ public class TestSerializeJson {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_badFormat() {
         return new Object[][] {
             {"{,}"},
@@ -481,8 +477,8 @@ public class TestSerializeJson {
         };
     }
 
-    @Test
-    @UseDataProvider("data_badFormat")
+    @ParameterizedTest
+    @MethodSource("data_badFormat")
     public void test_badFormat(String text) throws IOException {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(text, FlexiBean.class));

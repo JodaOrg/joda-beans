@@ -21,8 +21,8 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.MutableBaseBean;
 import org.joda.beans.sample.MutableDerivedBean;
 import org.joda.beans.sample.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test code coverage helper.
@@ -33,7 +33,7 @@ public class TestCoverage {
     private MutableBaseBean mutableBase;
     private MutableDerivedBean mutableDerived;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         person = new Person();
         person.setForename("Vince");

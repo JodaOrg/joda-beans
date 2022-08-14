@@ -25,7 +25,7 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ClonePerson;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.NoClone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using ClonePerson.

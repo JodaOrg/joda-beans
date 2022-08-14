@@ -28,7 +28,7 @@ import org.joda.beans.sample.LightImmutable;
 import org.joda.beans.sample.MinimalImmutable;
 import org.joda.beans.sample.MinimalMutable;
 import org.joda.beans.ser.JodaBeanSer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;

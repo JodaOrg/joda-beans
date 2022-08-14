@@ -15,10 +15,10 @@
  */
 package org.joda.beans.sample;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test RWOnlyBean.
@@ -27,8 +27,8 @@ public class TestRWOnlyBean extends RWOnlyBean {
 
     @Test
     public void test_ro() {
-        assertEquals(getRo(), null);
-        assertEquals(ro().get(), null);
+        assertThat(getRo()).isNull();
+        assertThat(ro().get()).isNull();
     }
 
     @Test
@@ -47,14 +47,14 @@ public class TestRWOnlyBean extends RWOnlyBean {
 
     @Test
     public void test_manualGet() {
-        assertEquals(getManualGet(), "goo");
-        assertEquals(manualGet().get(), "goo");
+        assertThat(getManualGet()).isEqualTo("goo");
+        assertThat(manualGet().get()).isEqualTo("goo");
     }
 
     @Test
     public void test_derived() {
-        assertEquals(getDerived(), "drv");
-        assertEquals(derived().get(), "drv");
+        assertThat(getDerived()).isEqualTo("drv");
+        assertThat(derived().get()).isEqualTo("drv");
     }
 
 }

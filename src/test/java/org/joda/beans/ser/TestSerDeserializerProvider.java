@@ -23,7 +23,7 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test ser.

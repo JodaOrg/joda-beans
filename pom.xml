@@ -141,15 +141,9 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.tngtech.java</groupId>
-      <artifactId>junit-dataprovider</artifactId>
-      <version>${junit-dataprovider.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -258,10 +252,9 @@
   <properties>
     <!-- Dependencies -->
     <assertj.version>3.23.1</assertj.version>
-    <junit-dataprovider.version>1.13.1</junit-dataprovider.version>
     <joda-collect.version>1.0.1</joda-collect.version>
     <joda-convert.version>2.2.2</joda-convert.version>
-    <junit.version>4.13.2</junit.version>
+    <junit.version>5.9.0</junit.version>
     <guava.version>31.1-jre</guava.version>
     <!-- Plugins -->
     <github-api.version>1.307</github-api.version>

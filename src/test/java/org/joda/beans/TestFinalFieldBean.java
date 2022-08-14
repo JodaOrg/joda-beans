@@ -24,8 +24,8 @@ import java.util.List;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.FinalFieldBean;
 import org.joda.beans.sample.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test FinalFieldBean.
@@ -35,7 +35,7 @@ public class TestFinalFieldBean {
     /** Bean. */
     private FinalFieldBean bean;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         bean = new FinalFieldBean("Hello");
         bean.setFieldNonFinal("Hello");

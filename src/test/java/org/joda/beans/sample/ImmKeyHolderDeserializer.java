@@ -31,48 +31,48 @@ import com.google.common.reflect.TypeToken;
  */
 final class ImmKeyHolderDeserializer extends DefaultDeserializer {
 
-  private static final Type VALUE_TYPE =
-      new TypeToken<ImmGeneric<String>>() {
-      }.getType();
+    @SuppressWarnings("serial")
+    private static final Type VALUE_TYPE = new TypeToken<ImmGeneric<String>>() {
+    }.getType();
 
-  private static final StandaloneMetaProperty<ImmGeneric<String>> VALUE_PROPERTY =
-      StandaloneMetaProperty.of(
-          "value",
-          ImmKeyHolder.meta(),
-          (Class) ImmGeneric.class,
-          VALUE_TYPE);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static final StandaloneMetaProperty<ImmGeneric<String>> VALUE_PROPERTY = StandaloneMetaProperty.of(
+            "value",
+            ImmKeyHolder.meta(),
+            (Class) ImmGeneric.class,
+            VALUE_TYPE);
 
-  ImmKeyHolderDeserializer() {
-  }
-
-  @Override
-  public BeanBuilder<?> createBuilder(Class<?> beanType, MetaBean metaBean) {
-    return BufferingBeanBuilder.of(metaBean);
-  }
-
-  @Override
-  public MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName) {
-    if (propertyName.equals(VALUE_PROPERTY.name())) {
-      return VALUE_PROPERTY;
-    } else {
-      return metaBean.metaProperty(propertyName);
+    ImmKeyHolderDeserializer() {
     }
-  }
 
-  @Override
-  public void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value) {
-    if (metaProp.equals(VALUE_PROPERTY)) {
-      ImmGeneric<?> generic = (ImmGeneric<?>) value;
-      builder.set(ImmKeyHolder.meta().value(), toImmKey(generic));
-    } else {
-      builder.set(metaProp, value);
+    @Override
+    public BeanBuilder<?> createBuilder(Class<?> beanType, MetaBean metaBean) {
+        return BufferingBeanBuilder.of(metaBean);
     }
-  }
 
-  private ImmKey toImmKey(ImmGeneric<?> generic) {
-    return ImmKey.builder()
-        .name(String.valueOf(generic.getValue()))
-        .build();
-  }
+    @Override
+    public MetaProperty<?> findMetaProperty(Class<?> beanType, MetaBean metaBean, String propertyName) {
+        if (propertyName.equals(VALUE_PROPERTY.name())) {
+            return VALUE_PROPERTY;
+        } else {
+            return metaBean.metaProperty(propertyName);
+        }
+    }
+
+    @Override
+    public void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value) {
+        if (metaProp.equals(VALUE_PROPERTY)) {
+            ImmGeneric<?> generic = (ImmGeneric<?>) value;
+            builder.set(ImmKeyHolder.meta().value(), toImmKey(generic));
+        } else {
+            builder.set(metaProp, value);
+        }
+    }
+
+    private ImmKey toImmKey(ImmGeneric<?> generic) {
+        return ImmKey.builder()
+                .name(String.valueOf(generic.getValue()))
+                .build();
+    }
 
 }

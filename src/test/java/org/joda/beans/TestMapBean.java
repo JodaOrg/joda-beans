@@ -16,10 +16,9 @@
 package org.joda.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.impl.map.MapBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test MapBean.
@@ -99,7 +98,7 @@ public class TestMapBean {
         assertThat(meta.metaPropertyCount()).isEqualTo(1);
         
         MetaProperty<Object> prop2 = meta.metaProperty("address");
-        assertNotNull(prop2);
+        assertThat(prop2).isNotNull();
         assertThat(meta.metaPropertyCount()).isEqualTo(1); // meta-property object created but data not changed
     }
 

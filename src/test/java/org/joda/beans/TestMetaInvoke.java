@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.AbstractResult;
 import org.joda.beans.sample.Address;
@@ -40,7 +40,7 @@ import org.joda.beans.sample.SubWrapper;
 import org.joda.beans.sample.TweakedPair;
 import org.joda.beans.sample.ValidateBean;
 import org.joda.beans.sample.Wrapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using Person.
@@ -51,97 +51,97 @@ public class TestMetaInvoke {
     public void test_method_call_compiles() {
         @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> a = AbstractResult.meta();
-        assertNotNull(a);
+        assertThat(a).isNotNull();
         
         AbstractResult.Meta<Address> a2 = AbstractResult.metaAbstractResult(Address.class);
-        assertNotNull(a2);
+        assertThat(a2).isNotNull();
         
         Address.Meta b = Address.meta();
-        assertNotNull(b);
+        assertThat(b).isNotNull();
         
         AddressResult.Meta c = AddressResult.meta();
-        assertNotNull(c);
+        assertThat(c).isNotNull();
         
         CompanyAddress.Meta d = CompanyAddress.meta();
-        assertNotNull(d);
+        assertThat(d).isNotNull();
         
         CompanyAddressMidResult.Meta e = CompanyAddressMidResult.meta();
-        assertNotNull(e);
+        assertThat(e).isNotNull();
         
         CompanyAddressResult.Meta f = CompanyAddressResult.meta();
-        assertNotNull(f);
+        assertThat(f).isNotNull();
         
         @SuppressWarnings("unchecked")
         Documentation.Meta<String> g = Documentation.meta();
-        assertNotNull(g);
+        assertThat(g).isNotNull();
         
         Documentation.Meta<String> g2 = Documentation.metaDocumentation(String.class);
-        assertNotNull(g2);
+        assertThat(g2).isNotNull();
         
         DocumentationHolder.Meta h = DocumentationHolder.meta();
-        assertNotNull(h);
+        assertThat(h).isNotNull();
         
         FinalFieldBean.Meta i = FinalFieldBean.meta();
-        assertNotNull(i);
+        assertThat(i).isNotNull();
         
         @SuppressWarnings("unchecked")
         GenericSubWrapper.Meta<Address> j = GenericSubWrapper.meta();
-        assertNotNull(j);
+        assertThat(j).isNotNull();
         
         GenericSubWrapper.Meta<Address> j2 = GenericSubWrapper.metaGenericSubWrapper(Address.class);
-        assertNotNull(j2);
+        assertThat(j2).isNotNull();
         
         @SuppressWarnings("unchecked")
         GenericWrapperDocumentation.Meta<Address> k = GenericWrapperDocumentation.meta();
-        assertNotNull(k);
+        assertThat(k).isNotNull();
         
         GenericWrapperDocumentation.Meta<Address> k2 = GenericWrapperDocumentation.metaGenericWrapperDocumentation(Address.class);
-        assertNotNull(k2);
+        assertThat(k2).isNotNull();
         
         @SuppressWarnings("unchecked")
         MidAbstractResult.Meta<Address> l = MidAbstractResult.meta();
-        assertNotNull(l);
+        assertThat(l).isNotNull();
         
         MidAbstractResult.Meta<Address> l2 = MidAbstractResult.metaMidAbstractResult(Address.class);
-        assertNotNull(l2);
+        assertThat(l2).isNotNull();
         
         NoGenEquals.Meta m = NoGenEquals.meta();
-        assertNotNull(m);
+        assertThat(m).isNotNull();
         
         NoProperties.Meta n = NoProperties.meta();
-        assertNotNull(n);
+        assertThat(n).isNotNull();
         
         Pair.Meta o = Pair.meta();
-        assertNotNull(o);
+        assertThat(o).isNotNull();
         
         Person.Meta p = Person.meta();
-        assertNotNull(p);
+        assertThat(p).isNotNull();
         
         PersonDocumentation.Meta q = PersonDocumentation.meta();
-        assertNotNull(q);
+        assertThat(q).isNotNull();
         
         RWOnlyBean.Meta r = RWOnlyBean.meta();
-        assertNotNull(r);
+        assertThat(r).isNotNull();
         
         @SuppressWarnings("unchecked")
         SubPerson.Meta<String> s = SubPerson.meta();
-        assertNotNull(s);
+        assertThat(s).isNotNull();
         
         SubPerson.Meta<String> s2 = SubPerson.metaSubPerson(String.class);
-        assertNotNull(s2);
+        assertThat(s2).isNotNull();
         
         SubWrapper.Meta t = SubWrapper.meta();
-        assertNotNull(t);
+        assertThat(t).isNotNull();
         
         TweakedPair.Meta u = TweakedPair.meta();
-        assertNotNull(u);
+        assertThat(u).isNotNull();
         
         ValidateBean.Meta v = ValidateBean.meta();
-        assertNotNull(v);
+        assertThat(v).isNotNull();
         
         @SuppressWarnings("unchecked")
         Wrapper.Meta<Address> w = Wrapper.meta();
-        assertNotNull(w);
+        assertThat(w).isNotNull();
     }
 
 }

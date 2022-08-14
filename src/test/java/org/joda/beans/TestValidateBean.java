@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import org.joda.beans.sample.SubValidateBean;
 import org.joda.beans.sample.ValidateBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test ValidateBean.

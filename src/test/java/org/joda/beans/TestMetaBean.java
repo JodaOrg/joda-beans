@@ -17,13 +17,12 @@ package org.joda.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.MetaBeanLoad;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test MetaBean statics.
@@ -34,7 +33,7 @@ public class TestMetaBean {
     @Test
     public void test_registerMetaBean() {
         // register once OK
-        assertNotNull(ImmPerson.meta());
+        assertThat(ImmPerson.meta()).isNotNull();
         // register second time not OK
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> MetaBean.register(ImmPerson.meta()));
@@ -44,7 +43,7 @@ public class TestMetaBean {
     @Test
     public void test_metaBean() {
         MetaBean metaBean = MetaBean.of(MetaBeanLoad.class);
-        assertNotNull(metaBean);
+        assertThat(metaBean).isNotNull();
         assertThat(metaBean).isEqualTo(MetaBeanLoad.meta());
     }
 

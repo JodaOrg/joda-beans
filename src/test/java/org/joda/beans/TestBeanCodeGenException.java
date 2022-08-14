@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 
 import org.joda.beans.gen.BeanCodeGenException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test exception, message is parsed by plugins.
