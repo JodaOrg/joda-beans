@@ -15,10 +15,9 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -95,15 +94,11 @@ public class TestMinimal {
         assertEquals(mp3.get(bean), "12 Park Lane Smallville");
         assertEquals(mp3.style(), PropertyStyle.DERIVED);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
         
-        try {
-            LightImmutable.meta().builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> LightImmutable.meta().builder().set(mp3, "Nothing"));
     }
 
     @Test
@@ -191,15 +186,11 @@ public class TestMinimal {
         assertEquals(mp3.get(bean), "12 Park Lane London");
         assertEquals(mp3.style(), PropertyStyle.DERIVED);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
         
-        try {
-            LightImmutable.meta().builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> LightImmutable.meta().builder().set(mp3, "Nothing"));
     }
 
     @Test

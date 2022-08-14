@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -113,8 +113,8 @@ public class TestCompanyAddress {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.street();
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().street());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().street());
         
         assertEquals(test.get(), null);
         address.setStreet("A");
@@ -130,8 +130,8 @@ public class TestCompanyAddress {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.companyName();
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().companyName());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().companyName());
         
         assertEquals(test.get(), null);
         address.setCompanyName("A");
@@ -148,8 +148,8 @@ public class TestCompanyAddress {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.property(STREET);
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().street());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().street());
         
         assertEquals(test.get(), null);
         address.setStreet("A");
@@ -165,8 +165,8 @@ public class TestCompanyAddress {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.property(COMPANY_NAME);
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().companyName());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().companyName());
         
         assertEquals(test.get(), null);
         address.setCompanyName("A");

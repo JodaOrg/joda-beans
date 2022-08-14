@@ -15,11 +15,10 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -484,10 +483,10 @@ public class TestJodaBeanUtils {
         p.getOtherAddressMap().put("A", new Address());
         p.getOtherAddressMap().get("A").setCity("London");
         Person cloned = JodaBeanUtils.clone(p);
-        assertNotSame(cloned, p);
-        assertEquals(cloned, p);
+        assertThat(cloned).isNotSameAs(p);
+        assertThat(cloned).isEqualTo(p);
         p.getOtherAddressMap().put("B", new Address());
-        assertFalse(cloned.equals(p));
+        assertThat(cloned).isNotEqualTo(p);
     }
 
     //-----------------------------------------------------------------------
@@ -609,20 +608,20 @@ public class TestJodaBeanUtils {
         Bean bean1 = createBean("123", "321", "name1");
         Bean bean2 = createBean("124", "321", "name1");
         // first not ignored
-        assertFalse(JodaBeanUtils.equalIgnoring(bean1, bean2));
-        assertFalse(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("second")));
-        assertFalse(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("second"), bean1.metaBean().metaProperty("name")));
+        assertThat(JodaBeanUtils.equalIgnoring(bean1, bean2)).isFalse();
+        assertThat(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("second"))).isFalse();
+        assertThat(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("second"), bean1.metaBean().metaProperty("name"))).isFalse();
         // first is ignored
-        assertTrue(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("first")));
-        assertTrue(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("first"), bean1.metaBean().metaProperty("second")));
+        assertThat(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("first"))).isTrue();
+        assertThat(JodaBeanUtils.equalIgnoring(bean1, bean2, bean1.metaBean().metaProperty("first"), bean1.metaBean().metaProperty("second"))).isTrue();
     }
 
     @Test
     public void equalIgnoring_same() {
         Bean bean1 = createBean("123", "321", "name1");
         Bean bean2 = createBean("124", "321", "name1");
-        assertTrue(JodaBeanUtils.equalIgnoring(bean1, bean1));
-        assertTrue(JodaBeanUtils.equalIgnoring(bean2, bean2));
+        assertThat(JodaBeanUtils.equalIgnoring(bean1, bean1)).isTrue();
+        assertThat(JodaBeanUtils.equalIgnoring(bean2, bean2)).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)

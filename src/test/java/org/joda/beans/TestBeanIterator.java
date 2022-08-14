@@ -15,8 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Iterator;
 
@@ -37,18 +36,18 @@ public class TestBeanIterator {
     public void test_iteration_noChildren() {
         ImmEmpty bean = ImmEmpty.builder().build();
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), bean);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(bean);
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test
     public void test_iteration_nullChild() {
         Address bean = new Address();
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), bean);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(bean);
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test
@@ -62,13 +61,13 @@ public class TestBeanIterator {
             .build();
         
         Iterator<Bean> it = JodaBeanUtils.beanIterator(root);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), root);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node1);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node2);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(root);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node1);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node2);
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test
@@ -86,15 +85,15 @@ public class TestBeanIterator {
             .build();
         
         Iterator<Bean> it = JodaBeanUtils.beanIterator(root);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), root);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node3);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node1);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node2);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(root);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node3);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node1);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node2);
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test
@@ -121,23 +120,23 @@ public class TestBeanIterator {
             .build();
         
         Iterator<Bean> it = JodaBeanUtils.beanIterator(root);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), root);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node3);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node1);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node1a);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node1b);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node2);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node2a);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), node2b);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(root);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node3);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node1);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node1a);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node1b);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node2);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node2a);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(node2b);
+        assertThat(it.hasNext()).isFalse();
     }
 
     //-----------------------------------------------------------------------
@@ -145,9 +144,9 @@ public class TestBeanIterator {
     public void test_iteration_childWithNoChildren_FlexiBean() {
         FlexiBean bean1 = new FlexiBean();
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean1);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), bean1);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(bean1);
+        assertThat(it.hasNext()).isFalse();
     }
 
     @Test
@@ -156,11 +155,11 @@ public class TestBeanIterator {
         FlexiBean bean2 = new FlexiBean();
         bean1.set("a", bean2);
         Iterator<Bean> it = JodaBeanUtils.beanIterator(bean1);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), bean1);
-        assertEquals(it.hasNext(), true);
-        assertSame(it.next(), bean2);
-        assertEquals(it.hasNext(), false);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(bean1);
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isSameAs(bean2);
+        assertThat(it.hasNext()).isFalse();
     }
 
 }

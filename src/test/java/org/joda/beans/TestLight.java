@@ -15,10 +15,9 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -103,15 +102,11 @@ public class TestLight {
         assertEquals(mp4.get(bean), "wow");
         assertEquals(mp4.style(), PropertyStyle.IMMUTABLE);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
         
-        try {
-            LightImmutable.meta().builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> LightImmutable.meta().builder().set(mp3, "Nothing"));
     }
 
     @Test
@@ -208,15 +203,11 @@ public class TestLight {
         assertEquals(mp4.get(bean), "wow");
         assertEquals(mp4.style(), PropertyStyle.READ_WRITE);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
         
-        try {
-            LightImmutable.meta().builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> LightImmutable.meta().builder().set(mp3, "Nothing"));
     }
 
     //-----------------------------------------------------------------------
@@ -277,15 +268,11 @@ public class TestLight {
         assertEquals(mp4.get(bean), "wow");
         assertEquals(mp4.style(), PropertyStyle.IMMUTABLE);
 
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
 
-        try {
-            oldMeta.builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> oldMeta.builder().set(mp3, "Nothing"));
     }
 
 }

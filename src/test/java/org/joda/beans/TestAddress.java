@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -169,8 +169,8 @@ public class TestAddress {
         Address address = new Address();
         Property<String> test = address.street();
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), Address.meta().street());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(Address.meta().street());
         
         assertEquals(test.get(), null);
         address.setStreet("A");
@@ -187,8 +187,8 @@ public class TestAddress {
         Address address = new Address();
         Property<String> test = address.property(STREET);
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), Address.meta().street());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(Address.meta().street());
         
         assertEquals(test.get(), null);
         address.setStreet("A");

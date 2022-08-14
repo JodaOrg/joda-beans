@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.sample.ReflectiveMutable;
@@ -67,7 +67,7 @@ public class TestReflective {
         assertEquals(mp2.get(bean), "Park Lane");
         assertEquals(mp2.style(), PropertyStyle.READ_WRITE);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<street>Park Lane<"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<street>Park Lane<");
     }
 
 }

@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,18 +55,11 @@ public class TestFinalFieldBean {
         assertEquals(bean.fieldFinal().metaProperty().name(), "fieldFinal");
         assertEquals(bean.fieldFinal().metaProperty().style(), PropertyStyle.READ_ONLY);
         assertEquals(bean.fieldFinal().metaProperty().propertyType(), String.class);
-        try {
-            bean.fieldFinal().set("foo");
-            fail();
-        } catch (UnsupportedOperationException ex) {
-            // expected
-        }
-        try {
-            bean.fieldFinal().metaProperty().set(bean, "foo");
-            fail();
-        } catch (UnsupportedOperationException ex) {
-            // expected
-        }
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> bean.fieldFinal().set("foo"));
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> bean.fieldFinal().metaProperty().set(bean, "foo"));
     }
 
     //-----------------------------------------------------------------------
@@ -148,18 +141,11 @@ public class TestFinalFieldBean {
         assertEquals(bean.personFinal().metaProperty().name(), "personFinal");
         assertEquals(bean.personFinal().metaProperty().style(), PropertyStyle.READ_ONLY);
         assertEquals(bean.personFinal().metaProperty().propertyType(), Person.class);
-        try {
-            bean.personFinal().set(new Person());
-            fail();
-        } catch (UnsupportedOperationException ex) {
-            // expected
-        }
-        try {
-            bean.personFinal().metaProperty().set(bean, new Person());
-            fail();
-        } catch (UnsupportedOperationException ex) {
-            // expected
-        }
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> bean.personFinal().set(new Person()));
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> bean.personFinal().metaProperty().set(bean, new Person()));
     }
 
 }

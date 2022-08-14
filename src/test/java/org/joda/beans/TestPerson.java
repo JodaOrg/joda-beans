@@ -15,9 +15,8 @@
  */
 package org.joda.beans;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -133,8 +132,8 @@ public class TestPerson {
         Person person = new Person();
         Property<String> test = person.forename();
         
-        assertSame(test.bean(), person);
-        assertSame(test.metaProperty(), Person.meta().forename());
+        assertThat((Object) test.bean()).isSameAs(person);
+        assertThat(test.metaProperty()).isSameAs(Person.meta().forename());
         
         assertEquals(test.get(), null);
         person.setForename("A");
@@ -151,8 +150,8 @@ public class TestPerson {
         Person person = new Person();
         Property<String> test = person.property(FORENAME);
         
-        assertSame(test.bean(), person);
-        assertSame(test.metaProperty(), Person.meta().forename());
+        assertThat((Object) test.bean()).isSameAs(person);
+        assertThat(test.metaProperty()).isSameAs(Person.meta().forename());
         
         assertEquals(test.get(), null);
         person.setForename("A");
@@ -171,7 +170,7 @@ public class TestPerson {
         
         assertEquals(test.metaBean().beanType(), Person.class);
         assertEquals(test.propertyType(), String.class);
-        assertSame(test.name(), FORENAME);
+        assertThat(test.name()).isSameAs(FORENAME);
         assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(person), null);
@@ -191,7 +190,7 @@ public class TestPerson {
         
         assertEquals(test.metaBean().beanType(), Person.class);
         assertEquals(test.propertyType(), String.class);
-        assertSame(test.name(), FORENAME);
+        assertThat(test.name()).isSameAs(FORENAME);
         assertEquals(test.style(), PropertyStyle.READ_WRITE);
         
         assertEquals(test.get(person), null);
@@ -210,7 +209,7 @@ public class TestPerson {
         
         assertEquals(test.metaBean().beanType(), Person.class);
         assertEquals(test.propertyType(), List.class);
-        assertTrue(test.propertyGenericType() instanceof ParameterizedType);
+        assertThat(test.propertyGenericType()).isInstanceOf(ParameterizedType.class);
         ParameterizedType pt = (ParameterizedType) test.propertyGenericType();
         assertEquals(pt.getRawType(), List.class);
         assertEquals(pt.getOwnerType(), null);
@@ -225,7 +224,7 @@ public class TestPerson {
         
         assertEquals(test.metaBean().beanType(), Person.class);
         assertEquals(test.propertyType(), List.class);
-        assertTrue(test.propertyGenericType() instanceof ParameterizedType);
+        assertThat(test.propertyGenericType()).isInstanceOf(ParameterizedType.class);
         ParameterizedType pt = (ParameterizedType) test.propertyGenericType();
         assertEquals(pt.getRawType(), List.class);
         assertEquals(pt.getOwnerType(), null);
@@ -240,7 +239,7 @@ public class TestPerson {
         
         assertEquals(test.metaBean().beanType(), Person.class);
         assertEquals(test.propertyType(), Map.class);
-        assertTrue(test.propertyGenericType() instanceof ParameterizedType);
+        assertThat(test.propertyGenericType()).isInstanceOf(ParameterizedType.class);
         ParameterizedType pt = (ParameterizedType) test.propertyGenericType();
         assertEquals(pt.getRawType(), Map.class);
         assertEquals(pt.getOwnerType(), null);
