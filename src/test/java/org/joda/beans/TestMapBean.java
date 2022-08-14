@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.impl.map.MapBean;
@@ -33,17 +33,17 @@ public class TestMapBean {
         a.put("B", "BB");
         MapBean b = a.clone();
         
-        assertEquals(a.get("A"), "AA");
-        assertEquals(a.get("B"), "BB");
-        assertEquals(b.get("A"), "AA");
-        assertEquals(b.get("B"), "BB");
+        assertThat(a.get("A")).isEqualTo("AA");
+        assertThat(a.get("B")).isEqualTo("BB");
+        assertThat(b.get("A")).isEqualTo("AA");
+        assertThat(b.get("B")).isEqualTo("BB");
         
         a.clear();
         
-        assertEquals(a.get("A"), null);
-        assertEquals(a.get("B"), null);
-        assertEquals(b.get("A"), "AA");
-        assertEquals(b.get("B"), "BB");
+        assertThat(a.get("A")).isNull();
+        assertThat(a.get("B")).isNull();
+        assertThat(b.get("A")).isEqualTo("AA");
+        assertThat(b.get("B")).isEqualTo("BB");
     }
 
     @SuppressWarnings("unlikely-arg-type")
@@ -57,50 +57,50 @@ public class TestMapBean {
         a2.put("first", "A");
         b.put("first", "B");
         
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a2.equals(a1), true);
-        assertEquals(a2.equals(a2), true);
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertThat(a1.equals(a1)).isTrue();
+        assertThat(a1.equals(a2)).isTrue();
+        assertThat(a2.equals(a1)).isTrue();
+        assertThat(a2.equals(a2)).isTrue();
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
         
-        assertEquals(a1.equals(b), false);
-        assertEquals(b.equals(a1), false);
+        assertThat(a1.equals(b)).isFalse();
+        assertThat(b.equals(a1)).isFalse();
         
-        assertEquals(b.equals("Weird type"), false);
-        assertEquals(b.equals(null), false);
+        assertThat(b.equals("Weird type")).isFalse();
+        assertThat(b.equals(null)).isFalse();
     }
 
     @Test
     public void test_propertyDefine_propertyRemove() {
         MapBean mapBean = new MapBean();
-        assertEquals(mapBean.propertyNames().size(), 0);
+        assertThat(mapBean.propertyNames().size()).isEqualTo(0);
         mapBean.propertyDefine("name", String.class);
-        assertEquals(mapBean.propertyNames().size(), 1);
+        assertThat(mapBean.propertyNames().size()).isEqualTo(1);
         Property<Object> prop = mapBean.property("name");
-        assertEquals(prop.name(), "name");
-        assertEquals(prop.get(), null);
+        assertThat(prop.name()).isEqualTo("name");
+        assertThat(prop.get()).isNull();
         mapBean.propertyRemove("name");
-        assertEquals(mapBean.propertyNames().size(), 0);
+        assertThat(mapBean.propertyNames().size()).isEqualTo(0);
     }
 
     @Test
     public void test_metaBean() {
         MapBean mapBean = new MapBean();
         DynamicMetaBean meta = mapBean.metaBean();
-        assertEquals(meta.metaPropertyCount(), 0);
+        assertThat(meta.metaPropertyCount()).isEqualTo(0);
         
         meta.metaPropertyDefine("name", String.class);
-        assertEquals(meta.metaPropertyCount(), 1);
+        assertThat(meta.metaPropertyCount()).isEqualTo(1);
         MetaProperty<Object> prop = meta.metaProperty("name");
-        assertEquals(prop.name(), "name");
-        assertEquals(prop.get(mapBean), null);
+        assertThat(prop.name()).isEqualTo("name");
+        assertThat(prop.get(mapBean)).isNull();
         
         meta.metaPropertyDefine("name", String.class);
-        assertEquals(meta.metaPropertyCount(), 1);
+        assertThat(meta.metaPropertyCount()).isEqualTo(1);
         
         MetaProperty<Object> prop2 = meta.metaProperty("address");
         assertNotNull(prop2);
-        assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
+        assertThat(meta.metaPropertyCount()).isEqualTo(1); // meta-property object created but data not changed
     }
 
 }

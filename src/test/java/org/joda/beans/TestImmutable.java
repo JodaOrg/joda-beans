@@ -15,7 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -47,8 +48,8 @@ public class TestImmutable {
                 .owner(ImmPerson.builder().forename("John").surname("Doggett").build())
                 .build();
         
-        assertEquals(address.getCity(), "Smallville");
-        assertEquals(address.getStreet(), "Park Lane");
+        assertThat(address.getCity()).isEqualTo("Smallville");
+        assertThat(address.getStreet()).isEqualTo("Park Lane");
     }
 
     @Test
@@ -56,18 +57,18 @@ public class TestImmutable {
         Builder builder = ImmAddress.builder()
                 .set("number", 12)
                 .set("street", "Park Lane");
-        assertEquals(builder.get("number"), 12);
-        assertEquals(builder.get("street"), "Park Lane");
-        assertEquals(builder.get("city"), null);
+        assertThat(builder.get("number")).isEqualTo(12);
+        assertThat(builder.get("street")).isEqualTo("Park Lane");
+        assertThat(builder.get("city")).isNull();
         builder.set("city", "Smallville")
                 .set("owner", ImmPerson.builder().forename("John").surname("Doggett").build());
-        assertEquals(builder.get("number"), 12);
-        assertEquals(builder.get("street"), "Park Lane");
-        assertEquals(builder.get("city"), "Smallville");
+        assertThat(builder.get("number")).isEqualTo(12);
+        assertThat(builder.get("street")).isEqualTo("Park Lane");
+        assertThat(builder.get("city")).isEqualTo("Smallville");
         ImmAddress address = builder.build();
         
-        assertEquals(address.getCity(), "Smallville");
-        assertEquals(address.getStreet(), "Park Lane");
+        assertThat(address.getCity()).isEqualTo("Smallville");
+        assertThat(address.getStreet()).isEqualTo("Park Lane");
     }
 
     @Test
@@ -81,31 +82,23 @@ public class TestImmutable {
         
         address = address.toBuilder().street("Park Road").build();
         
-        assertEquals(address.getCity(), "Smallville");
-        assertEquals(address.getStreet(), "Park Road");
+        assertThat(address.getCity()).isEqualTo("Smallville");
+        assertThat(address.getStreet()).isEqualTo("Park Road");
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_builder_getInvalidPropertyName() {
         BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
-        try {
-            builder.get("Rubbish");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> builder.get("Rubbish"));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_builder_setInvalidPropertyName() {
         BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
-        try {
-            builder.set("Rubbish", "");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> builder.set("Rubbish", ""));
     }
 
     //-----------------------------------------------------------------------
@@ -115,39 +108,31 @@ public class TestImmutable {
         builder.set(ImmPersonNonFinal.meta().forename(), "Bobby");
         builder.set(ImmSubPersonNonFinal.meta().middleName(), "Joe");
         builder.set(ImmSubSubPersonFinal.meta().codeCounts(), ImmutableMultiset.of());
-        assertEquals(builder.get("forename"), "Bobby");
-        assertEquals(builder.get("middleName"), "Joe");
-        assertEquals(builder.get("codeCounts"), ImmutableMultiset.of());
-        assertEquals(builder.get(ImmPersonNonFinal.meta().forename()), "Bobby");
-        assertEquals(builder.get(ImmSubPersonNonFinal.meta().middleName()), "Joe");
-        assertEquals(builder.get(ImmSubSubPersonFinal.meta().codeCounts()), ImmutableMultiset.of());
+        assertThat(builder.get("forename")).isEqualTo("Bobby");
+        assertThat(builder.get("middleName")).isEqualTo("Joe");
+        assertThat(builder.get("codeCounts")).isEqualTo(ImmutableMultiset.of());
+        assertThat(builder.get(ImmPersonNonFinal.meta().forename())).isEqualTo("Bobby");
+        assertThat(builder.get(ImmSubPersonNonFinal.meta().middleName())).isEqualTo("Joe");
+        assertThat(builder.get(ImmSubSubPersonFinal.meta().codeCounts())).isEqualTo(ImmutableMultiset.of());
         ImmSubSubPersonFinal result = builder.build();
         
-        assertEquals(result.getForename(), "Bobby");
-        assertEquals(result.getMiddleName(), "Joe");
-        assertEquals(result.getCodeCounts(), ImmutableMultiset.of());
+        assertThat(result.getForename()).isEqualTo("Bobby");
+        assertThat(result.getMiddleName()).isEqualTo("Joe");
+        assertThat(result.getCodeCounts()).isEmpty();
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_builder_subclass_getInvalidPropertyName() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
-        try {
-            builder.get("Rubbish");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> builder.get("Rubbish"));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_builder_subclass_setInvalidPropertyName() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
-        try {
-            builder.set("Rubbish", "");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> builder.set("Rubbish", ""));
     }
 
     //-----------------------------------------------------------------------
@@ -157,9 +142,9 @@ public class TestImmutable {
             .forename("A")
             .surname("B")
             .build();
-        assertEquals(person.getForename(), "A");
-        assertEquals(person.getSurname(), "B");
-        assertEquals(person.getNumberOfCars(), 1);
+        assertThat(person.getForename()).isEqualTo("A");
+        assertThat(person.getSurname()).isEqualTo("B");
+        assertThat(person.getNumberOfCars()).isEqualTo(1);
     }
 
     //-----------------------------------------------------------------------
@@ -182,7 +167,7 @@ public class TestImmutable {
             .listWildExtendsComparable((Double) 2d, (Integer) 5, (Float) 3f)
             .listWildExtendsComparable(listInts)
             .build();
-        assertEquals(obj.getList(), listCal);
+        assertThat(obj.getList()).isEqualTo(listCal);
     }
 
 }

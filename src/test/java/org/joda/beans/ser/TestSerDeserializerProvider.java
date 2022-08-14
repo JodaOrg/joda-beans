@@ -15,10 +15,7 @@
  */
 package org.joda.beans.ser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaBean;
@@ -71,31 +68,31 @@ public class TestSerDeserializerProvider {
     @Test
     public void test_provider() {
         SerDeserializers deser = new SerDeserializers(PROVIDER);
-        assertSame(deser.findDeserializer(Person.class), DESER);
+        assertThat(deser.findDeserializer(Person.class)).isSameAs(DESER);
     }
 
     @Test
     public void test_classpathImmKey() {
-        assertTrue(SerDeserializers.INSTANCE.getDeserializers().containsKey(ImmKey.class));
-        assertTrue(SerDeserializers.LENIENT.getDeserializers().containsKey(ImmKey.class));
-        assertTrue(new SerDeserializers(PROVIDER).getDeserializers().containsKey(ImmKey.class));
+        assertThat(SerDeserializers.INSTANCE.getDeserializers()).containsKey(ImmKey.class);
+        assertThat(SerDeserializers.LENIENT.getDeserializers()).containsKey(ImmKey.class);
+        assertThat(new SerDeserializers(PROVIDER).getDeserializers()).containsKey(ImmKey.class);
 
-        assertEquals(ImmKey.meta().name(), SerDeserializers.INSTANCE.findDeserializer(
-                ImmKey.class).findMetaProperty(ImmKey.class, ImmKey.meta(), "key"));
-        assertNull(SerDeserializers.LENIENT.findDeserializer(
-                ImmKey.class).findMetaProperty(ImmKey.class, ImmKey.meta(), "wibble"));
+        assertThat(SerDeserializers.INSTANCE.findDeserializer(ImmKey.class).findMetaProperty(ImmKey.class, ImmKey.meta(), "key"))
+            .isEqualTo(ImmKey.meta().name());
+        assertThat(SerDeserializers.LENIENT.findDeserializer(ImmKey.class).findMetaProperty(ImmKey.class, ImmKey.meta(), "wibble"))
+            .isNull();
     }
 
     @Test
     public void test_classpathPair() {
-        assertTrue(SerDeserializers.INSTANCE.getDeserializers().containsKey(Pair.class));
-        assertTrue(SerDeserializers.LENIENT.getDeserializers().containsKey(Pair.class));
-        assertTrue(new SerDeserializers(PROVIDER).getDeserializers().containsKey(Pair.class));
+        assertThat(SerDeserializers.INSTANCE.getDeserializers()).containsKey(Pair.class);
+        assertThat(SerDeserializers.LENIENT.getDeserializers()).containsKey(Pair.class);
+        assertThat(new SerDeserializers(PROVIDER).getDeserializers()).containsKey(Pair.class);
 
-        assertEquals(Pair.meta().first(), SerDeserializers.INSTANCE.findDeserializer(
-                Pair.class).findMetaProperty(Pair.class, Pair.meta(), "left"));
-        assertNull(SerDeserializers.LENIENT.findDeserializer(
-                Pair.class).findMetaProperty(Pair.class, ImmKey.meta(), "wibble"));
+        assertThat(SerDeserializers.INSTANCE.findDeserializer(Pair.class).findMetaProperty(Pair.class, Pair.meta(), "left"))
+            .isEqualTo(Pair.meta().first());
+        assertThat(SerDeserializers.LENIENT.findDeserializer(Pair.class).findMetaProperty(Pair.class, ImmKey.meta(), "wibble"))
+            .isNull();
     }
 
 }

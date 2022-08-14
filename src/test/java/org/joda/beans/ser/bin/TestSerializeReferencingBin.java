@@ -15,9 +15,10 @@
  */
 package org.joda.beans.ser.bin;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatRuntimeException;
+import static org.assertj.core.api.Assertions.offset;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -148,7 +149,7 @@ public class TestSerializeReferencingBin {
         ImmTreeNode bean = (ImmTreeNode) JodaBeanSer.COMPACT.binReader().read(bytes);
         //System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, treeNode);
-        assertTrue(bytes.length < regularBytes.length / 2d);
+        assertThat((double) bytes.length).isLessThan(regularBytes.length / 2d);
     }
 
     @Test
@@ -190,8 +191,8 @@ public class TestSerializeReferencingBin {
         byte[] bytes = baos.toByteArray();
 
         ImmDoubleFloat parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
-        assertEquals(6, parsed.getA(), 1e-10);
-        assertEquals(5, parsed.getB(), 1e-10);
+        assertThat(parsed.getA()).isCloseTo(6, offset(1e-10));
+        assertThat(parsed.getB()).isCloseTo(5, offset(1e-10));
     }
 
     @Test
@@ -221,10 +222,10 @@ public class TestSerializeReferencingBin {
         byte[] bytes = baos.toByteArray();
 
         ImmDefault parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDefault.class);
-        assertEquals("Defaulted", parsed.getValue());
+        assertThat(parsed.getValue()).isEqualTo("Defaulted");
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_wrongVersion() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -232,10 +233,11 @@ public class TestSerializeReferencingBin {
             out.writeByte(-1);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_wrongVersionTooHigh() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -243,7 +245,8 @@ public class TestSerializeReferencingBin {
             out.writeByte(3);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class));
     }
 
     //-----------------------------------------------------------------------
@@ -282,7 +285,7 @@ public class TestSerializeReferencingBin {
         ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
         ImmJodaConvertWrapper wrapper = ImmJodaConvertWrapper.of(bean, "Weird");
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(wrapper);
-        assertArrayEquals(bytes, expected);
+        assertThat(bytes).isEqualTo(expected);
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertWrapper.class);
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
@@ -317,7 +320,7 @@ public class TestSerializeReferencingBin {
         ImmJodaConvertBean bean = new ImmJodaConvertBean("Hello:9");
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(bean);
 
-        assertArrayEquals(expected, bytes);
+        assertThat(bytes).isEqualTo(expected);
 
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -395,7 +398,7 @@ public class TestSerializeReferencingBin {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -403,10 +406,11 @@ public class TestSerializeReferencingBin {
             out.writeByte(2);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_rootTypeNotSpecified_Bean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -415,10 +419,11 @@ public class TestSerializeReferencingBin {
             out.writeByte(MsgPack.MIN_FIX_MAP);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class);
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_rootTypeInvalid_Bean() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -432,10 +437,11 @@ public class TestSerializeReferencingBin {
             out.writeByte(MsgPack.NIL);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class);
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void test_read_rootTypeInvalid_incompatible() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(baos)) {
@@ -455,7 +461,8 @@ public class TestSerializeReferencingBin {
             out.write(MsgPack.NIL);
         }
         byte[] bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class);
+        assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class));
     }
 
 }

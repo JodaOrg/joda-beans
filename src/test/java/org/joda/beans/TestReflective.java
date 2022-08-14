@@ -15,8 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.sample.ReflectiveMutable;
@@ -36,38 +35,38 @@ public class TestReflective {
                 .set(StandaloneMetaProperty.of("city", ReflectiveMutable.META_BEAN, String.class), "Smallville")
                 .build();
         
-        assertEquals(bean.getNumber(), 12);
-        assertEquals(bean.getCity(), "Smallville");
-        assertEquals(bean.getStreet(), "Park Lane");
+        assertThat(bean.getNumber()).isEqualTo(12);
+        assertThat(bean.getCity()).isEqualTo("Smallville");
+        assertThat(bean.getStreet()).isEqualTo("Park Lane");
         
         bean.setCity("Nodnol");
-        assertEquals(bean.getCity(), "Nodnol");
+        assertThat(bean.getCity()).isEqualTo("Nodnol");
         
         bean.property("city").set("Paris");
-        assertEquals(bean.getCity(), "Paris");
+        assertThat(bean.getCity()).isEqualTo("Paris");
         
         bean.metaBean().metaProperty("city").set(bean, "London");
-        assertEquals(bean.getCity(), "London");
+        assertThat(bean.getCity()).isEqualTo("London");
         
-        assertEquals(bean.metaBean().beanType(), ReflectiveMutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 4);
-        assertEquals(bean.metaBean().metaPropertyExists("number"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        assertThat(bean.metaBean().beanType()).isEqualTo(ReflectiveMutable.class);
+        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(4);
+        assertThat(bean.metaBean().metaPropertyExists("number")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("foobar")).isFalse();
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
-        assertEquals(mp.propertyType(), int.class);
-        assertEquals(mp.declaringType(), ReflectiveMutable.class);
-        assertEquals(mp.get(bean), 12);
-        assertEquals(mp.style(), PropertyStyle.READ_WRITE);
+        assertThat(mp.propertyType()).isEqualTo(int.class);
+        assertThat(mp.declaringType()).isEqualTo(ReflectiveMutable.class);
+        assertThat(mp.get(bean)).isEqualTo(12);
+        assertThat(mp.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
         MetaProperty<Object> mp2 = bean.metaBean().metaProperty("street");
-        assertEquals(mp2.propertyType(), String.class);
-        assertEquals(mp2.propertyGenericType(), String.class);
-        assertEquals(mp2.declaringType(), ReflectiveMutable.class);
-        assertEquals(mp2.get(bean), "Park Lane");
-        assertEquals(mp2.style(), PropertyStyle.READ_WRITE);
+        assertThat(mp2.propertyType()).isEqualTo(String.class);
+        assertThat(mp2.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp2.declaringType()).isEqualTo(ReflectiveMutable.class);
+        assertThat(mp2.get(bean)).isEqualTo("Park Lane");
+        assertThat(mp2.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<street>Park Lane<"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<street>Park Lane<");
     }
 
 }

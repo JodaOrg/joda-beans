@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
@@ -32,7 +32,7 @@ public class TestBeanCodeGenException {
     @Test
     public void testMessage() {
         BeanCodeGenException test = new BeanCodeGenException("rubbish", FILE, 123);
-        assertEquals(test.getMessage(), "Error in bean: " + FILE.toString() + ", Line: 123, Message: rubbish");
+        assertThat(test.getMessage()).isEqualTo("Error in bean: " + FILE.toString() + ", Line: 123, Message: rubbish");
     }
 
 }

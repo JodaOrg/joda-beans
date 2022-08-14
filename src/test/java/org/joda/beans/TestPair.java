@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.TweakedPair;
@@ -39,17 +39,17 @@ public class TestPair {
         a2.setFirst("A");
         b.setFirst("A");
         
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a2.equals(a1), true);
-        assertEquals(a2.equals(a2), true);
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertThat(a1.equals(a1)).isTrue();
+        assertThat(a1.equals(a2)).isTrue();
+        assertThat(a2.equals(a1)).isTrue();
+        assertThat(a2.equals(a2)).isTrue();
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
         
-        assertEquals(a1.equals(b), false);
-        assertEquals(b.equals(a1), false);
+        assertThat(a1.equals(b)).isFalse();
+        assertThat(b.equals(a1)).isFalse();
         
-        assertEquals(b.equals("Weird type"), false);
-        assertEquals(b.equals(null), false);
+        assertThat(b.equals("Weird type")).isFalse();
+        assertThat(b.equals(null)).isFalse();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class TestPair {
         Pair test = new Pair();
         test.setFirst("A");
         test.setSecond("B");
-        assertEquals(test.toString(), "Pair{first=A, second=B}");
+        assertThat(test).hasToString("Pair{first=A, second=B}");
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package org.joda.beans.test;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.MutableBaseBean;
 import org.joda.beans.sample.MutableDerivedBean;
@@ -66,17 +68,17 @@ public class TestCoverage {
 
     @Test
     public void test_coveragePerson() {
-        JodaBeanTests.coverMutableBean(person);
+        assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(person));
     }
 
     @Test
     public void test_coverageMutableBase() {
-        JodaBeanTests.coverMutableBean(mutableBase);
+        assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(mutableBase));
     }
 
     @Test
     public void test_coverageMutableDerived() {
-        JodaBeanTests.coverMutableBean(mutableDerived);
+        assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(mutableDerived));
     }
 
 }

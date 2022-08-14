@@ -15,7 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertNotNull;
 
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -30,12 +31,13 @@ import org.junit.Test;
 public class TestMetaBean {
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_registerMetaBean() {
         // register once OK
         assertNotNull(ImmPerson.meta());
         // register second time not OK
-        MetaBean.register(ImmPerson.meta());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> MetaBean.register(ImmPerson.meta()));
     }
 
     //-----------------------------------------------------------------------
@@ -43,22 +45,23 @@ public class TestMetaBean {
     public void test_metaBean() {
         MetaBean metaBean = MetaBean.of(MetaBeanLoad.class);
         assertNotNull(metaBean);
-        assertEquals(metaBean, MetaBeanLoad.meta());
+        assertThat(metaBean).isEqualTo(MetaBeanLoad.meta());
     }
 
     @Test
     public void test_metaBean_FlexiBean() {
-        assertEquals(MetaBean.of(FlexiBean.class).builder().build().getClass(), FlexiBean.class);
+        assertThat(MetaBean.of(FlexiBean.class).builder().build().getClass()).isEqualTo(FlexiBean.class);
     }
 
     @Test
     public void test_metaBean_MapBean() {
-        assertEquals(MetaBean.of(MapBean.class).builder().build().getClass(), MapBean.class);
+        assertThat(MetaBean.of(MapBean.class).builder().build().getClass()).isEqualTo(MapBean.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_metaBean_notFound() {
-        MetaBean.of(String.class);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> MetaBean.of(String.class));
     }
 
 }
