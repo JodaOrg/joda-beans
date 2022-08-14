@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.CompanyAddress;
@@ -38,16 +38,16 @@ public class TestBasicBean {
         a2.setForename("Stephen");
         b.setForename("Etienne");
         
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a2.equals(a1), true);
-        assertEquals(a2.equals(a2), true);
+        assertThat(a1.equals(a1)).isTrue();
+        assertThat(a1.equals(a2)).isTrue();
+        assertThat(a2.equals(a1)).isTrue();
+        assertThat(a2.equals(a2)).isTrue();
         
-        assertEquals(a1.equals(b), false);
-        assertEquals(b.equals(a1), false);
+        assertThat(a1.equals(b)).isFalse();
+        assertThat(b.equals(a1)).isFalse();
         
-        assertEquals(b.equals("Weird type"), false);
-        assertEquals(b.equals(null), false);
+        assertThat(b.equals("Weird type")).isFalse();
+        assertThat(b.equals(null)).isFalse();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class TestBasicBean {
         a1.setForename("Stephen");
         a2.setForename("Stephen");
         
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
     }
 
     @Test
@@ -67,10 +67,11 @@ public class TestBasicBean {
         a.setForename("Stephen");
         a.setSurname("Colebourne");
         
-        assertEquals(a.toString().startsWith("Person{"), true);
-        assertEquals(a.toString().endsWith("}"), true);
-        assertEquals(a.toString().contains("forename=Stephen"), true);
-        assertEquals(a.toString().contains("surname=Colebourne"), true);
+        assertThat(a.toString())
+                .startsWith("Person{")
+                .endsWith("}")
+                .contains("forename=Stephen")
+                .contains("surname=Colebourne");
     }
 
     //-----------------------------------------------------------------------
@@ -84,7 +85,7 @@ public class TestBasicBean {
         obj1.setCity("London");
         obj2.setCity("London");
         
-        assertEquals(p1, p2);
+        assertThat(p1).isEqualTo(p2);
     }
 
     @Test
@@ -97,7 +98,7 @@ public class TestBasicBean {
         obj1.setForename("Stephen");
         obj2.setForename("Stephen");
         
-        assertEquals(p1.hashCode(), p2.hashCode());
+        assertThat(p1.hashCode()).isEqualTo(p2.hashCode());
     }
 
     @Test
@@ -107,7 +108,7 @@ public class TestBasicBean {
         
         obj1.setForename("Stephen");
         
-        assertEquals(p1.toString(), "Person:forename=Stephen");
+        assertThat(p1).hasToString("Person:forename=Stephen");
     }
 
     //-----------------------------------------------------------------------
@@ -116,7 +117,7 @@ public class TestBasicBean {
         MetaProperty<String> p1 = Address.meta().city();
         MetaProperty<String> p2 = CompanyAddress.meta().city();
         
-        assertEquals(p1, p2);
+        assertThat(p1).isEqualTo(p2);
     }
 
     @Test
@@ -124,14 +125,14 @@ public class TestBasicBean {
         MetaProperty<String> p1 = Person.meta().forename();
         MetaProperty<String> p2 = Person.meta().forename();
         
-        assertEquals(p1.hashCode(), p2.hashCode());
+        assertThat(p1.hashCode()).isEqualTo(p2.hashCode());
     }
 
     @Test
     public void test_metaProperty_toString() {
         MetaProperty<String> mp1 = Person.meta().forename();
         
-        assertEquals(mp1.toString(), "Person:forename");
+        assertThat(mp1).hasToString("Person:forename");
     }
 
 }

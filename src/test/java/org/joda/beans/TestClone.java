@@ -15,9 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -50,15 +48,15 @@ public class TestClone {
         base.setAmounts(new int[] {1, 2});
         
         ClonePerson cloned = base.clone();
-        assertEquals(cloned, base);
-        assertNotSame(cloned.getMiddleNames(), base.getMiddleNames());
-        assertNotSame(cloned.getFirstNames(), base.getFirstNames());
-        assertNotSame(cloned.getDateOfBirth(), base.getDateOfBirth());
-        assertNotSame(cloned.getAddresses(), base.getAddresses());
-        assertNotSame(cloned.getAddresses().get(0), base.getAddresses().get(0));
-        assertNotSame(cloned.getCompanies(), base.getCompanies());
-        assertNotSame(cloned.getCompanies()[0], base.getCompanies()[0]);
-        assertNotSame(cloned.getAmounts(), base.getAmounts());
+        assertThat(cloned).isEqualTo(base);
+        assertThat(cloned.getMiddleNames()).isNotSameAs(base.getMiddleNames());
+        assertThat(cloned.getFirstNames()).isNotSameAs(base.getFirstNames());
+        assertThat(cloned.getDateOfBirth()).isNotSameAs(base.getDateOfBirth());
+        assertThat(cloned.getAddresses()).isNotSameAs(base.getAddresses());
+        assertThat(cloned.getAddresses().get(0)).isNotSameAs(base.getAddresses().get(0));
+        assertThat(cloned.getCompanies()).isNotSameAs(base.getCompanies());
+        assertThat(cloned.getCompanies()[0]).isNotSameAs(base.getCompanies()[0]);
+        assertThat(cloned.getAmounts()).isNotSameAs(base.getAmounts());
     }
 
     @Test
@@ -67,7 +65,7 @@ public class TestClone {
         Method[] noCloneMethods = c.getDeclaredMethods();
 
         for (Method method : noCloneMethods) {
-            assertNotEquals("clone", method.getName());
+            assertThat("clone").isNotEqualTo(method.getName());
         }
     }
 

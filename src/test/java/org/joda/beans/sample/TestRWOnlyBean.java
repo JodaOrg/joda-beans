@@ -15,6 +15,7 @@
  */
 package org.joda.beans.sample;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -30,16 +31,18 @@ public class TestRWOnlyBean extends RWOnlyBean {
         assertEquals(ro().get(), null);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void test_wo1() {
         setWo("woo");
-        property("wo").get();
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> property("wo").get());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void test_wo2() {
         setWo("woo");
-        wo().get();
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> wo().get());
     }
 
     @Test

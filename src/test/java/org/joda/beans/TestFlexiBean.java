@@ -15,7 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
@@ -44,7 +45,7 @@ public class TestFlexiBean {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
             try (ObjectInputStream ois = new ObjectInputStream(bais)) {
                 Object obj = ois.readObject();
-                assertEquals(test, obj);
+                assertThat(test).isEqualTo(obj);
             }
         }
     }
@@ -60,74 +61,78 @@ public class TestFlexiBean {
         a2.set("first", "A");
         b.set("first", "B");
         
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a2.equals(a1), true);
-        assertEquals(a2.equals(a2), true);
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertThat(a1.equals(a1)).isTrue();
+        assertThat(a1.equals(a2)).isTrue();
+        assertThat(a2.equals(a1)).isTrue();
+        assertThat(a2.equals(a2)).isTrue();
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
         
-        assertEquals(a1.equals(b), false);
-        assertEquals(b.equals(a1), false);
+        assertThat(a1.equals(b)).isFalse();
+        assertThat(b.equals(a1)).isFalse();
         
-        assertEquals(b.equals("Weird type"), false);
-        assertEquals(b.equals(null), false);
+        assertThat(b.equals("Weird type")).isFalse();
+        assertThat(b.equals(null)).isFalse();
     }
 
     @Test
     public void test_propertyDefine_propertyRemove() {
         FlexiBean flexi = new FlexiBean();
-        assertEquals(flexi.propertyNames().size(), 0);
+        assertThat(flexi.propertyNames().size()).isEqualTo(0);
         flexi.propertyDefine("name", String.class);
-        assertEquals(flexi.propertyNames().size(), 1);
+        assertThat(flexi.propertyNames().size()).isEqualTo(1);
         Property<Object> prop = flexi.property("name");
-        assertEquals(prop.name(), "name");
-        assertEquals(prop.get(), null);
+        assertThat(prop.name()).isEqualTo("name");
+        assertThat(prop.get()).isNull();
         flexi.propertyRemove("name");
-        assertEquals(flexi.propertyNames().size(), 0);
+        assertThat(flexi.propertyNames().size()).isEqualTo(0);
     }
 
     @Test
     public void test_metaBean() {
         FlexiBean flexi = new FlexiBean();
         DynamicMetaBean meta = flexi.metaBean();
-        assertEquals(meta.metaPropertyCount(), 0);
+        assertThat(meta.metaPropertyCount()).isEqualTo(0);
         
         meta.metaPropertyDefine("name", String.class);
-        assertEquals(meta.metaPropertyCount(), 1);
+        assertThat(meta.metaPropertyCount()).isEqualTo(1);
         MetaProperty<Object> prop = meta.metaProperty("name");
-        assertEquals(prop.name(), "name");
-        assertEquals(prop.get(flexi), null);
+        assertThat(prop.name()).isEqualTo("name");
+        assertThat(prop.get(flexi)).isNull();
         
         meta.metaPropertyDefine("name", String.class);
-        assertEquals(meta.metaPropertyCount(), 1);
+        assertThat(meta.metaPropertyCount()).isEqualTo(1);
         
         MetaProperty<Object> prop2 = meta.metaProperty("address");
         assertNotNull(prop2);
-        assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
+        assertThat(meta.metaPropertyCount()).isEqualTo(1); // meta-property object created but data not changed
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
-        flexi.propertyDefine("bad-name", String.class);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.propertyDefine("bad-name", String.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_append_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
-        flexi.append("bad-name", "a");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.append("bad-name", "a"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_set_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
-        flexi.set("bad-name", "a");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.set("bad-name", "a"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_put_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
-        flexi.put("bad-name", "a");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.put("bad-name", "a"));
     }
 
 }

@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.ImmOptional;
 import org.junit.Test;
@@ -32,10 +32,10 @@ public class TestOptionalBean {
         ImmOptional test = ImmOptional.builder()
             .optString(Optional.of("A"))
             .build();
-        assertEquals(test.getOptString(), Optional.of("A"));
-        assertEquals(test.getOptDoubleGetter(), Optional.absent());
-        assertEquals(test.getOptIntGetter(), Optional.absent());
-        assertEquals(test.getOptLongGetter(), Optional.absent());
+        assertThat(test.getOptString()).isEqualTo(Optional.of("A"));
+        assertThat(test.getOptDoubleGetter()).isEqualTo(Optional.absent());
+        assertThat(test.getOptIntGetter()).isEqualTo(Optional.absent());
+        assertThat(test.getOptLongGetter()).isEqualTo(Optional.absent());
     }
 
     @Test
@@ -46,10 +46,10 @@ public class TestOptionalBean {
             .optIntGetter(3)
             .optLongGetter(4L)
             .build();
-        assertEquals(test.getOptString(), Optional.of("A"));
-        assertEquals(test.getOptDoubleGetter(), Optional.of(1.2d));
-        assertEquals(test.getOptIntGetter(), Optional.of(3));
-        assertEquals(test.getOptLongGetter(), Optional.of(4L));
+        assertThat(test.getOptString()).isEqualTo(Optional.of("A"));
+        assertThat(test.getOptDoubleGetter()).isEqualTo(Optional.of(1.2d));
+        assertThat(test.getOptIntGetter()).isEqualTo(Optional.of(3));
+        assertThat(test.getOptLongGetter()).isEqualTo(Optional.of(4L));
     }
 
     @Test
@@ -57,13 +57,13 @@ public class TestOptionalBean {
         ImmOptional test = ImmOptional.builder()
             .optStringGetter("A")
             .build();
-        assertEquals(test.getOptStringGetter(), Optional.of("A"));
+        assertThat(test.getOptStringGetter()).isEqualTo(Optional.of("A"));
         MetaProperty<Object> mp2 = test.metaBean().metaProperty("optStringGetter");
-        assertEquals(mp2.propertyType(), String.class);
-        assertEquals(mp2.propertyGenericType(), String.class);
-        assertEquals(mp2.declaringType(), ImmOptional.class);
-        assertEquals(mp2.get(test), "A");
-        assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
+        assertThat(mp2.propertyType()).isEqualTo(String.class);
+        assertThat(mp2.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp2.declaringType()).isEqualTo(ImmOptional.class);
+        assertThat(mp2.get(test)).isEqualTo("A");
+        assertThat(mp2.style()).isEqualTo(PropertyStyle.IMMUTABLE);
     }
 
 }

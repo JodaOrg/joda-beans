@@ -15,7 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,46 +38,38 @@ public class TestResult {
     public void test_bean() {
         Bean test = new AddressResult();
         
-        assertEquals(test.metaBean(), AddressResult.meta());
+        assertThat(test.metaBean()).isEqualTo(AddressResult.meta());
         
-        assertEquals(test.propertyNames().contains("docs"), true);
-        assertEquals(test.property("docs").name(), "docs");
-        assertEquals(test.toString(), "AddressResult{docs=null, resultType=Address}");
+        assertThat(test.propertyNames().contains("docs")).isTrue();
+        assertThat(test.property("docs").name()).isEqualTo("docs");
+        assertThat(test.toString()).isEqualTo("AddressResult{docs=null, resultType=Address}");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_bean_invalidPropertyName() {
         Bean test = AddressResult.meta().builder().build();
-        try {
-            test.property("Rubbish");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> test.property("Rubbish"));
     }
 
     //-----------------------------------------------------------------------
     @Test
     public void test_metaBean() {
         MetaBean test = AddressResult.meta();
-        assertEquals(test.beanType(), AddressResult.class);
-        assertEquals(test.beanName(), AddressResult.class.getName());
-        assertEquals(test.metaPropertyCount(), 2);
-        assertEquals(test.metaPropertyExists("docs"), true);
-        assertEquals(test.metaProperty("docs").name(), "docs");
-        assertEquals(test.metaPropertyExists("resultType"), true);
-        assertEquals(test.metaProperty("resultType").name(), "resultType");
+        assertThat(test.beanType()).isEqualTo(AddressResult.class);
+        assertThat(test.beanName()).isEqualTo(AddressResult.class.getName());
+        assertThat(test.metaPropertyCount()).isEqualTo(2);
+        assertThat(test.metaPropertyExists("docs")).isTrue();
+        assertThat(test.metaProperty("docs").name()).isEqualTo("docs");
+        assertThat(test.metaPropertyExists("resultType")).isTrue();
+        assertThat(test.metaProperty("resultType").name()).isEqualTo("resultType");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_metaBean_invalidPropertyName() {
         MetaBean test = AddressResult.meta();
-        try {
-            test.metaProperty("Rubbish");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> test.metaProperty("Rubbish"));
     }
 
     //-----------------------------------------------------------------------
@@ -84,37 +77,37 @@ public class TestResult {
     public void test_genericType_abstract() {
         @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> test = AbstractResult.meta();
-        assertEquals(test.docs().propertyType(), List.class);
-        assertEquals(JodaBeanUtils.collectionType(test.docs(), AbstractResult.class), Address.class);
+        assertThat(test.docs().propertyType()).isEqualTo(List.class);
+        assertThat(JodaBeanUtils.collectionType(test.docs(), AbstractResult.class)).isEqualTo(Address.class);
     }
 
     @Test
     public void test_genericType_Address() {
         AddressResult obj = new AddressResult();
         AddressResult.Meta test = AddressResult.meta();
-        assertEquals(test.docs().propertyType(), List.class);
-        assertEquals(JodaBeanUtils.collectionType(obj.docs()), Address.class);
-        assertEquals(JodaBeanUtils.collectionType(test.docs(), AddressResult.class), Address.class);
+        assertThat(test.docs().propertyType()).isEqualTo(List.class);
+        assertThat(JodaBeanUtils.collectionType(obj.docs())).isEqualTo(Address.class);
+        assertThat(JodaBeanUtils.collectionType(test.docs(), AddressResult.class)).isEqualTo(Address.class);
     }
 
     @Test
     public void test_genericType_CompanyAddress() {
         CompanyAddressResult obj = new CompanyAddressResult();
         CompanyAddressResult.Meta test = CompanyAddressResult.meta();
-        assertEquals(test.docs().propertyType(), List.class);
-        assertEquals(JodaBeanUtils.collectionType(obj.docs()), CompanyAddress.class);
-        assertEquals(JodaBeanUtils.collectionType(test.docs(), test.docs().declaringType()), Address.class);
-        assertEquals(JodaBeanUtils.collectionType(test.docs(), CompanyAddressResult.class), CompanyAddress.class);
+        assertThat(test.docs().propertyType()).isEqualTo(List.class);
+        assertThat(JodaBeanUtils.collectionType(obj.docs())).isEqualTo(CompanyAddress.class);
+        assertThat(JodaBeanUtils.collectionType(test.docs(), test.docs().declaringType())).isEqualTo(Address.class);
+        assertThat(JodaBeanUtils.collectionType(test.docs(), CompanyAddressResult.class)).isEqualTo(CompanyAddress.class);
     }
 
     @Test
     public void test_genericType_CompanyAddressMid() {
         CompanyAddressMidResult obj = new CompanyAddressMidResult();
         CompanyAddressMidResult.Meta test = CompanyAddressMidResult.meta();
-        assertEquals(test.docs().propertyType(), List.class);
-        assertEquals(JodaBeanUtils.collectionType(obj.docs()), CompanyAddress.class);
-        assertEquals(JodaBeanUtils.collectionType(test.docs(), test.docs().declaringType()), Address.class);
-        assertEquals(JodaBeanUtils.collectionType(test.docs(), CompanyAddressResult.class), CompanyAddress.class);
+        assertThat(test.docs().propertyType()).isEqualTo(List.class);
+        assertThat(JodaBeanUtils.collectionType(obj.docs())).isEqualTo(CompanyAddress.class);
+        assertThat(JodaBeanUtils.collectionType(test.docs(), test.docs().declaringType())).isEqualTo(Address.class);
+        assertThat(JodaBeanUtils.collectionType(test.docs(), CompanyAddressResult.class)).isEqualTo(CompanyAddress.class);
     }
 
 }

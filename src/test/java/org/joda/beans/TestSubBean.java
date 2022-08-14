@@ -15,7 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.ImmSubPersonNonFinal;
 import org.junit.Test;
@@ -38,6 +38,6 @@ public class TestSubBean {
         ImmSubPersonNonFinal person = builder.build();
 
         ImmSubPersonNonFinal rebuilt = person.toBuilder().build();
-        assertEquals(rebuilt, person);
+        assertThat(rebuilt).isEqualTo(person);
     }
 }
