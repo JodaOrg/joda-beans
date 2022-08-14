@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.TweakedPair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test Pair.

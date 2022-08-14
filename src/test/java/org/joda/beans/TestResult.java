@@ -27,7 +27,7 @@ import org.joda.beans.sample.AddressResult;
 import org.joda.beans.sample.CompanyAddress;
 import org.joda.beans.sample.CompanyAddressMidResult;
 import org.joda.beans.sample.CompanyAddressResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using Person.

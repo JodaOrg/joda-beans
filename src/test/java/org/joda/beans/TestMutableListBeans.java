@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.MutableListFinalBean;
 import org.joda.beans.sample.MutableListNonFinalBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test list with builder.

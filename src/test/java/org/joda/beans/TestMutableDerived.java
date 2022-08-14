@@ -18,7 +18,7 @@ package org.joda.beans;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.MutableDerivedBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test mutable derived beans.

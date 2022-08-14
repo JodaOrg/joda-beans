@@ -18,7 +18,7 @@ package org.joda.beans;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.ImmOptional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Optional;
 

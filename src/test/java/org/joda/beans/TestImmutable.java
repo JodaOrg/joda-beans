@@ -29,7 +29,7 @@ import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.ImmPersonNonFinal;
 import org.joda.beans.sample.ImmSubPersonNonFinal;
 import org.joda.beans.sample.ImmSubSubPersonFinal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultiset;

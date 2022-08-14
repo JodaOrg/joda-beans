@@ -19,25 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test.
  */
-@RunWith(DataProviderRunner.class)
 public class TestJsonOutput {
 
     private StringBuilder buf;
     private JsonOutput outputCompact;
     private JsonOutput outputPretty;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         buf = new StringBuilder();
         outputCompact = new JsonOutput(buf);
@@ -45,7 +41,6 @@ public class TestJsonOutput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(format = "%m[%i]")
     public static Object[][] data_string() {
         return new Object[][] {
             {"", ""},
@@ -64,15 +59,14 @@ public class TestJsonOutput {
         };
     }
 
-    @Test
-    @UseDataProvider("data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_writeString(String input, String expected) throws IOException {
         outputCompact.writeString(input);
         assertThat(buf.toString()).isEqualTo('"' + expected + '"');
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_int() {
         return new Object[][] {
             {0, "0"},
@@ -84,14 +78,13 @@ public class TestJsonOutput {
         };
     }
 
-    @Test
-    @UseDataProvider("data_int")
+    @ParameterizedTest
+    @MethodSource("data_int")
     public void test_writeInt(int input, String expected) throws IOException {
         outputCompact.writeInt(input);
         assertThat(buf.toString()).isEqualTo(expected);
     }
 
-    @DataProvider
     public static Object[][] data_long() {
         return new Object[][] {
             {0, "0"},
@@ -103,14 +96,13 @@ public class TestJsonOutput {
         };
     }
 
-    @Test
-    @UseDataProvider("data_long")
+    @ParameterizedTest
+    @MethodSource("data_long")
     public void test_writeLong(long input, String expected) throws IOException {
         outputCompact.writeLong(input);
         assertThat(buf.toString()).isEqualTo(expected);
     }
 
-    @DataProvider
     public static Object[][] data_double() {
         return new Object[][] {
             {0d, "0.0"},
@@ -127,14 +119,13 @@ public class TestJsonOutput {
         };
     }
 
-    @Test
-    @UseDataProvider("data_double")
+    @ParameterizedTest
+    @MethodSource("data_double")
     public void test_writeDouble(double input, String expected) throws IOException {
         outputCompact.writeDouble(input);
         assertThat(buf.toString()).isEqualTo(expected);
     }
 
-    @DataProvider
     public static Object[][] data_float() {
         return new Object[][] {
             {0f, "0.0"},
@@ -151,8 +142,8 @@ public class TestJsonOutput {
         };
     }
 
-    @Test
-    @UseDataProvider("data_float")
+    @ParameterizedTest
+    @MethodSource("data_float")
     public void test_writeFloat(float input, String expected) throws IOException {
         outputCompact.writeFloat(input);
         assertThat(buf.toString()).isEqualTo(expected);

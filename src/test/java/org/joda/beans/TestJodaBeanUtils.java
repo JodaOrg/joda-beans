@@ -18,8 +18,6 @@ package org.joda.beans;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +36,7 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -492,7 +490,7 @@ public class TestJodaBeanUtils {
         p.setExtensions(new FlexiBean());
         p.getExtensions().set("Foo", "bar");
         ImmPerson copied = JodaBeanUtils.copy(p, ImmPerson.class).build();
-        assertNotSame(copied, p);
+        assertThat(copied).isNotSameAs(p);
         assertThat(copied.getForename()).isEqualTo(p.getForename());
         assertThat(copied.getSurname()).isEqualTo(p.getSurname());
     }
@@ -504,9 +502,9 @@ public class TestJodaBeanUtils {
         p.setExtensions(new FlexiBean());
         p.getExtensions().set("Foo", "bar");
         ImmPerson copied = JodaBeanUtils.copyInto(p, ImmPerson.meta(), ImmPerson.builder()).build();
-        assertNotSame(copied, p);
+        assertThat(copied).isNotSameAs(p);
         assertThat(copied.getForename()).isEqualTo(p.getForename());
-        assertNull(copied.getSurname());
+        assertThat(copied.getSurname()).isNull();
     }
 
     //-----------------------------------------------------------------------

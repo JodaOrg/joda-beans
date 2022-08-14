@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.joda.beans.impl.StandaloneMetaProperty;
 import org.joda.beans.sample.ReflectiveMutable;
 import org.joda.beans.ser.JodaBeanSer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test {@code ReflectiveMetaBean}.

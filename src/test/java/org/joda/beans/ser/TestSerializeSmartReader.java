@@ -30,18 +30,15 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.SimpleJson;
 import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.primitives.Bytes;
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test smart reader.
  */
-@RunWith(DataProviderRunner.class)
 public class TestSerializeSmartReader {
 
     @Test
@@ -207,29 +204,40 @@ public class TestSerializeSmartReader {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_badFormat() {
         return new Object[][] {
-            {"xml"},
-            {"<beax"},
-            {"{,}"},
-            {"{  \t\r\n "},
-            {"{1,2}"},
-            {"{\"a\",6}"},
-            {"{\"a\":[}}"},
-            {""},
+                { "xml" },
+                { "<beax" },
+                { "{,}" },
+                { "{  \t\r\n " },
+                { "{1,2}" },
+                { "{\"a\",6}" },
+                { "{\"a\":[}}" },
+                { "" },
         };
     }
 
-    @Test
-    @UseDataProvider("data_badFormat")
+    @ParameterizedTest
+    @MethodSource("data_badFormat")
     public void test_badFormat(String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         assertThatIllegalArgumentException()
             .isThrownBy(() -> JodaBeanSer.COMPACT.smartReader().read(bytes, FlexiBean.class));
     }
 
-    @UseDataProvider("data_badFormat")
+    public static Object[][] data_unknownFormat() {
+        return new Object[][] {
+                { "xml" },
+                { "<beax" },
+                { "{,}" },
+                { "{  \t\r\n " },
+                { "{1,2}" },
+                { "" },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_unknownFormat")
     public void test_isKnownFormat_false(String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(bytes)).isFalse();

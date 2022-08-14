@@ -33,7 +33,7 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ClassAnnotation;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.SimpleAnnotation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using Person.

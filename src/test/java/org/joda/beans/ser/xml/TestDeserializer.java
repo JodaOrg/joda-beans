@@ -23,7 +23,7 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.test.BeanAssert;
 import org.joda.convert.RenameHandler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test deserialization using XML.

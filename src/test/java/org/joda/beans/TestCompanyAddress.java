@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.sample.CompanyAddress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using Person.

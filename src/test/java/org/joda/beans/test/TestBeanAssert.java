@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmTolerance;
 import org.joda.beans.sample.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test BeanAssert.
@@ -32,7 +32,7 @@ public class TestBeanAssert {
     private Person person1;
     private Person person2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         person1 = new Person();
         person1.setForename("Vince");

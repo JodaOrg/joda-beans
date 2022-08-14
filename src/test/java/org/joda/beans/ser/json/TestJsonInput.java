@@ -22,21 +22,16 @@ import static org.assertj.core.api.Assertions.offset;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test.
  */
-@RunWith(DataProviderRunner.class)
 public class TestJsonInput {
 
     //-----------------------------------------------------------------------
-    @DataProvider(format = "%m[%i]")
     public static Object[][] data_string() {
         return new Object[][] {
             {"", ""},
@@ -59,44 +54,43 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_parseString(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + '"'));
         assertThat(input.parseString()).isEqualTo(expected);
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_parseString_endOfFile(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text));
         assertThatIllegalArgumentException()
             .isThrownBy(() -> input.parseString());
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_acceptString(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader('"' + text + '"'));
         assertThat(input.acceptString()).isEqualTo(expected);
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_acceptString_whitespace(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(" \t\r\n \"" + text + '"'));
         assertThat(input.acceptString()).isEqualTo(expected);
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_acceptString_pushback(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + '"'));
         input.pushBack('"');
         assertThat(input.acceptString()).isEqualTo(expected);
     }
 
-    @DataProvider
     public static Object[][] data_stringBad() {
         return new Object[][] {
             {"\\x"},
@@ -108,24 +102,24 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_stringBad")
+    @ParameterizedTest
+    @MethodSource("data_stringBad")
     public void test_parseString_bad(String text) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + '"'));
         assertThatIllegalArgumentException()
             .isThrownBy(() -> input.parseString());
     }
 
-    @Test
-    @UseDataProvider(value = "data_stringBad")
+    @ParameterizedTest
+    @MethodSource("data_stringBad")
     public void test_acceptString_bad(String text) throws IOException {
         JsonInput input = new JsonInput(new StringReader('"' + text + '"'));
         assertThatIllegalArgumentException()
             .isThrownBy(() -> input.acceptString());
     }
 
-    @Test
-    @UseDataProvider(value = "data_stringBad")
+    @ParameterizedTest
+    @MethodSource("data_stringBad")
     public void test_acceptString_bad_whitespace(String text) throws IOException {
         JsonInput input = new JsonInput(new StringReader(" \t\r\n \"" + text + '"'));
         assertThatIllegalArgumentException()
@@ -133,37 +127,37 @@ public class TestJsonInput {
     }
 
     //-----------------------------------------------------------------------
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_parseObjectKey(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + "\":"));
         assertThat(input.parseObjectKey()).isEqualTo(expected);
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_parseObjectKey_whitspace(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + "\" \t\n\r:"));
         assertThat(input.parseObjectKey()).isEqualTo(expected);
     }
 
     //-----------------------------------------------------------------------
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_acceptObjectKey(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + "\":"));
         assertThat(input.acceptObjectKey(JsonEvent.STRING)).isEqualTo(expected);
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_acceptObjectKey_whitspace(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + "\" \t\n\r:"));
         assertThat(input.acceptObjectKey(JsonEvent.STRING)).isEqualTo(expected);
     }
 
-    @Test
-    @UseDataProvider(value = "data_string")
+    @ParameterizedTest
+    @MethodSource("data_string")
     public void test_acceptObjectKey_notString(String text, String expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + "\":"));
         assertThatIllegalArgumentException()
@@ -178,7 +172,6 @@ public class TestJsonInput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_numberIntegral() {
         return new Object[][] {
             {"0", 0L},
@@ -198,8 +191,8 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_numberIntegral")
+    @ParameterizedTest
+    @MethodSource("data_numberIntegral")
     public void test_parseNumberIntegral(String text, long expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + '}'));
         assertThat(input.readEvent()).isEqualTo(JsonEvent.NUMBER_INTEGRAL);
@@ -207,8 +200,8 @@ public class TestJsonInput {
         assertThat(input.readEvent()).isEqualTo(JsonEvent.OBJECT_END);
     }
 
-    @Test
-    @UseDataProvider(value = "data_numberIntegral")
+    @ParameterizedTest
+    @MethodSource("data_numberIntegral")
     public void test_parseNumberIntegral_endOfFile(String text, long expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text));
         assertThatIllegalArgumentException()
@@ -216,7 +209,6 @@ public class TestJsonInput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_numberFloating() {
         return new Object[][] {
             {"0.0", 0d},
@@ -248,8 +240,8 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_numberFloating")
+    @ParameterizedTest
+    @MethodSource("data_numberFloating")
     public void test_parseNumberFloating(String text, double expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + '}'));
         assertThat(input.readEvent()).isEqualTo(JsonEvent.NUMBER_FLOATING);
@@ -257,8 +249,8 @@ public class TestJsonInput {
         assertThat(input.readEvent()).isEqualTo(JsonEvent.OBJECT_END);
     }
 
-    @Test
-    @UseDataProvider(value = "data_numberFloating")
+    @ParameterizedTest
+    @MethodSource("data_numberFloating")
     public void test_parseNumberFloating_endOfFile(String text, double expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text));
         assertThatIllegalArgumentException()
@@ -266,7 +258,6 @@ public class TestJsonInput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_numberBad() {
         return new Object[][] {
             {"-"},
@@ -285,8 +276,8 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_numberBad")
+    @ParameterizedTest
+    @MethodSource("data_numberBad")
     public void test_parseNumberFloating_bad(String text) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + '}'));
         assertThatIllegalArgumentException()
@@ -294,7 +285,6 @@ public class TestJsonInput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_event() {
         return new Object[][] {
             {"null", JsonEvent.NULL},
@@ -314,14 +304,13 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_event")
+    @ParameterizedTest
+    @MethodSource("data_event")
     public void test_readEvent(String text, JsonEvent expected) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text));
         assertThat(input.readEvent()).isEqualTo(expected);
     }
 
-    @DataProvider
     public static Object[][] data_eventBad() {
         return new Object[][] {
             {"nul"},
@@ -336,8 +325,8 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_eventBad")
+    @ParameterizedTest
+    @MethodSource("data_eventBad")
     public void test_readEvent_bad(String text) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text));
         assertThatIllegalArgumentException()
@@ -345,7 +334,6 @@ public class TestJsonInput {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_skip() {
         return new Object[][] {
             {"null"},
@@ -366,8 +354,8 @@ public class TestJsonInput {
         };
     }
 
-    @Test
-    @UseDataProvider(value = "data_skip")
+    @ParameterizedTest
+    @MethodSource("data_skip")
     public void test_skip(String text) throws IOException {
         JsonInput input = new JsonInput(new StringReader(text + ','));
         input.skipData();

@@ -22,15 +22,14 @@ import static org.assertj.core.api.Assertions.offset;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmAddress;
-import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmDefault;
+import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKeyList;
@@ -43,7 +42,7 @@ import org.joda.beans.sample.Person;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property roundtrip using binary.
