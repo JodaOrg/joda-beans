@@ -19,6 +19,6 @@ git status
 git commit --message "Update joda-beans from CI: $GITHUB_ACTION"
 
 echo "## push..."
-git push origin master
+git push origin main
 
 echo "## done"
