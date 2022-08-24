@@ -118,6 +118,26 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
+      <!-- Enforce Maven 3.6.0 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.6.0</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -257,7 +277,7 @@
     <junit.version>5.9.0</junit.version>
     <guava.version>31.1-jre</guava.version>
     <!-- Plugins -->
-    <github-api.version>1.307</github-api.version>
+    <github-api.version>1.308</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <!-- Parent pom.xml control -->
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
