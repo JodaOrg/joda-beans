@@ -274,7 +274,7 @@
     <assertj.version>3.23.1</assertj.version>
     <joda-collect.version>1.0.1</joda-collect.version>
     <joda-convert.version>2.2.2</joda-convert.version>
-    <junit.version>5.9.0</junit.version>
+    <junit.version>5.9.1</junit.version>
     <guava.version>31.1-jre</guava.version>
     <!-- Plugins -->
     <github-api.version>1.308</github-api.version>
