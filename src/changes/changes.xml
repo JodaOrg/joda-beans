@@ -12,6 +12,9 @@
       <action dev="jodastephen" type="update">
         Switch master to main.
       </action>
+      <action dev="jodastephen" type="update">
+        Switch LGTM to CodeQL.
+      </action>
     </release>
     <release version="2.8.3" date="2022-08-02" description="Version 2.8.3">
       <action dev="martynassateika" type="fix">
