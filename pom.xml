@@ -273,7 +273,7 @@
     <!-- Dependencies -->
     <assertj.version>3.24.1</assertj.version>
     <joda-collect.version>1.0.1</joda-collect.version>
-    <joda-convert.version>2.2.2</joda-convert.version>
+    <joda-convert.version>2.2.3</joda-convert.version>
     <junit.version>5.9.1</junit.version>
     <guava.version>31.1-jre</guava.version>
     <!-- Plugins -->
