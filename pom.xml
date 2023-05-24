@@ -277,7 +277,7 @@
     <junit.version>5.9.1</junit.version>
     <guava.version>31.1-jre</guava.version>
     <!-- Plugins -->
-    <github-api.version>1.313</github-api.version>
+    <github-api.version>1.314</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <!-- Parent pom.xml control -->
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
