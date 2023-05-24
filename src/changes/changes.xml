@@ -9,6 +9,12 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="2.8.4" date="SNAPSHOT" description="v2.8.4">
+      <action dev="jodastephen" type="add">
+        Add 'metaImplements' bean definition option that allows meta beans to implement an interface.
+      </action>
+      <action dev="jodastephen" type="add">
+        Allow IDEs to generate @Override tags without Joda-Beans removing them on regeneration.
+      </action>
       <action dev="jodastephen" type="update">
         Switch master to main.
       </action>

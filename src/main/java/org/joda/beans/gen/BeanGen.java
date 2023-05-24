@@ -991,12 +991,13 @@ class BeanGen {
             superMeta = "DirectMetaBean";
         }
         String finalType = data.isTypeFinal() ? "final " : "";
+        String implementClause = data.getBeanMetaImplements().isEmpty() ? "" : " implements " + data.getBeanMetaImplements();
         if (data.isTypeGeneric()) {
             addLine(1, data.getEffectiveMetaScope() + "static " + finalType + 
-                    "class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + " {");
+                    "class Meta" + data.getTypeGeneric(true) + " extends " + superMeta + implementClause + " {");
         } else {
             addLine(1, data.getEffectiveMetaScope() + "static " + finalType + 
-                    "class Meta extends " + superMeta + " {");
+                    "class Meta extends " + superMeta + implementClause + " {");
         }
         addLine(2, "/**");
         addLine(2, " * The singleton instance of the meta-bean.");

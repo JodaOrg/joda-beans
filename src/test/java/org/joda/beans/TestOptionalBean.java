@@ -18,6 +18,7 @@ package org.joda.beans;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.ImmOptionalMeta;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Optional;
@@ -31,11 +32,20 @@ public class TestOptionalBean {
     public void test_optional_empty() {
         ImmOptional test = ImmOptional.builder()
             .optString(Optional.of("A"))
+            .optStringGetter("A")
             .build();
         assertThat(test.getOptString()).isEqualTo(Optional.of("A"));
+        assertThat(test.getOptStringGetter()).isEqualTo(Optional.of("A"));
         assertThat(test.getOptDoubleGetter()).isEqualTo(Optional.absent());
         assertThat(test.getOptIntGetter()).isEqualTo(Optional.absent());
         assertThat(test.getOptLongGetter()).isEqualTo(Optional.absent());
+
+        // check that meta bean can be assigned to the metaImplements interface
+        ImmOptionalMeta meta1 = ImmOptional.meta();
+        ImmOptionalMeta meta2 = test.metaBean();
+        assertThat(meta1.optString().get(test)).isEqualTo(Optional.of("A"));
+        assertThat(meta1.optStringGetter().get(test)).isEqualTo("A");
+        assertThat(meta2.optDoubleGetter().get(test)).isNull();
     }
 
     @Test

@@ -37,7 +37,7 @@ import com.google.common.base.Optional;
 /**
  * Mock.
  */
-@BeanDefinition(factoryName = "of")
+@BeanDefinition(factoryName = "of", metaImplements = "ImmOptionalMeta")
 public final class ImmOptional implements ImmutableBean {
 
     // this works but in serialization they fail for lists/maps
@@ -247,7 +247,7 @@ public final class ImmOptional implements ImmutableBean {
     /**
      * The meta-bean for {@code ImmOptional}.
      */
-    public static final class Meta extends DirectMetaBean {
+    public static final class Meta extends DirectMetaBean implements ImmOptionalMeta {
         /**
          * The singleton instance of the meta-bean.
          */
@@ -350,6 +350,7 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optString} property.
          * @return the meta-property, not null
          */
+        @Override
         public MetaProperty<Optional<String>> optString() {
             return optString;
         }
@@ -358,6 +359,7 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optStringEmpty} property.
          * @return the meta-property, not null
          */
+        @Override
         public MetaProperty<Optional<String>> optStringEmpty() {
             return optStringEmpty;
         }
@@ -366,6 +368,7 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optStringGetter} property.
          * @return the meta-property, not null
          */
+        @Override
         public MetaProperty<String> optStringGetter() {
             return optStringGetter;
         }
@@ -374,6 +377,7 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optLongGetter} property.
          * @return the meta-property, not null
          */
+        @Override
         public MetaProperty<Long> optLongGetter() {
             return optLongGetter;
         }
@@ -382,6 +386,7 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optIntGetter} property.
          * @return the meta-property, not null
          */
+        @Override
         public MetaProperty<Integer> optIntGetter() {
             return optIntGetter;
         }
@@ -390,6 +395,7 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optDoubleGetter} property.
          * @return the meta-property, not null
          */
+        @Override
         public MetaProperty<Double> optDoubleGetter() {
             return optDoubleGetter;
         }

@@ -35,6 +35,8 @@ class BeanData {
     private String beanStyle;
     /** The bean meta scope. */
     private String beanMetaScope;
+    /** The bean meta implements. */
+    private String beanMetaImplements;
     /** The bean builder scope. */
     private String beanBuilderScope;
     /** The bean builder style. */
@@ -264,6 +266,23 @@ class BeanData {
      */
     public boolean isMetaScopePrivate() {
         return "private".equals(beanMetaScope) || isBeanStyleLight();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the bean meta implements.
+     * @return the meta implements
+     */
+    public String getBeanMetaImplements() {
+        return beanMetaImplements;
+    }
+
+    /**
+     * Sets the bean meta implements.
+     * @param metaImplements  the meta implements
+     */
+    public void setBeanMetaImplements(String metaImplements) {
+        this.beanMetaImplements = metaImplements;
     }
 
     //-----------------------------------------------------------------------
