@@ -425,6 +425,15 @@ An option also exists to generate the ConstructorProperties annotation:
  }
 ```
 
+A user-defined interface can be added to the meta-bean using the bean definition:
+
+```
+ @BeanDefinition(metaImplements = "ShapeMeta")
+ public final class Square implements Shape, ImmutableBean {
+   // code generated meta-bean that implements ShapeMeta
+ }
+```
+
 
 ## Immutable bean hierarchies
 

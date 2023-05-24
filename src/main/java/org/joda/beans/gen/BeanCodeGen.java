@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.joda.beans.JodaBeanUtils;
 
@@ -298,7 +299,7 @@ public class BeanCodeGen {
                 System.out.print(file + "  [processing]");
             }
             gen.process();
-            if (content.equals(original) == false) {
+            if (contentDiffers(content, original)) {
                 if (write) {
                     if (verbosity >= 2) {
                         System.out.println(" [writing]");
@@ -321,7 +322,7 @@ public class BeanCodeGen {
             }
         } else {
             gen.processNonBean();
-            if (!content.equals(original)) {
+            if (contentDiffers(content, original)) {
                 if (write) {
                     if (verbosity >= 2) {
                         System.out.println(" [writing]");
@@ -344,6 +345,32 @@ public class BeanCodeGen {
             }
         }
         return null;
+    }
+
+    // checks to see if the content differs from the original
+    // if the files differ only by @Override lines then they are considered to be equal
+    private boolean contentDiffers(List<String> content, List<String> original) {
+        Pattern overridePattern = Pattern.compile(" *[@]Override");
+        int contentIndex = 0;
+        int originalIndex = 0;
+        while (contentIndex < content.size() && originalIndex < original.size()) {
+            String contentLine = content.get(contentIndex);
+            String originalLine = original.get(originalIndex);
+            if (contentLine.equals(originalLine)) {
+                // lines match
+                contentIndex++;
+                originalIndex++;
+            } else if (overridePattern.matcher(originalLine).matches()) {
+                // original is an @Override line
+                originalIndex++;
+            } else {
+                return true;
+            }
+        }
+        if (contentIndex < content.size() || originalIndex < original.size()) {
+            return true;
+        }
+        return false;
     }
 
     //-----------------------------------------------------------------------

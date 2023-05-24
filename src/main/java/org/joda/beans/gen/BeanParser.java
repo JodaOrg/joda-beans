@@ -76,6 +76,8 @@ class BeanParser {
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The metaScope pattern. */
     private static final Pattern META_SCOPE_PATTERN = Pattern.compile(".*[ ,(]metaScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The metaImplements pattern. */
+    private static final Pattern META_IMPLEMENTS_PATTERN = Pattern.compile(".*[ ,(]metaImplements[ ]*[=][ ]*[\"]([a-zA-Z0-9_.]*)[\"].*");
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderStyle pattern. */
@@ -161,6 +163,7 @@ class BeanParser {
         if (data.isBeanMetaScopeValid() == false) {
             throw new BeanCodeGenException("Invalid meta-bean scope: " + data.getBeanMetaScope(), file, beanDefIndex);
         }
+        data.setBeanMetaImplements(parseBeanMetaImplements(beanDefIndex));
         data.setBeanBuilderScope(parseBeanBuilderScope(beanDefIndex));
         if (data.isBeanBuilderScopeValid() == false) {
             throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanBuilderScope(), file, beanDefIndex);
@@ -345,6 +348,15 @@ class BeanParser {
             return matcher.group(1);
         }
         return "smart";
+    }
+
+    private String parseBeanMetaImplements(int defLine) {
+        String line = content.get(defLine).trim();
+        Matcher matcher = META_IMPLEMENTS_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 
     private String parseBeanBuilderScope(int defLine) {
