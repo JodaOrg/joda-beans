@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.9.1" date="SNAPSHOT" description="v2.9.1">
+      <action dev="jodastephen" type="fix">
+        Remove erroneous assertj dependency.
+      </action>
+    </release>
     <release version="2.9.0" date="2023-05-24" description="v2.9.0">
       <action dev="jodastephen" type="add">
         Add 'metaImplements' bean definition option that allows meta beans to implement an interface.
