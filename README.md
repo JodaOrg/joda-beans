@@ -45,7 +45,7 @@ Various documentation is available:
 
 
 ### Releases
-[Release 2.9.1](https://www.joda.org/joda-beans/download.html) is the current release.
+[Release 2.9.2](https://www.joda.org/joda-beans/download.html) is the current release.
 This release is considered stable and worthy of the 2.x tag.
 There are only [minor incompatibilities](https://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
