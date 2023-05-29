@@ -21,14 +21,15 @@ import com.google.common.base.Optional;
 
 /**
  * Mock.
+ * @param <T> the type
  */
-public interface ImmOptionalMeta {
+public interface ImmOptionalMeta<T> {
 
     /**
      * The meta-property for the {@code optString} property.
      * @return the meta-property, not null
      */
-    public abstract MetaProperty<Optional<String>> optString();
+    public abstract MetaProperty<Optional<T>> optString();
 
     /**
      * The meta-property for the {@code optStringEmpty} property.

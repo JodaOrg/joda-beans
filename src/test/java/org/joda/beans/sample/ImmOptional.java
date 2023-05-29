@@ -37,7 +37,7 @@ import com.google.common.base.Optional;
 /**
  * Mock.
  */
-@BeanDefinition(factoryName = "of", metaImplements = "ImmOptionalMeta")
+@BeanDefinition(factoryName = "of", metaImplements = "ImmOptionalMeta<String>")
 public final class ImmOptional implements ImmutableBean {
 
     // this works but in serialization they fail for lists/maps
@@ -247,7 +247,7 @@ public final class ImmOptional implements ImmutableBean {
     /**
      * The meta-bean for {@code ImmOptional}.
      */
-    public static final class Meta extends DirectMetaBean implements ImmOptionalMeta {
+    public static final class Meta extends DirectMetaBean implements ImmOptionalMeta<String> {
         /**
          * The singleton instance of the meta-bean.
          */

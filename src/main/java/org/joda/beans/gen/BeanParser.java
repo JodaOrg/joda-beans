@@ -77,7 +77,7 @@ class BeanParser {
     /** The metaScope pattern. */
     private static final Pattern META_SCOPE_PATTERN = Pattern.compile(".*[ ,(]metaScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The metaImplements pattern. */
-    private static final Pattern META_IMPLEMENTS_PATTERN = Pattern.compile(".*[ ,(]metaImplements[ ]*[=][ ]*[\"]([a-zA-Z0-9_.]*)[\"].*");
+    private static final Pattern META_IMPLEMENTS_PATTERN = Pattern.compile(".*[ ,(]metaImplements[ ]*[=][ ]*[\"]([a-zA-Z0-9_.<>]*)[\"].*");
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderStyle pattern. */
