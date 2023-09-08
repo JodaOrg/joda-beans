@@ -124,17 +124,8 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 ```
 
 The main jar file is based on Java 8 but contains a `module-info.class` file for Java 9 and later.
-If you have problems with this, there is a "classic" variant you can use instead:
-
-```xml
-<dependency>
-  <groupId>org.joda</groupId>
-  <artifactId>joda-beans</artifactId>
-  <version>2.9.2</version>
-  <classifier>classic</classifier>
-</dependency>
-```
-
+As of v2.10.0, it is structured as a multi-release jar file.
+The previous "classic" jar file is no longer published.
 For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-beans/releases/tag/v1.14).
 
 See the [related projects](related.html) page for Maven, Gradle and IntelliJ integration.

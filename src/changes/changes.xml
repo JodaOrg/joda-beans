@@ -8,6 +8,14 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.10.0" date="SNAPSHOT" description="v2.10.0">
+      <action dev="jodastephen" type="update">
+        The jar file is now a multi-release jar file, with the module-info file moved.
+      </action>
+      <action dev="jodastephen" type="remove">
+        The classic jar file (without module-info.class) is no longer produced.
+      </action>
+    </release>
     <release version="2.9.2" date="2023-05-29" description="v2.9.2">
       <action dev="jodastephen" type="fix">
         Allow generics in metaImplements.
