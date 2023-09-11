@@ -643,28 +643,44 @@
               </execution>
             </executions>
           </plugin>
+          <!-- Use nexus plugin to directly release -->
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>${nexus-staging-maven-plugin.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <serverId>sonatype-joda-staging</serverId>
+              <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+              <autoReleaseAfterClose>${joda.nexus.auto.release}</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
           <!-- Create dist files -->
+          <!-- Since we cannot sign a single file, we put everything in the deploy phase -->
+          <!-- The standard files are signed in the verify phase and then deployed to Maven Central using nexus-staging-maven-plugin -->
+          <!-- Then (and only then) we create and attach the dist files, sign them, and release them to GitHub Releases -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-              <attach>false</attach>
-              <descriptors>
-                <descriptor>src/main/assembly/dist.xml</descriptor>
-              </descriptors>
-              <tarLongFileMode>gnu</tarLongFileMode>
-            </configuration>
             <executions>
               <execution>
                 <id>make-assembly</id>
-                <phase>install</phase>
+                <phase>deploy</phase>
                 <goals>
                   <goal>single</goal>
                 </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/main/assembly/dist.xml</descriptor>
+                  </descriptors>
+                  <tarLongFileMode>gnu</tarLongFileMode>
+                </configuration>
               </execution>
             </executions>
           </plugin>
-          <!-- Sign artifacts -->
+          <!-- Sign artifacts, which now includes the dist files -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
@@ -676,21 +692,15 @@
                   <goal>sign</goal>
                 </goals>
               </execution>
+              <!-- this execution must be located after nexus-staging-maven-plugin (see comment above about ordering) -->
+              <execution>
+                <id>sign-dist-artifacts</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
             </executions>
-          </plugin>
-          <!-- Use nexus plugin to directly release -->
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>${nexus-staging-maven-plugin.version}</version>
-            <extensions>true</extensions>
-            <configuration>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <serverId>sonatype-joda-staging</serverId>
-              <autoReleaseAfterClose>${joda.nexus.auto.release}</autoReleaseAfterClose>
-              <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
-              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
-            </configuration>
           </plugin>
           <!-- Release dist files to GitHub -->
           <!-- This will create a tag on GitHub on deploy -->
@@ -699,21 +709,6 @@
             <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
             <version>${github-release-plugin.version}</version>
-            <configuration>
-              <releaseName>Release v${project.version}</releaseName>
-              <description>See the [change notes](https://www.joda.org/joda-beans/changes-report.html#a${project.version}) for more information.</description>
-              <tag>v${project.version}</tag>
-              <overwriteArtifact>true</overwriteArtifact>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>joda-beans*-dist.tar.gz</include>
-                    <include>joda-beans*-dist.zip</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
-            </configuration>
             <executions>
               <execution>
                 <id>github-releases</id>
@@ -721,6 +716,24 @@
                 <goals>
                   <goal>release</goal>
                 </goals>
+                <configuration>
+                  <releaseName>Release v${project.version}</releaseName>
+                  <description>See the [change notes](https://www.joda.org/joda-beans/changes-report.html#a${project.version}) for more information.</description>
+                  <tag>v${project.version}</tag>
+                  <overwriteArtifact>true</overwriteArtifact>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.build.directory}</directory>
+                      <includes>
+                        <include>${project.artifactId}-${project.version}-dist.tar.gz</include>
+                        <include>${project.artifactId}-${project.version}-dist.tar.gz.asc</include>
+                        <include>${project.artifactId}-${project.version}-dist.zip</include>
+                        <include>${project.artifactId}-${project.version}-dist.zip.asc</include>
+                        <include>${project.artifactId}-${project.version}.jar.asc</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -764,7 +777,7 @@
     <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <bndlib.version>6.4.0</bndlib.version>
-    <github-api.version>1.308</github-api.version>
+    <github-api.version>1.316</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
