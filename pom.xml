@@ -767,7 +767,7 @@
     <github-api.version>1.316</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <revapi-maven-plugin.version>0.11.1</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
     <spotbugs-maven-plugin.version>4.7.1.1</spotbugs-maven-plugin.version>
