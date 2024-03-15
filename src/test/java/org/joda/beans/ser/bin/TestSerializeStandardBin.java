@@ -447,6 +447,12 @@ public class TestSerializeStandardBin {
     }
 
     @Test
+    public void test_read_byteArray_nullByteArray() {
+	assertThatRuntimeException()
+            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read((byte[]) null, Company.class));
+    }
+
+    @Test
     public void test_write_nullKeyInMap() {
         Address address = new Address();
         Person bean = new Person();
