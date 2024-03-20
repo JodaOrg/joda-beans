@@ -291,6 +291,8 @@ do not extend any other bean class and directly implement [ImmutableBean](apidoc
  }
 ```
 
+Certain configuration settings will not work as expected if an immutable bean is not declared as final.
+
 
 ### Immutable bean customisation
 

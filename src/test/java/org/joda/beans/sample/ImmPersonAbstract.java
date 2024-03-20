@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(constructorScope = "public")
 public abstract class ImmPersonAbstract implements ImmutableBean {
 
     /** The forename. */
@@ -62,6 +62,18 @@ public abstract class ImmPersonAbstract implements ImmutableBean {
 
     static {
         MetaBean.register(ImmPersonAbstract.Meta.INSTANCE);
+    }
+
+    /**
+     * Creates an instance.
+     * @param forename  the value of the property
+     * @param surname  the value of the property
+     */
+    public ImmPersonAbstract(
+            String forename,
+            String surname) {
+        this.forename = forename;
+        this.surname = surname;
     }
 
     /**
