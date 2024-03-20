@@ -22,6 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.junit.jupiter.api.Test;
@@ -132,6 +134,15 @@ public class TestFlexiBean {
         FlexiBean flexi = new FlexiBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> flexi.put("bad-name", "a"));
+    }
+
+    @Test
+    public void test_putAll_invalidKey() {
+	FlexiBean test = new FlexiBean();
+	Map<String, Object> map = new HashMap<>();
+	map.put("1", "x");
+	assertThatIllegalArgumentException()
+	    .isThrownBy(() -> 	test.putAll(map));
     }
 
 }

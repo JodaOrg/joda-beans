@@ -105,6 +105,13 @@ public class TestPerson {
     }
 
     @Test
+    public void test_metaProperty_annotation_notFound() {
+	MetaProperty<FlexiBean> prop = Person.meta().extensions();
+	assertThatExceptionOfType(NoSuchElementException.class)
+	    .isThrownBy(() -> prop.annotation(ClassAnnotation.class));
+    }
+
+    @Test
     public void test_metaBean_abstract() {
         MetaBean test = AbstractResult.meta();
         
