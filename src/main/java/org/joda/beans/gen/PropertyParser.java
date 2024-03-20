@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 class PropertyParser {
 
     /** The getter pattern. */
-    private static final Pattern ALIAS_PATTERN = Pattern.compile(".*[ ,(]alias[ ]*[=][ ]*[\"]([a-zA-z_][a-zA-z0-9_]*)[\"].*");
+    private static final Pattern ALIAS_PATTERN = Pattern.compile(".*[ ,(]alias[ ]*[=][ ]*[\"]([a-zA-Z_][a-zA-Z0-9_]*)[\"].*");
     /** The getter pattern. */
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
     /** The setter pattern. */
