@@ -39,7 +39,7 @@ import org.joda.beans.impl.BasicProperty;
  * Each flexi-bean has a different set of properties.
  * As such, there is one instance of meta-bean for each flexi-bean.
  * <p>
- * The keys of a flexi-bean must be simple identifiers as per '[a-zA-z_][a-zA-z0-9_]*'.
+ * The keys of a flexi-bean must be simple identifiers as per '[a-zA-Z_][a-zA-Z0-9_]*'.
  */
 public final class FlexiBean implements DynamicBean, Serializable {
     // Alternate way to implement this would be to create a list/map of real property
@@ -48,7 +48,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
     /** Valid regex for keys. */
-    private static final Pattern VALID_KEY = Pattern.compile("[a-zA-z_][a-zA-z0-9_]*");
+    private static final Pattern VALID_KEY = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*");
 
     /** The meta-bean. */
     private final transient FlexiMetaBean metaBean = new FlexiMetaBean(this);  // CSIGNORE
