@@ -36,7 +36,7 @@ import org.joda.beans.impl.direct.DirectMetaPropertyMap;
  * 
  * @author Stephen Colebourne
  */
-@BeanDefinition
+@BeanDefinition(constructorScope = "package")
 public class ImmPersonNonFinal implements ImmutableBean {
 
     /** The forename. */
@@ -70,6 +70,18 @@ public class ImmPersonNonFinal implements ImmutableBean {
      */
     public static ImmPersonNonFinal.Builder builder() {
         return new ImmPersonNonFinal.Builder();
+    }
+
+    /**
+     * Creates an instance.
+     * @param forename  the value of the property
+     * @param surname  the value of the property
+     */
+    ImmPersonNonFinal(
+            String forename,
+            String surname) {
+        this.forename = forename;
+        this.surname = surname;
     }
 
     /**

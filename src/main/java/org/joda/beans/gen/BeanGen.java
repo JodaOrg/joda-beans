@@ -377,8 +377,7 @@ class BeanGen {
     }
 
     private void generateArgBasedConstructor() {
-        if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS && data.getImmutableConstructor() == CONSTRUCTOR_NONE && 
-                ((data.isMutable() && (data.isBuilderScopeVisible() || data.isBeanStyleLight())) || data.isImmutable())) {
+        if (isArgBasedConstructor()) {
             String scope = data.getEffectiveConstructorScope();
             boolean generateAnnotation = data.isConstructorPropertiesAnnotation();
             boolean generateJavadoc = !"private ".equals(scope);
@@ -447,6 +446,22 @@ class BeanGen {
             addLine(1, "}");
             addBlankLine();
         }
+    }
+
+    private boolean isArgBasedConstructor() {
+        if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS &&
+                data.getImmutableConstructor() == CONSTRUCTOR_NONE &&
+                ((data.isMutable() && (data.isBuilderScopeVisible() || data.isBeanStyleLight())) || data.isImmutable())) {
+            return true;
+        }
+        if (data.getConstructorStyle() == CONSTRUCTOR_BY_BUILDER &&
+                data.getImmutableConstructor() == CONSTRUCTOR_NONE &&
+                data.isImmutable() &&
+                !data.isTypeFinal() &&
+                !"smart".equals(data.getConstructorScope())) {
+            return true;
+        }
+        return false;
     }
 
     //-----------------------------------------------------------------------
