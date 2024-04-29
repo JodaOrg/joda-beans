@@ -790,7 +790,7 @@
     <guava.version>32.1.2-jre</guava.version>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>10.9.3</checkstyle.version>
+    <checkstyle.version>10.16.0</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 
