@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.joda.beans.impl.BasicProperty;
 import org.joda.convert.StringConvert;
@@ -108,7 +109,8 @@ public interface MetaProperty<P> {
      * <p>
      * The annotations are queried from the property.
      * This is typically accomplished by querying the annotations of the underlying
-     * instance variable however any strategy is permitted.
+     * instance variable however any strategy is permitted. If the implementation
+     * does not support annotations, an empty list will be returned.
      * 
      * @return the annotations, unmodifiable, not null
      */
@@ -119,12 +121,12 @@ public interface MetaProperty<P> {
      * <p>
      * The annotations are queried from the property.
      * This is typically accomplished by querying the annotations of the underlying
-     * instance variable however any strategy is permitted..
+     * instance variable however any strategy is permitted.
      * 
      * @param <A>  the annotation type
      * @param annotationClass  the annotation class to find, not null
      * @return the annotation, not null
-     * @throws NoSuchElementException if the annotation is not specified
+     * @throws NoSuchElementException if the annotation is not found
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> A annotation(Class<A> annotationClass) {
@@ -135,6 +137,29 @@ public interface MetaProperty<P> {
             }
         }
         throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+    }
+
+    /**
+     * Finds an optional annotation from the property.
+     * <p>
+     * The annotations are queried from the property.
+     * This is typically accomplished by querying the annotations of the underlying
+     * instance variable however any strategy is permitted.
+     * 
+     * @param <A>  the annotation type
+     * @param annotationClass  the annotation class to find, not null
+     * @return the annotation, empty if not found
+     * @since 2.11.0
+     */
+    @SuppressWarnings("unchecked")
+    public default <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
+        List<Annotation> annotations = annotations();
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return Optional.of((A) annotation);
+            }
+        }
+        return Optional.empty();
     }
 
     //-----------------------------------------------------------------------

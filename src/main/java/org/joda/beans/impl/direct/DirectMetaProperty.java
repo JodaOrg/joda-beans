@@ -16,12 +16,16 @@
 package org.joda.beans.impl.direct;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
@@ -43,8 +47,8 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     private final Class<P> propertyType;
     /** The declaring type. */
     private final Class<?> declaringType;
-    /** The field implementing the property. */
-    private final Field field;
+    /** The field or method implementing the property. */
+    private final AccessibleObject fieldOrMethod;
     /** The style. */
     private final PropertyStyle style;
 
@@ -124,8 +128,8 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofDerived(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, field);
+        AccessibleObject method = findMethod(metaBean, propertyName);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, method);
     }
 
     /**
@@ -145,22 +149,32 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     private static Field findField(MetaBean metaBean, String propertyName) {
-        Field field = null;
         Class<?> cls = metaBean.beanType();
         while (cls != DirectBean.class && cls != Object.class && cls != null) {
             try {
-                field = cls.getDeclaredField(propertyName);
-                break;
+                return cls.getDeclaredField(propertyName);
             } catch (NoSuchFieldException ex) {
                 try {
-                    field = cls.getDeclaredField("_" + propertyName);
-                    break;
+                    return cls.getDeclaredField("_" + propertyName);
                 } catch (NoSuchFieldException ex2) {
                     cls = cls.getSuperclass();
                 }
             }
         }
-        return field;
+        return null;
+    }
+
+    private static AccessibleObject findMethod(MetaBean metaBean, String propertyName) {
+        String methodName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        Class<?> cls = metaBean.beanType();
+        while (cls != DirectBean.class && cls != Object.class && cls != null) {
+            try {
+                return cls.getDeclaredMethod(methodName);
+            } catch (NoSuchMethodException ex) {
+                cls = cls.getSuperclass();
+            }
+        }
+        return findField(metaBean, propertyName);  // backwards compatibility
     }
 
     /**
@@ -171,10 +185,10 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param declaringType  the declaring type, not null
      * @param propertyType  the property type, not null
      * @param style  the style, not null
-     * @param field  the reflected field, not null
+     * @param fieldOrMethod  the reflected field or method, not null
      */
     private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<?> declaringType,
-            Class<P> propertyType, PropertyStyle style, Field field) {
+            Class<P> propertyType, PropertyStyle style, AccessibleObject fieldOrMethod) {
         super(propertyName);
         if (metaBean == null) {
             throw new NullPointerException("MetaBean must not be null");
@@ -192,7 +206,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         this.propertyType = propertyType;
         this.declaringType = declaringType;
         this.style = style;
-        this.field = field;  // may be null
+        this.fieldOrMethod = fieldOrMethod;  // may be null
     }
 
     //-----------------------------------------------------------------------
@@ -213,10 +227,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Type propertyGenericType() {
-        if (field == null) {
+        if (fieldOrMethod == null) {
             return propertyType;
         }
-        return field.getGenericType();
+        return fieldOrMethod instanceof Field ?
+                ((Field) fieldOrMethod).getGenericType() :
+                ((Method) fieldOrMethod).getGenericReturnType();
     }
 
     @Override
@@ -226,10 +242,10 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public <A extends Annotation> A annotation(Class<A> annotationClass) {
-        if (field == null) {
+        if (fieldOrMethod == null) {
             throw new UnsupportedOperationException("Field not found for property: " + name());
         }
-        A annotation = field.getAnnotation(annotationClass);
+        A annotation = fieldOrMethod.getAnnotation(annotationClass);
         if (annotation == null) {
             throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
         }
@@ -237,11 +253,18 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     @Override
+    public <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
+        return fieldOrMethod == null ?
+                Optional.empty() :
+                Optional.ofNullable(fieldOrMethod.getAnnotation(annotationClass));
+    }
+
+    @Override
     public List<Annotation> annotations() {
-        if (field == null) {
+        if (fieldOrMethod == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList(field.getDeclaredAnnotations());
+        return Arrays.asList(fieldOrMethod.getDeclaredAnnotations());
     }
 
     //-----------------------------------------------------------------------

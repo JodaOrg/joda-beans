@@ -29,6 +29,7 @@ import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.ImmPersonNonFinal;
 import org.joda.beans.sample.ImmSubPersonNonFinal;
 import org.joda.beans.sample.ImmSubSubPersonFinal;
+import org.joda.beans.sample.SimpleAnnotation;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -84,6 +85,23 @@ public class TestImmutable {
         
         assertThat(address.getCity()).isEqualTo("Smallville");
         assertThat(address.getStreet()).isEqualTo("Park Road");
+    }
+
+    @Test
+    public void test_annotations() {
+        ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
+
+        assertThat(person.metaBean().numberOfCars().annotationOpt(SimpleAnnotation.class))
+                .isPresent()
+                .hasValueSatisfying(anno -> {
+                    assertThat(anno.second()).isEqualTo("2");
+                });
+        assertThat(person.metaBean().age()
+                .annotationOpt(SimpleAnnotation.class))
+                .isPresent()
+                .hasValueSatisfying(anno -> {
+                    assertThat(anno.first()).isEqualTo("1");
+                });
     }
 
     //-----------------------------------------------------------------------
@@ -164,7 +182,7 @@ public class TestImmutable {
             .listWildExtendsNumber(2d, 5, 3f)
             .listWildExtendsNumber(listNumbers)
             .listWildExtendsNumber(listInts)
-            .listWildExtendsComparable((Double) 2d, (Integer) 5, (Float) 3f)
+            .listWildExtendsComparable(2d, 5, 3f)
             .listWildExtendsComparable(listInts)
             .build();
         assertThat(obj.getList()).isEqualTo(listCal);

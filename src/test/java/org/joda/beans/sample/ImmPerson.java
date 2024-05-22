@@ -57,6 +57,7 @@ public final class ImmPerson implements ImmutableBean {
     private final String surname;
     /** The number of cars. */
     @PropertyDefinition
+    @SimpleAnnotation(second = "2")
     private transient final int numberOfCars;
     /** The date of birth. */
     @PropertyDefinition
@@ -76,6 +77,7 @@ public final class ImmPerson implements ImmutableBean {
     private final ImmutableMultiset<String> codeCounts;
 
     @DerivedProperty
+    @SimpleAnnotation(first = "1")
     public int getAge() {
         return 12;
     }
