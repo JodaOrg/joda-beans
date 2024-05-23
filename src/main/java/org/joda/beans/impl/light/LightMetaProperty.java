@@ -101,7 +101,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     /**
-     * Creates an instance from a {@code Method}.
+     * Creates an instance from a get/set {@code Method} pair.
      * 
      * @param <P>  the property type
      * @param metaBean  the meta bean, not null

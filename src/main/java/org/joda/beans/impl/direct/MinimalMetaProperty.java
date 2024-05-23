@@ -54,7 +54,7 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance.
+     * Creates an instance from a {@code Field}.
      * 
      * @param metaBean  the meta bean, not null
      * @param propertyName  the property name, not empty
@@ -85,7 +85,7 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     /**
-     * Creates an instance.
+     * Creates an instance from a derived {@code Method}.
      * 
      * @param metaBean  the meta bean, not null
      * @param method  the method, not null

@@ -106,9 +106,10 @@ public class TestPerson {
 
     @Test
     public void test_metaProperty_annotation_notFound() {
-	MetaProperty<FlexiBean> prop = Person.meta().extensions();
-	assertThatExceptionOfType(NoSuchElementException.class)
-	    .isThrownBy(() -> prop.annotation(ClassAnnotation.class));
+        MetaProperty<FlexiBean> prop = Person.meta().extensions();
+        assertThatExceptionOfType(NoSuchElementException.class)
+            .isThrownBy(() -> prop.annotation(ClassAnnotation.class));
+        assertThat(prop.annotationOpt(ClassAnnotation.class)).isEmpty();
     }
 
     @Test
@@ -266,6 +267,8 @@ public class TestPerson {
         assertThat(annos.get(0) instanceof PropertyDefinition).isTrue();
         assertThat(annos.get(1) instanceof SimpleAnnotation).isTrue();
         assertThat(prop.annotation(PropertyDefinition.class).get()).isEqualTo("smart");
+        assertThat(prop.annotationOpt(PropertyDefinition.class)).isPresent();
+        assertThat(prop.annotationOpt(SimpleAnnotation.class)).isPresent();
     }
 
     @Test

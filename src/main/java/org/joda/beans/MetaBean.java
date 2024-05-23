@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * A meta-bean, defining those aspects of a bean which are not specific
@@ -219,6 +220,29 @@ public interface MetaBean {
             }
         }
         throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+    }
+
+    /**
+     * Finds an optional annotation from the property.
+     * <p>
+     * The annotations are queried from the property.
+     * This is typically accomplished by querying the annotations of the underlying
+     * instance variable however any strategy is permitted.
+     * 
+     * @param <A>  the annotation type
+     * @param annotationClass  the annotation class to find, not null
+     * @return the annotation, empty if not found
+     * @since 2.11.0
+     */
+    @SuppressWarnings("unchecked")
+    public default <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
+        List<Annotation> annotations = annotations();
+        for (Annotation annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return Optional.of((A) annotation);
+            }
+        }
+        return Optional.empty();
     }
 
 }
