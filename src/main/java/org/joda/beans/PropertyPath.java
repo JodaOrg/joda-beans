@@ -38,6 +38,7 @@ import java.util.stream.Stream;
  * The suffix {@code [<mapKey>]} accesses the specified numeric index of an {@code Map}.
  * 
  * @param <P>  the type of the result
+ * @since 2.11.0
  */
 public final class PropertyPath<P> {
 
