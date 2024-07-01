@@ -770,7 +770,7 @@
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <revapi-maven-plugin.version>0.11.1</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
-    <spotbugs-maven-plugin.version>4.7.1.1</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.8.6.1</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.source>1.8</maven.compiler.source>
