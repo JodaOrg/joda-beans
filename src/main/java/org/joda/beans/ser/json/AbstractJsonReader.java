@@ -384,9 +384,14 @@ abstract class AbstractJsonReader {
                     }
                     return Float.valueOf(fltVal);
                     
-                } else {
+                } else if (type == Integer.class || type == int.class) {
                     if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                         throw new IllegalArgumentException("Invalid JSON data: Expected int, but was " + value);
+                    }
+                    return Integer.valueOf((int) value);
+                } else {
+                    if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+                        return Long.valueOf(value);
                     }
                     return Integer.valueOf((int) value);
                 }
