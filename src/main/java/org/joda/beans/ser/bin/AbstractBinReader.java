@@ -324,7 +324,7 @@ abstract class AbstractBinReader extends MsgPack {
 
             } else {
                 if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
-                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was " + value);
+                    return Long.valueOf(value);
                 }
                 return Integer.valueOf((int) value);
             }
