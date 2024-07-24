@@ -322,6 +322,11 @@ abstract class AbstractBinReader extends MsgPack {
                 // handle case where property type has changed from integral to float
                 return Float.valueOf((float) value);
 
+            } else if (type == Integer.class || type == int.class) {
+                if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was " + value);
+                }
+                return Integer.valueOf((int) value);
             } else {
                 if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                     return Long.valueOf(value);
