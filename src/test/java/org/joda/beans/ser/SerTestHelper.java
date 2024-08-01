@@ -328,6 +328,7 @@ public class SerTestHelper {
                 .beanMap(ImmutableMap.of("a", key1, "b", key2))
                 .listInMap(map)
                 .listNumericInMap(map2)
+                .objectInMap(ImmutableMap.of("a", (long) Integer.MAX_VALUE + 1))
                 .build();
         return result;
     }

@@ -50,5 +50,8 @@
  },
  "listNumericInMap": {
   "A": [3, 2, 1]
+ },
+ "objectInMap": {
+  "a": 2147483648
  }
 }
