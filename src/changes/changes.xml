@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.11.1" date="2024-08-01" description="v2.11.1">
+      <action dev="jodastephen" type="add">
+        Allow deserialization to handle numbers greater than the capacity of an int.
+      </action>
+    </release>
     <release version="2.11.0" date="2024-05-23" description="v2.11.0">
       <action dev="jodastephen" type="add">
         Add `PropertyPath` class, allowing multi-stage property lookups.
