@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-If a security issue occurs, only the latest version is guaranteed to be patched.
+If a security issue occurs, only the latest versions of v3.x and v2.x are guaranteed to be patched.
 Consideration will be given to updating the v1.x line, however this is not guaranteed.
 
 ## Reporting a Vulnerability

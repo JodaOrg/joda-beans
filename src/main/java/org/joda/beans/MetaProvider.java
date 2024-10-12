@@ -32,5 +32,11 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface MetaProvider {
 
+    /**
+     * The class that provides the meta-bean.
+     * 
+     * @return the class that provides the meta-bean
+     */
     Class<? extends MetaBeanProvider> value();
+
 }

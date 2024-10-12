@@ -106,14 +106,17 @@ Further integration is included for MongoDB and Freemarker.
 
 ## <i></i> Releases
 
-[Release 2.11.1](download.html) is the current release.
-This release is considered stable and worthy of the 2.x tag.
-There are only [minor incompatibilities](migration.html) with the 1.x codebase.
+The 3.x branch (v3.0.0-SNAPSHOT) is compatible with Java SE 21 or later.
 
-Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](/joda-convert/).
+The 2.x branch (v2.11.1) is compatible with Java SE 8 or later.
+
+v3.x releases are compatible with v2.x releases - except for the Java SE version.
+
+Joda-Beans depends on [Joda-Convert](/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
 
 Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-beans&core=gav).
+[GitHub release bundles](https://github.com/JodaOrg/joda-beans/releases).
 
 ```xml
 <dependency>
@@ -123,10 +126,10 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 </dependency>
 ```
 
-The main jar file is based on Java 8 but contains a `module-info.class` file for Java 9 and later.
-As of v2.10.0, it is structured as a multi-release jar file.
-The previous "classic" jar file is no longer published.
 For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-beans/releases/tag/v1.14).
+There are only [minor incompatibilities](migration.html) with the 1.x codebase.
+Note that the v2.x branch is based on Java 8 but contains a `module-info.class` file for Java 9
+(using the multi-release jar format).
 
 See the [related projects](related.html) page for Maven, Gradle and IntelliJ integration.
 

@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ==================================================================== -->
-  <!-- Joda-Beans requires Java SE 8 or later, but the build requires Java SE 11 or later -->
+  <!-- Build requires Java SE 21 or later -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.joda</groupId>
   <artifactId>joda-beans</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Beans</name>
-  <version>2.11.2-SNAPSHOT</version>
-  <description>Beans and Properties, compatible with Java 8</description>
+  <version>3.0.0-SNAPSHOT</version>
+  <description>Beans and Properties, compatible with Java 21+</description>
   <url>https://www.joda.org/joda-beans/</url>
 
   <!-- ==================================================================== -->
@@ -109,7 +109,7 @@
     </resources>
     <!-- define build -->
     <plugins>
-      <!-- Enforce Maven 3.6.0 and Java 11+ -->
+      <!-- Enforce Maven 3.8.0 and Java 21+ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -122,12 +122,55 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.6.0</version>
+                  <version>3.8.0</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[11,)</version>
+                  <version>[21,)</version>
                 </requireJavaVersion>
               </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Tests need access to an extra module. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <configuration>
+              <compilerArgs>
+                <arg>--add-modules</arg>
+                <arg>java.desktop</arg>
+                <arg>--add-reads</arg>
+                <arg>org.joda.beans=java.desktop</arg>
+              </compilerArgs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Tests need access to an extra module. -->
+      <!-- Package org.joda.beans.sample is only for tests, this it must be explicitly exported. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <configuration>
+              <useModulePath>true</useModulePath>
+              <argLine>--add-modules java.desktop --add-reads org.joda.beans=java.desktop --add-exports org.joda.beans/org.joda.beans.sample=org.joda.convert ${argLine}</argLine>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-without-modules</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <useModulePath>false</useModulePath>
             </configuration>
           </execution>
         </executions>
@@ -144,28 +187,15 @@
             <goals>
               <goal>manifest</goal>
             </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <instructions>
-            <Export-Package>${joda.osgi.packages}</Export-Package>
-            <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
-            <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
-          </instructions>
-          <supportIncrementalBuild>true</supportIncrementalBuild>
-        </configuration>
-      </plugin>
-      <!-- Compile twice -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <!-- default compile for Java 8 -->
-          <execution>
-            <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
+            <configuration>
+              <instructions>
+                <Specification-Version>${project.version}</Specification-Version>
+                <Export-Package>${joda.osgi.packages}</Export-Package>
+                <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
+                <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
+              </instructions>
+              <supportIncrementalBuild>true</supportIncrementalBuild>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -180,9 +210,6 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
-            <manifestEntries>
-              <Multi-Release>true</Multi-Release>
-            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
@@ -199,10 +226,9 @@
             </goals>
           </execution>
         </executions>
-        <!-- Javadoc uses source 11 to pickup the module settings -->
+        <!-- Javadoc uses source 21 to pickup the module settings -->
         <configuration>
-          <source>11</source>
-          <sourcepath>src/main/java;src/main/java9</sourcepath>
+          <source>21</source>
         </configuration>
       </plugin>
       <!-- Setup source jar -->
@@ -219,7 +245,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Setup Checkstyle -->
+      <!-- Setup Checkstyle, excluding module-info -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -232,6 +258,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <excludes>module-info.java</excludes>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
@@ -470,7 +499,7 @@
       <artifactId>assertj-core</artifactId>
       <version>${assertj.version}</version>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
   </dependencies>
 
   <!-- ==================================================================== -->
@@ -521,7 +550,7 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <source>11</source>
+          <source>21</source>
         </configuration>
       </plugin>
       <!-- Setup Surefire report -->
@@ -611,32 +640,6 @@
       </activation>
       <build>
         <plugins>
-          <!-- Compile module-info -->
-          <!-- this is here so that it is not triggered in Eclipse -->
-          <!-- this allows Eclipse development to proceed as though Java 9 never happened -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <executions>
-              <!-- multi-release jar compiler for Java 9 -->
-              <execution>
-                <id>jdk9-compile</id>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <release>9</release>
-                  <source>9</source>
-                  <target>9</target>
-                  <compileSourceRoots>
-                    <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-                  </compileSourceRoots>
-                  <fork>true</fork>
-                  <multiReleaseOutput>true</multiReleaseOutput>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <!-- Create dist files -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -734,14 +737,14 @@
 
     <!-- Common control parameters -->
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
-    <joda.osgi.require.capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=${maven.compiler.source}))"</joda.osgi.require.capability>
+    <joda.osgi.require.capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=${maven.compiler.release}))"</joda.osgi.require.capability>
     <joda.nexus.auto.release>true</joda.nexus.auto.release>
 
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
@@ -772,8 +775,7 @@
     <spotbugs-maven-plugin.version>4.8.6.4</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
 
     <!-- Properties for maven-javadoc-plugin -->

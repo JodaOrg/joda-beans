@@ -45,16 +45,19 @@ Various documentation is available:
 
 
 ### Releases
-[Release 2.11.1](https://www.joda.org/joda-beans/download.html) is the current release.
-This release is considered stable and worthy of the 2.x tag.
-There are only [minor incompatibilities](https://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
+The 3.x branch is compatible with Java SE 21 or later.
 
-Joda-Beans requires Java SE 8 or later and depends on [Joda-Convert](https://www.joda.org/joda-convert/).
+The 2.x branch is compatible with Java SE 8 or later.
+
+v3.x releases are compatible with v2.x releases - except for the Java SE version.
+
+Joda-Beans depends on [Joda-Convert](https://www.joda.org/joda-convert/).
 There are a number of [optional dependencies](https://www.joda.org/joda-beans/dependencies.html) which help with integration.
 
 Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-beans&core=gav)
 
 For Java SE 6 compatibility, use [release 1.14](https://github.com/JodaOrg/joda-beans/releases/tag/v1.14).
+There are only [minor incompatibilities](https://www.joda.org/joda-beans/migration.html) with the 1.x codebase.
 
 ![Tidelift dependency check](https://tidelift.com/badges/github/JodaOrg/joda-beans)
 
@@ -82,9 +85,9 @@ Tidelift will coordinate the fix and disclosure.
 
 ### Release process
 
-* Update version (README.md, index.md, changes.xml)
+* Update version (index.md, changes.xml)
 * Commit and push
-* Switch to Java 11
+* Switch to Java 21
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`
 * Website will be built and released by GitHub Actions
