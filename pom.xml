@@ -764,7 +764,7 @@
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.12.1</maven-site-plugin.version><!-- 3.20.0 throws ComponentLookupException -->
+    <maven-site-plugin.version>3.20.0</maven-site-plugin.version><!-- 3.20.0 throws ComponentLookupException -->
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.0</maven-surefire-report-plugin.version>
