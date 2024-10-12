@@ -27,10 +27,10 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
@@ -39,13 +39,13 @@ jobs:
     - name: Maven version
       run: |
         mkdir -p ./.mvn
-        echo '-e -B -DtrimStackTrace=false' > ./.mvn/maven.config
+        echo '-e -B -ntp -DtrimStackTrace=false' > ./.mvn/maven.config
         mvn --version
         mkdir -p target
 
     - name: Initialize CodeQL
       if: matrix.java == '11'
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: java
     
@@ -55,7 +55,7 @@ jobs:
 
     - name: Perform CodeQL Analysis
       if: matrix.java == '11'
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
     
     - name: Website
       if: matrix.java == '11' && github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
