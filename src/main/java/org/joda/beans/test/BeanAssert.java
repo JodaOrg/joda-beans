@@ -204,14 +204,15 @@ public final class BeanAssert {
     }
 
     private static void buildMessage(List<String> diffs, String prefix, Object expected, Object actual, double tolerance) {
-        if (expected == null && actual == null) {
-            return;
+        if (expected == null) {
+            if (actual == null) {
+                return;
+            } else {
+                diffs.add(prefix + ": Expected null, but was " + buildSummary(actual, true));
+                return;
+            }
         }
-        if (expected == null && actual != null) {
-            diffs.add(prefix + ": Expected null, but was " + buildSummary(actual, true));
-            return;
-        }
-        if (expected != null && actual == null) {
+        if (actual == null) {
             diffs.add(prefix + ": Was null, but expected " + buildSummary(expected, true));
             return;
         }
@@ -243,7 +244,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected != null && expected.getClass() != actual.getClass()) {
+        if (expected.getClass() != actual.getClass()) {
             diffs.add(prefix + ": Class differs, expected " + buildSummary(expected, true) + " but was " + buildSummary(actual, true));
             return;
         }

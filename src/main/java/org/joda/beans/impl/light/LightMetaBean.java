@@ -375,8 +375,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             propertyTypes.add(field.getType());
         }
         Constructor<?> constructor = findConstructor(beanType, propertyTypes);
+        Object[] constructionData = defaultValues;
         if (defaultValues.length == 0) {
-            defaultValues = buildConstructionData(constructor);
+            constructionData = buildConstructionData(constructor);
         }
         // derived
         Method[] methods = beanType.getDeclaredMethods();
@@ -395,7 +396,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
         this.aliasMap = new HashMap<>();
-        this.constructionData = defaultValues;
+        this.constructionData = constructionData;
         MethodHandle handle = findConstructorHandle(beanType, lookup, constructor);
         this.constructorFn = args -> build(handle, args);
     }

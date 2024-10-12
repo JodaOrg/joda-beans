@@ -153,9 +153,9 @@ public class SerOptional {
         if (helpers != null) {
             try {
                 if (value != null) {
-                    value = ((Method) helpers[0]).invoke(null, value);
+                    return ((Method) helpers[0]).invoke(null, value);
                 } else {
-                    value = helpers[1];
+                    return helpers[1];
                 }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
