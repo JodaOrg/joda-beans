@@ -408,33 +408,10 @@
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${spotbugs-maven-plugin.version}</version>
         </plugin>
-        <!-- Setup site with reflow maven skin -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <version>${maven-site-plugin.version}</version>
-          <configuration>
-            <skipDeploy>true</skipDeploy>
-          </configuration>
-          <executions>
-            <execution>
-              <id>attach-descriptor</id>
-              <goals>
-                <goal>attach-descriptor</goal>
-              </goals>
-              <!-- https://issues.apache.org/jira/browse/MSITE-639 -->
-              <configuration>
-                <locales>en,de</locales>
-              </configuration>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.joda.external</groupId>
-              <artifactId>reflow-velocity-tools</artifactId>
-              <version>1.2</version>
-            </dependency>
-          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -470,32 +447,12 @@
       <artifactId>assertj-core</artifactId>
       <version>${assertj.version}</version>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
   </dependencies>
 
   <!-- ==================================================================== -->
   <reporting>
     <plugins>
-      <!-- Setup standard project info reports -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>${maven-project-info-reports-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>ci-management</report>
-              <report>dependencies</report>
-              <report>dependency-info</report>
-              <report>issue-management</report>
-              <report>licenses</report>
-              <report>team</report>
-              <report>scm</report>
-              <report>summary</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
       <!-- Setup Checkstyle report, excluding module-info -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -532,19 +489,6 @@
         <configuration>
           <showSuccess>true</showSuccess>
         </configuration>
-      </plugin>
-      <!-- Setup changes (release notes) -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <version>${maven-changes-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
       </plugin>
       <!-- Setup PMD report, excluding module-info -->
       <plugin>
