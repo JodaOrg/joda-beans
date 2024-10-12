@@ -132,18 +132,11 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Setup OSGi bundle data, with fix for Java 9 -->
+      <!-- Setup OSGi bundle data -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>${maven-bundle-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>${bndlib.version}</version>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -159,6 +152,7 @@
             <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
             <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
           </instructions>
+          <supportIncrementalBuild>true</supportIncrementalBuild>
         </configuration>
       </plugin>
       <!-- Compile twice -->
@@ -769,7 +763,6 @@
     <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.0</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
-    <bndlib.version>6.4.0</bndlib.version>
     <github-api.version>1.326</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>

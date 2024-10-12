@@ -256,7 +256,7 @@ final class JsonInput {
         char last = first;
         char next = readNext();
         while ((next >= '0' && next <= '9') || next == '.' || next == '-' || next == '+' || next == 'e' || next == 'E') {
-            buf.append((char) next);
+            buf.append(next);
             last = next;
             next = readNext();
         }
@@ -329,24 +329,27 @@ final class JsonInput {
 
     private void skipData(JsonEvent event) throws IOException {
         switch (event) {
-            case OBJECT:
-                event = readEvent();
-                while (event != JsonEvent.OBJECT_END) {
-                    acceptObjectKey(event);
+            case OBJECT: {
+                JsonEvent ev = readEvent();
+                while (ev != JsonEvent.OBJECT_END) {
+                    acceptObjectKey(ev);
                     skipData();
-                    event = acceptObjectSeparator();
+                    ev = acceptObjectSeparator();
                 }
                 break;
-            case ARRAY:
-                event = readEvent();
-                while (event != JsonEvent.ARRAY_END) {
-                    skipData(event);
-                    event = acceptArraySeparator();
+            }
+            case ARRAY: {
+                JsonEvent ev = readEvent();
+                while (ev != JsonEvent.ARRAY_END) {
+                    skipData(ev);
+                    ev = acceptArraySeparator();
                 }
                 break;
-            case STRING:
+            }
+            case STRING: {
                 parseString();
                 break;
+            }
             case NULL:
             case TRUE:
             case FALSE:

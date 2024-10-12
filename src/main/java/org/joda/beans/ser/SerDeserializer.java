@@ -45,7 +45,7 @@ import org.joda.beans.MetaProperty;
  * A property type change can be handled by overriding the {@code lookupMetaProperty}
  * and {@code setValue}:
  * <pre>
- *  private MetaProperty<String> NUMBER_OF_CARS_STRING =
+ *  private MetaProperty&lt;String&gt; NUMBER_OF_CARS_STRING =
  *    StandaloneMetaProperty.of("numberOfCars", SimplePerson.meta(), String.class);
  *  
  *  public MetaProperty&lt;?&gt; findMetaProperty(Class&lt;?&gt; beanType, MetaBean metaBean, String propertyName) {
