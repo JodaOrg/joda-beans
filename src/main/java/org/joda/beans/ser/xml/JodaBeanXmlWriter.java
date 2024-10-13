@@ -71,7 +71,7 @@ public class JodaBeanXmlWriter {
      */
     private final JodaBeanSer settings;
     /**
-     * The string builder, unused if writing to an {@code Appendable}.
+     * The string builder, may be null.
      */
     private final StringBuilder builder;
     /**
@@ -97,7 +97,8 @@ public class JodaBeanXmlWriter {
      * @param settings  the settings to use, not null
      */
     public JodaBeanXmlWriter(JodaBeanSer settings) {
-        this(settings, new StringBuilder(1024));
+        this.settings = settings;
+        this.builder = null;
     }
 
     /**
@@ -132,39 +133,13 @@ public class JodaBeanXmlWriter {
      * @return the XML, not null
      */
     public String write(Bean bean, boolean rootType) {
-        return writeToBuilder(bean, rootType).toString();
-    }
-
-    /**
-     * Writes the bean to the {@code StringBuilder}.
-     * <p>
-     * The type of the bean will be set in the message.
-     * 
-     * @param bean  the bean to output, not null
-     * @return the builder, not null
-     * @deprecated Use {@link #write(Bean, Appendable)}
-     */
-    @Deprecated
-    public StringBuilder writeToBuilder(Bean bean) {
-        return writeToBuilder(bean, true);
-    }
-
-    /**
-     * Writes the bean to the {@code StringBuilder}.
-     * 
-     * @param bean  the bean to output, not null
-     * @param rootType  true to output the root type
-     * @return the builder, not null
-     * @deprecated Use {@link #write(Bean, boolean, Appendable)}
-     */
-    @Deprecated
-    public StringBuilder writeToBuilder(Bean bean, boolean rootType) {
+        var builder = this.builder != null ? this.builder : new StringBuilder(1024);
         try {
-            write(bean, rootType, this.builder);
+            write(bean, rootType, builder);
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
-        return builder;
+        return builder.toString();
     }
 
     /**
@@ -442,7 +417,7 @@ public class JodaBeanXmlWriter {
                     output.append(ch);
                     break;
                 default:
-                    if ((int) ch < 32) {
+                    if (ch < 32) {
                         throw new IllegalArgumentException("Invalid character for XML: " + ((int) ch));
                     }
                     output.append(ch);
@@ -492,7 +467,7 @@ public class JodaBeanXmlWriter {
                     builder.append("&#0D;");
                     break;
                 default:
-                    if ((int) ch < 32) {
+                    if (ch < 32) {
                         throw new IllegalArgumentException("Invalid character for XML: " + ((int) ch));
                     }
                     builder.append(ch);
