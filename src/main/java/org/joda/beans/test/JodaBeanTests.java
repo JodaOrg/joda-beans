@@ -15,8 +15,6 @@
  */
 package org.joda.beans.test;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.time.DayOfWeek;
@@ -126,18 +124,18 @@ public final class JodaBeanTests {
         if (bean1.equals(bean2) || bean1.getClass() != bean2.getClass()) {
             return;
         }
-        MetaBean metaBean = bean1.metaBean();
-        List<MetaProperty<?>> buildableProps = metaBean.metaPropertyMap().values().stream()
+        var metaBean = bean1.metaBean();
+        var buildableProps = metaBean.metaPropertyMap().values().stream()
                 .filter(mp -> mp.style().isBuildable())
                 .toList();
-        Set<Bean> builtBeansSet = new HashSet<>();
+        var builtBeansSet = new HashSet<Bean>();
         builtBeansSet.add(bean1);
         builtBeansSet.add(bean2);
-        for (int i = 0; i < buildableProps.size(); i++) {
-            for (int j = 0; j < 2; j++) {
+        for (var i = 0; i < buildableProps.size(); i++) {
+            for (var j = 0; j < 2; j++) {
                 try {
-                    BeanBuilder<? extends Bean> bld = metaBean.builder();
-                    for (int k = 0; k < buildableProps.size(); k++) {
+                    var bld = metaBean.builder();
+                    for (var k = 0; k < buildableProps.size(); k++) {
                         MetaProperty<?> mp = buildableProps.get(k);
                         if (j == 0) {
                             bld.set(mp, mp.get(k < i ? bean1 : bean2));
@@ -151,9 +149,9 @@ public final class JodaBeanTests {
                 }
             }
         }
-        List<Bean> builtBeansList = new ArrayList<>(builtBeansSet);
-        for (int i = 0; i < builtBeansList.size() - 1; i++) {
-            for (int j = i + 1; j < builtBeansList.size(); j++) {
+        var builtBeansList = new ArrayList<Bean>(builtBeansSet);
+        for (var i = 0; i < builtBeansList.size() - 1; i++) {
+            for (var j = i + 1; j < builtBeansList.size(); j++) {
                 builtBeansList.get(i).equals(builtBeansList.get(j));
             }
         }
@@ -168,11 +166,11 @@ public final class JodaBeanTests {
 
     // cover parts of a bean that are property-based
     private static void coverProperties(Bean bean) {
-        MetaBean metaBean = bean.metaBean();
-        Map<String, MetaProperty<?>> metaPropMap = metaBean.metaPropertyMap();
+        var metaBean = bean.metaBean();
+        var metaPropMap = metaBean.metaPropertyMap();
         assertNotNull(metaPropMap);
         assertEquals(metaBean.metaPropertyCount(), metaPropMap.size());
-        for (MetaProperty<?> mp : metaBean.metaPropertyIterable()) {
+        for (var mp : metaBean.metaPropertyIterable()) {
             assertTrue(metaBean.metaPropertyExists(mp.name()));
             assertEquals(metaBean.metaProperty(mp.name()), mp);
             // Ensure we don't use interned value
@@ -200,19 +198,19 @@ public final class JodaBeanTests {
                 }
             }
             ignoreThrows(() -> {
-                Method m = metaBean.getClass().getDeclaredMethod(mp.name());
+                var m = metaBean.getClass().getDeclaredMethod(mp.name());
                 m.setAccessible(true);
                 m.invoke(metaBean);
             });
             ignoreThrows(() -> {
-                Method m = metaBean.getClass().getDeclaredMethod(
+                var m = metaBean.getClass().getDeclaredMethod(
                         "propertySet", Bean.class, String.class, Object.class, Boolean.TYPE);
                 m.setAccessible(true);
                 m.invoke(metaBean, bean, mp.name(), "", true);
             });
         }
         ignoreThrows(() -> {
-            Method m = metaBean.getClass().getDeclaredMethod(
+            var m = metaBean.getClass().getDeclaredMethod(
                     "propertyGet", Bean.class, String.class, Boolean.TYPE);
             m.setAccessible(true);
             m.invoke(metaBean, bean, "Not a real property name", true);
@@ -225,15 +223,14 @@ public final class JodaBeanTests {
 
     // cover parts of a bean that are not property-based
     private static void coverNonProperties(Bean bean) {
-        MetaBean metaBean = bean.metaBean();
+        var metaBean = bean.metaBean();
         assertFalse(metaBean.metaPropertyExists(""));
         assertThrows(() -> metaBean.builder().get("foo_bar"), NoSuchElementException.class);
         assertThrows(() -> metaBean.builder().set("foo_bar", ""), NoSuchElementException.class);
         assertThrows(() -> metaBean.metaProperty("foo_bar"), NoSuchElementException.class);
 
         if (metaBean instanceof DirectMetaBean) {
-            DirectMetaProperty<String> dummy =
-                    DirectMetaProperty.ofReadWrite(metaBean, "foo_bar", metaBean.beanType(), String.class);
+            var dummy = DirectMetaProperty.ofReadWrite(metaBean, "foo_bar", metaBean.beanType(), String.class);
             assertThrows(() -> dummy.get(bean), NoSuchElementException.class);
             assertThrows(() -> dummy.set(bean, ""), NoSuchElementException.class);
             assertThrows(() -> dummy.setString(bean, ""), NoSuchElementException.class);
@@ -241,42 +238,42 @@ public final class JodaBeanTests {
             assertThrows(() -> metaBean.builder().set(dummy, ""), NoSuchElementException.class);
         }
 
-        Set<String> propertyNameSet = bean.propertyNames();
+        var propertyNameSet = bean.propertyNames();
         assertNotNull(propertyNameSet);
         for (String propertyName : propertyNameSet) {
             assertNotNull(bean.property(propertyName));
         }
         assertThrows(() -> bean.property(""), NoSuchElementException.class);
 
-        Class<? extends Bean> beanClass = bean.getClass();
+        var beanClass = bean.getClass();
         ignoreThrows(() -> {
-            Method m = beanClass.getDeclaredMethod("meta");
+            var m = beanClass.getDeclaredMethod("meta");
             m.setAccessible(true);
             m.invoke(null);
         });
         ignoreThrows(() -> {
-            Method m = beanClass.getDeclaredMethod("meta" + beanClass.getSimpleName(), Class.class);
+            var m = beanClass.getDeclaredMethod("meta" + beanClass.getSimpleName(), Class.class);
             m.setAccessible(true);
             m.invoke(null, String.class);
         });
         ignoreThrows(() -> {
-            Method m = beanClass.getDeclaredMethod("meta" + beanClass.getSimpleName(), Class.class, Class.class);
+            var m = beanClass.getDeclaredMethod("meta" + beanClass.getSimpleName(), Class.class, Class.class);
             m.setAccessible(true);
             m.invoke(null, String.class, String.class);
         });
         ignoreThrows(() -> {
-            Method m = beanClass.getDeclaredMethod("meta" + beanClass.getSimpleName(), Class.class, Class.class, Class.class);
+            var m = beanClass.getDeclaredMethod("meta" + beanClass.getSimpleName(), Class.class, Class.class, Class.class);
             m.setAccessible(true);
             m.invoke(null, String.class, String.class, String.class);
         });
 
         ignoreThrows(() -> {
-            Method m = bean.getClass().getDeclaredMethod("builder");
+            var m = bean.getClass().getDeclaredMethod("builder");
             m.setAccessible(true);
             m.invoke(null);
         });
         ignoreThrows(() -> {
-            Method m = bean.getClass().getDeclaredMethod("toBuilder");
+            var m = bean.getClass().getDeclaredMethod("toBuilder");
             m.setAccessible(true);
             m.invoke(bean);
         });
@@ -291,22 +288,22 @@ public final class JodaBeanTests {
     private static void coverEquals(Bean bean) {
         // create beans with different data and compare each to the input bean
         // this will normally trigger each of the possible branches in equals
-        List<MetaProperty<?>> buildableProps = bean.metaBean().metaPropertyMap().values().stream()
+        var buildableProps = bean.metaBean().metaPropertyMap().values().stream()
                 .filter(mp -> mp.style().isBuildable())
                 .toList();
-        for (int i = 0; i < buildableProps.size(); i++) {
+        for (var i = 0; i < buildableProps.size(); i++) {
             try {
-                BeanBuilder<? extends Bean> bld = bean.metaBean().builder();
-                for (int j = 0; j < buildableProps.size(); j++) {
-                    MetaProperty<?> mp = buildableProps.get(j);
+                var bld = bean.metaBean().builder();
+                for (var j = 0; j < buildableProps.size(); j++) {
+                    var mp = buildableProps.get(j);
                     if (j < i) {
                         bld.set(mp, mp.get(bean));
                     } else {
-                        List<?> samples = sampleValues(mp);
+                        var samples = sampleValues(mp);
                         bld.set(mp, samples.get(0));
                     }
                 }
-                Bean built = bld.build();
+                var built = bld.build();
                 coverBeanEquals(bean, built);
                 assertEquals(built, built);
                 assertEquals(built.hashCode(), built.hashCode());
@@ -324,19 +321,19 @@ public final class JodaBeanTests {
 
     // sample values for setters
     private static List<?> sampleValues(MetaProperty<?> mp) {
-        Class<?> type = mp.propertyType();
+        var type = mp.propertyType();
         // enum constants
         if (Enum.class.isAssignableFrom(type)) {
             return Arrays.asList(type.getEnumConstants());
         }
         // lookup pre-canned samples
-        List<?> sample = SAMPLES.get(type);
+        var sample = SAMPLES.get(type);
         if (sample != null) {
             return sample;
         }
         // find any potential declared constants, using some plural rules
-        String typeName = type.getName();
-        List<Object> samples = new ArrayList<>();
+        var typeName = type.getName();
+        var samples = new ArrayList<>();
         samples.addAll(buildSampleConstants(type, type));
         ignoreThrows(() -> {
             // cat -> cats
@@ -360,8 +357,8 @@ public final class JodaBeanTests {
 
     // adds sample constants to the 
     private static List<Object> buildSampleConstants(Class<?> queryType, Class<?> targetType) {
-        List<Object> samples = new ArrayList<>();
-        for (Field field : queryType.getFields()) {
+        var samples = new ArrayList<Object>();
+        for (var field : queryType.getFields()) {
             if (field.getType() == targetType &&
                     Modifier.isPublic(field.getModifiers()) &&
                     Modifier.isStatic(field.getModifiers()) &&
@@ -375,7 +372,7 @@ public final class JodaBeanTests {
 
     private static final Map<Class<?>, List<?>> SAMPLES;
     static {
-        Map<Class<?>, List<?>> map = new HashMap<>();
+        var map = new HashMap<Class<?>, List<?>>();
         map.put(String.class, List.of("Hello", "Goodbye", " ", ""));
         map.put(Byte.class, List.of((byte) 0, (byte) 1));
         map.put(Byte.TYPE, List.of((byte) 0, (byte) 1));
@@ -417,29 +414,29 @@ public final class JodaBeanTests {
         map.put(Set.class, List.of(new HashSet<>()));
         map.put(SortedSet.class, List.of(new TreeSet<>()));
         try {
-            Class<?> cls = Class.forName("com.google.common.collect.ImmutableList");
-            Method method = cls.getDeclaredMethod("of");
+            var cls = Class.forName("com.google.common.collect.ImmutableList");
+            var method = cls.getDeclaredMethod("of");
             map.put(cls, List.of(method.invoke(null)));
         } catch (Exception ex) {
             // ignore
         }
         try {
-            Class<?> cls = Class.forName("com.google.common.collect.ImmutableSet");
-            Method method = cls.getDeclaredMethod("of");
+            var cls = Class.forName("com.google.common.collect.ImmutableSet");
+            var method = cls.getDeclaredMethod("of");
             map.put(cls, List.of(method.invoke(null)));
         } catch (Exception ex) {
             // ignore
         }
         try {
-            Class<?> cls = Class.forName("com.google.common.collect.ImmutableSortedSet");
-            Method method = cls.getDeclaredMethod("naturalOrder");
+            var cls = Class.forName("com.google.common.collect.ImmutableSortedSet");
+            var method = cls.getDeclaredMethod("naturalOrder");
             map.put(cls, List.of(method.invoke(null)));
         } catch (Exception ex) {
             // ignore
         }
         try {
-            Class<?> cls = Class.forName("com.google.common.collect.ImmutableMap");
-            Method method = cls.getDeclaredMethod("of");
+            var cls = Class.forName("com.google.common.collect.ImmutableMap");
+            var method = cls.getDeclaredMethod("of");
             map.put(cls, List.of(method.invoke(null)));
         } catch (Exception ex) {
             // ignore

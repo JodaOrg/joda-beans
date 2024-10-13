@@ -132,7 +132,7 @@ final class MetaBeans {
         if (providerAnnotation != null) {
             return providerAnnotation;
         }
-        for (Class<?> implementedInterface : cls.getInterfaces()) {
+        for (var implementedInterface : cls.getInterfaces()) {
             providerAnnotation = implementedInterface.getAnnotation(MetaProvider.class);
             if (providerAnnotation != null) {
                 return providerAnnotation;

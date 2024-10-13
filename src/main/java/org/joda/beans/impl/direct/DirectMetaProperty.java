@@ -216,12 +216,11 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Type propertyGenericType() {
-        if (fieldOrMethod == null) {
-            return propertyType;
-        }
-        return fieldOrMethod instanceof Field ?
-                ((Field) fieldOrMethod).getGenericType() :
-                ((Method) fieldOrMethod).getGenericReturnType();
+        return switch (fieldOrMethod) {
+            case Field field -> field.getGenericType();
+            case Method method -> method.getGenericReturnType();
+            case null, default -> propertyType;
+        };
     }
 
     @Override
@@ -234,7 +233,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         if (fieldOrMethod == null) {
             throw new UnsupportedOperationException("Field not found for property: " + name());
         }
-        A annotation = fieldOrMethod.getAnnotation(annotationClass);
+        var annotation = fieldOrMethod.getAnnotation(annotationClass);
         if (annotation == null) {
             throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
         }

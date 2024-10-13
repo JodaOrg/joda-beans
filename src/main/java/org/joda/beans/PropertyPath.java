@@ -20,7 +20,6 @@ import static org.joda.beans.JodaBeanUtils.notNull;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -102,10 +101,10 @@ public final class PropertyPath<P> {
             if (obj instanceof Optional<?>) {
                 obj = ((Optional<?>) obj).orElse(null);
             }
-            if (obj == null || !(obj instanceof Bean)) {
+            if (!(obj instanceof Bean newBean)) {
                 return Optional.empty();
             }
-            currentBean = (Bean) obj;
+            currentBean = newBean;
         }
         // last entry, which allows for possibility that resultType = Optional.class
         var pathEntry = pathEntries.get(pathEntries.size() - 1);
@@ -117,8 +116,8 @@ public final class PropertyPath<P> {
         if (resultType.isInstance(obj)) {
             return Optional.of(resultType.cast(obj));
         } else {
-            if (obj instanceof Optional<?>) {
-                obj = ((Optional<?>) obj).orElse(null);
+            if (obj instanceof Optional<?> opt) {
+                obj = opt.orElse(null);
             }
             if (resultType.isInstance(obj)) {
                 return Optional.of(resultType.cast(obj));
@@ -221,12 +220,7 @@ public final class PropertyPath<P> {
                 if (key == null) {
                     return extract(map.values());
                 } else {
-                    for (Entry<?, ?> mapEntry : map.entrySet()) {
-                        if (key.equals(mapEntry.getKey())) {
-                            return mapEntry.getValue();
-                        }
-                    }
-                    return null;
+                    return map.get(key);
                 }
             }
 
