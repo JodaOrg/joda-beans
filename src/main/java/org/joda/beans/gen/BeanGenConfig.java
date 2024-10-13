@@ -304,7 +304,7 @@ public final class BeanGenConfig {
      * 
      * @return the generators, not null
      */
-    public Map<String, CopyGen> getCopyGenerators() {
+    Map<String, CopyGen> getCopyGenerators() {
         return copyGenerators;
     }
 
@@ -313,7 +313,7 @@ public final class BeanGenConfig {
      * 
      * @return the generators, not null
      */
-    public Map<String, BuilderGen> getBuilderGenerators() {
+    Map<String, BuilderGen> getBuilderGenerators() {
         return builderGenerators;
     }
 

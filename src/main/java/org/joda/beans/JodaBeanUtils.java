@@ -85,39 +85,6 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a meta-bean from a {@code Class}.
-     * <p>
-     * This will return a meta-bean if it has been registered, or if the class
-     * implements {@link DynamicBean} and has a no-args constructor.
-     * Note that the common case where the meta-bean is registered by a static initializer is handled.
-     * 
-     * @param cls  the class to get the meta-bean for, not null
-     * @return the meta-bean, not null
-     * @throws IllegalArgumentException if unable to obtain the meta-bean
-     * @deprecated Use {@link MetaBean#of(Class)}
-     */
-    @Deprecated
-    public static MetaBean metaBean(Class<?> cls) {
-        return MetaBean.of(cls);
-    }
-
-    /**
-     * Registers a meta-bean.
-     * <p>
-     * This should be done for all beans in a static factory where possible.
-     * If the meta-bean is dynamic, this method should not be called.
-     * 
-     * @param metaBean  the meta-bean, not null
-     * @throws IllegalArgumentException if unable to register
-     * @deprecated Use {@link MetaBean#register(MetaBean)}
-     */
-    @Deprecated
-    public static void registerMetaBean(MetaBean metaBean) {
-        MetaBean.register(metaBean);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the standard string format converter.
      * <p>
      * This returns a singleton that may be mutated (holds a concurrent map).

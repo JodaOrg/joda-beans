@@ -150,9 +150,6 @@ public class BeanCodeGen {
                 defaultStyle = arg.substring(7);
             } else if (arg.startsWith("-verbose=")) {
                 verbosity = Integer.parseInt(arg.substring(9));
-            } else if (arg.startsWith("-v=")) {
-                System.out.println("Deprecated command line argument -v (use -verbose instead)");
-                verbosity = Integer.parseInt(arg.substring(3));
             } else if (arg.equals("-nowrite")) {
                 write = false;
             } else {

@@ -110,7 +110,8 @@ The 3.x branch (v3.0.0-SNAPSHOT) is compatible with Java SE 21 or later.
 
 The 2.x branch (v2.11.1) is compatible with Java SE 8 or later.
 
-v3.x releases are compatible with v2.x releases - except for the Java SE version.
+v3.x releases are mostly compatible with v2.x releases.
+Deprecated methods have been removed.
 
 Joda-Beans depends on [Joda-Convert](/joda-convert/).
 There are a number of [optional dependencies](dependencies.html) which help with integration.
