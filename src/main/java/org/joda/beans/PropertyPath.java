@@ -18,10 +18,8 @@ package org.joda.beans;
 import static java.util.stream.Collectors.toList;
 import static org.joda.beans.JodaBeanUtils.notNull;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -77,7 +75,7 @@ public final class PropertyPath<P> {
     public static <P> PropertyPath<P> of(String propertyPath, Class<P> resultType) {
         notNull(propertyPath, "propertyPath");
         notNull(resultType, "resultType");
-        List<PathEntry> split = PathEntry.parse(propertyPath);
+        var split = PathEntry.parse(propertyPath);
         return new PropertyPath<>(propertyPath, resultType, split);
     }
 
@@ -95,25 +93,25 @@ public final class PropertyPath<P> {
      */
     public Optional<P> get(Bean bean) {
         notNull(bean, "bean");
-        Bean currentBean = bean;
+        var currentBean = bean;
         for (int i = 0; i < pathEntries.size() - 1; i++) {
-            PathEntry pathEntry = pathEntries.get(i);
-            Object obj = pathEntry.get(currentBean);
+            var pathEntry = pathEntries.get(i);
+            var obj = pathEntry.get(currentBean);
             obj = pathEntry.extract(obj);
-            if (obj instanceof Optional<?>) {
-                obj = ((Optional<?>) obj).orElse(null);
+            if (obj instanceof Optional<?> opt) {
+                obj = opt.orElse(null);
             }
             if (obj == null) {
                 return Optional.empty();
             }
-            if (!(obj instanceof Bean)) {
+            if (!(obj instanceof Bean newBean)) {
                 return Optional.empty();
             }
-            currentBean = (Bean) obj;
+            currentBean = newBean;
         }
         // last entry, which allows for possibility that resultType = Optional.class
-        PathEntry pathEntry = pathEntries.get(pathEntries.size() - 1);
-        Object obj = pathEntry.get(currentBean);
+        var pathEntry = pathEntries.get(pathEntries.size() - 1);
+        var obj = pathEntry.get(currentBean);
         obj = pathEntry.extract(obj);
         if (obj == null) {
             return Optional.empty();
@@ -121,8 +119,8 @@ public final class PropertyPath<P> {
         if (resultType.isInstance(obj)) {
             return Optional.of(resultType.cast(obj));
         } else {
-            if (obj instanceof Optional<?>) {
-                obj = ((Optional<?>) obj).orElse(null);
+            if (obj instanceof Optional<?> opt) {
+                obj = opt.orElse(null);
             }
             if (resultType.isInstance(obj)) {
                 return Optional.of(resultType.cast(obj));
@@ -152,12 +150,9 @@ public final class PropertyPath<P> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof PropertyPath<?>) {
-            PropertyPath<?> other = (PropertyPath<?>) obj;
-            return this.propertyPath.equals(other.propertyPath) &&
-                    this.resultType.equals(other.resultType);
-        }
-        return false;
+        return obj instanceof PropertyPath<?> other &&
+                this.propertyPath.equals(other.propertyPath) &&
+                this.resultType.equals(other.resultType);
     }
 
     @Override
@@ -177,23 +172,23 @@ public final class PropertyPath<P> {
         private final int index;
 
         static List<PathEntry> parse(String propertyPath) {
-            String[] split = propertyPath.split("\\.");
+            var split = propertyPath.split("\\.");
             return Stream.of(split)
                     .map(entryStr -> extractEntry(propertyPath, entryStr))
                     .collect(toList());
         }
 
         private static PathEntry extractEntry(String propertyPath, String entryStr) {
-            String propName = entryStr;
-            String key = null;
-            int index = 0;
-            int start = entryStr.lastIndexOf('[');
+            var propName = entryStr;
+            var key = (String) null;
+            var index = 0;
+            var start = entryStr.lastIndexOf('[');
             if (entryStr.endsWith("]") && start > 0) {
                 key = entryStr.substring(start + 1, entryStr.length() - 1);
                 if (key.length() == 0) {
                     throw new IllegalArgumentException("Invalid property path, empty key: " + propertyPath);
                 }
-                char firstChar = key.charAt(0);
+                var firstChar = key.charAt(0);
                 index = -1;
                 if (firstChar == '-' || (firstChar >= '0' && firstChar <= '9')) {
                     try {
@@ -224,12 +219,11 @@ public final class PropertyPath<P> {
         private Object extract(Object obj) {
             // maps can be queried using the [key] suffix if desired
             // an [index] suffix will be queried as a key, not an index
-            if (obj instanceof Map<?, ?>) {
+            if (obj instanceof Map<?, ?> map) {
                 if (key == null) {
-                    return extract(((Map<?, ?>) obj).values());
+                    return extract(map.values());
                 } else {
-                    Map<?, ?> map = ((Map<?, ?>) obj);
-                    for (Entry<?, ?> mapEntry : map.entrySet()) {
+                    for (var mapEntry : map.entrySet()) {
                         if (key.equals(mapEntry.getKey())) {
                             return mapEntry.getValue();
                         }
@@ -239,19 +233,18 @@ public final class PropertyPath<P> {
             }
 
             // lists/sets can be queried using the [index] suffix if desired
-            if (obj instanceof Iterable<?>) {
+            if (obj instanceof Iterable<?> iter) {
                 if (key != null && index < 0) {
                     return null;
                 }
-                if (obj instanceof List<?>) {
-                    List<?> list = (List<?>) obj;
+                if (obj instanceof List<?> list) {
                     if (index < list.size()) {
                         return list.get(index);
                     }
                     return null;
                 }
-                Iterator<?> it = ((Iterable<?>) obj).iterator();
-                int i = 0;
+                var it = iter.iterator();
+                var i = 0;
                 while (it.hasNext() && i < index) {
                     it.next();
                     i++;

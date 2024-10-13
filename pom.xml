@@ -175,30 +175,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Setup OSGi bundle data -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>${maven-bundle-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-            <configuration>
-              <instructions>
-                <Specification-Version>${project.version}</Specification-Version>
-                <Export-Package>${joda.osgi.packages}</Export-Package>
-                <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
-                <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
-              </instructions>
-              <supportIncrementalBuild>true</supportIncrementalBuild>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Setup Jar file manifest entries -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -481,6 +457,28 @@
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
       <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>listenablefuture</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.checkerframework</groupId>
+          <artifactId>checker-qual</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.joda</groupId>
@@ -640,6 +638,30 @@
       </activation>
       <build>
         <plugins>
+          <!-- Setup OSGi bundle data, in a profile to avoid activation in Eclipse  -->
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>${maven-bundle-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>bundle-manifest</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>manifest</goal>
+                </goals>
+                <configuration>
+                  <instructions>
+                    <Specification-Version>${project.version}</Specification-Version>
+                    <Export-Package>${joda.osgi.packages}</Export-Package>
+                    <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
+                    <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
+                  </instructions>
+                  <supportIncrementalBuild>true</supportIncrementalBuild>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!-- Create dist files -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -731,9 +753,9 @@
     <!-- Dependencies -->
     <assertj.version>3.24.2</assertj.version>
     <guava.version>33.3.1-jre</guava.version>
-    <joda-collect.version>1.0.1</joda-collect.version>
-    <joda-convert.version>2.2.3</joda-convert.version>
-    <junit.version>5.10.3</junit.version>
+    <joda-collect.version>2.0.0</joda-collect.version>
+    <joda-convert.version>3.0.1</joda-convert.version>
+    <junit.version>5.11.2</junit.version>
 
     <!-- Common control parameters -->
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>

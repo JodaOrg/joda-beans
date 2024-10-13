@@ -46,20 +46,20 @@ final class BeanIterator implements Iterator<Bean> {
 
     @Override
     public boolean hasNext() {
-        return stack.isEmpty() == false;
+        return !stack.isEmpty();
     }
 
     @Override
     public Bean next() {
-        if (hasNext() == false) {
+        if (!hasNext()) {
             throw new NoSuchElementException("No more elements in the iterator");
         }
         // next bean to return is head of the stack
-        Bean current = stack.remove(stack.size() - 1);
+        var current = stack.removeLast();
         // temp used to reverse the order of child beans to match depth-first order
         // alternative is to insert into stack at a fixed index (lots of array copying)
-        Deque<Bean> temp = new ArrayDeque<>(32);
-        for (MetaProperty<?> mp : current.metaBean().metaPropertyIterable()) {
+        var temp = new ArrayDeque<Bean>(32);
+        for (var mp : current.metaBean().metaPropertyIterable()) {
             findChildBeans(mp.get(current), mp, current.getClass(), temp);
         }
         stack.addAll(temp);
@@ -69,10 +69,10 @@ final class BeanIterator implements Iterator<Bean> {
     // find child beans, including those in collections
     private void findChildBeans(Object obj, MetaProperty<?> mp, Class<?> beanClass, Deque<Bean> temp) {
         if (obj != null) {
-            if (obj instanceof Bean) {
-                temp.addFirst((Bean) obj);
+            if (obj instanceof Bean bean) {
+                temp.addFirst(bean);
             } else {
-                SerIterator it = SerIteratorFactory.INSTANCE.create(obj, mp, beanClass);
+                var it = SerIteratorFactory.INSTANCE.create(obj, mp, beanClass);
                 if (it != null) {
                     while (it.hasNext()) {
                         it.next();
