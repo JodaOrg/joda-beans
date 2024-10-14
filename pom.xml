@@ -729,7 +729,7 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
-    <assertj.version>3.24.2</assertj.version>
+    <assertj.version>3.26.3</assertj.version>
     <guava.version>33.3.1-jre</guava.version>
     <joda-collect.version>1.0.1</joda-collect.version>
     <joda-convert.version>2.2.3</joda-convert.version>
