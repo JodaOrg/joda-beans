@@ -732,7 +732,7 @@
     <assertj.version>3.24.2</assertj.version>
     <guava.version>33.3.1-jre</guava.version>
     <joda-collect.version>1.0.1</joda-collect.version>
-    <joda-convert.version>2.2.3</joda-convert.version>
+    <joda-convert.version>3.0.1</joda-convert.version>
     <junit.version>5.10.3</junit.version>
 
     <!-- Common control parameters -->
