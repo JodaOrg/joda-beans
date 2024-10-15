@@ -46,7 +46,7 @@ jobs:
 
     - name: Maven build
       run: |
-        mvn install site
+        mvn install site -Doss.build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
