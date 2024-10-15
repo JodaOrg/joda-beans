@@ -160,7 +160,7 @@
             <id>default-test</id>
             <configuration>
               <useModulePath>true</useModulePath>
-              <argLine>--add-modules java.desktop --add-reads org.joda.beans=java.desktop --add-exports org.joda.beans/org.joda.beans.sample=org.joda.convert ${argLine}</argLine>
+              <argLine>--add-modules java.desktop --add-reads org.joda.beans=java.desktop --add-exports org.joda.beans/org.joda.beans.sample=org.joda.convert</argLine>
             </configuration>
           </execution>
           <execution>
@@ -175,126 +175,12 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Setup OSGi bundle data -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>${maven-bundle-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-            <configuration>
-              <instructions>
-                <Specification-Version>${project.version}</Specification-Version>
-                <Export-Package>${joda.osgi.packages}</Export-Package>
-                <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
-                <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
-              </instructions>
-              <supportIncrementalBuild>true</supportIncrementalBuild>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup Jar file manifest entries -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <!-- Setup Javadoc jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-        <!-- Javadoc uses source 21 to pickup the module settings -->
-        <configuration>
-          <source>21</source>
-        </configuration>
-      </plugin>
-      <!-- Setup source jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup Checkstyle, excluding module-info -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>run-checkstyle</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>module-info.java</excludes>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>${checkstyle.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <!-- Setup JaCoCo code coverage -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>jacoco-initialize</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-site</id>
-            <phase>package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Release to GitHub -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <configuration>
-          <arguments>-Doss.repo</arguments>
+          <arguments>-Doss.build -Doss.repo</arguments>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <tagNameFormat>v@{project.version}</tagNameFormat>
           <localCheckout>true</localCheckout>
@@ -630,6 +516,133 @@
 
   <!-- ==================================================================== -->
   <profiles>
+    <!-- Main profile for command line builds -->
+    <profile>
+      <id>oss-build</id>
+      <activation>
+        <property>
+          <name>oss.build</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <!-- Setup OSGi bundle data -->
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>${maven-bundle-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>bundle-manifest</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>manifest</goal>
+                </goals>
+                <configuration>
+                  <instructions>
+                    <Specification-Version>${project.version}</Specification-Version>
+                    <Export-Package>${joda.osgi.packages}</Export-Package>
+                    <Require-Capability>${joda.osgi.require.capability}</Require-Capability>
+                    <_fixupmessages>"Classes found in the wrong directory"; restrict:=error; is:=ignore</_fixupmessages>
+                  </instructions>
+                  <supportIncrementalBuild>true</supportIncrementalBuild>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Setup Jar file manifest entries -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <archive>
+                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                <manifest>
+                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                  <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                </manifest>
+              </archive>
+            </configuration>
+          </plugin>
+          <!-- Setup Javadoc jar -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <!-- Javadoc uses source 21 to pickup the module settings -->
+            <configuration>
+              <source>21</source>
+            </configuration>
+          </plugin>
+          <!-- Setup source jar -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Setup Checkstyle, excluding module-info -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>run-checkstyle</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>checkstyle</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <excludes>module-info.java</excludes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.puppycrawl.tools</groupId>
+                <artifactId>checkstyle</artifactId>
+                <version>${checkstyle.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          <!-- Setup JaCoCo code coverage -->
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-site</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Main deployment profile, activated by -Doss.repo -->
     <profile>
       <id>release-artifacts</id>
