@@ -46,12 +46,12 @@ final class BeanIterator implements Iterator<Bean> {
 
     @Override
     public boolean hasNext() {
-        return stack.isEmpty() == false;
+        return !stack.isEmpty();
     }
 
     @Override
     public Bean next() {
-        if (hasNext() == false) {
+        if (!hasNext()) {
             throw new NoSuchElementException("No more elements in the iterator");
         }
         // next bean to return is head of the stack

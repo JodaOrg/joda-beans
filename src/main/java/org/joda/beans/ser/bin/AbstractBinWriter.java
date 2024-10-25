@@ -51,7 +51,7 @@ abstract class AbstractBinWriter {
     /**
      * The known types.
      */
-    private Map<Class<?>, String> knownTypes = new HashMap<>();
+    private final Map<Class<?>, String> knownTypes = new HashMap<>();
 
     // creates an instance
     AbstractBinWriter(JodaBeanSer settings, OutputStream output) {
@@ -148,7 +148,7 @@ abstract class AbstractBinWriter {
             itemIterator.next();
             Object key = itemIterator.key();
             if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
+                throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
             writeObject(itemIterator.keyType(), key, null);
             writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
@@ -282,7 +282,7 @@ abstract class AbstractBinWriter {
             } else {
                 effectiveType = realType;
             }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
+        } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
             output.writeMapHeader(1);
             String type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);

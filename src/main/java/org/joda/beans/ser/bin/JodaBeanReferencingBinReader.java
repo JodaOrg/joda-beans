@@ -181,7 +181,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         Integer ref = null;
         int typeByte = input.readByte();
 
-        // Unwrap nested references and meta data
+        // Unwrap nested references and metadata
         while (isMap(typeByte)) {
 
             input.mark(18);
@@ -400,12 +400,12 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
 
     private Object parseBean(Class<?> declaredType, boolean rootType, ClassInfo classInfo, int arraySize) {
         if (rootType) {
-            if (Bean.class.isAssignableFrom(classInfo.type) == false) {
+            if (!Bean.class.isAssignableFrom(classInfo.type)) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + classInfo.type.getName());
             }
             overrideBasePackage = classInfo.type.getPackage().getName() + ".";
         }
-        if (declaredType.isAssignableFrom(classInfo.type) == false) {
+        if (!declaredType.isAssignableFrom(classInfo.type)) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + classInfo.type.getName());
         }
         return parseBean(arraySize - 1, classInfo);

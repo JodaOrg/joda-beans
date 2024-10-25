@@ -276,22 +276,22 @@ public final class SerDeserializers {
             if (!Modifier.isStatic(field.getModifiers())) {
                 throw new IllegalStateException("Field " + field + " must be static");
             }
-            deser = SerDeserializer.class.cast(field.get(null));
+            deser = (SerDeserializer) field.get(null);
         } catch (NoSuchFieldException ex) {
             Constructor<?> cons = null;
             try {
                 cons = deserClass.getConstructor();
-                deser = SerDeserializer.class.cast(cons.newInstance());
+                deser = (SerDeserializer) cons.newInstance();
             } catch (NoSuchMethodException ex2) {
                 throw new IllegalStateException(
                         "Class " + deserClass.getName() + " must have field DESERIALIZER or a no-arg constructor");
             } catch (IllegalAccessException ex2) {
                 cons.setAccessible(true);
-                deser = SerDeserializer.class.cast(cons.newInstance());
+                deser = (SerDeserializer) cons.newInstance();
             }
         } catch (IllegalAccessException ex) {
             field.setAccessible(true);
-            deser = SerDeserializer.class.cast(field.get(null));
+            deser = (SerDeserializer) field.get(null);
         }
         map.put(beanClass, deser);
     }

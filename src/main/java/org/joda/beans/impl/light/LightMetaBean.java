@@ -105,7 +105,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         for (int i = 0; i < fields.length; i++) {
             fieldNames.add(fields[i].getName());
         }
-        return fieldNames.toArray(new String[fieldNames.size()]);
+        return fieldNames.toArray(new String[0]);
     }
 
     /**
@@ -178,7 +178,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
             PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
             String name = field.getName();
-            if (pdef.get().equals("field") || pdef.get().startsWith("optional") || pdef.get().equals("")) {
+            if (pdef.get().isEmpty() || pdef.get().equals("field") || pdef.get().startsWith("optional")) {
                 map.put(name, LightMetaProperty.of(this, field, lookup, name, propertyTypes.size()));
             } else {
                 String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
@@ -203,8 +203,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                                 "Unable to find property setter: " + beanType.getSimpleName() + "." + setterName + "()");
                     }
                 }
-                map.put(name,
-                        LightMetaProperty.of(this, field, getMethod, setMethod, lookup, name, propertyTypes.size()));
+                map.put(name, LightMetaProperty.of(this, field, getMethod, setMethod, lookup, name, propertyTypes.size()));
             }
             propertyTypes.add(field.getType());
         }
@@ -311,11 +310,10 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     // finds constructor which matches types exactly
     private static <T extends Bean> Constructor<T> findConstructor(Class<T> beanType, List<Class<?>> propertyTypes) {
-        Class<?>[] types = propertyTypes.toArray(new Class<?>[propertyTypes.size()]);
+        Class<?>[] types = propertyTypes.toArray(new Class<?>[0]);
         try {
-            Constructor<T> con = beanType.getDeclaredConstructor(types);
-            return con;
-            
+            return beanType.getDeclaredConstructor(types);
+
         } catch (NoSuchMethodException ex) {
             // try a more lenient search
             // this handles cases where field is a concrete class and constructor is an interface
@@ -338,12 +336,12 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                 }
             }
             if (match == null) {
-                String msg = "Unable to find constructor: " + beanType.getSimpleName() + "(";
+                StringBuilder msg = new StringBuilder("Unable to find constructor: ").append(beanType.getSimpleName()).append("(");
                 for (Class<?> type : types) {
-                    msg += Objects.toString(type.getName(), "<null>");
+                    msg.append(Objects.toString(type.getName(), "<null>"));
                 }
-                msg += ")";
-                throw new UnsupportedOperationException(msg, ex);
+                msg.append(")");
+                throw new UnsupportedOperationException(msg.toString(), ex);
             }
             return match;
         }
@@ -359,7 +357,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             if (parameterTypes[i] == boolean.class) {
                 args[i] = false;
             } else if (parameterTypes[i] == int.class) {
-                args[i] = (int) 0;
+                args[i] = 0;
             } else if (parameterTypes[i] == long.class) {
                 args[i] = (long) 0;
             } else if (parameterTypes[i] == short.class) {

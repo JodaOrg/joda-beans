@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ public class BeanCodeGen {
             gen = createFromArgs(args);
         } catch (RuntimeException ex) {
             System.out.println(ex.getMessage());
-            System.out.println("");
+            System.out.println();
             System.out.println("Code generator");
             System.out.println("  Usage java org.joda.beans.gen.BeanCodeGen [file]");
             System.out.println("  Options");
@@ -191,7 +192,7 @@ public class BeanCodeGen {
             }
             if (recurse) {
                 for (File child : files) {
-                    if (child.isDirectory() && child.getName().startsWith(".") == false) {
+                    if (child.isDirectory() && !child.getName().startsWith(".")) {
                         result.addAll(findFiles(child, recurse));
                     }
                 }
@@ -364,16 +365,13 @@ public class BeanCodeGen {
                 return true;
             }
         }
-        if (contentIndex < content.size() || originalIndex < original.size()) {
-            return true;
-        }
-        return false;
+      return contentIndex < content.size() || originalIndex < original.size();
     }
 
     //-----------------------------------------------------------------------
     private List<String> readFile(File file) throws Exception {
         List<String> content = new ArrayList<>(100);
-        try (BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+        try (BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             String line;
             while ((line = is.readLine()) != null) {
                 content.add(line);
@@ -383,7 +381,7 @@ public class BeanCodeGen {
     }
 
     private void writeFile(File file, List<String> content) throws Exception {
-        try (BufferedWriter os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) {
+        try (BufferedWriter os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             for (String line : content) {
                 os.write(line);
                 os.write(config.getEol());

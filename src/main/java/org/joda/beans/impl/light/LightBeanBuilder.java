@@ -69,7 +69,6 @@ class LightBeanBuilder<B extends Bean>
         return this;
     }
 
-    @SuppressWarnings("deprecation")
     private int index(MetaProperty<?> metaProperty) {
         if (metaProperty instanceof LightMetaProperty) {
             int index = ((LightMetaProperty<?>) metaProperty).getConstructorIndex();

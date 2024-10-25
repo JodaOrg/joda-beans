@@ -84,7 +84,7 @@ public class MapBean extends HashMap<String, Object> implements DynamicBean {
 
     @Override
     public void propertyDefine(String propertyName, Class<?> propertyType) {
-        if (containsKey(propertyName) == false) {
+        if (!containsKey(propertyName)) {
             put(propertyName, null);
         }
     }

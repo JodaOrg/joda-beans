@@ -15,8 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import static java.util.stream.Collectors.toList;
-
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -149,7 +147,7 @@ class BeanGen {
         fixImports();
         if (insertRegion != null) {
             data.ensureImport(BeanDefinition.class);
-            if (properties.size() > 0) {
+            if (!properties.isEmpty()) {
                 data.ensureImport(PropertyDefinition.class);
             }
             removeOld();
@@ -202,13 +200,13 @@ class BeanGen {
     }
 
     private void resolveImports() {
-        if (data.getNewImports().size() > 0) {
+        if (!data.getNewImports().isEmpty()) {
             int pos = data.getImportInsertLocation() + 1;
             for (String imp : data.getNewImports()) {
                 content.add(pos++, "import " + imp + ";");
             }
         }
-        if (removedImports.size() > 0) {
+        if (!removedImports.isEmpty()) {
             for (ListIterator<String> it = content.listIterator(); it.hasNext(); ) {
                 String line = it.next().trim();
                 if (line.startsWith("import ")) {
@@ -233,14 +231,14 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateSeparator() {
-        if (insertRegion.size() > 0 && insertRegion.get(insertRegion.size() - 1).equals(LINE_SEPARATOR)) {
+        if (!insertRegion.isEmpty() && insertRegion.get(insertRegion.size() - 1).equals(LINE_SEPARATOR)) {
             return;
         }
         addLine(0, LINE_SEPARATOR);
     }
 
     private void generateIndentedSeparator() {
-        if (insertRegion.size() > 0 && insertRegion.get(insertRegion.size() - 1).equals(LINE_SEPARATOR_INDENTED)) {
+        if (!insertRegion.isEmpty() && insertRegion.get(insertRegion.size() - 1).equals(LINE_SEPARATOR_INDENTED)) {
             return;
         }
         addLine(0, LINE_SEPARATOR_INDENTED);
@@ -257,7 +255,7 @@ class BeanGen {
             List<PropertyGen> nonDerived = nonDerivedProperties();
             addLine(1, "/**");
             addLine(1, " * Obtains an instance.");
-            if (nonDerived.size() > 0) {
+            if (!nonDerived.isEmpty()) {
                 if (data.isTypeGeneric()) {
                     for (int j = 0; j < data.getTypeGenericCount(); j++) {
                         addLine(1, " * @param " + data.getTypeGenericName(j, true) + "  the type");
@@ -382,7 +380,7 @@ class BeanGen {
             boolean generateAnnotation = data.isConstructorPropertiesAnnotation();
             boolean generateJavadoc = !"private ".equals(scope);
             List<PropertyGen> nonDerived = nonDerivedProperties();
-            if (nonDerived.size() == 0) {
+            if (nonDerived.isEmpty()) {
                 if (generateJavadoc) {
                     addLine(1, "/**");
                     addLine(1, " * Creates an instance.");
@@ -471,9 +469,7 @@ class BeanGen {
             addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
             addLine(1, " */");
             boolean genericProps = data.getProperties().stream()
-                    .filter(p -> p.isGeneric())
-                    .findAny()
-                    .isPresent();
+                    .anyMatch(p -> p.isGeneric());
             boolean unchecked = data.isBeanStyleMinimal() && data.isMutable() && genericProps;
             unchecked |= data.isBeanStyleMinimal() && data.isTypeGeneric() && !data.isSkipBuilderGeneration();
             boolean rawtypes = data.isBeanStyleMinimal() && data.isTypeGeneric();
@@ -492,13 +488,13 @@ class BeanGen {
                 addLine(1, "private static final TypedMetaBean<" + data.getTypeNoExtends() + "> META_BEAN =");
             }
             List<PropertyGen> nonDerived = nonDerivedProperties();
-            List<PropertyGen> aliases = nonDerived.stream().filter(p -> p.getData().getAlias() != null).collect(toList());
+            List<PropertyGen> aliases = nonDerived.stream().filter(p -> p.getData().getAlias() != null).toList();
             boolean hasAliases = aliases.isEmpty();
             if (data.isBeanStyleLight()) {
                 // light
                 data.ensureImport(LightMetaBean.class);
                 data.ensureImport(MethodHandles.class);
-                boolean specialInit = nonDerived.stream().filter(p -> p.isSpecialInit()).findAny().isPresent();
+                boolean specialInit = nonDerived.stream().anyMatch(p -> p.isSpecialInit());
                 if (nonDerived.isEmpty()) {
                     addLine(3, "LightMetaBean.of(" + data.getTypeRaw() + ".class, MethodHandles.lookup());");
                 } else {
@@ -765,12 +761,12 @@ class BeanGen {
         if (data.isBuilderGenerated()) {
             if (data.isConstructable()) {
                 List<PropertyGen> nonDerived = nonDerivedProperties();
-                if (nonDerived.size() > 0 || !data.isTypeFinal()) {
+                if (!nonDerived.isEmpty() || !data.isTypeFinal()) {
                     addLine(1, "/**");
                     addLine(1, " * Returns a builder that allows this bean to be mutated.");
                     addLine(1, " * @return the mutable builder, not null");
                     addLine(1, " */");
-                    if (data.isRootClass() == false) {
+                    if (!data.isRootClass()) {
                         addLine(1, "@Override");
                     }
                     addLine(1, data.getEffectiveBuilderScope() + data.getEffectiveMinimalBeanBuilderName() + data.getTypeGenericName(true) + " toBuilder() {");
@@ -783,7 +779,7 @@ class BeanGen {
                 addLine(1, " * Returns a builder that allows this bean to be mutated.");
                 addLine(1, " * @return the mutable builder, not null");
                 addLine(1, " */");
-                if (data.isRootClass() == false) {
+                if (!data.isRootClass()) {
                     addLine(1, "@Override");
                 }
                 addLine(1, "public abstract " + data.getEffectiveMinimalBeanBuilderName() + data.getTypeGenericName(true) + " toBuilder();");
@@ -795,7 +791,7 @@ class BeanGen {
     private void generateClone() {
         if (data.isSkipCloneGeneration() ||
                 data.isManualClone() ||
-                (data.isRootClass() == false && data.isConstructable() == false)) {
+                (!data.isRootClass() && !data.isConstructable())) {
             return;
         }
         addLine(1, "@Override");
@@ -823,7 +819,7 @@ class BeanGen {
         addLine(2, "}");
         addLine(2, "if (obj != null && obj.getClass() == this.getClass()) {");
         List<PropertyGen> nonDerived = nonDerivedEqualsHashCodeProperties();
-        if (nonDerived.size() == 0) {
+        if (nonDerived.isEmpty()) {
             if (data.isSubClass()) {
                 addLine(3, "return super.equals(obj);");
             } else {
@@ -921,7 +917,7 @@ class BeanGen {
             addLine(1, "public String toString() {");
             addLine(2, "StringBuilder buf = new StringBuilder(" + (props.size() * 32 + 32) + ");");
             addLine(2, "buf.append(\"" + data.getTypeRaw() + "{\");");
-            if (props.size() > 0) {
+            if (!props.isEmpty()) {
                 data.ensureImport(JodaBeanUtils.class);
                 for (int i = 0; i < props.size(); i++) {
                     PropertyGen prop = props.get(i);
@@ -1058,9 +1054,9 @@ class BeanGen {
         addLine(2, " */");
         addLine(2, "private final Map<String, MetaProperty<?>> " + config.getPrefix() + "metaPropertyMap$ = new DirectMetaPropertyMap(");
         if (data.isSubClass()) {
-            addLine(4, "this, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.size() == 0 ? ");" : ","));
+            addLine(4, "this, (DirectMetaPropertyMap) super.metaPropertyMap()" + (properties.isEmpty() ? ");" : ","));
         } else {
-            addLine(4, "this, null" + (properties.size() == 0 ? ");" : ","));
+            addLine(4, "this, null" + (properties.isEmpty() ? ");" : ","));
         }
         for (int i = 0; i < properties.size(); i++) {
             addLine(4, "\"" + properties.get(i).getData().getPropertyName() + "\"" + joinComma(i, properties, ");"));
@@ -1077,7 +1073,7 @@ class BeanGen {
             addBlankLine();
         }
         addLine(2, "@Override");
-        if (data.isImmutable() && data.isEffectiveBuilderScopeVisible() == false) {
+        if (data.isImmutable() && !data.isEffectiveBuilderScopeVisible()) {
             data.ensureImport(BeanBuilder.class);
             addLine(2, "public BeanBuilder<? extends " + data.getTypeNoExtends() + "> builder() {");
             if (data.isConstructable()) {
@@ -1122,7 +1118,7 @@ class BeanGen {
     }
 
     private void generateMetaPropertyGet() {
-        if (properties.size() > 0) {
+        if (!properties.isEmpty()) {
             data.ensureImport(MetaProperty.class);
             addLine(2, "@Override");
             addLine(2, "protected MetaProperty<?> metaPropertyGet(String propertyName) {");
@@ -1156,7 +1152,7 @@ class BeanGen {
 
     //-----------------------------------------------------------------------
     private void generateMetaGetPropertyValue() {
-        if (properties.size() == 0) {
+        if (properties.isEmpty()) {
             return;
         }
         data.ensureImport(Bean.class);
@@ -1173,7 +1169,7 @@ class BeanGen {
     }
 
     private void generateMetaSetPropertyValue() {
-        if (properties.size() == 0) {
+        if (properties.isEmpty()) {
             return;
         }
         data.ensureImport(Bean.class);
@@ -1193,7 +1189,7 @@ class BeanGen {
         boolean generics = false;
         for (PropertyData prop : data.getProperties()) {
             generics |= (prop.getStyle().isWritable() &&
-                    ((prop.isGeneric() && prop.isGenericWildcardParamType() == false) || data.isTypeGeneric()));
+                    ((prop.isGeneric() && !prop.isGenericWildcardParamType()) || data.isTypeGeneric()));
         }
         if (generics) {
             addLine(2, "@SuppressWarnings(\"unchecked\")");
@@ -1211,7 +1207,7 @@ class BeanGen {
     }
 
     private void generateMetaValidate() {
-        if (data.isValidated() == false || data.isImmutable()) {
+        if (!data.isValidated() || data.isImmutable()) {
             return;
         }
         data.ensureImport(Bean.class);
@@ -1267,7 +1263,7 @@ class BeanGen {
             addLine(1, data.getEffectiveBuilderScope() + "abstract static " + finalType +
                     "class Builder" + data.getTypeGeneric(true) + " extends " + superBuilder + " {");
         }
-        if (nonDerived.size() > 0) {
+        if (!nonDerived.isEmpty()) {
             addBlankLine();
             generateBuilderProperties();
         }
@@ -1304,7 +1300,7 @@ class BeanGen {
     private void generateBuilderConstructorCopy() {
         if (data.isBuilderGenerated()) {
             List<PropertyGen> nonDerived = nonDerivedProperties();
-            if (nonDerived.size() > 0 || !data.isTypeFinal()) {
+            if (!nonDerived.isEmpty() || !data.isTypeFinal()) {
                 addLine(2, "/**");
                 addLine(2, " * Restricted copy constructor.");
                 addLine(2, " * @param beanToCopy  the bean to copy from, not null");
@@ -1332,7 +1328,7 @@ class BeanGen {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         addLine(2, "@Override");
         addLine(2, "public Object get(String propertyName) {");
-        if (nonDerived.size() > 0) {
+        if (!nonDerived.isEmpty()) {
             addLine(3, "switch (propertyName.hashCode()) {");
             for (PropertyGen prop : nonDerived) {
                 addLines(prop.generateBuilderFieldGet());
@@ -1360,15 +1356,13 @@ class BeanGen {
     private void generateBuilderSet() {
         List<PropertyGen> nonDerived = nonDerivedProperties();
         boolean generics = data.getProperties().stream()
-                .filter(p -> p.isGeneric() && p.isGenericWildcardParamType() == false)
-                .findAny()
-                .isPresent();
+                .anyMatch(p -> p.isGeneric() && !p.isGenericWildcardParamType());
         if (generics) {
             addLine(2, "@SuppressWarnings(\"unchecked\")");
         }
         addLine(2, "@Override");
         addLine(2, "public Builder" + data.getTypeGenericName(true) + " set(String propertyName, Object newValue) {");
-        if (nonDerived.size() > 0) {
+        if (!nonDerived.isEmpty()) {
             addLine(3, "switch (propertyName.hashCode()) {");
             for (PropertyGen prop : nonDerived) {
                 addLines(prop.generateBuilderFieldSet());
@@ -1415,7 +1409,7 @@ class BeanGen {
             addLine(3, data.getImmutablePreBuild() + "(this);");
         }
         if (data.getConstructorStyle() == CONSTRUCTOR_BY_ARGS) {
-            if (nonDerived.size() == 0) {
+            if (nonDerived.isEmpty()) {
                 addLine(3, "return new " + data.getTypeWithDiamond() + "();");
             } else {
                 addLine(3, "return new " + data.getTypeWithDiamond() + "(");
@@ -1443,7 +1437,7 @@ class BeanGen {
         if (data.isImmutable() && data.isTypeFinal()) {
             addLine(2, "@Override");
             addLine(2, "public String toString() {");
-            if (nonDerived.size() == 0) {
+            if (nonDerived.isEmpty()) {
                 addLine(3, "return \"" + data.getEffectiveBeanBuilderName() + "{}\";");
             } else {
                 addLine(3, "StringBuilder buf = new StringBuilder(" + (nonDerived.size() * 32 + 32) + ");");
@@ -1545,7 +1539,7 @@ class BeanGen {
     private List<PropertyGen> nonDerivedProperties() {
         List<PropertyGen> nonDerived = new ArrayList<>();
         for (PropertyGen prop : properties) {
-            if (prop.getData().isDerived() == false) {
+            if (!prop.getData().isDerived()) {
                 nonDerived.add(prop);
             }
         }

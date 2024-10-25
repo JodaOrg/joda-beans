@@ -17,7 +17,6 @@ package org.joda.beans.ser.bin;
 
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +88,7 @@ final class BeanReferences {
         List<Map.Entry<Object, Integer>> refEntries = objects.entrySet().stream()
                 .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
                 .filter(entry -> entry.getValue() > 1)
-                .collect(toList());
+                .toList();
         for (Map.Entry<Object, Integer> entry : refEntries) {
             Object value = entry.getKey();
             Class<?> realType = value.getClass();
@@ -112,7 +111,7 @@ final class BeanReferences {
         this.classInfoList.addAll(classSerializationCount.entrySet().stream()
                 .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
                 .map(entry -> classes.get(entry.getKey()))
-                .collect(toList()));
+                .toList());
 
         // adjust the position in the ClassInfo instance
         for (int position = 0; position < classInfoList.size(); position++) {
@@ -289,7 +288,7 @@ final class BeanReferences {
 
     // CSOFF
     //-----------------------------------------------------------------------
-    // The info needed serialize instances of a class with a reference to the initially serialized class definition
+    // The info needed to serialize instances of a class with a reference to the initially serialized class definition
     static final class ClassInfo {
 
         // The class itself - not necessary for serialization but here for easier inspection

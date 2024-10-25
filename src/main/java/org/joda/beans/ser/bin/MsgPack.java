@@ -15,8 +15,8 @@
  */
 package org.joda.beans.ser.bin;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Constants used in MsgPack binary serialization.
@@ -28,8 +28,7 @@ abstract class MsgPack {
     /**
      * UTF-8 encoding.
      */
-    static final Charset UTF_8 = Charset.forName("UTF-8");
-
+    static final Charset UTF_8 = StandardCharsets.UTF_8;
     /**
      * Maximum fixed int.
      */
@@ -219,19 +218,19 @@ abstract class MsgPack {
         return String.format("%02X", (byte) b);
     }
 
-    static boolean isMap(int typeByte) throws IOException {
+    static boolean isMap(int typeByte) {
         return (typeByte >= MIN_FIX_MAP && typeByte <= MAX_FIX_MAP) || typeByte == MAP_16 || typeByte == MAP_32;
     }
 
-    static boolean isArray(int typeByte) throws IOException {
+    static boolean isArray(int typeByte) {
         return (typeByte >= MIN_FIX_ARRAY && typeByte <= MAX_FIX_ARRAY) || typeByte == ARRAY_16 || typeByte == ARRAY_32;
     }
 
-    static boolean isString(int typeByte) throws IOException {
+    static boolean isString(int typeByte) {
         return (typeByte >= MIN_FIX_STR && typeByte <= MAX_FIX_STR) || typeByte == STR_8 || typeByte == STR_16 || typeByte == STR_32;
     }
 
-    static boolean isIntegral(int typeByte) throws IOException {
+    static boolean isIntegral(int typeByte) {
         return (typeByte >= MIN_FIX_INT && typeByte <= MAX_FIX_INT) ||
                 typeByte == UINT_8 || typeByte == UINT_16 || typeByte == UINT_32 || typeByte == UINT_64 ||
                 typeByte == SINT_8 || typeByte == SINT_16 || typeByte == SINT_32 || typeByte == SINT_64;

@@ -84,13 +84,13 @@ public class JodaBeanSimpleJsonReader extends AbstractJsonReader {
         if (declaredType.isArray()) {
             return SerIteratorFactory.array(declaredType.getComponentType());
         } else {
-            return SerIteratorFactory.list(Object.class, Collections.<Class<?>>emptyList());
+            return SerIteratorFactory.list(Object.class, Collections.emptyList());
         }
     }
 
     @Override
     SerIterable parseUnknownObject(Class<?> declaredType) {
-        return SerIteratorFactory.map(String.class, Object.class, Collections.<Class<?>>emptyList());
+        return SerIteratorFactory.map(String.class, Object.class, Collections.emptyList());
     }
 
 }

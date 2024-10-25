@@ -143,7 +143,7 @@ abstract class SetterGen {
             for (String line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());
                 line = line.replace("$value", prop.getPropertyName());
-                if (split.length == 1 && line.endsWith(";") == false) {
+                if (split.length == 1 && !line.endsWith(";")) {
                     line += ";";
                 }
                 list.add(indent + "\t" + line);

@@ -93,7 +93,7 @@ public class JodaBeanSimpleMapReader {
     }
 
     // parse a bean, event after object start passed in
-    private Object parseBean(Map<String, Object> input, Class<?> beanType) throws Exception {
+    private Object parseBean(Map<String, Object> input, Class<?> beanType) {
         String propName = "";
         try {
             SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
@@ -147,11 +147,11 @@ public class JodaBeanSimpleMapReader {
                         if (declaredType.isArray()) {
                             childIterable = SerIteratorFactory.array(declaredType.getComponentType());
                         } else {
-                            childIterable = SerIteratorFactory.list(Object.class, Collections.<Class<?>>emptyList());
+                            childIterable = SerIteratorFactory.list(Object.class, Collections.emptyList());
                         }
                     } else {
                         childIterable = SerIteratorFactory.map(
-                                String.class, Object.class, Collections.<Class<?>>emptyList());
+                                String.class, Object.class, Collections.emptyList());
                     }
                 }
                 return parseIterable(input, childIterable);
@@ -228,7 +228,7 @@ public class JodaBeanSimpleMapReader {
         iterable.dimensions(new int[] {rows, columns});
         for (Object inputVal : inputList.subList(2, inputList.size())) {
             List<?> inputData = (List<?>) inputVal;
-            if (inputData.size() != 2) {
+            if (inputData.size() != 3) {
                 throw new IllegalArgumentException("Expected grid iterable to have entries of size 3");
             }
             Integer row = (Integer) inputData.get(0);
@@ -262,7 +262,7 @@ public class JodaBeanSimpleMapReader {
         return iterable.build();
     }
 
-    private Object parseSimple(Object input, Class<?> type) throws Exception {
+    private Object parseSimple(Object input, Class<?> type) {
         if (input == null) {
             if (type == double.class || type == Double.class) {
                 return Double.NaN;  // leniently accept null for NaN
