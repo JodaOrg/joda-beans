@@ -62,7 +62,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
+    public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass) {
         Class<?> declaredType = prop.propertyType();
         if (value instanceof BiMap) {
             Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
@@ -101,7 +101,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterator createChild(final Object value, final SerIterator parent) {
+    public SerIterator createChild(Object value, SerIterator parent) {
         Class<?> declaredType = parent.valueType();
         List<Class<?>> childGenericTypes = parent.valueTypeTypes();
         if (value instanceof BiMap) {
@@ -112,7 +112,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         }
         if (value instanceof Multimap) {
             if (childGenericTypes.size() == 2) {
-                return multimap((Multimap<?, ?>) value, declaredType, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
+                return multimap((Multimap<?, ?>) value, declaredType, childGenericTypes.get(0), childGenericTypes.get(1),
+                        EMPTY_VALUE_TYPES);
             }
             return multimap((Multimap<?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
@@ -143,7 +144,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings, final Map<String, Class<?>> knownTypes) {
+    public SerIterable createIterable(String metaTypeDescription, JodaBeanSer settings, Map<String, Class<?>> knownTypes) {
         if (metaTypeDescription.equals("BiMap")) {
             return biMap(Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
@@ -173,7 +174,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterable createIterable(final MetaProperty<?> prop, Class<?> beanClass) {
+    public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass) {
         if (BiMap.class.isAssignableFrom(prop.propertyType())) {
             Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
             Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
@@ -253,8 +254,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable biMap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final BiMap<Object, Object> map = HashBiMap.create();
+    public static SerIterable biMap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        BiMap<Object, Object> map = HashBiMap.create();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
@@ -265,8 +266,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable multiset(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Multiset<Object> coll = HashMultiset.create();
+    public static SerIterable multiset(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Multiset<Object> coll = HashMultiset.create();
         return multiset(valueType, valueTypeTypes, coll);
     }
 
@@ -277,19 +278,20 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static final SerIterable sortedMultiset(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static SerIterable sortedMultiset(Class<?> valueType, List<Class<?>> valueTypeTypes) {
         Ordering natural = Ordering.natural();
-        final SortedMultiset<Object> coll = TreeMultiset.create(natural);
+        SortedMultiset<Object> coll = TreeMultiset.create(natural);
         return multiset(valueType, valueTypeTypes, coll);
     }
 
-    private static SerIterable multiset(final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Multiset<Object> coll) {
+    private static SerIterable multiset(Class<?> valueType, List<Class<?>> valueTypeTypes, Multiset<Object> coll) {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return multiset(coll, Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
@@ -297,18 +299,22 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 coll.add(value, count);
             }
+
             @Override
             public Object build() {
                 return coll;
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.COUNTED;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -326,8 +332,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator multiset(
-            final Multiset<?> multiset, final Class<?> declaredType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator multiset(
+            Multiset<?> multiset, Class<?> declaredType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = multiset.entrySet().iterator();
             private Multiset.Entry current;
@@ -336,38 +342,47 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             public String metaTypeName() {
                 return "Multiset";
             }
+
             @Override
             public boolean metaTypeRequired() {
-                return Multiset.class.isAssignableFrom(declaredType) == false;
+                return !Multiset.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.COUNTED;
             }
+
             @Override
             public int size() {
                 return multiset.entrySet().size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = (Multiset.Entry) it.next();
             }
+
             @Override
             public int count() {
                 return current.getCount();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
             }
+
             @Override
             public Object value() {
                 return current.getElement();
@@ -384,13 +399,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable listMultimap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final ListMultimap<Object, Object> map = ArrayListMultimap.create();
+    public static SerIterable listMultimap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        ListMultimap<Object, Object> map = ArrayListMultimap.create();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return multimap(map, Object.class, keyType, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
@@ -401,22 +417,27 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 map.put(key, value);
             }
+
             @Override
             public Object build() {
                 return map;
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -432,13 +453,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable setMultimap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final SetMultimap<Object, Object> map = HashMultimap.create();
+    public static SerIterable setMultimap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        SetMultimap<Object, Object> map = HashMultimap.create();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return multimap(map, Object.class, keyType, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
@@ -449,22 +471,27 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 map.put(key, value);
             }
+
             @Override
             public Object build() {
                 return map;
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -483,9 +510,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator multimap(
-            final Multimap<?, ?> map, final Class<?> declaredType,
-            final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator multimap(
+            Multimap<?, ?> map, Class<?> declaredType, Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = map.entries().iterator();
             private Map.Entry current;
@@ -500,48 +526,58 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 return "Multimap";
             }
+
             @Override
             public boolean metaTypeRequired() {
                 if (map instanceof SetMultimap) {
-                    return SetMultimap.class.isAssignableFrom(declaredType) == false;
+                    return !SetMultimap.class.isAssignableFrom(declaredType);
                 }
                 if (map instanceof ListMultimap) {
-                    return ListMultimap.class.isAssignableFrom(declaredType) == false;
+                    return !ListMultimap.class.isAssignableFrom(declaredType);
                 }
-                return Multimap.class.isAssignableFrom(declaredType) == false;
+                return !Multimap.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public int size() {
                 return map.size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = (Map.Entry) it.next();
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Object key() {
                 return current.getKey();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
             }
+
             @Override
             public Object value() {
                 return current.getValue();
@@ -559,13 +595,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable table(final Class<?> rowType, final Class<?> colType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Table<Object, Object, Object> table = HashBasedTable.create();
+    public static SerIterable table(Class<?> rowType, Class<?> colType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Table<Object, Object, Object> table = HashBasedTable.create();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return table(table, Object.class, rowType, colType, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object row, Object column, Object value, int count) {
                 if (row == null) {
@@ -579,26 +616,32 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 table.put(row, column, value);
             }
+
             @Override
             public Object build() {
                 return table;
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.TABLE;
             }
+
             @Override
             public Class<?> keyType() {
                 return rowType;
             }
+
             @Override
             public Class<?> columnType() {
                 return colType;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -618,9 +661,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator table(
-            final Table<?, ?, ?> table, final Class<?> declaredType,
-            final Class<?> rowType, final Class<?> colType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator table(
+            Table<?, ?, ?> table,
+            Class<?> declaredType,
+            Class<?> rowType,
+            Class<?> colType,
+            Class<?> valueType,
+            List<Class<?>> valueTypeTypes) {
+
         return new SerIterator() {
             private final Iterator it = table.cellSet().iterator();
             private Cell current;
@@ -629,50 +677,62 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             public String metaTypeName() {
                 return "Table";
             }
+
             @Override
             public boolean metaTypeRequired() {
-                return Table.class.isAssignableFrom(declaredType) == false;
+                return !Table.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.TABLE;
             }
+
             @Override
             public int size() {
                 return table.size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = (Cell) it.next();
             }
+
             @Override
             public Class<?> keyType() {
                 return rowType;
             }
+
             @Override
             public Object key() {
                 return current.getRowKey();
             }
+
             @Override
             public Class<?> columnType() {
                 return colType;
             }
+
             @Override
             public Object column() {
                 return current.getColumnKey();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
             }
+
             @Override
             public Object value() {
                 return current.getValue();
@@ -691,9 +751,8 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator biMap(
-            final BiMap<?, ?> map, final Class<?> declaredType,
-            final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator biMap(
+            BiMap<?, ?> map, Class<?> declaredType, Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = map.entrySet().iterator();
             private Entry current;
@@ -702,6 +761,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
             public String metaTypeName() {
                 return "BiMap";
             }
+
             @Override
             public boolean metaTypeRequired() {
                 // hack around Guava annoyance by assuming that size 0 and 1 ImmutableBiMap
@@ -709,40 +769,49 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 if ((declaredType == Map.class || declaredType == ImmutableMap.class) && map.size() < 2) {
                     return false;
                 }
-                return BiMap.class.isAssignableFrom(declaredType) == false;
+                return !BiMap.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public int size() {
                 return map.size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = (Entry) it.next();
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Object key() {
                 return current.getKey();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
             }
+
             @Override
             public Object value() {
                 return current.getValue();
@@ -757,14 +826,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable immutableList(
-            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final List<Object> coll = new ArrayList<>();
+    public static SerIterable immutableList(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        List<Object> coll = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return collection(coll, Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
@@ -774,14 +843,17 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                     coll.add(value);
                 }
             }
+
             @Override
             public Object build() {
                 return ImmutableList.copyOf(coll);
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -796,14 +868,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable immutableSortedSet(
-            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Set<Object> coll = new LinkedHashSet<>();
+    public static SerIterable immutableSortedSet(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Set<Object> coll = new LinkedHashSet<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return collection(coll, Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
@@ -813,14 +885,17 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                     coll.add(value);
                 }
             }
+
             @Override
             public Object build() {
                 return ImmutableSortedSet.copyOf(coll);
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -835,14 +910,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable immutableSet(
-            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Set<Object> coll = new LinkedHashSet<>();
+    public static SerIterable immutableSet(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Set<Object> coll = new LinkedHashSet<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return collection(coll, Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
@@ -852,14 +927,17 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                     coll.add(value);
                 }
             }
+
             @Override
             public Object build() {
                 return ImmutableSet.copyOf(coll);
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -867,15 +945,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         };
     }
 
-    static SerIterable immutableMap(
-            final Class<?> keyType, final Class<?> valueType,
-            final List<Class<?>> valueTypeTypes) {
-        final Map<Object, Object> map = new LinkedHashMap<>();
+    static SerIterable immutableMap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Map<Object, Object> map = new LinkedHashMap<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return map(map, Object.class, keyType, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
@@ -886,22 +963,27 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 map.put(key, value);
             }
+
             @Override
             public Object build() {
                 return ImmutableMap.copyOf(map);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -909,15 +991,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
         };
     }
 
-    static SerIterable immutableSortedMap(
-            final Class<?> keyType, final Class<?> valueType,
-            final List<Class<?>> valueTypeTypes) {
-        final Map<Object, Object> map = new LinkedHashMap<>();
+    static SerIterable immutableSortedMap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Map<Object, Object> map = new LinkedHashMap<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return map(map, Object.class, keyType, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key == null) {
@@ -928,22 +1009,27 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 }
                 map.put(key, value);
             }
+
             @Override
             public Object build() {
                 return ImmutableSortedMap.copyOf(map);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;

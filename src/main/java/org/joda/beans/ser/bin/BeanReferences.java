@@ -289,7 +289,7 @@ final class BeanReferences {
 
     // CSOFF
     //-----------------------------------------------------------------------
-    // The info needed serialize instances of a class with a reference to the initially serialized class definition
+    // The info needed to serialize instances of a class with a reference to the initially serialized class definition
     static final class ClassInfo {
 
         // The class itself - not necessary for serialization but here for easier inspection

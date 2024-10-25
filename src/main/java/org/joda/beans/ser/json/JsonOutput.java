@@ -62,7 +62,7 @@ final class JsonOutput {
     /**
      * The comma state.
      */
-    private BitSet commaState = new BitSet(64);
+    private final BitSet commaState = new BitSet(64);
 
     /**
      * Creates an instance that outputs in compact format.
@@ -216,7 +216,7 @@ final class JsonOutput {
     void writeArrayItemStart() throws IOException {
         if (commaState.get(commaDepth)) {
             output.append(',');
-            if (newLine.length() > 0) {
+            if (!newLine.isEmpty()) {
                 output.append(' ');
             }
         } else {
@@ -265,7 +265,7 @@ final class JsonOutput {
         output.append(currentIndent);
         writeString(key);
         output.append(':');
-        if (newLine.length() > 0) {
+        if (!newLine.isEmpty()) {
             output.append(' ');
         }
     }

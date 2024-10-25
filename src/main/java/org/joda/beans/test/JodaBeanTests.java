@@ -15,6 +15,8 @@
  */
 package org.joda.beans.test;
 
+import static java.util.stream.Collectors.toList;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -45,7 +47,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -130,7 +131,7 @@ public final class JodaBeanTests {
         MetaBean metaBean = bean1.metaBean();
         List<MetaProperty<?>> buildableProps = metaBean.metaPropertyMap().values().stream()
                 .filter(mp -> mp.style().isBuildable())
-                .collect(Collectors.toList());
+                .collect(toList());
         Set<Bean> builtBeansSet = new HashSet<>();
         builtBeansSet.add(bean1);
         builtBeansSet.add(bean2);
@@ -178,8 +179,8 @@ public final class JodaBeanTests {
             assertEquals(metaBean.metaProperty(mp.name()), mp);
             // Ensure we don't use interned value
             assertEquals(metaBean.metaProperty(new String(mp.name())), mp);
-            assertEquals(metaPropMap.values().contains(mp), true);
-            assertEquals(metaPropMap.keySet().contains(mp.name()), true);
+            assertEquals(metaPropMap.containsValue(mp), true);
+            assertEquals(metaPropMap.containsKey(mp.name()), true);
             if (mp.style().isReadable()) {
                 ignoreThrows(() -> mp.get(bean));
             } else {
@@ -222,9 +223,6 @@ public final class JodaBeanTests {
         ignoreThrows(() -> metaBean.builder().set(fakeMetaProp, JodaBeanTests.TEST_COVERAGE_STRING));
         ignoreThrows(() -> metaBean.builder().set(JodaBeanTests.TEST_COVERAGE_PROPERTY, JodaBeanTests.TEST_COVERAGE_STRING));
         ignoreThrows(() -> bean.property(JodaBeanTests.TEST_COVERAGE_PROPERTY));
-    }
-
-    private static void assertNotNull(Map<String, MetaProperty<?>> metaPropMap) {
     }
 
     // cover parts of a bean that are not property-based
@@ -297,7 +295,7 @@ public final class JodaBeanTests {
         // this will normally trigger each of the possible branches in equals
         List<MetaProperty<?>> buildableProps = bean.metaBean().metaPropertyMap().values().stream()
                 .filter(mp -> mp.style().isBuildable())
-                .collect(Collectors.toList());
+                .collect(toList());
         for (int i = 0; i < buildableProps.size(); i++) {
             try {
                 BeanBuilder<? extends Bean> bld = bean.metaBean().builder();
@@ -370,7 +368,7 @@ public final class JodaBeanTests {
                     Modifier.isPublic(field.getModifiers()) &&
                     Modifier.isStatic(field.getModifiers()) &&
                     Modifier.isFinal(field.getModifiers()) &&
-                    field.isSynthetic() == false) {
+                    !field.isSynthetic()) {
                 ignoreThrows(() -> samples.add(field.get(null)));
             }
         }
@@ -385,8 +383,8 @@ public final class JodaBeanTests {
         map.put(Byte.TYPE, Arrays.asList((byte) 0, (byte) 1));
         map.put(Short.class, Arrays.asList((short) 0, (short) 1));
         map.put(Short.TYPE, Arrays.asList((short) 0, (short) 1));
-        map.put(Integer.class, Arrays.asList((int) 0, (int) 1));
-        map.put(Integer.TYPE, Arrays.asList((int) 0, (int) 1));
+        map.put(Integer.class, Arrays.asList(0, 1));
+        map.put(Integer.TYPE, Arrays.asList(0, 1));
         map.put(Long.class, Arrays.asList((long) 0, (long) 1));
         map.put(Long.TYPE, Arrays.asList((long) 0, (long) 1));
         map.put(Float.class, Arrays.asList((float) 0, (float) 1));
@@ -399,10 +397,8 @@ public final class JodaBeanTests {
         map.put(Boolean.TYPE, Arrays.asList(Boolean.TRUE, Boolean.FALSE));
         map.put(LocalDate.class, Arrays.asList(LocalDate.now(ZoneOffset.UTC), LocalDate.of(2012, 6, 30)));
         map.put(LocalTime.class, Arrays.asList(LocalTime.now(ZoneOffset.UTC), LocalTime.of(11, 30)));
-        map.put(LocalDateTime.class,
-                Arrays.asList(LocalDateTime.now(ZoneOffset.UTC), LocalDateTime.of(2012, 6, 30, 11, 30)));
-        map.put(OffsetTime.class, Arrays.asList(
-                OffsetTime.now(ZoneOffset.UTC), OffsetTime.of(11, 30, 0, 0, ZoneOffset.ofHours(1))));
+        map.put(LocalDateTime.class, Arrays.asList(LocalDateTime.now(ZoneOffset.UTC), LocalDateTime.of(2012, 6, 30, 11, 30)));
+        map.put(OffsetTime.class, Arrays.asList(OffsetTime.now(ZoneOffset.UTC), OffsetTime.of(11, 30, 0, 0, ZoneOffset.ofHours(1))));
         map.put(OffsetDateTime.class, Arrays.asList(
                 OffsetDateTime.now(ZoneOffset.UTC),
                 OffsetDateTime.of(2012, 6, 30, 11, 30, 0, 0, ZoneOffset.ofHours(1))));

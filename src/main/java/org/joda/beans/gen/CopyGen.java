@@ -24,10 +24,6 @@ import java.util.List;
  */
 abstract class CopyGen {
 
-    static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
-    static final CopyGen CLONE = new PatternCopyGen("$value.clone()");
-    static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()");
-
     /**
      * Generates the copy to immutable lines.
      * 
@@ -50,6 +46,10 @@ abstract class CopyGen {
 
     //-----------------------------------------------------------------------
     static class PatternCopyGen extends CopyGen {
+        static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
+        static final CopyGen CLONE = new PatternCopyGen("$value.clone()");
+        static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()");
+
         private final String immutablePattern;
         private final String mutablePattern;
         PatternCopyGen(String pattern) {
@@ -66,14 +66,14 @@ abstract class CopyGen {
             final String[] split = immutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {
-                    if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
+                    if (!line.startsWith("$field = ") && !line.endsWith(";")) {
                         if (prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
                             line = "$field = ($value != null ? " + line + " : null);";
                         }
                     }
-                    if (line.startsWith("$field = ") == false) {
+                    if (!line.startsWith("$field = ")) {
                         line = "$field = " + line;
                     }
                 }
@@ -92,7 +92,7 @@ abstract class CopyGen {
             final String[] split = mutablePattern.split("\n");
             for (String line : split) {
                 if (split.length == 1) {
-                    if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
+                    if (!line.startsWith("$field = ") && !line.endsWith(";")) {
                         if (prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
@@ -103,7 +103,7 @@ abstract class CopyGen {
                             }
                         }
                     }
-                    if (line.startsWith("$field = ") == false) {
+                    if (!line.startsWith("$field = ")) {
                         line = "$field = " + line;
                     }
                 }

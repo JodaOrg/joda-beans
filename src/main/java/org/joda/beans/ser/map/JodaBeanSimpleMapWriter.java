@@ -87,7 +87,7 @@ public class JodaBeanSimpleMapWriter {
             if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
                 Object value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
-                    Object outputValue = null;
+                    Object outputValue;
                     Class<?> propType = SerOptional.extractType(prop, bean.getClass());
                     if (value instanceof Bean) {
                         if (settings.getConverter().isConvertible(value.getClass())) {

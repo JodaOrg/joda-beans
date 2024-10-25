@@ -94,7 +94,7 @@ public final class BeanAssert {
         if (actual == null) {
             throw new AssertionError(baseMsg + ": Actual bean must not be null");
         }
-        if (expected.equals(actual) == false) {
+        if (!expected.equals(actual)) {
             String comparisonMsg = buildMessage(baseMsg, 10, expected, actual, tolerance);
             if (comparisonMsg.isEmpty()) {
                 return; // no errors, just double/float within tolerance
@@ -161,7 +161,7 @@ public final class BeanAssert {
         if (actual == null) {
             throw new AssertionError(baseMsg + ": Actual bean must not be null");
         }
-        if (expected.equals(actual) == false) {
+        if (!expected.equals(actual)) {
             String comparisonMsg = buildMessage(baseMsg, Integer.MAX_VALUE, expected, actual, tolerance);
             if (comparisonMsg.isEmpty()) {
                 return; // no errors, just double/float within tolerance
@@ -184,7 +184,7 @@ public final class BeanAssert {
     private static String buildMessage(String baseMsg, int maxErrors, Bean expected, Bean actual, double tolerance) {
         List<String> diffs = new ArrayList<>();
         buildMessage(diffs, "", expected, actual, tolerance);
-        if (diffs.size() == 0) {
+        if (diffs.isEmpty()) {
             return "";
         }
         StringBuilder buf = new StringBuilder();
@@ -198,7 +198,7 @@ public final class BeanAssert {
             buf.append('\n').append(diff);
         }
         if (size > maxErrors) {
-            buf.append("\n...and " + (size - 10) + " more differences");
+            buf.append("\n...and ").append(size - 10).append(" more differences");
         }
         return buf.toString();
     }
@@ -235,7 +235,7 @@ public final class BeanAssert {
                 diffs.add(prefix + ": Map size differs, expected " + expectedMap.size() + " but was " + actualMap.size());
                 return;
             }
-            if (expectedMap.keySet().equals(actualMap.keySet()) == false) {
+            if (!expectedMap.keySet().equals(actualMap.keySet())) {
                 diffs.add(prefix + ": Map keyset differs, expected " + buildSummary(expectedMap.keySet(), false) + " but was " + buildSummary(actualMap.keySet(), false));
                 return;
             }
@@ -254,7 +254,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof Double && actual instanceof Double && tolerance != 0d) {
+        if (expected instanceof Double && tolerance != 0d) {
             double e = (Double) expected;
             double a = (Double) actual;
             if (!JodaBeanUtils.equalWithTolerance(e, a, tolerance)) {
@@ -263,7 +263,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof double[] && actual instanceof double[] && tolerance != 0d) {
+        if (expected instanceof double[] && tolerance != 0d) {
             double[] e = (double[]) expected;
             double[] a = (double[]) actual;
             if (e.length != a.length) {
@@ -280,7 +280,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof Float && actual instanceof Float && tolerance != 0d) {
+        if (expected instanceof Float && tolerance != 0d) {
             float e = (Float) expected;
             float a = (Float) actual;
             if (!JodaBeanUtils.equalWithTolerance(e, a, tolerance)) {
@@ -289,7 +289,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof float[] && actual instanceof float[] && tolerance != 0d) {
+        if (expected instanceof float[] && tolerance != 0d) {
             float[] e = (float[]) expected;
             float[] a = (float[]) actual;
             if (e.length != a.length) {
@@ -306,11 +306,10 @@ public final class BeanAssert {
             }
             return;
         }
-        if (JodaBeanUtils.equal(expected, actual) == false) {
+        if (!JodaBeanUtils.equal(expected, actual)) {
             diffs.add(prefix + ": Content differs, expected " + buildSummary(expected, true) + " but was " + buildSummary(actual, false));
-            return;
         }
-        return;  // equal
+        // equal
     }
 
     /**

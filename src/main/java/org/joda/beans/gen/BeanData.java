@@ -82,7 +82,7 @@ class BeanData {
     /** The generic argument of the bean superclass. */
     private String superTypeGeneric;
     /** The list of properties, in the order they are declared. */
-    private List<PropertyData> properties = new ArrayList<>();
+    private final List<PropertyData> properties = new ArrayList<>();
     /** The serializable flag. */
     private boolean serializable;
     /** The manual serialization version id flag. */
@@ -123,7 +123,7 @@ class BeanData {
      * @param cls  the class, not null
      */
     public void ensureImport(Class<?> cls) {
-        if (currentImports.contains(cls.getName()) == false) {
+        if (!currentImports.contains(cls.getName())) {
             newImports.add(cls.getName());
         }
     }
@@ -209,7 +209,7 @@ class BeanData {
      * @return the flag
      */
     public boolean isBeanStyleGenerateProperties() {
-        return "full".equals(beanStyle) || ("smart".equals(beanStyle) && isImmutable() == false);
+        return "full".equals(beanStyle) || ("smart".equals(beanStyle) && !isImmutable());
     }
 
     /**
@@ -355,7 +355,7 @@ class BeanData {
      * @return true if generated
      */
     public boolean isSkipBuilderGeneration() {
-        return (isMutable() && isBuilderScopeVisible() == false) || isBeanStyleLight() || isBeanBuilderManual();
+        return (isMutable() && !isBuilderScopeVisible()) || isBeanStyleLight() || isBeanBuilderManual();
     }
 
     //-----------------------------------------------------------------------
@@ -405,7 +405,7 @@ class BeanData {
      * @return the factory name
      */
     public boolean isFactoryRequired() {
-        return factoryName.length() > 0;
+        return !factoryName.isEmpty();
     }
 
     /**
@@ -826,7 +826,7 @@ class BeanData {
 
     /**
      * Gets the scope of the type.
-     * @return true if manual
+     * @return the scope
      */
     public String getTypeScope() {
         return typeScope;
@@ -888,7 +888,7 @@ class BeanData {
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getTypeGeneric(boolean includeBrackets) {
-        if (isTypeGeneric() == false) {
+        if (!isTypeGeneric()) {
             return "";
         }
         String result = typeGenericName[0] + typeGenericExtends[0];
@@ -898,7 +898,7 @@ class BeanData {
                 result += ", " + typeGenericName[2] + typeGenericExtends[2];
             }
         }
-        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+        return includeBrackets && !result.isEmpty() ? '<' + result + '>' : result;
     }
 
     /**
@@ -907,7 +907,7 @@ class BeanData {
      * @return the generic type name, or a blank string if not generic, not null
      */
     public String getTypeGenericName(boolean includeBrackets) {
-        if (isTypeGeneric() == false) {
+        if (!isTypeGeneric()) {
             return "";
         }
         String result = typeGenericName[0];
@@ -917,7 +917,7 @@ class BeanData {
                 result += ", " + typeGenericName[2];
             }
         }
-        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+        return includeBrackets && !result.isEmpty() ? '<' + result + '>' : result;
     }
 
     /**
@@ -944,7 +944,7 @@ class BeanData {
      */
     public String getTypeGenericName(int typeParamIndex, boolean includeBrackets) {
         String result = typeGenericName[typeParamIndex];
-        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+        return includeBrackets && !result.isEmpty() ? '<' + result + '>' : result;
     }
 
     /**
@@ -1004,7 +1004,7 @@ class BeanData {
      * @return the wildcarded type, not null
      */
     public String getTypeWildcard() {
-        if (isTypeGeneric() == false) {
+        if (!isTypeGeneric()) {
             return typeRaw;
         }
         String result = "?";
@@ -1041,7 +1041,7 @@ class BeanData {
      * @return true if generified
      */
     public boolean isSuperTypeGeneric() {
-        return superTypeGeneric.length() > 0;
+        return !superTypeGeneric.isEmpty();
     }
 
     /**
@@ -1058,7 +1058,7 @@ class BeanData {
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getSuperTypeGeneric(boolean includeBrackets) {
-        return includeBrackets && superTypeGeneric.length() > 0 ? '<' + superTypeGeneric + '>' : superTypeGeneric;
+        return includeBrackets && !superTypeGeneric.isEmpty() ? '<' + superTypeGeneric + '>' : superTypeGeneric;
     }
 
     /**

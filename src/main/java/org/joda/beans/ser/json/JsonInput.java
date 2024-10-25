@@ -125,16 +125,16 @@ final class JsonInput {
     }
 
     // store peeked value for later use
-    void pushBack(char ch) throws IOException {
+    void pushBack(char ch) {
         cachedNext = ch;
     }
 
     // store peeked value for later use
-    void pushBackObjectKey(String objectKey) throws IOException {
+    void pushBackObjectKey(String objectKey) {
         cachedObjectKey = objectKey;
     }
 
-    JsonEvent ensureEvent(JsonEvent event, JsonEvent expected) throws IOException {
+    JsonEvent ensureEvent(JsonEvent event, JsonEvent expected) {
         if (event != expected) {
             throw new IllegalArgumentException("Invalid JSON data: Expected " + expected + " but found " + event);
         }
