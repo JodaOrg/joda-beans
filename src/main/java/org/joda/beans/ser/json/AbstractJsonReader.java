@@ -60,7 +60,7 @@ abstract class AbstractJsonReader {
     /**
      * The known types.
      */
-    private Map<String, Class<?>> knownTypes = new HashMap<>();
+    private final Map<String, Class<?>> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -88,7 +88,7 @@ abstract class AbstractJsonReader {
     }
 
     // parse a bean, event after object start passed in
-    private Object parseBean(JsonEvent event, Class<?> beanType) throws Exception {
+    private Object parseBean(JsonEvent event, Class<?> beanType) {
         String propName = "";
         try {
             SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
@@ -191,12 +191,12 @@ abstract class AbstractJsonReader {
         String typeStr = input.acceptString();
         Class<?> effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
         if (rootType) {
-            if (Bean.class.isAssignableFrom(effectiveType) == false) {
+            if (!Bean.class.isAssignableFrom(effectiveType)) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
             }
             basePackage = effectiveType.getPackage().getName() + ".";
         }
-        if (declaredType.isAssignableFrom(effectiveType) == false) {
+        if (!declaredType.isAssignableFrom(effectiveType)) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
                 declaredType.getName() + " and " + effectiveType.getName());
         }
@@ -210,13 +210,13 @@ abstract class AbstractJsonReader {
     private Object parseTypedSimple(Class<?> declaredType) throws Exception {
         String typeStr = input.acceptString();
         Class<?> effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
-        if (declaredType.isAssignableFrom(effectiveType) == false) {
+        if (!declaredType.isAssignableFrom(effectiveType)) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
                 declaredType.getName() + " and " + effectiveType.getName());
         }
         input.acceptEvent(JsonEvent.COMMA);
         String valueKey = input.acceptObjectKey(input.readEvent());
-        if (valueKey.equals(VALUE) == false) {
+        if (!valueKey.equals(VALUE)) {
             throw new IllegalArgumentException("Invalid JSON data: Expected 'value' key but found " + valueKey);
         }
         Object result = parseSimple(input.readEvent(), effectiveType);
@@ -229,7 +229,7 @@ abstract class AbstractJsonReader {
         SerIterable childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
         input.acceptEvent(JsonEvent.COMMA);
         String valueKey = input.acceptObjectKey(input.readEvent());
-        if (valueKey.equals(VALUE) == false) {
+        if (!valueKey.equals(VALUE)) {
             throw new IllegalArgumentException("Invalid JSON data: Expected 'value' key but found " + valueKey);
         }
         Object result = parseIterable(input.readEvent(), childIterable);

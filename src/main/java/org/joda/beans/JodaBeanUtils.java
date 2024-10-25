@@ -353,13 +353,13 @@ public final class JodaBeanUtils {
      */
     public static boolean propertiesEqual(Bean bean1, Bean bean2) {
         Set<String> names = bean1.propertyNames();
-        if (names.equals(bean2.propertyNames()) == false) {
+        if (!names.equals(bean2.propertyNames())) {
             return false;
         }
         for (String name : names) {
             Object value1 = bean1.property(name).get();
             Object value2 = bean2.property(name).get();
-            if (equal(value1, value2) == false) {
+            if (!equal(value1, value2)) {
                 return false;
             }
         }
@@ -405,7 +405,7 @@ public final class JodaBeanUtils {
             buf = new StringBuilder((names.size()) * 32);
         }
         buf.append('{');
-        if (names.size() > 0) {
+        if (!names.isEmpty()) {
             for (String name : names) {
                 Object value = bean.property(name).get();
                 buf.append(name).append('=').append(value).append(',').append(' ');
@@ -582,7 +582,7 @@ public final class JodaBeanUtils {
      * @throws IllegalArgumentException if the value is null or empty
      */
     public static void notEmpty(String value, String propertyName) {
-        if (value == null || value.length() == 0) {
+        if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException(notEmpty(propertyName));
         }
     }
@@ -858,7 +858,7 @@ public final class JodaBeanUtils {
             case 1: {
                 MetaProperty<?> ignored = properties[0];
                 for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
-                    if (ignored.equals(mp) == false && JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2)) == false) {
+                    if (!ignored.equals(mp) && !JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2))) {
                         return false;
                     }
                 }
@@ -867,8 +867,8 @@ public final class JodaBeanUtils {
             default:
                 Set<MetaProperty<?>> ignored = new HashSet<>(Arrays.asList(properties));
                 for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
-                    if (ignored.contains(mp) == false
-                            && JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2)) == false) {
+                    if (!ignored.contains(mp)
+                            && !JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2))) {
                         return false;
                     }
                 }
@@ -969,7 +969,7 @@ public final class JodaBeanUtils {
     }
 
     /**
-     * Obtains an descending comparator for the specified bean query.
+     * Obtains a descending comparator for the specified bean query.
      * <p>
      * The result of the query must be {@link Comparable}.
      * 

@@ -176,7 +176,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @Override
     @SuppressWarnings("unchecked")
     public P get(Bean bean) {
-        if (style().isReadable() == false) {
+        if (!style().isReadable()) {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
         try {
@@ -194,7 +194,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings("null")
     @Override
     public void set(Bean bean, Object value) {
-        if (style().isWritable() == false) {
+        if (!style().isWritable()) {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
         try {
@@ -203,7 +203,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             if (value == null && setMethod.getParameterTypes()[0].isPrimitive()) {
                 throw new NullPointerException("Property cannot be written: " + name() + ": Cannot store null in primitive");
             }
-            if (propertyType.isInstance(value) == false) {
+            if (!propertyType.isInstance(value)) {
                 throw new ClassCastException("Property cannot be written: " + name() + ": Invalid type: " + value.getClass().getName());
             }
             throw new UnsupportedOperationException("Property cannot be written: " + name(), ex);

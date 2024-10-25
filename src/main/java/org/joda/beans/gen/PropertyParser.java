@@ -172,8 +172,8 @@ class PropertyParser {
     private int parseCodeIndex(List<String> content) {
         for (int index = propertyIndex; index < content.size(); index++) {
             String line = content.get(index).trim();
-            if (line.startsWith("@") == false) {
-                if (line.length() == 0 ||
+            if (!line.startsWith("@")) {
+                if (line.isEmpty() ||
                         line.startsWith("//") ||
                         (index > propertyIndex && content.get(index - 1).endsWith(","))) {
                     continue;
@@ -363,7 +363,7 @@ class PropertyParser {
         }
         if (line.contains(" = ")) {
             line = line.substring(line.indexOf(" = ") + 3).trim();
-            if (line.endsWith(";") == false) {
+            if (!line.endsWith(";")) {
                 throw new BeanCodeGenException("Field line does not end with semi-colon", beanParser.getFile(), fieldIndex);
             }
             return line.substring(0, line.length() - 1).trim();
@@ -374,7 +374,7 @@ class PropertyParser {
     //-----------------------------------------------------------------------
     private String parseMethodNameAsPropertyName(List<String> content) {
         String name = parseMethodDefinition(content)[1];
-        if (name.length() == 0 || Character.isUpperCase(name.charAt(0)) == false) {
+        if (name.isEmpty() || !Character.isUpperCase(name.charAt(0))) {
             throw new BeanCodeGenException("@DerivedProperty method name invalid: '" + name + "'", beanParser.getFile(), fieldIndex);
         }
         return Character.toLowerCase(name.charAt(0)) + name.substring(1);
@@ -407,7 +407,7 @@ class PropertyParser {
         if (getIndex < 0) {
             throw new BeanCodeGenException("@DerivedProperty method must start with 'get'", beanParser.getFile(), fieldIndex);
         }
-        if (line.endsWith(lineEnd) == false) {
+        if (!line.endsWith(lineEnd)) {
             throw new BeanCodeGenException("@DerivedProperty method must end with '" + lineEnd + "'", beanParser.getFile(), fieldIndex);
         }
         line = line.substring(0, line.length() - lineEnd.length());
@@ -439,13 +439,13 @@ class PropertyParser {
                     if (commentLine.startsWith("*")) {
                         commentLine = commentLine.substring(1).trim();
                     }
-                    if (commentLine.startsWith("@return") == false && commentLine.startsWith("@param") == false &&
-                            commentLine.startsWith("@throws") == false && commentLine.startsWith("@exception") == false) {
+                    if (!commentLine.startsWith("@return") && !commentLine.startsWith("@param") &&
+                        !commentLine.startsWith("@throws") && !commentLine.startsWith("@exception")) {
                         comments.add(commentLine);
                     }
                 }
                 String firstLine = comments.get(0);
-                if (firstLine.length() > 0) {
+                if (!firstLine.isEmpty()) {
                     comments.set(0, firstLine.substring(0, 1).toLowerCase(Locale.ENGLISH) + firstLine.substring(1));
                 } else {
                     comments.remove(0);
@@ -455,11 +455,11 @@ class PropertyParser {
             int startPos = commentEnd.indexOf("/**") + 3;
             int endPos = commentEnd.lastIndexOf("*/");
             String comment = commentEnd.substring(startPos, endPos).trim();
-            if (comment.length() > 0) {
+            if (!comment.isEmpty()) {
                 comments.add(comment.substring(0, 1).toLowerCase(Locale.ENGLISH) + comment.substring(1));
             }
         }
-        if (comments.size() == 0) {
+        if (comments.isEmpty()) {
             comments.add("the " + propertyName + ".");
         }
         return comments;

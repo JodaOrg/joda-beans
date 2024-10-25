@@ -15,8 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import static java.util.stream.Collectors.joining;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +24,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.joda.beans.PropertyStyle;
+import org.joda.beans.gen.CopyGen.PatternCopyGen;
 
 /**
  * A bean that can be generated.
@@ -293,7 +292,7 @@ class PropertyData {
         }
         if (getTypeStyle().equals("smart")) {
             setType(fieldType);
-        } else if (getTypeStyle().length() > 0) {
+        } else if (!getTypeStyle().isEmpty()) {
             if (getTypeStyle().contains("<>")) {
                 setType(getTypeStyle().replace("<>", generics));
             } else if (getTypeStyle().contains("<")) {
@@ -320,7 +319,7 @@ class PropertyData {
         }
         if (getBuilderTypeStyle().equals("smart")) {
             setBuilderType(fieldType);
-        } else if (getBuilderTypeStyle().length() > 0) {
+        } else if (!getBuilderTypeStyle().isEmpty()) {
             if (getBuilderTypeStyle().contains("<>")) {
                 setBuilderType(getBuilderTypeStyle().replace("<>", generics));
             } else if (getBuilderTypeStyle().contains("<")) {
@@ -378,7 +377,7 @@ class PropertyData {
      * @param alias  the alias
      */
     public void setAlias(String alias) {
-        this.alias = (alias != null && alias.isEmpty() == false ? alias : null);
+        this.alias = (alias != null && !alias.isEmpty() ? alias : null);
     }
 
     /**
@@ -565,7 +564,7 @@ class PropertyData {
      * Resolves validation.
      */
     public void resolveValidation() {
-        if (isFinal() && getInitializer().length() > 0 &&  getValidation().length() == 0) {
+        if (isFinal() && !getInitializer().isEmpty() && getValidation().isEmpty()) {
             setValidation("notNull");
         }
     }
@@ -759,7 +758,7 @@ class PropertyData {
             }
             altered.add(erased);
         }
-        return getTypeRaw() + "<" + altered.stream().collect(joining(", ")) + ">";
+        return getTypeRaw() + "<" + String.join(", ", altered) + ">";
     }
 
     /**
@@ -817,7 +816,7 @@ class PropertyData {
             } else {
                 getterGen = GetterGen.GetGetterGen.of(access);
             }
-        } else if (style.equals("")) {
+        } else if (style.isEmpty()) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
         } else if (style.equals("field")) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
@@ -894,7 +893,7 @@ class PropertyData {
             } else {
                 setterGen = SetterGen.SetSetterGen.of(access);
             }
-        } else if (style.equals("")) {
+        } else if (style.isEmpty()) {
             setterGen = SetterGen.NoSetterGen.INSTANCE;
         } else if (style.equals("field")) {
             setterGen = SetterGen.FieldSetterGen.INSTANCE;
@@ -946,7 +945,7 @@ class PropertyData {
      * @param lineIndex  the line index
      */
     public void resolveCopyGen(File file, int lineIndex) {
-        if (getBean().isMutable() && getBean().isBuilderScopeVisible() == false) {
+        if (getBean().isMutable() && !getBean().isBuilderScopeVisible()) {
             return;  // no copying
         }
         if (config.getInvalidImmutableTypes().contains(getFieldTypeRaw())) {
@@ -963,12 +962,12 @@ class PropertyData {
                 String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
                 if (clone != null) {
                     if (clone.equals("clone")) {
-                        copyGen = CopyGen.CLONE;
+                        copyGen = PatternCopyGen.CLONE;
                     } else {
-                        copyGen = CopyGen.CLONE_CAST;
+                        copyGen = PatternCopyGen.CLONE_CAST;
                     }
                 } else {
-                    copyGen = CopyGen.ASSIGN;
+                    copyGen = PatternCopyGen.ASSIGN;
                 }
             }
         }
@@ -1079,17 +1078,17 @@ class PropertyData {
         if (getBean().isImmutable()) {
             return PropertyStyle.IMMUTABLE;
         }
-        if (getGetStyle().length() > 0 && getSetStyle().length() > 0 && (getSetterGen().isSetterGenerated(this) || getSetStyle().equals("manual"))) {
+        if (!getGetStyle().isEmpty() && !getSetStyle().isEmpty() && (getSetterGen().isSetterGenerated(this) || getSetStyle().equals("manual"))) {
             return PropertyStyle.READ_WRITE;
         }
-        if (getGetStyle().length() > 0) {
+        if (!getGetStyle().isEmpty()) {
             if (bean.isBuilderScopeVisible()) {
                 return PropertyStyle.READ_ONLY_BUILDABLE;
             } else {
                 return PropertyStyle.READ_ONLY;
             }
         }
-        if (getSetStyle().length() > 0) {
+        if (!getSetStyle().isEmpty()) {
             return PropertyStyle.WRITE_ONLY;
         }
         throw new RuntimeException("Property must have a getter or setter: " +
@@ -1102,7 +1101,7 @@ class PropertyData {
      * @return true if non-null
      */
     public boolean isValidated() {
-        return getValidation() != null && getValidation().length() > 0;
+        return getValidation() != null && !getValidation().isEmpty();
     }
 
     /**
@@ -1137,7 +1136,7 @@ class PropertyData {
      * @return the method name
      */
     public String getValidationMethodName() {
-        if (isValidated() == false) {
+        if (!isValidated()) {
             throw new IllegalStateException();
         }
         if (getValidation().equals("notNull") ||
