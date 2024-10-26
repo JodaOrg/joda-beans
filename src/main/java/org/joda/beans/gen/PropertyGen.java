@@ -48,7 +48,7 @@ class PropertyGen {
     List<String> generateMetaPropertyConstant() {
         data.getBean().ensureImport(MetaProperty.class);
         data.getBean().ensureImport(DirectMetaProperty.class);
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t */");
@@ -59,7 +59,7 @@ class PropertyGen {
             list.add("\t\t\t\tthis, \"" + data.getPropertyName() + "\", " +
                 data.getBean().getTypeRaw() + ".class, " + actualType() + ");");
         } else {
-            String propertyType = propertyType();
+            var propertyType = propertyType();
             if (propertyType.length() == 1) {
                 propertyType = "Object";
             }
@@ -75,7 +75,7 @@ class PropertyGen {
     }
 
     List<String> generateMetaPropertyGetCase() {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -94,10 +94,10 @@ class PropertyGen {
 
     List<String> generateProperty() {
         data.getBean().ensureImport(Property.class);
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets the the {@code " + data.getPropertyName() + "} property.");
-        for (String comment : data.getComments()) {
+        for (var comment : data.getComments()) {
             list.add("\t * " + comment);
         }
         list.add("\t * @return the property, not null");
@@ -116,8 +116,8 @@ class PropertyGen {
     }
 
     List<String> generateMetaProperty() {
-        List<String> list = new ArrayList<>();
-        String propertyType = propertyType();
+        var list = new ArrayList<String>();
+        var propertyType = propertyType();
         list.add("\t\t/**");
         list.add("\t\t * The meta-property for the {@code " + data.getPropertyName() + "} property.");
         list.add("\t\t * @return the meta-property, not null");
@@ -136,7 +136,7 @@ class PropertyGen {
     }
 
     List<String> generatePropertyGetCase() {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -153,12 +153,12 @@ class PropertyGen {
     }
 
     List<String> generatePropertySetCase() {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
         }
-        String setter = data.getSetterGen().generateSetInvoke(data, castObject() + "newValue");
+        var setter = data.getSetterGen().generateSetInvoke(data, castObject() + "newValue");
         if (data.getStyle().isWritable() && setter != null) {
             list.add("\t\t\t\t\t((" + data.getBean().getTypeNoExtends() + ") bean)." + setter + ";");
             list.add("\t\t\t\t\treturn;");
@@ -176,8 +176,8 @@ class PropertyGen {
     }
 
     String generateLambdaSetter() {
-        String propType = propertyType(data.getTypeBeanErased());
-        String cast = propType.equals("Object") ? "" : "(" + propType + ") ";
+        var propType = propertyType(data.getTypeBeanErased());
+        var cast = propType.equals("Object") ? "" : "(" + propType + ") ";
         return "(b, v) -> b." + data.getSetterGen().generateSetInvoke(data, cast + "v");
     }
 
@@ -199,7 +199,7 @@ class PropertyGen {
     }
 
     List<String> generateBuilderFieldGet() {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -209,7 +209,7 @@ class PropertyGen {
     }
 
     List<String> generateBuilderFieldSet() {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t\t\tcase " + data.getPropertyName().hashCode() + ":  // " + data.getPropertyName());
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
@@ -224,10 +224,10 @@ class PropertyGen {
     }
 
     List<String> generateBuilderSetMethod() {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t\t/**");
         list.add("\t\t * Sets " + data.getFirstComment());
-        for (String comment : data.getComments()) {
+        for (var comment : data.getComments()) {
             list.add("\t\t * " + comment);
         }
         list.add("\t\t * @param " + data.getPropertyName() + "  the new value" + data.getNotNullJavadoc());
@@ -239,7 +239,7 @@ class PropertyGen {
         if (data.isDeprecated()) {
             list.add("\t\t@Deprecated");
         }
-        String builderType = getBuilderType();
+        var builderType = getBuilderType();
         if (builderType.endsWith("[]") && !builderType.endsWith("[][]") && !builderType.equals("byte[]")) {
             list.add("\t\tpublic Builder" + data.getBean().getTypeGenericName(true) + " " + data.getPropertyName() +
                     "(" + builderType.substring(0, builderType.length() - 2) + "... " + data.getPropertyName() + ") {");
@@ -263,18 +263,18 @@ class PropertyGen {
     }
 
     private void generateBuilderSetCollectionMethod(List<String> list) {
-        String code = data.getVarArgsCode();
+        var code = data.getVarArgsCode();
         if (code == null) {
             return;
         }
-        String argType = data.getTypeGenericsSimple();
+        var argType = data.getTypeGenericsSimple();
         if (argType.equals("?")) {
             argType = "Object";
         }
         if (argType.startsWith("? extends ")) {
             argType = argType.substring(10);
         }
-        boolean safeVarargs = argType.length() == 1 || argType.contains("<");
+        var safeVarargs = argType.length() == 1 || argType.contains("<");
         // generate based on varargs
         list.add("\t\t/**");
         list.add("\t\t * Sets the {@code " + data.getPropertyName() + "} property in the builder");
@@ -306,29 +306,21 @@ class PropertyGen {
 
     //-----------------------------------------------------------------------
     private String readWrite() {
-        switch (data.getStyle()) {
-            case READ_WRITE:
-                return "ReadWrite";
-            case READ_ONLY:
-                return "ReadOnly";
-            case WRITE_ONLY:
-                return "WriteOnly";
-            case DERIVED:
-                return "Derived";
-            case READ_ONLY_BUILDABLE:
-                return "ReadOnlyBuildable";
-            case IMMUTABLE:
-                return "Immutable";
-            default:
-                break;
-        }
-        throw new RuntimeException("Invalid style");
+        return switch (data.getStyle()) {
+            case READ_WRITE -> "ReadWrite";
+            case READ_ONLY -> "ReadOnly";
+            case WRITE_ONLY -> "WriteOnly";
+            case DERIVED -> "Derived";
+            case READ_ONLY_BUILDABLE -> "ReadOnlyBuildable";
+            case IMMUTABLE -> "Immutable";
+            default -> throw new RuntimeException("Invalid style");
+        };
     }
 
     private String actualType() {
-        String pt = propertyType();
+        var pt = propertyType();
         if (pt.equals(data.getType())) {
-            int genericStart = pt.indexOf('<');
+            var genericStart = pt.indexOf('<');
             if (genericStart >= 0) {
                 return "(Class) " + pt.substring(0, genericStart) + ".class";
             }
@@ -344,7 +336,7 @@ class PropertyGen {
     }
 
     private String castObject() {
-        String pt = propertyType();
+        var pt = propertyType();
         return "(" + pt + ") ";
     }
 
@@ -353,31 +345,17 @@ class PropertyGen {
     }
 
     private String propertyType(String type) {
-        if (type.equals("boolean")) {
-            return "Boolean";
-        }
-        if (type.equals("byte")) {
-            return "Byte";
-        }
-        if (type.equals("short")) {
-            return "Short";
-        }
-        if (type.equals("char")) {
-            return "Character";
-        }
-        if (type.equals("int")) {
-            return "Integer";
-        }
-        if (type.equals("long")) {
-            return "Long";
-        }
-        if (type.equals("float")) {
-            return "Float";
-        }
-        if (type.equals("double")) {
-            return "Double";
-        }
-        return type;
+        return switch (type) {
+            case "boolean" -> "Boolean";
+            case "byte" -> "Byte";
+            case "short" -> "Short";
+            case "char" -> "Character";
+            case "int" -> "Integer";
+            case "long" -> "Long";
+            case "float" -> "Float";
+            case "double" -> "Double";
+            default -> type;
+        };
     }
 
     PropertyData getData() {

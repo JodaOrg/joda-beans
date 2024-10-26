@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,9 +60,12 @@ abstract class SetterGen {
         static final SetSetterGen PRIVATE = new SetSetterGen("private ");
         private final String access;
         static SetSetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private SetSetterGen(String access) {
             this.access = access;
@@ -74,10 +76,10 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<>();
+            var list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Sets " + prop.getFirstComment());
-            for (String comment : prop.getComments()) {
+            for (var comment : prop.getComments()) {
                 list.add("\t * " + comment);
             }
             list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
@@ -110,7 +112,7 @@ abstract class SetterGen {
         }
         PatternSetterGen(String setPattern, String access) {
             this.setPattern = setPattern;
-            this.access = (access.equals("package") ? "" : access + ' ');;
+            this.access = (access.equals("package") ? "" : access + ' ');
         }
         @Override
         boolean isSetterGenerated(PropertyData prop) {
@@ -118,10 +120,10 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<>();
+            var list = new ArrayList<String>();
             list.add(indent + "/**");
             list.add(indent + " * Sets " + prop.getFirstComment());
-            for (String comment : prop.getComments()) {
+            for (var comment : prop.getComments()) {
                 list.add(indent + " * " + comment);
             }
             list.add(indent + " * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
@@ -139,8 +141,8 @@ abstract class SetterGen {
             if (prop.isValidated()) {
                 list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
             }
-            final String[] split = setPattern.split("\n");
-            for (String line : split) {
+            var split = setPattern.split("\n");
+            for (var line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());
                 line = line.replace("$value", prop.getPropertyName());
                 if (split.length == 1 && !line.endsWith(";")) {
@@ -162,7 +164,7 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 
@@ -174,7 +176,7 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
         @Override
         String generateSetInvoke(PropertyData prop, String newValue) {
@@ -190,10 +192,10 @@ abstract class SetterGen {
         }
         @Override
         List<String> generateSetter(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<>();
+            var list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Sets " + prop.getFirstComment());
-            for (String comment : prop.getComments()) {
+            for (var comment : prop.getComments()) {
                 list.add("\t * " + comment);
             }
             list.add("\t * @param " + prop.getPropertyName() + "  the new value of the property" + prop.getNotNullJavadoc());
@@ -211,7 +213,7 @@ abstract class SetterGen {
             if (prop.isValidated()) {
                 list.add("\t\t" + prop.getValidationMethodName() + "(" + prop.getPropertyName() + ", \"" + prop.getPropertyName() + "\");");
             }
-            String old = "old" + prop.getUpperName();
+            var old = "old" + prop.getUpperName();
             list.add("\t\t" + prop.getFieldType() + " " + old + " = this." + prop.getFieldName() + ";");
             list.add("\t\tthis." + prop.getFieldName() + " = " + prop.getPropertyName() + ";");
             list.add("\t\tthis." + prop.getConfig().getPrefix() + "propertyChangeSupport.firePropertyChange(\"" +
