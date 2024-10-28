@@ -130,7 +130,7 @@ class BeanData {
      * Ensures an import is present.
      * @param className  the class name, not null
      */
-    public void ensureImport(String className) {
+    void ensureImport(String className) {
         if (!currentImports.contains(className)) {
             newImports.add(className);
         }
