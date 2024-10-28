@@ -15,8 +15,6 @@
  */
 package org.joda.beans.gen;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,15 +67,12 @@ abstract class BuilderGen {
         }
         @Override
         List<String> generateField(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<>();
             if (prop.isNotNull()) {
-                String init = this.init;
-                init = init.replace("<>", PropertyGen.resolveWildcard(prop.getTypeGenerics()));
-                list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + " = " + init + ";");
+                var init = this.init.replace("<>", PropertyGen.resolveWildcard(prop.getTypeGenerics()));
+                return List.of(indent + "private " + generateType(prop) + " " + prop.getFieldName() + " = " + init + ";");
             } else {
-                list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
+                return List.of(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
             }
-            return list;
         }
         @Override
         boolean isSpecialInit(PropertyData prop) {
@@ -101,9 +96,7 @@ abstract class BuilderGen {
         }
         @Override
         List<String> generateField(String indent, PropertyData prop) {
-            List<String> list = new ArrayList<>();
-            list.add(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
-            return list;
+            return List.of(indent + "private " + generateType(prop) + " " + prop.getFieldName() + ";");
         }
         @Override
         boolean isSpecialInit(PropertyData prop) {
@@ -123,7 +116,7 @@ abstract class BuilderGen {
         static final BuilderGen INSTANCE = new NoBuilderGen();
         @Override
         List<String> generateField(String indent, PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
         @Override
         boolean isSpecialInit(PropertyData prop) {
@@ -135,25 +128,19 @@ abstract class BuilderGen {
         }
     }
 
+    // default type (assigned to an Object)
     private static String defaultType(PropertyData prop) {
-        if (prop.getType().equals("long")) {
-            return "0L";
-        } else if (prop.getType().equals("int")) {
-            return "0";
-        } else if (prop.getType().equals("short")) {
-            return "Short.valueOf(0)";
-        } else if (prop.getType().equals("byte")) {
-            return "Byte.valueOf(0)";
-        } else if (prop.getType().equals("double")) {
-            return "0d";
-        } else if (prop.getType().equals("float")) {
-            return "0f";
-        } else if (prop.getType().equals("char")) {
-            return "Character.valueOf((char) 0)";
-        } else if (prop.getType().equals("boolean")) {
-            return "Boolean.FALSE";
-        }
-        return "null";
+        return switch (prop.getType()) {
+            case "long" -> "0L";
+            case "int" -> "0";
+            case "short" -> "(short) 0";
+            case "byte" -> "(byte) 0";
+            case "double" -> "0d";
+            case "float" -> "0f";
+            case "char" -> "'\\u0000'";
+            case "boolean" -> "Boolean.FALSE";
+            default -> "null";
+        };
     }
 
 }

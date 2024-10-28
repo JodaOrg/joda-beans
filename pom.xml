@@ -468,7 +468,7 @@
         <version>${maven-pmd-plugin.version}</version>
         <configuration>
           <minimumTokens>100</minimumTokens>
-          <targetJdk>${maven.compiler.target}</targetJdk>
+          <targetJdk>${maven.compiler.release}</targetJdk>
           <excludes>
             <exclude>module-info.java</exclude>
           </excludes>

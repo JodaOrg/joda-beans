@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,9 +61,9 @@ abstract class CopyGen {
         }
         @Override
         List<String> generateCopyToImmutable(String indent, String fromBean, PropertyData prop) {
-            List<String> list = new ArrayList<>();
-            final String[] split = immutablePattern.split("\n");
-            for (String line : split) {
+            var list = new ArrayList<String>();
+            var split = immutablePattern.split("\n");
+            for (var line : split) {
                 if (split.length == 1) {
                     if (!line.startsWith("$field = ") && !line.endsWith(";")) {
                         if (prop.isNotNull()) {
@@ -88,9 +87,9 @@ abstract class CopyGen {
         }
         @Override
         List<String> generateCopyToMutable(String indent, PropertyData prop, String beanToCopyFrom) {
-            List<String> list = new ArrayList<>();
-            final String[] split = mutablePattern.split("\n");
-            for (String line : split) {
+            var list = new ArrayList<String>();
+            var split = mutablePattern.split("\n");
+            for (var line : split) {
                 if (split.length == 1) {
                     if (!line.startsWith("$field = ") && !line.endsWith(";")) {
                         if (prop.isNotNull()) {
@@ -122,11 +121,11 @@ abstract class CopyGen {
         static final CopyGen INSTANCE = new NoCopyGen();
         @Override
         List<String> generateCopyToImmutable(String indent, String fromBean, PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
         @Override
         List<String> generateCopyToMutable(String indent, PropertyData prop, String beanToCopyFrom) {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 
