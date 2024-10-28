@@ -16,7 +16,6 @@
 package org.joda.beans.impl.direct;
 
 import java.util.AbstractCollection;
-import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,16 +59,16 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
             throw new NullPointerException("MetaBean must not be null");
         }
         this.metaBean = metaBean;
-        int parentSize = 0;
-        final Entry<String, MetaProperty<?>>[] metaProperties;
+        var parentSize = 0;
+        Entry<String, MetaProperty<?>>[] metaProperties;
         if (parent != null) {
             parentSize = parent.size();
             metaProperties = Arrays.copyOf(((Entries) parent.entries).metaProperties, parentSize + propertyNames.length);
         } else {
             metaProperties = new Entry[propertyNames.length];
         }
-        for (int i = 0; i < propertyNames.length; i++) {
-            metaProperties[i + parentSize] = new AbstractMap.SimpleImmutableEntry(propertyNames[i], metaBean.metaPropertyGet(propertyNames[i]));
+        for (var i = 0; i < propertyNames.length; i++) {
+            metaProperties[i + parentSize] = Map.entry(propertyNames[i], metaBean.metaPropertyGet(propertyNames[i]));
         }
         keys = new Keys(metaProperties);
         values = new Values(metaProperties);
@@ -90,22 +89,22 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
     @SuppressWarnings("unchecked")
     @Override
     public MetaProperty<Object> get(Object propertyName) {
-        if (propertyName  instanceof String) {
-            return (MetaProperty<Object>) metaBean.metaPropertyGet((String) propertyName);
+        if (propertyName instanceof String propName) {
+            return (MetaProperty<Object>) metaBean.metaPropertyGet(propName);
         }
         return null;
     }
 
     @Override
     public boolean containsKey(Object propertyName) {
-        return propertyName instanceof String &&
-                metaBean.metaPropertyGet(propertyName.toString()) != null;
+        return propertyName instanceof String propName &&
+                metaBean.metaPropertyGet(propName) != null;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return value instanceof MetaProperty &&
-                metaBean.metaPropertyGet(((MetaProperty<?>) value).name()) != null;
+        return value instanceof MetaProperty mp &&
+                metaBean.metaPropertyGet(mp.name()) != null;
     }
 
     //-----------------------------------------------------------------------
@@ -158,7 +157,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
 
         @Override
         public Iterator<String> iterator() {
-            return new Iterator<String>() {
+            return new Iterator<>() {
                 private int index;
                 @Override
                 public boolean hasNext() {
@@ -193,7 +192,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
 
         @Override
         public Iterator<MetaProperty<?>> iterator() {
-            return new Iterator<MetaProperty<?>>() {
+            return new Iterator<>() {
                 private int index;
                 @Override
                 public boolean hasNext() {
@@ -228,7 +227,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
 
         @Override
         public Iterator<Entry<String, MetaProperty<?>>> iterator() {
-            return new Iterator<Entry<String, MetaProperty<?>>>() {
+            return new Iterator<>() {
                 private int index;
                 @Override
                 public boolean hasNext() {

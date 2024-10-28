@@ -48,11 +48,9 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MetaProperty<?>) {
-            MetaProperty<?> other = (MetaProperty<?>) obj;
-            return name().equals(other.name()) && declaringType().equals(other.declaringType());
-        }
-        return false;
+        return obj instanceof MetaProperty<?> other &&
+                name().equals(other.name()) &&
+                declaringType().equals(other.declaringType());
     }
 
     @Override

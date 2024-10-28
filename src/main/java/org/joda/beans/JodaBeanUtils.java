@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -121,27 +120,21 @@ public final class JodaBeanUtils {
 
     // extracted from equal(Object,Object) to aid hotspot inlining
     private static boolean equalsArray(Object obj1, Object obj2) {
-        if (obj1 instanceof Object[] && obj2 instanceof Object[] && obj1.getClass() == obj2.getClass()) {
-            return Arrays.deepEquals((Object[]) obj1, (Object[]) obj2);
-        } else if (obj1 instanceof int[] && obj2 instanceof int[]) {
-            return Arrays.equals((int[]) obj1, (int[]) obj2);
-        } else if (obj1 instanceof long[] && obj2 instanceof long[]) {
-            return Arrays.equals((long[]) obj1, (long[]) obj2);
-        } else if (obj1 instanceof byte[] && obj2 instanceof byte[]) {
-            return Arrays.equals((byte[]) obj1, (byte[]) obj2);
-        } else if (obj1 instanceof double[] && obj2 instanceof double[]) {
-            return Arrays.equals((double[]) obj1, (double[]) obj2);
-        } else if (obj1 instanceof float[] && obj2 instanceof float[]) {
-            return Arrays.equals((float[]) obj1, (float[]) obj2);
-        } else if (obj1 instanceof char[] && obj2 instanceof char[]) {
-            return Arrays.equals((char[]) obj1, (char[]) obj2);
-        } else if (obj1 instanceof short[] && obj2 instanceof short[]) {
-            return Arrays.equals((short[]) obj1, (short[]) obj2);
-        } else if (obj1 instanceof boolean[] && obj2 instanceof boolean[]) {
-            return Arrays.equals((boolean[]) obj1, (boolean[]) obj2);
+        if (obj1.getClass() != obj2.getClass()) {
+            return false;
         }
-        // reachable if obj1 is an array and obj2 is not
-        return false;
+        return switch (obj1) {
+            case Object[] objects -> Arrays.deepEquals(objects, (Object[]) obj2);
+            case int[] ints -> Arrays.equals(ints, (int[]) obj2);
+            case long[] longs -> Arrays.equals(longs, (long[]) obj2);
+            case byte[] bytes -> Arrays.equals(bytes, (byte[]) obj2);
+            case double[] doubles -> Arrays.equals(doubles, (double[]) obj2);
+            case float[] floats -> Arrays.equals(floats, (float[]) obj2);
+            case char[] chars -> Arrays.equals(chars, (char[]) obj2);
+            case short[] shorts -> Arrays.equals(shorts, (short[]) obj2);
+            case boolean[] booleans -> Arrays.equals(booleans, (boolean[]) obj2);
+            default -> false;  // unreachable?
+        };
     }
 
     /**
@@ -219,27 +212,18 @@ public final class JodaBeanUtils {
 
     // extracted from hashCode(Object) to aid hotspot inlining
     private static int hashCodeArray(Object obj) {
-        if (obj instanceof Object[]) {
-            return Arrays.deepHashCode((Object[]) obj);
-        } else if (obj instanceof int[]) {
-            return Arrays.hashCode((int[]) obj);
-        } else if (obj instanceof long[]) {
-            return Arrays.hashCode((long[]) obj);
-        } else if (obj instanceof byte[]) {
-            return Arrays.hashCode((byte[]) obj);
-        } else if (obj instanceof double[]) {
-            return Arrays.hashCode((double[]) obj);
-        } else if (obj instanceof float[]) {
-            return Arrays.hashCode((float[]) obj);
-        } else if (obj instanceof char[]) {
-            return Arrays.hashCode((char[]) obj);
-        } else if (obj instanceof short[]) {
-            return Arrays.hashCode((short[]) obj);
-        } else if (obj instanceof boolean[]) {
-            return Arrays.hashCode((boolean[]) obj);
-        }
-        // unreachable?
-        return obj.hashCode();
+        return switch (obj) {
+            case Object[] objects -> Arrays.deepHashCode(objects);
+            case int[] ints -> Arrays.hashCode(ints);
+            case long[] longs -> Arrays.hashCode(longs);
+            case byte[] bytes -> Arrays.hashCode(bytes);
+            case double[] doubles -> Arrays.hashCode(doubles);
+            case float[] floats -> Arrays.hashCode(floats);
+            case char[] chars -> Arrays.hashCode(chars);
+            case short[] shorts -> Arrays.hashCode(shorts);
+            case boolean[] booleans -> Arrays.hashCode(booleans);
+            default -> obj.hashCode();  // unreachable?
+        };
     }
 
     /**
@@ -269,7 +253,7 @@ public final class JodaBeanUtils {
      * @return the hash code
      */
     public static int hashCode(long value) {
-        return (int) (value ^ value >>> 32);
+        return Long.hashCode(value);
     }
 
     /**
@@ -279,7 +263,7 @@ public final class JodaBeanUtils {
      * @return the hash code
      */
     public static int hashCode(float value) {
-        return Float.floatToIntBits(value);
+        return Float.hashCode(value);
     }
 
     /**
@@ -289,7 +273,7 @@ public final class JodaBeanUtils {
      * @return the hash code
      */
     public static int hashCode(double value) {
-        return hashCode(Double.doubleToLongBits(value));
+        return Double.hashCode(value);
     }
 
     //-----------------------------------------------------------------------
@@ -311,27 +295,18 @@ public final class JodaBeanUtils {
 
     // extracted from toString(Object) to aid hotspot inlining
     private static String toStringArray(Object obj) {
-        if (obj instanceof Object[]) {
-            return Arrays.deepToString((Object[]) obj);
-        } else if (obj instanceof int[]) {
-            return Arrays.toString((int[]) obj);
-        } else if (obj instanceof long[]) {
-            return Arrays.toString((long[]) obj);
-        } else if (obj instanceof byte[]) {
-            return Arrays.toString((byte[]) obj);
-        } else if (obj instanceof double[]) {
-            return Arrays.toString((double[]) obj);
-        } else if (obj instanceof float[]) {
-            return Arrays.toString((float[]) obj);
-        } else if (obj instanceof char[]) {
-            return Arrays.toString((char[]) obj);
-        } else if (obj instanceof short[]) {
-            return Arrays.toString((short[]) obj);
-        } else if (obj instanceof boolean[]) {
-            return Arrays.toString((boolean[]) obj);
-        }
-        // unreachable?
-        return obj.toString();
+        return switch (obj) {
+            case Object[] objects -> Arrays.deepToString(objects);
+            case int[] ints -> Arrays.toString(ints);
+            case long[] longs -> Arrays.toString(longs);
+            case byte[] bytes -> Arrays.toString(bytes);
+            case double[] doubles -> Arrays.toString(doubles);
+            case float[] floats -> Arrays.toString(floats);
+            case char[] chars -> Arrays.toString(chars);
+            case short[] shorts -> Arrays.toString(shorts);
+            case boolean[] booleans -> Arrays.toString(booleans);
+            default -> obj.toString(); // unreachable?
+        };
     }
 
     //-----------------------------------------------------------------------
@@ -352,13 +327,13 @@ public final class JodaBeanUtils {
      * @return true if equal
      */
     public static boolean propertiesEqual(Bean bean1, Bean bean2) {
-        Set<String> names = bean1.propertyNames();
+        var names = bean1.propertyNames();
         if (!names.equals(bean2.propertyNames())) {
             return false;
         }
-        for (String name : names) {
-            Object value1 = bean1.property(name).get();
-            Object value2 = bean2.property(name).get();
+        for (var name : names) {
+            var value1 = bean1.property(name).get();
+            var value2 = bean2.property(name).get();
             if (!equal(value1, value2)) {
                 return false;
             }
@@ -377,10 +352,10 @@ public final class JodaBeanUtils {
      * @return the hash code
      */
     public static int propertiesHashCode(Bean bean) {
-        int hash = 7;
-        Set<String> names = bean.propertyNames();
-        for (String name : names) {
-            Object value = bean.property(name).get();
+        var hash = 7;
+        var names = bean.propertyNames();
+        for (var name : names) {
+            var value = bean.property(name).get();
             hash += hashCode(value);
         }
         return hash;
@@ -397,17 +372,15 @@ public final class JodaBeanUtils {
      * @return the string form of the bean, not null
      */
     public static String propertiesToString(Bean bean, String prefix) {
-        Set<String> names = bean.propertyNames();
-        StringBuilder buf;
-        if (prefix != null) {
-            buf = new StringBuilder((names.size()) * 32 + prefix.length()).append(prefix);
-        } else {
-            buf = new StringBuilder((names.size()) * 32);
+        if (prefix == null) {
+            return propertiesToString(bean, "");
         }
+        var names = bean.propertyNames();
+        var buf = new StringBuilder((names.size()) * 32 + prefix.length()).append(prefix);
         buf.append('{');
         if (!names.isEmpty()) {
-            for (String name : names) {
-                Object value = bean.property(name).get();
+            for (var name : names) {
+                var value = bean.property(name).get();
                 buf.append(name).append('=').append(value).append(',').append(' ');
             }
             buf.setLength(buf.length() - 2);
@@ -425,12 +398,12 @@ public final class JodaBeanUtils {
      * @return the bean as a map, not null
      */
     public static Map<String, Object> flatten(Bean bean) {
-        Map<String, MetaProperty<?>> propertyMap = bean.metaBean().metaPropertyMap();
-        Map<String, Object> map = new LinkedHashMap<>(propertyMap.size());
-        for (Entry<String, MetaProperty<?>> entry : propertyMap.entrySet()) {
+        var propertyMap = bean.metaBean().metaPropertyMap();
+        var map = new LinkedHashMap<String, Object>(propertyMap.size());
+        for (var entry : propertyMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().get(bean));
         }
-        return Collections.unmodifiableMap(map);
+        return Map.copyOf(map);
     }
 
     //-----------------------------------------------------------------------
@@ -447,9 +420,9 @@ public final class JodaBeanUtils {
      * @throws RuntimeException if unable to copy a property
      */
     public static <T extends Bean> BeanBuilder<T> copy(Bean sourceBean, Class<T> destType) {
-        MetaBean destMeta = MetaBean.of(destType);
+        var destMeta = MetaBean.of(destType);
         @SuppressWarnings("unchecked")
-        BeanBuilder<T> destBuilder = (BeanBuilder<T>) destMeta.builder();
+        var destBuilder = (BeanBuilder<T>) destMeta.builder();
         return copyInto(sourceBean, destMeta, destBuilder);
     }
 
@@ -467,12 +440,12 @@ public final class JodaBeanUtils {
      * @throws RuntimeException if unable to copy a property
      */
     public static <T extends Bean> BeanBuilder<T> copyInto(Bean sourceBean, MetaBean destMeta, BeanBuilder<T> destBuilder) {
-        MetaBean sourceMeta = sourceBean.metaBean();
-        for (MetaProperty<?> sourceProp : sourceMeta.metaPropertyIterable()) {
+        var sourceMeta = sourceBean.metaBean();
+        for (var sourceProp : sourceMeta.metaPropertyIterable()) {
             if (destMeta.metaPropertyExists(sourceProp.name())) {
-                MetaProperty<?> destProp = destMeta.metaProperty(sourceProp.name());
+                var destProp = destMeta.metaProperty(sourceProp.name());
                 if (destProp.propertyType().isAssignableFrom(sourceProp.propertyType())) {
-                    Object sourceValue = sourceProp.get(sourceBean);
+                    var sourceValue = sourceProp.get(sourceBean);
                     if (sourceValue != null) {
                         destBuilder.set(destProp, sourceValue);
                     }
@@ -513,10 +486,10 @@ public final class JodaBeanUtils {
      */
     public static <T extends Bean> T cloneAlways(T original) {
         @SuppressWarnings("unchecked")
-        BeanBuilder<T> builder = (BeanBuilder<T>) original.metaBean().builder();
-        for (MetaProperty<?> mp : original.metaBean().metaPropertyIterable()) {
+        var builder = (BeanBuilder<T>) original.metaBean().builder();
+        for (var mp : original.metaBean().metaPropertyIterable()) {
             if (mp.style().isBuildable()) {
-                Object value = mp.get(original);
+                var value = mp.get(original);
                 builder.set(mp.name(), Cloner.INSTANCE.clone(value));
             }
         }
@@ -552,26 +525,9 @@ public final class JodaBeanUtils {
      * @throws IllegalArgumentException if the value is null or empty
      */
     public static void notBlank(String value, String propertyName) {
-        if (isBlank(value)) {
-            throw new IllegalArgumentException(notBlank(propertyName));
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(notEmpty(propertyName));
         }
-    }
-
-    @SuppressWarnings("null")
-    private static boolean isBlank(String str) {
-        int strLen = (str != null ? str.length() : 0);
-        if (strLen != 0) {
-            for (int i = 0; i < strLen; i++) {
-                if (!Character.isWhitespace(str.charAt(i))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private static String notBlank(String propertyName) {
-        return "Argument '" + propertyName + "' must not be empty";
     }
 
     /**
@@ -656,7 +612,7 @@ public final class JodaBeanUtils {
      * @return the collection content type generic parameters, empty if unable to determine, no nulls
      */
     public static List<Class<?>> collectionTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
-        Type type = extractType(targetClass, prop, 1, 0);
+        var type = extractType(targetClass, prop, 1, 0);
         return extractTypeClasses(targetClass, type);
     }
 
@@ -718,7 +674,7 @@ public final class JodaBeanUtils {
      * @return the map value type generic parameters, empty if unable to determine, no nulls
      */
     public static List<Class<?>> mapValueTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
-        Type type = extractType(targetClass, prop, 2, 1);
+        var type = extractType(targetClass, prop, 2, 1);
         return extractTypeClasses(targetClass, type);
     }
 
@@ -736,20 +692,18 @@ public final class JodaBeanUtils {
     }
 
     private static Type extractType(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
-        Type genType = prop.propertyGenericType();
-        if (genType instanceof ParameterizedType) {
-            ParameterizedType pt = (ParameterizedType) genType;
-            Type[] types = pt.getActualTypeArguments();
+        var genType = prop.propertyGenericType();
+        if (genType instanceof ParameterizedType pt) {
+            var types = pt.getActualTypeArguments();
             if (types.length == size) {
-                Type type = types[index];
-                if (type instanceof WildcardType) {
-                    WildcardType wtype = (WildcardType) type;
+                var type = types[index];
+                if (type instanceof WildcardType wtype) {
                     if (wtype.getLowerBounds().length == 0 && wtype.getUpperBounds().length > 0) {
                         type = wtype.getUpperBounds()[0];
                     }
                 }
-                if (type instanceof TypeVariable) {
-                    type = resolveGenerics(targetClass, (TypeVariable<?>) type);
+                if (type instanceof TypeVariable<?> tvar) {
+                    type = resolveGenerics(targetClass, tvar);
                 }
                 return type;
             }
@@ -758,16 +712,15 @@ public final class JodaBeanUtils {
     }
 
     private static List<Class<?>> extractTypeClasses(Class<?> targetClass, Type type) {
-        List<Class<?>> result = new ArrayList<>();
+        var result = new ArrayList<Class<?>>();
         if (type != null) {
-            if (type instanceof ParameterizedType) {
-                ParameterizedType pt = (ParameterizedType) type;
-                Type[] actualTypes = pt.getActualTypeArguments();
-                for (Type actualType : actualTypes) {
-                    if (actualType instanceof TypeVariable) {
-                        actualType = resolveGenerics(targetClass, (TypeVariable<?>) actualType);
+            if (type instanceof ParameterizedType pt) {
+                var actualTypes = pt.getActualTypeArguments();
+                for (var actualType : actualTypes) {
+                    if (actualType instanceof TypeVariable<?> tvar) {
+                        actualType = resolveGenerics(targetClass, tvar);
                     }
-                    Class<?> cls = eraseToClass(actualType);
+                    var cls = eraseToClass(actualType);
                     result.add(cls != null ? cls : Object.class);
                 }
             }
@@ -777,22 +730,21 @@ public final class JodaBeanUtils {
 
     private static Type resolveGenerics(Class<?> targetClass, TypeVariable<?> typevar) {
         // looks up meaning of type variables like T
-        Map<Type, Type> resolved = new HashMap<>();
+        var resolved = new HashMap<Type, Type>();
         Type type = targetClass;
         while (type != null) {
-            if (type instanceof Class) {
-                type = ((Class<?>) type).getGenericSuperclass();
-            } else if (type instanceof ParameterizedType) {
+            if (type instanceof Class<?> cls) {
+                type = cls.getGenericSuperclass();
+            } else if (type instanceof ParameterizedType pt) {
                 // find actual types captured by subclass
-                ParameterizedType pt = (ParameterizedType) type;
-                Type[] actualTypeArguments = pt.getActualTypeArguments();
+                var actualTypeArguments = pt.getActualTypeArguments();
                 // find type variables declared in source code
-                Class<?> rawType = eraseToClass(pt.getRawType());
+                var rawType = eraseToClass(pt.getRawType());
                 if (rawType == null) {
                     return null;
                 }
-                TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
-                for (int i = 0; i < actualTypeArguments.length; i++) {
+                var typeParameters = rawType.getTypeParameters();
+                for (var i = 0; i < actualTypeArguments.length; i++) {
                     resolved.put(typeParameters[i], actualTypeArguments[i]);
                 }
                 type = rawType.getGenericSuperclass();
@@ -807,18 +759,18 @@ public final class JodaBeanUtils {
     }
 
     private static Class<?> eraseToClass(Type type) {
-        if (type instanceof Class) {
-            return (Class<?>) type;
-        } else if (type instanceof ParameterizedType) {
-            return eraseToClass(((ParameterizedType) type).getRawType());
-        } else if (type instanceof GenericArrayType) {
-            Type componentType = ((GenericArrayType) type).getGenericComponentType();
-            Class<?> componentClass = eraseToClass(componentType);
+        if (type instanceof Class<?> cls) {
+            return cls;
+        } else if (type instanceof ParameterizedType parameterizedType) {
+            return eraseToClass(parameterizedType.getRawType());
+        } else if (type instanceof GenericArrayType arrType) {
+            var componentType = arrType.getGenericComponentType();
+            var componentClass = eraseToClass(componentType);
             if (componentClass != null) {
                 return Array.newInstance(componentClass, 0).getClass();
             }
-        } else if (type instanceof TypeVariable) {
-            Type[] bounds = ((TypeVariable<?>) type).getBounds();
+        } else if (type instanceof TypeVariable<?> tvar) {
+            var bounds = tvar.getBounds();
             if (bounds.length == 0) {
                 return Object.class;
             } else {
@@ -852,28 +804,27 @@ public final class JodaBeanUtils {
         if (bean1.getClass() != bean2.getClass()) {
             return false;
         }
-        switch (properties.length) {
-            case 0:
-                return bean1.equals(bean2);
-            case 1: {
-                MetaProperty<?> ignored = properties[0];
-                for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
+        return switch (properties.length) {
+            case 0 -> bean1.equals(bean2);
+            case 1 -> {
+                var ignored = properties[0];
+                for (var mp : bean1.metaBean().metaPropertyIterable()) {
                     if (!ignored.equals(mp) && !JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2))) {
-                        return false;
+                        yield false;
                     }
                 }
-                return true;
+                yield true;
             }
-            default:
-                Set<MetaProperty<?>> ignored = new HashSet<>(Arrays.asList(properties));
-                for (MetaProperty<?> mp : bean1.metaBean().metaPropertyIterable()) {
-                    if (!ignored.contains(mp)
-                            && !JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2))) {
-                        return false;
+            default -> {
+                var ignored = Set.of(properties);
+                for (var mp : bean1.metaBean().metaPropertyIterable()) {
+                    if (!ignored.contains(mp) && !JodaBeanUtils.equal(mp.get(bean1), mp.get(bean2))) {
+                        yield false;
                     }
                 }
-                return true;
-        }
+                yield true;
+            }
+        };
     }
 
     //-----------------------------------------------------------------------
@@ -910,7 +861,7 @@ public final class JodaBeanUtils {
         notNull(mp1, "MetaProperty 1");
         notNull(mp1, "MetaProperty 2");
         return b -> {
-            Bean first = mp1.get(b);
+            var first = mp1.get(b);
             return first != null ? mp2.get(first) : null;
         };
     }
@@ -931,7 +882,7 @@ public final class JodaBeanUtils {
         notNull(fn1, "Function 1");
         notNull(fn1, "MetaProperty 2");
         return b -> {
-            Bean first = fn1.apply(b);
+            var first = fn1.apply(b);
             return first != null ? mp2.get(first) : null;
         };
     }
@@ -997,7 +948,7 @@ public final class JodaBeanUtils {
         @Override
         public int compare(Bean bean1, Bean bean2) {
             @SuppressWarnings("unchecked")
-            Comparable<Object> value1 = (Comparable<Object>) query.apply(bean1);
+            var value1 = (Comparable<Object>) query.apply(bean1);
             Object value2 = query.apply(bean2);
             return value1.compareTo(value2);
         }
@@ -1007,9 +958,10 @@ public final class JodaBeanUtils {
     /**
      * Clones an object.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static class Cloner {
         public static final Cloner INSTANCE = getInstance();
+
         private static Cloner getInstance() {
             try {
                 Class.forName("org.joda.collect.grid.Grid");
@@ -1028,51 +980,48 @@ public final class JodaBeanUtils {
         }
 
         Object clone(Object value) {
-            if (value == null) {
-                return value;
-            } else if (value instanceof Bean) {
-                return cloneAlways((Bean) value);
-            } else if (value instanceof SortedSet) {
-                SortedSet set = (SortedSet) value;
-                return cloneIterable(set, new TreeSet(set.comparator()));
-            } else if (value instanceof Set) {
-                return cloneIterable((Set) value, new LinkedHashSet());
-            } else if (value instanceof Iterable) {
-                return cloneIterable((Iterable) value, new ArrayList());
-            } else if (value instanceof SortedMap) {
-                SortedMap map = (SortedMap) value;
-                return cloneMap(map, new TreeMap(map.comparator()));
-            } else if (value instanceof Map) {
-                return cloneMap((Map) value, new LinkedHashMap());
-            } else if (value.getClass().isArray()) {
-                return cloneArray(value);
-            } else if (value instanceof java.util.Date) {
-                return ((java.util.Date) value).clone();
-            }
-            return value;
+            return switch (value) {
+                case null -> value;
+                case Bean bean -> cloneAlways(bean);
+                case SortedSet set -> cloneIterable(set, new TreeSet(set.comparator()));
+                case Set set -> cloneIterable(set, LinkedHashSet.newLinkedHashSet(set.size()));
+                case Collection coll -> cloneIterable(coll, new ArrayList(coll.size()));
+                case Iterable iterable -> cloneIterable(iterable, new ArrayList());
+                case SortedMap map -> cloneMap(map, new TreeMap(map.comparator()));
+                case Map map -> cloneMap(map, LinkedHashMap.newLinkedHashMap(map.size()));
+                case java.util.Date date -> date.clone();
+                case long[] array -> array.clone();
+                case int[] array -> array.clone();
+                case short[] array -> array.clone();
+                case byte[] array -> array.clone();
+                case char[] array -> array.clone();
+                case double[] array -> array.clone();
+                case float[] array -> array.clone();
+                case boolean[] array -> array.clone();
+                case Object[] array -> cloneArray(array);
+                default -> value;
+            };
         }
 
         Object cloneIterable(Iterable original, Collection cloned) {
-            for (Object item : original) {
+            for (var item : original) {
                 cloned.add(clone(item));
             }
             return cloned;
         }
 
         Object cloneMap(Map original, Map cloned) {
-            for (Object item : original.entrySet()) {
-                Entry entry = (Entry) item;
+            for (var item : original.entrySet()) {
+                var entry = (Entry) item;
                 cloned.put(clone(entry.getKey()), clone(entry.getValue()));
             }
             return cloned;
         }
 
-        Object cloneArray(Object original) {
-            int len = Array.getLength(original);
-            Class<?> arrayType = original.getClass().getComponentType();
-            Object copy = Array.newInstance(arrayType, len);
-            for (int i = 0; i < len; i++) {
-                Array.set(copy, i, clone(Array.get(original, i)));
+        Object cloneArray(Object[] originalArray) {
+            var copy = originalArray.clone();
+            for (var i = 0; i < copy.length; i++) {
+                copy[i] = clone(originalArray[i]);
             }
             return copy;
         }
@@ -1082,41 +1031,34 @@ public final class JodaBeanUtils {
     /**
      * Clones an object.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static class GuavaCloner extends Cloner {
         GuavaCloner() {
         }
 
         @Override
         Object clone(Object value) {
-            if (value == null) {
-                return value;
-            } else if (value instanceof ImmutableMap ||
-                    value instanceof ImmutableCollection ||
-                    value instanceof ImmutableMultimap ||
-                    value instanceof ImmutableTable) {
-                return value;
-            } else if (value instanceof SortedMultiset) {
-                SortedMultiset set = (SortedMultiset) value;
-                return cloneIterable(set, TreeMultiset.create(set.comparator()));
-            } else if (value instanceof Multiset) {
-                return cloneIterable((Multiset) value, LinkedHashMultiset.create());
-            } else if (value instanceof SetMultimap) {
-                return cloneMultimap((Multimap) value, LinkedHashMultimap.create());
-            } else if (value instanceof ListMultimap || value instanceof Multimap) {
-                return cloneMultimap((Multimap) value, ArrayListMultimap.create());
-            } else if (value instanceof BiMap) {
-                return cloneMap((BiMap) value, HashBiMap.create());
-            } else if (value instanceof Table) {
-                return cloneTable((Table) value, HashBasedTable.create());
-            }
-            return super.clone(value);
+            return switch (value) {
+                case null -> value;
+                case ImmutableCollection coll -> coll;
+                case ImmutableMap map -> map;
+                case ImmutableMultimap map -> map;
+                case ImmutableTable table -> table;
+                case SortedMultiset set -> cloneIterable(set, TreeMultiset.create(set.comparator()));
+                case Multiset mset -> cloneIterable(mset, LinkedHashMultiset.create(mset.size()));
+                case SetMultimap mmap -> cloneMultimap(mmap, LinkedHashMultimap.create());
+                case ListMultimap mmap -> cloneMultimap(mmap, ArrayListMultimap.create());
+                case Multimap mmap -> cloneMultimap(mmap, ArrayListMultimap.create());
+                case BiMap bimap -> cloneMap(bimap, HashBiMap.create(bimap.size()));
+                case Table table -> cloneTable(table, HashBasedTable.create());
+                default -> super.clone(value);
+            };
         }
 
         Object cloneMultimap(Multimap original, Multimap cloned) {
-            for (Object key : original.keySet()) {
-                Collection values = original.get(key);
-                for (Object value : values) {
+            for (var key : original.keySet()) {
+                var values = original.get(key);
+                for (var value : values) {
                     cloned.put(clone(key), clone(value));
                 }
             }
@@ -1124,8 +1066,8 @@ public final class JodaBeanUtils {
         }
 
         Object cloneTable(Table original, Table cloned) {
-            for (Object item : original.cellSet()) {
-                Table.Cell cell = (Table.Cell) item;
+            for (var item : original.cellSet()) {
+                var cell = (Table.Cell) item;
                 cloned.put(clone(cell.getRowKey()), clone(cell.getColumnKey()), clone(cell.getValue()));
             }
             return cloned;
@@ -1136,30 +1078,25 @@ public final class JodaBeanUtils {
     /**
      * Clones an object.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static class CollectCloner extends GuavaCloner {
         CollectCloner() {
         }
 
         @Override
         Object clone(Object value) {
-            if (value == null) {
-                return value;
-            } else if (value instanceof ImmutableGrid) {
-                return value;
-            } else if (value instanceof DenseGrid) {
-                Grid grid = (Grid) value;
-                return cloneGrid(grid, DenseGrid.create(grid.rowCount(), grid.columnCount()));
-            } else if (value instanceof Grid) {
-                Grid grid = (Grid) value;
-                return cloneGrid(grid, SparseGrid.create(grid.rowCount(), grid.columnCount()));
-            }
-            return super.clone(value);
+            return switch (value) {
+                case null -> value;
+                case ImmutableGrid grid -> grid;
+                case DenseGrid grid -> cloneGrid(grid, DenseGrid.create(grid.rowCount(), grid.columnCount()));
+                case Grid grid -> cloneGrid(grid, SparseGrid.create(grid.rowCount(), grid.columnCount()));
+                default -> super.clone(value);
+            };
         }
 
         Object cloneGrid(Grid original, Grid cloned) {
-            for (Object item : original.cells()) {
-                Grid.Cell cell = (Grid.Cell) item;
+            for (var item : original.cells()) {
+                var cell = (Grid.Cell) item;
                 cloned.put(cell.getRow(), cell.getColumn(), clone(cell.getValue()));
             }
             return cloned;

@@ -130,8 +130,8 @@ public interface MetaProperty<P> {
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> A annotation(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
             if (annotationClass.isInstance(annotation)) {
                 return (A) annotation;
             }
@@ -153,8 +153,8 @@ public interface MetaProperty<P> {
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
             if (annotationClass.isInstance(annotation)) {
                 return Optional.of((A) annotation);
             }
@@ -208,7 +208,7 @@ public interface MetaProperty<P> {
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
     public default P put(Bean bean, Object value) {
-        P old = get(bean);
+        var old = get(bean);
         set(bean, value);
         return old;
     }
@@ -251,7 +251,7 @@ public interface MetaProperty<P> {
      * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
     public default String getString(Bean bean, StringConvert stringConvert) {
-        P value = get(bean);
+        var value = get(bean);
         return stringConvert.convertToString(propertyType(), value);
     }
 

@@ -15,6 +15,8 @@
  */
 package org.joda.beans.impl;
 
+import java.util.Objects;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
@@ -80,24 +82,15 @@ public final class BasicProperty<P> implements Property<P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof Property) {
-            Property<?> other = (Property<?>) obj;
-            if (metaProperty.equals(other.metaProperty())) {
-                Object a = get();
-                Object b = other.get();
-                return a == null ? b == null : a.equals(b);
-            }
-        }
-        return false;
+        return obj == this ||
+                (obj instanceof Property<?> other &&
+                        metaProperty.equals(other.metaProperty()) &&
+                        Objects.equals(get(), other.get()));
     }
 
     @Override
     public int hashCode() {
-        P value = get();
-        return metaProperty.hashCode() ^ (value == null ? 0 : value.hashCode());
+        return metaProperty.hashCode() ^ Objects.hashCode(get());
     }
 
     /**

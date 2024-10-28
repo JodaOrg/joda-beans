@@ -114,11 +114,8 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ReflectiveMetaBean) {
-            ReflectiveMetaBean<?> other = (ReflectiveMetaBean<?>) obj;
-            return this.beanType.equals(other.beanType);
-        }
-        return false;
+        return obj instanceof ReflectiveMetaBean other &&
+                this.beanType.equals(other.beanType);
     }
 
     @Override
