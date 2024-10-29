@@ -64,7 +64,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofReadWrite(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_WRITE, field);
     }
 
@@ -80,7 +80,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofReadOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY, field);
     }
 
@@ -96,7 +96,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofWriteOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.WRITE_ONLY, field);
     }
 
@@ -112,7 +112,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofReadOnlyBuildable(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY_BUILDABLE, field);
     }
 
@@ -128,12 +128,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofDerived(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        AccessibleObject method = findMethod(metaBean, propertyName);
+        var method = findMethod(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, method);
     }
 
     /**
-     * Factory to create an imutable meta-property avoiding duplicate generics.
+     * Factory to create an immutable meta-property avoiding duplicate generics.
      * 
      * @param <P>  the property type
      * @param metaBean  the meta-bean, not null
@@ -144,7 +144,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofImmutable(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.IMMUTABLE, field);
     }
 
@@ -165,7 +165,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     private static AccessibleObject findMethod(MetaBean metaBean, String propertyName) {
-        String methodName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        var methodName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
         Class<?> cls = metaBean.beanType();
         while (cls != DirectBean.class && cls != Object.class && cls != null) {
             try {
@@ -271,13 +271,13 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings("unchecked")
     @Override
     public P get(Bean bean) {
-        DirectMetaBean meta = (DirectMetaBean) bean.metaBean();
+        var meta = (DirectMetaBean) bean.metaBean();
         return (P) meta.propertyGet(bean, name(), false);
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        DirectMetaBean meta = (DirectMetaBean) bean.metaBean();
+        var meta = (DirectMetaBean) bean.metaBean();
         meta.propertySet(bean, name(), value, false);
     }
 

@@ -154,7 +154,7 @@ class BeanParser {
         if (!data.isBeanStyleValid()) {
             throw new BeanCodeGenException("Invalid bean style: " + data.getBeanStyle(), file, beanDefIndex);
         }
-        data.setConstructorScope(parseConstrucorScope(beanDefIndex));
+        data.setConstructorScope(parseConstructorScope(beanDefIndex));
         if (!data.isConstructorScopeValid()) {
             throw new BeanCodeGenException("Invalid constructor scope: " + data.getConstructorScope(), file, beanDefIndex);
         }
@@ -331,7 +331,7 @@ class BeanParser {
         return "smart";
     }
 
-    private String parseConstrucorScope(int defLine) {
+    private String parseConstructorScope(int defLine) {
         var line = content.get(defLine).trim();
         var matcher = CONSTRUCTOR_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {

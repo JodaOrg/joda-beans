@@ -15,7 +15,6 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -131,8 +130,8 @@ public class BufferingBeanBuilder<T extends Bean>
     @Override
     public T build() {
         @SuppressWarnings("unchecked")
-        BeanBuilder<T> builder = (BeanBuilder<T>) getMetaBean().builder();
-        for (Entry<MetaProperty<?>, Object> entry : getBuffer().entrySet()) {
+        var builder = (BeanBuilder<T>) getMetaBean().builder();
+        for (var entry : getBuffer().entrySet()) {
             builder.set(entry.getKey(), entry.getValue());
         }
         return builder.build();

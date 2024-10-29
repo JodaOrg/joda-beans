@@ -66,7 +66,7 @@ public final class BasicPropertyMap
 
     @Override
     public boolean containsKey(Object obj) {
-        return obj instanceof String && bean.metaBean().metaPropertyExists(obj.toString());
+        return obj instanceof String str && bean.metaBean().metaPropertyExists(str);
     }
 
     @Override

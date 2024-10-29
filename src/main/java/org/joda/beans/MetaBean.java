@@ -140,7 +140,7 @@ public interface MetaBean {
      * This method returns the property with the specified name.
      * <p>
      * The base interface throws an exception if the name is not recognised.
-     * By contrast, the {@code DynamicMetaBean} subinterface creates the property on demand.
+     * By contrast, the {@code DynamicMetaBean} interface creates the property on demand.
      * 
      * @param <R>  the property type, optional, enabling auto-casting
      * @param propertyName  the property name to retrieve, not null

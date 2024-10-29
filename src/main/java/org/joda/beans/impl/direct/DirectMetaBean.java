@@ -42,7 +42,7 @@ public abstract class DirectMetaBean implements MetaBean {
     @SuppressWarnings("unchecked")
     @Override
     public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyGet(propertyName);
+        var mp = metaPropertyGet(propertyName);
         if (mp == null) {
             return metaPropertyNotFound(propertyName);
         }
