@@ -70,8 +70,8 @@ class LightBeanBuilder<B extends Bean>
     }
 
     private int index(MetaProperty<?> metaProperty) {
-        if (metaProperty instanceof LightMetaProperty) {
-            int index = ((LightMetaProperty<?>) metaProperty).getConstructorIndex();
+        if (metaProperty instanceof LightMetaProperty<?> mp) {
+            int index = mp.getConstructorIndex();
             if (index < 0) {
                 throw new NoSuchElementException("Derived property cannot be set: " + metaProperty.name());
             }

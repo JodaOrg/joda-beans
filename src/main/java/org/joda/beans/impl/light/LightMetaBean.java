@@ -99,12 +99,11 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     // determine the field names by reflection
     private static String[] fieldNames(Class<?> beanType) {
-        Field[] fields = Stream.of(beanType.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
-                .toArray(Field[]::new);
-        List<String> fieldNames = new ArrayList<>();
-        for (Field field : fields) {
-            fieldNames.add(field.getName());
+        var fieldNames = new ArrayList<String>();
+        for (var field : beanType.getDeclaredFields()) {
+            if (!Modifier.isStatic(field.getModifiers()) && field.getAnnotation(PropertyDefinition.class) != null) {
+                fieldNames.add(field.getName());
+            }
         }
         return fieldNames.toArray(new String[0]);
     }
@@ -161,9 +160,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         }
         this.beanType = beanType;
         // handle ordered or random
-        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        List<Class<?>> propertyTypes = new ArrayList<>();
-        for (String fieldName : fieldNames) {
+        var map = new LinkedHashMap<String, MetaProperty<?>>();
+        var propertyTypes = new ArrayList<Class<?>>();
+        for (var fieldName : fieldNames) {
             Field field;
             try {
                 field = beanType.getDeclaredField(fieldName);
@@ -207,30 +206,30 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
             propertyTypes.add(field.getType());
         }
-        Constructor<?> constructor = findConstructor(beanType, propertyTypes);
-        Object[] constructionData = defaultValues;
+        var constructor = findConstructor(beanType, propertyTypes);
+        var constructionData = defaultValues;
         if (defaultValues.length == 0) {
             constructionData = buildConstructionData(constructor);
         }
         // derived
-        Method[] methods = beanType.getDeclaredMethods();
-        for (Method method : methods) {
+        var methods = beanType.getDeclaredMethods();
+        for (var method : methods) {
             if (!Modifier.isStatic(method.getModifiers()) &&
                     method.getAnnotation(DerivedProperty.class) != null &&
                     method.getName().startsWith("get") &&
                     method.getName().length() > 3 &&
                     Character.isUpperCase(method.getName().charAt(3)) &&
                     method.getParameterTypes().length == 0) {
-                String methodName = method.getName();
-                String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
-                MetaProperty<Object> mp = LightMetaProperty.of(this, method, lookup, propertyName, -1);
+                var methodName = method.getName();
+                var propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+                var mp = LightMetaProperty.of(this, method, lookup, propertyName, -1);
                 map.put(propertyName, mp);
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
         this.aliasMap = new HashMap<>();
         this.constructionData = constructionData;
-        MethodHandle handle = findConstructorHandle(beanType, lookup, constructor);
+        var handle = findConstructorHandle(beanType, lookup, constructor);
         this.constructorFn = args -> build(handle, args);
     }
 
@@ -269,9 +268,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         try {
             return beanType.getDeclaredMethod(setterName, fieldType);
         } catch (NoSuchMethodException ex) {
-            Method[] methods = beanType.getMethods();
-            List<Method> potential = new ArrayList<>();
-            for (Method method : methods) {
+            var methods = beanType.getMethods();
+            var potential = new ArrayList<Method>();
+            for (var method : methods) {
                 if (method.getName().equals(setterName) && method.getParameterTypes().length == 1) {
                     potential.add(method);
                 }
@@ -296,8 +295,8 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
         try {
             // spreader allows an Object[] to invoke the positional arguments
-            MethodType constructorType = MethodType.methodType(Void.TYPE, constructor.getParameterTypes());
-            MethodHandle baseHandle = lookup.findConstructor(beanType, constructorType)
+            var constructorType = MethodType.methodType(Void.TYPE, constructor.getParameterTypes());
+            var baseHandle = lookup.findConstructor(beanType, constructorType)
                     .asSpreader(Object[].class, constructor.getParameterTypes().length);
             // change the return type so caller can use invokeExact()
             return baseHandle.asType(baseHandle.type().changeReturnType(Bean.class));
@@ -310,7 +309,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
 
     // finds constructor which matches types exactly
     private static <T extends Bean> Constructor<T> findConstructor(Class<T> beanType, List<Class<?>> propertyTypes) {
-        Class<?>[] types = propertyTypes.toArray(new Class<?>[0]);
+        var types = propertyTypes.toArray(new Class<?>[0]);
         try {
             return beanType.getDeclaredConstructor(types);
         } catch (NoSuchMethodException ex) {
@@ -322,13 +321,13 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     // this handles cases where field is a concrete class and constructor is an interface
     private static <T extends Bean> Constructor<T> findConstructorFallback(Class<T> beanType, Class<?>[] types, NoSuchMethodException ex) {
         @SuppressWarnings("unchecked")
-        Constructor<T>[] cons = (Constructor<T>[]) beanType.getDeclaredConstructors();
+        var cons = (Constructor<T>[]) beanType.getDeclaredConstructors();
         Constructor<T> match = null;
         outer:
-        for (Constructor<T> con : cons) {
-            Class<?>[] conTypes = con.getParameterTypes();
+        for (var con : cons) {
+            var conTypes = con.getParameterTypes();
             if (conTypes.length == types.length) {
-                for (int j = 0; j < types.length; j++) {
+                for (var j = 0; j < types.length; j++) {
                     if (!conTypes[j].isAssignableFrom(types[j])) {
                         continue outer;
                     }
@@ -340,8 +339,8 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             }
         }
         if (match == null) {
-            String signature = Stream.of(types).map(Class::getName).collect(joining(", "));
-            String msg = "Unable to find constructor: " + beanType.getSimpleName() + '(' + signature + ')';
+            var signature = Stream.of(types).map(Class::getName).collect(joining(", "));
+            var msg = "Unable to find constructor: " + beanType.getSimpleName() + '(' + signature + ')';
             throw new UnsupportedOperationException(msg, ex);
         }
         return match;
@@ -351,9 +350,9 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     // needs to have default values for primitives
     // note that this does not handle empty collections/maps
     private static Object[] buildConstructionData(Constructor<?> constructor) {
-        Class<?>[] parameterTypes = constructor.getParameterTypes();
-        Object[] args = new Object[parameterTypes.length];
-        for (int i = 0; i < parameterTypes.length; i++) {
+        var parameterTypes = constructor.getParameterTypes();
+        var args = new Object[parameterTypes.length];
+        for (var i = 0; i < parameterTypes.length; i++) {
             if (parameterTypes[i] == boolean.class) {
                 args[i] = false;
             } else if (parameterTypes[i] == int.class) {
@@ -375,6 +374,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         return args;
     }
 
+    @SuppressWarnings("unchecked")
     private T build(MethodHandle handle, Object[] args) {
         try {
             return (T) handle.invokeExact(args);
@@ -408,7 +408,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (!metaPropertyMap.containsKey(realName)) {
             throw new IllegalArgumentException("Invalid property name: " + realName);
         }
-        Map<String, String> aliasMap = new HashMap<>(this.aliasMap);
+        var aliasMap = new HashMap<String, String>(this.aliasMap);
         aliasMap.put(alias, realName);
         return new LightMetaBean<>(beanType, metaPropertyMap, aliasMap, constructorFn, constructionData);
     }
@@ -432,7 +432,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
+        var mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
         if (mp == null) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
@@ -447,7 +447,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof LightMetaBean other &&
+        return obj instanceof LightMetaBean<?> other &&
                 this.beanType.equals(other.beanType);
     }
 

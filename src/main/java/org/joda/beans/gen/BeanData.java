@@ -738,7 +738,7 @@ class BeanData {
     }
 
     /**
-     * Is the clone method to be skiped.
+     * Is the clone method to be skipped.
      * @return true to generate
      */
     public boolean isSkipCloneGeneration() {

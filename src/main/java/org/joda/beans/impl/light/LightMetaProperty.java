@@ -122,16 +122,16 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
         
         MethodHandle getter;
         try {
-            MethodType type = MethodType.methodType(getMethod.getReturnType(), getMethod.getParameterTypes());
-            getter = lookup.findVirtual(field.getDeclaringClass(), getMethod.getName(), type);
+            var methodTypeype = MethodType.methodType(getMethod.getReturnType(), getMethod.getParameterTypes());
+            getter = lookup.findVirtual(field.getDeclaringClass(), getMethod.getName(), methodTypeype);
         } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
         }
         MethodHandle setter = null;
         if (setMethod != null) {
             try {
-                MethodType type = MethodType.methodType(void.class, setMethod.getParameterTypes());
-                setter = lookup.findVirtual(field.getDeclaringClass(), setMethod.getName(), type);
+                var methodType = MethodType.methodType(void.class, setMethod.getParameterTypes());
+                setter = lookup.findVirtual(field.getDeclaringClass(), setMethod.getName(), methodType);
             } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException ex) {
                 throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
             }

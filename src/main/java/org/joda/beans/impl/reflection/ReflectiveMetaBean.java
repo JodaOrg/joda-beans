@@ -73,8 +73,8 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
             throw new NullPointerException("Property names must not be null");
         }
         this.beanType = beanType;
-        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        for (String name : propertyNames) {
+        var map = new LinkedHashMap<String, MetaProperty<?>>();
+        for (var name : propertyNames) {
             map.put(name, new ReflectiveMetaProperty<>(this, beanType, name));
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
@@ -114,7 +114,7 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ReflectiveMetaBean other &&
+        return obj instanceof ReflectiveMetaBean<?> other &&
                 this.beanType.equals(other.beanType);
     }
 

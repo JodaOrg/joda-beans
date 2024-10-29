@@ -16,7 +16,6 @@
 package org.joda.beans.impl.direct;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
@@ -144,9 +143,9 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         this.beanType = beanType;
         this.builderSupplier = builderSupplier;
         // extract fields and match to getters/setters
-        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        for (int i = 0; i < fieldNames.length; i++) {
-            String fieldName = fieldNames[i];
+        var map = new LinkedHashMap<String, MetaProperty<?>>();
+        for (var i = 0; i < fieldNames.length; i++) {
+            var fieldName = fieldNames[i];
             Field field;
             try {
                 field = beanType.getDeclaredField(fieldName);
@@ -163,8 +162,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
                     this, fieldName, field, getters.get(i), setters != null ? setters.get(i) : null));
         }
         // derived
-        Method[] methods = beanType.getDeclaredMethods();
-        for (Method method : methods) {
+        var methods = beanType.getDeclaredMethods();
+        for (var method : methods) {
             if (!Modifier.isStatic(method.getModifiers()) &&
                     Modifier.isPublic(method.getModifiers()) &&
                     method.getAnnotation(DerivedProperty.class) != null &&
@@ -172,9 +171,9 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
                     method.getName().length() > 3 &&
                     Character.isUpperCase(method.getName().charAt(3)) &&
                     method.getParameterTypes().length == 0) {
-                String methodName = method.getName();
-                String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
-                MetaProperty<Object> mp = new MinimalMetaProperty<>(this, method, propertyName);
+                var methodName = method.getName();
+                var propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+                var mp = new MinimalMetaProperty<Object>(this, method, propertyName);
                 map.put(propertyName, mp);
             }
         }
@@ -210,7 +209,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (!metaPropertyMap.containsKey(realName)) {
             throw new IllegalArgumentException("Invalid property name: " + realName);
         }
-        Map<String, String> aliasMap = new HashMap<>(this.aliasMap);
+        var aliasMap = new HashMap<String, String>(this.aliasMap);
         aliasMap.put(alias, realName);
         return new MinimalMetaBean<>(beanType, builderSupplier, metaPropertyMap, aliasMap);
     }
@@ -234,7 +233,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
+        var mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
         if (mp == null) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
@@ -249,7 +248,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof MinimalMetaBean other &&
+        return obj instanceof MinimalMetaBean<?> other &&
                 this.beanType.equals(other.beanType);
     }
 

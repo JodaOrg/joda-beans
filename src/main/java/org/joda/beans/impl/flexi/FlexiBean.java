@@ -158,7 +158,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @return the value of the property, may be null
      */
     public String getString(String propertyName) {
-        Object obj = get(propertyName);
+        var obj = get(propertyName);
         return obj != null ? obj.toString() : null;
     }
 
@@ -195,8 +195,8 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @throws ClassCastException if the value is not compatible
      */
     public int getInt(String propertyName, int defaultValue) {
-        Object obj = get(propertyName);
-        return obj != null ? ((Number) get(propertyName)).intValue() : defaultValue;
+        var obj = get(propertyName);
+        return obj != null ? ((Number) obj).intValue() : defaultValue;
     }
 
     /**
@@ -220,8 +220,8 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @throws ClassCastException if the value is not compatible
      */
     public long getLong(String propertyName, long defaultValue) {
-        Object obj = get(propertyName);
-        return obj != null ? ((Number) get(propertyName)).longValue() : defaultValue;
+        var obj = get(propertyName);
+        return obj != null ? ((Number) obj).longValue() : defaultValue;
     }
 
     /**
@@ -245,8 +245,8 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @throws ClassCastException if the value is not compatible
      */
     public double getDouble(String propertyName, double defaultValue) {
-        Object obj = get(propertyName);
-        return obj != null ? ((Number) get(propertyName)).doubleValue() : defaultValue;
+        var obj = get(propertyName);
+        return obj != null ? ((Number) obj).doubleValue() : defaultValue;
     }
 
     //-----------------------------------------------------------------------
@@ -301,7 +301,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      */
     public void putAll(Map<String, ? extends Object> map) {
         if (!map.isEmpty()) {
-            for (String key : map.keySet()) {
+            for (var key : map.keySet()) {
                 if (!VALID_KEY.matcher(key).matches()) {
                     throw new IllegalArgumentException("Invalid key for FlexiBean: " + key);
                 }

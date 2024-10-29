@@ -216,9 +216,7 @@ public final class BeanAssert {
             diffs.add(prefix + ": Was null, but expected " + buildSummary(expected, true));
             return;
         }
-        if (expected instanceof List && actual instanceof List) {
-            List<?> expectedList = (List<?>) expected;
-            List<?> actualList = (List<?>) actual;
+        if (expected instanceof List<?> expectedList && actual instanceof List<?> actualList) {
             if (expectedList.size() != actualList.size()) {
                 diffs.add(prefix + ": List size differs, expected " + expectedList.size() + " but was " + actualList.size());
                 return;
@@ -228,15 +226,13 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof Map && actual instanceof Map) {
-            Map<?, ?> expectedMap = (Map<?, ?>) expected;
-            Map<?, ?> actualMap = (Map<?, ?>) actual;
+        if (expected instanceof Map<?, ?> expectedMap && actual instanceof Map<?, ?> actualMap) {
             if (expectedMap.size() != actualMap.size()) {
                 diffs.add(prefix + ": Map size differs, expected " + expectedMap.size() + " but was " + actualMap.size());
                 return;
             }
             if (!expectedMap.keySet().equals(actualMap.keySet())) {
-                diffs.add(prefix + ": Map keyset differs, expected " + buildSummary(expectedMap.keySet(), false) + " but was " + buildSummary(actualMap.keySet(), false));
+                diffs.add(prefix + ": Map keySet differs, expected " + buildSummary(expectedMap.keySet(), false) + " but was " + buildSummary(actualMap.keySet(), false));
                 return;
             }
             for (Object key : expectedMap.keySet()) {
