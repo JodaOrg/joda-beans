@@ -145,25 +145,14 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterable createIterable(String metaTypeDescription, JodaBeanSer settings, Map<String, Class<?>> knownTypes) {
-        if (metaTypeDescription.equals("BiMap")) {
-            return biMap(Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (metaTypeDescription.equals("SetMultimap")) {
-            return setMultimap(Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (metaTypeDescription.equals("ListMultimap")) {
-            return listMultimap(Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (metaTypeDescription.equals("Multimap")) {
-            return listMultimap(Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (metaTypeDescription.equals("Multiset")) {
-            return multiset(Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (metaTypeDescription.equals("Table")) {
-            return table(Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        return super.createIterable(metaTypeDescription, settings, knownTypes);
+        return switch (metaTypeDescription) {
+            case "BiMap" -> biMap(Object.class, Object.class, EMPTY_VALUE_TYPES);
+            case "SetMultimap" -> setMultimap(Object.class, Object.class, EMPTY_VALUE_TYPES);
+            case "ListMultimap", "Multimap" -> listMultimap(Object.class, Object.class, EMPTY_VALUE_TYPES);
+            case "Multiset" -> multiset(Object.class, EMPTY_VALUE_TYPES);
+            case "Table" -> table(Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            default -> super.createIterable(metaTypeDescription, settings, knownTypes);
+        };
     }
 
     /**

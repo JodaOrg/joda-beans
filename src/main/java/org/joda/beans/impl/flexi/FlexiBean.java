@@ -425,6 +425,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
         if (size() == 0) {
             return Collections.emptyMap();
         }
+        // retain order, Map.of() does not respect order
         return Collections.unmodifiableMap(new LinkedHashMap<>(data));
     }
 
@@ -447,14 +448,9 @@ public final class FlexiBean implements DynamicBean, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof FlexiBean) {
-            FlexiBean other = (FlexiBean) obj;
-            return this.data.equals(other.data);
-        }
-        return super.equals(obj);
+        return obj == this ||
+                (obj instanceof FlexiBean other &&
+                        this.data.equals(other.data));
     }
 
     /**

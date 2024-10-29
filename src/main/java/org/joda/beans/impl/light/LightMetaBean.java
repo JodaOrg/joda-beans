@@ -102,8 +102,8 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                 .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
                 .toArray(Field[]::new);
         List<String> fieldNames = new ArrayList<>();
-        for (int i = 0; i < fields.length; i++) {
-            fieldNames.add(fields[i].getName());
+        for (Field field : fields) {
+            fieldNames.add(field.getName());
         }
         return fieldNames.toArray(new String[0]);
     }
@@ -162,8 +162,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         // handle ordered or random
         Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
         List<Class<?>> propertyTypes = new ArrayList<>();
-        for (int i = 0; i < fieldNames.length; i++) {
-            String fieldName = fieldNames[i];
+        for (String fieldName : fieldNames) {
             Field field;
             try {
                 field = beanType.getDeclaredField(fieldName);
@@ -320,8 +319,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             @SuppressWarnings("unchecked")
             Constructor<T>[] cons = (Constructor<T>[]) beanType.getDeclaredConstructors();
             Constructor<T> match = null;
-            for (int i = 0; i < cons.length; i++) {
-                Constructor<T> con = cons[i];
+            for (Constructor<T> con : cons) {
                 Class<?>[] conTypes = con.getParameterTypes();
                 if (conTypes.length == types.length) {
                     for (int j = 0; j < types.length; j++) {
@@ -447,11 +445,8 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof LightMetaBean) {
-            LightMetaBean<?> other = (LightMetaBean<?>) obj;
-            return this.beanType.equals(other.beanType);
-        }
-        return false;
+        return obj instanceof LightMetaBean other &&
+                this.beanType.equals(other.beanType);
     }
 
     @Override

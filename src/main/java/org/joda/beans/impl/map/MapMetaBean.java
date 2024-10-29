@@ -79,33 +79,31 @@ class MapMetaBean implements DynamicMetaBean {
 
     @Override
     public Iterable<MetaProperty<?>> metaPropertyIterable() {
-        return new Iterable<MetaProperty<?>>() {
-            @Override
-            public Iterator<MetaProperty<?>> iterator() {
-                Iterator<String> it = bean.keySet().iterator();
-                return new Iterator<MetaProperty<?>>() {
-                    @Override
-                    public boolean hasNext() {
-                        return it.hasNext();
-                    }
-                    @Override
-                    public MetaProperty<?> next() {
-                        return MapBeanMetaProperty.of(MapMetaBean.this, it.next());
-                    }
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException("Unmodifiable");
-                    }
-                    
-                };
-            }
+        return () -> {
+            var it = bean.keySet().iterator();
+            return new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
+                @Override
+                public MetaProperty<?> next() {
+                    return MapBeanMetaProperty.of(MapMetaBean.this, it.next());
+                }
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("Unmodifiable");
+                }
+
+            };
         };
     }
 
     @Override
     public Map<String, MetaProperty<?>> metaPropertyMap() {
-        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        for (String name : bean.keySet()) {
+        var keySet = bean.keySet();
+        var map = LinkedHashMap.<String, MetaProperty<?>>newLinkedHashMap(keySet.size());
+        for (var name : bean.keySet()) {
             map.put(name, MapBeanMetaProperty.of(this, name));
         }
         return Collections.unmodifiableMap(map);

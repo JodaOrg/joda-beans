@@ -16,8 +16,6 @@
 package org.joda.beans;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -151,7 +149,7 @@ public interface MetaBean {
      */
     @SuppressWarnings("unchecked")
     public default <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyMap().get(propertyName);
+        var mp = metaPropertyMap().get(propertyName);
         if (mp == null) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
@@ -196,7 +194,7 @@ public interface MetaBean {
      * @return the annotations, unmodifiable, not null
      */
     public default List<Annotation> annotations() {
-        return Collections.unmodifiableList(Arrays.asList(beanType().getAnnotations()));
+        return List.of(beanType().getAnnotations());
     }
 
     /**
@@ -213,8 +211,8 @@ public interface MetaBean {
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> A annotation(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
             if (annotationClass.isInstance(annotation)) {
                 return (A) annotation;
             }
@@ -236,8 +234,8 @@ public interface MetaBean {
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
             if (annotationClass.isInstance(annotation)) {
                 return Optional.of((A) annotation);
             }

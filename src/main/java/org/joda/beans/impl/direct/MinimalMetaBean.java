@@ -249,11 +249,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MinimalMetaBean) {
-            MinimalMetaBean<?> other = (MinimalMetaBean<?>) obj;
-            return this.beanType.equals(other.beanType);
-        }
-        return false;
+        return obj instanceof MinimalMetaBean other &&
+                this.beanType.equals(other.beanType);
     }
 
     @Override

@@ -59,7 +59,7 @@ final class MetaBeans {
      * @throws IllegalArgumentException if unable to obtain the meta-bean
      */
     static MetaBean lookup(Class<?> cls) {
-        MetaBean meta = META_BEANS.get(cls);
+        var meta = META_BEANS.get(cls);
         if (meta == null) {
             return metaBeanLookup(cls);
         }
@@ -89,11 +89,11 @@ final class MetaBeans {
             // should be impossible
             throw new IllegalArgumentException("Unable to find meta-bean: " + cls.getName(), ex);
         }
-        MetaBean meta = META_BEANS.get(cls);
+        var meta = META_BEANS.get(cls);
         if (meta != null) {
             return meta;
         }
-        MetaProvider providerAnnotation = findProviderAnnotation(cls);
+        var providerAnnotation = findProviderAnnotation(cls);
         if (providerAnnotation != null) {
             // Synchronization is necessary to prevent a race condition where the same meta-bean is registered twice
             synchronized (MetaBeans.class) {
@@ -102,9 +102,9 @@ final class MetaBeans {
                 if (meta != null) {
                     return meta;
                 }
-                Class<? extends MetaBeanProvider> providerClass = providerAnnotation.value();
+                var providerClass = providerAnnotation.value();
                 try {
-                    MetaBeanProvider provider = META_BEAN_PROVIDERS.get(providerClass);
+                    var provider = META_BEAN_PROVIDERS.get(providerClass);
                     if (provider == null) {
                         provider = providerClass.getDeclaredConstructor().newInstance();
                         META_BEAN_PROVIDERS.put(providerClass, provider);
@@ -128,7 +128,7 @@ final class MetaBeans {
     // the class and all its superclasses and interfaces are searched.
     // if the annotation is found in multiple places then it is undefined which is returned.
     private static MetaProvider findProviderAnnotation(Class<?> cls) {
-        MetaProvider providerAnnotation = cls.getAnnotation(MetaProvider.class);
+        var providerAnnotation = cls.getAnnotation(MetaProvider.class);
         if (providerAnnotation != null) {
             return providerAnnotation;
         }
@@ -138,7 +138,7 @@ final class MetaBeans {
                 return providerAnnotation;
             }
         }
-        Class<?> superclass = cls.getSuperclass();
+        var superclass = cls.getSuperclass();
         if (superclass == null || superclass.equals(Object.class)) {
             return null;
         }
@@ -155,7 +155,7 @@ final class MetaBeans {
      * @throws IllegalArgumentException if unable to register
      */
     static void register(MetaBean metaBean) {
-        Class<? extends Bean> type = metaBean.beanType();
+        var type = metaBean.beanType();
         if (META_BEANS.putIfAbsent(type, metaBean) != null) {
             throw new IllegalArgumentException("Cannot register class twice: " + type.getName());
         }

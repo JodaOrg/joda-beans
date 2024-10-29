@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
 
 /**
@@ -67,7 +66,7 @@ public final class BasicPropertyMap
 
     @Override
     public boolean containsKey(Object obj) {
-        return obj instanceof String ? bean.metaBean().metaPropertyExists(obj.toString()) : false;
+        return obj instanceof String && bean.metaBean().metaPropertyExists(obj.toString());
     }
 
     @Override
@@ -82,7 +81,7 @@ public final class BasicPropertyMap
 
     @Override
     public Set<Entry<String, Property<?>>> entrySet() {
-        return new AbstractSet<Entry<String, Property<?>>>() {
+        return new AbstractSet<>() {
             // TODO: possibly override contains()
             @Override
             public int size() {
@@ -90,16 +89,16 @@ public final class BasicPropertyMap
             }
             @Override
             public Iterator<Entry<String, Property<?>>> iterator() {
-                final Iterator<MetaProperty<?>> it = bean.metaBean().metaPropertyMap().values().iterator();
-                return new Iterator<Entry<String, Property<?>>>() {
+                var it = bean.metaBean().metaPropertyMap().values().iterator();
+                return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
                     public Entry<String, Property<?>> next() {
-                        MetaProperty<?> meta = it.next();
-                        return new SimpleImmutableEntry<>(meta.name(), BasicProperty.of(bean, meta));
+                        var meta = it.next();
+                        return Map.entry(meta.name(), BasicProperty.of(bean, meta));
                     }
                     @Override
                     public void remove() {
