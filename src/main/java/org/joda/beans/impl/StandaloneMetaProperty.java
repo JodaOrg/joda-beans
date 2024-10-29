@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
@@ -40,7 +41,7 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
     /**
      * The type of the property.
      */
-    private final Class<P> clazz;
+    private final Class<P> propertyType;
     /**
      * The type of the property.
      */
@@ -53,11 +54,11 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
      * @param <R>  the property type
      * @param propertyName  the property name, not empty
      * @param metaBean  the meta-bean, which does not have to refer to this property, not null
-     * @param clazz  the type of the property, not null
+     * @param propertyType  the type of the property, not null
      * @return the meta-property, not null
      */
-    public static <R> StandaloneMetaProperty<R> of(String propertyName, MetaBean metaBean, Class<R> clazz) {
-        return new StandaloneMetaProperty<>(propertyName, metaBean, clazz, clazz);
+    public static <R> StandaloneMetaProperty<R> of(String propertyName, MetaBean metaBean, Class<R> propertyType) {
+        return new StandaloneMetaProperty<>(propertyName, metaBean, propertyType, propertyType);
     }
 
     /**
@@ -66,12 +67,12 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
      * @param <R>  the property type
      * @param propertyName  the property name, not empty
      * @param metaBean  the meta-bean, which does not have to refer to this property, not null
-     * @param clazz  the type of the property, not null
+     * @param propertyType  the type of the property, not null
      * @param type  the type of the property, not null
      * @return the meta-property, not null
      */
-    public static <R> StandaloneMetaProperty<R> of(String propertyName, MetaBean metaBean, Class<R> clazz, Type type) {
-        return new StandaloneMetaProperty<>(propertyName, metaBean, clazz, type);
+    public static <R> StandaloneMetaProperty<R> of(String propertyName, MetaBean metaBean, Class<R> propertyType, Type type) {
+        return new StandaloneMetaProperty<>(propertyName, metaBean, propertyType, type);
     }
 
     //-----------------------------------------------------------------------
@@ -80,22 +81,16 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
      * 
      * @param propertyName  the property name, not empty
      * @param metaBean  the meta-bean, which does not have to refer to this property, not null
-     * @param clazz  the type of the property, not null
+     * @param propertyType  the type of the property, not null
      * @param type  the type of the property, not null
      */
-    private StandaloneMetaProperty(String propertyName, MetaBean metaBean, Class<P> clazz, Type type) {
+    private StandaloneMetaProperty(String propertyName, MetaBean metaBean, Class<P> propertyType, Type type) {
         super(propertyName);
-        if (metaBean == null) {
-            throw new NullPointerException("MetaBean must not be null");
-        }
-        if (clazz == null) {
-            throw new NullPointerException("Class must not be null");
-        }
-        if (type == null) {
-            throw new NullPointerException("Type must not be null");
-        }
+        Objects.requireNonNull(metaBean, "metaBean must not be null");
+        Objects.requireNonNull(propertyType, "propertyType must not be null");
+        Objects.requireNonNull(type, "type must not be null");
         this.metaBean = metaBean;
-        this.clazz = clazz;
+        this.propertyType = propertyType;
         this.type = type;
     }
 
@@ -112,7 +107,7 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Class<P> propertyType() {
-        return clazz;
+        return propertyType;
     }
 
     @Override
@@ -134,7 +129,7 @@ public final class StandaloneMetaProperty<P> extends BasicMetaProperty<P> {
     //-----------------------------------------------------------------------
     @Override
     public P get(Bean bean) {
-        return clazz.cast(metaBean().metaProperty(name()).get(bean));
+        return propertyType.cast(metaBean().metaProperty(name()).get(bean));
     }
 
     @Override

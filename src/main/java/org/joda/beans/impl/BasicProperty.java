@@ -57,14 +57,8 @@ public final class BasicProperty<P> implements Property<P> {
      * @param metaProperty  the meta property, not null
      */
     private BasicProperty(Bean bean, MetaProperty<P> metaProperty) {
-        if (bean == null) {
-            throw new NullPointerException("Bean must not be null");
-        }
-        if (metaProperty == null) {
-            throw new NullPointerException("MetaProperty must not be null");
-        }
-        this.bean = bean;
-        this.metaProperty = metaProperty;
+        this.bean = Objects.requireNonNull(bean, "bean must not be null");
+        this.metaProperty = Objects.requireNonNull(metaProperty, "metaProperty must not be null");
     }
 
     //-----------------------------------------------------------------------

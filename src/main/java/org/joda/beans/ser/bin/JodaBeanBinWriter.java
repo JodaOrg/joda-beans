@@ -18,6 +18,7 @@ package org.joda.beans.ser.bin;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
@@ -114,10 +115,7 @@ public class JodaBeanBinWriter {
      * @param referencing  whether to use referencing
      */
     public JodaBeanBinWriter(JodaBeanSer settings, boolean referencing) {
-        if (settings == null) {
-            throw new NullPointerException("settings");
-        }
-        this.settings = settings;
+        this.settings = Objects.requireNonNull(settings, "settings must not be null");
         this.referencing = referencing;
     }
 
@@ -173,12 +171,8 @@ public class JodaBeanBinWriter {
      * @throws IOException if an error occurs
      */
     public void write(Bean bean, boolean rootType, OutputStream output) throws IOException {
-        if (bean == null) {
-            throw new NullPointerException("bean");
-        }
-        if (output == null) {
-            throw new NullPointerException("output");
-        }
+        Objects.requireNonNull(bean, "bean must not be null");
+        Objects.requireNonNull(output, "output must not be null");
         if (referencing) {
             if (!(bean instanceof ImmutableBean)) {
                 throw new IllegalArgumentException(

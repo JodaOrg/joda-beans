@@ -18,6 +18,7 @@ package org.joda.beans.ser.bin;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
+import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ser.JodaBeanSer;
@@ -54,10 +55,7 @@ public class JodaBeanBinReader extends MsgPack {
      * @param settings  the settings, not null
      */
     public JodaBeanBinReader(JodaBeanSer settings) {
-        if (settings == null) {
-            throw new NullPointerException("settings");
-        }
-        this.settings = settings;
+        this.settings = Objects.requireNonNull(settings, "settings must not be null");
     }
 
     //-----------------------------------------------------------------------
@@ -80,9 +78,7 @@ public class JodaBeanBinReader extends MsgPack {
      * @return the bean, not null
      */
     public <T> T read(byte[] input, Class<T> rootType) {
-        if (input == null) {
-            throw new NullPointerException("input");
-        }
+        Objects.requireNonNull(input, "input must not be null");
         return read(new ByteArrayInputStream(input), rootType);
     }
 
@@ -107,12 +103,8 @@ public class JodaBeanBinReader extends MsgPack {
      * @return the bean, not null
      */
     public <T> T read(InputStream input, Class<T> rootType) {
-        if (input == null) {
-            throw new NullPointerException("input");
-        }
-        if (rootType == null) {
-            throw new NullPointerException("rootType");
-        }
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(rootType, "rootType must not be null");
         try {
             try (input) {
                 var dataInput = input instanceof DataInputStream din ?

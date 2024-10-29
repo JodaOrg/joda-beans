@@ -34,7 +34,7 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
      */
     protected BasicMetaProperty(String propertyName) {
         if (propertyName == null || propertyName.isEmpty()) {
-            throw new NullPointerException("Property name must not be null or empty");
+            throw new NullPointerException("propertyName must not be null or empty");
         }
         this.name = propertyName;
     }
