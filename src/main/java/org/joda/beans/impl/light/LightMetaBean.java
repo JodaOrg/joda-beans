@@ -15,6 +15,8 @@
  */
 package org.joda.beans.impl.light;
 
+import static java.util.stream.Collectors.joining;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -312,37 +313,38 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         Class<?>[] types = propertyTypes.toArray(new Class<?>[0]);
         try {
             return beanType.getDeclaredConstructor(types);
-
         } catch (NoSuchMethodException ex) {
-            // try a more lenient search
-            // this handles cases where field is a concrete class and constructor is an interface
-            @SuppressWarnings("unchecked")
-            Constructor<T>[] cons = (Constructor<T>[]) beanType.getDeclaredConstructors();
-            Constructor<T> match = null;
-            for (Constructor<T> con : cons) {
-                Class<?>[] conTypes = con.getParameterTypes();
-                if (conTypes.length == types.length) {
-                    for (int j = 0; j < types.length; j++) {
-                        if (!conTypes[j].isAssignableFrom(types[j])) {
-                            break;
-                        }
-                    }
-                    if (match != null) {
-                        throw new UnsupportedOperationException("Unable to find constructor: More than one matches");
-                    }
-                    match = con;
-                }
-            }
-            if (match == null) {
-                StringBuilder msg = new StringBuilder("Unable to find constructor: ").append(beanType.getSimpleName()).append("(");
-                for (Class<?> type : types) {
-                    msg.append(Objects.toString(type.getName(), "<null>"));
-                }
-                msg.append(")");
-                throw new UnsupportedOperationException(msg.toString(), ex);
-            }
-            return match;
+            return findConstructorFallback(beanType, types, ex);
         }
+    }
+
+    // try a more lenient search
+    // this handles cases where field is a concrete class and constructor is an interface
+    private static <T extends Bean> Constructor<T> findConstructorFallback(Class<T> beanType, Class<?>[] types, NoSuchMethodException ex) {
+        @SuppressWarnings("unchecked")
+        Constructor<T>[] cons = (Constructor<T>[]) beanType.getDeclaredConstructors();
+        Constructor<T> match = null;
+        outer:
+        for (Constructor<T> con : cons) {
+            Class<?>[] conTypes = con.getParameterTypes();
+            if (conTypes.length == types.length) {
+                for (int j = 0; j < types.length; j++) {
+                    if (!conTypes[j].isAssignableFrom(types[j])) {
+                        continue outer;
+                    }
+                }
+                if (match != null) {
+                    throw new UnsupportedOperationException("Unable to find constructor: More than one matches");
+                }
+                match = con;
+            }
+        }
+        if (match == null) {
+            String signature = Stream.of(types).map(Class::getName).collect(joining(", "));
+            String msg = "Unable to find constructor: " + beanType.getSimpleName() + '(' + signature + ')';
+            throw new UnsupportedOperationException(msg, ex);
+        }
+        return match;
     }
 
     // array used to collect data when building
