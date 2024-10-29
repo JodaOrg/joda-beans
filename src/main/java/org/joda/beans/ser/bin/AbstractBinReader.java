@@ -334,21 +334,15 @@ abstract class AbstractBinReader extends MsgPack {
                 return Integer.valueOf((int) value);
             }
         }
-        switch (typeByte) {
-            case TRUE:
-                return Boolean.TRUE;
-            case FALSE:
-                return Boolean.FALSE;
-            case FLOAT_32:
-                return Float.valueOf(input.readFloat());
-            case FLOAT_64:
-                return Double.valueOf(input.readDouble());
-            case BIN_8:
-            case BIN_16:
-            case BIN_32:
-                return acceptBinary(typeByte);
-        }
-        throw new IllegalArgumentException("Invalid binary data: Expected " + type.getName() + ", but was: 0x" + toHex(typeByte));
+        return switch (typeByte) {
+            case TRUE -> Boolean.TRUE;
+            case FALSE -> Boolean.FALSE;
+            case FLOAT_32 -> Float.valueOf(input.readFloat());
+            case FLOAT_64 -> Double.valueOf(input.readDouble());
+            case BIN_8, BIN_16, BIN_32 -> acceptBinary(typeByte);
+            default -> throw new IllegalArgumentException(
+                "Invalid binary data: Expected " + type.getName() + ", but was: 0x" + toHex(typeByte));
+        };
     }
 
     //-----------------------------------------------------------------------

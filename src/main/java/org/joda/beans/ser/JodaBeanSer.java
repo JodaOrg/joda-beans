@@ -258,7 +258,7 @@ public final class JodaBeanSer {
      * Checks if the property is serialized.
      * 
      * @param prop  the property to check
-     * @return true if the property is seialized
+     * @return true if the property is serialized
      */
     public boolean isSerialized(MetaProperty<?> prop) {
         return prop.style().isSerializable() || (prop.style().isDerived() && includeDerived);

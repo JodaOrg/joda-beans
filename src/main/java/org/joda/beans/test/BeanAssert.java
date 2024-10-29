@@ -95,7 +95,7 @@ public final class BeanAssert {
             throw new AssertionError(baseMsg + ": Actual bean must not be null");
         }
         if (!expected.equals(actual)) {
-            String comparisonMsg = buildMessage(baseMsg, 10, expected, actual, tolerance);
+            var comparisonMsg = buildMessage(baseMsg, 10, expected, actual, tolerance);
             if (comparisonMsg.isEmpty()) {
                 return; // no errors, just double/float within tolerance
             }
@@ -162,7 +162,7 @@ public final class BeanAssert {
             throw new AssertionError(baseMsg + ": Actual bean must not be null");
         }
         if (!expected.equals(actual)) {
-            String comparisonMsg = buildMessage(baseMsg, Integer.MAX_VALUE, expected, actual, tolerance);
+            var comparisonMsg = buildMessage(baseMsg, Integer.MAX_VALUE, expected, actual, tolerance);
             if (comparisonMsg.isEmpty()) {
                 return; // no errors, just double/float within tolerance
             }
@@ -187,10 +187,10 @@ public final class BeanAssert {
         if (diffs.isEmpty()) {
             return "";
         }
-        StringBuilder buf = new StringBuilder();
+        var buf = new StringBuilder();
         buf.append(baseMsg != null ? baseMsg + ": " : "");
         buf.append("Bean did not equal expected. Differences:");
-        int size = diffs.size();
+        var size = diffs.size();
         if (size > maxErrors) {
             diffs = diffs.subList(0, maxErrors);
         }
@@ -221,7 +221,7 @@ public final class BeanAssert {
                 diffs.add(prefix + ": List size differs, expected " + expectedList.size() + " but was " + actualList.size());
                 return;
             }
-            for (int i = 0; i < expectedList.size(); i++) {
+            for (var i = 0; i < expectedList.size(); i++) {
                 buildMessage(diffs, prefix + '[' + i + "]", expectedList.get(i), actualList.get(i), tolerance);
             }
             return;
@@ -235,7 +235,7 @@ public final class BeanAssert {
                 diffs.add(prefix + ": Map keySet differs, expected " + buildSummary(expectedMap.keySet(), false) + " but was " + buildSummary(actualMap.keySet(), false));
                 return;
             }
-            for (Object key : expectedMap.keySet()) {
+            for (var key : expectedMap.keySet()) {
                 buildMessage(diffs, prefix + '[' + key + "]", expectedMap.get(key), actualMap.get(key), tolerance);
             }
             return;
@@ -251,22 +251,21 @@ public final class BeanAssert {
             return;
         }
         if (expected instanceof Double && tolerance != 0d) {
-            double e = (Double) expected;
-            double a = (Double) actual;
+            var e = (Double) expected;
+            var a = (Double) actual;
             if (!JodaBeanUtils.equalWithTolerance(e, a, tolerance)) {
                 diffs.add(prefix + ": Double values differ by more than allowed tolerance, expected " +
                     buildSummary(expected, true) + " but was " + buildSummary(actual, false));
             }
             return;
         }
-        if (expected instanceof double[] && tolerance != 0d) {
-            double[] e = (double[]) expected;
-            double[] a = (double[]) actual;
+        if (expected instanceof double[] e && tolerance != 0d) {
+            var a = (double[]) actual;
             if (e.length != a.length) {
                 diffs.add(prefix + ": Double arrays differ in length, expected " +
                                 buildSummary(expected, true) + " but was " + buildSummary(actual, false));
             } else {
-                for (int i = 0; i < a.length; i++) {
+                for (var i = 0; i < a.length; i++) {
                     if (!JodaBeanUtils.equalWithTolerance(e[i], a[i], tolerance)) {
                         diffs.add(prefix + ": Double arrays differ by more than allowed tolerance, expected " +
                             buildSummary(expected, true) + " but was " + buildSummary(actual, false));
@@ -277,22 +276,21 @@ public final class BeanAssert {
             return;
         }
         if (expected instanceof Float && tolerance != 0d) {
-            float e = (Float) expected;
-            float a = (Float) actual;
+            var e = (Float) expected;
+            var a = (Float) actual;
             if (!JodaBeanUtils.equalWithTolerance(e, a, tolerance)) {
                 diffs.add(prefix + ": Float values differ by more than allowed tolerance, expected " +
                     buildSummary(expected, true) + " but was " + buildSummary(actual, false));
             }
             return;
         }
-        if (expected instanceof float[] && tolerance != 0d) {
-            float[] e = (float[]) expected;
-            float[] a = (float[]) actual;
+        if (expected instanceof float[] e && tolerance != 0d) {
+            var a = (float[]) actual;
             if (e.length != a.length) {
-                diffs.add(prefix + ": Double arrays differ in length, expected " +
+                diffs.add(prefix + ": Float arrays differ in length, expected " +
                                 buildSummary(expected, true) + " but was " + buildSummary(actual, false));
             } else {
-                for (int i = 0; i < a.length; i++) {
+                for (var i = 0; i < a.length; i++) {
                     if (!JodaBeanUtils.equalWithTolerance(e[i], a[i], tolerance)) {
                         diffs.add(prefix + ": Float arrays differ by more than allowed tolerance, expected " +
                             buildSummary(expected, true) + " but was " + buildSummary(actual, false));
@@ -314,15 +312,12 @@ public final class BeanAssert {
      * @param obj  the object to summarise, not null
      */
     private static String buildSummary(Object obj, boolean includeType) {
-        String type = obj.getClass().getSimpleName();
-        String toStr;
-        if (obj instanceof double[]) {
-            toStr = Arrays.toString((double[]) obj);
-        } else if (obj instanceof float[]) {
-            toStr = Arrays.toString((float[]) obj);
-        } else {
-            toStr = obj.toString();
-        }
+        var type = obj.getClass().getSimpleName();
+        var toStr = switch (obj) {
+            case double[] arr -> Arrays.toString(arr);
+            case float[] arr -> Arrays.toString(arr);
+            default -> obj.toString();
+        };
         if (toStr.length() > 60) {
             toStr = toStr.substring(0, 57) + "...";
         }

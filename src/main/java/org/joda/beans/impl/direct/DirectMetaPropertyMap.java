@@ -101,7 +101,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
 
     @Override
     public boolean containsValue(Object value) {
-        return value instanceof MetaProperty mp &&
+        return value instanceof MetaProperty<?> mp &&
                 metaBean.metaPropertyGet(mp.name()) != null;
     }
 
