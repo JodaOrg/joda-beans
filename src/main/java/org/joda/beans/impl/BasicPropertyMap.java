@@ -19,6 +19,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.joda.beans.Bean;
@@ -52,10 +53,7 @@ public final class BasicPropertyMap
      * @param bean  the bean that the property is bound to, not null
      */
     private BasicPropertyMap(Bean bean) {
-        if (bean == null) {
-            throw new NullPointerException("Bean must not be null");
-        }
-        this.bean = bean;
+        this.bean = Objects.requireNonNull(bean, "bean must not be null");
     }
 
     //-----------------------------------------------------------------------

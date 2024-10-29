@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -66,12 +67,8 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
      * @param propertyNames  the property names, not null
      */
     private ReflectiveMetaBean(Class<T> beanType, String[] propertyNames) {
-        if (beanType == null) {
-            throw new NullPointerException("Bean class must not be null");
-        }
-        if (propertyNames == null) {
-            throw new NullPointerException("Property names must not be null");
-        }
+        Objects.requireNonNull(beanType, "beanType must not be null");
+        Objects.requireNonNull(propertyNames, "propertyNames must not be null");
         this.beanType = beanType;
         var map = new LinkedHashMap<String, MetaProperty<?>>();
         for (var name : propertyNames) {

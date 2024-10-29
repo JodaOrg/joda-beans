@@ -31,6 +31,7 @@ import static org.joda.beans.ser.xml.JodaBeanXml.TYPE;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
@@ -164,11 +165,8 @@ public class JodaBeanXmlWriter {
      * @throws IOException if an error occurs
      */
     public void write(Bean bean, boolean rootType, Appendable output) throws IOException {
-        if (bean == null) {
-            throw new NullPointerException("bean");
-        }
         this.output = output;
-        this.rootBean = bean;
+        this.rootBean = Objects.requireNonNull(bean, "bean must not be null");
         this.basePackage = (rootType ? bean.getClass().getPackage().getName() + "." : null);
         
         String type = rootBean.getClass().getName();

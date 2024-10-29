@@ -33,6 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -913,9 +914,7 @@ public final class JodaBeanUtils {
      * @return the comparator, not null
      */
     public static Comparator<Bean> comparatorAscending(Function<Bean, ?> query) {
-        if (query == null) {
-            throw new NullPointerException("Function must not be null");
-        }
+        Objects.requireNonNull(query, "query must not be null");
         return new Comp(query);
     }
 
@@ -928,9 +927,7 @@ public final class JodaBeanUtils {
      * @return the comparator, not null
      */
     public static Comparator<Bean> comparatorDescending(Function<Bean, ?> query) {
-        if (query == null) {
-            throw new NullPointerException("Function must not be null");
-        }
+        Objects.requireNonNull(query, "query must not be null");
         return Collections.reverseOrder(new Comp(query));
     }
 

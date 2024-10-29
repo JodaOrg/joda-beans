@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.joda.beans.Bean;
@@ -190,22 +191,10 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<?> declaringType,
             Class<P> propertyType, PropertyStyle style, AccessibleObject fieldOrMethod) {
         super(propertyName);
-        if (metaBean == null) {
-            throw new NullPointerException("MetaBean must not be null");
-        }
-        if (declaringType == null) {
-            throw new NullPointerException("Declaring type must not be null");
-        }
-        if (propertyType == null) {
-            throw new NullPointerException("Property type must not be null");
-        }
-        if (style == null) {
-            throw new NullPointerException("PropertyStyle must not be null");
-        }
-        this.metaBean = metaBean;
-        this.propertyType = propertyType;
-        this.declaringType = declaringType;
-        this.style = style;
+        this.metaBean = Objects.requireNonNull(metaBean, "metaBean must not be null");
+        this.propertyType = Objects.requireNonNull(propertyType, "propertyType must not be null");
+        this.declaringType = Objects.requireNonNull(declaringType, "declaringType must not be null");
+        this.style = Objects.requireNonNull(style, "style must not be null");
         this.fieldOrMethod = fieldOrMethod;  // may be null
     }
 

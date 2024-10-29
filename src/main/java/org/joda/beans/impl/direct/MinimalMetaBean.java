@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -72,9 +73,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             Supplier<BeanBuilder<B>> builderSupplier,
             Function<B, Object>... getters) {
 
-        if (getters == null) {
-            throw new NullPointerException("Getter functions must not be null");
-        }
+        Objects.requireNonNull(getters, "getters must not be null");
         return new MinimalMetaBean<>(beanType, fieldNames, builderSupplier, Arrays.asList(getters), null);
     }
 
@@ -100,12 +99,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             List<Function<B, Object>> getters,
             List<BiConsumer<B, Object>> setters) {
 
-        if (getters == null) {
-            throw new NullPointerException("Getter functions must not be null");
-        }
-        if (setters == null) {
-            throw new NullPointerException("Setter functions must not be null");
-        }
+        Objects.requireNonNull(getters, "getters must not be null");
+        Objects.requireNonNull(setters, "setters must not be null");
         return new MinimalMetaBean<>(beanType, fieldNames, builderSupplier, getters, setters);
     }
 
@@ -125,15 +120,10 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             List<Function<T, Object>> getters,
             List<BiConsumer<T, Object>> setters) {
 
-        if (beanType == null) {
-            throw new NullPointerException("Bean class must not be null");
-        }
-        if (builderSupplier == null) {
-            throw new NullPointerException("Supplier of BeanBuilder must not be null");
-        }
-        if (fieldNames == null) {
-            throw new NullPointerException("Field names must not be null");
-        }
+        Objects.requireNonNull(beanType, "beanType must not be null");
+        Objects.requireNonNull(builderSupplier, "builderSupplier must not be null");
+        Objects.requireNonNull(fieldNames, "fieldNames must not be null");
+        Objects.requireNonNull(getters, "getters must not be null");
         if (fieldNames.length != getters.size()) {
             throw new IllegalArgumentException("Number of getter functions must match number of fields");
         }

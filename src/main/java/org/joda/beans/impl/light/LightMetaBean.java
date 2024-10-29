@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -143,18 +144,10 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             String[] fieldNames,
             Object[] defaultValues) {
 
-        if (beanType == null) {
-            throw new NullPointerException("Bean class must not be null");
-        }
-        if (lookup == null) {
-            throw new NullPointerException("Lookup must not be null");
-        }
-        if (fieldNames == null) {
-            throw new NullPointerException("Field names array must not be null");
-        }
-        if (defaultValues == null) {
-            throw new NullPointerException("Default values array must not be null");
-        }
+        Objects.requireNonNull(beanType, "beanType must not be null");
+        Objects.requireNonNull(lookup, "lookup must not be null");
+        Objects.requireNonNull(fieldNames, "fieldNames must not be null");
+        Objects.requireNonNull(defaultValues, "defaultValues must not be null");
         if (defaultValues.length > 0 && defaultValues.length != fieldNames.length) {
             throw new IllegalArgumentException("Number of default values must match number of fields");
         }

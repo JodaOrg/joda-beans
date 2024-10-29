@@ -15,6 +15,8 @@
  */
 package org.joda.beans.impl;
 
+import java.util.Objects;
+
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaProperty;
@@ -41,10 +43,7 @@ public class BasicBeanBuilder<T extends Bean>
      * @param bean  the target bean, not null
      */
     public BasicBeanBuilder(T bean) {
-        if (bean == null) {
-            throw new NullPointerException("Bean must not be null");
-        }
-        this.bean = bean;
+        this.bean = Objects.requireNonNull(bean, "bean must not be null");
     }
 
     //-----------------------------------------------------------------------

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.joda.beans.MetaProperty;
@@ -55,10 +56,7 @@ public final class DirectMetaPropertyMap implements Map<String, MetaProperty<?>>
      */
     @SuppressWarnings("unchecked")
     public DirectMetaPropertyMap(final DirectMetaBean metaBean, DirectMetaPropertyMap parent, String... propertyNames) {
-        if (metaBean == null) {
-            throw new NullPointerException("MetaBean must not be null");
-        }
-        this.metaBean = metaBean;
+        this.metaBean = Objects.requireNonNull(metaBean, "metaBean must not be null");
         var parentSize = 0;
         Entry<String, MetaProperty<?>>[] metaProperties;
         if (parent != null) {
