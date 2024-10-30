@@ -184,23 +184,13 @@ final class MsgPackVisualizer extends MsgPackInput {
             .append(str)
             .append("'");
         switch (type) {
-            case JODA_TYPE_BEAN:
-                buf.append(" (bean)");
-                break;
-            case JODA_TYPE_DATA:
-                buf.append(" (data)");
-                break;
-            case JODA_TYPE_META:
-                buf.append(" (meta)");
-                break;
-            case JODA_TYPE_REF_KEY:
-                buf.append(" (refkey)");
-                break;
-            case JODA_TYPE_REF:
-                buf.append(" (ref)");
-                break;
-            default:
-                break;
+            case JODA_TYPE_BEAN -> buf.append(" (bean)");
+            case JODA_TYPE_DATA -> buf.append(" (data)");
+            case JODA_TYPE_META -> buf.append(" (meta)");
+            case JODA_TYPE_REF_KEY -> buf.append(" (refkey)");
+            case JODA_TYPE_REF -> buf.append(" (ref)");
+            default -> {
+            }
         }
         buf.append(System.lineSeparator());
     }

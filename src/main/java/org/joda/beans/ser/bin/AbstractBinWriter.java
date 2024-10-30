@@ -23,7 +23,6 @@ import java.util.Map;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -121,16 +120,12 @@ abstract class AbstractBinWriter {
             output.writeMapHeader(1);
             writeMetaPropertyReference(itemIterator.metaTypeName());
         }
-        if (itemIterator.category() == SerCategory.MAP) {
-            writeMap(itemIterator);
-        } else if (itemIterator.category() == SerCategory.COUNTED) {
-            writeCounted(itemIterator);
-        } else if (itemIterator.category() == SerCategory.TABLE) {
-            writeTable(itemIterator);
-        } else if (itemIterator.category() == SerCategory.GRID) {
-            writeGrid(itemIterator);
-        } else {
-            writeArray(itemIterator);
+        switch (itemIterator.category()) {
+            case COLLECTION -> writeArray(itemIterator);
+            case COUNTED -> writeCounted(itemIterator);
+            case MAP -> writeMap(itemIterator);
+            case TABLE -> writeTable(itemIterator);
+            case GRID -> writeGrid(itemIterator);
         }
     }
 
@@ -226,37 +221,51 @@ abstract class AbstractBinWriter {
     //-----------------------------------------------------------------------
     void writeSimple(Class<?> declaredType, Object value) throws IOException {
         // simple types have no need to write a type object
-        Class<?> realType = value.getClass();
-        if (realType == Integer.class) {
-            output.writeInt(((Integer) value).intValue());
-            return;
-        } else if (realType == Double.class) {
-            output.writeDouble(((Double) value).doubleValue());
-            return;
-        } else if (realType == Float.class) {
-            output.writeFloat(((Float) value).floatValue());
-            return;
-        } else if (realType == Boolean.class) {
-            output.writeBoolean(((Boolean) value).booleanValue());
-            return;
+        switch (value) {
+            case Integer val -> {
+                output.writeInt(val);
+                return;
+            }
+            case Double val -> {
+                output.writeDouble(val);
+                return;
+            }
+            case Float val -> {
+                output.writeFloat(val);
+                return;
+            }
+            case Boolean val -> {
+                output.writeBoolean(val);
+                return;
+            }
+            default -> {
+            }
         }
 
         // handle no declared type and subclasses
         Class<?> effectiveType = getAndSerializeEffectiveTypeIfRequired(value, declaredType);
 
         // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
-        if (realType == Long.class) {
-            output.writeLong(((Long) value).longValue());
-            return;
-        } else if (realType == Short.class) {
-            output.writeInt(((Short) value).shortValue());
-            return;
-        } else if (realType == Byte.class) {
-            output.writeInt(((Byte) value).byteValue());
-            return;
-        } else if (realType == byte[].class) {
-            output.writeBytes((byte[]) value);
-            return;
+        // (the method call above writes additional type information into the output stream)
+        switch (value) {
+            case Long val -> {
+                output.writeLong(val);
+                return;
+            }
+            case Short val -> {
+                output.writeInt(val);
+                return;
+            }
+            case Byte val -> {
+                output.writeInt(val);
+                return;
+            }
+            case byte[] val -> {
+                output.writeBytes(val);
+                return;
+            }
+            default -> {
+            }
         }
 
         // write as a string
@@ -272,23 +281,25 @@ abstract class AbstractBinWriter {
     // needs to handle no declared type and subclass instances
     Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
         var realType = value.getClass();
-        var effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {
-                effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
+                var effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
                 output.writeMapHeader(1);
                 var type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
+                return effectiveType;
             } else {
-                effectiveType = realType;
+                return realType;
             }
-        } else if (!settings.getConverter().isConvertible(declaredType)) {
-            effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
+        }
+        if (!settings.getConverter().isConvertible(declaredType)) {
+            var effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
             output.writeMapHeader(1);
             var type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
+            return effectiveType;
         }
-        return effectiveType;
+        return declaredType;
     }
 
     // writes a value as a string

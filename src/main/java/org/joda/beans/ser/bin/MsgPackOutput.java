@@ -270,7 +270,7 @@ final class MsgPackOutput extends MsgPack {
     }
 
     /**
-     * Writes an extension string using FIX_EXT_1.
+     * Writes an extension value using FIX_EXT_1.
      * 
      * @param extensionType  the type
      * @param value  the value to write as the data
