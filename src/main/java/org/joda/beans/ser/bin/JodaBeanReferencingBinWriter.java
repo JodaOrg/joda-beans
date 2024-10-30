@@ -17,17 +17,14 @@ package org.joda.beans.ser.bin;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 import org.joda.beans.ser.bin.BeanReferences.ClassInfo;
-import org.joda.beans.ser.bin.BeanReferences.Ref;
 
 /**
  * Provides the ability for a Joda-Bean to written to the referencing binary format.
@@ -60,14 +57,14 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
         output.writeInt(references.getReferences().size());
 
         // write map of class name to a list of metatype names (which is empty if not a bean)
-        List<ClassInfo> classInfos = references.getClassInfoList();
+        var classInfos = references.getClassInfoList();
         output.writeMapHeader(classInfos.size());
-        for (ClassInfo classInfo : classInfos) {
+        for (var classInfo : classInfos) {
             // known types parameter is null as we never serialize the class names again
-            String className = SerTypeMapper.encodeType(classInfo.type, settings, null, null);
+            var className = SerTypeMapper.encodeType(classInfo.type, settings, null, null);
             output.writeString(className);
 
-            output.writeArrayHeader(classInfo.metaProperties.length);
+            output.writeArrayHeader(classInfo.metaProperties.size());
             for (MetaProperty<?> property : classInfo.metaProperties) {
                 output.writeString(property.name());
             }
@@ -77,7 +74,7 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
     //-----------------------------------------------------------------------
     @Override
     void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) throws IOException {
-        Ref ref = references.getReferences().get(bean);
+        var ref = references.getReferences().get(bean);
         if (ref != null) {
             if (ref.hasBeenSerialized) {
                 output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF, ref.position);
@@ -87,13 +84,13 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
             output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF_KEY, ref.position);
         }
 
-        ClassInfo classInfo = references.getClassInfo(bean.getClass());
-        MetaProperty<?>[] props = classInfo.metaProperties;
-        int count = props.length;
-        Object[] values = new Object[count];
-        int size = 0;
-        for (MetaProperty<?> prop : props) {
-            Object value = SerOptional.extractValue(prop, bean);
+        var classInfo = references.getClassInfo(bean.getClass());
+        var props = classInfo.metaProperties;
+        var count = props.size();
+        var values = new Object[count];
+        var size = 0;
+        for (var prop : props) {
+            var value = SerOptional.extractValue(prop, bean);
             values[size++] = value;
         }
 
@@ -104,25 +101,24 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
             output.writeArrayHeader(size);
         }
 
-        for (int i = 0; i < size; i++) {
-            MetaProperty<?> prop = props[i];
-            Object value = values[i];
-
-            Class<?> propType = SerOptional.extractType(prop, bean.getClass());
+        for (var i = 0; i < size; i++) {
+            var prop = props.get(i);
+            var value = values[i];
+            var propType = SerOptional.extractType(prop, bean.getClass());
 
             if (value == null) {
                 output.writeNil();
                 continue;
             }
 
-            if (value instanceof Bean) {
+            if (value instanceof Bean beanValue) {
                 if (settings.getConverter().isConvertible(value.getClass())) {
                     writeSimple(propType, value);
                 } else {
-                    writeBean((Bean) value, propType, RootType.NOT_ROOT);
+                    writeBean(beanValue, propType, RootType.NOT_ROOT);
                 }
             } else {
-                SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                 if (itemIterator != null) {
                     writeElements(itemIterator);
                 } else {
@@ -137,7 +133,7 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
 
     @Override
     void writeMetaPropertyReference(String metaTypeName) throws IOException {
-        Ref ref = references.getReferences().get(metaTypeName);
+        var ref = references.getReferences().get(metaTypeName);
         if (ref != null) {
             if (ref.hasBeenSerialized) {
                 output.writePositiveExtensionInt(MsgPack.JODA_TYPE_META, ref.position);
@@ -154,13 +150,13 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
 
     @Override
     Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
-        Ref ref = references.getReferences().get(value);
+        var ref = references.getReferences().get(value);
         if (ref != null && ref.hasBeenSerialized) {
             // Don't need to change types if using a reference
             return declaredType;
         }
-        Class<?> realType = value.getClass();
-        Class<?> effectiveType = declaredType;
+        var realType = value.getClass();
+        var effectiveType = declaredType;
         if (declaredType == Object.class) {
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
@@ -181,11 +177,11 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
 
     @Override
     void writeObjectAsString(Object value, Class<?> effectiveType) throws IOException {
-        Ref ref = references.getReferences().get(value);
+        var ref = references.getReferences().get(value);
         if (ref != null && ref.hasBeenSerialized) {
             output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF, ref.position);
         } else {
-            String converted = settings.getConverter().convertToString(effectiveType, value);
+            var converted = settings.getConverter().convertToString(effectiveType, value);
             if (converted == null) {
                 throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
             }

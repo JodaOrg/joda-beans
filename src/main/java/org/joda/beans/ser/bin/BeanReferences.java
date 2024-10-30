@@ -19,12 +19,10 @@ import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparingInt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.StreamSupport;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
@@ -63,7 +61,7 @@ final class BeanReferences {
 
     // finds 
     static BeanReferences find(ImmutableBean root, JodaBeanSer settings) {
-        BeanReferences references = new BeanReferences(settings);
+        var references = new BeanReferences(settings);
         references.findReferences(root);
         return references;
     }
@@ -81,17 +79,17 @@ final class BeanReferences {
         classSerializationCount.put(root.getClass(), 1);
 
         // recursively check object graph
-        Map<Object, Integer> objects = new LinkedHashMap<>();
+        var objects = new LinkedHashMap<Object, Integer>();
         findReferencesBean(root, root.getClass(), objects, null);
 
         // build up the list of references, but only for those instances that are repeated
-        List<Map.Entry<Object, Integer>> refEntries = objects.entrySet().stream()
+        var refEntries = objects.entrySet().stream()
                 .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
                 .filter(entry -> entry.getValue() > 1)
                 .toList();
         for (Map.Entry<Object, Integer> entry : refEntries) {
-            Object value = entry.getKey();
-            Class<?> realType = value.getClass();
+            var value = entry.getKey();
+            var realType = value.getClass();
 
             // simple types do not need references
             if (realType != Integer.class &&
@@ -114,8 +112,8 @@ final class BeanReferences {
                 .toList());
 
         // adjust the position in the ClassInfo instance
-        for (int position = 0; position < classInfoList.size(); position++) {
-            ClassInfo classInfo = classInfoList.get(position);
+        for (var position = 0; position < classInfoList.size(); position++) {
+            var classInfo = classInfoList.get(position);
             classInfo.position = position;
         }
     }
@@ -132,25 +130,24 @@ final class BeanReferences {
         }
 
         // has this object been seen before, if so no need to check it again
-        int result = objects.compute(base, BeanReferences::incrementOrOne);
+        var result = objects.compute(base, BeanReferences::incrementOrOne);
         if (result > 1) {
             return;
         }
 
-        if (base instanceof Bean) {
+        if (base instanceof Bean bean) {
             addClassInfo(base, declaredClass);
-            Bean bean = (Bean) base;
             if (settings.getConverter().isConvertible(bean.getClass())) {
                 return;
             }
 
             for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
                 if (settings.isSerialized(prop)) {
-                    Object value = prop.get(bean);
-                    Class<?> type = SerOptional.extractType(prop, base.getClass());
+                    var value = prop.get(bean);
+                    var type = SerOptional.extractType(prop, base.getClass());
 
                     if (value != null) {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                         if (itemIterator != null) {
                             if (itemIterator.metaTypeRequired()) {
                                 objects.compute(itemIterator.metaTypeName(), BeanReferences::incrementOrOne);
@@ -163,7 +160,7 @@ final class BeanReferences {
                 }
             }
         } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
+            var childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
             if (childIterator != null) {
                 findReferencesIterable(childIterator, objects);
             } else {
@@ -214,9 +211,9 @@ final class BeanReferences {
                     "Can only serialize immutable beans in referencing binary format: " + value.getClass().getName());
         }
 
-        if (value instanceof ImmutableBean) {
-            boolean isConvertible = settings.getConverter().isConvertible(value.getClass());
-            boolean noNeedToSerializeTypeName = declaredClass.equals(value.getClass()) &&
+        if (value instanceof ImmutableBean bean) {
+            var isConvertible = settings.getConverter().isConvertible(value.getClass());
+            var noNeedToSerializeTypeName = declaredClass.equals(value.getClass()) &&
                     (classes.containsKey(value.getClass()) || isConvertible);
 
             if (noNeedToSerializeTypeName) {
@@ -227,7 +224,7 @@ final class BeanReferences {
             if (isConvertible) {
                 addClassInfoForEffectiveType(value);
             } else {
-                ClassInfo classInfo = classInfoFromMetaBean(((ImmutableBean) value).metaBean());
+                var classInfo = classInfoFromMetaBean(bean.metaBean());
                 addClassInfoAndIncrementCount(value.getClass(), classInfo);
             }
             
@@ -240,8 +237,8 @@ final class BeanReferences {
     }
 
     private void addClassInfoForEffectiveType(Object value) {
-        Class<?> effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
-        ClassInfo classInfo = new ClassInfo(effectiveType, new MetaProperty<?>[0]);
+        var effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
+        var classInfo = new ClassInfo(effectiveType, List.of());
         addClassInfoAndIncrementCount(effectiveType, classInfo);
     }
 
@@ -253,10 +250,12 @@ final class BeanReferences {
 
     // converts a meta-bean to a ClassInfo
     private ClassInfo classInfoFromMetaBean(MetaBean metaBean) {
-        MetaProperty<?>[] metaProperties = StreamSupport.stream(metaBean.metaPropertyIterable().spliterator(), false)
-            .filter(metaProp -> settings.isSerialized(metaProp))
-            .toArray(MetaProperty<?>[]::new);
-
+        var metaProperties = new ArrayList<MetaProperty<?>>();
+        for (var metaProp : metaBean.metaPropertyIterable()) {
+            if (settings.isSerialized(metaProp)) {
+                metaProperties.add(metaProp);
+            }
+        }
         // Positions get recreated when all classes have been recorded
         return new ClassInfo(metaBean.beanType(), metaProperties);
     }
@@ -278,7 +277,7 @@ final class BeanReferences {
 
     // lookup the class info by type
     ClassInfo getClassInfo(Class<?> effectiveType) {
-        ClassInfo classInfo = classes.get(effectiveType);
+        var classInfo = classes.get(effectiveType);
         if (classInfo == null) {
             throw new IllegalStateException(
                     "Tried to serialise class that wasn't present in bean on first pass: " + effectiveType.getName());
@@ -295,12 +294,12 @@ final class BeanReferences {
         final Class<?> type;
 
         // The metaproperties (empty if not a bean) in the order in which they need to be serialized
-        final MetaProperty<?>[] metaProperties;
+        final List<MetaProperty<?>> metaProperties;
 
         // The position in the initial class definition list, lower means serialized more often
         int position;
 
-        private ClassInfo(Class<?> type, MetaProperty<?>[] metaProperties) {
+        private ClassInfo(Class<?> type, List<MetaProperty<?>> metaProperties) {
             this.type = type;
             this.metaProperties = metaProperties;
             this.position = -1;
@@ -311,7 +310,7 @@ final class BeanReferences {
             return "ClassInfo{" +
                     "position=" + position +
                     ", type=" + type +
-                    ", metaProperties=" + Arrays.toString(metaProperties) +
+                    ", metaProperties=" + metaProperties +
                     '}';
         }
     }

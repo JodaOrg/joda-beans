@@ -779,7 +779,7 @@
     <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version><!-- 3.6.0 fails in reporting -->
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
@@ -819,7 +819,7 @@
     <doclint>none</doclint>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>10.17.0</checkstyle.version>
+    <checkstyle.version>10.18.2</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 

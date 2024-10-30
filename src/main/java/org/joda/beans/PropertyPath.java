@@ -98,8 +98,8 @@ public final class PropertyPath<P> {
             var pathEntry = pathEntries.get(i);
             var obj = pathEntry.get(currentBean);
             obj = pathEntry.extract(obj);
-            if (obj instanceof Optional<?>) {
-                obj = ((Optional<?>) obj).orElse(null);
+            if (obj instanceof Optional<?> optional) {
+                obj = optional.orElse(null);
             }
             if (!(obj instanceof Bean newBean)) {
                 return Optional.empty();
@@ -107,7 +107,7 @@ public final class PropertyPath<P> {
             currentBean = newBean;
         }
         // last entry, which allows for possibility that resultType = Optional.class
-        var pathEntry = pathEntries.get(pathEntries.size() - 1);
+        var pathEntry = pathEntries.getLast();
         var obj = pathEntry.get(currentBean);
         obj = pathEntry.extract(obj);
         if (obj == null) {

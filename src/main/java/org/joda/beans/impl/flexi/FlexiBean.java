@@ -16,6 +16,7 @@
 package org.joda.beans.impl.flexi;
 
 import java.io.ObjectStreamException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -46,6 +47,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
     // objects which could then be properly typed
 
     /** Serialization version. */
+    @Serial
     private static final long serialVersionUID = 1L;
     /** Valid regex for keys. */
     private static final Pattern VALID_KEY = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*");

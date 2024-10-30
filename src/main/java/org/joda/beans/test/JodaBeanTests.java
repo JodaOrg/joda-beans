@@ -149,7 +149,7 @@ public final class JodaBeanTests {
                 }
             }
         }
-        var builtBeansList = new ArrayList<Bean>(builtBeansSet);
+        var builtBeansList = new ArrayList<>(builtBeansSet);
         for (var i = 0; i < builtBeansList.size() - 1; i++) {
             for (var j = i + 1; j < builtBeansList.size(); j++) {
                 builtBeansList.get(i).equals(builtBeansList.get(j));
@@ -357,7 +357,7 @@ public final class JodaBeanTests {
 
     // adds sample constants to the 
     private static List<Object> buildSampleConstants(Class<?> queryType, Class<?> targetType) {
-        var samples = new ArrayList<Object>();
+        var samples = new ArrayList<>();
         for (var field : queryType.getFields()) {
             if (field.getType() == targetType &&
                     Modifier.isPublic(field.getModifiers()) &&

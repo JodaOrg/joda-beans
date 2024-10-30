@@ -33,17 +33,18 @@ reviews:
         - The pattern matching `instanceof` expression safely handles `null`, returning `false`.
     - path: '**/main/java/**/*.java'
       instructions: |
-        - This project uses `System.out.println` instead of logging
         - This project is mature and must provide a stable backwards-compatible public Java API.
-        - This project tends to prefer `for` loops to streams for performance reasons.
-        - In the "Summary by CodeRabbit" section, always provide a list of up to 25 changes to the public Java API that will affect end users.
-          If the list is empty, provide a note indicating that there are no incompatible changes.
+        - In the 'Summary by CodeRabbit' section, you must always provide a list of up to 25 changes to the public Java API that will affect end users.
+          If there are no changes, you must explicitly state that there are no changes to the public Java API in this PR.
           The public Java API is defined as public and protected methods on public classes, plus the file `module-info.java`.
           Provide the list by deeply analysing code flow, which incudes analysing code flow through private methods and calls to Guava and Java 21.
           Changes to be reported on include:
           - New or removed methods in the public Java API
           - Changes to method return types or parameter types in the public Java API
           - Changes to method behaviour in the public Java API that might affect consumers
+        - This project uses `System.out.println` instead of logging
+        - This project tends to prefer `for` loops to streams for performance reasons, however either form is acceptable.
+          Do not make suggestions to change between streams and for loops or vice versa.
     - path: '**/test/java/**/*.java'
       instructions: |
         For test code, focus on:

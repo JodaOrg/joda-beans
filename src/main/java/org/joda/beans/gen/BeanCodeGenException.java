@@ -16,6 +16,7 @@
 package org.joda.beans.gen;
 
 import java.io.File;
+import java.io.Serial;
 
 /**
  * Exception thrown by the code generator.
@@ -25,6 +26,7 @@ public final class BeanCodeGenException extends RuntimeException {
     /**
      * Serialization version.
      */
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
