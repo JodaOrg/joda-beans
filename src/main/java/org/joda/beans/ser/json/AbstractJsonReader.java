@@ -24,13 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -83,26 +80,26 @@ abstract class AbstractJsonReader {
      */
     <T> T parseRoot(JsonInput input, Class<T> declaredType) throws Exception {
         this.input = input;
-        Object parsed = parseObject(input.acceptEvent(JsonEvent.OBJECT), declaredType, null, null, null, true);
+        var parsed = parseObject(input.acceptEvent(JsonEvent.OBJECT), declaredType, null, null, null, true);
         return declaredType.cast(parsed);
     }
 
     // parse a bean, event after object start passed in
     private Object parseBean(JsonEvent event, Class<?> beanType) {
-        String propName = "";
+        var propName = "";
         try {
-            SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
-            MetaBean metaBean = deser.findMetaBean(beanType);
-            BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
+            var deser = settings.getDeserializers().findDeserializer(beanType);
+            var metaBean = deser.findMetaBean(beanType);
+            var builder = deser.createBuilder(beanType, metaBean);
             while (event != JsonEvent.OBJECT_END) {
                 // property name
                 propName = input.acceptObjectKey(event);
-                MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
+                var metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                 // ignore unknown properties
                 if (metaProp == null || metaProp.style().isDerived()) {
                     input.skipData();
                 } else {
-                    Object value = parseObject(input.readEvent(),
+                    var value = parseObject(input.readEvent(),
                             SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
@@ -126,12 +123,12 @@ abstract class AbstractJsonReader {
             boolean rootType) throws Exception {
 
         // avoid nulls
-        Class<?> declaredType = (inputDeclaredType == null ? Object.class : inputDeclaredType);
+        var declaredType = (inputDeclaredType == null ? Object.class : inputDeclaredType);
         // establish type
         if (event == JsonEvent.OBJECT) {
             event = input.readEvent();
             if (event == JsonEvent.STRING) {
-                String key = input.parseObjectKey();
+                var key = input.parseObjectKey();
                 if (key.equals(BEAN)) {
                     return parseTypedBean(declaredType, rootType);
                 } else if (key.equals(TYPE)) {
@@ -188,7 +185,7 @@ abstract class AbstractJsonReader {
     }
 
     private Object parseTypedBean(Class<?> declaredType, boolean rootType) throws Exception {
-        String typeStr = input.acceptString();
+        var typeStr = input.acceptString();
         Class<?> effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
         if (rootType) {
             if (!Bean.class.isAssignableFrom(effectiveType)) {
@@ -200,7 +197,7 @@ abstract class AbstractJsonReader {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
                 declaredType.getName() + " and " + effectiveType.getName());
         }
-        JsonEvent event = input.readEvent();
+        var event = input.readEvent();
         if (event == JsonEvent.COMMA) {
             event = input.readEvent();
         }
@@ -208,31 +205,31 @@ abstract class AbstractJsonReader {
     }
 
     private Object parseTypedSimple(Class<?> declaredType) throws Exception {
-        String typeStr = input.acceptString();
-        Class<?> effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
+        var typeStr = input.acceptString();
+        var effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
         if (!declaredType.isAssignableFrom(effectiveType)) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
                 declaredType.getName() + " and " + effectiveType.getName());
         }
         input.acceptEvent(JsonEvent.COMMA);
-        String valueKey = input.acceptObjectKey(input.readEvent());
+        var valueKey = input.acceptObjectKey(input.readEvent());
         if (!valueKey.equals(VALUE)) {
             throw new IllegalArgumentException("Invalid JSON data: Expected 'value' key but found " + valueKey);
         }
-        Object result = parseSimple(input.readEvent(), effectiveType);
+        var result = parseSimple(input.readEvent(), effectiveType);
         input.acceptEvent(JsonEvent.OBJECT_END);
         return result;
     }
 
     private Object parseTypedMeta() throws Exception {
-        String metaType = input.acceptString();
-        SerIterable childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
+        var metaType = input.acceptString();
+        var childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
         input.acceptEvent(JsonEvent.COMMA);
-        String valueKey = input.acceptObjectKey(input.readEvent());
+        var valueKey = input.acceptObjectKey(input.readEvent());
         if (!valueKey.equals(VALUE)) {
             throw new IllegalArgumentException("Invalid JSON data: Expected 'value' key but found " + valueKey);
         }
-        Object result = parseIterable(input.readEvent(), childIterable);
+        var result = parseIterable(input.readEvent(), childIterable);
         input.acceptEvent(JsonEvent.OBJECT_END);
         return result;
     }
@@ -255,9 +252,9 @@ abstract class AbstractJsonReader {
         if (event == JsonEvent.OBJECT) {
             event = input.readEvent();
             while (event != JsonEvent.OBJECT_END) {
-                String keyStr = input.acceptObjectKey(event);
-                Object key = parseText(keyStr, iterable.keyType());
-                Object value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
+                var keyStr = input.acceptObjectKey(event);
+                var key = parseText(keyStr, iterable.keyType());
+                var value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
                 iterable.add(key, null, value, 1);
                 event = input.acceptObjectSeparator();
             }
@@ -265,9 +262,9 @@ abstract class AbstractJsonReader {
             event = input.readEvent();
             while (event != JsonEvent.ARRAY_END) {
                 input.ensureEvent(event, JsonEvent.ARRAY);
-                Object key = parseObject(input.readEvent(), iterable.keyType(), null, null, null, false);
+                var key = parseObject(input.readEvent(), iterable.keyType(), null, null, null, false);
                 input.acceptEvent(JsonEvent.COMMA);
-                Object value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
+                var value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
                 input.acceptEvent(JsonEvent.ARRAY_END);
                 iterable.add(key, null, value, 1);
                 event = input.acceptArraySeparator();
@@ -284,11 +281,11 @@ abstract class AbstractJsonReader {
         event = input.readEvent();
         while (event != JsonEvent.ARRAY_END) {
             input.ensureEvent(event, JsonEvent.ARRAY);
-            Object key = parseObject(input.readEvent(), iterable.keyType(), null, null, null, false);
+            var key = parseObject(input.readEvent(), iterable.keyType(), null, null, null, false);
             input.acceptEvent(JsonEvent.COMMA);
-            Object column = parseObject(input.readEvent(), iterable.columnType(), null, null, null, false);
+            var column = parseObject(input.readEvent(), iterable.columnType(), null, null, null, false);
             input.acceptEvent(JsonEvent.COMMA);
-            Object value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
+            var value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
             iterable.add(key, column, value, 1);
             input.acceptEvent(JsonEvent.ARRAY_END);
             event = input.acceptArraySeparator();
@@ -299,21 +296,21 @@ abstract class AbstractJsonReader {
     private Object parseIterableGrid(JsonEvent event, SerIterable iterable) throws Exception {
         input.ensureEvent(event, JsonEvent.ARRAY);
         input.acceptEvent(JsonEvent.NUMBER_INTEGRAL);
-        int rows = (int) input.parseNumberIntegral();
+        var rows = (int) input.parseNumberIntegral();
         input.acceptEvent(JsonEvent.COMMA);
         input.acceptEvent(JsonEvent.NUMBER_INTEGRAL);
-        int columns = (int) input.parseNumberIntegral();
+        var columns = (int) input.parseNumberIntegral();
         iterable.dimensions(new int[] {rows, columns});
         event = input.acceptArraySeparator();
         while (event != JsonEvent.ARRAY_END) {
             input.ensureEvent(event, JsonEvent.ARRAY);
             input.acceptEvent(JsonEvent.NUMBER_INTEGRAL);
-            int row = (int) input.parseNumberIntegral();
+            var row = (int) input.parseNumberIntegral();
             input.acceptEvent(JsonEvent.COMMA);
             input.acceptEvent(JsonEvent.NUMBER_INTEGRAL);
-            int column = (int) input.parseNumberIntegral();
+            var column = (int) input.parseNumberIntegral();
             input.acceptEvent(JsonEvent.COMMA);
-            Object value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
+            var value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
             input.acceptEvent(JsonEvent.ARRAY_END);
             iterable.add(row, column, value, 1);
             event = input.acceptArraySeparator();
@@ -326,7 +323,7 @@ abstract class AbstractJsonReader {
         event = input.readEvent();
         while (event != JsonEvent.ARRAY_END) {
             input.ensureEvent(event, JsonEvent.ARRAY);
-            Object value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
+            var value = parseObject(input.readEvent(), iterable.valueType(), null, null, iterable, false);
             input.acceptEvent(JsonEvent.COMMA);
             input.acceptEvent(JsonEvent.NUMBER_INTEGRAL);
             iterable.add(null, null, value, (int) input.parseNumberIntegral());
@@ -340,7 +337,7 @@ abstract class AbstractJsonReader {
         input.ensureEvent(event, JsonEvent.ARRAY);
         event = input.readEvent();
         while (event != JsonEvent.ARRAY_END) {
-            Object value = parseObject(event, iterable.valueType(), null, null, iterable, false);
+            var value = parseObject(event, iterable.valueType(), null, null, iterable, false);
             iterable.add(null, null, value, 1);
             event = input.acceptArraySeparator();
         }
@@ -350,11 +347,11 @@ abstract class AbstractJsonReader {
     private Object parseSimple(JsonEvent event, Class<?> type) throws Exception {
         switch (event) {
             case STRING: {
-                String text = input.parseString();
+                var text = input.parseString();
                 return parseText(text, type);
             }
             case NUMBER_INTEGRAL: {
-                long value = input.parseNumberIntegral();
+                var value = input.parseNumberIntegral();
                 if (type == Long.class || type == long.class) {
                     return Long.valueOf(value);
                     
@@ -371,14 +368,14 @@ abstract class AbstractJsonReader {
                     return Byte.valueOf((byte) value);
                     
                 } else if (type == Double.class || type == double.class) {
-                    double dblVal = (double) value;
+                    double dblVal = value;
                     if (value != (long) dblVal) {
                         throw new IllegalArgumentException("Invalid JSON data: Value exceeds capacity of double: " + value);
                     }
                     return Double.valueOf(dblVal);
                     
                 } else if (type == Float.class || type == float.class) {
-                    float fltVal = (float) value;
+                    float fltVal = value;
                     if (value != (long) fltVal) {
                         throw new IllegalArgumentException("Invalid JSON data: Value exceeds capacity of float: " + value);
                     }
@@ -397,7 +394,7 @@ abstract class AbstractJsonReader {
                 }
             }
             case NUMBER_FLOATING: {
-                double value = input.parseNumberFloating();
+                var value = input.parseNumberFloating();
                 if (type == Float.class || type == float.class) {
                     return Float.valueOf((float) value);
                 } else {

@@ -140,7 +140,7 @@ public class JodaBeanBinWriter {
      * @return the binary data, not null
      */
     public byte[] write(Bean bean, boolean rootType) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        var baos = new ByteArrayOutputStream(1024);
         try {
             write(bean, rootType, baos);
         } catch (IOException ex) {

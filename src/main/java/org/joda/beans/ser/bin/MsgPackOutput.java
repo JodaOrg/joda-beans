@@ -180,7 +180,7 @@ final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     void writeBytes(byte[] bytes) throws IOException {
-        int size = bytes.length;
+        var size = bytes.length;
         if (size < 256) {
             output.writeByte(BIN_8);
             output.writeByte(size);
@@ -201,8 +201,8 @@ final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     void writeString(String value) throws IOException {
-        byte[] bytes = toUTF8(value);
-        int size = bytes.length;
+        var bytes = toUTF8(value);
+        var size = bytes.length;
         if (size < 32) {
             output.writeByte(MIN_FIX_STR + size);
         } else if (size < 256) {
@@ -220,10 +220,10 @@ final class MsgPackOutput extends MsgPack {
 
     private byte[] toUTF8(String value) {
         // inline common ASCII case for much better performance
-        int size = value.length();
-        byte[] bytes = new byte[size];
-        for (int i = 0; i < size; i++) {
-            char ch = value.charAt(i);
+        var size = value.length();
+        var bytes = new byte[size];
+        for (var i = 0; i < size; i++) {
+            var ch = value.charAt(i);
             if (ch < 128) {
                 bytes[i] = (byte) ch;
             } else {
@@ -290,7 +290,7 @@ final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     void writeExtensionString(int extensionType, String str) throws IOException {
-        byte[] bytes = str.getBytes(UTF_8);
+        var bytes = str.getBytes(UTF_8);
         if (bytes.length > 256) {
             throw new IllegalArgumentException("String too long");
         }

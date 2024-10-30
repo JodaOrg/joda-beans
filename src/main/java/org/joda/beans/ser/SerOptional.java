@@ -37,50 +37,50 @@ public class SerOptional {
         Map<Class<?>, Object[]> map = new HashMap<>();
         try {
             Class<?> cls = Class.forName("com.google.common.base.Optional");
-            Method create = cls.getMethod("of", Object.class);
-            Object nullConstant = cls.getMethod("absent").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("get");
+            var create = cls.getMethod("of", Object.class);
+            var nullConstant = cls.getMethod("absent").invoke(null);
+            var isPresent = cls.getMethod("isPresent");
+            var get = cls.getMethod("get");
             map.put(cls, new Object[] {create, nullConstant, isPresent, get});
         } catch (Exception ex) {
             // ignore
         }
         try {
             Class<?> cls = Class.forName("java.util.Optional");
-            Method create = cls.getMethod("of", Object.class);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("get");
+            var create = cls.getMethod("of", Object.class);
+            var nullConstant = cls.getMethod("empty").invoke(null);
+            var isPresent = cls.getMethod("isPresent");
+            var get = cls.getMethod("get");
             map.put(cls, new Object[] {create, nullConstant, isPresent, get});
         } catch (Exception ex) {
             // ignore
         }
         try {
             Class<?> cls = Class.forName("java.util.OptionalDouble");
-            Method create = cls.getMethod("of", Double.TYPE);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("getAsDouble");
+            var create = cls.getMethod("of", Double.TYPE);
+            var nullConstant = cls.getMethod("empty").invoke(null);
+            var isPresent = cls.getMethod("isPresent");
+            var get = cls.getMethod("getAsDouble");
             map.put(cls, new Object[] {create, nullConstant, isPresent, get});
         } catch (Exception ex) {
             // ignore
         }
         try {
             Class<?> cls = Class.forName("java.util.OptionalInt");
-            Method create = cls.getMethod("of", Integer.TYPE);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("getAsInt");
+            var create = cls.getMethod("of", Integer.TYPE);
+            var nullConstant = cls.getMethod("empty").invoke(null);
+            var isPresent = cls.getMethod("isPresent");
+            var get = cls.getMethod("getAsInt");
             map.put(cls, new Object[] {create, nullConstant, isPresent, get});
         } catch (Exception ex) {
             // ignore
         }
         try {
             Class<?> cls = Class.forName("java.util.OptionalLong");
-            Method create = cls.getMethod("of", Long.TYPE);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("getAsLong");
+            var create = cls.getMethod("of", Long.TYPE);
+            var nullConstant = cls.getMethod("empty").invoke(null);
+            var isPresent = cls.getMethod("isPresent");
+            var get = cls.getMethod("getAsLong");
             map.put(cls, new Object[] {create, nullConstant, isPresent, get});
         } catch (Exception ex) {
             // ignore
@@ -102,7 +102,7 @@ public class SerOptional {
     public static Object extractValue(MetaProperty<?> metaProp, Bean bean) {
         Object value = metaProp.get(bean);
         if (value != null) {
-            Object[] helpers = OPTIONALS.get(metaProp.propertyType());
+            var helpers = OPTIONALS.get(metaProp.propertyType());
             if (helpers != null) {
                 try {
                     boolean present = (Boolean) ((Method) helpers[2]).invoke(value);
@@ -128,7 +128,7 @@ public class SerOptional {
      */
     public static Class<?> extractType(MetaProperty<?> metaProp, Class<?> beanType) {
         Class<?> type = metaProp.propertyType();
-        Object[] helpers = OPTIONALS.get(type);
+        var helpers = OPTIONALS.get(type);
         if (helpers != null) {
             try {
                 Class<?> genericType = JodaBeanUtils.extractTypeClass(metaProp, beanType, 1, 0);
@@ -149,7 +149,7 @@ public class SerOptional {
      * @return the value of the property, with any optional wrapper added
      */
     public static Object wrapValue(MetaProperty<?> metaProp, Class<?> beanType, Object value) {
-        Object[] helpers = OPTIONALS.get(metaProp.propertyType());
+        var helpers = OPTIONALS.get(metaProp.propertyType());
         if (helpers != null) {
             try {
                 if (value != null) {

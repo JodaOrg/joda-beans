@@ -24,7 +24,6 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
-import org.joda.beans.ser.bin.BeanReferences.ClassInfo;
 
 /**
  * Provides the ability for a Joda-Bean to written to the referencing binary format.
@@ -160,7 +159,7 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
         if (declaredType == Object.class) {
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                ClassInfo classInfo = references.getClassInfo(effectiveType);
+                var classInfo = references.getClassInfo(effectiveType);
                 output.writeMapHeader(1);
                 output.writePositiveExtensionInt(MsgPack.JODA_TYPE_DATA, classInfo.position);
             } else {
@@ -168,7 +167,7 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
             }
         } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            ClassInfo classInfo = references.getClassInfo(effectiveType);
+            var classInfo = references.getClassInfo(effectiveType);
             output.writeMapHeader(1);
             output.writePositiveExtensionInt(MsgPack.JODA_TYPE_DATA, classInfo.position);
         }

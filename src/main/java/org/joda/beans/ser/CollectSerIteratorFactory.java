@@ -41,11 +41,11 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      */
     @Override
     public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass) {
-        Class<?> declaredType = prop.propertyType();
-        if (value instanceof Grid) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return grid((Grid<?>) value, declaredType, valueType, valueTypeTypes);
+        var declaredType = prop.propertyType();
+        if (value instanceof Grid<?> grid) {
+            var valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return grid(grid, declaredType, valueType, valueTypeTypes);
         }
         return super.create(value, prop, beanClass);
     }
@@ -62,13 +62,13 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      */
     @Override
     public SerIterator createChild(Object value, SerIterator parent) {
-        Class<?> declaredType = parent.valueType();
-        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
-        if (value instanceof Grid) {
+        var declaredType = parent.valueType();
+        var childGenericTypes = parent.valueTypeTypes();
+        if (value instanceof Grid<?> grid) {
             if (childGenericTypes.size() == 1) {
-                return grid((Grid<?>) value, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
+                return grid(grid, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
-            return grid((Grid<?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            return grid(grid, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         return super.createChild(value, parent);
     }
@@ -100,8 +100,8 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
     @Override
     public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass) {
         if (Grid.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return grid(valueType, valueTypeTypes);
         }
         return super.createIterable(prop, beanClass);

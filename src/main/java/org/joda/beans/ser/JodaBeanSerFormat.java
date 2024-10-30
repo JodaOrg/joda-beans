@@ -54,38 +54,35 @@ enum JodaBeanSerFormat {
     // creates the reader, handling any UTF BOM
     <T> T read(InputStream stream, Class<T> rootType, JodaBeanSer settings) {
         // javac generics fails when this code is moved to enum subclasses
-        switch (this) {
-            case BIN: {
-                return settings.binReader().read(stream, rootType);
+        return switch (this) {
+            case BIN -> settings.binReader().read(stream, rootType);
+            case JSON -> {
+                var reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                yield rootType.cast(settings.simpleJsonReader().read(reader, rootType));
             }
-            case JSON: {
-                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                return rootType.cast(settings.simpleJsonReader().read(reader, rootType));
-            }
-            case JSON_UTF8: {
+            case JSON_UTF8 -> {
                 read(stream, 3);
-                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                return rootType.cast(settings.simpleJsonReader().read(reader, rootType));
+                var reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                yield rootType.cast(settings.simpleJsonReader().read(reader, rootType));
             }
-            case XML: {
-                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                return rootType.cast(settings.xmlReader().read(reader, rootType));
+            case XML -> {
+                var reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                yield rootType.cast(settings.xmlReader().read(reader, rootType));
             }
-            case XML_UTF8: {
+            case XML_UTF8 -> {
                 read(stream, 3);
-                InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                return rootType.cast(settings.xmlReader().read(reader, rootType));
+                var reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                yield rootType.cast(settings.xmlReader().read(reader, rootType));
             }
-            case UNKNOWN:
-            default:
-                throw new IllegalArgumentException("File is not a recognised Joda-Beans format");
-        }
+            case UNKNOWN -> throw new IllegalArgumentException("File is not a recognised Joda-Beans format");
+            default -> throw new IllegalArgumentException("File is not a recognised Joda-Beans format");
+        };
     }
 
     // read a fixed number of bytes from the input stream
     private static void read(InputStream buffered, int count) {
         try {
-            for (int i = 0; i < count; i++) {
+            for (var i = 0; i < count; i++) {
                 buffered.read();
             }
         } catch (IOException ex) {
