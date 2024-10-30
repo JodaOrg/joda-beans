@@ -91,7 +91,7 @@ public final class ReflectiveMetaBean<T extends Bean> implements TypedMetaBean<T
     @Override
     public BeanBuilder<T> builder() {
         try {
-            T bean = beanType.getDeclaredConstructor().newInstance();
+            var bean = beanType.getDeclaredConstructor().newInstance();
             return new BasicBeanBuilder<>(bean);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Bean cannot be created: " + beanName(), ex);

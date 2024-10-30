@@ -184,8 +184,10 @@ public class TestBeanAssert {
         ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.016d}).build();
         assertThatExceptionOfType(BeanComparisonError.class)
             .isThrownBy(() -> BeanAssert.assertBeanEquals(t1, t2))
-            .withMessage("Bean did not equal expected. Differences:\n.array: Content differs, expected " +
-                    "double[] <[0.015, 0.015]> but was <[0.015, 0.016]>");
+            .withMessage("""
+                    Bean did not equal expected. Differences:
+                    .array: Content differs, expected \
+                    double[] <[0.015, 0.015]> but was <[0.015, 0.016]>""");
     }
 
     @Test
@@ -208,8 +210,10 @@ public class TestBeanAssert {
         ImmTolerance t2 = ImmTolerance.builder().array(new double[] {0.015d, 0.0153d}).build();
         assertThatExceptionOfType(BeanComparisonError.class)
             .isThrownBy(() -> BeanAssert.assertBeanEquals(t1, t2, 0.0002d))
-            .withMessage("Bean did not equal expected. Differences:\n.array: Double arrays differ by " +
-                    "more than allowed tolerance, expected double[] <[0.015, 0.015]> but was <[0.015, 0.0153]>");
+            .withMessage("""
+                    Bean did not equal expected. Differences:
+                    .array: Double arrays differ by \
+                    more than allowed tolerance, expected double[] <[0.015, 0.015]> but was <[0.015, 0.0153]>""");
     }
 
 }

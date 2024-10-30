@@ -250,8 +250,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof Double && tolerance != 0d) {
-            var e = (Double) expected;
+        if (expected instanceof Double e && tolerance != 0d) {
             var a = (Double) actual;
             if (!JodaBeanUtils.equalWithTolerance(e, a, tolerance)) {
                 diffs.add(prefix + ": Double values differ by more than allowed tolerance, expected " +
@@ -275,8 +274,7 @@ public final class BeanAssert {
             }
             return;
         }
-        if (expected instanceof Float && tolerance != 0d) {
-            var e = (Float) expected;
+        if (expected instanceof Float e && tolerance != 0d) {
             var a = (Float) actual;
             if (!JodaBeanUtils.equalWithTolerance(e, a, tolerance)) {
                 diffs.add(prefix + ": Float values differ by more than allowed tolerance, expected " +

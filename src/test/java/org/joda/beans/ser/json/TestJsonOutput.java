@@ -497,9 +497,16 @@ public class TestJsonOutput {
         outputPretty.writeObjectEnd();
         outputPretty.writeObjectKeyValue("c", "cc");
         outputPretty.writeObjectEnd();
-        assertThat(buf.toString()).isEqualTo("{\n \"a\": \"aa\",\n \"b\": " +
-        		"{\n  \"bb1\": \"bbb1\",\n  \"bb2\": \"bbb2\"\n }," +
-        		"\n \"c\": \"cc\"\n}");
+        assertThat(buf.toString()).isEqualTo("""
+                {
+                 "a": "aa",
+                 "b": {
+                  "bb1": "bbb1",
+                  "bb2": "bbb2"
+                 },
+                 "c": "cc"
+                }\
+                """);
     }
 
 }

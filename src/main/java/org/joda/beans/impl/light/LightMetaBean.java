@@ -168,12 +168,12 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
             if (field.getAnnotation(PropertyDefinition.class) == null) {
                 throw new IllegalArgumentException("Field must have PropertyDefinition annotation");
             }
-            PropertyDefinition pdef = field.getAnnotation(PropertyDefinition.class);
-            String name = field.getName();
+            var pdef = field.getAnnotation(PropertyDefinition.class);
+            var name = field.getName();
             if (pdef.get().isEmpty() || pdef.get().equals("field") || pdef.get().startsWith("optional")) {
                 map.put(name, LightMetaProperty.of(this, field, lookup, name, propertyTypes.size()));
             } else {
-                String getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+                var getterName = "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
                 Method getMethod = null;
                 if (field.getType() == boolean.class) {
                     getMethod = findGetMethod(
@@ -188,7 +188,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
                 }
                 Method setMethod = null;
                 if (!ImmutableBean.class.isAssignableFrom(beanType)) {
-                    String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+                    var setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
                     setMethod = findSetMethod(beanType, setterName, field.getType());
                     if (setMethod == null) {
                         throw new IllegalArgumentException(
@@ -401,7 +401,7 @@ public final class LightMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (!metaPropertyMap.containsKey(realName)) {
             throw new IllegalArgumentException("Invalid property name: " + realName);
         }
-        var aliasMap = new HashMap<String, String>(this.aliasMap);
+        var aliasMap = new HashMap<>(this.aliasMap);
         aliasMap.put(alias, realName);
         return new LightMetaBean<>(beanType, metaPropertyMap, aliasMap, constructorFn, constructionData);
     }

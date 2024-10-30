@@ -15,6 +15,8 @@
  */
 package org.joda.beans.test;
 
+import java.io.Serial;
+
 import org.joda.beans.Bean;
 
 /**
@@ -23,6 +25,7 @@ import org.joda.beans.Bean;
 class BeanComparisonError extends AssertionError {
 
     /** Serialization version. */
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

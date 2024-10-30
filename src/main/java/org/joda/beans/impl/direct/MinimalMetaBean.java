@@ -163,7 +163,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
                     method.getParameterTypes().length == 0) {
                 var methodName = method.getName();
                 var propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
-                var mp = new MinimalMetaProperty<Object>(this, method, propertyName);
+                var mp = new MinimalMetaProperty<>(this, method, propertyName);
                 map.put(propertyName, mp);
             }
         }
@@ -199,7 +199,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (!metaPropertyMap.containsKey(realName)) {
             throw new IllegalArgumentException("Invalid property name: " + realName);
         }
-        var aliasMap = new HashMap<String, String>(this.aliasMap);
+        var aliasMap = new HashMap<>(this.aliasMap);
         aliasMap.put(alias, realName);
         return new MinimalMetaBean<>(beanType, builderSupplier, metaPropertyMap, aliasMap);
     }

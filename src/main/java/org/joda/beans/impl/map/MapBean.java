@@ -15,6 +15,7 @@
  */
 package org.joda.beans.impl.map;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import org.joda.beans.impl.flexi.FlexiBean;
 public class MapBean extends HashMap<String, Object> implements DynamicBean {
 
     /** Serialization version. */
+    @Serial
     private static final long serialVersionUID = 1L;
 
     //-----------------------------------------------------------------------
