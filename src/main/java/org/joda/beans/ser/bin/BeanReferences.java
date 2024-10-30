@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 
@@ -37,6 +37,17 @@ import org.joda.beans.ser.SerOptional;
  * Stores information on the references in a bean.
  */
 final class BeanReferences {
+
+    private static final Set<Class<?>> NON_REFERENCED = Set.of(
+            Long.class,
+            Integer.class,
+            Short.class,
+            Byte.class,
+            Double.class,
+            Float.class,
+            Boolean.class,
+            Character.class,
+            byte[].class);
 
     /**
      * The settings.
@@ -84,23 +95,15 @@ final class BeanReferences {
 
         // build up the list of references, but only for those instances that are repeated
         var refEntries = objects.entrySet().stream()
-                .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
                 .filter(entry -> entry.getValue() > 1)
+                .sorted(reverseOrder(comparingInt(Map.Entry::getValue)))
                 .toList();
-        for (Map.Entry<Object, Integer> entry : refEntries) {
+        for (var entry : refEntries) {
             var value = entry.getKey();
             var realType = value.getClass();
 
             // simple types do not need references
-            if (realType != Integer.class &&
-                    realType != Double.class &&
-                    realType != Float.class &&
-                    realType != Boolean.class &&
-                    realType != Long.class &&
-                    realType != Short.class &&
-                    realType != Byte.class &&
-                    realType != byte[].class) {
-
+            if (!NON_REFERENCED.contains(realType)) {
                 refs.put(value, new Ref(false, refs.size()));
             }
         }
@@ -141,7 +144,7 @@ final class BeanReferences {
                 return;
             }
 
-            for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
+            for (var prop : bean.metaBean().metaPropertyIterable()) {
                 if (settings.isSerialized(prop)) {
                     var value = prop.get(bean);
                     var type = SerOptional.extractType(prop, base.getClass());
@@ -173,54 +176,57 @@ final class BeanReferences {
 
     // recursively find the references in an iterable
     private void findReferencesIterable(SerIterator itemIterator, Map<Object, Integer> objects) {
-        if (itemIterator.category() == SerCategory.MAP) {
-            while (itemIterator.hasNext()) {
-                itemIterator.next();
-                findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects, null);
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+        switch (itemIterator.category()) {
+            case COLLECTION -> {
+                while (itemIterator.hasNext()) {
+                    itemIterator.next();
+                    findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+                }
             }
-        } else if (itemIterator.category() == SerCategory.COUNTED) {
-            while (itemIterator.hasNext()) {
-                itemIterator.next();
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+            case COUNTED -> {
+                while (itemIterator.hasNext()) {
+                    itemIterator.next();
+                    findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+                }
             }
-        } else if (itemIterator.category() == SerCategory.TABLE) {
-            while (itemIterator.hasNext()) {
-                itemIterator.next();
-                findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects, null);
-                findReferencesBean(itemIterator.column(), itemIterator.columnType(), objects, null);
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+            case MAP -> {
+                while (itemIterator.hasNext()) {
+                    itemIterator.next();
+                    findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects, null);
+                    findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+                }
             }
-        } else if (itemIterator.category() == SerCategory.GRID) {
-            while (itemIterator.hasNext()) {
-                itemIterator.next();
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+            case TABLE -> {
+                while (itemIterator.hasNext()) {
+                    itemIterator.next();
+                    findReferencesBean(itemIterator.key(), itemIterator.keyType(), objects, null);
+                    findReferencesBean(itemIterator.column(), itemIterator.columnType(), objects, null);
+                    findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+                }
             }
-        } else {
-            while (itemIterator.hasNext()) {
-                itemIterator.next();
-                findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+            case GRID -> {
+                while (itemIterator.hasNext()) {
+                    itemIterator.next();
+                    findReferencesBean(itemIterator.value(), itemIterator.valueType(), objects, itemIterator);
+                }
             }
         }
     }
 
     // add to list of known classes
     private void addClassInfo(Object value, Class<?> declaredClass) {
-        if (value instanceof Bean && !(value instanceof ImmutableBean)) {
-            throw new IllegalArgumentException(
-                    "Can only serialize immutable beans in referencing binary format: " + value.getClass().getName());
-        }
-
-        if (value instanceof ImmutableBean bean) {
+        if (value instanceof Bean bean) {
+            if (!(value instanceof ImmutableBean)) {
+                throw new IllegalArgumentException(
+                        "Can only serialize immutable beans in referencing binary format: " + value.getClass().getName());
+            }
             var isConvertible = settings.getConverter().isConvertible(value.getClass());
-            var noNeedToSerializeTypeName = declaredClass.equals(value.getClass()) &&
-                    (classes.containsKey(value.getClass()) || isConvertible);
-
-            if (noNeedToSerializeTypeName) {
+            if (declaredClass.equals(value.getClass()) &&
+                    (classes.containsKey(value.getClass()) || isConvertible)) {
                 return;
             }
 
-            // Don't need metaproperty info if it's a convertible type
+            // don't need meta-property info if it's a convertible type
             if (isConvertible) {
                 addClassInfoForEffectiveType(value);
             } else {
@@ -293,7 +299,7 @@ final class BeanReferences {
         // The class itself - not necessary for serialization but here for easier inspection
         final Class<?> type;
 
-        // The metaproperties (empty if not a bean) in the order in which they need to be serialized
+        // The meta-properties (empty if not a bean) in the order in which they need to be serialized
         final List<MetaProperty<?>> metaProperties;
 
         // The position in the initial class definition list, lower means serialized more often

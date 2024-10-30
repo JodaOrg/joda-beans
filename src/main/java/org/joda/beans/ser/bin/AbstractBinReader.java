@@ -21,10 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -88,19 +86,19 @@ abstract class AbstractBinReader extends MsgPack {
         try {
             var deser = settings.getDeserializers().findDeserializer(beanType);
             var metaBean = deser.findMetaBean(beanType);
-            BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
+            var builder = deser.createBuilder(beanType, metaBean);
             for (var i = 0; i < propertyCount; i++) {
                 // property name
                 propName = acceptPropertyName();
-                MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
+                var metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                 if (metaProp == null || metaProp.style().isDerived()) {
                     MsgPackInput.skipObject(input);
                 } else {
                     var value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
-                propName = "";
             }
+            propName = "";
             return deser.build(beanType, builder);
         } catch (Exception ex) {
             throw new RuntimeException("Error parsing bean: " + beanType.getName() + "::" + propName + ", " + ex.getMessage(), ex);
@@ -112,12 +110,12 @@ abstract class AbstractBinReader extends MsgPack {
         return acceptString(typeByte);
     }
 
+    //-------------------------------------------------------------------------
+    // parses an object, determining how to parse based on the input data
     Object parseObject(Class<?> declaredType, MetaProperty<?> metaProp, Class<?> beanType, SerIterable parentIterable, boolean rootType) throws Exception {
-        // establish type
-        Class<?> effectiveType = declaredType;
-        String metaType = null;
-        int typeByte = input.readByte();
+        var typeByte = input.readByte();
 
+        // parse metadata
         if (isMap(typeByte)) {
             input.mark(8);
             var mapSize = acceptMap(typeByte);
@@ -128,66 +126,32 @@ abstract class AbstractBinReader extends MsgPack {
                     typeByteTemp = input.readByte();
                     if (typeByteTemp == JODA_TYPE_BEAN) {
                         var typeStr = acceptStringBytes(size);
-                        effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
-                        return parseBean(declaredType, rootType, effectiveType, mapSize);
+                        var effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
+                        return parseObjectAsBean(declaredType, rootType, effectiveType, mapSize);
                     } else if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
                         var typeStr = acceptStringBytes(size);
-                        effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
+                        var effectiveType = settings.getDeserializers().decodeType(
+                                typeStr, settings, basePackage, knownTypes, declaredType);
                         if (!declaredType.isAssignableFrom(effectiveType)) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
                         }
-                        typeByte = input.readByte();
+                        return parseObjectFromInput(input.readByte(), effectiveType, metaProp, beanType, parentIterable);
                     } else if (typeByteTemp == JODA_TYPE_META) {
-                        if (mapSize != 1) {
-                            throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
-                        }
-                        metaType = acceptStringBytes(size);
-                        typeByte = input.readByte();
-                    } else {
-                        input.reset();
+                        return parseObjectAsCollectionWithMeta(mapSize, size);
                     }
-                } else {
-                    input.reset();
                 }
-            } else {
-                input.reset();
             }
+            input.reset();
         }
         // parse based on type
-        if (typeByte == NIL) {
-            return null;
-        }
-        if (Bean.class.isAssignableFrom(effectiveType)) {
-            if (isMap(typeByte)) {
-                var mapSize = acceptMap(typeByte);
-                return parseBean(mapSize, effectiveType);
-            } else {
-                return parseSimple(typeByte, effectiveType);
-            }
-        } else {
-            if (isMap(typeByte) || isArray(typeByte)) {
-                SerIterable childIterable = null;
-                if (metaType != null) {
-                    childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
-                } else if (metaProp != null) {
-                    childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
-                } else if (parentIterable != null) {
-                    childIterable = settings.getIteratorFactory().createIterable(parentIterable);
-                }
-                if (childIterable == null) {
-                    throw new IllegalArgumentException("Invalid binary data: Invalid metaType: " + metaType);
-                }
-                return parseIterable(typeByte, childIterable);
-            } else {
-                return parseSimple(typeByte, effectiveType);
-            }
-        }
+        return parseObjectFromInput(typeByte, declaredType, metaProp, beanType, parentIterable);
     }
 
-    Object parseBean(Class<?> declaredType, boolean rootType, Class<?> effectiveType, int mapSize) throws Exception {
+    // a bean with an explicit type
+    private Object parseObjectAsBean(Class<?> declaredType, boolean rootType, Class<?> effectiveType, int mapSize) throws Exception {
         if (rootType) {
             if (!Bean.class.isAssignableFrom(effectiveType)) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
@@ -203,18 +167,64 @@ abstract class AbstractBinReader extends MsgPack {
         return parseBean(mapSize - 1, effectiveType);
     }
 
-    Object parseIterable(int typeByte, SerIterable iterable) throws Exception {
-        if (iterable.category() == SerCategory.MAP) {
-            return parseIterableMap(typeByte, iterable);
-        } else if (iterable.category() == SerCategory.COUNTED) {
-            return parseIterableCounted(typeByte, iterable);
-        } else if (iterable.category() == SerCategory.TABLE) {
-            return parseIterableTable(typeByte, iterable);
-        } else if (iterable.category() == SerCategory.GRID) {
-            return parseIterableGrid(typeByte, iterable);
-        } else {
-            return parseIterableArray(typeByte, iterable);
+    // a collection with a meta annotation
+    private Object parseObjectAsCollectionWithMeta(int mapSize, int strSize) throws Exception {
+        if (mapSize != 1) {
+            throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
         }
+        var metaType = acceptStringBytes(strSize);
+        var typeByte = input.readByte();
+        if (isMap(typeByte) || isArray(typeByte)) {
+            var childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
+            if (childIterable == null) {
+                throw new IllegalArgumentException("Invalid binary data: Invalid metaType: " + metaType);
+            }
+            return parseIterable(typeByte, childIterable);
+        } else {
+            throw new IllegalArgumentException("Invalid binary data: MetaType was not followed by a collection: " + metaType);
+        }
+    }
+
+    private Object parseObjectFromInput(
+            int typeByte,
+            Class<?> effectiveType,
+            MetaProperty<?> metaProp,
+            Class<?> beanType,
+            SerIterable parentIterable) throws Exception {
+
+        if (typeByte == NIL) {
+            return null;
+        } else if (Bean.class.isAssignableFrom(effectiveType)) {
+            if (isMap(typeByte)) {
+                var mapSize = acceptMap(typeByte);
+                return parseBean(mapSize, effectiveType);
+            } else {
+                return parseSimple(typeByte, effectiveType);
+            }
+        } else if (isMap(typeByte) || isArray(typeByte)) {
+            SerIterable childIterable = null;
+            if (metaProp != null) {
+                childIterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
+            } else if (parentIterable != null) {
+                childIterable = settings.getIteratorFactory().createIterable(parentIterable);
+            }
+            if (childIterable == null) {
+                throw new IllegalArgumentException("Invalid binary data: Unable to create collection type");
+            }
+            return parseIterable(typeByte, childIterable);
+        } else {
+            return parseSimple(typeByte, effectiveType);
+        }
+    }
+
+    Object parseIterable(int typeByte, SerIterable iterable) throws Exception {
+        return switch (iterable.category()) {
+            case COLLECTION -> parseIterableArray(typeByte, iterable);
+            case COUNTED -> parseIterableCounted(typeByte, iterable);
+            case MAP -> parseIterableMap(typeByte, iterable);
+            case TABLE -> parseIterableTable(typeByte, iterable);
+            case GRID -> parseIterableGrid(typeByte, iterable);
+        };
     }
 
     Object parseIterableMap(int typeByte, SerIterable iterable) throws Exception {
@@ -245,7 +255,7 @@ abstract class AbstractBinReader extends MsgPack {
         var size = acceptArray(typeByte);
         var rows = acceptInteger(input.readByte());
         var columns = acceptInteger(input.readByte());
-        iterable.dimensions(new int[]{rows, columns});
+        iterable.dimensions(new int[] {rows, columns});
         if ((rows * columns) != (size - 2)) {
             // sparse
             for (var i = 0; i < (size - 2); i++) {
@@ -287,6 +297,7 @@ abstract class AbstractBinReader extends MsgPack {
         return iterable.build();
     }
 
+    //-------------------------------------------------------------------------
     Object parseSimple(int typeByte, Class<?> type) throws Exception {
         if (isString(typeByte)) {
             var text = acceptString(typeByte);
@@ -296,9 +307,20 @@ abstract class AbstractBinReader extends MsgPack {
             return settings.getConverter().convertFromString(type, text);
         }
         if (isIntegral(typeByte)) {
+            // ordered from common to less-common
             var value = acceptLong(typeByte);
             if (type == Long.class || type == long.class) {
                 return Long.valueOf(value);
+
+            } else if (type == Integer.class || type == int.class) {
+                if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was " + value);
+                }
+                return Integer.valueOf((int) value);
+
+            } else if (type == Double.class || type == double.class) {
+                // handle case where property type has changed from integral to double
+                return Double.valueOf(value);
 
             } else if (type == Short.class || type == short.class) {
                 if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
@@ -312,19 +334,10 @@ abstract class AbstractBinReader extends MsgPack {
                 }
                 return Byte.valueOf((byte) value);
 
-            } else if (type == Double.class || type == double.class) {
-                // handle case where property type has changed from integral to double
-                return Double.valueOf(value);
-
             } else if (type == Float.class || type == float.class) {
                 // handle case where property type has changed from integral to float
                 return Float.valueOf(value);
 
-            } else if (type == Integer.class || type == int.class) {
-                if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
-                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was " + value);
-                }
-                return Integer.valueOf((int) value);
             } else {
                 if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                     return Long.valueOf(value);
@@ -338,61 +351,47 @@ abstract class AbstractBinReader extends MsgPack {
             case FLOAT_32 -> Float.valueOf(input.readFloat());
             case FLOAT_64 -> Double.valueOf(input.readDouble());
             case BIN_8, BIN_16, BIN_32 -> acceptBinary(typeByte);
-            default -> throw new IllegalArgumentException(
-                "Invalid binary data: Expected " + type.getName() + ", but was: 0x" + toHex(typeByte));
+            default -> throw invalidBinaryData(type.getName(), typeByte);
         };
     }
 
     //-----------------------------------------------------------------------
     int acceptMap(int typeByte) throws IOException {
-        int size;
         if (typeByte >= MIN_FIX_MAP && typeByte <= MAX_FIX_MAP) {
-            size = (typeByte - MIN_FIX_MAP);
+            return (typeByte - MIN_FIX_MAP);
         } else if (typeByte == MAP_16) {
-            size = input.readUnsignedShort();
+            return input.readUnsignedShort();
         } else if (typeByte == MAP_32) {
-            size = input.readInt();
-            if (size < 0) {
-                throw new IllegalArgumentException("Invalid binary data: Map too large");
-            }
+            return readPositiveInt("Invalid binary data: Map too large");
         } else {
-            throw new IllegalArgumentException("Invalid binary data: Expected map, but was: 0x" + toHex(typeByte));
+            throw invalidBinaryData("map", typeByte);
         }
-        return size;
     }
 
     int acceptArray(int typeByte) throws IOException {
-        int size;
         if (typeByte >= MIN_FIX_ARRAY && typeByte <= MAX_FIX_ARRAY) {
-            size = (typeByte - MIN_FIX_ARRAY);
+            return typeByte - MIN_FIX_ARRAY;
         } else if (typeByte == ARRAY_16) {
-            size = input.readUnsignedShort();
+            return input.readUnsignedShort();
         } else if (typeByte == ARRAY_32) {
-            size = input.readInt();
-            if (size < 0) {
-                throw new IllegalArgumentException("Invalid binary data: Array too large");
-            }
+            return readPositiveInt("Invalid binary data: Array too large");
         } else {
-            throw new IllegalArgumentException("Invalid binary data: Expected array, but was: 0x" + toHex(typeByte));
+            throw invalidBinaryData("array", typeByte);
         }
-        return size;
     }
 
     String acceptString(int typeByte) throws IOException {
         int size;
         if (typeByte >= MIN_FIX_STR && typeByte <= MAX_FIX_STR) {
-            size = (typeByte - MIN_FIX_STR);
+            size = typeByte - MIN_FIX_STR;
         } else if (typeByte == STR_8) {
             size = input.readUnsignedByte();
         } else if (typeByte == STR_16) {
             size = input.readUnsignedShort();
         } else if (typeByte == STR_32) {
-            size = input.readInt();
-            if (size < 0) {
-                throw new IllegalArgumentException("Invalid binary data: String too large");
-            }
+            size = readPositiveInt("Invalid binary data: String too large");
         } else {
-            throw new IllegalArgumentException("Invalid binary data: Expected string, but was: 0x" + toHex(typeByte));
+            throw invalidBinaryData("string", typeByte);
         }
         return acceptStringBytes(size);
     }
@@ -414,19 +413,12 @@ abstract class AbstractBinReader extends MsgPack {
     }
 
     byte[] acceptBinary(int typeByte) throws IOException {
-        int size;
-        if (typeByte == BIN_8) {
-            size = input.readUnsignedByte();
-        } else if (typeByte == BIN_16) {
-            size = input.readUnsignedShort();
-        } else if (typeByte == BIN_32) {
-            size = input.readInt();
-            if (size < 0) {
-                throw new IllegalArgumentException("Invalid binary data: Binary too large");
-            }
-        } else {
-            throw new IllegalArgumentException("Invalid binary data: Expected binary, but was: 0x" + toHex(typeByte));
-        }
+        int size = switch (typeByte) {
+            case BIN_8 -> input.readUnsignedByte();
+            case BIN_16 -> input.readUnsignedShort();
+            case BIN_32 -> readPositiveInt("Invalid binary data: Binary too large");
+            default -> throw invalidBinaryData("binary", typeByte);
+        };
         var bytes = new byte[size];
         input.readFully(bytes);
         return bytes;
@@ -436,72 +428,71 @@ abstract class AbstractBinReader extends MsgPack {
         if (typeByte >= MIN_FIX_INT && typeByte <= MAX_FIX_INT) {
             return typeByte;
         }
-        switch (typeByte) {
-            case UINT_8:
-                return input.readUnsignedByte();
-            case UINT_16:
-                return input.readUnsignedShort();
-            case UINT_32: {
-                var val = input.readInt();
-                if (val < 0) {
-                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was large unsigned int");
-                }
-                return val;
-            }
-            case UINT_64: {
-                var val = input.readLong();
-                if (val < 0 || val > Integer.MAX_VALUE) {
-                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was large unsigned int");
-                }
-                return (int) val;
-            }
-            case SINT_8:
-                return input.readByte();
-            case SINT_16:
-                return input.readShort();
-            case SINT_32:
-                return input.readInt();
-            case SINT_64: {
-                var val = input.readLong();
-                if (val < Integer.MIN_VALUE || val > Integer.MAX_VALUE) {
-                    throw new IllegalArgumentException("Invalid binary data: Expected int, but was large signed int");
-                }
-                return (int) val;
-            }
-        }
-        throw new IllegalArgumentException("Invalid binary data: Expected int, but was: 0x" + toHex(typeByte));
+        return switch (typeByte) {
+            case UINT_8 -> input.readUnsignedByte();
+            case UINT_16 -> input.readUnsignedShort();
+            case UINT_32 -> readPositiveInt("Invalid binary data: Expected int, but was large unsigned int");
+            case UINT_64 -> readUnsignedLongAsInt();
+            case SINT_8 -> input.readByte();
+            case SINT_16 -> input.readShort();
+            case SINT_32 -> input.readInt();
+            case SINT_64 -> readLongAsInt();
+            default -> throw invalidBinaryData("int", typeByte);
+        };
     }
 
     long acceptLong(int typeByte) throws IOException {
         if (typeByte >= MIN_FIX_INT && typeByte <= MAX_FIX_INT) {
             return typeByte;
         }
-        switch (typeByte) {
-            case UINT_8:
-                return input.readUnsignedByte();
-            case UINT_16:
-                return input.readUnsignedShort();
-            case UINT_32: {
-                return input.readInt() & 0xFFFFFFFFL;
-            }
-            case UINT_64: {
-                var val = input.readLong();
-                if (val < 0) {
-                    throw new IllegalArgumentException("Invalid binary data: Expected long, but was large unsigned int");
-                }
-                return val;
-            }
-            case SINT_8:
-                return input.readByte();
-            case SINT_16:
-                return input.readShort();
-            case SINT_32:
-                return input.readInt();
-            case SINT_64: {
-                return input.readLong();
-            }
+        return switch (typeByte) {
+            case UINT_8 -> input.readUnsignedByte();
+            case UINT_16 -> input.readUnsignedShort();
+            case UINT_32 -> Integer.toUnsignedLong(input.readInt());
+            case UINT_64 -> readUnsignedLong();
+            case SINT_8 -> input.readByte();
+            case SINT_16 -> input.readShort();
+            case SINT_32 -> input.readInt();
+            case SINT_64 -> input.readLong();
+            default -> throw invalidBinaryData("long", typeByte);
+        };
+    }
+
+    private int readPositiveInt(String msg) throws IOException {
+        var val = input.readInt();
+        if (val < 0) {
+            throw new IllegalArgumentException(msg);
         }
-        throw new IllegalArgumentException("Invalid binary data: Expected long, but was: 0x" + toHex(typeByte));
+        return val;
+    }
+
+    private long readUnsignedLong() throws IOException {
+        var val = input.readLong();
+        if (val < 0) {
+            throw new IllegalArgumentException("Invalid binary data: Expected long, but was large unsigned int");
+        }
+        return val;
+    }
+
+    private int readUnsignedLongAsInt() throws IOException {
+        var val = input.readLong();
+        if (val < 0 || val > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid binary data: Expected int, but was large unsigned int");
+        }
+        return (int) val;
+    }
+
+    private int readLongAsInt() throws IOException {
+        var val = input.readLong();
+        if (val < Integer.MIN_VALUE || val > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid binary data: Expected int, but was large signed int");
+        }
+        return (int) val;
+    }
+
+    private IllegalArgumentException invalidBinaryData(String expected, int actualByte) {
+        return new IllegalArgumentException(
+                "Invalid binary data: Expected " + expected + ", but was: 0x" + toHex(actualByte));
     }
 
 }

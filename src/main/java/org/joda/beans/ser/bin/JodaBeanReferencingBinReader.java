@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
@@ -112,7 +111,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
     // parses the class information
     private ClassInfo parseClassInfo() throws Exception {
         var className = acceptString(input.readByte());
-        Class<?> type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
+        var type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
         var propertyCount = acceptArray(input.readByte());
         if (propertyCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected array with 0 to many elements, but was: " + propertyCount);
@@ -141,8 +140,8 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         try {
             var deser = settings.getDeserializers().findDeserializer(classInfo.type);
             var metaBean = deser.findMetaBean(classInfo.type);
-            BeanBuilder<?> builder = deser.createBuilder(classInfo.type, metaBean);
-            for (MetaProperty<?> metaProp : classInfo.metaProperties) {
+            var builder = deser.createBuilder(classInfo.type, metaBean);
+            for (var metaProp : classInfo.metaProperties) {
                 if (metaProp == null) {
                     MsgPackInput.skipObject(input);
                 } else {
@@ -388,9 +387,9 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
             throw new RuntimeException("Could not find type: " + type.getName());
         }
         var propertyCount = metaBean.metaPropertyCount();
-        MetaProperty<?>[] metaProperties = new MetaProperty[propertyCount];
+        var metaProperties = new MetaProperty[propertyCount];
         var i = 0;
-        for (MetaProperty<?> metaProperty : metaBean.metaPropertyIterable()) {
+        for (var metaProperty : metaBean.metaPropertyIterable()) {
             metaProperties[i++] = metaProperty;
         }
         return new ClassInfo(type, metaProperties);
@@ -415,17 +414,13 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
     }
 
     private int acceptIntExtension(int typeByte) throws IOException {
-        if (typeByte == MsgPack.FIX_EXT_1) {
-            return input.readUnsignedByte();
-        }
-        if (typeByte == MsgPack.FIX_EXT_2) {
-            return input.readUnsignedShort();
-        }
-        if (typeByte == MsgPack.FIX_EXT_4) {
-            return input.readInt();
-        }
-        throw new IllegalArgumentException(
-                "Invalid binary data: Expected int extension type, but was: 0x" + toHex(typeByte));
+        return switch (typeByte) {
+            case MsgPack.FIX_EXT_1 -> input.readUnsignedByte();
+            case MsgPack.FIX_EXT_2 -> input.readUnsignedShort();
+            case MsgPack.FIX_EXT_4 -> input.readInt();
+            default -> throw new IllegalArgumentException(
+                    "Invalid binary data: Expected int extension type, but was: 0x" + toHex(typeByte));
+        };
     }
 
     //-----------------------------------------------------------------------
