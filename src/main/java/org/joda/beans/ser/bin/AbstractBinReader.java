@@ -22,11 +22,9 @@ import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -81,24 +79,24 @@ abstract class AbstractBinReader extends MsgPack {
 
     <T> T parseRemaining(Class<T> declaredType) throws Exception {
         // the array and version has already been read
-        Object parsed = parseObject(declaredType, null, null, null, true);
+        var parsed = parseObject(declaredType, null, null, null, true);
         return declaredType.cast(parsed);
     }
 
     Object parseBean(int propertyCount, Class<?> beanType) {
-        String propName = "";
+        var propName = "";
         try {
-            SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
-            MetaBean metaBean = deser.findMetaBean(beanType);
+            var deser = settings.getDeserializers().findDeserializer(beanType);
+            var metaBean = deser.findMetaBean(beanType);
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
-            for (int i = 0; i < propertyCount; i++) {
+            for (var i = 0; i < propertyCount; i++) {
                 // property name
                 propName = acceptPropertyName();
                 MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                 if (metaProp == null || metaProp.style().isDerived()) {
                     MsgPackInput.skipObject(input);
                 } else {
-                    Object value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
+                    var value = parseObject(SerOptional.extractType(metaProp, beanType), metaProp, beanType, null, false);
                     deser.setValue(builder, metaProp, SerOptional.wrapValue(metaProp, beanType, value));
                 }
                 propName = "";
@@ -110,7 +108,7 @@ abstract class AbstractBinReader extends MsgPack {
     }
 
     String acceptPropertyName() throws IOException {
-        byte typeByte = input.readByte();
+        var typeByte = input.readByte();
         return acceptString(typeByte);
     }
 
@@ -122,21 +120,21 @@ abstract class AbstractBinReader extends MsgPack {
 
         if (isMap(typeByte)) {
             input.mark(8);
-            int mapSize = acceptMap(typeByte);
+            var mapSize = acceptMap(typeByte);
             if (mapSize > 0) {
                 int typeByteTemp = input.readByte();
                 if (typeByteTemp == EXT_8) {
-                    int size = input.readUnsignedByte();
+                    var size = input.readUnsignedByte();
                     typeByteTemp = input.readByte();
                     if (typeByteTemp == JODA_TYPE_BEAN) {
-                        String typeStr = acceptStringBytes(size);
+                        var typeStr = acceptStringBytes(size);
                         effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
                         return parseBean(declaredType, rootType, effectiveType, mapSize);
                     } else if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
-                        String typeStr = acceptStringBytes(size);
+                        var typeStr = acceptStringBytes(size);
                         effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
                         if (!declaredType.isAssignableFrom(effectiveType)) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
@@ -164,7 +162,7 @@ abstract class AbstractBinReader extends MsgPack {
         }
         if (Bean.class.isAssignableFrom(effectiveType)) {
             if (isMap(typeByte)) {
-                int mapSize = acceptMap(typeByte);
+                var mapSize = acceptMap(typeByte);
                 return parseBean(mapSize, effectiveType);
             } else {
                 return parseSimple(typeByte, effectiveType);
@@ -220,50 +218,50 @@ abstract class AbstractBinReader extends MsgPack {
     }
 
     Object parseIterableMap(int typeByte, SerIterable iterable) throws Exception {
-        int size = acceptMap(typeByte);
-        for (int i = 0; i < size; i++) {
-            Object key = parseObject(iterable.keyType(), null, null, null, false);
-            Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+        var size = acceptMap(typeByte);
+        for (var i = 0; i < size; i++) {
+            var key = parseObject(iterable.keyType(), null, null, null, false);
+            var value = parseObject(iterable.valueType(), null, null, iterable, false);
             iterable.add(key, null, value, 1);
         }
         return iterable.build();
     }
 
     Object parseIterableTable(int typeByte, SerIterable iterable) throws Exception {
-        int size = acceptArray(typeByte);
-        for (int i = 0; i < size; i++) {
+        var size = acceptArray(typeByte);
+        for (var i = 0; i < size; i++) {
             if (acceptArray(input.readByte()) != 3) {
                 throw new IllegalArgumentException("Table must have cell array size 3");
             }
-            Object key = parseObject(iterable.keyType(), null, null, null, false);
-            Object column = parseObject(iterable.columnType(), null, null, null, false);
-            Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+            var key = parseObject(iterable.keyType(), null, null, null, false);
+            var column = parseObject(iterable.columnType(), null, null, null, false);
+            var value = parseObject(iterable.valueType(), null, null, iterable, false);
             iterable.add(key, column, value, 1);
         }
         return iterable.build();
     }
 
     Object parseIterableGrid(int typeByte, SerIterable iterable) throws Exception {
-        int size = acceptArray(typeByte);
-        int rows = acceptInteger(input.readByte());
-        int columns = acceptInteger(input.readByte());
+        var size = acceptArray(typeByte);
+        var rows = acceptInteger(input.readByte());
+        var columns = acceptInteger(input.readByte());
         iterable.dimensions(new int[]{rows, columns});
         if ((rows * columns) != (size - 2)) {
             // sparse
-            for (int i = 0; i < (size - 2); i++) {
+            for (var i = 0; i < (size - 2); i++) {
                 if (acceptArray(input.readByte()) != 3) {
                     throw new IllegalArgumentException("Grid must have cell array size 3");
                 }
-                int row = acceptInteger(input.readByte());
-                int column = acceptInteger(input.readByte());
-                Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+                var row = acceptInteger(input.readByte());
+                var column = acceptInteger(input.readByte());
+                var value = parseObject(iterable.valueType(), null, null, iterable, false);
                 iterable.add(row, column, value, 1);
             }
         } else {
             // dense
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < columns; column++) {
-                    Object value = parseObject(iterable.valueType(), null, null, iterable, false);
+            for (var row = 0; row < rows; row++) {
+                for (var column = 0; column < columns; column++) {
+                    var value = parseObject(iterable.valueType(), null, null, iterable, false);
                     iterable.add(row, column, value, 1);
                 }
             }
@@ -272,18 +270,18 @@ abstract class AbstractBinReader extends MsgPack {
     }
 
     Object parseIterableCounted(int typeByte, SerIterable iterable) throws Exception {
-        int size = acceptMap(typeByte);
-        for (int i = 0; i < size; i++) {
-            Object value = parseObject(iterable.valueType(), null, null, iterable, false);
-            int count = acceptInteger(input.readByte());
+        var size = acceptMap(typeByte);
+        for (var i = 0; i < size; i++) {
+            var value = parseObject(iterable.valueType(), null, null, iterable, false);
+            var count = acceptInteger(input.readByte());
             iterable.add(null, null, value, count);
         }
         return iterable.build();
     }
 
     Object parseIterableArray(int typeByte, SerIterable iterable) throws Exception {
-        int size = acceptArray(typeByte);
-        for (int i = 0; i < size; i++) {
+        var size = acceptArray(typeByte);
+        for (var i = 0; i < size; i++) {
             iterable.add(null, null, parseObject(iterable.valueType(), null, null, iterable, false), 1);
         }
         return iterable.build();
@@ -291,14 +289,14 @@ abstract class AbstractBinReader extends MsgPack {
 
     Object parseSimple(int typeByte, Class<?> type) throws Exception {
         if (isString(typeByte)) {
-            String text = acceptString(typeByte);
+            var text = acceptString(typeByte);
             if (type == String.class || type == Object.class) {
                 return text;
             }
             return settings.getConverter().convertFromString(type, text);
         }
         if (isIntegral(typeByte)) {
-            long value = acceptLong(typeByte);
+            var value = acceptLong(typeByte);
             if (type == Long.class || type == long.class) {
                 return Long.valueOf(value);
 
@@ -316,11 +314,11 @@ abstract class AbstractBinReader extends MsgPack {
 
             } else if (type == Double.class || type == double.class) {
                 // handle case where property type has changed from integral to double
-                return Double.valueOf((double) value);
+                return Double.valueOf(value);
 
             } else if (type == Float.class || type == float.class) {
                 // handle case where property type has changed from integral to float
-                return Float.valueOf((float) value);
+                return Float.valueOf(value);
 
             } else if (type == Integer.class || type == int.class) {
                 if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
@@ -400,12 +398,12 @@ abstract class AbstractBinReader extends MsgPack {
     }
 
     String acceptStringBytes(int size) throws IOException {
-        byte[] bytes = new byte[size];
+        var bytes = new byte[size];
         input.readFully(bytes);
         // inline common ASCII case for much better performance
-        char[] chars = new char[size];
-        for (int i = 0; i < size; i++) {
-            byte b = bytes[i];
+        var chars = new char[size];
+        for (var i = 0; i < size; i++) {
+            var b = bytes[i];
             if (b >= 0) {
                 chars[i] = (char) b;
             } else {
@@ -429,7 +427,7 @@ abstract class AbstractBinReader extends MsgPack {
         } else {
             throw new IllegalArgumentException("Invalid binary data: Expected binary, but was: 0x" + toHex(typeByte));
         }
-        byte[] bytes = new byte[size];
+        var bytes = new byte[size];
         input.readFully(bytes);
         return bytes;
     }
@@ -444,14 +442,14 @@ abstract class AbstractBinReader extends MsgPack {
             case UINT_16:
                 return input.readUnsignedShort();
             case UINT_32: {
-                int val = input.readInt();
+                var val = input.readInt();
                 if (val < 0) {
                     throw new IllegalArgumentException("Invalid binary data: Expected int, but was large unsigned int");
                 }
                 return val;
             }
             case UINT_64: {
-                long val = input.readLong();
+                var val = input.readLong();
                 if (val < 0 || val > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("Invalid binary data: Expected int, but was large unsigned int");
                 }
@@ -464,7 +462,7 @@ abstract class AbstractBinReader extends MsgPack {
             case SINT_32:
                 return input.readInt();
             case SINT_64: {
-                long val = input.readLong();
+                var val = input.readLong();
                 if (val < Integer.MIN_VALUE || val > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("Invalid binary data: Expected int, but was large signed int");
                 }
@@ -484,10 +482,10 @@ abstract class AbstractBinReader extends MsgPack {
             case UINT_16:
                 return input.readUnsignedShort();
             case UINT_32: {
-                return ((long) input.readInt()) & 0xFFFFFFFFL;
+                return input.readInt() & 0xFFFFFFFFL;
             }
             case UINT_64: {
-                long val = input.readLong();
+                var val = input.readLong();
                 if (val < 0) {
                     throw new IllegalArgumentException("Invalid binary data: Expected long, but was large unsigned int");
                 }

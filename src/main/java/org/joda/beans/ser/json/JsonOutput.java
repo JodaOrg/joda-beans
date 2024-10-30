@@ -26,7 +26,7 @@ final class JsonOutput {
     /** encoding JSON */
     private static final String[] REPLACE = new String[128];
     static {
-        for (int i = 0; i < 32; i++) {
+        for (var i = 0; i < 32; i++) {
             REPLACE[i] = String.format("\\u%04x", i);
         }
         REPLACE['\b'] = "\\b";
@@ -176,10 +176,10 @@ final class JsonOutput {
      */
     void writeString(String value) throws IOException {
         output.append('"');
-        for (int i = 0; i < value.length(); i++) {
-            char ch = value.charAt(i);
+        for (var i = 0; i < value.length(); i++) {
+            var ch = value.charAt(i);
             if (ch < 128) {
-                String replace = REPLACE[ch];
+                var replace = REPLACE[ch];
                 if (replace != null) {
                     output.append(replace);
                 } else {

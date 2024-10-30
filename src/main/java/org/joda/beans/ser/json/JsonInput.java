@@ -26,7 +26,7 @@ final class JsonInput {
     /** encoding JSON */
     private static final String[] REPLACE = new String[128];
     static {
-        for (int i = 0; i < 32; i++) {
+        for (var i = 0; i < 32; i++) {
             REPLACE[i] = String.format("\\u%04x", i);
         }
         REPLACE['\b'] = "\\b";
@@ -80,48 +80,26 @@ final class JsonInput {
      * @throws IOException if an error occurs
      */
     JsonEvent readEvent() throws IOException {
-        char next = readNext();
+        var next = readNext();
         // whitespace
         while (next == ' ' || next == '\t' || next == '\n' || next == '\r') {
             next = readNext();
         }
         // identify token
-        switch (next) {
-            case '{':
-                return JsonEvent.OBJECT;
-            case '}':
-                return JsonEvent.OBJECT_END;
-            case '[':
-                return JsonEvent.ARRAY;
-            case ']':
-                return JsonEvent.ARRAY_END;
-            case '"':
-                return JsonEvent.STRING;
-            case '-':
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                return acceptNumber(next);
-            case 'n':
-                return acceptNull();
-            case 't':
-                return acceptTrue();
-            case 'f':
-                return acceptFalse();
-            case ',':
-                return JsonEvent.COMMA;
-            case ':':
-                return JsonEvent.COLON;
-            default:
-                throw new IllegalArgumentException("Invalid JSON data: Expected JSON character but found '" + next + "'");
-        }
+        return switch (next) {
+            case '{' -> JsonEvent.OBJECT;
+            case '}' -> JsonEvent.OBJECT_END;
+            case '[' -> JsonEvent.ARRAY;
+            case ']' -> JsonEvent.ARRAY_END;
+            case '"' -> JsonEvent.STRING;
+            case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> acceptNumber(next);
+            case 'n' -> acceptNull();
+            case 't' -> acceptTrue();
+            case 'f' -> acceptFalse();
+            case ',' -> JsonEvent.COMMA;
+            case ':' -> JsonEvent.COLON;
+            default -> throw new IllegalArgumentException("Invalid JSON data: Expected JSON character but found '" + next + "'");
+        };
     }
 
     // store peeked value for later use
@@ -155,11 +133,11 @@ final class JsonInput {
     // opening quite already consumed
     String parseObjectKey() throws IOException {
         if (cachedObjectKey != null) {
-            String key = cachedObjectKey;
+            var key = cachedObjectKey;
             cachedObjectKey = null;
             return key;
         }
-        String str = parseString();
+        var str = parseString();
         acceptEvent(JsonEvent.COLON);
         return str;
     }
@@ -174,7 +152,7 @@ final class JsonInput {
     // opening quite already consumed
     String parseString() throws IOException {
         buf.setLength(0);
-        char next = readNext();
+        var next = readNext();
         while (next != '"') {
             if (next == '\\') {
                 parseEscape();
@@ -187,7 +165,7 @@ final class JsonInput {
     }
 
     private void parseEscape() throws IOException {
-        char next = readNext();
+        var next = readNext();
         switch (next) {
             case '"':
                 buf.append('"');
@@ -214,8 +192,8 @@ final class JsonInput {
                 buf.append('\t');
                 return;
             case 'u':
-                int total = 0;
-                for (int i = 0; i < 4; i++) {
+                var total = 0;
+                for (var i = 0; i < 4; i++) {
                     total = total * 16 + acceptHex();
                 }
                 buf.append((char) total);
@@ -226,7 +204,7 @@ final class JsonInput {
     }
 
     private int acceptHex() throws IOException {
-        char next = readNext();
+        var next = readNext();
         if (next >= '0' && next <= '9') {
             return next - 48;
         }
@@ -253,8 +231,8 @@ final class JsonInput {
     private JsonEvent acceptNumber(char first) throws IOException {
         buf.setLength(0);
         buf.append(first);
-        char last = first;
-        char next = readNext();
+        var last = first;
+        var next = readNext();
         while ((next >= '0' && next <= '9') || next == '.' || next == '-' || next == '+' || next == 'e' || next == 'E') {
             buf.append(next);
             last = next;
@@ -264,7 +242,7 @@ final class JsonInput {
         if (last < '0' || last > '9') {
             throw new IllegalArgumentException("Invalid JSON data: Expected number but found invalid last char '" + last + "'");
         }
-        String str = buf.toString();
+        var str = buf.toString();
         if (str.equals("0")) {
             integral = 0;
             return JsonEvent.NUMBER_INTEGRAL;
@@ -303,7 +281,7 @@ final class JsonInput {
     }
 
     private void acceptChar(char ch) throws IOException {
-        char next = readNext();
+        var next = readNext();
         if (next != ch) {
             throw new IllegalArgumentException("Invalid JSON data: Expected '" + ch + "' but found '" + next + "'");
         }
@@ -312,11 +290,11 @@ final class JsonInput {
     //-----------------------------------------------------------------------
     private char readNext() throws IOException {
         if (cachedNext != null) {
-            char next = cachedNext.charValue();
+            var next = cachedNext.charValue();
             cachedNext = null;
             return next;
         }
-        int next = input.read();
+        var next = input.read();
         if (next == -1) {
             throw new IllegalArgumentException("Invalid JSON data: End of file");
         }
@@ -330,7 +308,7 @@ final class JsonInput {
     private void skipData(JsonEvent event) throws IOException {
         switch (event) {
             case OBJECT: {
-                JsonEvent ev = readEvent();
+                var ev = readEvent();
                 while (ev != JsonEvent.OBJECT_END) {
                     acceptObjectKey(ev);
                     skipData();
@@ -339,7 +317,7 @@ final class JsonInput {
                 break;
             }
             case ARRAY: {
-                JsonEvent ev = readEvent();
+                var ev = readEvent();
                 while (ev != JsonEvent.ARRAY_END) {
                     skipData(ev);
                     ev = acceptArraySeparator();
@@ -364,7 +342,7 @@ final class JsonInput {
     //-----------------------------------------------------------------------
     // accepts a comma or object end
     JsonEvent acceptObjectSeparator() throws IOException {
-        JsonEvent event = readEvent();
+        var event = readEvent();
         if (event == JsonEvent.COMMA) {
             return readEvent();  // leniently allow comma before objectEnd
         } else {
@@ -374,7 +352,7 @@ final class JsonInput {
 
     // accepts a comma or array end
     JsonEvent acceptArraySeparator() throws IOException {
-        JsonEvent event = readEvent();
+        var event = readEvent();
         if (event == JsonEvent.COMMA) {
             return readEvent();  // leniently allow comma before arrayEnd
         } else {

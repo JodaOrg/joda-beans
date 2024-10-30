@@ -64,7 +64,7 @@ abstract class MsgPackInput extends MsgPack {
     void readAll() {
         try {
             try {
-                int b = input.read();
+                var b = input.read();
                 while (b >= 0) {
                     readObject(b);
                     b = input.read();
@@ -80,7 +80,7 @@ abstract class MsgPackInput extends MsgPack {
     //-----------------------------------------------------------------------
     void readObject(int unsigned) throws IOException {
         handleObjectStart();
-        byte b = (byte) unsigned;
+        var b = (byte) unsigned;
         if (b >= MIN_FIX_INT) {  // no need to check for b <= MAX_FIX_INT
             handleInt(b);
             
@@ -94,7 +94,7 @@ abstract class MsgPackInput extends MsgPack {
             map(b - MIN_FIX_MAP);
             
         } else {
-            switch ((int) b) {
+            switch (b) {
                 case NIL:
                     handleNil();
                     break;
@@ -129,37 +129,37 @@ abstract class MsgPackInput extends MsgPack {
                     break;
                 }
                 case FLOAT_32: {
-                    float value = input.readFloat();
+                    var value = input.readFloat();
                     handleFloat(value);
                     break;
                 }
                 case FLOAT_64: {
-                    double value = input.readDouble();
+                    var value = input.readDouble();
                     handleDouble(value);
                     break;
                 }
                 case UINT_8: {
-                    int value = input.readUnsignedByte();
+                    var value = input.readUnsignedByte();
                     handleInt(value);
                     break;
                 }
                 case UINT_16: {
-                    int value = input.readUnsignedShort();
+                    var value = input.readUnsignedShort();
                     handleInt(value);
                     break;
                 }
                 case UINT_32: {
-                    int val = input.readInt();
+                    var val = input.readInt();
                     if (val >= 0) {
                         handleInt(val);
                     } else {
-                        long value = ((long) val) & 0xFFFFFFFFL;
+                        var value = (val) & 0xFFFFFFFFL;
                         handleUnsignedLong(value);
                     }
                     break;
                 }
                 case UINT_64: {
-                    long value = input.readLong();
+                    var value = input.readLong();
                     handleUnsignedLong(value);
                     break;
                 }
@@ -174,12 +174,12 @@ abstract class MsgPackInput extends MsgPack {
                     break;
                 }
                 case SINT_32: {
-                    int value = input.readInt();
+                    var value = input.readInt();
                     handleInt(value);
                     break;
                 }
                 case SINT_64: {
-                    long value = input.readLong();
+                    var value = input.readLong();
                     handleSignedLong(value);
                     break;
                 }
@@ -241,39 +241,39 @@ abstract class MsgPackInput extends MsgPack {
         if (size < 0) {
             throw new IllegalStateException("String too large");
         }
-        byte[] bytes = new byte[size];
+        var bytes = new byte[size];
         input.readFully(bytes);
-        String str = new String(bytes, UTF_8);
+        var str = new String(bytes, UTF_8);
         handleString(str);
     }
 
     private void array(int size) throws IOException {
         handleArrayHeader(size);
-        for (int i = 0; i < size; i++) {
+        for (var i = 0; i < size; i++) {
             readArrayItem();
         }
     }
 
     void readArrayItem() throws IOException {
-        int next = input.readUnsignedByte();
+        var next = input.readUnsignedByte();
         readObject(next);
     }
 
     private void map(int size) throws IOException {
         handleMapHeader(size);
-        for (int i = 0; i < size; i++) {
+        for (var i = 0; i < size; i++) {
             readMapKey();
             readMapValue();
         }
     }
 
     void readMapKey() throws IOException {
-        int next = input.readUnsignedByte();
+        var next = input.readUnsignedByte();
         readObject(next);
     }
 
     void readMapValue() throws IOException {
-        int next = input.readUnsignedByte();
+        var next = input.readUnsignedByte();
         readObject(next);
     }
 
@@ -281,7 +281,7 @@ abstract class MsgPackInput extends MsgPack {
         if (size < 0) {
             throw new IllegalStateException("Binary too large");
         }
-        byte[] bytes = new byte[size];
+        var bytes = new byte[size];
         input.readFully(bytes);
         handleBinary(bytes);
     }
@@ -291,7 +291,7 @@ abstract class MsgPackInput extends MsgPack {
         if (size < 0) {
             throw new IllegalStateException("Extension too large");
         }
-        byte[] bytes = new byte[size];
+        var bytes = new byte[size];
         input.readFully(bytes);
         handleExtension(type, numeric, bytes);
     }

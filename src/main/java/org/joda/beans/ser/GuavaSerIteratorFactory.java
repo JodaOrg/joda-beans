@@ -63,31 +63,35 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass) {
-        Class<?> declaredType = prop.propertyType();
-        if (value instanceof BiMap) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return biMap((BiMap<?, ?>) value, declaredType, keyType, valueType, valueTypeTypes);
+        var declaredType = prop.propertyType();
+        switch (value) {
+            case BiMap<?, ?> map -> {
+                var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+                var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+                var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+                return biMap(map, declaredType, keyType, valueType, valueTypeTypes);
+            }
+            case Multiset<?> multiset -> {
+                var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+                var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+                return multiset(multiset, declaredType, valueType, valueTypeTypes);
+            }
+            case Multimap<?, ?> multimap -> {
+                var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+                var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+                var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+                return multimap(multimap, declaredType, keyType, valueType, valueTypeTypes);
+            }
+            case Table<?, ?, ?> table -> {
+                var rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
+                var colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
+                var valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
+                return table(table, declaredType, rowType, colType, valueType, EMPTY_VALUE_TYPES);
+            }
+            case null, default -> {
+                return super.create(value, prop, beanClass);
+            }
         }
-        if (value instanceof Multiset) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return multiset((Multiset<?>) value, declaredType, valueType, valueTypeTypes);
-        }
-        if (value instanceof Multimap) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return multimap((Multimap<?, ?>) value, declaredType, keyType, valueType, valueTypeTypes);
-        }
-        if (value instanceof Table) {
-            Class<?> rowType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0);
-            Class<?> colType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1);
-            Class<?> valueType = JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2);
-            return table((Table<?, ?, ?>) value, declaredType, rowType, colType, valueType, EMPTY_VALUE_TYPES);
-        }
-        return super.create(value, prop, beanClass);
     }
 
     /**
@@ -102,36 +106,39 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
      */
     @Override
     public SerIterator createChild(Object value, SerIterator parent) {
-        Class<?> declaredType = parent.valueType();
-        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
-        if (value instanceof BiMap) {
-            if (childGenericTypes.size() == 2) {
-                return biMap((BiMap<?, ?>) value, declaredType, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
+        var declaredType = parent.valueType();
+        var childGenTypes = parent.valueTypeTypes();
+        switch (value) {
+            case BiMap<?, ?> map -> {
+                if (childGenTypes.size() == 2) {
+                    return biMap(map, declaredType, childGenTypes.get(0), childGenTypes.get(1), EMPTY_VALUE_TYPES);
+                }
+                return biMap(map, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
-            return biMap((BiMap<?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (value instanceof Multimap) {
-            if (childGenericTypes.size() == 2) {
-                return multimap((Multimap<?, ?>) value, declaredType, childGenericTypes.get(0), childGenericTypes.get(1),
-                        EMPTY_VALUE_TYPES);
+            case Multimap<?, ?> multimap -> {
+                if (childGenTypes.size() == 2) {
+                    return multimap(multimap, declaredType, childGenTypes.get(0), childGenTypes.get(1), EMPTY_VALUE_TYPES);
+                }
+                return multimap(multimap, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
-            return multimap((Multimap<?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (value instanceof Multiset) {
-            if (childGenericTypes.size() == 1) {
-                return multiset((Multiset<?>) value, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
+            case Multiset<?> multiset -> {
+                if (childGenTypes.size() == 1) {
+                    return multiset(multiset, declaredType, childGenTypes.get(0), EMPTY_VALUE_TYPES);
+                }
+                return multiset(multiset, Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
-            return multiset((Multiset<?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (value instanceof Table) {
-            if (childGenericTypes.size() == 3) {
-                return table((Table<?, ?, ?>) value, declaredType,
-                        childGenericTypes.get(0), childGenericTypes.get(1),
-                        childGenericTypes.get(2), EMPTY_VALUE_TYPES);
+            case Table<?, ?, ?> table -> {
+                if (childGenTypes.size() == 3) {
+                    return table(table, declaredType,
+                            childGenTypes.get(0), childGenTypes.get(1),
+                            childGenTypes.get(2), EMPTY_VALUE_TYPES);
+                }
+                return table(table, Object.class, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
-            return table((Table<?, ?, ?>) value, Object.class, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            case null, default -> {
+                return super.createChild(value, parent);
+            }
         }
-        return super.createChild(value, parent);
     }
 
     //-----------------------------------------------------------------------
@@ -165,70 +172,64 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
     @Override
     public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass) {
         if (BiMap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            var valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return biMap(keyType, valueType, valueTypeTypes);
         }
         if (SortedMultiset.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return sortedMultiset(valueType, valueTypeTypes);
         }
         if (Multiset.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return multiset(valueType, valueTypeTypes);
         }
         if (SetMultimap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            var valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return setMultimap(keyType, valueType, valueTypeTypes);
         }
-        if (ListMultimap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return listMultimap(keyType, valueType, valueTypeTypes);
-        }
-        if (Multimap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+        if (ListMultimap.class.isAssignableFrom(prop.propertyType()) || Multimap.class.isAssignableFrom(prop.propertyType())) {
+            var keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            var valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return listMultimap(keyType, valueType, valueTypeTypes);
         }
         if (Table.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> rowType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0));
-            Class<?> colType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2));
+            var rowType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 0));
+            var colType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 1));
+            var valueType = defaultToObjectClass(JodaBeanUtils.extractTypeClass(prop, beanClass, 3, 2));
             return table(rowType, colType, valueType, EMPTY_VALUE_TYPES);
         }
         if (ImmutableList.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return immutableList(valueType, valueTypeTypes);
         }
         if (ImmutableSortedSet.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return immutableSortedSet(valueType, valueTypeTypes);
         }
         if (ImmutableSet.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return immutableSet(valueType, valueTypeTypes);
         }
         if (ImmutableSortedMap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return immutableSortedMap(keyType, valueType, valueTypeTypes);
         }
         if (ImmutableMap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return immutableMap(keyType, valueType, valueTypeTypes);
         }
         return super.createIterable(prop, beanClass);
@@ -828,7 +829,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     coll.add(value);
                 }
             }
@@ -870,7 +871,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     coll.add(value);
                 }
             }
@@ -912,7 +913,7 @@ public class GuavaSerIteratorFactory extends SerIteratorFactory {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     coll.add(value);
                 }
             }

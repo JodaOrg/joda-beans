@@ -24,7 +24,6 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
-import org.joda.convert.StringConverter;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a simple JSON format.
@@ -76,7 +75,7 @@ public class JodaBeanSimpleJsonWriter {
      * @return the JSON, not null
      */
     public String write(Bean bean) {
-        StringBuilder buf = new StringBuilder(1024);
+        var buf = new StringBuilder(1024);
         try {
             write(bean, buf);
         } catch (IOException ex) {
@@ -109,18 +108,18 @@ public class JodaBeanSimpleJsonWriter {
         // property information
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                Object value = SerOptional.extractValue(prop, bean);
+                var value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     output.writeObjectKey(prop.name());
                     Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-                    if (value instanceof Bean) {
+                    if (value instanceof Bean beanValue) {
                         if (settings.getConverter().isConvertible(value.getClass())) {
                             writeSimple(propType, value);
                         } else {
-                            writeBean((Bean) value, propType);
+                            writeBean(beanValue, propType);
                         }
                     } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
+                        var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
                         if (itemIterator != null) {
                             writeElements(itemIterator);
                         } else {
@@ -172,15 +171,15 @@ public class JodaBeanSimpleJsonWriter {
 
     // write map with simple keys
     private void writeMapSimple(SerIterator itemIterator) throws IOException {
-        StringConverter<Object> keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
+        var keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         output.writeObjectStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
+            var key = itemIterator.key();
             if (key == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
-            String str = keyConverter.convertToString(itemIterator.key());
+            var str = keyConverter.convertToString(itemIterator.key());
             if (str == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
             }
@@ -195,11 +194,11 @@ public class JodaBeanSimpleJsonWriter {
         output.writeObjectStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
+            var key = itemIterator.key();
             if (key == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
-            String str = settings.getConverter().convertToString(itemIterator.key());
+            var str = settings.getConverter().convertToString(itemIterator.key());
             if (str == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
             }
@@ -271,10 +270,10 @@ public class JodaBeanSimpleJsonWriter {
             output.writeNull();
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
             writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean) {
-            writeBean((Bean) obj, declaredType);
+        } else if (obj instanceof Bean bean) {
+            writeBean(bean, declaredType);
         } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
+            var childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
             if (childIterator != null) {
                 writeElements(childIterator);
             } else {
@@ -298,7 +297,7 @@ public class JodaBeanSimpleJsonWriter {
         } else if (realType == Byte.class) {
             output.writeInt(((Byte) value).byteValue());
         } else if (realType == Float.class) {
-            float flt = ((Float) value).floatValue();
+            var flt = ((Float) value).floatValue();
             if (Float.isNaN(flt)) {
                 // write as string
                 output.writeNull();
@@ -309,7 +308,7 @@ public class JodaBeanSimpleJsonWriter {
                 output.writeFloat(flt);
             }
         } else if (realType == Double.class) {
-            double dbl = ((Double) value).doubleValue();
+            var dbl = ((Double) value).doubleValue();
             if (Double.isNaN(dbl)) {
                 // write as string
                 output.writeNull();
@@ -324,7 +323,7 @@ public class JodaBeanSimpleJsonWriter {
         } else {
             // write as a string
             try {
-                String converted = settings.getConverter().convertToString(realType, value);
+                var converted = settings.getConverter().convertToString(realType, value);
                 if (converted == null) {
                     throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
                 }

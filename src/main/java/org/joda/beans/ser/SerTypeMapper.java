@@ -92,7 +92,7 @@ public final class SerTypeMapper {
      */
     public static String encodeType(Class<?> cls, JodaBeanSer settings, String basePackage, Map<Class<?>, String> knownTypes) {
         // basic type
-        String result = BASIC_TYPES.get(cls);
+        var result = BASIC_TYPES.get(cls);
         if (result != null) {
             return result;
         }
@@ -125,7 +125,7 @@ public final class SerTypeMapper {
             } else {
                 // use long format, short next time if possible
                 if (knownTypes != null) {
-                    String simpleName = cls.getSimpleName();
+                    var simpleName = cls.getSimpleName();
                     if (Character.isUpperCase(simpleName.charAt(0)) &&
                             !BASIC_TYPES_REVERSED.containsKey(simpleName) &&
                             !knownTypes.containsValue(simpleName)) {
@@ -210,8 +210,8 @@ public final class SerTypeMapper {
             }
         }
         // calculate
-        String fullName = className;
-        boolean expanded = false;
+        var fullName = className;
+        var expanded = false;
         if (basePackage != null && !className.isEmpty() && Character.isUpperCase(className.charAt(0))) {
             fullName = basePackage + className;
             expanded = true;
@@ -226,7 +226,7 @@ public final class SerTypeMapper {
                     knownTypes.put(className, result);
                 } else {
                     // derive and cache short name
-                    String simpleName = result.getSimpleName();
+                    var simpleName = result.getSimpleName();
                     // handle renames
                     if (!fullName.equals(result.getName()) &&
                             RenameHandler.INSTANCE.getTypeRenames().containsKey(fullName) &&

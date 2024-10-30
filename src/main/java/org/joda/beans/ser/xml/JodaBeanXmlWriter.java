@@ -169,7 +169,7 @@ public class JodaBeanXmlWriter {
         this.rootBean = Objects.requireNonNull(bean, "bean must not be null");
         this.basePackage = (rootType ? bean.getClass().getPackage().getName() + "." : null);
         
-        String type = rootBean.getClass().getName();
+        var type = rootBean.getClass().getName();
         writeHeader();
         output.append('<').append(BEAN);
         if (rootType) {
@@ -197,18 +197,18 @@ public class JodaBeanXmlWriter {
     private void writeBean(Bean bean, String currentIndent) throws IOException {
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                Object value = SerOptional.extractValue(prop, bean);
+                var value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
-                    String propName = prop.name();
+                    var propName = prop.name();
                     Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-                    if (value instanceof Bean) {
+                    if (value instanceof Bean beanValue) {
                         if (settings.getConverter().isConvertible(value.getClass())) {
                             writeSimple(currentIndent, propName, new StringBuilder(), propType, value);
                         } else {
-                            writeBean(currentIndent, propName, new StringBuilder(), propType, (Bean) value);
+                            writeBean(currentIndent, propName, new StringBuilder(), propType, beanValue);
                         }
                     } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                         if (itemIterator != null) {
                             writeElements(currentIndent, propName, new StringBuilder(), itemIterator);
                         } else {
@@ -227,7 +227,7 @@ public class JodaBeanXmlWriter {
         }
         output.append(currentIndent).append('<').append(tagName).append(attrs);
         if (value.getClass() != propType) {
-            String typeStr = SerTypeMapper.encodeType(value.getClass(), settings, basePackage, knownTypes);
+            var typeStr = SerTypeMapper.encodeType(value.getClass(), settings, basePackage, knownTypes);
             appendAttribute(output, TYPE, typeStr);
         }
         if (willWriteBean(value)) {
@@ -262,7 +262,7 @@ public class JodaBeanXmlWriter {
         StringConverter<Object> keyConverter = null;
         StringConverter<Object> rowConverter = null;
         StringConverter<Object> columnConverter = null;
-        boolean keyBean = false;
+        var keyBean = false;
         if (itemIterator.category() == SerCategory.TABLE || itemIterator.category() == SerCategory.GRID) {
             try {
                 rowConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
@@ -285,28 +285,28 @@ public class JodaBeanXmlWriter {
         // output each item
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            StringBuilder attr = new StringBuilder(32);
+            var attr = new StringBuilder(32);
             if (keyConverter != null) {
-                String keyStr = convertToString(keyConverter, itemIterator.key(), "map key");
+                var keyStr = convertToString(keyConverter, itemIterator.key(), "map key");
                 appendAttribute(attr, KEY, keyStr);
             }
             if (rowConverter != null) {
-                String rowStr = convertToString(rowConverter, itemIterator.key(), "table row");
+                var rowStr = convertToString(rowConverter, itemIterator.key(), "table row");
                 appendAttribute(attr, ROW, rowStr);
-                String colStr = convertToString(columnConverter, itemIterator.column(), "table column");
+                var colStr = convertToString(columnConverter, itemIterator.column(), "table column");
                 appendAttribute(attr, COL, colStr);
             }
             if (itemIterator.count() != 1) {
                 appendAttribute(attr, COUNT, Integer.toString(itemIterator.count()));
             }
             if (keyBean) {
-                Object key = itemIterator.key();
+                var key = itemIterator.key();
                 output.append(currentIndent).append('<').append(ENTRY).append(attr).append('>').append(settings.getNewLine());
                 writeKeyElement(currentIndent + settings.getIndent(), key, itemIterator);
                 writeValueElement(currentIndent + settings.getIndent(), ITEM, new StringBuilder(), itemIterator);
                 output.append(currentIndent).append('<').append('/').append(ENTRY).append('>').append(settings.getNewLine());
             } else {
-                String tagName = itemIterator.category() == SerCategory.MAP ? ENTRY : ITEM;
+                var tagName = itemIterator.category() == SerCategory.MAP ? ENTRY : ITEM;
                 writeValueElement(currentIndent, tagName, attr, itemIterator);
             }
         }
@@ -316,7 +316,7 @@ public class JodaBeanXmlWriter {
         if (obj == null) {
             throw new IllegalArgumentException("Unable to write " + description + " as it cannot be null");
         }
-        String str = encodeAttribute(converter.convertToString(obj));
+        var str = encodeAttribute(converter.convertToString(obj));
         if (str == null) {
             throw new IllegalArgumentException("Unable to write " + description + " as it cannot be a null string: " + obj);
         }
@@ -330,8 +330,8 @@ public class JodaBeanXmlWriter {
         // if key type is known and convertible use short key format
         if (settings.getConverter().isConvertible(itemIterator.keyType())) {
             writeSimple(currentIndent, ITEM, new StringBuilder(), Object.class, key);
-        } else if (key instanceof Bean) {
-            writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), (Bean) key);
+        } else if (key instanceof Bean bean) {
+            writeBean(currentIndent, ITEM, new StringBuilder(), itemIterator.keyType(), bean);
         } else {
             // this case covers where the key type is not known, such as an Object meta-property
             try {
@@ -343,19 +343,19 @@ public class JodaBeanXmlWriter {
     }
 
     private void writeValueElement(String currentIndent, String tagName, StringBuilder attrs, SerIterator itemIterator) throws IOException {
-        Object value = itemIterator.value();
+        var value = itemIterator.value();
         Class<?> valueType = itemIterator.valueType();
         if (value == null) {
             appendAttribute(attrs, NULL, "true");
             output.append(currentIndent).append('<').append(tagName).append(attrs).append("/>").append(settings.getNewLine());
-        } else if (value instanceof Bean) {
+        } else if (value instanceof Bean bean) {
             if (settings.getConverter().isConvertible(value.getClass())) {
                 writeSimple(currentIndent, tagName, attrs, valueType, value);
             } else {
-                writeBean(currentIndent, tagName, attrs, valueType, (Bean) value);
+                writeBean(currentIndent, tagName, attrs, valueType, bean);
             }
         } else {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(value, itemIterator);
+            var childIterator = settings.getIteratorFactory().createChild(value, itemIterator);
             if (childIterator != null) {
                 writeElements(currentIndent, tagName, attrs, childIterator);
             } else {
@@ -371,20 +371,20 @@ public class JodaBeanXmlWriter {
             Class<?> realType = value.getClass();
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                var typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 appendAttribute(attrs, TYPE, typeStr);
             } else {
                 effectiveType = realType;
             }
         } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
-            String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+            var typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             appendAttribute(attrs, TYPE, typeStr);
         } else {
             effectiveType = declaredType;
         }
         try {
-            String converted = settings.getConverter().convertToString(effectiveType, value);
+            var converted = settings.getConverter().convertToString(effectiveType, value);
             if (converted == null) {
                 throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
             }
@@ -397,8 +397,8 @@ public class JodaBeanXmlWriter {
     }
 
     private void appendEncoded(String text) throws IOException {
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
+        for (var i = 0; i < text.length(); i++) {
+            var ch = text.charAt(i);
             switch (ch) {
                 case '&':
                     output.append("&amp;");
@@ -437,8 +437,8 @@ public class JodaBeanXmlWriter {
     }
 
     private StringBuilder appendEncodedAttribute(StringBuilder builder, String text) {
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
+        for (var i = 0; i < text.length(); i++) {
+            var ch = text.charAt(i);
             switch (ch) {
                 case '&':
                     builder.append("&amp;");

@@ -107,13 +107,13 @@ public class JodaBeanSmartReader {
     }
 
     private boolean isXml(byte[] bytes, int pos) {
-        String str = new String(bytes, pos, bytes.length - pos, StandardCharsets.UTF_8);
+        var str = new String(bytes, pos, bytes.length - pos, StandardCharsets.UTF_8);
         return str.contains("<bean ") || str.contains("<bean>");
     }
 
     private boolean isJson(byte[] bytes, int pos) {
-        for (int i = pos + 1; i < bytes.length; i++) {
-            byte b = bytes[i];
+        for (var i = pos + 1; i < bytes.length; i++) {
+            var b = bytes[i];
             if (b == '}' || b == '"') {
                 return true;
             } else if (!(b == ' ' || b == '\t' || b == '\r' || b == '\n')) {
@@ -128,10 +128,10 @@ public class JodaBeanSmartReader {
         if (!input.markSupported()) {
             throw new IllegalArgumentException("Input stream does not support mark/reset");
         }
-        byte[] buf = new byte[128];
+        var buf = new byte[128];
         try {
             input.mark(128);
-            int readCount = read(input, buf, 128);
+            var readCount = read(input, buf, 128);
             buf = Arrays.copyOf(buf, readCount);
             input.reset();
         } catch (IOException ex) {
@@ -142,9 +142,9 @@ public class JodaBeanSmartReader {
 
     // fully reads the stream
     private static int read(InputStream in, byte[] buf, int len) throws IOException {
-        int pos = 0;
+        var pos = 0;
         while (pos < len) {
-            int result = in.read(buf, pos, len - pos);
+            var result = in.read(buf, pos, len - pos);
             if (result == -1) {
                 break;
             }
@@ -216,8 +216,8 @@ public class JodaBeanSmartReader {
     public <T> T read(InputStream input, Class<T> rootType) {
         JodaBeanUtils.notNull(input, "input");
         JodaBeanUtils.notNull(rootType, "rootType");
-        BufferedInputStream buffered = buffer(input);
-        JodaBeanSerFormat format = determineFormat(buffered);
+        var buffered = buffer(input);
+        var format = determineFormat(buffered);
         return format.read(buffered, rootType, settings);
     }
 

@@ -28,7 +28,6 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
-import org.joda.convert.StringConverter;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a JSON-like in memory {@code Map}.
@@ -85,18 +84,18 @@ public class JodaBeanSimpleMapWriter {
         // property information
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                Object value = SerOptional.extractValue(prop, bean);
+                var value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     Object outputValue;
                     Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-                    if (value instanceof Bean) {
+                    if (value instanceof Bean beanValue) {
                         if (settings.getConverter().isConvertible(value.getClass())) {
                             outputValue = writeSimple(propType, value);
                         } else {
-                            outputValue = writeBean((Bean) value, propType);
+                            outputValue = writeBean(beanValue, propType);
                         }
                     } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
+                        var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
                         if (itemIterator != null) {
                             outputValue = writeElements(itemIterator);
                         } else {
@@ -152,14 +151,14 @@ public class JodaBeanSimpleMapWriter {
     // write map with simple keys
     private Object writeMapSimple(SerIterator itemIterator) {
         Map<String, Object> result = new LinkedHashMap<>();
-        StringConverter<Object> keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
+        var keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
+            var key = itemIterator.key();
             if (key == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
-            String str = keyConverter.convertToString(itemIterator.key());
+            var str = keyConverter.convertToString(itemIterator.key());
             if (str == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
             }
@@ -173,11 +172,11 @@ public class JodaBeanSimpleMapWriter {
         Map<String, Object> result = new LinkedHashMap<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
+            var key = itemIterator.key();
             if (key == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
-            String str = settings.getConverter().convertToString(itemIterator.key());
+            var str = settings.getConverter().convertToString(itemIterator.key());
             if (str == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
             }
@@ -191,9 +190,9 @@ public class JodaBeanSimpleMapWriter {
         List<Object> result = new ArrayList<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object outputKey = writeObject(itemIterator.keyType(), itemIterator.key(), null);
-            Object outputCol = writeObject(itemIterator.columnType(), itemIterator.column(), null);
-            Object outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
+            var outputKey = writeObject(itemIterator.keyType(), itemIterator.key(), null);
+            var outputCol = writeObject(itemIterator.columnType(), itemIterator.column(), null);
+            var outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
             result.add(Arrays.asList(outputKey, outputCol, outputValue));
         }
         return result;
@@ -206,9 +205,9 @@ public class JodaBeanSimpleMapWriter {
         result.add(itemIterator.dimensionSize(1));
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Integer outputKey = (Integer) itemIterator.key();
-            Integer outputCol = (Integer) itemIterator.column();
-            Object outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
+            var outputKey = (Integer) itemIterator.key();
+            var outputCol = (Integer) itemIterator.column();
+            var outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
             result.add(Arrays.asList(outputKey, outputCol, outputValue));
         }
         return result;
@@ -219,8 +218,8 @@ public class JodaBeanSimpleMapWriter {
         List<Object> result = new ArrayList<>();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            int outputCount = itemIterator.count();
+            var outputValue = writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
+            var outputCount = itemIterator.count();
             result.add(Arrays.asList(outputValue, outputCount));
         }
         return result;
@@ -232,10 +231,10 @@ public class JodaBeanSimpleMapWriter {
             return null;
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
             return writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean) {
-            return writeBean((Bean) obj, declaredType);
+        } else if (obj instanceof Bean bean) {
+            return writeBean(bean, declaredType);
         } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
+            var childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
             if (childIterator != null) {
                 return writeElements(childIterator);
             } else {
@@ -257,7 +256,7 @@ public class JodaBeanSimpleMapWriter {
         } else {
             // write as a string
             try {
-                String converted = settings.getConverter().convertToString(realType, value);
+                var converted = settings.getConverter().convertToString(realType, value);
                 if (converted == null) {
                     throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
                 }

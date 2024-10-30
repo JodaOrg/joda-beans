@@ -87,7 +87,7 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
         JodaBeanUtils.notNull(input, "input");
         JodaBeanUtils.notNull(rootType, "rootType");
         try {
-            JsonInput jsonInput = new JsonInput(input);
+            var jsonInput = new JsonInput(input);
             return parseRoot(jsonInput, rootType);
         } catch (RuntimeException ex) {
             throw ex;

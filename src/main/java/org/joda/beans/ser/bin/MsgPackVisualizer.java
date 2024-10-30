@@ -134,7 +134,7 @@ final class MsgPackVisualizer extends MsgPackInput {
 
     @Override
     void handleUnknown(byte b) {
-        buf.append("Unknown - ").append(String.format("%02X ", b)).append(System.lineSeparator());;
+        buf.append("Unknown - ").append(String.format("%02X ", b)).append(System.lineSeparator());
     }
 
     @Override
@@ -165,7 +165,7 @@ final class MsgPackVisualizer extends MsgPackInput {
     void handleExtension(int type, boolean numeric, byte[] bytes) {
         String str;
         if (numeric) {
-            int value = 0;
+            var value = 0;
             for (byte b : bytes) {
                 value = (value << 8) | (0xFF & b);
             }

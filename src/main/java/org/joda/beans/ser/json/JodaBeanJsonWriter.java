@@ -27,7 +27,6 @@ import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
-import org.joda.convert.StringConverter;
 
 /**
  * Provides the ability for a Joda-Bean to be written to JSON.
@@ -130,7 +129,7 @@ public class JodaBeanJsonWriter {
      * @return the JSON, not null
      */
     public String write(Bean bean, boolean rootType) {
-        StringBuilder buf = new StringBuilder(1024);
+        var buf = new StringBuilder(1024);
         try {
             write(bean, rootType, buf);
         } catch (IOException ex) {
@@ -174,7 +173,7 @@ public class JodaBeanJsonWriter {
         output.writeObjectStart();
         // type information
         if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
-            String typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
+            var typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
             if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
                 basePackage = bean.getClass().getPackage().getName() + ".";
             }
@@ -183,18 +182,18 @@ public class JodaBeanJsonWriter {
         // property information
         for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
             if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                Object value = SerOptional.extractValue(prop, bean);
+                var value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     output.writeObjectKey(prop.name());
                     Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-                    if (value instanceof Bean) {
+                    if (value instanceof Bean beanValue) {
                         if (settings.getConverter().isConvertible(value.getClass())) {
                             writeSimple(propType, value);
                         } else {
-                            writeBean((Bean) value, propType, RootType.NOT_ROOT);
+                            writeBean(beanValue, propType, RootType.NOT_ROOT);
                         }
                     } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                        var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                         if (itemIterator != null) {
                             writeElements(itemIterator);
                         } else {
@@ -254,15 +253,15 @@ public class JodaBeanJsonWriter {
 
     // write map with simple keys
     private void writeMapSimple(SerIterator itemIterator) throws IOException {
-        StringConverter<Object> keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
+        var keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         output.writeObjectStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
+            var key = itemIterator.key();
             if (key == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
-            String str = keyConverter.convertToString(itemIterator.key());
+            var str = keyConverter.convertToString(itemIterator.key());
             if (str == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
             }
@@ -277,7 +276,7 @@ public class JodaBeanJsonWriter {
         output.writeArrayStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
+            var key = itemIterator.key();
             if (key == null) {
                 throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
@@ -354,10 +353,10 @@ public class JodaBeanJsonWriter {
             output.writeNull();
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
             writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean) {
-            writeBean((Bean) obj, declaredType, RootType.NOT_ROOT);
+        } else if (obj instanceof Bean bean) {
+            writeBean(bean, declaredType, RootType.NOT_ROOT);
         } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
+            var childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
             if (childIterator != null) {
                 writeElements(childIterator);
             } else {
@@ -377,7 +376,7 @@ public class JodaBeanJsonWriter {
             output.writeInt(((Integer) value).intValue());
             return;
         } else if (realType == Double.class) {
-            double dbl = ((Double) value).doubleValue();
+            var dbl = ((Double) value).doubleValue();
             if (!Double.isNaN(dbl) && !Double.isInfinite(dbl)) {
                 output.writeDouble(dbl);
                 return;
@@ -389,11 +388,11 @@ public class JodaBeanJsonWriter {
         
         // handle no declared type and subclasses
         Class<?> effectiveType = declaredType;
-        boolean requiresClose = false;
+        var requiresClose = false;
         if (declaredType == Object.class) {
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                var typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 output.writeObjectStart();
                 output.writeObjectKeyValue(TYPE, typeStr);
                 output.writeObjectKey(VALUE);
@@ -403,7 +402,7 @@ public class JodaBeanJsonWriter {
             }
         } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+            var typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             output.writeObjectStart();
             output.writeObjectKeyValue(TYPE, typeStr);
             output.writeObjectKey(VALUE);
@@ -426,7 +425,7 @@ public class JodaBeanJsonWriter {
         } else {
             // write as a string
             try {
-                String converted = settings.getConverter().convertToString(effectiveType, value);
+                var converted = settings.getConverter().convertToString(effectiveType, value);
                 if (converted == null) {
                     throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
                 }
