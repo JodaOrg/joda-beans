@@ -67,4 +67,16 @@ public interface Bean {
         return metaBean().metaPropertyMap().keySet();
     }
 
+    /**
+     * Walks the properties on the bean, potentially walking the whole bean object graph.
+     * 
+     * @param handler  the walk handler
+     */
+    public default void walk(BeanWalkHandler handler) {
+        for (var mp : metaBean().metaPropertyIterable()) {
+            handler.handleProperty(this, mp, handler);
+        }
+
+    }
+
 }
