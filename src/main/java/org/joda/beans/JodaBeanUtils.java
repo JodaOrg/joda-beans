@@ -15,6 +15,7 @@
  */
 package org.joda.beans;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -594,11 +595,11 @@ public final class JodaBeanUtils {
      * The target type is the type of the object, not the declaring type of the meta-property.
      * 
      * @param prop  the property to examine, not null
-     * @param targetClass  the target type to evaluate against, not null
+     * @param contextClass  the context class to evaluate against, not null
      * @return the collection content type, null if unable to determine or type has no generic parameters
      */
-    public static Class<?> collectionType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractTypeClass(prop, targetClass, 1, 0);
+    public static Class<?> collectionType(MetaProperty<?> prop, Class<?> contextClass) {
+        return extractTypeClass(prop, contextClass, 1, 0);
     }
 
     /**
@@ -609,12 +610,12 @@ public final class JodaBeanUtils {
      * This is used when the collection generic parameter is a map or collection.
      * 
      * @param prop  the property to examine, not null
-     * @param targetClass  the target type to evaluate against, not null
+     * @param contextClass  the context class to evaluate against, not null
      * @return the collection content type generic parameters, empty if unable to determine, no nulls
      */
-    public static List<Class<?>> collectionTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
-        var type = extractType(targetClass, prop, 1, 0);
-        return extractTypeClasses(targetClass, type);
+    public static List<Class<?>> collectionTypeTypes(MetaProperty<?> prop, Class<?> contextClass) {
+        var type = extractType(prop, contextClass, 1, 0);
+        return extractTypeClasses(type, contextClass);
     }
 
     /**
@@ -633,11 +634,11 @@ public final class JodaBeanUtils {
      * The target type is the type of the object, not the declaring type of the meta-property.
      * 
      * @param prop  the property to examine, not null
-     * @param targetClass  the target type to evaluate against, not null
+     * @param contextClass  the context class to evaluate against, not null
      * @return the map key type, null if unable to determine or type has no generic parameters
      */
-    public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractTypeClass(prop, targetClass, 2, 0);
+    public static Class<?> mapKeyType(MetaProperty<?> prop, Class<?> contextClass) {
+        return extractTypeClass(prop, contextClass, 2, 0);
     }
 
     /**
@@ -656,11 +657,11 @@ public final class JodaBeanUtils {
      * The target type is the type of the object, not the declaring type of the meta-property.
      * 
      * @param prop  the property to examine, not null
-     * @param targetClass  the target type to evaluate against, not null
+     * @param contextClass  the context class to evaluate against, not null
      * @return the map value type, null if unable to determine or type has no generic parameters
      */
-    public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> targetClass) {
-        return extractTypeClass(prop, targetClass, 2, 1);
+    public static Class<?> mapValueType(MetaProperty<?> prop, Class<?> contextClass) {
+        return extractTypeClass(prop, contextClass, 2, 1);
     }
 
     /**
@@ -671,30 +672,87 @@ public final class JodaBeanUtils {
      * This is used when the map value generic parameter is a map or collection.
      * 
      * @param prop  the property to examine, not null
-     * @param targetClass  the target type to evaluate against, not null
+     * @param contextClass  the context class to evaluate against, not null
      * @return the map value type generic parameters, empty if unable to determine, no nulls
      */
-    public static List<Class<?>> mapValueTypeTypes(MetaProperty<?> prop, Class<?> targetClass) {
-        var type = extractType(targetClass, prop, 2, 1);
-        return extractTypeClasses(targetClass, type);
+    public static List<Class<?>> mapValueTypeTypes(MetaProperty<?> prop, Class<?> contextClass) {
+        var type = extractType(prop, contextClass, 2, 1);
+        return extractTypeClasses(type, contextClass);
     }
 
     /**
      * Low-level method to extract generic type information.
      * 
      * @param prop  the property to examine, not null
-     * @param targetClass  the target type to evaluate against, not null
+     * @param contextClass  the context class to evaluate against, not null
      * @param size  the number of generic parameters expected
      * @param index  the index of the generic parameter
      * @return the type, null if unable to determine or type has no generic parameters
      */
-    public static Class<?> extractTypeClass(MetaProperty<?> prop, Class<?> targetClass, int size, int index) {
-        return eraseToClass(extractType(targetClass, prop, size, index));
+    public static Class<?> extractTypeClass(MetaProperty<?> prop, Class<?> contextClass, int size, int index) {
+        return eraseToClass(extractType(prop, contextClass, size, index));
     }
 
-    private static Type extractType(Class<?> targetClass, MetaProperty<?> prop, int size, int index) {
+    /**
+     * Low-level method to extract generic type information.
+     * 
+     * @param type  the type to examine, not null
+     * @param contextClass  the context class to evaluate against, not null
+     * @param size  the number of generic parameters expected
+     * @param index  the index of the generic parameter
+     * @return the type, null if unable to determine or type has no generic parameters
+     */
+    public static Type extractType(Type type, Class<?> contextClass, int size, int index) {
+        var extracted = extractParameterizedType(type, contextClass, size, index);
+        return extracted != null ? extracted : Object.class;
+    }
+
+    /**
+     * Low-level method to resolve type variables in a generic type.
+     * 
+     * @param type  the type to examine, not null
+     * @param contextClass  the context class to evaluate against, not null
+     * @return the resolved type, null if unable to determine or type has no generic parameters
+     * @throws IllegalArgumentException if the type cannot be resolved
+     */
+    public static Type resolveType(Type type, Class<?> contextClass) {
+        return switch (type) {
+            case Class<?> cls -> cls;
+            case DynamicParameterizedType parameterizedType -> parameterizedType;
+            case ParameterizedType parameterizedType -> {
+                var typeArguments = new Type[parameterizedType.getActualTypeArguments().length];
+                for (int i = 0; i < typeArguments.length; i++) {
+                    typeArguments[i] = resolveType(parameterizedType.getActualTypeArguments()[i], contextClass);
+                }
+                if (parameterizedType.getRawType() instanceof Class<?> rawType) {
+                    yield createParameterizedType(rawType, typeArguments);
+                }
+                throw new IllegalArgumentException("Unknown generic type class: " + type);
+            }
+            case DynamicGenericArrayType arrType -> arrType;
+            case GenericArrayType arrType -> {
+                var componentType = resolveType(arrType.getGenericComponentType(), contextClass);
+                yield createGenericArrayType(componentType);
+            }
+            case TypeVariable<?> tvar -> {
+                var bounds = tvar.getBounds();
+                yield bounds.length == 0 ? Object.class : resolveType(bounds[0], contextClass);
+            }
+            case WildcardType wild -> {
+                var bounds = wild.getUpperBounds();
+                yield bounds.length == 0 ? Object.class : resolveType(bounds[0], contextClass);
+            }
+            default -> throw new IllegalArgumentException("Unknown generic type class: " + type);
+        };
+    }
+
+    private static Type extractType(MetaProperty<?> prop, Class<?> contextClass, int size, int index) {
         var genType = prop.propertyGenericType();
-        if (genType instanceof ParameterizedType pt) {
+        return extractParameterizedType(genType, contextClass, size, index);
+    }
+
+    private static Type extractParameterizedType(Type typeToExtractFrom, Class<?> contextClass, int size, int index) {
+        if (typeToExtractFrom instanceof ParameterizedType pt) {
             var types = pt.getActualTypeArguments();
             if (types.length == size) {
                 var type = types[index];
@@ -704,7 +762,7 @@ public final class JodaBeanUtils {
                     }
                 }
                 if (type instanceof TypeVariable<?> tvar) {
-                    type = resolveGenerics(targetClass, tvar);
+                    type = resolveGenerics(tvar, contextClass);
                 }
                 return type;
             }
@@ -712,14 +770,14 @@ public final class JodaBeanUtils {
         return null;
     }
 
-    private static List<Class<?>> extractTypeClasses(Class<?> targetClass, Type type) {
+    private static List<Class<?>> extractTypeClasses(Type type, Class<?> contextClass) {
         var result = new ArrayList<Class<?>>();
         if (type != null) {
             if (type instanceof ParameterizedType pt) {
                 var actualTypes = pt.getActualTypeArguments();
                 for (var actualType : actualTypes) {
                     if (actualType instanceof TypeVariable<?> tvar) {
-                        actualType = resolveGenerics(targetClass, tvar);
+                        actualType = resolveGenerics(tvar, contextClass);
                     }
                     var cls = eraseToClass(actualType);
                     result.add(cls != null ? cls : Object.class);
@@ -729,56 +787,92 @@ public final class JodaBeanUtils {
         return result;
     }
 
-    private static Type resolveGenerics(Class<?> targetClass, TypeVariable<?> typevar) {
-        // looks up meaning of type variables like T
-        var resolved = new HashMap<Type, Type>();
-        Type type = targetClass;
-        while (type != null) {
+    // cache the type variable lookup by Class
+    private static final ClassValue<Map<Type, Type>> RESOLVED_TYPE_VARIABLES = new ClassValue<>() {
+        @Override
+        protected Map<Type, Type> computeValue(Class<?> contextClass) {
+            var resolved = new HashMap<Type, Type>();
+            findTypeVars(contextClass, resolved);
+            return Map.copyOf(resolved);
+        }
+
+        private void findTypeVars(Type type, HashMap<Type, Type> resolved) {
             if (type instanceof Class<?> cls) {
-                type = cls.getGenericSuperclass();
+                findTypeVars(cls.getGenericSuperclass(), resolved);
+                for (var genInterface : cls.getGenericInterfaces()) {
+                    findTypeVars(genInterface, resolved);
+                }
+
             } else if (type instanceof ParameterizedType pt) {
                 // find actual types captured by subclass
                 var actualTypeArguments = pt.getActualTypeArguments();
                 // find type variables declared in source code
                 var rawType = eraseToClass(pt.getRawType());
-                if (rawType == null) {
-                    return null;
-                }
                 var typeParameters = rawType.getTypeParameters();
                 for (var i = 0; i < actualTypeArguments.length; i++) {
                     resolved.put(typeParameters[i], actualTypeArguments[i]);
                 }
-                type = rawType.getGenericSuperclass();
+                findTypeVars(rawType, resolved);
             }
         }
-        // resolve type variable to a meaningful type
+    };
+
+    // resolve generic type variables
+    // if a subclass is defined as 'extends Foo<String>' and the superclass is 'Foo<T>'
+    // then we know that 'T = String' in the context of the subclass
+    static Type resolveGenerics(TypeVariable<?> typevar, Class<?> contextClass) {
+        var resolved = RESOLVED_TYPE_VARIABLES.get(contextClass);
+        // look handles situation where there is a type variable in a sub-sub-class
         Type result = typevar;
         while (resolved.containsKey(result)) {
             result = resolved.get(result);
         }
+        // NOTE: this may return a type variable
         return result;
     }
 
-    private static Class<?> eraseToClass(Type type) {
-        if (type instanceof Class<?> cls) {
-            return cls;
-        } else if (type instanceof ParameterizedType parameterizedType) {
-            return eraseToClass(parameterizedType.getRawType());
-        } else if (type instanceof GenericArrayType arrType) {
-            var componentType = arrType.getGenericComponentType();
-            var componentClass = eraseToClass(componentType);
-            if (componentClass != null) {
-                return Array.newInstance(componentClass, 0).getClass();
+    // erases a Type to a Class
+    static Class<?> eraseToClass(Type type) {
+        return switch (type) {
+            case null -> null;
+            case Class<?> cls -> cls;
+            case ParameterizedType parameterizedType -> eraseToClass(parameterizedType.getRawType());
+            case GenericArrayType arrType -> {
+                var componentType = arrType.getGenericComponentType();
+                var componentClass = eraseToClass(componentType);
+                yield componentClass != null ? Array.newInstance(componentClass, 0).getClass() : null;
             }
-        } else if (type instanceof TypeVariable<?> tvar) {
-            var bounds = tvar.getBounds();
-            if (bounds.length == 0) {
-                return Object.class;
-            } else {
-                return eraseToClass(bounds[0]);
+            case TypeVariable<?> tvar -> {
+                var bounds = tvar.getBounds();
+                yield bounds.length == 0 ? Object.class : eraseToClass(bounds[0]);
             }
-        }
-        return null;
+            case WildcardType wild -> {
+                var bounds = wild.getUpperBounds();
+                yield bounds.length == 0 ? Object.class : eraseToClass(bounds[0]);
+            }
+            default -> null;
+        };
+    }
+
+    /**
+     * Creates an implementation of {@code ParameterizedType}.
+     * 
+     * @param rawType the raw type
+     * @param typeArguments the type arguments
+     * @return the type
+     */
+    public static ParameterizedType createParameterizedType(Class<?> rawType, Type... typeArguments) {
+        return new DynamicParameterizedType(rawType, typeArguments);
+    }
+
+    /**
+     * Creates an implementation of {@code GenericArrayType}.
+     * 
+     * @param componentType the component type
+     * @return the type
+     */
+    public static GenericArrayType createGenericArrayType(Type componentType) {
+        return new DynamicGenericArrayType(componentType);
     }
 
     //-------------------------------------------------------------------------
@@ -1100,4 +1194,109 @@ public final class JodaBeanUtils {
         }
     }
 
+    //-------------------------------------------------------------------------
+    // the JDK should have a public implementation for this
+    private static final class DynamicParameterizedType implements ParameterizedType, Serializable {
+
+        private static final long serialVersionUID = 0;
+
+        private final Class<?> rawType;
+        private final Type[] argumentsList;
+
+        private DynamicParameterizedType(Class<?> rawType, Type[] typeArguments) {
+            this.rawType = Objects.requireNonNull(rawType);
+            this.argumentsList = Objects.requireNonNull(typeArguments).clone();
+            for (var type : typeArguments) {
+                Objects.requireNonNull(type);
+            }
+            if (typeArguments.length != rawType.getTypeParameters().length) {
+                throw new IllegalArgumentException("Type parameters do not match");
+            }
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return argumentsList.clone();
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof ParameterizedType other &&
+                    getRawType().equals(other.getRawType()) &&
+                    equal(getOwnerType(), other.getOwnerType()) &&
+                    Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments());
+        }
+
+        @Override
+        public int hashCode() {
+            return argumentsList.hashCode() ^ rawType.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder().append(rawType.getName()).append('<');
+            if (argumentsList == null) {
+                builder.append("null");
+            } else {
+                for (int i = 0; i < argumentsList.length; i++) {
+                    if (i > 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(typeToString(argumentsList[i]));
+                }
+            }
+            return builder.append('>').toString();
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // the JDK should have a public implementation for this
+    private static final class DynamicGenericArrayType implements GenericArrayType, Serializable {
+
+        private static final long serialVersionUID = 0;
+
+        private final Type componentType;
+
+        private DynamicGenericArrayType(Type componentType) {
+            this.componentType = Objects.requireNonNull(componentType);
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return componentType;
+        }
+
+        @Override
+        public String toString() {
+            return typeToString(componentType) + "[]";
+        }
+
+        @Override
+        public int hashCode() {
+            return componentType.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof GenericArrayType) {
+                GenericArrayType that = (GenericArrayType) obj;
+                return equal(getGenericComponentType(), that.getGenericComponentType());
+            }
+            return false;
+        }
+    }
+
+    private static String typeToString(Type type) {
+        return type instanceof Class cls ? cls.getName() : type.toString();
+    }
 }
