@@ -1,0 +1,105 @@
+{
+ "number": 185,
+ "street": "Park Street",
+ "city": "London & Capital of the World <!>\n",
+ "abstractNumber": 89,
+ "array2d": [["a"], [], ["b", "c"]],
+ "owner": {
+  "forename": "Etienne",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": ["K", "T"],
+  "addressList": [{
+   "number": 0
+  }],
+  "codeCounts": [["A", 2], ["B", 1]]
+ },
+ "object1": ["a", "b", "c"],
+ "object2": {
+  "d": 1,
+  "GBP": 2
+ },
+ "serializable": ["a", "b", "c"],
+ "objectInMap": {
+  "A": "Abba",
+  "B": ["a", "b"],
+  "C": ["fr_CA", 2, {
+   "valueLong": 1,
+   "valueInt": 2,
+   "valueShort": 3,
+   "valueByte": 4,
+   "valueDouble": 5.0,
+   "valueFloat": 6.0,
+   "valueChar": "7",
+   "valueBoolean": true
+  }],
+  "D": {
+   "d": 1,
+   "e": 2
+  }
+ },
+ "listInMap": {
+  "A": ["B", "b"]
+ },
+ "listNumericInMap": {
+  "A": [3, 2, 1]
+ },
+ "listInListInMap": {
+  "A": [[3, 2, 1]]
+ },
+ "objectListInListInMap": {
+  "A": [["GBP", "Europe/London"]],
+  "B": [["fr_CA", 2, {
+   "valueLong": 1,
+   "valueInt": 2,
+   "valueShort": 3,
+   "valueByte": 4,
+   "valueDouble": 5.0,
+   "valueFloat": 6.0,
+   "valueChar": "7",
+   "valueBoolean": true
+  }]]
+ },
+ "mapInMap": {},
+ "simpleTable": [[1, 1, "Hello"], [1, 2, "There"]],
+ "compoundTable": [[1, 1, {
+  "forename": "Etienne",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": ["K", "T"],
+  "addressList": [{
+   "number": 0
+  }],
+  "codeCounts": [["A", 2], ["B", 1]]
+ }], [1, 2, {
+  "forename": "Etiennette",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }], [2, 1, {
+  "forename": "Kylie",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }]],
+ "sparseGrid": [5, 5, [1, 1, {
+  "forename": "Kylie",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }]],
+ "denseGrid": [2, 3, [0, 0, {
+  "forename": "Etiennette",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }], [1, 1, {
+  "forename": "Kylie",
+  "surname": "Colebourne",
+  "numberOfCars": 1,
+  "middleNames": []
+ }]],
+ "beanBeanMap": {},
+ "doubleVector": [1.1, 2.2, 3.3],
+ "matrix": ["1.1,2.2", "3.2"]
+}
