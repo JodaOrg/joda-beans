@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.offset;
 
 import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -43,10 +44,12 @@ import org.joda.beans.sample.SimplePerson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
+import org.joda.beans.ser.json.TestSerializeJson;
 import org.joda.beans.test.BeanAssert;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Resources;
 
 /**
  * Test property roundtrip using XML.
@@ -54,10 +57,11 @@ import com.google.common.collect.ImmutableMap;
 public class TestSerializeXml {
 
     @Test
-    public void test_writeAddress() {
+    public void test_writeAddress() throws IOException {
         Address address = SerTestHelper.testAddress();
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
 //        System.out.println(xml);
+        assertEqualsSerialization(xml, "/org/joda/beans/ser/Address.xml");
         
         Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
@@ -76,12 +80,13 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeImmAddress() {
+    public void test_writeImmAddress() throws IOException {
         ImmAddress address = SerTestHelper.testImmAddress();
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
+//        System.out.println(xml);
+        assertEqualsSerialization(xml, "/org/joda/beans/ser/ImmAddress.xml");
         
         xml = xml.replace("185", "18<!-- comment -->5");
-//        System.out.println(xml);
         
         ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
@@ -89,10 +94,11 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeImmOptional() {
+    public void test_writeImmOptional() throws IOException {
         ImmOptional optional = SerTestHelper.testImmOptional();
         String xml = JodaBeanSer.PRETTY.withIncludeDerived(true).xmlWriter().write(optional);
 //        System.out.println(xml);
+        assertEqualsSerialization(xml, "/org/joda/beans/ser/ImmOptional.xml");
         
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.xmlReader().read(xml);
 //        System.out.println(bean);
@@ -100,10 +106,11 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeCollections() {
+    public void test_writeCollections() throws IOException {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(optional);
 //        System.out.println(xml);
+        assertEqualsSerialization(xml, "/org/joda/beans/ser/Collections.xml");
         
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.xmlReader().read(xml);
@@ -123,6 +130,13 @@ public class TestSerializeXml {
                 (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.xmlReader().read(xml);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, array);
+    }
+
+    private void assertEqualsSerialization(String xml, String expectedResource) throws IOException {
+        var url = TestSerializeJson.class.getResource(expectedResource);
+        var expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        assertThat(xml.trim().replace(System.lineSeparator(), "\n"))
+            .isEqualTo(expected.trim().replace(System.lineSeparator(), "\n"));
     }
 
     //-----------------------------------------------------------------------

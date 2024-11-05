@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean type="org.joda.beans.sample.ImmGuava">
+ <collection metatype="List"/>
+ <list>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </list>
+ <set>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </set>
+ <sortedSet>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </sortedSet>
+ <map>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </map>
+ <sortedMap>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </sortedMap>
+ <biMap>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </biMap>
+ <multimap metatype="ListMultimap"/>
+ <listMultimap/>
+ <setMultimap/>
+ <multiset>
+  <item type="String">A</item>
+  <item count="2" type="String">B</item>
+  <item count="3" type="String">C</item>
+ </multiset>
+ <sortedMultiset/>
+ <collectionInterface metatype="List"/>
+ <listInterface>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </listInterface>
+ <setInterface>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </setInterface>
+ <sortedSetInterface>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </sortedSetInterface>
+ <mapInterface>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </mapInterface>
+ <sortedMapInterface>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </sortedMapInterface>
+ <biMapInterface>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </biMapInterface>
+ <multimapInterface metatype="ListMultimap"/>
+ <listMultimapInterface/>
+ <setMultimapInterface/>
+ <multisetInterface/>
+ <sortedMultisetInterface/>
+ <listWildExtendsT/>
+ <listWildExtendsNumber/>
+ <listWildExtendsComparable/>
+ <setWildExtendsT/>
+ <setWildExtendsNumber/>
+ <setWildExtendsComparable/>
+ <listWildBuilder1/>
+ <listWildBuilder2/>
+ <mapWildBuilder1/>
+ <mapWildKey/>
+</bean>
