@@ -108,7 +108,7 @@ public @interface PropertyDefinition {
      * '$field' for the field to copy into.<br/>
      * '$value' for the value to copy from.<br/>
      * '&lt;&gt;' for the generics of the type including angle brackets.<br/>
-     * '\n' for a new line (all lines must then include semi-colons).<br/>
+     * '\n' for a new line (all lines must then include semicolons).<br/>
      * 
      * @return the setter style, defaulted to 'smart'
      */

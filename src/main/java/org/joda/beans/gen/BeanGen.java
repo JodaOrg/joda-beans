@@ -60,22 +60,10 @@ class BeanGen {
     static final int CONSTRUCTOR_BY_BUILDER = 1;
     /** Constructor style for argument-based. */
     static final int CONSTRUCTOR_BY_ARGS = 2;
-    /** Class constant, avoiding module dependency in Java 9. */
-    private static final Class<?> CLASS_CONSTRUCTOR_PROPERTIES;
-    /** Class constant, avoiding module dependency in Java 9. */
-    private static final Class<?> CLASS_PROPERTY_CHANGE_SUPPORT;
-    static {
-        Class<?> cls1 = null;
-        Class<?> cls2 = null;
-        try {
-            cls1 = Class.forName("java.beans.ConstructorProperties");
-            cls2 = Class.forName("java.beans.PropertyChangeSupport");
-        } catch (ClassNotFoundException ex) {
-            // ignore
-        }
-        CLASS_CONSTRUCTOR_PROPERTIES = cls1;
-        CLASS_PROPERTY_CHANGE_SUPPORT = cls2;
-    }
+    /** Class name - this avoids a Class.class reference to the java.desktop module. */
+    private static final String CLASS_CONSTRUCTOR_PROPERTIES = "java.beans.ConstructorProperties";
+    /** Class name - this avoids a Class.class reference to the java.desktop module. */
+    private static final String CLASS_PROPERTY_CHANGE_SUPPORT = "java.beans.PropertyChangeSupport";
     /** Line separator. */
     private static final String LINE_SEPARATOR = "\t//-----------------------------------------------------------------------";
     /** Line separator. */
@@ -960,8 +948,7 @@ class BeanGen {
         if (data.isSubClass()) {
             addLine(2, "super.toString(buf);");
         }
-        for (int i = 0; i < props.size(); i++) {
-            PropertyGen prop = props.get(i);
+        for (PropertyGen prop : props) {
             String getter = toStringFieldAccessor(prop);
             data.ensureImport(JodaBeanUtils.class);
             addLine(2, "buf.append(\"" + prop.getData().getPropertyName() +
@@ -1311,8 +1298,8 @@ class BeanGen {
                 if (data.isSubClass()) {
                     addLine(3, "super(beanToCopy);");
                 }
-                for (int i = 0; i < nonDerived.size(); i++) {
-                    addLines(nonDerived.get(i).generateBuilderConstructorAssign("beanToCopy"));
+                for (PropertyGen propertyGen : nonDerived) {
+                    addLines(propertyGen.generateBuilderConstructorAssign("beanToCopy"));
                 }
                 addLine(2, "}");
                 addBlankLine();

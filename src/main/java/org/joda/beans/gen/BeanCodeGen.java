@@ -15,18 +15,26 @@
  */
 package org.joda.beans.gen;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.joda.beans.JodaBeanUtils;
 
@@ -36,6 +44,8 @@ import org.joda.beans.JodaBeanUtils;
  * This reads in a {@code .java} file, parses it, and writes out an updated version.
  */
 public class BeanCodeGen {
+
+    private static final Pattern PATTERN_OVERRIDE = Pattern.compile(" *[@]Override");
 
     /**
      * Main method.
@@ -99,7 +109,6 @@ public class BeanCodeGen {
         boolean generatedAnno = false;
         int verbosity = 1;
         boolean write = true;
-        File file = null;
         BeanGenConfig config = null;
         if (args.length == 0) {
             throw new IllegalArgumentException("No arguments specified");
@@ -160,7 +169,7 @@ public class BeanCodeGen {
                 throw new IllegalArgumentException("Unknown argument: " + arg);
             }
         }
-        file = new File(args[args.length - 1]);
+        Path file = Paths.get(args[args.length - 1]);
         List<File> files = findFiles(file, recurse);
         
         if (config == null) {
@@ -183,29 +192,15 @@ public class BeanCodeGen {
      * @param recurse  whether to recurse
      * @return the files, not null
      */
-    private static List<File> findFiles(final File parent, boolean recurse) {
-        final List<File> result = new ArrayList<>();
-        if (parent.isDirectory()) {
-            File[] files = parent.listFiles();
-            files = (files != null ? files : new File[0]);
-            for (File child : files) {
-                if (child.isFile() && child.getName().endsWith(".java")) {
-                    result.add(child);
-                }
-            }
-            if (recurse) {
-                for (File child : files) {
-                    if (child.isDirectory() && !child.getName().startsWith(".")) {
-                        result.addAll(findFiles(child, recurse));
-                    }
-                }
-            }
-        } else {
-            if (parent.getName().endsWith(".java")) {
-                result.add(parent);
-            }
+    private static List<File> findFiles(Path parent, boolean recurse) {
+        try (Stream<Path> pathStream = Files.walk(parent, recurse ? Integer.MAX_VALUE : 1)) {
+            return pathStream
+                    .filter(path -> path.toString().endsWith(".java"))
+                    .map(path -> path.toFile())
+                    .collect(toList());
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
         }
-        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -351,7 +346,6 @@ public class BeanCodeGen {
     // checks to see if the content differs from the original
     // if the files differ only by @Override lines then they are considered to be equal
     private boolean contentDiffers(List<String> content, List<String> original) {
-        Pattern overridePattern = Pattern.compile(" *[@]Override");
         int contentIndex = 0;
         int originalIndex = 0;
         while (contentIndex < content.size() && originalIndex < original.size()) {
@@ -361,14 +355,14 @@ public class BeanCodeGen {
                 // lines match
                 contentIndex++;
                 originalIndex++;
-            } else if (overridePattern.matcher(originalLine).matches()) {
+            } else if (PATTERN_OVERRIDE.matcher(originalLine).matches()) {
                 // original is an @Override line
                 originalIndex++;
             } else {
                 return true;
             }
         }
-      return contentIndex < content.size() || originalIndex < original.size();
+        return contentIndex < content.size() || originalIndex < original.size();
     }
 
     //-----------------------------------------------------------------------
