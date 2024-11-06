@@ -226,7 +226,7 @@ public class JodaBeanSimpleMapReader {
 
     private Object parseIterableGrid(List<?> input, SerIterable iterable) {
         if (input.size() < 2) {
-            throw new IllegalArgumentException("Expected grid iterable to be size 3");
+            throw new IllegalArgumentException("Expected grid iterable to be at least size 2");
         }
         var rows = (Integer) input.get(0);
         var columns = (Integer) input.get(1);
