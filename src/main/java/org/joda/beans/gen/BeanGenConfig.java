@@ -15,12 +15,13 @@
  */
 package org.joda.beans.gen;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,10 +35,6 @@ import java.util.Set;
  */
 public final class BeanGenConfig {
 
-    /**
-     * The copy generators.
-     */
-    private static final Charset UTF8 = Charset.availableCharsets().get("UTF-8");
     /**
      * The copy generators.
      */
@@ -92,44 +89,29 @@ public final class BeanGenConfig {
      * @return the configuration
      */
     public static BeanGenConfig parse(String resourceLocator) {
-        String fullFile;
-        if (resourceLocator.contains("/") || resourceLocator.endsWith(".ini")) {
-            fullFile = resourceLocator;
-        } else if (resourceLocator.equals("jdk6")) {  // compatibility
-            fullFile = "org/joda/beans/gen/jdk.ini";
-        } else {
-            fullFile = "org/joda/beans/gen/" + resourceLocator + ".ini";
-        }
-        ClassLoader loader = BeanGenConfig.class.getClassLoader();
-        if (loader == null) {
-            throw new IllegalArgumentException("ClassLoader was null: " + fullFile);
-        }
-        URL url = loader.getResource(fullFile);
-        if (url == null) {
-            throw new IllegalArgumentException("Configuration file not found: " + fullFile);
-        }
-        List<String> lines = new ArrayList<>();
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new InputStreamReader(url.openStream(), UTF8));
-            String line = in.readLine();
-            while (line != null) {
-                if (!line.trim().startsWith("#") && !line.trim().isEmpty()) {
-                    lines.add(line);
-                }
-                line = in.readLine();
+        String fileName = createConfigFileName(resourceLocator);
+        try (InputStream in = BeanGenConfig.class.getResourceAsStream(fileName)) {
+            if (in == null) {
+                throw new IllegalArgumentException("Configuration file not found in classpath: " + fileName);
             }
-            return parse(lines);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                List<String> lines = reader.lines()
+                        .filter(line -> !line.trim().startsWith("#") && !line.trim().isEmpty())
+                        .collect(toList());
+                return parse(lines);
+            }
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ex1) {
-                    // ignore
-                }
-            }
+        }
+    }
+
+    private static String createConfigFileName(String resourceLocator) {
+        if (resourceLocator.contains("/") || resourceLocator.endsWith(".ini")) {
+            return resourceLocator.startsWith("/") ? resourceLocator : "/" + resourceLocator;
+        } else if (resourceLocator.equals("jdk6")) {  // compatibility
+            return "/org/joda/beans/gen/jdk.ini";
+        } else {
+            return "/org/joda/beans/gen/" + resourceLocator + ".ini";
         }
     }
 
