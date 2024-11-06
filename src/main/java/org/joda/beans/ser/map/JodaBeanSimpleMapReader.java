@@ -221,7 +221,7 @@ public class JodaBeanSimpleMapReader {
     private Object parseIterableGrid(Object input, SerIterable iterable) throws Exception {
         List<?> inputList = (List<?>) input;
         if (inputList.size() < 2) {
-            throw new IllegalArgumentException("Expected counted iterable to be size 3");
+            throw new IllegalArgumentException("Expected counted iterable to be at least size 2");
         }
         Integer rows = (Integer) inputList.get(0);
         Integer columns = (Integer) inputList.get(1);
