@@ -80,7 +80,9 @@ class PropertyGen {
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
         }
-        list.add("\t\t\t\t\treturn " + data.getMetaFieldName() + ";");
+        String fieldName = data.getMetaFieldName();
+        fieldName = fieldName.equals("propertyName") ? "this.propertyName" : fieldName;
+        list.add("\t\t\t\t\treturn " + fieldName + ";");
         return list;
     }
 
@@ -204,7 +206,9 @@ class PropertyGen {
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
         }
-        list.add("\t\t\t\t\treturn " + generateBuilderFieldName() + ";");
+        String fieldName = generateBuilderFieldName();
+        fieldName = fieldName.equals("propertyName") ? "this.propertyName" : fieldName;
+        list.add("\t\t\t\t\treturn " + fieldName + ";");
         return list;
     }
 
