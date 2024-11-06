@@ -30,6 +30,7 @@ import java.util.HashMap;
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
+import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGuava;
@@ -91,6 +92,27 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
+    public void test_writeAddress() throws IOException {
+        Address address = SerTestHelper.testAddress();
+        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(address);
+//        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Address.simplejson");
+        // no round trip with simple JSON
+    }
+
+    @Test
+    public void test_writeImmAddress() throws IOException {
+        ImmAddress address = SerTestHelper.testImmAddress().toBuilder()
+            .mapInMap(new HashMap<>())
+            .beanBeanMap(new HashMap<>())
+            .build();
+        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(address);
+//        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.simplejson");
+        // no round trip with simple JSON
+    }
+
+    @Test
     public void test_writeCollections()  throws IOException {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(optional);
@@ -98,7 +120,7 @@ public class TestSerializeJsonSimple {
         assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.simplejson");
         
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
+        ImmGuava<String> bean = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
     }

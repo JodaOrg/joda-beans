@@ -180,7 +180,10 @@ public class SerTestHelper {
             .listInListInMap(map3)
             .objectListInListInMap(map5)
             .mapInMap(map4)
-            .simpleTable(ImmutableTable.of(1, 1, "Hello"))
+            .simpleTable(ImmutableTable.<Integer, Integer, String>builder()
+                .put(1, 1, "Hello")
+                .put(1, 2, "There")
+                .build())
             .compoundTable(table)
             .sparseGrid(sparseGrid)
             .denseGrid(denseGrid)
@@ -205,6 +208,7 @@ public class SerTestHelper {
         ImmutableMap<String, String> map = ImmutableMap.of("A", "AA", "B", "BB");
         ImmutableSortedMap<String, String> sortedMap = ImmutableSortedMap.of("A", "AA", "B", "BB");
         ImmutableBiMap<String, String> bimap = ImmutableBiMap.of("A", "AA", "B", "BB");
+        ImmutableMultiset<String> multiset = ImmutableMultiset.of("A", "B", "C", "B", "C", "C");
         return ImmGuava.<String> builder()
             .list(list)
             .listInterface(list)
@@ -218,6 +222,7 @@ public class SerTestHelper {
             .sortedMapInterface(sortedMap)
             .biMap(bimap)
             .biMapInterface(bimap)
+            .multiset(multiset)
             .build();
     }
 
