@@ -123,8 +123,16 @@ class BeanData {
      * @param cls  the class, not null
      */
     public void ensureImport(Class<?> cls) {
-        if (!currentImports.contains(cls.getName())) {
-            newImports.add(cls.getName());
+        ensureImport(cls.getName());
+    }
+
+    /**
+     * Ensures an import is present.
+     * @param className  the class name, not null
+     */
+    void ensureImport(String className) {
+        if (!currentImports.contains(className)) {
+            newImports.add(className);
         }
     }
 
@@ -447,12 +455,7 @@ class BeanData {
      * @return the flag
      */
     public boolean isPropertyChangeSupport() {
-        for (PropertyData prop : properties) {
-            if (prop.isBound()) {
-                return true;
-            }
-        }
-        return false;
+        return properties.stream().anyMatch(PropertyData::isBound);
     }
 
     //-----------------------------------------------------------------------
@@ -1074,12 +1077,7 @@ class BeanData {
      * @return true if validated
      */
     public boolean isValidated() {
-        for (PropertyData property : properties) {
-            if (property.isValidated()) {
-                return true;
-            }
-        }
-        return false;
+        return properties.stream().anyMatch(PropertyData::isValidated);
     }
 
     /**

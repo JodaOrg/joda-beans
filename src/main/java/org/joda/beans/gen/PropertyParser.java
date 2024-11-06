@@ -364,7 +364,7 @@ class PropertyParser {
         if (line.contains(" = ")) {
             line = line.substring(line.indexOf(" = ") + 3).trim();
             if (!line.endsWith(";")) {
-                throw new BeanCodeGenException("Field line does not end with semi-colon", beanParser.getFile(), fieldIndex);
+                throw new BeanCodeGenException("Field line does not end with semicolon", beanParser.getFile(), fieldIndex);
             }
             return line.substring(0, line.length() - 1).trim();
         }
