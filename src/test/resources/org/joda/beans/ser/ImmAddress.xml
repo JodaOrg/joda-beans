@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean type="org.joda.beans.sample.ImmAddress">
+ <number>185</number>
+ <street>Park Street</street>
+ <city>London &amp; Capital of the World &lt;!&gt;
+</city>
+ <abstractNumber type="Short">89</abstractNumber>
+ <array2d metatype="String[][]">
+  <item metatype="String[]">
+   <item>a</item>
+  </item>
+  <item metatype="String[]"/>
+  <item metatype="String[]">
+   <item>b</item>
+   <item>c</item>
+  </item>
+ </array2d>
+ <owner>
+  <forename>Etienne</forename>
+  <surname>Colebourne</surname>
+  <numberOfCars>1</numberOfCars>
+  <middleNames>
+   <item>K</item>
+   <item>T</item>
+  </middleNames>
+  <addressList>
+   <item>
+    <number>0</number>
+   </item>
+  </addressList>
+  <codeCounts>
+   <item count="2">A</item>
+   <item>B</item>
+  </codeCounts>
+ </owner>
+ <object1 metatype="List">
+  <item>a</item>
+  <item>b</item>
+  <item>c</item>
+ </object1>
+ <object2 metatype="Map">
+  <entry>
+   <item>d</item>
+   <item type="Integer">1</item>
+  </entry>
+  <entry>
+   <item type="java.util.Currency">GBP</item>
+   <item type="Integer">2</item>
+  </entry>
+ </object2>
+ <serializable metatype="List">
+  <item>a</item>
+  <item>b</item>
+  <item>c</item>
+ </serializable>
+ <objectInMap>
+  <entry key="A">Abba</entry>
+  <entry key="B" metatype="Set">
+   <item>a</item>
+   <item>b</item>
+  </entry>
+  <entry key="C" metatype="Set">
+   <item type="Locale">fr_CA</item>
+   <item type="Long">2</item>
+   <item type="PrimitiveBean">
+    <valueLong>1</valueLong>
+    <valueInt>2</valueInt>
+    <valueShort>3</valueShort>
+    <valueByte>4</valueByte>
+    <valueDouble>5.0</valueDouble>
+    <valueFloat>6.0</valueFloat>
+    <valueChar>7</valueChar>
+    <valueBoolean>true</valueBoolean>
+   </item>
+  </entry>
+  <entry key="D" metatype="Map">
+   <entry>
+    <item>d</item>
+    <item type="Integer">1</item>
+   </entry>
+   <entry>
+    <item>e</item>
+    <item type="Integer">2</item>
+   </entry>
+  </entry>
+ </objectInMap>
+ <listInMap>
+  <entry key="A">
+   <item>B</item>
+   <item>b</item>
+  </entry>
+ </listInMap>
+ <listNumericInMap>
+  <entry key="A">
+   <item>3</item>
+   <item>2</item>
+   <item>1</item>
+  </entry>
+ </listNumericInMap>
+ <listInListInMap>
+  <entry key="A">
+   <item metatype="List">
+    <item type="Integer">3</item>
+    <item type="Integer">2</item>
+    <item type="Integer">1</item>
+   </item>
+  </entry>
+ </listInListInMap>
+ <objectListInListInMap>
+  <entry key="A">
+   <item metatype="List">
+    <item type="Currency">GBP</item>
+    <item type="java.util.TimeZone">Europe/London</item>
+   </item>
+  </entry>
+  <entry key="B">
+   <item metatype="List">
+    <item type="Locale">fr_CA</item>
+    <item type="Long">2</item>
+    <item type="PrimitiveBean">
+     <valueLong>1</valueLong>
+     <valueInt>2</valueInt>
+     <valueShort>3</valueShort>
+     <valueByte>4</valueByte>
+     <valueDouble>5.0</valueDouble>
+     <valueFloat>6.0</valueFloat>
+     <valueChar>7</valueChar>
+     <valueBoolean>true</valueBoolean>
+    </item>
+   </item>
+  </entry>
+ </objectListInListInMap>
+ <mapInMap>
+  <entry>
+   <item>
+    <forename>Etiennette</forename>
+    <surname>Colebourne</surname>
+    <numberOfCars>1</numberOfCars>
+    <middleNames/>
+   </item>
+   <item>
+    <entry key="sibling">
+     <forename>Kylie</forename>
+     <surname>Colebourne</surname>
+     <numberOfCars>1</numberOfCars>
+     <middleNames/>
+    </entry>
+   </item>
+  </entry>
+ </mapInMap>
+ <simpleTable>
+  <item row="1" col="1">Hello</item>
+  <item row="1" col="2">There</item>
+ </simpleTable>
+ <compoundTable>
+  <item row="1" col="1">
+   <forename>Etienne</forename>
+   <surname>Colebourne</surname>
+   <numberOfCars>1</numberOfCars>
+   <middleNames>
+    <item>K</item>
+    <item>T</item>
+   </middleNames>
+   <addressList>
+    <item>
+     <number>0</number>
+    </item>
+   </addressList>
+   <codeCounts>
+    <item count="2">A</item>
+    <item>B</item>
+   </codeCounts>
+  </item>
+  <item row="1" col="2">
+   <forename>Etiennette</forename>
+   <surname>Colebourne</surname>
+   <numberOfCars>1</numberOfCars>
+   <middleNames/>
+  </item>
+  <item row="2" col="1">
+   <forename>Kylie</forename>
+   <surname>Colebourne</surname>
+   <numberOfCars>1</numberOfCars>
+   <middleNames/>
+  </item>
+ </compoundTable>
+ <sparseGrid rows="5" cols="5">
+  <item row="1" col="1">
+   <forename>Kylie</forename>
+   <surname>Colebourne</surname>
+   <numberOfCars>1</numberOfCars>
+   <middleNames/>
+  </item>
+ </sparseGrid>
+ <denseGrid rows="2" cols="3">
+  <item row="0" col="0">
+   <forename>Etiennette</forename>
+   <surname>Colebourne</surname>
+   <numberOfCars>1</numberOfCars>
+   <middleNames/>
+  </item>
+  <item row="1" col="1">
+   <forename>Kylie</forename>
+   <surname>Colebourne</surname>
+   <numberOfCars>1</numberOfCars>
+   <middleNames/>
+  </item>
+ </denseGrid>
+ <beanBeanMap>
+  <entry>
+   <item>
+    <forename>Etiennette</forename>
+    <surname>Colebourne</surname>
+    <numberOfCars>1</numberOfCars>
+    <middleNames/>
+   </item>
+   <item>
+    <number>185</number>
+    <street>Park Street</street>
+    <city>London</city>
+    <data>QEFC</data>
+    <owner>
+     <forename>Etiennette</forename>
+     <surname>Colebourne</surname>
+     <numberOfCars>1</numberOfCars>
+     <middleNames/>
+    </owner>
+    <object1 type="Risk">MEDIUM</object1>
+    <object2 type="RiskPerception">LOW</object2>
+    <risk>LOW</risk>
+    <riskLevel>HIGH</riskLevel>
+    <riskLevels>
+     <item>LOW</item>
+     <item>MEDIUM</item>
+    </riskLevels>
+    <objectInMap/>
+    <listInMap/>
+    <listNumericInMap/>
+    <listInListInMap/>
+    <objectListInListInMap/>
+    <mapInMap/>
+    <beanBeanMap/>
+   </item>
+  </entry>
+ </beanBeanMap>
+ <doubleVector>1.1,2.2,3.3</doubleVector>
+ <matrix metatype="double[][]">
+  <item>1.1,2.2</item>
+  <item>3.2</item>
+ </matrix>
+</bean>
