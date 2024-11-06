@@ -49,6 +49,7 @@ public class TestLight {
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
                 .set("hiddenText", "wow")
+                .set("valueChar", 'a')  // XML does not support char zero
                 .build();
         
         assertThat(bean.getNumber()).isEqualTo(12);
@@ -59,7 +60,7 @@ public class TestLight {
         assertThat(bean.getList()).isEqualTo(ImmutableList.of());
         
         assertThat(bean.metaBean().beanType()).isEqualTo(LightImmutable.class);
-        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(10);
+        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(14);
         assertThat(bean.metaBean().metaPropertyExists("number")).isTrue();
         assertThat(bean.metaBean().metaPropertyExists("town")).isTrue();
         assertThat(bean.metaBean().metaPropertyExists("address")).isTrue();
@@ -111,7 +112,7 @@ public class TestLight {
     @Test
     public void test_immutable_order() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        LightImmutable bean = (LightImmutable) LightImmutable.meta().builder()
+        LightImmutable bean = LightImmutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", LightImmutable.meta(), String.class), "Smallville")
@@ -130,7 +131,11 @@ public class TestLight {
         assertThat(mps.get(6).name()).isEqualTo("list");
         assertThat(mps.get(7).name()).isEqualTo("currency");
         assertThat(mps.get(8).name()).isEqualTo("hiddenText");
-        assertThat(mps.get(9).name()).isEqualTo("address");
+        assertThat(mps.get(9).name()).isEqualTo("valueLong");
+        assertThat(mps.get(10).name()).isEqualTo("valueShort");
+        assertThat(mps.get(11).name()).isEqualTo("valueChar");
+        assertThat(mps.get(12).name()).isEqualTo("valueByte");
+        assertThat(mps.get(13).name()).isEqualTo("address");
     }
 
     @Test
@@ -224,6 +229,7 @@ public class TestLight {
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
                 .set("hiddenText", "wow")
+                .set("valueChar", 'a')  // XML does not support char zero
                 .build();
 
         assertThat(bean.getNumber()).isEqualTo(12);
@@ -234,7 +240,7 @@ public class TestLight {
         assertThat(bean.getList()).isEqualTo(ImmutableList.of());
 
         assertThat(bean.metaBean().beanType()).isEqualTo(LightImmutable.class);
-        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(10);
+        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(14);
         assertThat(bean.metaBean().metaPropertyExists("number")).isTrue();
         assertThat(bean.metaBean().metaPropertyExists("town")).isTrue();
         assertThat(bean.metaBean().metaPropertyExists("address")).isTrue();

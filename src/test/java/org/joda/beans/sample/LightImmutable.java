@@ -85,6 +85,26 @@ public final class LightImmutable implements ImmutableBean, Serializable {
      */
     @PropertyDefinition(get = "")
     private final String hiddenText;
+    /**
+     * The long.
+     */
+    @PropertyDefinition
+    private final long valueLong;
+    /**
+     * The short.
+     */
+    @PropertyDefinition
+    private final short valueShort;
+    /**
+     * The char.
+     */
+    @PropertyDefinition
+    private final char valueChar;
+    /**
+     * The byte.
+     */
+    @PropertyDefinition
+    private final byte valueByte;
 
     //-----------------------------------------------------------------------
     // manual getter with a different name
@@ -115,7 +135,11 @@ public final class LightImmutable implements ImmutableBean, Serializable {
                             "owner",
                             "list",
                             "currency",
-                            "hiddenText"},
+                            "hiddenText",
+                            "valueLong",
+                            "valueShort",
+                            "valueChar",
+                            "valueByte"},
                     0,
                     Boolean.FALSE,
                     null,
@@ -124,7 +148,11 @@ public final class LightImmutable implements ImmutableBean, Serializable {
                     null,
                     ImmutableList.of(),
                     null,
-                    null)
+                    null,
+                    0L,
+                    (short) 0,
+                    '\u0000',
+                    (byte) 0)
                     .withAlias("place", "city");
 
     /**
@@ -155,6 +183,10 @@ public final class LightImmutable implements ImmutableBean, Serializable {
      * @param list  the value of the property, not null
      * @param currency  the value of the property
      * @param hiddenText  the value of the property
+     * @param valueLong  the value of the property
+     * @param valueShort  the value of the property
+     * @param valueChar  the value of the property
+     * @param valueByte  the value of the property
      */
     LightImmutable(
             int number,
@@ -165,7 +197,11 @@ public final class LightImmutable implements ImmutableBean, Serializable {
             ImmPerson owner,
             List<String> list,
             Currency currency,
-            String hiddenText) {
+            String hiddenText,
+            long valueLong,
+            short valueShort,
+            char valueChar,
+            byte valueByte) {
         JodaBeanUtils.notNull(street, "street");
         JodaBeanUtils.notNull(city, "city");
         JodaBeanUtils.notNull(owner, "owner");
@@ -179,6 +215,10 @@ public final class LightImmutable implements ImmutableBean, Serializable {
         this.list = ImmutableList.copyOf(list);
         this.currency = currency;
         this.hiddenText = hiddenText;
+        this.valueLong = valueLong;
+        this.valueShort = valueShort;
+        this.valueChar = valueChar;
+        this.valueByte = valueByte;
     }
 
     @Override
@@ -250,6 +290,42 @@ public final class LightImmutable implements ImmutableBean, Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the long.
+     * @return the value of the property
+     */
+    public long getValueLong() {
+        return valueLong;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the short.
+     * @return the value of the property
+     */
+    public short getValueShort() {
+        return valueShort;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the char.
+     * @return the value of the property
+     */
+    public char getValueChar() {
+        return valueChar;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the byte.
+     * @return the value of the property
+     */
+    public byte getValueByte() {
+        return valueByte;
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -265,7 +341,11 @@ public final class LightImmutable implements ImmutableBean, Serializable {
                     JodaBeanUtils.equal(owner, other.owner) &&
                     JodaBeanUtils.equal(list, other.list) &&
                     JodaBeanUtils.equal(currency, other.currency) &&
-                    JodaBeanUtils.equal(hiddenText, other.hiddenText);
+                    JodaBeanUtils.equal(hiddenText, other.hiddenText) &&
+                    (valueLong == other.valueLong) &&
+                    (valueShort == other.valueShort) &&
+                    (valueChar == other.valueChar) &&
+                    (valueByte == other.valueByte);
         }
         return false;
     }
@@ -282,12 +362,16 @@ public final class LightImmutable implements ImmutableBean, Serializable {
         hash = hash * 31 + JodaBeanUtils.hashCode(list);
         hash = hash * 31 + JodaBeanUtils.hashCode(currency);
         hash = hash * 31 + JodaBeanUtils.hashCode(hiddenText);
+        hash = hash * 31 + JodaBeanUtils.hashCode(valueLong);
+        hash = hash * 31 + JodaBeanUtils.hashCode(valueShort);
+        hash = hash * 31 + JodaBeanUtils.hashCode(valueChar);
+        hash = hash * 31 + JodaBeanUtils.hashCode(valueByte);
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(352);
+        StringBuilder buf = new StringBuilder(480);
         buf.append("LightImmutable{");
         buf.append("number").append('=').append(JodaBeanUtils.toString(number)).append(',').append(' ');
         buf.append("flag").append('=').append(JodaBeanUtils.toString(flag)).append(',').append(' ');
@@ -298,6 +382,10 @@ public final class LightImmutable implements ImmutableBean, Serializable {
         buf.append("list").append('=').append(JodaBeanUtils.toString(list)).append(',').append(' ');
         buf.append("currency").append('=').append(JodaBeanUtils.toString(currency)).append(',').append(' ');
         buf.append("hiddenText").append('=').append(JodaBeanUtils.toString(hiddenText)).append(',').append(' ');
+        buf.append("valueLong").append('=').append(JodaBeanUtils.toString(valueLong)).append(',').append(' ');
+        buf.append("valueShort").append('=').append(JodaBeanUtils.toString(valueShort)).append(',').append(' ');
+        buf.append("valueChar").append('=').append(JodaBeanUtils.toString(valueChar)).append(',').append(' ');
+        buf.append("valueByte").append('=').append(JodaBeanUtils.toString(valueByte)).append(',').append(' ');
         buf.append("address").append('=').append(JodaBeanUtils.toString(getAddress()));
         buf.append('}');
         return buf.toString();
