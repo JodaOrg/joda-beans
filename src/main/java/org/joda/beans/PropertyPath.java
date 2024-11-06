@@ -190,7 +190,7 @@ public final class PropertyPath<P> {
             int start = entryStr.lastIndexOf('[');
             if (entryStr.endsWith("]") && start > 0) {
                 key = entryStr.substring(start + 1, entryStr.length() - 1);
-                if (key.length() == 0) {
+                if (key.isEmpty()) {
                     throw new IllegalArgumentException("Invalid property path, empty key: " + propertyPath);
                 }
                 char firstChar = key.charAt(0);

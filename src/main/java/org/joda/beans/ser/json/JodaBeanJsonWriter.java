@@ -97,7 +97,7 @@ public class JodaBeanJsonWriter {
     /**
      * The known types.
      */
-    private Map<Class<?>, String> knownTypes = new HashMap<>();
+    private final Map<Class<?>, String> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -279,7 +279,7 @@ public class JodaBeanJsonWriter {
             itemIterator.next();
             Object key = itemIterator.key();
             if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
+                throw new IllegalArgumentException("Unable to write map key as it cannot be null");
             }
             output.writeArrayItemStart();
             output.writeArrayStart();
@@ -378,7 +378,7 @@ public class JodaBeanJsonWriter {
             return;
         } else if (realType == Double.class) {
             double dbl = ((Double) value).doubleValue();
-            if (Double.isNaN(dbl) == false && Double.isInfinite(dbl) == false) {
+            if (!Double.isNaN(dbl) && !Double.isInfinite(dbl)) {
                 output.writeDouble(dbl);
                 return;
             }
@@ -401,7 +401,7 @@ public class JodaBeanJsonWriter {
             } else {
                 effectiveType = realType;
             }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
+        } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
             String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             output.writeObjectStart();

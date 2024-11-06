@@ -21,7 +21,7 @@ import org.joda.beans.JodaBeanUtils;
 /**
  * Basic implementation of {@code Bean} intended for applications to subclass.
  * <p>
- * The subclass must to provide an implementation for {@link Bean#metaBean()}.
+ * The subclass must provide an implementation for {@link Bean#metaBean()}.
  * This returns the complete definition of the bean at the meta level.
  */
 public abstract class BasicBean implements Bean {

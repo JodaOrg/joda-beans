@@ -114,7 +114,7 @@ public final class BeanGenConfig {
             in = new BufferedReader(new InputStreamReader(url.openStream(), UTF8));
             String line = in.readLine();
             while (line != null) {
-                if (line.trim().startsWith("#") == false && line.trim().length() > 0) {
+                if (!line.trim().startsWith("#") && !line.trim().isEmpty()) {
                     lines.add(line);
                 }
                 line = in.readLine();
@@ -196,7 +196,7 @@ public final class BeanGenConfig {
                     }
                     String key = line.substring(0, pos).trim();
                     String value = line.substring(pos + 1).trim();
-                    if (value.equals("clone") == false && value.equals("cloneCast") == false) {
+                    if (!value.equals("clone") && !value.equals("cloneCast")) {
                         throw new IllegalArgumentException("Value for [immutable.get.clone] must be 'clone' or 'cloneCast'");
                     }
                     immutableGetClones.put(key, value);

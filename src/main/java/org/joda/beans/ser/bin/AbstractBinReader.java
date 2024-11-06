@@ -54,7 +54,7 @@ abstract class AbstractBinReader extends MsgPack {
     /**
      * The known types.
      */
-    private Map<String, Class<?>> knownTypes = new HashMap<>();
+    private final Map<String, Class<?>> knownTypes = new HashMap<>();
 
     //-----------------------------------------------------------------------
     // creates an instance
@@ -138,7 +138,7 @@ abstract class AbstractBinReader extends MsgPack {
                         }
                         String typeStr = acceptStringBytes(size);
                         effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
-                        if (declaredType.isAssignableFrom(effectiveType) == false) {
+                        if (!declaredType.isAssignableFrom(effectiveType)) {
                             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
                         }
                         typeByte = input.readByte();
@@ -191,12 +191,12 @@ abstract class AbstractBinReader extends MsgPack {
 
     Object parseBean(Class<?> declaredType, boolean rootType, Class<?> effectiveType, int mapSize) throws Exception {
         if (rootType) {
-            if (Bean.class.isAssignableFrom(effectiveType) == false) {
+            if (!Bean.class.isAssignableFrom(effectiveType)) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
             }
             basePackage = effectiveType.getPackage().getName() + ".";
         }
-        if (declaredType.isAssignableFrom(effectiveType) == false) {
+        if (!declaredType.isAssignableFrom(effectiveType)) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + effectiveType.getName());
         }
         if (input.readByte() != NIL) {

@@ -92,7 +92,7 @@ public class JodaBeanXmlReader {
     /**
      * The known types.
      */
-    private Map<String, Class<?>> knownTypes = new HashMap<>();
+    private final Map<String, Class<?>> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -206,7 +206,7 @@ public class JodaBeanXmlReader {
      */
     private <T> T read(final Class<T> rootType) throws Exception {
         StartElement start = advanceToStartElement();
-        if (start.getName().equals(BEAN_QNAME) == false) {
+        if (!start.getName().equals(BEAN_QNAME)) {
             throw new IllegalArgumentException("Expected root element 'bean' but found '" + start.getName() + "'");
         }
         Attribute attr = start.getAttributeByName(TYPE_QNAME);
@@ -217,11 +217,11 @@ public class JodaBeanXmlReader {
         if (attr != null) {
             String typeStr = attr.getValue();
             effectiveType = SerTypeMapper.decodeType(typeStr, settings, null, knownTypes);
-            if (rootType.isAssignableFrom(effectiveType) == false) {
+            if (!rootType.isAssignableFrom(effectiveType)) {
                 throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + effectiveType.getName());
             }
         }
-        if (Bean.class.isAssignableFrom(effectiveType) == false) {
+        if (!Bean.class.isAssignableFrom(effectiveType)) {
             throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
         }
         basePackage = effectiveType.getPackage().getName() + ".";
@@ -238,7 +238,7 @@ public class JodaBeanXmlReader {
      * @return the bean, not null
      */
     @SuppressWarnings("null")
-    private Object parseBean(final Class<?> beanType) throws Exception {
+    private Object parseBean(final Class<?> beanType) {
         String propName = "";
         try {
             XMLEvent event = null;
@@ -265,7 +265,7 @@ public class JodaBeanXmlReader {
             MetaBean metaBean = deser.findMetaBean(beanType);
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
             // handle beans with structure
-            while (event.isEndElement() == false) {
+            while (!event.isEndElement()) {
                 if (event.isStartElement()) {
                     StartElement start = event.asStartElement();
                     propName = start.getName().getLocalPart();
@@ -273,7 +273,7 @@ public class JodaBeanXmlReader {
                     if (metaProp == null || metaProp.style().isDerived()) {
                         int depth = 0;
                         event = nextEvent(" skip ");
-                        while (event.isEndElement() == false || depth > 0) {
+                        while (!event.isEndElement() || depth > 0) {
                             if (event.isStartElement()) {
                                 depth++;
                             } else if (event.isEndElement()) {
@@ -331,11 +331,11 @@ public class JodaBeanXmlReader {
             iterable.dimensions(new int[] {Integer.parseInt(rowsAttr.getValue()), Integer.parseInt(columnsAttr.getValue())});
         }
         XMLEvent event = nextEvent(">iter ");
-        while (event.isEndElement() == false) {
+        while (!event.isEndElement()) {
             if (event.isStartElement()) {
                 StartElement start = event.asStartElement();
                 QName expectedType = iterable.category() == SerCategory.MAP ? ENTRY_QNAME : ITEM_QNAME;
-                if (start.getName().equals(expectedType) == false) {
+                if (!start.getName().equals(expectedType)) {
                     throw new IllegalArgumentException("Expected '" + expectedType.getLocalPart() + "' but found '" + start.getName() + "'");
                 }
                 int count = 1;
@@ -385,10 +385,10 @@ public class JodaBeanXmlReader {
                         // two items nested in this entry
                         event = nextEvent(">>map ");
                         int loop = 0;
-                        while (event.isEndElement() == false) {
+                        while (!event.isEndElement()) {
                             if (event.isStartElement()) {
                                 start = event.asStartElement();
-                                if (start.getName().equals(ITEM_QNAME) == false) {
+                                if (!start.getName().equals(ITEM_QNAME)) {
                                     throw new IllegalArgumentException("Expected 'item' but found '" + start.getName() + "'");
                                 }
                                 if (key == null) {
@@ -432,7 +432,7 @@ public class JodaBeanXmlReader {
         Object value;
         Attribute nullAttr = start.getAttributeByName(NULL_QNAME);
         if (nullAttr != null) {
-            if (nullAttr.getValue().equals("true") == false) {
+            if (!nullAttr.getValue().equals("true")) {
                 throw new IllegalArgumentException("Unexpected value for null attribute");
             }
             advanceAndParseText();  // move to end tag and ignore any text

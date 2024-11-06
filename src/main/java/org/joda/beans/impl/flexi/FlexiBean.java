@@ -83,7 +83,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
         putAll(copyFrom.data);
     }
 
-    // resolve to setup transient field
+    // resolve to set up transient field
     private Object readResolve() throws ObjectStreamException {
         return new FlexiBean(this);
     }
@@ -286,7 +286,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @return the old value of the property, may be null
      */
     public Object put(String propertyName, Object newValue) {
-        if (VALID_KEY.matcher(propertyName).matches() == false) {
+        if (!VALID_KEY.matcher(propertyName).matches()) {
             throw new IllegalArgumentException("Invalid key for FlexiBean: " + propertyName);
         }
         return dataWritable().put(propertyName, newValue);
@@ -300,9 +300,9 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @param map  the map of properties to add, not null
      */
     public void putAll(Map<String, ? extends Object> map) {
-        if (map.size() > 0) {
+        if (!map.isEmpty()) {
             for (String key : map.keySet()) {
-                if (VALID_KEY.matcher(key).matches() == false) {
+                if (!VALID_KEY.matcher(key).matches()) {
                     throw new IllegalArgumentException("Invalid key for FlexiBean: " + key);
                 }
             }
@@ -369,7 +369,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @return the value of the property, may be null
      */
     public Object propertyGet(String propertyName) {
-        if (propertyExists(propertyName) == false) {
+        if (!propertyExists(propertyName)) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
         return data.get(propertyName);
@@ -403,7 +403,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
 
     @Override
     public void propertyDefine(String propertyName, Class<?> propertyType) {
-        if (propertyExists(propertyName) == false) {
+        if (!propertyExists(propertyName)) {
             put(propertyName, null);
         }
     }

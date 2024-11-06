@@ -89,7 +89,7 @@ public class JodaBeanXmlWriter {
     /**
      * The known types.
      */
-    private Map<Class<?>, String> knownTypes = new HashMap<>();
+    private final Map<Class<?>, String> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -341,7 +341,7 @@ public class JodaBeanXmlWriter {
 
     private String convertToString(StringConverter<Object> converter, Object obj, String description) {
         if (obj == null) {
-            throw new IllegalArgumentException("Unable to write " + description + " as it cannot be null: " + obj);
+            throw new IllegalArgumentException("Unable to write " + description + " as it cannot be null");
         }
         String str = encodeAttribute(converter.convertToString(obj));
         if (str == null) {
@@ -352,7 +352,7 @@ public class JodaBeanXmlWriter {
 
     private void writeKeyElement(String currentIndent, Object key, SerIterator itemIterator) throws IOException {
         if (key == null) {
-            throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
+            throw new IllegalArgumentException("Unable to write map key as it cannot be null");
         }
         // if key type is known and convertible use short key format
         if (settings.getConverter().isConvertible(itemIterator.keyType())) {
@@ -403,7 +403,7 @@ public class JodaBeanXmlWriter {
             } else {
                 effectiveType = realType;
             }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
+        } else if (!settings.getConverter().isConvertible(declaredType)) {
             effectiveType = settings.getConverter().findTypedConverter(value.getClass()).getEffectiveType();
             String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             appendAttribute(attrs, TYPE, typeStr);

@@ -332,10 +332,10 @@ abstract class MsgPackInput extends MsgPack {
     void handleMapHeader(int size) {
     }
 
-    void handleBinary(byte[] bytes) throws IOException {
+    void handleBinary(byte[] bytes) {
     }
 
-    void handleExtension(int type, boolean numeric, byte[] bytes) throws IOException {
+    void handleExtension(int type, boolean numeric, byte[] bytes) {
     }
 
     //-----------------------------------------------------------------------

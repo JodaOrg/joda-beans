@@ -31,7 +31,7 @@ final class MsgPackVisualizer extends MsgPackInput {
     /**
      * The buffer.
      */
-    private StringBuilder buf = new StringBuilder(1024);
+    private final StringBuilder buf = new StringBuilder(1024);
 
     /**
      * Creates an instance.
@@ -109,47 +109,47 @@ final class MsgPackVisualizer extends MsgPackInput {
 
     @Override
     void handleInt(int value) {
-        buf.append("int " + value).append(System.lineSeparator());
+        buf.append("int ").append(value).append(System.lineSeparator());
     }
 
     @Override
     void handleUnsignedLong(long value) {
-        buf.append("int " + value + " unsigned").append(System.lineSeparator());
+        buf.append("int ").append(value).append(" unsigned").append(System.lineSeparator());
     }
 
     @Override
     void handleSignedLong(long value) {
-        buf.append("int " + value + " signed").append(System.lineSeparator());
+        buf.append("int ").append(value).append(" signed").append(System.lineSeparator());
     }
 
     @Override
     void handleFloat(float value) {
-        buf.append("flt " + value).append(System.lineSeparator());
+        buf.append("flt ").append(value).append(System.lineSeparator());
     }
 
     @Override
     void handleDouble(double value) {
-        buf.append("dbl " + value).append(System.lineSeparator());
+        buf.append("dbl ").append(value).append(System.lineSeparator());
     }
 
     @Override
     void handleUnknown(byte b) {
-        buf.append("Unknown - " + String.format("%02X ", b)).append(System.lineSeparator());;
+        buf.append("Unknown - ").append(String.format("%02X ", b)).append(System.lineSeparator());;
     }
 
     @Override
     void handleString(String str) {
-        buf.append("str '" + str + '\'').append(System.lineSeparator());
+        buf.append("str '").append(str).append('\'').append(System.lineSeparator());
     }
 
     @Override
     void handleArrayHeader(int size) {
-        buf.append("arr (" + size + ")").append(System.lineSeparator());
+        buf.append("arr (").append(size).append(")").append(System.lineSeparator());
     }
 
     @Override
     void handleMapHeader(int size) {
-        buf.append("map (" + size + ")").append(System.lineSeparator());
+        buf.append("map (").append(size).append(")").append(System.lineSeparator());
     }
 
     @Override
@@ -162,7 +162,7 @@ final class MsgPackVisualizer extends MsgPackInput {
     }
 
     @Override
-    void handleExtension(int type, boolean numeric, byte[] bytes) throws IOException {
+    void handleExtension(int type, boolean numeric, byte[] bytes) {
         String str;
         if (numeric) {
             int value = 0;
