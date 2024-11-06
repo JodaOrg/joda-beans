@@ -141,15 +141,15 @@ abstract class BuilderGen {
         } else if (prop.getType().equals("int")) {
             return "0";
         } else if (prop.getType().equals("short")) {
-            return "Short.valueOf(0)";
+            return "(short) 0";
         } else if (prop.getType().equals("byte")) {
-            return "Byte.valueOf(0)";
+            return "(byte) 0";
         } else if (prop.getType().equals("double")) {
             return "0d";
         } else if (prop.getType().equals("float")) {
             return "0f";
         } else if (prop.getType().equals("char")) {
-            return "Character.valueOf((char) 0)";
+            return "'\\u0000'";
         } else if (prop.getType().equals("boolean")) {
             return "Boolean.FALSE";
         }
