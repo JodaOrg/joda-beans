@@ -98,6 +98,8 @@ public class JodaBeanBinReader extends MsgPack {
 
     /**
      * Reads and parses to a bean.
+     * <p>
+     * Unusually for a method of this type, it closes the input stream.
      * 
      * @param <T>  the root type
      * @param input  the input stream, not null
