@@ -142,8 +142,8 @@ public final class LightMutableGeneric<T extends Number> implements Bean, Serial
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             LightMutableGeneric<?> other = (LightMutableGeneric<?>) obj;
-            return JodaBeanUtils.equal(getNumber(), other.getNumber()) &&
-                    JodaBeanUtils.equal(getList(), other.getList());
+            return JodaBeanUtils.equal(this.getNumber(), other.getNumber()) &&
+                    JodaBeanUtils.equal(this.getList(), other.getList());
         }
         return false;
     }

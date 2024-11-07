@@ -217,10 +217,10 @@ public final class MutableDeprecated implements Cloneable, Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MutableDeprecated other = (MutableDeprecated) obj;
-            return JodaBeanUtils.equal(getDeprecatedBoth(), other.getDeprecatedBoth()) &&
-                    JodaBeanUtils.equal(getDeprecatedJavadoc(), other.getDeprecatedJavadoc()) &&
-                    JodaBeanUtils.equal(getDeprecatedAnnotation(), other.getDeprecatedAnnotation()) &&
-                    JodaBeanUtils.equal(deprecatedOptional, other.deprecatedOptional);
+            return JodaBeanUtils.equal(this.getDeprecatedBoth(), other.getDeprecatedBoth()) &&
+                    JodaBeanUtils.equal(this.getDeprecatedJavadoc(), other.getDeprecatedJavadoc()) &&
+                    JodaBeanUtils.equal(this.getDeprecatedAnnotation(), other.getDeprecatedAnnotation()) &&
+                    JodaBeanUtils.equal(this.deprecatedOptional, other.deprecatedOptional);
         }
         return false;
     }
@@ -297,13 +297,13 @@ public final class MutableDeprecated implements Cloneable, Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1108081708:  // deprecatedBoth
-                    return deprecatedBoth;
+                    return this.deprecatedBoth;
                 case -1632501085:  // deprecatedJavadoc
-                    return deprecatedJavadoc;
+                    return this.deprecatedJavadoc;
                 case 1044703554:  // deprecatedAnnotation
-                    return deprecatedAnnotation;
+                    return this.deprecatedAnnotation;
                 case 1434300979:  // deprecatedOptional
-                    return deprecatedOptional;
+                    return this.deprecatedOptional;
             }
             return super.metaPropertyGet(propertyName);
         }

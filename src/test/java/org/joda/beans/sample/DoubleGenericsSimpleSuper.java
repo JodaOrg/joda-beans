@@ -176,9 +176,9 @@ public class DoubleGenericsSimpleSuper<T, U>
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             DoubleGenericsSimpleSuper<?, ?> other = (DoubleGenericsSimpleSuper<?, ?>) obj;
-            return JodaBeanUtils.equal(getBaseType(), other.getBaseType()) &&
-                    JodaBeanUtils.equal(getBaseT(), other.getBaseT()) &&
-                    JodaBeanUtils.equal(getBaseU(), other.getBaseU());
+            return JodaBeanUtils.equal(this.getBaseType(), other.getBaseType()) &&
+                    JodaBeanUtils.equal(this.getBaseT(), other.getBaseT()) &&
+                    JodaBeanUtils.equal(this.getBaseU(), other.getBaseU());
         }
         return false;
     }
@@ -260,11 +260,11 @@ public class DoubleGenericsSimpleSuper<T, U>
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1721484885:  // baseType
-                    return baseType;
+                    return this.baseType;
                 case 93508515:  // baseT
-                    return baseT;
+                    return this.baseT;
                 case 93508516:  // baseU
-                    return baseU;
+                    return this.baseU;
             }
             return super.metaPropertyGet(propertyName);
         }

@@ -119,7 +119,7 @@ public final class ImmGenericArray<T>
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmGenericArray<?> other = (ImmGenericArray<?>) obj;
-            return JodaBeanUtils.equal(values, other.values);
+            return JodaBeanUtils.equal(this.values, other.values);
         }
         return false;
     }
@@ -175,7 +175,7 @@ public final class ImmGenericArray<T>
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -823812830:  // values
-                    return values;
+                    return this.values;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -246,7 +246,7 @@ public final class ImmGenericArray<T>
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -823812830:  // values
-                    return values;
+                    return this.values;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

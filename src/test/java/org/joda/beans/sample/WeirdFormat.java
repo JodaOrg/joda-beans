@@ -212,11 +212,11 @@ public class WeirdFormat
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             WeirdFormat other = (WeirdFormat) obj;
-            return JodaBeanUtils.equal(getForename1(), other.getForename1()) &&
-                    JodaBeanUtils.equal(getForename2(), other.getForename2()) &&
-                    JodaBeanUtils.equal(getForename3(), other.getForename3()) &&
-                    JodaBeanUtils.equal(getForename4(), other.getForename4()) &&
-                    JodaBeanUtils.equal(getForename5(), other.getForename5());
+            return JodaBeanUtils.equal(this.getForename1(), other.getForename1()) &&
+                    JodaBeanUtils.equal(this.getForename2(), other.getForename2()) &&
+                    JodaBeanUtils.equal(this.getForename3(), other.getForename3()) &&
+                    JodaBeanUtils.equal(this.getForename4(), other.getForename4()) &&
+                    JodaBeanUtils.equal(this.getForename5(), other.getForename5());
         }
         return false;
     }
@@ -309,15 +309,15 @@ public class WeirdFormat
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1593991114:  // forename1
-                    return forename1;
+                    return this.forename1;
                 case 1593991115:  // forename2
-                    return forename2;
+                    return this.forename2;
                 case 1593991116:  // forename3
-                    return forename3;
+                    return this.forename3;
                 case 1593991117:  // forename4
-                    return forename4;
+                    return this.forename4;
                 case 1593991118:  // forename5
-                    return forename5;
+                    return this.forename5;
             }
             return super.metaPropertyGet(propertyName);
         }

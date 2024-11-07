@@ -132,8 +132,8 @@ public class Pair  extends  DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Pair other = (Pair) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond());
+            return JodaBeanUtils.equal(this.getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(this.getSecond(), other.getSecond());
         }
         return false;
     }
@@ -202,9 +202,9 @@ public class Pair  extends  DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
             }
             return super.metaPropertyGet(propertyName);
         }

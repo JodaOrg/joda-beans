@@ -228,11 +228,11 @@ public class FinalFieldBean extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             FinalFieldBean other = (FinalFieldBean) obj;
-            return JodaBeanUtils.equal(getFieldFinal(), other.getFieldFinal()) &&
-                    JodaBeanUtils.equal(getFieldNonFinal(), other.getFieldNonFinal()) &&
-                    JodaBeanUtils.equal(getListFinal(), other.getListFinal()) &&
-                    JodaBeanUtils.equal(getFlexiFinal(), other.getFlexiFinal()) &&
-                    JodaBeanUtils.equal(getPersonFinal(), other.getPersonFinal());
+            return JodaBeanUtils.equal(this.getFieldFinal(), other.getFieldFinal()) &&
+                    JodaBeanUtils.equal(this.getFieldNonFinal(), other.getFieldNonFinal()) &&
+                    JodaBeanUtils.equal(this.getListFinal(), other.getListFinal()) &&
+                    JodaBeanUtils.equal(this.getFlexiFinal(), other.getFlexiFinal()) &&
+                    JodaBeanUtils.equal(this.getPersonFinal(), other.getPersonFinal());
         }
         return false;
     }
@@ -326,15 +326,15 @@ public class FinalFieldBean extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 553434268:  // fieldFinal
-                    return fieldFinal;
+                    return this.fieldFinal;
                 case 1043548611:  // fieldNonFinal
-                    return fieldNonFinal;
+                    return this.fieldNonFinal;
                 case -1247489160:  // listFinal
-                    return listFinal;
+                    return this.listFinal;
                 case 1629293510:  // flexiFinal
-                    return flexiFinal;
+                    return this.flexiFinal;
                 case -448986335:  // personFinal
-                    return personFinal;
+                    return this.personFinal;
             }
             return super.metaPropertyGet(propertyName);
         }

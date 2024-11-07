@@ -206,12 +206,12 @@ public final class ImmOptional implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmOptional other = (ImmOptional) obj;
-            return JodaBeanUtils.equal(optString, other.optString) &&
-                    JodaBeanUtils.equal(optStringEmpty, other.optStringEmpty) &&
-                    JodaBeanUtils.equal(optStringGetter, other.optStringGetter) &&
-                    JodaBeanUtils.equal(optLongGetter, other.optLongGetter) &&
-                    JodaBeanUtils.equal(optIntGetter, other.optIntGetter) &&
-                    JodaBeanUtils.equal(optDoubleGetter, other.optDoubleGetter);
+            return JodaBeanUtils.equal(this.optString, other.optString) &&
+                    JodaBeanUtils.equal(this.optStringEmpty, other.optStringEmpty) &&
+                    JodaBeanUtils.equal(this.optStringGetter, other.optStringGetter) &&
+                    JodaBeanUtils.equal(this.optLongGetter, other.optLongGetter) &&
+                    JodaBeanUtils.equal(this.optIntGetter, other.optIntGetter) &&
+                    JodaBeanUtils.equal(this.optDoubleGetter, other.optDoubleGetter);
         }
         return false;
     }
@@ -313,19 +313,19 @@ public final class ImmOptional implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1220339876:  // optString
-                    return optString;
+                    return this.optString;
                 case -856788215:  // optStringEmpty
-                    return optStringEmpty;
+                    return this.optStringEmpty;
                 case -740642097:  // optStringGetter
-                    return optStringGetter;
+                    return this.optStringGetter;
                 case 2046023098:  // optLongGetter
-                    return optLongGetter;
+                    return this.optLongGetter;
                 case -1931360153:  // optIntGetter
-                    return optIntGetter;
+                    return this.optIntGetter;
                 case 224984719:  // optDoubleGetter
-                    return optDoubleGetter;
+                    return this.optDoubleGetter;
                 case -860970343:  // twelve
-                    return twelve;
+                    return this.twelve;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -350,7 +350,6 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optString} property.
          * @return the meta-property, not null
          */
-        @Override
         public MetaProperty<Optional<String>> optString() {
             return optString;
         }
@@ -359,7 +358,6 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optStringEmpty} property.
          * @return the meta-property, not null
          */
-        @Override
         public MetaProperty<Optional<String>> optStringEmpty() {
             return optStringEmpty;
         }
@@ -368,7 +366,6 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optStringGetter} property.
          * @return the meta-property, not null
          */
-        @Override
         public MetaProperty<String> optStringGetter() {
             return optStringGetter;
         }
@@ -377,7 +374,6 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optLongGetter} property.
          * @return the meta-property, not null
          */
-        @Override
         public MetaProperty<Long> optLongGetter() {
             return optLongGetter;
         }
@@ -386,7 +382,6 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optIntGetter} property.
          * @return the meta-property, not null
          */
-        @Override
         public MetaProperty<Integer> optIntGetter() {
             return optIntGetter;
         }
@@ -395,7 +390,6 @@ public final class ImmOptional implements ImmutableBean {
          * The meta-property for the {@code optDoubleGetter} property.
          * @return the meta-property, not null
          */
-        @Override
         public MetaProperty<Double> optDoubleGetter() {
             return optDoubleGetter;
         }
@@ -479,17 +473,17 @@ public final class ImmOptional implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1220339876:  // optString
-                    return optString;
+                    return this.optString;
                 case -856788215:  // optStringEmpty
-                    return optStringEmpty;
+                    return this.optStringEmpty;
                 case -740642097:  // optStringGetter
-                    return optStringGetter;
+                    return this.optStringGetter;
                 case 2046023098:  // optLongGetter
-                    return optLongGetter;
+                    return this.optLongGetter;
                 case -1931360153:  // optIntGetter
-                    return optIntGetter;
+                    return this.optIntGetter;
                 case 224984719:  // optDoubleGetter
-                    return optDoubleGetter;
+                    return this.optDoubleGetter;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -105,7 +105,7 @@ public class CompanyAddress extends Address {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             CompanyAddress other = (CompanyAddress) obj;
-            return JodaBeanUtils.equal(companyName, other.companyName) &&
+            return JodaBeanUtils.equal(this.companyName, other.companyName) &&
                     super.equals(obj);
         }
         return false;
@@ -169,7 +169,7 @@ public class CompanyAddress extends Address {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -508582744:  // companyName
-                    return companyName;
+                    return this.companyName;
             }
             return super.metaPropertyGet(propertyName);
         }

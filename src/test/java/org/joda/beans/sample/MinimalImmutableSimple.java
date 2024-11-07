@@ -137,8 +137,8 @@ public final class MinimalImmutableSimple implements ImmutableBean, Serializable
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MinimalImmutableSimple other = (MinimalImmutableSimple) obj;
-            return (number == other.number) &&
-                    JodaBeanUtils.equal(text, other.text);
+            return (this.number == other.number) &&
+                    JodaBeanUtils.equal(this.text, other.text);
         }
         return false;
     }
@@ -190,9 +190,9 @@ public final class MinimalImmutableSimple implements ImmutableBean, Serializable
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case 3556653:  // text
-                    return text;
+                    return this.text;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

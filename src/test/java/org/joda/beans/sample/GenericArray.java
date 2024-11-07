@@ -112,7 +112,7 @@ public class GenericArray<T extends Address> implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             GenericArray<?> other = (GenericArray<?>) obj;
-            return JodaBeanUtils.equal(getValues(), other.getValues());
+            return JodaBeanUtils.equal(this.getValues(), other.getValues());
         }
         return false;
     }
@@ -176,7 +176,7 @@ public class GenericArray<T extends Address> implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -823812830:  // values
-                    return values;
+                    return this.values;
             }
             return super.metaPropertyGet(propertyName);
         }

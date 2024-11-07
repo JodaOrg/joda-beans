@@ -114,7 +114,7 @@ public class Company
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Company other = (Company) obj;
-            return JodaBeanUtils.equal(getCompanyName(), other.getCompanyName());
+            return JodaBeanUtils.equal(this.getCompanyName(), other.getCompanyName());
         }
         return false;
     }
@@ -175,7 +175,7 @@ public class Company
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -508582744:  // companyName
-                    return companyName;
+                    return this.companyName;
             }
             return super.metaPropertyGet(propertyName);
         }

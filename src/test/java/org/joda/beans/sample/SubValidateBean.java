@@ -103,7 +103,7 @@ public class SubValidateBean extends ValidateBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             SubValidateBean other = (SubValidateBean) obj;
-            return JodaBeanUtils.equal(getSub(), other.getSub()) &&
+            return JodaBeanUtils.equal(this.getSub(), other.getSub()) &&
                     super.equals(obj);
         }
         return false;
@@ -167,7 +167,7 @@ public class SubValidateBean extends ValidateBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 114240:  // sub
-                    return sub;
+                    return this.sub;
             }
             return super.metaPropertyGet(propertyName);
         }

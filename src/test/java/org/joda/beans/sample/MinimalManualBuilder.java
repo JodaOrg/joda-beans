@@ -132,8 +132,8 @@ public final class MinimalManualBuilder implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MinimalManualBuilder other = (MinimalManualBuilder) obj;
-            return (number == other.number) &&
-                    JodaBeanUtils.equal(text, other.text);
+            return (this.number == other.number) &&
+                    JodaBeanUtils.equal(this.text, other.text);
         }
         return false;
     }

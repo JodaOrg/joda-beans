@@ -128,8 +128,8 @@ public final class MutableOptional implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MutableOptional other = (MutableOptional) obj;
-            return JodaBeanUtils.equal(getOptString(), other.getOptString()) &&
-                    JodaBeanUtils.equal(optStringGetter, other.optStringGetter);
+            return JodaBeanUtils.equal(this.getOptString(), other.getOptString()) &&
+                    JodaBeanUtils.equal(this.optStringGetter, other.optStringGetter);
         }
         return false;
     }
@@ -191,9 +191,9 @@ public final class MutableOptional implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1220339876:  // optString
-                    return optString;
+                    return this.optString;
                 case -740642097:  // optStringGetter
-                    return optStringGetter;
+                    return this.optStringGetter;
             }
             return super.metaPropertyGet(propertyName);
         }

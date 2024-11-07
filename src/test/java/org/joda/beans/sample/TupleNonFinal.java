@@ -178,9 +178,9 @@ public class TupleNonFinal<X, Y, Z> extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             TupleNonFinal<?, ?, ?> other = (TupleNonFinal<?, ?, ?>) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
-                    JodaBeanUtils.equal(getThird(), other.getThird());
+            return JodaBeanUtils.equal(this.getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(this.getSecond(), other.getSecond()) &&
+                    JodaBeanUtils.equal(this.getThird(), other.getThird());
         }
         return false;
     }
@@ -264,11 +264,11 @@ public class TupleNonFinal<X, Y, Z> extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
                 case 110331239:  // third
-                    return third;
+                    return this.third;
             }
             return super.metaPropertyGet(propertyName);
         }

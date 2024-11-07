@@ -813,9 +813,9 @@ class BeanGen {
                 var prop = nonDerived.get(i);
                 var getter = equalsHashCodeFieldAccessor(prop);
                 data.ensureImport(JodaBeanUtils.class);
-                var equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
+                var equals = "JodaBeanUtils.equal(this." + getter + ", other." + getter + ")";
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
-                    equals = "(" + getter + " == other." + getter + ")";
+                    equals = "(this." + getter + " == other." + getter + ")";
                 }
                 addLine(
                         0, (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +

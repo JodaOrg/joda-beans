@@ -106,7 +106,7 @@ public class NoGenToString extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             NoGenToString other = (NoGenToString) obj;
-            return JodaBeanUtils.equal(getValue(), other.getValue());
+            return JodaBeanUtils.equal(this.getValue(), other.getValue());
         }
         return false;
     }
@@ -150,7 +150,7 @@ public class NoGenToString extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }

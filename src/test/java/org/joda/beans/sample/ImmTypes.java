@@ -214,12 +214,12 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmTypes<?> other = (ImmTypes<?>) obj;
-            return JodaBeanUtils.equal(listWild, other.listWild) &&
-                    JodaBeanUtils.equal(listWildPublic1, other.listWildPublic1) &&
-                    JodaBeanUtils.equal(listWildPublic2, other.listWildPublic2) &&
-                    JodaBeanUtils.equal(listWildBuilder1, other.listWildBuilder1) &&
-                    JodaBeanUtils.equal(listWildBuilder2, other.listWildBuilder2) &&
-                    JodaBeanUtils.equal(mapWildBuilder1, other.mapWildBuilder1);
+            return JodaBeanUtils.equal(this.listWild, other.listWild) &&
+                    JodaBeanUtils.equal(this.listWildPublic1, other.listWildPublic1) &&
+                    JodaBeanUtils.equal(this.listWildPublic2, other.listWildPublic2) &&
+                    JodaBeanUtils.equal(this.listWildBuilder1, other.listWildBuilder1) &&
+                    JodaBeanUtils.equal(this.listWildBuilder2, other.listWildBuilder2) &&
+                    JodaBeanUtils.equal(this.mapWildBuilder1, other.mapWildBuilder1);
         }
         return false;
     }
@@ -320,17 +320,17 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1345738120:  // listWild
-                    return listWild;
+                    return this.listWild;
                 case 1874924608:  // listWildPublic1
-                    return listWildPublic1;
+                    return this.listWildPublic1;
                 case 1874924609:  // listWildPublic2
-                    return listWildPublic2;
+                    return this.listWildPublic2;
                 case -436161122:  // listWildBuilder1
-                    return listWildBuilder1;
+                    return this.listWildBuilder1;
                 case -436161121:  // listWildBuilder2
-                    return listWildBuilder2;
+                    return this.listWildBuilder2;
                 case -2009039524:  // mapWildBuilder1
-                    return mapWildBuilder1;
+                    return this.mapWildBuilder1;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -469,17 +469,17 @@ public final class ImmTypes<T extends Comparable<T>> implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1345738120:  // listWild
-                    return listWild;
+                    return this.listWild;
                 case 1874924608:  // listWildPublic1
-                    return listWildPublic1;
+                    return this.listWildPublic1;
                 case 1874924609:  // listWildPublic2
-                    return listWildPublic2;
+                    return this.listWildPublic2;
                 case -436161122:  // listWildBuilder1
-                    return listWildBuilder1;
+                    return this.listWildBuilder1;
                 case -436161121:  // listWildBuilder2
-                    return listWildBuilder2;
+                    return this.listWildBuilder2;
                 case -2009039524:  // mapWildBuilder1
-                    return mapWildBuilder1;
+                    return this.mapWildBuilder1;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

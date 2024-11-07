@@ -124,7 +124,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmUnusedGeneric<?> other = (ImmUnusedGeneric<?>) obj;
-            return JodaBeanUtils.equal(errorMessage, other.errorMessage);
+            return JodaBeanUtils.equal(this.errorMessage, other.errorMessage);
         }
         return false;
     }
@@ -179,7 +179,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1203236063:  // errorMessage
-                    return errorMessage;
+                    return this.errorMessage;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -258,7 +258,7 @@ public final class ImmUnusedGeneric<T> implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1203236063:  // errorMessage
-                    return errorMessage;
+                    return this.errorMessage;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

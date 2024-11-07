@@ -151,10 +151,10 @@ public final class ImmPrivateMeta implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPrivateMeta other = (ImmPrivateMeta) obj;
-            return (number == other.number) &&
-                    JodaBeanUtils.equal(street, other.street) &&
-                    JodaBeanUtils.equal(city, other.city) &&
-                    JodaBeanUtils.equal(owner, other.owner);
+            return (this.number == other.number) &&
+                    JodaBeanUtils.equal(this.street, other.street) &&
+                    JodaBeanUtils.equal(this.city, other.city) &&
+                    JodaBeanUtils.equal(this.owner, other.owner);
         }
         return false;
     }
@@ -231,13 +231,13 @@ public final class ImmPrivateMeta implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case -891990013:  // street
-                    return street;
+                    return this.street;
                 case 3053931:  // city
-                    return city;
+                    return this.city;
                 case 106164915:  // owner
-                    return owner;
+                    return this.owner;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -317,13 +317,13 @@ public final class ImmPrivateMeta implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case -891990013:  // street
-                    return street;
+                    return this.street;
                 case 3053931:  // city
-                    return city;
+                    return this.city;
                 case 106164915:  // owner
-                    return owner;
+                    return this.owner;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

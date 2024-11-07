@@ -106,7 +106,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmSubSubPersonFinal other = (ImmSubSubPersonFinal) obj;
-            return JodaBeanUtils.equal(codeCounts, other.codeCounts) &&
+            return JodaBeanUtils.equal(this.codeCounts, other.codeCounts) &&
                     super.equals(obj);
         }
         return false;
@@ -176,7 +176,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1383758447:  // codeCounts
-                    return codeCounts;
+                    return this.codeCounts;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -254,7 +254,7 @@ public final class ImmSubSubPersonFinal extends ImmSubPersonNonFinal {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1383758447:  // codeCounts
-                    return codeCounts;
+                    return this.codeCounts;
                 default:
                     return super.get(propertyName);
             }

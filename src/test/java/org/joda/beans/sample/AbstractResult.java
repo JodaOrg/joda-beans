@@ -125,7 +125,7 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             AbstractResult<?> other = (AbstractResult<?>) obj;
-            return JodaBeanUtils.equal(getDocs(), other.getDocs());
+            return JodaBeanUtils.equal(this.getDocs(), other.getDocs());
         }
         return false;
     }
@@ -196,9 +196,9 @@ public abstract class AbstractResult<T extends Address> extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3088955:  // docs
-                    return docs;
+                    return this.docs;
                 case -571837193:  // resultType
-                    return resultType;
+                    return this.resultType;
             }
             return super.metaPropertyGet(propertyName);
         }

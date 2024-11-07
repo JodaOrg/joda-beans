@@ -449,33 +449,33 @@ public final class SimpleJson implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             SimpleJson other = (SimpleJson) obj;
-            return (primitiveChar == other.primitiveChar) &&
-                    (primitiveByte == other.primitiveByte) &&
-                    (primitiveShort == other.primitiveShort) &&
-                    (primitiveInt == other.primitiveInt) &&
-                    (primitiveLong == other.primitiveLong) &&
-                    JodaBeanUtils.equal(primitiveFloat, other.primitiveFloat) &&
-                    JodaBeanUtils.equal(primitiveDouble, other.primitiveDouble) &&
-                    JodaBeanUtils.equal(primitiveDoubleNaN, other.primitiveDoubleNaN) &&
-                    JodaBeanUtils.equal(primitiveDoubleInf, other.primitiveDoubleInf) &&
-                    JodaBeanUtils.equal(abstractNumber, other.abstractNumber) &&
-                    JodaBeanUtils.equal(arrayByte, other.arrayByte) &&
-                    JodaBeanUtils.equal(array2d, other.array2d) &&
-                    JodaBeanUtils.equal(string, other.string) &&
-                    JodaBeanUtils.equal(bean, other.bean) &&
-                    JodaBeanUtils.equal(object1, other.object1) &&
-                    JodaBeanUtils.equal(object2, other.object2) &&
-                    JodaBeanUtils.equal(risk, other.risk) &&
-                    JodaBeanUtils.equal(riskLevel, other.riskLevel) &&
-                    JodaBeanUtils.equal(riskLevels, other.riskLevels) &&
-                    JodaBeanUtils.equal(stringList, other.stringList) &&
-                    JodaBeanUtils.equal(beanList, other.beanList) &&
-                    JodaBeanUtils.equal(stringMap, other.stringMap) &&
-                    JodaBeanUtils.equal(intKeyMap, other.intKeyMap) &&
-                    JodaBeanUtils.equal(beanMap, other.beanMap) &&
-                    JodaBeanUtils.equal(listInMap, other.listInMap) &&
-                    JodaBeanUtils.equal(listNumericInMap, other.listNumericInMap) &&
-                    JodaBeanUtils.equal(objectInMap, other.objectInMap);
+            return (this.primitiveChar == other.primitiveChar) &&
+                    (this.primitiveByte == other.primitiveByte) &&
+                    (this.primitiveShort == other.primitiveShort) &&
+                    (this.primitiveInt == other.primitiveInt) &&
+                    (this.primitiveLong == other.primitiveLong) &&
+                    JodaBeanUtils.equal(this.primitiveFloat, other.primitiveFloat) &&
+                    JodaBeanUtils.equal(this.primitiveDouble, other.primitiveDouble) &&
+                    JodaBeanUtils.equal(this.primitiveDoubleNaN, other.primitiveDoubleNaN) &&
+                    JodaBeanUtils.equal(this.primitiveDoubleInf, other.primitiveDoubleInf) &&
+                    JodaBeanUtils.equal(this.abstractNumber, other.abstractNumber) &&
+                    JodaBeanUtils.equal(this.arrayByte, other.arrayByte) &&
+                    JodaBeanUtils.equal(this.array2d, other.array2d) &&
+                    JodaBeanUtils.equal(this.string, other.string) &&
+                    JodaBeanUtils.equal(this.bean, other.bean) &&
+                    JodaBeanUtils.equal(this.object1, other.object1) &&
+                    JodaBeanUtils.equal(this.object2, other.object2) &&
+                    JodaBeanUtils.equal(this.risk, other.risk) &&
+                    JodaBeanUtils.equal(this.riskLevel, other.riskLevel) &&
+                    JodaBeanUtils.equal(this.riskLevels, other.riskLevels) &&
+                    JodaBeanUtils.equal(this.stringList, other.stringList) &&
+                    JodaBeanUtils.equal(this.beanList, other.beanList) &&
+                    JodaBeanUtils.equal(this.stringMap, other.stringMap) &&
+                    JodaBeanUtils.equal(this.intKeyMap, other.intKeyMap) &&
+                    JodaBeanUtils.equal(this.beanMap, other.beanMap) &&
+                    JodaBeanUtils.equal(this.listInMap, other.listInMap) &&
+                    JodaBeanUtils.equal(this.listNumericInMap, other.listNumericInMap) &&
+                    JodaBeanUtils.equal(this.objectInMap, other.objectInMap);
         }
         return false;
     }
@@ -745,59 +745,59 @@ public final class SimpleJson implements ImmutableBean, Serializable {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1058293981:  // primitiveChar
-                    return primitiveChar;
+                    return this.primitiveChar;
                 case 1058281103:  // primitiveByte
-                    return primitiveByte;
+                    return this.primitiveByte;
                 case -1537835051:  // primitiveShort
-                    return primitiveShort;
+                    return this.primitiveShort;
                 case 1281070472:  // primitiveInt
-                    return primitiveInt;
+                    return this.primitiveInt;
                 case 1058569219:  // primitiveLong
-                    return primitiveLong;
+                    return this.primitiveLong;
                 case -1549722187:  // primitiveFloat
-                    return primitiveFloat;
+                    return this.primitiveFloat;
                 case -851055720:  // primitiveDouble
-                    return primitiveDouble;
+                    return this.primitiveDouble;
                 case -608928189:  // primitiveDoubleNaN
-                    return primitiveDoubleNaN;
+                    return this.primitiveDoubleNaN;
                 case -608932567:  // primitiveDoubleInf
-                    return primitiveDoubleInf;
+                    return this.primitiveDoubleInf;
                 case 1986500107:  // abstractNumber
-                    return abstractNumber;
+                    return this.abstractNumber;
                 case -1425444095:  // arrayByte
-                    return arrayByte;
+                    return this.arrayByte;
                 case -734443893:  // array2d
-                    return array2d;
+                    return this.array2d;
                 case -891985903:  // string
-                    return string;
+                    return this.string;
                 case 3019696:  // bean
-                    return bean;
+                    return this.bean;
                 case -1659648814:  // object1
-                    return object1;
+                    return this.object1;
                 case -1659648813:  // object2
-                    return object2;
+                    return this.object2;
                 case 3500751:  // risk
-                    return risk;
+                    return this.risk;
                 case 540453365:  // riskLevel
-                    return riskLevel;
+                    return this.riskLevel;
                 case -425814754:  // riskLevels
-                    return riskLevels;
+                    return this.riskLevels;
                 case -1573317553:  // stringList
-                    return stringList;
+                    return this.stringList;
                 case 1321263214:  // beanList
-                    return beanList;
+                    return this.beanList;
                 case -189298805:  // stringMap
-                    return stringMap;
+                    return this.stringMap;
                 case -253193396:  // intKeyMap
-                    return intKeyMap;
+                    return this.intKeyMap;
                 case -234472564:  // beanMap
-                    return beanMap;
+                    return this.beanMap;
                 case -1244601351:  // listInMap
-                    return listInMap;
+                    return this.listInMap;
                 case 391098024:  // listNumericInMap
-                    return listNumericInMap;
+                    return this.listNumericInMap;
                 case -1297715720:  // objectInMap
-                    return objectInMap;
+                    return this.objectInMap;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -1186,59 +1186,59 @@ public final class SimpleJson implements ImmutableBean, Serializable {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1058293981:  // primitiveChar
-                    return primitiveChar;
+                    return this.primitiveChar;
                 case 1058281103:  // primitiveByte
-                    return primitiveByte;
+                    return this.primitiveByte;
                 case -1537835051:  // primitiveShort
-                    return primitiveShort;
+                    return this.primitiveShort;
                 case 1281070472:  // primitiveInt
-                    return primitiveInt;
+                    return this.primitiveInt;
                 case 1058569219:  // primitiveLong
-                    return primitiveLong;
+                    return this.primitiveLong;
                 case -1549722187:  // primitiveFloat
-                    return primitiveFloat;
+                    return this.primitiveFloat;
                 case -851055720:  // primitiveDouble
-                    return primitiveDouble;
+                    return this.primitiveDouble;
                 case -608928189:  // primitiveDoubleNaN
-                    return primitiveDoubleNaN;
+                    return this.primitiveDoubleNaN;
                 case -608932567:  // primitiveDoubleInf
-                    return primitiveDoubleInf;
+                    return this.primitiveDoubleInf;
                 case 1986500107:  // abstractNumber
-                    return abstractNumber;
+                    return this.abstractNumber;
                 case -1425444095:  // arrayByte
-                    return arrayByte;
+                    return this.arrayByte;
                 case -734443893:  // array2d
-                    return array2d;
+                    return this.array2d;
                 case -891985903:  // string
-                    return string;
+                    return this.string;
                 case 3019696:  // bean
-                    return bean;
+                    return this.bean;
                 case -1659648814:  // object1
-                    return object1;
+                    return this.object1;
                 case -1659648813:  // object2
-                    return object2;
+                    return this.object2;
                 case 3500751:  // risk
-                    return risk;
+                    return this.risk;
                 case 540453365:  // riskLevel
-                    return riskLevel;
+                    return this.riskLevel;
                 case -425814754:  // riskLevels
-                    return riskLevels;
+                    return this.riskLevels;
                 case -1573317553:  // stringList
-                    return stringList;
+                    return this.stringList;
                 case 1321263214:  // beanList
-                    return beanList;
+                    return this.beanList;
                 case -189298805:  // stringMap
-                    return stringMap;
+                    return this.stringMap;
                 case -253193396:  // intKeyMap
-                    return intKeyMap;
+                    return this.intKeyMap;
                 case -234472564:  // beanMap
-                    return beanMap;
+                    return this.beanMap;
                 case -1244601351:  // listInMap
-                    return listInMap;
+                    return this.listInMap;
                 case 391098024:  // listNumericInMap
-                    return listNumericInMap;
+                    return this.listNumericInMap;
                 case -1297715720:  // objectInMap
-                    return objectInMap;
+                    return this.objectInMap;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

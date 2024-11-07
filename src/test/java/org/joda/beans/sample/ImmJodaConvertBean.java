@@ -127,8 +127,8 @@ public final class ImmJodaConvertBean implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmJodaConvertBean other = (ImmJodaConvertBean) obj;
-            return JodaBeanUtils.equal(base, other.base) &&
-                    (extra == other.extra);
+            return JodaBeanUtils.equal(this.base, other.base) &&
+                    (this.extra == other.extra);
         }
         return false;
     }
@@ -189,9 +189,9 @@ public final class ImmJodaConvertBean implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3016401:  // base
-                    return base;
+                    return this.base;
                 case 96965648:  // extra
-                    return extra;
+                    return this.extra;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -280,9 +280,9 @@ public final class ImmJodaConvertBean implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3016401:  // base
-                    return base;
+                    return this.base;
                 case 96965648:  // extra
-                    return extra;
+                    return this.extra;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

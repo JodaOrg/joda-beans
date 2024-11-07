@@ -139,8 +139,8 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Wrapper<?> other = (Wrapper<?>) obj;
-            return JodaBeanUtils.equal(getType(), other.getType()) &&
-                    JodaBeanUtils.equal(getContent(), other.getContent());
+            return JodaBeanUtils.equal(this.getType(), other.getType()) &&
+                    JodaBeanUtils.equal(this.getContent(), other.getContent());
         }
         return false;
     }
@@ -212,9 +212,9 @@ public abstract class Wrapper<T extends Address> extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3575610:  // type
-                    return type;
+                    return this.type;
                 case 951530617:  // content
-                    return content;
+                    return this.content;
             }
             return super.metaPropertyGet(propertyName);
         }

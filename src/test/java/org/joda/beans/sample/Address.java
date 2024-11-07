@@ -193,10 +193,10 @@ public class Address extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Address other = (Address) obj;
-            return (getNumber() == other.getNumber()) &&
-                    JodaBeanUtils.equal(getStreet(), other.getStreet()) &&
-                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getOwner(), other.getOwner());
+            return (this.getNumber() == other.getNumber()) &&
+                    JodaBeanUtils.equal(this.getStreet(), other.getStreet()) &&
+                    JodaBeanUtils.equal(this.getCity(), other.getCity()) &&
+                    JodaBeanUtils.equal(this.getOwner(), other.getOwner());
         }
         return false;
     }
@@ -281,13 +281,13 @@ public class Address extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case -891990013:  // street
-                    return street;
+                    return this.street;
                 case 3053931:  // city
-                    return city;
+                    return this.city;
                 case 106164915:  // owner
-                    return owner;
+                    return this.owner;
             }
             return super.metaPropertyGet(propertyName);
         }

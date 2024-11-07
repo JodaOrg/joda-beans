@@ -535,32 +535,32 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmAddress other = (ImmAddress) obj;
-            return (number == other.number) &&
-                    JodaBeanUtils.equal(street, other.street) &&
-                    JodaBeanUtils.equal(city, other.city) &&
-                    JodaBeanUtils.equal(abstractNumber, other.abstractNumber) &&
-                    JodaBeanUtils.equal(data, other.data) &&
-                    JodaBeanUtils.equal(array2d, other.array2d) &&
-                    JodaBeanUtils.equal(owner, other.owner) &&
-                    JodaBeanUtils.equal(object1, other.object1) &&
-                    JodaBeanUtils.equal(object2, other.object2) &&
-                    JodaBeanUtils.equal(risk, other.risk) &&
-                    JodaBeanUtils.equal(riskLevel, other.riskLevel) &&
-                    JodaBeanUtils.equal(riskLevels, other.riskLevels) &&
-                    JodaBeanUtils.equal(serializable, other.serializable) &&
-                    JodaBeanUtils.equal(objectInMap, other.objectInMap) &&
-                    JodaBeanUtils.equal(listInMap, other.listInMap) &&
-                    JodaBeanUtils.equal(listNumericInMap, other.listNumericInMap) &&
-                    JodaBeanUtils.equal(listInListInMap, other.listInListInMap) &&
-                    JodaBeanUtils.equal(objectListInListInMap, other.objectListInListInMap) &&
-                    JodaBeanUtils.equal(mapInMap, other.mapInMap) &&
-                    JodaBeanUtils.equal(simpleTable, other.simpleTable) &&
-                    JodaBeanUtils.equal(compoundTable, other.compoundTable) &&
-                    JodaBeanUtils.equal(sparseGrid, other.sparseGrid) &&
-                    JodaBeanUtils.equal(denseGrid, other.denseGrid) &&
-                    JodaBeanUtils.equal(beanBeanMap, other.beanBeanMap) &&
-                    JodaBeanUtils.equal(doubleVector, other.doubleVector) &&
-                    JodaBeanUtils.equal(matrix, other.matrix);
+            return (this.number == other.number) &&
+                    JodaBeanUtils.equal(this.street, other.street) &&
+                    JodaBeanUtils.equal(this.city, other.city) &&
+                    JodaBeanUtils.equal(this.abstractNumber, other.abstractNumber) &&
+                    JodaBeanUtils.equal(this.data, other.data) &&
+                    JodaBeanUtils.equal(this.array2d, other.array2d) &&
+                    JodaBeanUtils.equal(this.owner, other.owner) &&
+                    JodaBeanUtils.equal(this.object1, other.object1) &&
+                    JodaBeanUtils.equal(this.object2, other.object2) &&
+                    JodaBeanUtils.equal(this.risk, other.risk) &&
+                    JodaBeanUtils.equal(this.riskLevel, other.riskLevel) &&
+                    JodaBeanUtils.equal(this.riskLevels, other.riskLevels) &&
+                    JodaBeanUtils.equal(this.serializable, other.serializable) &&
+                    JodaBeanUtils.equal(this.objectInMap, other.objectInMap) &&
+                    JodaBeanUtils.equal(this.listInMap, other.listInMap) &&
+                    JodaBeanUtils.equal(this.listNumericInMap, other.listNumericInMap) &&
+                    JodaBeanUtils.equal(this.listInListInMap, other.listInListInMap) &&
+                    JodaBeanUtils.equal(this.objectListInListInMap, other.objectListInListInMap) &&
+                    JodaBeanUtils.equal(this.mapInMap, other.mapInMap) &&
+                    JodaBeanUtils.equal(this.simpleTable, other.simpleTable) &&
+                    JodaBeanUtils.equal(this.compoundTable, other.compoundTable) &&
+                    JodaBeanUtils.equal(this.sparseGrid, other.sparseGrid) &&
+                    JodaBeanUtils.equal(this.denseGrid, other.denseGrid) &&
+                    JodaBeanUtils.equal(this.beanBeanMap, other.beanBeanMap) &&
+                    JodaBeanUtils.equal(this.doubleVector, other.doubleVector) &&
+                    JodaBeanUtils.equal(this.matrix, other.matrix);
         }
         return false;
     }
@@ -825,57 +825,57 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case -891990013:  // street
-                    return street;
+                    return this.street;
                 case 3053931:  // city
-                    return city;
+                    return this.city;
                 case 1986500107:  // abstractNumber
-                    return abstractNumber;
+                    return this.abstractNumber;
                 case 3076010:  // data
-                    return data;
+                    return this.data;
                 case -734443893:  // array2d
-                    return array2d;
+                    return this.array2d;
                 case 106164915:  // owner
-                    return owner;
+                    return this.owner;
                 case -1659648814:  // object1
-                    return object1;
+                    return this.object1;
                 case -1659648813:  // object2
-                    return object2;
+                    return this.object2;
                 case 3500751:  // risk
-                    return risk;
+                    return this.risk;
                 case 540453365:  // riskLevel
-                    return riskLevel;
+                    return this.riskLevel;
                 case -425814754:  // riskLevels
-                    return riskLevels;
+                    return this.riskLevels;
                 case 861034751:  // serializable
-                    return serializable;
+                    return this.serializable;
                 case -1297715720:  // objectInMap
-                    return objectInMap;
+                    return this.objectInMap;
                 case -1244601351:  // listInMap
-                    return listInMap;
+                    return this.listInMap;
                 case 391098024:  // listNumericInMap
-                    return listNumericInMap;
+                    return this.listNumericInMap;
                 case -940836650:  // listInListInMap
-                    return listInListInMap;
+                    return this.listInListInMap;
                 case -861321321:  // objectListInListInMap
-                    return objectListInListInMap;
+                    return this.objectListInListInMap;
                 case 158545403:  // mapInMap
-                    return mapInMap;
+                    return this.mapInMap;
                 case -1429579460:  // simpleTable
-                    return simpleTable;
+                    return this.simpleTable;
                 case 103339235:  // compoundTable
-                    return compoundTable;
+                    return this.compoundTable;
                 case 1337284998:  // sparseGrid
-                    return sparseGrid;
+                    return this.sparseGrid;
                 case 1802377989:  // denseGrid
-                    return denseGrid;
+                    return this.denseGrid;
                 case -2039203396:  // beanBeanMap
-                    return beanBeanMap;
+                    return this.beanBeanMap;
                 case 1118070900:  // doubleVector
-                    return doubleVector;
+                    return this.doubleVector;
                 case -1081239615:  // matrix
-                    return matrix;
+                    return this.matrix;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -1252,57 +1252,57 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case -891990013:  // street
-                    return street;
+                    return this.street;
                 case 3053931:  // city
-                    return city;
+                    return this.city;
                 case 1986500107:  // abstractNumber
-                    return abstractNumber;
+                    return this.abstractNumber;
                 case 3076010:  // data
-                    return data;
+                    return this.data;
                 case -734443893:  // array2d
-                    return array2d;
+                    return this.array2d;
                 case 106164915:  // owner
-                    return owner;
+                    return this.owner;
                 case -1659648814:  // object1
-                    return object1;
+                    return this.object1;
                 case -1659648813:  // object2
-                    return object2;
+                    return this.object2;
                 case 3500751:  // risk
-                    return risk;
+                    return this.risk;
                 case 540453365:  // riskLevel
-                    return riskLevel;
+                    return this.riskLevel;
                 case -425814754:  // riskLevels
-                    return riskLevels;
+                    return this.riskLevels;
                 case 861034751:  // serializable
-                    return serializable;
+                    return this.serializable;
                 case -1297715720:  // objectInMap
-                    return objectInMap;
+                    return this.objectInMap;
                 case -1244601351:  // listInMap
-                    return listInMap;
+                    return this.listInMap;
                 case 391098024:  // listNumericInMap
-                    return listNumericInMap;
+                    return this.listNumericInMap;
                 case -940836650:  // listInListInMap
-                    return listInListInMap;
+                    return this.listInListInMap;
                 case -861321321:  // objectListInListInMap
-                    return objectListInListInMap;
+                    return this.objectListInListInMap;
                 case 158545403:  // mapInMap
-                    return mapInMap;
+                    return this.mapInMap;
                 case -1429579460:  // simpleTable
-                    return simpleTable;
+                    return this.simpleTable;
                 case 103339235:  // compoundTable
-                    return compoundTable;
+                    return this.compoundTable;
                 case 1337284998:  // sparseGrid
-                    return sparseGrid;
+                    return this.sparseGrid;
                 case 1802377989:  // denseGrid
-                    return denseGrid;
+                    return this.denseGrid;
                 case -2039203396:  // beanBeanMap
-                    return beanBeanMap;
+                    return this.beanBeanMap;
                 case 1118070900:  // doubleVector
-                    return doubleVector;
+                    return this.doubleVector;
                 case -1081239615:  // matrix
-                    return matrix;
+                    return this.matrix;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -299,14 +299,14 @@ public class ClonePerson
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ClonePerson other = (ClonePerson) obj;
-            return JodaBeanUtils.equal(getFirstNames(), other.getFirstNames()) &&
-                    JodaBeanUtils.equal(getMiddleNames(), other.getMiddleNames()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    JodaBeanUtils.equal(getDateOfBirth(), other.getDateOfBirth()) &&
-                    JodaBeanUtils.equal(getDateOfDeath(), other.getDateOfDeath()) &&
-                    JodaBeanUtils.equal(getAddresses(), other.getAddresses()) &&
-                    JodaBeanUtils.equal(getCompanies(), other.getCompanies()) &&
-                    JodaBeanUtils.equal(getAmounts(), other.getAmounts());
+            return JodaBeanUtils.equal(this.getFirstNames(), other.getFirstNames()) &&
+                    JodaBeanUtils.equal(this.getMiddleNames(), other.getMiddleNames()) &&
+                    JodaBeanUtils.equal(this.getSurname(), other.getSurname()) &&
+                    JodaBeanUtils.equal(this.getDateOfBirth(), other.getDateOfBirth()) &&
+                    JodaBeanUtils.equal(this.getDateOfDeath(), other.getDateOfDeath()) &&
+                    JodaBeanUtils.equal(this.getAddresses(), other.getAddresses()) &&
+                    JodaBeanUtils.equal(this.getCompanies(), other.getCompanies()) &&
+                    JodaBeanUtils.equal(this.getAmounts(), other.getAmounts());
         }
         return false;
     }
@@ -425,21 +425,21 @@ public class ClonePerson
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -177061256:  // firstNames
-                    return firstNames;
+                    return this.firstNames;
                 case 404996787:  // middleNames
-                    return middleNames;
+                    return this.middleNames;
                 case -1852993317:  // surname
-                    return surname;
+                    return this.surname;
                 case -386871910:  // dateOfBirth
-                    return dateOfBirth;
+                    return this.dateOfBirth;
                 case -385160369:  // dateOfDeath
-                    return dateOfDeath;
+                    return this.dateOfDeath;
                 case 874544034:  // addresses
-                    return addresses;
+                    return this.addresses;
                 case -1412832805:  // companies
-                    return companies;
+                    return this.companies;
                 case -879772901:  // amounts
-                    return amounts;
+                    return this.amounts;
             }
             return super.metaPropertyGet(propertyName);
         }
