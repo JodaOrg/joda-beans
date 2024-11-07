@@ -820,10 +820,12 @@ class BeanGen {
             for (int i = 0; i < nonDerived.size(); i++) {
                 PropertyGen prop = nonDerived.get(i);
                 String getter = equalsHashCodeFieldAccessor(prop);
+                String fieldName = prop.getData().getFieldName();
+                String prefix = fieldName.equals("obj") || fieldName.equals("other") ? "this." : "";
                 data.ensureImport(JodaBeanUtils.class);
-                String equals = "JodaBeanUtils.equal(" + getter + ", other." + getter + ")";
+                String equals = "JodaBeanUtils.equal(" + prefix + getter + ", other." + getter + ")";
                 if (PRIMITIVE_EQUALS.contains(prop.getData().getType())) {
-                    equals = "(" + getter + " == other." + getter + ")";
+                    equals = "(" + prefix + getter + " == other." + getter + ")";
                 }
                 addLine(
                         0, (i == 0 ? "\t\t\treturn " : "\t\t\t\t\t") + equals +
