@@ -206,9 +206,9 @@ public final class TupleFinal<X, Y, Z> implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             TupleFinal<?, ?, ?> other = (TupleFinal<?, ?, ?>) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
-                    JodaBeanUtils.equal(getThird(), other.getThird());
+            return JodaBeanUtils.equal(this.getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(this.getSecond(), other.getSecond()) &&
+                    JodaBeanUtils.equal(this.getThird(), other.getThird());
         }
         return false;
     }
@@ -284,11 +284,11 @@ public final class TupleFinal<X, Y, Z> implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
                 case 110331239:  // third
-                    return third;
+                    return this.third;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -401,11 +401,11 @@ public final class TupleFinal<X, Y, Z> implements Bean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
                 case 110331239:  // third
-                    return third;
+                    return this.third;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

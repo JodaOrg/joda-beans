@@ -310,14 +310,14 @@ public final class LightMutable implements Bean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             LightMutable other = (LightMutable) obj;
-            return (getNumber() == other.getNumber()) &&
-                    (isFlag() == other.isFlag()) &&
-                    JodaBeanUtils.equal(street, other.street) &&
-                    JodaBeanUtils.equal(town, other.town) &&
-                    JodaBeanUtils.equal(getCity(), other.getCity()) &&
-                    JodaBeanUtils.equal(getList(), other.getList()) &&
-                    JodaBeanUtils.equal(currency, other.currency) &&
-                    JodaBeanUtils.equal(hiddenText, other.hiddenText);
+            return (this.getNumber() == other.getNumber()) &&
+                    (this.isFlag() == other.isFlag()) &&
+                    JodaBeanUtils.equal(this.street, other.street) &&
+                    JodaBeanUtils.equal(this.town, other.town) &&
+                    JodaBeanUtils.equal(this.getCity(), other.getCity()) &&
+                    JodaBeanUtils.equal(this.getList(), other.getList()) &&
+                    JodaBeanUtils.equal(this.currency, other.currency) &&
+                    JodaBeanUtils.equal(this.hiddenText, other.hiddenText);
         }
         return false;
     }

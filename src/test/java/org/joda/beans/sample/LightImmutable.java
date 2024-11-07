@@ -333,19 +333,19 @@ public final class LightImmutable implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             LightImmutable other = (LightImmutable) obj;
-            return (number == other.number) &&
-                    (flag == other.flag) &&
-                    JodaBeanUtils.equal(street, other.street) &&
-                    JodaBeanUtils.equal(town, other.town) &&
-                    JodaBeanUtils.equal(city, other.city) &&
-                    JodaBeanUtils.equal(owner, other.owner) &&
-                    JodaBeanUtils.equal(list, other.list) &&
-                    JodaBeanUtils.equal(currency, other.currency) &&
-                    JodaBeanUtils.equal(hiddenText, other.hiddenText) &&
-                    (valueLong == other.valueLong) &&
-                    (valueShort == other.valueShort) &&
-                    (valueChar == other.valueChar) &&
-                    (valueByte == other.valueByte);
+            return (this.number == other.number) &&
+                    (this.flag == other.flag) &&
+                    JodaBeanUtils.equal(this.street, other.street) &&
+                    JodaBeanUtils.equal(this.town, other.town) &&
+                    JodaBeanUtils.equal(this.city, other.city) &&
+                    JodaBeanUtils.equal(this.owner, other.owner) &&
+                    JodaBeanUtils.equal(this.list, other.list) &&
+                    JodaBeanUtils.equal(this.currency, other.currency) &&
+                    JodaBeanUtils.equal(this.hiddenText, other.hiddenText) &&
+                    (this.valueLong == other.valueLong) &&
+                    (this.valueShort == other.valueShort) &&
+                    (this.valueChar == other.valueChar) &&
+                    (this.valueByte == other.valueByte);
         }
         return false;
     }

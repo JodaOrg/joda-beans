@@ -102,7 +102,7 @@ final class ImmPackageScoped implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPackageScoped other = (ImmPackageScoped) obj;
-            return JodaBeanUtils.equal(name, other.name);
+            return JodaBeanUtils.equal(this.name, other.name);
         }
         return false;
     }
@@ -155,7 +155,7 @@ final class ImmPackageScoped implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -232,7 +232,7 @@ final class ImmPackageScoped implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

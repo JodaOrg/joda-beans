@@ -651,40 +651,40 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmGuava<?> other = (ImmGuava<?>) obj;
-            return JodaBeanUtils.equal(collection, other.collection) &&
-                    JodaBeanUtils.equal(list, other.list) &&
-                    JodaBeanUtils.equal(set, other.set) &&
-                    JodaBeanUtils.equal(sortedSet, other.sortedSet) &&
-                    JodaBeanUtils.equal(map, other.map) &&
-                    JodaBeanUtils.equal(sortedMap, other.sortedMap) &&
-                    JodaBeanUtils.equal(biMap, other.biMap) &&
-                    JodaBeanUtils.equal(multimap, other.multimap) &&
-                    JodaBeanUtils.equal(listMultimap, other.listMultimap) &&
-                    JodaBeanUtils.equal(setMultimap, other.setMultimap) &&
-                    JodaBeanUtils.equal(multiset, other.multiset) &&
-                    JodaBeanUtils.equal(sortedMultiset, other.sortedMultiset) &&
-                    JodaBeanUtils.equal(collectionInterface, other.collectionInterface) &&
-                    JodaBeanUtils.equal(listInterface, other.listInterface) &&
-                    JodaBeanUtils.equal(setInterface, other.setInterface) &&
-                    JodaBeanUtils.equal(sortedSetInterface, other.sortedSetInterface) &&
-                    JodaBeanUtils.equal(mapInterface, other.mapInterface) &&
-                    JodaBeanUtils.equal(sortedMapInterface, other.sortedMapInterface) &&
-                    JodaBeanUtils.equal(biMapInterface, other.biMapInterface) &&
-                    JodaBeanUtils.equal(multimapInterface, other.multimapInterface) &&
-                    JodaBeanUtils.equal(listMultimapInterface, other.listMultimapInterface) &&
-                    JodaBeanUtils.equal(setMultimapInterface, other.setMultimapInterface) &&
-                    JodaBeanUtils.equal(multisetInterface, other.multisetInterface) &&
-                    JodaBeanUtils.equal(sortedMultisetInterface, other.sortedMultisetInterface) &&
-                    JodaBeanUtils.equal(listWildExtendsT, other.listWildExtendsT) &&
-                    JodaBeanUtils.equal(listWildExtendsNumber, other.listWildExtendsNumber) &&
-                    JodaBeanUtils.equal(listWildExtendsComparable, other.listWildExtendsComparable) &&
-                    JodaBeanUtils.equal(setWildExtendsT, other.setWildExtendsT) &&
-                    JodaBeanUtils.equal(setWildExtendsNumber, other.setWildExtendsNumber) &&
-                    JodaBeanUtils.equal(setWildExtendsComparable, other.setWildExtendsComparable) &&
-                    JodaBeanUtils.equal(listWildBuilder1, other.listWildBuilder1) &&
-                    JodaBeanUtils.equal(listWildBuilder2, other.listWildBuilder2) &&
-                    JodaBeanUtils.equal(mapWildBuilder1, other.mapWildBuilder1) &&
-                    JodaBeanUtils.equal(mapWildKey, other.mapWildKey);
+            return JodaBeanUtils.equal(this.collection, other.collection) &&
+                    JodaBeanUtils.equal(this.list, other.list) &&
+                    JodaBeanUtils.equal(this.set, other.set) &&
+                    JodaBeanUtils.equal(this.sortedSet, other.sortedSet) &&
+                    JodaBeanUtils.equal(this.map, other.map) &&
+                    JodaBeanUtils.equal(this.sortedMap, other.sortedMap) &&
+                    JodaBeanUtils.equal(this.biMap, other.biMap) &&
+                    JodaBeanUtils.equal(this.multimap, other.multimap) &&
+                    JodaBeanUtils.equal(this.listMultimap, other.listMultimap) &&
+                    JodaBeanUtils.equal(this.setMultimap, other.setMultimap) &&
+                    JodaBeanUtils.equal(this.multiset, other.multiset) &&
+                    JodaBeanUtils.equal(this.sortedMultiset, other.sortedMultiset) &&
+                    JodaBeanUtils.equal(this.collectionInterface, other.collectionInterface) &&
+                    JodaBeanUtils.equal(this.listInterface, other.listInterface) &&
+                    JodaBeanUtils.equal(this.setInterface, other.setInterface) &&
+                    JodaBeanUtils.equal(this.sortedSetInterface, other.sortedSetInterface) &&
+                    JodaBeanUtils.equal(this.mapInterface, other.mapInterface) &&
+                    JodaBeanUtils.equal(this.sortedMapInterface, other.sortedMapInterface) &&
+                    JodaBeanUtils.equal(this.biMapInterface, other.biMapInterface) &&
+                    JodaBeanUtils.equal(this.multimapInterface, other.multimapInterface) &&
+                    JodaBeanUtils.equal(this.listMultimapInterface, other.listMultimapInterface) &&
+                    JodaBeanUtils.equal(this.setMultimapInterface, other.setMultimapInterface) &&
+                    JodaBeanUtils.equal(this.multisetInterface, other.multisetInterface) &&
+                    JodaBeanUtils.equal(this.sortedMultisetInterface, other.sortedMultisetInterface) &&
+                    JodaBeanUtils.equal(this.listWildExtendsT, other.listWildExtendsT) &&
+                    JodaBeanUtils.equal(this.listWildExtendsNumber, other.listWildExtendsNumber) &&
+                    JodaBeanUtils.equal(this.listWildExtendsComparable, other.listWildExtendsComparable) &&
+                    JodaBeanUtils.equal(this.setWildExtendsT, other.setWildExtendsT) &&
+                    JodaBeanUtils.equal(this.setWildExtendsNumber, other.setWildExtendsNumber) &&
+                    JodaBeanUtils.equal(this.setWildExtendsComparable, other.setWildExtendsComparable) &&
+                    JodaBeanUtils.equal(this.listWildBuilder1, other.listWildBuilder1) &&
+                    JodaBeanUtils.equal(this.listWildBuilder2, other.listWildBuilder2) &&
+                    JodaBeanUtils.equal(this.mapWildBuilder1, other.mapWildBuilder1) &&
+                    JodaBeanUtils.equal(this.mapWildKey, other.mapWildKey);
         }
         return false;
     }
@@ -1037,73 +1037,73 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1741312354:  // collection
-                    return collection;
+                    return this.collection;
                 case 3322014:  // list
-                    return list;
+                    return this.list;
                 case 113762:  // set
-                    return set;
+                    return this.set;
                 case -6890395:  // sortedSet
-                    return sortedSet;
+                    return this.sortedSet;
                 case 107868:  // map
-                    return map;
+                    return this.map;
                 case -6896289:  // sortedMap
-                    return sortedMap;
+                    return this.sortedMap;
                 case 93710229:  // biMap
-                    return biMap;
+                    return this.biMap;
                 case 653826435:  // multimap
-                    return multimap;
+                    return this.multimap;
                 case 1737633857:  // listMultimap
-                    return listMultimap;
+                    return this.listMultimap;
                 case -1651820539:  // setMultimap
-                    return setMultimap;
+                    return this.setMultimap;
                 case 653832329:  // multiset
-                    return multiset;
+                    return this.multiset;
                 case 1018567270:  // sortedMultiset
-                    return sortedMultiset;
+                    return this.sortedMultiset;
                 case 420048955:  // collectionInterface
-                    return collectionInterface;
+                    return this.collectionInterface;
                 case -259084741:  // listInterface
-                    return listInterface;
+                    return this.listInterface;
                 case 2042011383:  // setInterface
-                    return setInterface;
+                    return this.setInterface;
                 case 1019335252:  // sortedSetInterface
-                    return sortedSetInterface;
+                    return this.sortedSetInterface;
                 case 651439933:  // mapInterface
-                    return mapInterface;
+                    return this.mapInterface;
                 case -371236198:  // sortedMapInterface
-                    return sortedMapInterface;
+                    return this.sortedMapInterface;
                 case 2068077860:  // biMapInterface
-                    return biMapInterface;
+                    return this.biMapInterface;
                 case -1415579914:  // multimapInterface
-                    return multimapInterface;
+                    return this.multimapInterface;
                 case 1576080888:  // listMultimapInterface
-                    return listMultimapInterface;
+                    return this.listMultimapInterface;
                 case -630551884:  // setMultimapInterface
-                    return setMultimapInterface;
+                    return this.setMultimapInterface;
                 case -25008464:  // multisetInterface
-                    return multisetInterface;
+                    return this.multisetInterface;
                 case 271697267:  // sortedMultisetInterface
-                    return sortedMultisetInterface;
+                    return this.sortedMultisetInterface;
                 case -826400637:  // listWildExtendsT
-                    return listWildExtendsT;
+                    return this.listWildExtendsT;
                 case 789015706:  // listWildExtendsNumber
-                    return listWildExtendsNumber;
+                    return this.listWildExtendsNumber;
                 case 857377195:  // listWildExtendsComparable
-                    return listWildExtendsComparable;
+                    return this.listWildExtendsComparable;
                 case -844782009:  // setWildExtendsT
-                    return setWildExtendsT;
+                    return this.setWildExtendsT;
                 case -1417617066:  // setWildExtendsNumber
-                    return setWildExtendsNumber;
+                    return this.setWildExtendsNumber;
                 case 940785767:  // setWildExtendsComparable
-                    return setWildExtendsComparable;
+                    return this.setWildExtendsComparable;
                 case -436161122:  // listWildBuilder1
-                    return listWildBuilder1;
+                    return this.listWildBuilder1;
                 case -436161121:  // listWildBuilder2
-                    return listWildBuilder2;
+                    return this.listWildBuilder2;
                 case -2009039524:  // mapWildBuilder1
-                    return mapWildBuilder1;
+                    return this.mapWildBuilder1;
                 case 1463967033:  // mapWildKey
-                    return mapWildKey;
+                    return this.mapWildKey;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -1578,73 +1578,73 @@ public final class ImmGuava<T extends Comparable<T>> implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1741312354:  // collection
-                    return collection;
+                    return this.collection;
                 case 3322014:  // list
-                    return list;
+                    return this.list;
                 case 113762:  // set
-                    return set;
+                    return this.set;
                 case -6890395:  // sortedSet
-                    return sortedSet;
+                    return this.sortedSet;
                 case 107868:  // map
-                    return map;
+                    return this.map;
                 case -6896289:  // sortedMap
-                    return sortedMap;
+                    return this.sortedMap;
                 case 93710229:  // biMap
-                    return biMap;
+                    return this.biMap;
                 case 653826435:  // multimap
-                    return multimap;
+                    return this.multimap;
                 case 1737633857:  // listMultimap
-                    return listMultimap;
+                    return this.listMultimap;
                 case -1651820539:  // setMultimap
-                    return setMultimap;
+                    return this.setMultimap;
                 case 653832329:  // multiset
-                    return multiset;
+                    return this.multiset;
                 case 1018567270:  // sortedMultiset
-                    return sortedMultiset;
+                    return this.sortedMultiset;
                 case 420048955:  // collectionInterface
-                    return collectionInterface;
+                    return this.collectionInterface;
                 case -259084741:  // listInterface
-                    return listInterface;
+                    return this.listInterface;
                 case 2042011383:  // setInterface
-                    return setInterface;
+                    return this.setInterface;
                 case 1019335252:  // sortedSetInterface
-                    return sortedSetInterface;
+                    return this.sortedSetInterface;
                 case 651439933:  // mapInterface
-                    return mapInterface;
+                    return this.mapInterface;
                 case -371236198:  // sortedMapInterface
-                    return sortedMapInterface;
+                    return this.sortedMapInterface;
                 case 2068077860:  // biMapInterface
-                    return biMapInterface;
+                    return this.biMapInterface;
                 case -1415579914:  // multimapInterface
-                    return multimapInterface;
+                    return this.multimapInterface;
                 case 1576080888:  // listMultimapInterface
-                    return listMultimapInterface;
+                    return this.listMultimapInterface;
                 case -630551884:  // setMultimapInterface
-                    return setMultimapInterface;
+                    return this.setMultimapInterface;
                 case -25008464:  // multisetInterface
-                    return multisetInterface;
+                    return this.multisetInterface;
                 case 271697267:  // sortedMultisetInterface
-                    return sortedMultisetInterface;
+                    return this.sortedMultisetInterface;
                 case -826400637:  // listWildExtendsT
-                    return listWildExtendsT;
+                    return this.listWildExtendsT;
                 case 789015706:  // listWildExtendsNumber
-                    return listWildExtendsNumber;
+                    return this.listWildExtendsNumber;
                 case 857377195:  // listWildExtendsComparable
-                    return listWildExtendsComparable;
+                    return this.listWildExtendsComparable;
                 case -844782009:  // setWildExtendsT
-                    return setWildExtendsT;
+                    return this.setWildExtendsT;
                 case -1417617066:  // setWildExtendsNumber
-                    return setWildExtendsNumber;
+                    return this.setWildExtendsNumber;
                 case 940785767:  // setWildExtendsComparable
-                    return setWildExtendsComparable;
+                    return this.setWildExtendsComparable;
                 case -436161122:  // listWildBuilder1
-                    return listWildBuilder1;
+                    return this.listWildBuilder1;
                 case -436161121:  // listWildBuilder2
-                    return listWildBuilder2;
+                    return this.listWildBuilder2;
                 case -2009039524:  // mapWildBuilder1
-                    return mapWildBuilder1;
+                    return this.mapWildBuilder1;
                 case 1463967033:  // mapWildKey
-                    return mapWildKey;
+                    return this.mapWildKey;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

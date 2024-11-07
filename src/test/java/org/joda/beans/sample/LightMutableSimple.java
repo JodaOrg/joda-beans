@@ -139,8 +139,8 @@ public final class LightMutableSimple implements Bean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             LightMutableSimple other = (LightMutableSimple) obj;
-            return (getNumber() == other.getNumber()) &&
-                    JodaBeanUtils.equal(getText(), other.getText());
+            return (this.getNumber() == other.getNumber()) &&
+                    JodaBeanUtils.equal(this.getText(), other.getText());
         }
         return false;
     }

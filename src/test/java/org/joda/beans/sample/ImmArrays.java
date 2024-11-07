@@ -156,10 +156,10 @@ public final class ImmArrays implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmArrays other = (ImmArrays) obj;
-            return JodaBeanUtils.equal(intArray, other.intArray) &&
-                    JodaBeanUtils.equal(longArray, other.longArray) &&
-                    JodaBeanUtils.equal(doubleArray, other.doubleArray) &&
-                    JodaBeanUtils.equal(booleanArray, other.booleanArray);
+            return JodaBeanUtils.equal(this.intArray, other.intArray) &&
+                    JodaBeanUtils.equal(this.longArray, other.longArray) &&
+                    JodaBeanUtils.equal(this.doubleArray, other.doubleArray) &&
+                    JodaBeanUtils.equal(this.booleanArray, other.booleanArray);
         }
         return false;
     }
@@ -236,13 +236,13 @@ public final class ImmArrays implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 537167786:  // intArray
-                    return intArray;
+                    return this.intArray;
                 case 100362557:  // longArray
-                    return longArray;
+                    return this.longArray;
                 case -1645494008:  // doubleArray
-                    return doubleArray;
+                    return this.doubleArray;
                 case -1066176751:  // booleanArray
-                    return booleanArray;
+                    return this.booleanArray;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -355,13 +355,13 @@ public final class ImmArrays implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 537167786:  // intArray
-                    return intArray;
+                    return this.intArray;
                 case 100362557:  // longArray
-                    return longArray;
+                    return this.longArray;
                 case -1645494008:  // doubleArray
-                    return doubleArray;
+                    return this.doubleArray;
                 case -1066176751:  // booleanArray
-                    return booleanArray;
+                    return this.booleanArray;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -193,10 +193,10 @@ public final class ImmTreeNode implements ImmutableBean{
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmTreeNode other = (ImmTreeNode) obj;
-            return JodaBeanUtils.equal(name, other.name) &&
-                    JodaBeanUtils.equal(getChild1(), other.getChild1()) &&
-                    JodaBeanUtils.equal(getChild2(), other.getChild2()) &&
-                    JodaBeanUtils.equal(child3, other.child3);
+            return JodaBeanUtils.equal(this.name, other.name) &&
+                    JodaBeanUtils.equal(this.getChild1(), other.getChild1()) &&
+                    JodaBeanUtils.equal(this.getChild2(), other.getChild2()) &&
+                    JodaBeanUtils.equal(this.child3, other.child3);
         }
         return false;
     }
@@ -284,15 +284,15 @@ public final class ImmTreeNode implements ImmutableBean{
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
                 case -1361400171:  // child1
-                    return child1;
+                    return this.child1;
                 case -1361400170:  // child2
-                    return child2;
+                    return this.child2;
                 case -1361400169:  // child3
-                    return child3;
+                    return this.child3;
                 case -95409190:  // childList
-                    return childList;
+                    return this.childList;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -417,15 +417,15 @@ public final class ImmTreeNode implements ImmutableBean{
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
                 case -1361400171:  // child1
-                    return child1;
+                    return this.child1;
                 case -1361400170:  // child2
-                    return child2;
+                    return this.child2;
                 case -1361400169:  // child3
-                    return child3;
+                    return this.child3;
                 case -95409190:  // childList
-                    return childList;
+                    return this.childList;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

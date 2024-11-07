@@ -120,7 +120,7 @@ public final class ImmDocumentationHolder<T>
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDocumentationHolder<?> other = (ImmDocumentationHolder<?>) obj;
-            return JodaBeanUtils.equal(documentation, other.documentation);
+            return JodaBeanUtils.equal(this.documentation, other.documentation);
         }
         return false;
     }
@@ -176,7 +176,7 @@ public final class ImmDocumentationHolder<T>
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
-                    return documentation;
+                    return this.documentation;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -255,7 +255,7 @@ public final class ImmDocumentationHolder<T>
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
-                    return documentation;
+                    return this.documentation;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

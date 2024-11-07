@@ -315,14 +315,14 @@ public final class Person extends DirectBean implements IPerson,
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Person other = (Person) obj;
-            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname()) &&
-                    (getNumberOfCars() == other.getNumberOfCars()) &&
-                    JodaBeanUtils.equal(getAddressList(), other.getAddressList()) &&
-                    JodaBeanUtils.equal(getOtherAddressMap(), other.getOtherAddressMap()) &&
-                    JodaBeanUtils.equal(getAddressesList(), other.getAddressesList()) &&
-                    JodaBeanUtils.equal(getMainAddress(), other.getMainAddress()) &&
-                    JodaBeanUtils.equal(getExtensions(), other.getExtensions());
+            return JodaBeanUtils.equal(this.getForename(), other.getForename()) &&
+                    JodaBeanUtils.equal(this.getSurname(), other.getSurname()) &&
+                    (this.getNumberOfCars() == other.getNumberOfCars()) &&
+                    JodaBeanUtils.equal(this.getAddressList(), other.getAddressList()) &&
+                    JodaBeanUtils.equal(this.getOtherAddressMap(), other.getOtherAddressMap()) &&
+                    JodaBeanUtils.equal(this.getAddressesList(), other.getAddressesList()) &&
+                    JodaBeanUtils.equal(this.getMainAddress(), other.getMainAddress()) &&
+                    JodaBeanUtils.equal(this.getExtensions(), other.getExtensions());
         }
         return false;
     }
@@ -434,21 +434,21 @@ public final class Person extends DirectBean implements IPerson,
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
-                    return forename;
+                    return this.forename;
                 case -1852993317:  // surname
-                    return surname;
+                    return this.surname;
                 case 926656063:  // numberOfCars
-                    return numberOfCars;
+                    return this.numberOfCars;
                 case -1377524046:  // addressList
-                    return addressList;
+                    return this.addressList;
                 case 1368089592:  // otherAddressMap
-                    return otherAddressMap;
+                    return this.otherAddressMap;
                 case -226885792:  // addressesList
-                    return addressesList;
+                    return this.addressesList;
                 case -2032731141:  // mainAddress
-                    return mainAddress;
+                    return this.mainAddress;
                 case -1809421292:  // extensions
-                    return extensions;
+                    return this.extensions;
             }
             return super.metaPropertyGet(propertyName);
         }

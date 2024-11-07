@@ -96,7 +96,7 @@ public class NoClone
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             NoClone other = (NoClone) obj;
-            return JodaBeanUtils.equal(getDummyProperty(), other.getDummyProperty());
+            return JodaBeanUtils.equal(this.getDummyProperty(), other.getDummyProperty());
         }
         return false;
     }
@@ -157,7 +157,7 @@ public class NoClone
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -184213859:  // dummyProperty
-                    return dummyProperty;
+                    return this.dummyProperty;
             }
             return super.metaPropertyGet(propertyName);
         }

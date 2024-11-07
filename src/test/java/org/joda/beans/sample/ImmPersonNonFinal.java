@@ -132,8 +132,8 @@ public class ImmPersonNonFinal implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPersonNonFinal other = (ImmPersonNonFinal) obj;
-            return JodaBeanUtils.equal(forename, other.forename) &&
-                    JodaBeanUtils.equal(surname, other.surname);
+            return JodaBeanUtils.equal(this.forename, other.forename) &&
+                    JodaBeanUtils.equal(this.surname, other.surname);
         }
         return false;
     }
@@ -209,11 +209,11 @@ public class ImmPersonNonFinal implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
-                    return forename;
+                    return this.forename;
                 case -1852993317:  // surname
-                    return surname;
+                    return this.surname;
                 case 96511:  // age
-                    return age;
+                    return this.age;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -312,9 +312,9 @@ public class ImmPersonNonFinal implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
-                    return forename;
+                    return this.forename;
                 case -1852993317:  // surname
-                    return surname;
+                    return this.surname;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

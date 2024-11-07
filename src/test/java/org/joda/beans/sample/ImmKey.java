@@ -116,7 +116,7 @@ public final class ImmKey implements ImmutableBean, IKey, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmKey other = (ImmKey) obj;
-            return JodaBeanUtils.equal(name, other.name);
+            return JodaBeanUtils.equal(this.name, other.name);
         }
         return false;
     }
@@ -169,7 +169,7 @@ public final class ImmKey implements ImmutableBean, IKey, Serializable {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -246,7 +246,7 @@ public final class ImmKey implements ImmutableBean, IKey, Serializable {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -202,14 +202,14 @@ public final class ImmClone implements ImmutableBean, Serializable{
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmClone other = (ImmClone) obj;
-            return JodaBeanUtils.equal(date, other.date) &&
-                    JodaBeanUtils.equal(array1, other.array1) &&
-                    JodaBeanUtils.equal(array2, other.array2) &&
-                    JodaBeanUtils.equal(array3, other.array3) &&
-                    JodaBeanUtils.equal(dateNullable, other.dateNullable) &&
-                    JodaBeanUtils.equal(array1Nullable, other.array1Nullable) &&
-                    JodaBeanUtils.equal(array2Nullable, other.array2Nullable) &&
-                    JodaBeanUtils.equal(array3Nullable, other.array3Nullable);
+            return JodaBeanUtils.equal(this.date, other.date) &&
+                    JodaBeanUtils.equal(this.array1, other.array1) &&
+                    JodaBeanUtils.equal(this.array2, other.array2) &&
+                    JodaBeanUtils.equal(this.array3, other.array3) &&
+                    JodaBeanUtils.equal(this.dateNullable, other.dateNullable) &&
+                    JodaBeanUtils.equal(this.array1Nullable, other.array1Nullable) &&
+                    JodaBeanUtils.equal(this.array2Nullable, other.array2Nullable) &&
+                    JodaBeanUtils.equal(this.array3Nullable, other.array3Nullable);
         }
         return false;
     }
@@ -318,21 +318,21 @@ public final class ImmClone implements ImmutableBean, Serializable{
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3076014:  // date
-                    return date;
+                    return this.date;
                 case -1409165064:  // array1
-                    return array1;
+                    return this.array1;
                 case -1409165063:  // array2
-                    return array2;
+                    return this.array2;
                 case -1409165062:  // array3
-                    return array3;
+                    return this.array3;
                 case 781387055:  // dateNullable
-                    return dateNullable;
+                    return this.dateNullable;
                 case 221578361:  // array1Nullable
-                    return array1Nullable;
+                    return this.array1Nullable;
                 case -1585876102:  // array2Nullable
-                    return array2Nullable;
+                    return this.array2Nullable;
                 case 901636731:  // array3Nullable
-                    return array3Nullable;
+                    return this.array3Nullable;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -493,21 +493,21 @@ public final class ImmClone implements ImmutableBean, Serializable{
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3076014:  // date
-                    return date;
+                    return this.date;
                 case -1409165064:  // array1
-                    return array1;
+                    return this.array1;
                 case -1409165063:  // array2
-                    return array2;
+                    return this.array2;
                 case -1409165062:  // array3
-                    return array3;
+                    return this.array3;
                 case 781387055:  // dateNullable
-                    return dateNullable;
+                    return this.dateNullable;
                 case 221578361:  // array1Nullable
-                    return array1Nullable;
+                    return this.array1Nullable;
                 case -1585876102:  // array2Nullable
-                    return array2Nullable;
+                    return this.array2Nullable;
                 case 901636731:  // array3Nullable
-                    return array3Nullable;
+                    return this.array3Nullable;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

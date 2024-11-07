@@ -192,10 +192,10 @@ public final class UserAccount implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             UserAccount other = (UserAccount) obj;
-            return JodaBeanUtils.equal(getUserId(), other.getUserId()) &&
-                    JodaBeanUtils.equal(getEmailAddress(), other.getEmailAddress()) &&
-                    (getNumberLogins() == other.getNumberLogins()) &&
-                    JodaBeanUtils.equal(getLastLogin(), other.getLastLogin());
+            return JodaBeanUtils.equal(this.getUserId(), other.getUserId()) &&
+                    JodaBeanUtils.equal(this.getEmailAddress(), other.getEmailAddress()) &&
+                    (this.getNumberLogins() == other.getNumberLogins()) &&
+                    JodaBeanUtils.equal(this.getLastLogin(), other.getLastLogin());
         }
         return false;
     }
@@ -272,13 +272,13 @@ public final class UserAccount implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -836030906:  // userId
-                    return userId;
+                    return this.userId;
                 case -1070931784:  // emailAddress
-                    return emailAddress;
+                    return this.emailAddress;
                 case 850160339:  // numberLogins
-                    return numberLogins;
+                    return this.numberLogins;
                 case 1995610739:  // lastLogin
-                    return lastLogin;
+                    return this.lastLogin;
             }
             return super.metaPropertyGet(propertyName);
         }

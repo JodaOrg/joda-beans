@@ -113,7 +113,7 @@ public final class TupleSub<X extends Number, Y extends Number, Z> extends Tuple
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             TupleSub<?, ?, ?> other = (TupleSub<?, ?, ?>) obj;
-            return JodaBeanUtils.equal(getName(), other.getName()) &&
+            return JodaBeanUtils.equal(this.getName(), other.getName()) &&
                     super.equals(obj);
         }
         return false;
@@ -181,7 +181,7 @@ public final class TupleSub<X extends Number, Y extends Number, Z> extends Tuple
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }

@@ -118,8 +118,8 @@ public final class LightImmutableGeneric<T extends Number> implements ImmutableB
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             LightImmutableGeneric<?> other = (LightImmutableGeneric<?>) obj;
-            return JodaBeanUtils.equal(number, other.number) &&
-                    JodaBeanUtils.equal(list, other.list);
+            return JodaBeanUtils.equal(this.number, other.number) &&
+                    JodaBeanUtils.equal(this.list, other.list);
         }
         return false;
     }

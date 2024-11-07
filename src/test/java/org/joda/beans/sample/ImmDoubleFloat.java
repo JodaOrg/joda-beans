@@ -108,8 +108,8 @@ public final class ImmDoubleFloat implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDoubleFloat other = (ImmDoubleFloat) obj;
-            return JodaBeanUtils.equal(a, other.a) &&
-                    JodaBeanUtils.equal(b, other.b);
+            return JodaBeanUtils.equal(this.a, other.a) &&
+                    JodaBeanUtils.equal(this.b, other.b);
         }
         return false;
     }
@@ -170,9 +170,9 @@ public final class ImmDoubleFloat implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97:  // a
-                    return a;
+                    return this.a;
                 case 98:  // b
-                    return b;
+                    return this.b;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -261,9 +261,9 @@ public final class ImmDoubleFloat implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97:  // a
-                    return a;
+                    return this.a;
                 case 98:  // b
-                    return b;
+                    return this.b;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

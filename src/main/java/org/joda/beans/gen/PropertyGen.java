@@ -80,7 +80,7 @@ class PropertyGen {
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
         }
-        list.add("\t\t\t\t\treturn " + data.getMetaFieldName() + ";");
+        list.add("\t\t\t\t\treturn this." + data.getMetaFieldName() + ";");
         return list;
     }
 
@@ -204,7 +204,7 @@ class PropertyGen {
         if (data.getAlias() != null) {
             list.add("\t\t\t\tcase " + data.getAlias().hashCode() + ":  // " + data.getAlias() + " (alias)");
         }
-        list.add("\t\t\t\t\treturn " + generateBuilderFieldName() + ";");
+        list.add("\t\t\t\t\treturn this." + generateBuilderFieldName() + ";");
         return list;
     }
 

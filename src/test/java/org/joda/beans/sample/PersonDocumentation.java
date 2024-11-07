@@ -97,7 +97,7 @@ public class PersonDocumentation extends Documentation<Person> {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             PersonDocumentation other = (PersonDocumentation) obj;
-            return JodaBeanUtils.equal(getName(), other.getName()) &&
+            return JodaBeanUtils.equal(this.getName(), other.getName()) &&
                     super.equals(obj);
         }
         return false;
@@ -161,7 +161,7 @@ public class PersonDocumentation extends Documentation<Person> {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }

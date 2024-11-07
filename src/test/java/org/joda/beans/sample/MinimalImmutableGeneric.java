@@ -158,9 +158,9 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MinimalImmutableGeneric<?> other = (MinimalImmutableGeneric<?>) obj;
-            return JodaBeanUtils.equal(number, other.number) &&
-                    JodaBeanUtils.equal(list, other.list) &&
-                    JodaBeanUtils.equal(map, other.map);
+            return JodaBeanUtils.equal(this.number, other.number) &&
+                    JodaBeanUtils.equal(this.list, other.list) &&
+                    JodaBeanUtils.equal(this.map, other.map);
         }
         return false;
     }
@@ -217,11 +217,11 @@ public final class MinimalImmutableGeneric<T extends Number> implements Immutabl
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case 3322014:  // list
-                    return list;
+                    return this.list;
                 case 107868:  // map
-                    return map;
+                    return this.map;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

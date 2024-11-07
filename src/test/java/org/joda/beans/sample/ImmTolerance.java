@@ -129,8 +129,8 @@ public final class ImmTolerance implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmTolerance other = (ImmTolerance) obj;
-            return JodaBeanUtils.equal(value, other.value) &&
-                    JodaBeanUtils.equal(array, other.array);
+            return JodaBeanUtils.equal(this.value, other.value) &&
+                    JodaBeanUtils.equal(this.array, other.array);
         }
         return false;
     }
@@ -195,9 +195,9 @@ public final class ImmTolerance implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
                 case 93090393:  // array
-                    return array;
+                    return this.array;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -286,9 +286,9 @@ public final class ImmTolerance implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
                 case 93090393:  // array
-                    return array;
+                    return this.array;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -265,14 +265,14 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MinimalImmutable other = (MinimalImmutable) obj;
-            return (number == other.number) &&
-                    (flag == other.flag) &&
-                    JodaBeanUtils.equal(street, other.street) &&
-                    JodaBeanUtils.equal(town, other.town) &&
-                    JodaBeanUtils.equal(city, other.city) &&
-                    JodaBeanUtils.equal(owner, other.owner) &&
-                    JodaBeanUtils.equal(list, other.list) &&
-                    JodaBeanUtils.equal(currency, other.currency);
+            return (this.number == other.number) &&
+                    (this.flag == other.flag) &&
+                    JodaBeanUtils.equal(this.street, other.street) &&
+                    JodaBeanUtils.equal(this.town, other.town) &&
+                    JodaBeanUtils.equal(this.city, other.city) &&
+                    JodaBeanUtils.equal(this.owner, other.owner) &&
+                    JodaBeanUtils.equal(this.list, other.list) &&
+                    JodaBeanUtils.equal(this.currency, other.currency);
         }
         return false;
     }
@@ -349,22 +349,22 @@ public final class MinimalImmutable implements ImmutableBean, Serializable {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1034364087:  // number
-                    return number;
+                    return this.number;
                 case 3145580:  // flag
-                    return flag;
+                    return this.flag;
                 case -891990013:  // street
-                    return street;
+                    return this.street;
                 case 3566226:  // town
-                    return town;
+                    return this.town;
                 case 3053931:  // city
                 case 106748167:  // place (alias)
-                    return city;
+                    return this.city;
                 case 106164915:  // owner
-                    return owner;
+                    return this.owner;
                 case 3322014:  // list
-                    return list;
+                    return this.list;
                 case 575402001:  // currency
-                    return currency;
+                    return this.currency;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

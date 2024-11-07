@@ -152,9 +152,9 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             TupleImmutable<?, ?, ?> other = (TupleImmutable<?, ?, ?>) obj;
-            return JodaBeanUtils.equal(first, other.first) &&
-                    JodaBeanUtils.equal(second, other.second) &&
-                    JodaBeanUtils.equal(third, other.third);
+            return JodaBeanUtils.equal(this.first, other.first) &&
+                    JodaBeanUtils.equal(this.second, other.second) &&
+                    JodaBeanUtils.equal(this.third, other.third);
         }
         return false;
     }
@@ -230,11 +230,11 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
                 case 110331239:  // third
-                    return third;
+                    return this.third;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -339,11 +339,11 @@ public final class TupleImmutable<X, Y, Z extends Address> implements ImmutableB
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
                 case 110331239:  // third
-                    return third;
+                    return this.third;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -111,7 +111,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             GenericSubWrapper<?> other = (GenericSubWrapper<?>) obj;
-            return JodaBeanUtils.equal(getName(), other.getName()) &&
+            return JodaBeanUtils.equal(this.getName(), other.getName()) &&
                     super.equals(obj);
         }
         return false;
@@ -177,7 +177,7 @@ public class GenericSubWrapper<T extends Address> extends Wrapper<T> {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }

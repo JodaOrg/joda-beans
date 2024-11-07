@@ -118,8 +118,8 @@ public final class LightImmutableSimple implements ImmutableBean, Serializable {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             LightImmutableSimple other = (LightImmutableSimple) obj;
-            return (number == other.number) &&
-                    JodaBeanUtils.equal(text, other.text);
+            return (this.number == other.number) &&
+                    JodaBeanUtils.equal(this.text, other.text);
         }
         return false;
     }

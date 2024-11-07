@@ -289,13 +289,13 @@ public class DoubleGenericsWithExtendsSuperOneGeneric<T extends Serializable, U 
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             DoubleGenericsWithExtendsSuperOneGeneric<?, ?> other = (DoubleGenericsWithExtendsSuperOneGeneric<?, ?>) obj;
-            return JodaBeanUtils.equal(getNormalType(), other.getNormalType()) &&
-                    JodaBeanUtils.equal(getTypeT(), other.getTypeT()) &&
-                    JodaBeanUtils.equal(getTypeU(), other.getTypeU()) &&
-                    JodaBeanUtils.equal(getTypeTList(), other.getTypeTList()) &&
-                    JodaBeanUtils.equal(getTypeUList(), other.getTypeUList()) &&
-                    JodaBeanUtils.equal(getTypeTArray(), other.getTypeTArray()) &&
-                    JodaBeanUtils.equal(getTypeUArray(), other.getTypeUArray()) &&
+            return JodaBeanUtils.equal(this.getNormalType(), other.getNormalType()) &&
+                    JodaBeanUtils.equal(this.getTypeT(), other.getTypeT()) &&
+                    JodaBeanUtils.equal(this.getTypeU(), other.getTypeU()) &&
+                    JodaBeanUtils.equal(this.getTypeTList(), other.getTypeTList()) &&
+                    JodaBeanUtils.equal(this.getTypeUList(), other.getTypeUList()) &&
+                    JodaBeanUtils.equal(this.getTypeTArray(), other.getTypeTArray()) &&
+                    JodaBeanUtils.equal(this.getTypeUArray(), other.getTypeUArray()) &&
                     super.equals(obj);
         }
         return false;
@@ -416,19 +416,19 @@ public class DoubleGenericsWithExtendsSuperOneGeneric<T extends Serializable, U 
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1255672639:  // normalType
-                    return normalType;
+                    return this.normalType;
                 case 110843994:  // typeT
-                    return typeT;
+                    return this.typeT;
                 case 110843995:  // typeU
-                    return typeU;
+                    return this.typeU;
                 case 508018712:  // typeTList
-                    return typeTList;
+                    return this.typeTList;
                 case 508942233:  // typeUList
-                    return typeUList;
+                    return this.typeUList;
                 case -1441181153:  // typeTArray
-                    return typeTArray;
+                    return this.typeTArray;
                 case -1412552002:  // typeUArray
-                    return typeUArray;
+                    return this.typeUArray;
             }
             return super.metaPropertyGet(propertyName);
         }

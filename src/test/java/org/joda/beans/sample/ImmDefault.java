@@ -116,7 +116,7 @@ public final class ImmDefault implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDefault other = (ImmDefault) obj;
-            return JodaBeanUtils.equal(value, other.value);
+            return JodaBeanUtils.equal(this.value, other.value);
         }
         return false;
     }
@@ -169,7 +169,7 @@ public final class ImmDefault implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -247,7 +247,7 @@ public final class ImmDefault implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

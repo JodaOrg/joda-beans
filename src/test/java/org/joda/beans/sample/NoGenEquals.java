@@ -143,7 +143,7 @@ public final class NoGenEquals extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }

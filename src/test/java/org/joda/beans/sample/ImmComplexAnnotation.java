@@ -125,7 +125,7 @@ public final class ImmComplexAnnotation
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmComplexAnnotation other = (ImmComplexAnnotation) obj;
-            return JodaBeanUtils.equal(value, other.value);
+            return JodaBeanUtils.equal(this.value, other.value);
         }
         return false;
     }
@@ -182,7 +182,7 @@ public final class ImmComplexAnnotation
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -259,7 +259,7 @@ public final class ImmComplexAnnotation
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

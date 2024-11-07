@@ -119,7 +119,7 @@ public class MutableBaseBean implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MutableBaseBean other = (MutableBaseBean) obj;
-            return JodaBeanUtils.equal(getBaseBeanString(), other.getBaseBeanString());
+            return JodaBeanUtils.equal(this.getBaseBeanString(), other.getBaseBeanString());
         }
         return false;
     }
@@ -180,7 +180,7 @@ public class MutableBaseBean implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 788344210:  // baseBeanString
-                    return baseBeanString;
+                    return this.baseBeanString;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -258,7 +258,7 @@ public class MutableBaseBean implements Bean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 788344210:  // baseBeanString
-                    return baseBeanString;
+                    return this.baseBeanString;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

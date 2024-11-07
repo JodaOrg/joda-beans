@@ -142,8 +142,8 @@ public class GenericUnionType<T extends Number & Serializable & Cloneable> imple
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             GenericUnionType<?> other = (GenericUnionType<?>) obj;
-            return JodaBeanUtils.equal(getName(), other.getName()) &&
-                    JodaBeanUtils.equal(getValue(), other.getValue());
+            return JodaBeanUtils.equal(this.getName(), other.getName()) &&
+                    JodaBeanUtils.equal(this.getValue(), other.getValue());
         }
         return false;
     }
@@ -215,9 +215,9 @@ public class GenericUnionType<T extends Number & Serializable & Cloneable> imple
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }

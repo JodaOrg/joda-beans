@@ -113,7 +113,7 @@ public final class ImmMappedKey
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmMappedKey other = (ImmMappedKey) obj;
-            return JodaBeanUtils.equal(data, other.data);
+            return JodaBeanUtils.equal(this.data, other.data);
         }
         return false;
     }
@@ -167,7 +167,7 @@ public final class ImmMappedKey
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3076010:  // data
-                    return data;
+                    return this.data;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -244,7 +244,7 @@ public final class ImmMappedKey
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3076010:  // data
-                    return data;
+                    return this.data;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -154,8 +154,8 @@ public class MutableListNonFinalBean implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MutableListNonFinalBean other = (MutableListNonFinalBean) obj;
-            return JodaBeanUtils.equal(getStrings(), other.getStrings()) &&
-                    JodaBeanUtils.equal(getNumberMap(), other.getNumberMap());
+            return JodaBeanUtils.equal(this.getStrings(), other.getStrings()) &&
+                    JodaBeanUtils.equal(this.getNumberMap(), other.getNumberMap());
         }
         return false;
     }
@@ -226,9 +226,9 @@ public class MutableListNonFinalBean implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1881759102:  // strings
-                    return strings;
+                    return this.strings;
                 case 1649910099:  // numberMap
-                    return numberMap;
+                    return this.numberMap;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -322,9 +322,9 @@ public class MutableListNonFinalBean implements Bean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1881759102:  // strings
-                    return strings;
+                    return this.strings;
                 case 1649910099:  // numberMap
-                    return numberMap;
+                    return this.numberMap;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }
