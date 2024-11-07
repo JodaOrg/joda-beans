@@ -616,12 +616,6 @@ class BeanParser {
                 return true;
             }
         }
-        for (var index = autoEndIndex; index < content.size(); index++) {
-            var line = content.get(index).trim();
-            if (line.startsWith("public ") && line.endsWith(" clone() {")) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -632,23 +626,11 @@ class BeanParser {
                 return true;
             }
         }
-        for (var index = autoEndIndex; index < content.size(); index++) {
-            var line = content.get(index).trim();
-            if (line.equals("public int hashCode() {") || (line.startsWith("public boolean equals(") && line.endsWith(") {"))) {
-                return true;
-            }
-        }
         return false;
     }
 
     private boolean parseManualToStringCode(int defLine) {
         for (var index = defLine; index < autoStartIndex; index++) {
-            var line = content.get(index).trim();
-            if (line.equals("public String toString() {")) {
-                return true;
-            }
-        }
-        for (var index = autoEndIndex; index < content.size(); index++) {
             var line = content.get(index).trim();
             if (line.equals("public String toString() {")) {
                 return true;

@@ -128,6 +128,16 @@ public final class PairManualInnerBuilder implements ImmutableBean {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(96);
+        buf.append("PairManualInnerBuilder{");
+        buf.append("first").append('=').append(JodaBeanUtils.toString(first)).append(',').append(' ');
+        buf.append("second").append('=').append(JodaBeanUtils.toString(second));
+        buf.append('}');
+        return buf.toString();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * The meta-bean for {@code PairManualInnerBuilder}.
