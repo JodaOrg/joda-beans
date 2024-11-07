@@ -28,7 +28,7 @@
   </organization>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/JodaOrg/joda-beans/issues</url>
+    <url>https://github.com/JodaOrg/joda-beans/issues/</url>
   </issueManagement>
   <scm>
     <connection>scm:git:https://github.com/JodaOrg/joda-beans.git</connection>
