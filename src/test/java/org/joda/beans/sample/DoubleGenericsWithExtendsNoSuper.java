@@ -62,6 +62,12 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
     /** The type U value. */
     @PropertyDefinition
     private U[] typeUArray;
+    /** The list of generic T as an array. */
+    @PropertyDefinition
+    private List<T>[] typeTArrayOfList;
+    /** The list of generic T as an array. */
+    @PropertyDefinition
+    private List<T>[][] typeTArray2dOfList;
 
     /**
      * Creates an instance.
@@ -278,6 +284,56 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the list of generic T as an array.
+     * @return the value of the property
+     */
+    public List<T>[] getTypeTArrayOfList() {
+        return typeTArrayOfList;
+    }
+
+    /**
+     * Sets the list of generic T as an array.
+     * @param typeTArrayOfList  the new value of the property
+     */
+    public void setTypeTArrayOfList(List<T>[] typeTArrayOfList) {
+        this.typeTArrayOfList = typeTArrayOfList;
+    }
+
+    /**
+     * Gets the the {@code typeTArrayOfList} property.
+     * @return the property, not null
+     */
+    public final Property<List<T>[]> typeTArrayOfList() {
+        return metaBean().typeTArrayOfList().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the list of generic T as an array.
+     * @return the value of the property
+     */
+    public List<T>[][] getTypeTArray2dOfList() {
+        return typeTArray2dOfList;
+    }
+
+    /**
+     * Sets the list of generic T as an array.
+     * @param typeTArray2dOfList  the new value of the property
+     */
+    public void setTypeTArray2dOfList(List<T>[][] typeTArray2dOfList) {
+        this.typeTArray2dOfList = typeTArray2dOfList;
+    }
+
+    /**
+     * Gets the the {@code typeTArray2dOfList} property.
+     * @return the property, not null
+     */
+    public final Property<List<T>[][]> typeTArray2dOfList() {
+        return metaBean().typeTArray2dOfList().createProperty(this);
+    }
+
+    //-----------------------------------------------------------------------
     @Override
     public DoubleGenericsWithExtendsNoSuper<T, U> clone() {
         return JodaBeanUtils.cloneAlways(this);
@@ -296,7 +352,9 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
                     JodaBeanUtils.equal(this.getTypeTList(), other.getTypeTList()) &&
                     JodaBeanUtils.equal(this.getTypeUList(), other.getTypeUList()) &&
                     JodaBeanUtils.equal(this.getTypeTArray(), other.getTypeTArray()) &&
-                    JodaBeanUtils.equal(this.getTypeUArray(), other.getTypeUArray());
+                    JodaBeanUtils.equal(this.getTypeUArray(), other.getTypeUArray()) &&
+                    JodaBeanUtils.equal(this.getTypeTArrayOfList(), other.getTypeTArrayOfList()) &&
+                    JodaBeanUtils.equal(this.getTypeTArray2dOfList(), other.getTypeTArray2dOfList());
         }
         return false;
     }
@@ -311,12 +369,14 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
         hash = hash * 31 + JodaBeanUtils.hashCode(getTypeUList());
         hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTArray());
         hash = hash * 31 + JodaBeanUtils.hashCode(getTypeUArray());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTArrayOfList());
+        hash = hash * 31 + JodaBeanUtils.hashCode(getTypeTArray2dOfList());
         return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder(256);
+        StringBuilder buf = new StringBuilder(320);
         buf.append("DoubleGenericsWithExtendsNoSuper{");
         int len = buf.length();
         toString(buf);
@@ -335,6 +395,8 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
         buf.append("typeUList").append('=').append(JodaBeanUtils.toString(getTypeUList())).append(',').append(' ');
         buf.append("typeTArray").append('=').append(JodaBeanUtils.toString(getTypeTArray())).append(',').append(' ');
         buf.append("typeUArray").append('=').append(JodaBeanUtils.toString(getTypeUArray())).append(',').append(' ');
+        buf.append("typeTArrayOfList").append('=').append(JodaBeanUtils.toString(getTypeTArrayOfList())).append(',').append(' ');
+        buf.append("typeTArray2dOfList").append('=').append(JodaBeanUtils.toString(getTypeTArray2dOfList())).append(',').append(' ');
     }
 
     //-----------------------------------------------------------------------
@@ -392,6 +454,18 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
         private final MetaProperty<U[]> typeUArray = (DirectMetaProperty) DirectMetaProperty.ofReadWrite(
                 this, "typeUArray", DoubleGenericsWithExtendsNoSuper.class, Object[].class);
         /**
+         * The meta-property for the {@code typeTArrayOfList} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<List<T>[]> typeTArrayOfList = DirectMetaProperty.ofReadWrite(
+                this, "typeTArrayOfList", DoubleGenericsWithExtendsNoSuper.class, (Class) List.class);
+        /**
+         * The meta-property for the {@code typeTArray2dOfList} property.
+         */
+        @SuppressWarnings({"unchecked", "rawtypes" })
+        private final MetaProperty<List<T>[][]> typeTArray2dOfList = DirectMetaProperty.ofReadWrite(
+                this, "typeTArray2dOfList", DoubleGenericsWithExtendsNoSuper.class, (Class) List.class);
+        /**
          * The meta-properties.
          */
         private final Map<String, MetaProperty<?>> metaPropertyMap$ = new DirectMetaPropertyMap(
@@ -402,7 +476,9 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
                 "typeTList",
                 "typeUList",
                 "typeTArray",
-                "typeUArray");
+                "typeUArray",
+                "typeTArrayOfList",
+                "typeTArray2dOfList");
 
         /**
          * Restricted constructor.
@@ -427,6 +503,10 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
                     return this.typeTArray;
                 case -1412552002:  // typeUArray
                     return this.typeUArray;
+                case -1497015788:  // typeTArrayOfList
+                    return this.typeTArrayOfList;
+                case -513079482:  // typeTArray2dOfList
+                    return this.typeTArray2dOfList;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -504,6 +584,22 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
             return typeUArray;
         }
 
+        /**
+         * The meta-property for the {@code typeTArrayOfList} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<List<T>[]> typeTArrayOfList() {
+            return typeTArrayOfList;
+        }
+
+        /**
+         * The meta-property for the {@code typeTArray2dOfList} property.
+         * @return the meta-property, not null
+         */
+        public final MetaProperty<List<T>[][]> typeTArray2dOfList() {
+            return typeTArray2dOfList;
+        }
+
         //-----------------------------------------------------------------------
         @Override
         protected Object propertyGet(Bean bean, String propertyName, boolean quiet) {
@@ -522,6 +618,10 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
                     return ((DoubleGenericsWithExtendsNoSuper<?, ?>) bean).getTypeTArray();
                 case -1412552002:  // typeUArray
                     return ((DoubleGenericsWithExtendsNoSuper<?, ?>) bean).getTypeUArray();
+                case -1497015788:  // typeTArrayOfList
+                    return ((DoubleGenericsWithExtendsNoSuper<?, ?>) bean).getTypeTArrayOfList();
+                case -513079482:  // typeTArray2dOfList
+                    return ((DoubleGenericsWithExtendsNoSuper<?, ?>) bean).getTypeTArray2dOfList();
             }
             return super.propertyGet(bean, propertyName, quiet);
         }
@@ -550,6 +650,12 @@ public class DoubleGenericsWithExtendsNoSuper<T extends Serializable, U extends 
                     return;
                 case -1412552002:  // typeUArray
                     ((DoubleGenericsWithExtendsNoSuper<T, U>) bean).setTypeUArray((U[]) newValue);
+                    return;
+                case -1497015788:  // typeTArrayOfList
+                    ((DoubleGenericsWithExtendsNoSuper<T, U>) bean).setTypeTArrayOfList((List<T>[]) newValue);
+                    return;
+                case -513079482:  // typeTArray2dOfList
+                    ((DoubleGenericsWithExtendsNoSuper<T, U>) bean).setTypeTArray2dOfList((List<T>[][]) newValue);
                     return;
             }
             super.propertySet(bean, propertyName, newValue, quiet);
