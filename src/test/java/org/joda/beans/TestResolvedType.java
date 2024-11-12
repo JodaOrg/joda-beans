@@ -44,8 +44,10 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.MidAbstractResult;
 import org.joda.beans.sample.Person;
+import org.joda.beans.sample.RiskLevel;
 import org.joda.beans.sample.SubDecimal;
 import org.joda.convert.StringConvert;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -180,12 +182,26 @@ public class TestResolvedType {
                 {ResolvedType.from(AbstractResult.class, CompanyAddressResult.class),
                         AbstractResult.class, List.of(ResolvedType.of(CompanyAddress.class)),
                         "org.joda.beans.sample.AbstractResult<org.joda.beans.sample.CompanyAddress>"},
+                // recursive generics
+                {ResolvedType.of(Enum.class),
+                        Enum.class, List.of(ResolvedType.ofFlat(Enum.class, Object.class)),
+                        "java.lang.Enum<java.lang.Enum<Object>>"},
+                {ResolvedType.from(Enum.class, Thread.State.class),  // also test nested classes
+                        Enum.class, List.of(ResolvedType.of(Thread.State.class)),
+                        "java.lang.Enum<java.lang.Thread$State>"},
+                // enums with class-per-constant
+                {ResolvedType.from(Enum.class, RiskLevel.class),
+                        Enum.class, List.of(ResolvedType.of(RiskLevel.class)),
+                        "java.lang.Enum<org.joda.beans.sample.RiskLevel>"},
+                {ResolvedType.from(Enum.class, RiskLevel.HIGH.getClass()),
+                        Enum.class, List.of(ResolvedType.of(RiskLevel.class)),
+                        "java.lang.Enum<org.joda.beans.sample.RiskLevel>"},
         };
     }
 
     @ParameterizedTest
     @MethodSource("data_resolvedTypes")
-    public void test_basics(
+    void test_basics(
             ResolvedType test,
             Class<?> expectedRawType,
             List<ResolvedType> expectedArgTypes,
@@ -226,7 +242,7 @@ public class TestResolvedType {
         } else {
             assertThatIllegalStateException()
                     .isThrownBy(() -> test.toComponentType())
-                    .withMessage("Unexpected type " + expectedToString + ", expected array type");
+                    .withMessage("Unable to get component type for " + expectedToString + ", type is not an array");
         }
         assertThat(test.toArrayType().toComponentType()).isEqualTo(test);
 
@@ -243,6 +259,7 @@ public class TestResolvedType {
                 {"String<"},
                 {"String>"},
                 {"String]"},
+                {"String[]]"},
                 {"List<>"},
                 {"List<<String"},
                 {"List<[]String"},
@@ -260,10 +277,16 @@ public class TestResolvedType {
 
     @ParameterizedTest
     @MethodSource("data_invalidParse")
-    public void test_invalidParse(String stringToParse) {
+    void test_invalidParse(String stringToParse) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ResolvedType.parse(stringToParse))
                 .withMessageMatching(
                         "Unable to parse ResolvedType( from '" + Pattern.quote(stringToParse) + "', invalid format|, class not found: .*)");
+    }
+
+    @Test
+    void test_enumSubclass() {
+        var test = ResolvedType.of(RiskLevel.HIGH.getClass());
+        assertThat(test.getRawType().getSuperclass()).isEqualTo(RiskLevel.class);
     }
 }

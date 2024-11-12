@@ -51,6 +51,9 @@ import org.joda.convert.ToString;
  * For example, {@code ResolvedType.of(List.class)} returns {@code List<Object>} unless a context
  * class is passed in that extends {@code List} and constrains the type, such as an imaginary class
  * {@code StringList implements List<String>}.
+ * <p>
+ * Note that special cases like anonymous classes, hidden classes and specialized enum subclasses
+ * are not resolved.
  * 
  * @since 3.0.0
  */
@@ -457,7 +460,7 @@ public final class ResolvedType {
     }
 
     private IllegalStateException invalidArrayType() {
-        return new IllegalStateException("Unexpected type " + this + ", expected array type");
+        return new IllegalStateException("Unable to get component type for " + this + ", type is not an array");
     }
 
     /**
@@ -521,7 +524,7 @@ public final class ResolvedType {
         if (arguments.isEmpty()) {
             return shortenedClassName + suffix;
         } else {
-            var builder = new StringBuilder().append(shortenedClassName).append('<');
+            var builder = new StringBuilder(shortenedClassName).append('<');
             for (int i = 0; i < arguments.size(); i++) {
                 if (i > 0) {
                     builder.append(", ");
