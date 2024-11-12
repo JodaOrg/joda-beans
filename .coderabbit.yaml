@@ -27,14 +27,14 @@ reviews:
         - Review code using Java 21 standards, taking into account the rules defined by `src/main/checkstyle/checkstyle.xml`.
         - Validate that code indentation uses spaces, not tabs, with an indent of multiple of 4.
         - Validate that immutable local variables are not annotated with `final` unless the variable is required for use in an inner class.
-        - Allow use of `var` keyword when value is a cast `null`.
+        - Favour use of `var` keyword for type declarations. `var` may also be used when the value is a cast `null`.
         - Use a coding standard where multi-line expressions have operators and tenary separators at the end of line.
         - Propose changes that only use the Java 21 API, not the API of Guava.
         - The pattern matching `instanceof` expression safely handles `null`, returning `false`.
     - path: '**/main/java/**/*.java'
       instructions: |
         - This project is mature and must provide a stable backwards-compatible public Java API.
-        - In the 'Summary by CodeRabbit' section, you must always provide a list of up to 25 changes to the public Java API that will affect end users.
+        - In the 'Walkthrough' section, you must always provide a list of up to 25 changes to the public Java API that will affect end users.
           If there are no changes, you must explicitly state that there are no changes to the public Java API in this PR.
           The public Java API is defined as public and protected methods on public classes, plus the file `module-info.java`.
           Provide the list by deeply analysing code flow, which incudes analysing code flow through private methods and calls to Guava and Java 21.
@@ -51,6 +51,7 @@ reviews:
         - Correctness of test assertions
         - Test coverage of edge cases
         - Clear test naming and documentation
+        - Encourage test methods to be package-scoped where possible
         - Be more lenient with code style and minor optimisations
   abort_on_close: true
   auto_review:
