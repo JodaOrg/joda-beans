@@ -16,7 +16,6 @@
 package org.joda.beans.ser.json;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
@@ -120,18 +119,14 @@ class JodaBeanSimpleJsonWalker {
      * @throws IOException if an error occurs
      */
     void walk(Bean bean, Appendable output) throws IOException {
-        try {
-            this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
-            walkObject(ResolvedType.OBJECT, "", bean);
-            output.append(settings.getNewLine());
-        } catch (UncheckedIOException ex) {
-            throw ex.getCause();
-        }
+        this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
+        walkObject(ResolvedType.OBJECT, "", bean);
+        output.append(settings.getNewLine());
     }
 
     //-----------------------------------------------------------------------
     // walk an object, by determining the runtime type
-    private void walkObject(ResolvedType declaredType, String propertyName, Object value) {
+    private void walkObject(ResolvedType declaredType, String propertyName, Object value) throws IOException {
         if (value == null) {
             output.writeNull();
         } else {
@@ -141,7 +136,8 @@ class JodaBeanSimpleJsonWalker {
     }
 
     //-------------------------------------------------------------------------
-    private void writeBean(ResolvedType declaredType, String propertyName, Bean bean) {
+    private void writeBean(ResolvedType declaredType, String propertyName, Bean bean) throws IOException {
+        // check for Joda-Convert cannot be in ClassValue as it relies on the settings
         if (settings.getConverter().isConvertible(bean.getClass())) {
             writeJodaConvert(declaredType, propertyName, bean);
         } else {
@@ -151,11 +147,9 @@ class JodaBeanSimpleJsonWalker {
         }
     }
 
-    private void writeBeanProperties(ResolvedType declaredType, String propertyName, Bean bean) {
+    private void writeBeanProperties(ResolvedType declaredType, String propertyName, Bean bean) throws IOException {
         for (var metaProperty : bean.metaBean().metaPropertyIterable()) {
-            // checking for style.isReadable() is redundant, as isSerializable()/isDerived() cover the same check
-            if (metaProperty.style().isSerializable() ||
-                    (metaProperty.style().isDerived() && settings.isIncludeDerived())) {
+            if (settings.isSerialized(metaProperty)) {
                 var value = metaProperty.get(bean);
                 if (value != null) {
                     var resolvedType = ResolvedType.from(metaProperty.propertyGenericType(), bean.getClass());
@@ -167,7 +161,7 @@ class JodaBeanSimpleJsonWalker {
     }
 
     //-------------------------------------------------------------------------
-    private void writeArray(ResolvedType declaredType, String propertyName, Object[] array) {
+    private void writeArray(ResolvedType declaredType, String propertyName, Object[] array) throws IOException {
         var componentType = declaredType.toComponentType();
         output.writeArrayStart();
         for (var item : array) {
@@ -177,7 +171,7 @@ class JodaBeanSimpleJsonWalker {
         output.writeArrayEnd();
     }
 
-    private void writePrimitiveArray(ResolvedType declaredType, String propertyName, Object array) {
+    private void writePrimitiveArray(ResolvedType declaredType, String propertyName, Object array) throws IOException {
         var componentType = declaredType.toComponentType();
         var handler = LOOKUP.get(componentType.getRawType());
         var arrayLength = Array.getLength(array);
@@ -189,7 +183,7 @@ class JodaBeanSimpleJsonWalker {
         output.writeArrayEnd();
     }
 
-    private <T> void writeCollection(ResolvedType declaredType, String propertyName, Collection<T> coll) {
+    private <T> void writeCollection(ResolvedType declaredType, String propertyName, Collection<T> coll) throws IOException {
         var itemType = declaredType.getArgumentOrDefault(0);
         output.writeArrayStart();
         for (var item : coll) {
@@ -199,7 +193,11 @@ class JodaBeanSimpleJsonWalker {
         output.writeArrayEnd();
     }
 
-    private <K, V> void writeMap(ResolvedType declaredType, String propertyName, Collection<Map.Entry<K, V>> mapEntries) {
+    private <K, V> void writeMap(
+            ResolvedType declaredType,
+            String propertyName,
+            Collection<Map.Entry<K, V>> mapEntries) throws IOException {
+
         var keyType = declaredType.getArgumentOrDefault(0);
         var valueType = declaredType.getArgumentOrDefault(1);
         // converter based on the declared type if possible, else based on the runtime type
@@ -225,7 +223,7 @@ class JodaBeanSimpleJsonWalker {
                 "Unable to write property '" + propertyName + "', map key must not be null");
     }
 
-    private void writeDouble(Double val) {
+    private void writeDouble(Double val) throws IOException {
         if (Double.isNaN(val)) {
             output.writeNull();
         } else {
@@ -233,7 +231,7 @@ class JodaBeanSimpleJsonWalker {
         }
     }
 
-    private void writeFloat(Float val) {
+    private void writeFloat(Float val) throws IOException {
         if (Float.isNaN(val)) {
             output.writeNull();
         } else {
@@ -241,7 +239,7 @@ class JodaBeanSimpleJsonWalker {
         }
     }
 
-    private void writeJodaConvert(ResolvedType declaredType, String propertyName, Object value) {
+    private void writeJodaConvert(ResolvedType declaredType, String propertyName, Object value) throws IOException {
         var realType = value.getClass();
         try {
             var converted = settings.getConverter().convertToString(value);
@@ -263,9 +261,18 @@ class JodaBeanSimpleJsonWalker {
 
     //-------------------------------------------------------------------------
     private static interface JsonHandler<T> {
-        public abstract void handle(JodaBeanSimpleJsonWalker walker, ResolvedType declaredType, String propertyName, T obj);
+        public abstract void handle(
+                JodaBeanSimpleJsonWalker walker,
+                ResolvedType declaredType,
+                String propertyName,
+                T obj) throws IOException;
 
-        public default void handleProperty(JodaBeanSimpleJsonWalker walker, ResolvedType declaredType, String propertyName, T obj) {
+        public default void handleProperty(
+                JodaBeanSimpleJsonWalker walker,
+                ResolvedType declaredType,
+                String propertyName,
+                T obj) throws IOException {
+
             walker.output.writeObjectKey(propertyName);
             handle(walker, declaredType, propertyName, obj);
         }
@@ -281,7 +288,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                Optional<?> opt) {
+                Optional<?> opt) throws IOException {
 
             var valueType = declaredType.getArgumentOrDefault(0);
             walker.walkObject(valueType, "", opt.orElse(null));
@@ -293,7 +300,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                Optional<?> opt) {
+                Optional<?> opt) throws IOException {
 
             var value = opt.orElse(null);
             if (value != null) {
@@ -304,6 +311,7 @@ class JodaBeanSimpleJsonWalker {
         }
     }
 
+    //-------------------------------------------------------------------------
     private static sealed class BaseJsonHandlers {
 
         private static final BaseJsonHandlers INSTANCE = getInstance();
@@ -332,6 +340,7 @@ class JodaBeanSimpleJsonWalker {
         }
     }
 
+    //-------------------------------------------------------------------------
     private static sealed class GuavaJsonHandlers extends BaseJsonHandlers {
 
         @Override
@@ -356,7 +365,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                Multimap<?, ?> mmap) {
+                Multimap<?, ?> mmap) throws IOException {
 
             walker.writeMap(declaredType, propertyName, mmap.entries());
         }
@@ -365,7 +374,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                Multiset<?> mset) {
+                Multiset<?> mset) throws IOException {
 
             var valueType = declaredType.getArgumentOrDefault(0);
             walker.output.writeArrayStart();
@@ -385,7 +394,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                Table<?, ?, ?> table) {
+                Table<?, ?, ?> table) throws IOException {
 
             var rowType = declaredType.getArgumentOrDefault(0);
             var columnType = declaredType.getArgumentOrDefault(1);
@@ -406,6 +415,7 @@ class JodaBeanSimpleJsonWalker {
         }
     }
 
+    //-------------------------------------------------------------------------
     static final class GuavaOptionalJsonHandler implements JsonHandler<com.google.common.base.Optional<?>> {
         private static final GuavaOptionalJsonHandler INSTANCE = new GuavaOptionalJsonHandler();
 
@@ -415,7 +425,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                com.google.common.base.Optional<?> opt) {
+                com.google.common.base.Optional<?> opt) throws IOException {
 
             var valueType = declaredType.getArgumentOrDefault(0);
             walker.walkObject(valueType, "", opt.orNull());
@@ -427,7 +437,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                com.google.common.base.Optional<?> opt) {
+                com.google.common.base.Optional<?> opt) throws IOException {
 
             var value = opt.orNull();
             if (value != null) {
@@ -454,7 +464,7 @@ class JodaBeanSimpleJsonWalker {
                 JodaBeanSimpleJsonWalker walker,
                 ResolvedType declaredType,
                 String propertyName,
-                Grid<?> grid) {
+                Grid<?> grid) throws IOException {
 
             // write grid using sparse approach
             var valueType = declaredType.getArgumentOrDefault(0);
