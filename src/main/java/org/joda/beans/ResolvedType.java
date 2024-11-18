@@ -438,6 +438,19 @@ public final class ResolvedType {
         return arguments.get(index);
     }
 
+    /**
+     * Gets the matching type argument or the default value of {@code Object}
+     * 
+     * @param index  the index of the generic parameter
+     * @return the type, defaulted to Object
+     */
+    public ResolvedType getArgumentOrDefault(int index) {
+        if (index < 0 || index >= arguments.size()) {
+            return OBJECT;
+        }
+        return arguments.get(index);
+    }
+
     private IllegalArgumentException invalidTypeArgumentIndex(int index) {
         return new IllegalArgumentException("Unexpected generic type access for " + this + ", index " + index + " is invalid");
     }

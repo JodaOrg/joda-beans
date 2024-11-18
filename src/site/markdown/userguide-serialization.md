@@ -34,6 +34,19 @@ The serializer makes use the meta-data in the bean to minimize the output size.
 In effect, the Joda-Bean acts as a schema to interpret the data.
 
 
+## Supported types
+
+The serialization mechanism supports implementations of `Bean`, `Collection`, `Map`, `Optional` and arrays.
+If Guava is present, implementations of `Multimap`, `Multiset`, `Table` and Guava's `Optional` are supported.
+If Joda-Collect is present, implementations of `Grid` are supported.
+
+The serialization format is generally stable over different versions of the API.
+The following incompatibilities apply:
+
+* The simple JSON format in v3.x alters two-dimensional primitive arrays to be written using
+the natural format `[[1, 2], [2, 3]]` instead of the previous format `["1,2", "2,3"]`.
+
+
 ## Handling change
 
 When deserializing, the Joda-Bean meta-data is used to parse the input JSON/XML/binary.
