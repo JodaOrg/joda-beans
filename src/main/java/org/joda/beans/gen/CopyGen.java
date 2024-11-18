@@ -46,19 +46,23 @@ abstract class CopyGen {
 
     //-----------------------------------------------------------------------
     static class PatternCopyGen extends CopyGen {
-        static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
-        static final CopyGen CLONE = new PatternCopyGen("$value.clone()");
-        static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()");
+        static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;", true);
+        static final CopyGen CLONE = new PatternCopyGen("$value.clone()", false);
+        static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()", false);
+        static final CopyGen CLONE_ARRAY = new PatternCopyGen("($type) JodaBeanUtils.cloneArray($value)", true);
 
         private final String immutablePattern;
         private final String mutablePattern;
-        PatternCopyGen(String pattern) {
-            this.immutablePattern = pattern;
-            this.mutablePattern = pattern;
+        private final boolean nullSafe;
+
+        PatternCopyGen(String pattern, boolean nullSafe) {
+            this(pattern, pattern, nullSafe);
         }
-        PatternCopyGen(String immutablePattern, String mutablePattern) {
+
+        PatternCopyGen(String immutablePattern, String mutablePattern, boolean nullSafe) {
             this.immutablePattern = immutablePattern;
             this.mutablePattern = mutablePattern;
+            this.nullSafe = nullSafe;
         }
         @Override
         List<String> generateCopyToImmutable(String indent, String fromBean, PropertyData prop) {
@@ -67,7 +71,7 @@ abstract class CopyGen {
             for (String line : split) {
                 if (split.length == 1) {
                     if (!line.startsWith("$field = ") && !line.endsWith(";")) {
-                        if (prop.isNotNull()) {
+                        if (nullSafe || prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
                             line = "$field = ($value != null ? " + line + " : null);";
@@ -93,7 +97,7 @@ abstract class CopyGen {
             for (String line : split) {
                 if (split.length == 1) {
                     if (!line.startsWith("$field = ") && !line.endsWith(";")) {
-                        if (prop.isNotNull()) {
+                        if (nullSafe || prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
                             if (line.equals("$value")) {

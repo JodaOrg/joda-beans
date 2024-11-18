@@ -110,7 +110,7 @@ abstract class SetterGen {
         }
         PatternSetterGen(String setPattern, String access) {
             this.setPattern = setPattern;
-            this.access = (access.equals("package") ? "" : access + ' ');;
+            this.access = (access.equals("package") ? "" : access + ' ');
         }
         @Override
         boolean isSetterGenerated(PropertyData prop) {
@@ -143,6 +143,7 @@ abstract class SetterGen {
             for (String line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());
                 line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("$type", prop.getFieldType());
                 if (split.length == 1 && !line.endsWith(";")) {
                     line += ";";
                 }

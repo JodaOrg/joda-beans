@@ -167,7 +167,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
         this.primitiveDoubleInf = primitiveDoubleInf;
         this.abstractNumber = abstractNumber;
         this.arrayByte = (arrayByte != null ? arrayByte.clone() : null);
-        this.array2d = array2d;
+        this.array2d = (String[][]) JodaBeanUtils.cloneArray(array2d);
         this.string = string;
         this.bean = bean;
         this.object1 = object1;
@@ -295,7 +295,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
      * @return the value of the property
      */
     public String[][] getArray2d() {
-        return array2d;
+        return (String[][]) JodaBeanUtils.cloneArray(array2d);
     }
 
     //-----------------------------------------------------------------------
@@ -1163,7 +1163,7 @@ public final class SimpleJson implements ImmutableBean, Serializable {
             this.primitiveDoubleInf = beanToCopy.getPrimitiveDoubleInf();
             this.abstractNumber = beanToCopy.getAbstractNumber();
             this.arrayByte = (beanToCopy.getArrayByte() != null ? beanToCopy.getArrayByte().clone() : null);
-            this.array2d = beanToCopy.getArray2d();
+            this.array2d = (String[][]) JodaBeanUtils.cloneArray(beanToCopy.getArray2d());
             this.string = beanToCopy.getString();
             this.bean = beanToCopy.getBean();
             this.object1 = beanToCopy.getObject1();
