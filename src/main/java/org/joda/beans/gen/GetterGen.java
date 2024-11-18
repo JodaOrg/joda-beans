@@ -183,6 +183,33 @@ abstract class GetterGen {
         }
     }
 
+    static final class CloneArrayGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new CloneArrayGetterGen("public ");
+        static final GetterGen PROTECTED = new CloneArrayGetterGen("protected ");
+        static final GetterGen PACKAGE = new CloneArrayGetterGen("");
+        static final GetterGen PRIVATE = new CloneArrayGetterGen("private ");
+        private final String access;
+
+        static GetterGen of(String access) {
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
+        }
+
+        private CloneArrayGetterGen(String access) {
+            this.access = access;
+        }
+
+        @Override
+        List<String> generateGetter(PropertyData prop) {
+            return doGenerateGetter(prop, access, "get",
+                    "(" + prop.getFieldType() + ") JodaBeanUtils.cloneArray(" + prop.getFieldName() + ")");
+        }
+    }
+
     static final class Optional8GetterGen extends GetterGen {
         static final GetterGen PUBLIC = new Optional8GetterGen();
         @Override

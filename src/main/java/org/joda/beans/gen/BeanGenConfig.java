@@ -152,8 +152,8 @@ public final class BeanGenConfig {
                         }
                         var key = line.substring(0, pos).trim();
                         var value = line.substring(pos + 1).trim();
-                        if (!value.equals("clone") && !value.equals("cloneCast")) {
-                            throw new IllegalArgumentException("Value for [immutable.get.clone] must be 'clone' or 'cloneCast'");
+                        if (!value.equals("clone") && !value.equals("cloneCast") && !value.equals("cloneArray")) {
+                            throw new IllegalArgumentException("Value for [immutable.get.clone] must be 'clone', 'cloneCast' or 'cloneArray'");
                         }
                         immutableGetClones.put(key, value);
                     }
@@ -187,7 +187,7 @@ public final class BeanGenConfig {
             if (mutableCopier == null) {
                 throw new IllegalArgumentException("[immutable.builder.to.immutable] and [immutable.builder.to.mutable] entries must match: " + fieldType);
             }
-            copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier));
+            copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier, false));
         }
         return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes, immutableVarArgs, immutableGetClones);
     }

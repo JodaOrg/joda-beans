@@ -129,6 +129,7 @@ In most cases, the default "smart" setting is sufficient:
 * "get" - generates `getXxx()`
 * "clone" - generates `getXxx()` with a clone of the field (assumed to be of the correct type)
 * "cloneCast" - generates `getXxx()` with a clone of the field with a cast to the property type
+* "cloneArray" - generates getXxx() with a deep clone of the array suitable for multi-dimensional arrays
 * "optional" - generate `getXxx()` returning a Java 8 `Optional` wrapper around the field, where the field
  itself is nullable instead of optional. `OptionalDouble`, `OptionalInt` and `OptionalLong` are also handled
 * "optionalGuava" - generate `getXxx()` returning a Guava `Optional` wrapper around the field,
@@ -163,6 +164,7 @@ In most cases, the default "smart" setting is sufficient:
 * "set" - generates `setXxx()`
 * "setClearAddAll" - generates `setXxx()` using `field.clear()` and `field.addAll(newData)`
 * "setClearPutAll" - generates `setXxx()` using `field.clear()` and `field.putAll(newData)`
+* "cloneArray" - generates setXxx() with a deep clone of the array suitable for multi-dimensional arrays
 * "bound" - generates a bound property with {@code PropertyChangeSupport}
 * "field" - generates direct access to the field, enabling a weird manual setter
 * "manual" - a method named `setXxx()` must be manually provided at package scope or greater
