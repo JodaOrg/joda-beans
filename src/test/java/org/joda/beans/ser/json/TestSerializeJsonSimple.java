@@ -81,7 +81,9 @@ public class TestSerializeJsonSimple {
                 new int[] {1, 3, 2},
                 new long[] {1, 4, 3},
                 new double[] {1.1, 2.2, 3.3},
-                new boolean[] {true, false});
+                new boolean[] {true, false},
+                new int[][] {{1, 2}, {2}, {}},
+                new boolean[][] {{true, false}, {false}, {}});
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.simplejson");
