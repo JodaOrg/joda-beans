@@ -108,9 +108,9 @@ public final class ImmArrays implements ImmutableBean {
         this.intArray = (intArray != null ? intArray.clone() : null);
         this.longArray = (longArray != null ? longArray.clone() : null);
         this.doubleArray = (doubleArray != null ? doubleArray.clone() : null);
-        this.booleanArray = booleanArray;
-        this.intArray2d = intArray2d;
-        this.booleanArray2d = booleanArray2d;
+        this.booleanArray = (booleanArray != null ? booleanArray.clone() : null);
+        this.intArray2d = (int[][]) JodaBeanUtils.cloneArray(intArray2d);
+        this.booleanArray2d = (boolean[][]) JodaBeanUtils.cloneArray(booleanArray2d);
     }
 
     @Override
@@ -151,7 +151,7 @@ public final class ImmArrays implements ImmutableBean {
      * @return the value of the property
      */
     public boolean[] getBooleanArray() {
-        return booleanArray;
+        return (booleanArray != null ? booleanArray.clone() : null);
     }
 
     //-----------------------------------------------------------------------
@@ -160,7 +160,7 @@ public final class ImmArrays implements ImmutableBean {
      * @return the value of the property
      */
     public int[][] getIntArray2d() {
-        return intArray2d;
+        return (int[][]) JodaBeanUtils.cloneArray(intArray2d);
     }
 
     //-----------------------------------------------------------------------
@@ -169,7 +169,7 @@ public final class ImmArrays implements ImmutableBean {
      * @return the value of the property
      */
     public boolean[][] getBooleanArray2d() {
-        return booleanArray2d;
+        return (boolean[][]) JodaBeanUtils.cloneArray(booleanArray2d);
     }
 
     //-----------------------------------------------------------------------
@@ -423,9 +423,9 @@ public final class ImmArrays implements ImmutableBean {
             this.intArray = (beanToCopy.getIntArray() != null ? beanToCopy.getIntArray().clone() : null);
             this.longArray = (beanToCopy.getLongArray() != null ? beanToCopy.getLongArray().clone() : null);
             this.doubleArray = (beanToCopy.getDoubleArray() != null ? beanToCopy.getDoubleArray().clone() : null);
-            this.booleanArray = beanToCopy.getBooleanArray();
-            this.intArray2d = beanToCopy.getIntArray2d();
-            this.booleanArray2d = beanToCopy.getBooleanArray2d();
+            this.booleanArray = (beanToCopy.getBooleanArray() != null ? beanToCopy.getBooleanArray().clone() : null);
+            this.intArray2d = (int[][]) JodaBeanUtils.cloneArray(beanToCopy.getIntArray2d());
+            this.booleanArray2d = (boolean[][]) JodaBeanUtils.cloneArray(beanToCopy.getBooleanArray2d());
         }
 
         //-----------------------------------------------------------------------

@@ -256,7 +256,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         this.city = city;
         this.abstractNumber = abstractNumber;
         this.data = (data != null ? data.clone() : null);
-        this.array2d = array2d;
+        this.array2d = (String[][]) JodaBeanUtils.cloneArray(array2d);
         this.owner = owner;
         this.object1 = object1;
         this.object2 = object2;
@@ -276,7 +276,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
         this.denseGrid = (denseGrid != null ? ImmutableGrid.copyOf(denseGrid) : null);
         this.beanBeanMap = ImmutableMap.copyOf(beanBeanMap);
         this.doubleVector = (doubleVector != null ? doubleVector.clone() : null);
-        this.matrix = matrix;
+        this.matrix = (double[][]) JodaBeanUtils.cloneArray(matrix);
     }
 
     @Override
@@ -336,7 +336,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
      * @return the value of the property
      */
     public String[][] getArray2d() {
-        return array2d;
+        return (String[][]) JodaBeanUtils.cloneArray(array2d);
     }
 
     //-----------------------------------------------------------------------
@@ -516,7 +516,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
      * @return the value of the property
      */
     public double[][] getMatrix() {
-        return matrix;
+        return (double[][]) JodaBeanUtils.cloneArray(matrix);
     }
 
     //-----------------------------------------------------------------------
@@ -1224,7 +1224,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             this.city = beanToCopy.getCity();
             this.abstractNumber = beanToCopy.getAbstractNumber();
             this.data = (beanToCopy.getData() != null ? beanToCopy.getData().clone() : null);
-            this.array2d = beanToCopy.getArray2d();
+            this.array2d = (String[][]) JodaBeanUtils.cloneArray(beanToCopy.getArray2d());
             this.owner = beanToCopy.getOwner();
             this.object1 = beanToCopy.getObject1();
             this.object2 = beanToCopy.getObject2();
@@ -1244,7 +1244,7 @@ public final class ImmAddress implements ImmutableBean, Serializable {
             this.denseGrid = beanToCopy.getDenseGrid();
             this.beanBeanMap = beanToCopy.getBeanBeanMap();
             this.doubleVector = (beanToCopy.getDoubleVector() != null ? beanToCopy.getDoubleVector().clone() : null);
-            this.matrix = beanToCopy.getMatrix();
+            this.matrix = (double[][]) JodaBeanUtils.cloneArray(beanToCopy.getMatrix());
         }
 
         //-----------------------------------------------------------------------

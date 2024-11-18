@@ -517,6 +517,26 @@ public final class JodaBeanUtils {
 
     //-----------------------------------------------------------------------
     /**
+     * Clones an array.
+     * <p>
+     * This performs a deep clone and handles multi-dimensional arrays.
+     * There is no protection against cycles in the object graph beyond {@code StackOverflowError}.
+     * <p>
+     * Unfortunately, primitive arrays don't play nicely with generics, thus callers must cast the result.
+     * 
+     * @param original  the original array to clone, null returns null
+     * @return the cloned array, null if null input
+     * @since 2.12.0
+     */
+    @SuppressWarnings("unchecked")
+    public static Object cloneArray(Object original) {
+        if (original == null) {
+            return null;
+        }
+        return Cloner.INSTANCE.cloneArray(original);
+    }
+
+    /**
      * Clones a bean.
      * <p>
      * This performs a deep clone. There is no protection against cycles in

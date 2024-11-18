@@ -806,6 +806,8 @@ class PropertyData {
                     getterGen = isNotNull() ?
                                     GetterGen.CloneCastNNGetterGen.of(access) :
                                     GetterGen.CloneCastGetterGen.of(access);
+                } else if ("cloneArray".equals(clone)) {
+                    getterGen = GetterGen.CloneArrayGetterGen.of(access);
                 } else if (getType().equals("boolean")) {
                     getterGen = GetterGen.IsGetterGen.of(access);
                 } else {
@@ -824,6 +826,8 @@ class PropertyData {
             getterGen = isNotNull() ? GetterGen.CloneNNGetterGen.PUBLIC : GetterGen.CloneGetterGen.PUBLIC;
         } else if (style.equals("cloneCast")) {
             getterGen = isNotNull() ? GetterGen.CloneCastNNGetterGen.PUBLIC : GetterGen.CloneCastGetterGen.PUBLIC;
+        } else if (style.equals("cloneArray")) {
+            getterGen = GetterGen.CloneArrayGetterGen.PUBLIC;
         } else if (style.equals("optional")) {
             getterGen = GetterGen.Optional8GetterGen.PUBLIC;
         } else if (style.equals("optionalGuava")) {
@@ -879,6 +883,8 @@ class PropertyData {
                 setterGen = SetterGen.ObservableSetterGen.PUBLIC;
                 bound = true;
             }
+        } else if (style.equals("cloneArray")) {
+            setterGen = new SetterGen.PatternSetterGen("$field = ($type) JodaBeanUtils.cloneArray($value);");
         } else if (style.equals("smart")) {
             if (isDerived()) {
                 setterGen = SetterGen.NoSetterGen.INSTANCE;
@@ -961,10 +967,12 @@ class PropertyData {
             } else {
                 String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
                 if (clone != null) {
-                    if (clone.equals("clone")) {
-                        copyGen = PatternCopyGen.CLONE;
-                    } else {
+                    if (clone.equals("cloneCast")) {
                         copyGen = PatternCopyGen.CLONE_CAST;
+                    } else if (clone.equals("cloneArray")) {
+                        copyGen = PatternCopyGen.CLONE_ARRAY;
+                    } else {
+                        copyGen = PatternCopyGen.CLONE;
                     }
                 } else {
                     copyGen = PatternCopyGen.ASSIGN;
