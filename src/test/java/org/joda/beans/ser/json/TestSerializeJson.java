@@ -29,6 +29,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
 import org.joda.beans.sample.ImmGenericCollections;
@@ -93,6 +94,24 @@ public class TestSerializeJson {
         ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, optional);
+    }
+
+    @Test
+    public void test_writeImmArrays() throws IOException {
+        ImmArrays bean = ImmArrays.of(
+                new int[] {1, 3, 2},
+                new long[] {1, 4, 3},
+                new double[] {1.1, 2.2, 3.3},
+                new boolean[] {true, false},
+                new int[][] {{1, 2}, {2}, {}},
+                new boolean[][] {{true, false}, {false}, {}});
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
+//        System.out.println(json);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.json");
+
+        ImmArrays parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
@@ -467,8 +486,8 @@ public class TestSerializeJson {
             {"{\"a\":{\"@type\":\"Integer\",\"value\":[]}}"},
             {"{\"a\":{\"@type\":\"Integer\",\"value\":" + (((long) Integer.MAX_VALUE) + 1) + "}}"},
             {"{\"a\":{\"@type\":\"Integer\",\"value\":" + (((long) Integer.MIN_VALUE) - 1) + "}}"},
-            {"{\"a\":{\"@type\":\"Short\",\"value\":" + (((int) Short.MAX_VALUE) + 1) + "}}"},
-            {"{\"a\":{\"@type\":\"Short\",\"value\":" + (((int) Short.MIN_VALUE) - 1) + "}}"},
+            {"{\"a\":{\"@type\":\"Short\",\"value\":" + ((Short.MAX_VALUE) + 1) + "}}"},
+            {"{\"a\":{\"@type\":\"Short\",\"value\":" + ((Short.MIN_VALUE) - 1) + "}}"},
             {"{\"a\":{\"@type\":\"Byte\",\"value\":128}}"},
             {"{\"a\":{\"@type\":\"Byte\",\"value\":-129}}"},
             {"{\"a\":{\"@meta\":\"List\",\"notvalue\":[]}}"},
