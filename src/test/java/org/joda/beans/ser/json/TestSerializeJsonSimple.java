@@ -89,6 +89,11 @@ public class TestSerializeJsonSimple {
         var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
+        
+        var oldJsonUrl = TestSerializeJsonSimple.class.getResource("/org/joda/beans/ser/ImmArrays-old.simplejson");
+        var oldJson = Resources.asCharSource(oldJsonUrl, StandardCharsets.UTF_8).read();
+        var oldParsed = JodaBeanSer.PRETTY.simpleJsonReader().read(oldJson, ImmArrays.class);
+        assertThat(oldParsed).isEqualTo(parsed);
     }
 
     @Test

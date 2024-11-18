@@ -216,16 +216,28 @@ public class TestResolvedType {
         assertThat(test.equals(new Object())).isFalse();
         assertThat(test.equals(ResolvedType.of(TestResolvedType.class))).isFalse();
         assertThat(test.equals(ResolvedType.ofFlat(List.class, TestResolvedType.class))).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_resolvedTypes")
+    void test_queries(
+            ResolvedType test,
+            Class<?> expectedRawType,
+            List<ResolvedType> expectedArgTypes,
+            String expectedToString) {
 
         if (expectedArgTypes.isEmpty()) {
             assertThatIllegalArgumentException()
                     .isThrownBy(() -> test.getArgument(0))
                     .withMessage("Unexpected generic type access for " + expectedToString + ", index 0 is invalid");
+            assertThat(test.getArgumentOrDefault(0)).isEqualTo(ResolvedType.OBJECT);
         } else if (expectedArgTypes.size() == 1) {
             assertThat(test.getArgument(0)).isEqualTo(expectedArgTypes.get(0));
             assertThatIllegalArgumentException()
                     .isThrownBy(() -> test.getArgument(1))
                     .withMessage("Unexpected generic type access for " + expectedToString + ", index 1 is invalid");
+            assertThat(test.getArgumentOrDefault(0)).isEqualTo(expectedArgTypes.get(0));
+            assertThat(test.getArgumentOrDefault(1)).isEqualTo(ResolvedType.OBJECT);
         } else if (expectedArgTypes.size() == 2) {
             assertThat(test.getArgument(0)).isEqualTo(expectedArgTypes.get(0));
             assertThat(test.getArgument(1)).isEqualTo(expectedArgTypes.get(1));
@@ -235,6 +247,9 @@ public class TestResolvedType {
             assertThatIllegalArgumentException()
                     .isThrownBy(() -> test.getArgument(2))
                     .withMessage("Unexpected generic type access for " + expectedToString + ", index 2 is invalid");
+            assertThat(test.getArgumentOrDefault(0)).isEqualTo(expectedArgTypes.get(0));
+            assertThat(test.getArgumentOrDefault(1)).isEqualTo(expectedArgTypes.get(1));
+            assertThat(test.getArgumentOrDefault(2)).isEqualTo(ResolvedType.OBJECT);
         }
         if (expectedRawType.isArray()) {
             assertThat(test.toComponentType())
@@ -245,6 +260,15 @@ public class TestResolvedType {
                     .withMessage("Unable to get component type for " + expectedToString + ", type is not an array");
         }
         assertThat(test.toArrayType().toComponentType()).isEqualTo(test);
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_resolvedTypes")
+    void test_jodaConvert(
+            ResolvedType test,
+            Class<?> expectedRawType,
+            List<ResolvedType> expectedArgTypes,
+            String expectedToString) {
 
         var str = StringConvert.INSTANCE.convertToString(test);
         assertThat(str).isEqualTo(expectedToString);

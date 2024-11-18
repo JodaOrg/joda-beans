@@ -16,15 +16,10 @@
 package org.joda.beans.ser.json;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerIterator;
-import org.joda.beans.ser.SerOptional;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a simple JSON format.
@@ -45,27 +40,22 @@ import org.joda.beans.ser.SerOptional;
  * list/map entries, that are defined as {@code Object} are unlikely to work well.
  * <p>
  * Collections are output using JSON arrays. Maps as JSON objects.
- * Multisets are output as a map of value to count.
  */
 public class JodaBeanSimpleJsonWriter {
 
     /**
      * The settings to use.
      */
-    private final JodaBeanSer settings;
-    /**
-     * The outputter.
-     */
-    private JsonOutput output;
+    private final JodaBeanSimpleJsonWalker walker;
 
     /**
      * Creates an instance.
      * 
      * @param settings  the settings to use, not null
      */
-    public JodaBeanSimpleJsonWriter(final JodaBeanSer settings) {
+    public JodaBeanSimpleJsonWriter(JodaBeanSer settings) {
         JodaBeanUtils.notNull(settings, "settings");
-        this.settings = settings;
+        this.walker = new JodaBeanSimpleJsonWalker(settings);
     }
 
     //-----------------------------------------------------------------------
@@ -97,247 +87,7 @@ public class JodaBeanSimpleJsonWriter {
     public void write(Bean bean, Appendable output) throws IOException {
         JodaBeanUtils.notNull(bean, "bean");
         JodaBeanUtils.notNull(output, "output");
-        try {
-            this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
-            writeBean(bean, bean.getClass());
-            output.append(settings.getNewLine());
-        } catch (UncheckedIOException ex) {
-            throw ex.getCause();
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // write a bean as a JSON object
-    private void writeBean(Bean bean, Class<?> declaredType) {
-        output.writeObjectStart();
-        // property information
-        for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                var value = SerOptional.extractValue(prop, bean);
-                if (value != null) {
-                    output.writeObjectKey(prop.name());
-                    Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-                    if (value instanceof Bean beanValue) {
-                        if (settings.getConverter().isConvertible(value.getClass())) {
-                            writeSimple(propType, value);
-                        } else {
-                            writeBean(beanValue, propType);
-                        }
-                    } else {
-                        var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass(), true);
-                        if (itemIterator != null) {
-                            writeElements(itemIterator);
-                        } else {
-                            writeSimple(propType, value);
-                        }
-                    }
-                }
-            }
-        }
-        output.writeObjectEnd();
-    }
-
-    //-----------------------------------------------------------------------
-    // write a collection
-    private void writeElements(SerIterator itemIterator) {
-        if (itemIterator.category() == SerCategory.MAP) {
-            writeMap(itemIterator);
-        } else if (itemIterator.category() == SerCategory.COUNTED) {
-            writeCounted(itemIterator);
-        } else if (itemIterator.category() == SerCategory.TABLE) {
-            writeTable(itemIterator);
-        } else if (itemIterator.category() == SerCategory.GRID) {
-            writeGrid(itemIterator);
-        } else {
-            writeArray(itemIterator);
-        }
-    }
-
-    // write list/set/array
-    private void writeArray(SerIterator itemIterator) {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-        output.writeArrayEnd();
-    }
-
-    // write map
-    private void writeMap(SerIterator itemIterator) {
-        // if key type is known and convertible use short key format, else use full bean format
-        if (settings.getConverter().isConvertible(itemIterator.keyType())) {
-            writeMapSimple(itemIterator);
-        } else {
-            writeMapComplex(itemIterator);
-        }
-    }
-
-    // write map with simple keys
-    private void writeMapSimple(SerIterator itemIterator) {
-        var keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
-        output.writeObjectStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            var key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null");
-            }
-            var str = keyConverter.convertToString(itemIterator.key());
-            if (str == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
-            }
-            output.writeObjectKey(str);
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-        output.writeObjectEnd();
-    }
-
-    // write map with complex keys
-    private void writeMapComplex(SerIterator itemIterator) {
-        output.writeObjectStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            var key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null");
-            }
-            var str = settings.getConverter().convertToString(itemIterator.key());
-            if (str == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
-            }
-            output.writeObjectKey(str);
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-        output.writeObjectEnd();
-    }
-
-    // write table
-    private void writeTable(SerIterator itemIterator) {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.keyType(), itemIterator.key(), null);
-            output.writeArrayItemStart();
-            writeObject(itemIterator.columnType(), itemIterator.column(), null);
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write grid using sparse approach
-    private void writeGrid(SerIterator itemIterator) {
-        output.writeArrayStart();
-        output.writeArrayItemStart();
-        output.writeInt(itemIterator.dimensionSize(0));
-        output.writeArrayItemStart();
-        output.writeInt(itemIterator.dimensionSize(1));
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            output.writeInt((Integer) itemIterator.key());
-            output.writeArrayItemStart();
-            output.writeInt((Integer) itemIterator.column());
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write counted set
-    private void writeCounted(final SerIterator itemIterator) {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayItemStart();
-            output.writeInt(itemIterator.count());
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write collection object
-    private void writeObject(Class<?> declaredType, Object obj, SerIterator parentIterator) {
-        if (obj == null) {
-            output.writeNull();
-        } else if (settings.getConverter().isConvertible(obj.getClass())) {
-            writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean bean) {
-            writeBean(bean, declaredType);
-        } else if (parentIterator != null) {
-            var childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
-            if (childIterator != null) {
-                writeElements(childIterator);
-            } else {
-                writeSimple(declaredType, obj);
-            }
-        } else {
-            writeSimple(declaredType, obj);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // write simple type
-    private void writeSimple(Class<?> declaredType, Object value) {
-        Class<?> realType = value.getClass();
-        if (realType == Integer.class) {
-            output.writeInt(((Integer) value).intValue());
-        } else if (realType == Long.class) {
-            output.writeLong(((Long) value).longValue());
-        } else if (realType == Short.class) {
-            output.writeInt(((Short) value).shortValue());
-        } else if (realType == Byte.class) {
-            output.writeInt(((Byte) value).byteValue());
-        } else if (realType == Float.class) {
-            var flt = ((Float) value).floatValue();
-            if (Float.isNaN(flt)) {
-                // write as string
-                output.writeNull();
-            } else if (Float.isInfinite(flt)) {
-                // write as string
-                output.writeString(Float.toString(flt));
-            } else {
-                output.writeFloat(flt);
-            }
-        } else if (realType == Double.class) {
-            var dbl = ((Double) value).doubleValue();
-            if (Double.isNaN(dbl)) {
-                // write as string
-                output.writeNull();
-            } else if (Double.isInfinite(dbl)) {
-                // write as string
-                output.writeString(Double.toString(dbl));
-            } else {
-                output.writeDouble(dbl);
-            }
-        } else if (realType == Boolean.class) {
-            output.writeBoolean(((Boolean) value).booleanValue());
-        } else {
-            // write as a string
-            try {
-                var converted = settings.getConverter().convertToString(realType, value);
-                if (converted == null) {
-                    throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
-                }
-                output.writeString(converted);
-            } catch (RuntimeException ex) {
-                throw new IllegalArgumentException(
-                        "Unable to convert type " + declaredType.getName() + " for real type: " + realType.getName(), ex);
-            }
-        }
+        walker.walk(bean, output);
     }
 
 }

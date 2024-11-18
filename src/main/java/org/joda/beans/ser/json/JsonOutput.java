@@ -27,6 +27,8 @@ final class JsonOutput {
     /** encoding JSON */
     private static final String[] REPLACE = new String[128];
     static {
+        // performance is better without adding the characters from 32 to 126
+        // (because they would have to be added as String, not char, which slows down the append method)
         for (var i = 0; i < 32; i++) {
             REPLACE[i] = String.format("\\u%04x", i);
         }
@@ -128,11 +130,7 @@ final class JsonOutput {
      */
     void writeInt(int value) {
         try {
-            if ((value & 0xfffffff8) == 0) {
-                output.append((char) (value + 48));
-            } else {
-                output.append(Integer.toString(value));
-            }
+            output.append(Integer.toString(value));
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
