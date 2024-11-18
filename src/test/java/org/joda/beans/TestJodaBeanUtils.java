@@ -509,6 +509,39 @@ public class TestJodaBeanUtils {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_cloneArray_primitive1d() {
+        int[] array = {1, 2, 3};
+        int[] cloned = (int[]) JodaBeanUtils.cloneArray(array);
+        assertThat(cloned)
+                .isNotSameAs(array)
+                .isEqualTo(array);
+        array[0] = 99;
+        assertThat(cloned).isNotEqualTo(array);
+    }
+
+    @Test
+    public void test_cloneArray_primitive2d() {
+        int[][] array = {{1, 2, 3}, {4}, {}};
+        int[][] cloned = (int[][]) JodaBeanUtils.cloneArray(array);
+        assertThat(cloned)
+                .isNotSameAs(array)
+                .isEqualTo(array);
+        array[2] = new int[] {99};
+        assertThat(cloned).isNotEqualTo(array);
+    }
+
+    @Test
+    public void test_cloneArray_string2d() {
+        String[][] array = {{"1", "2", "3"}, {"4"}, {}};
+        String[][] cloned = (String[][]) JodaBeanUtils.cloneArray(array);
+        assertThat(cloned)
+                .isNotSameAs(array)
+                .isEqualTo(array);
+        array[2] = new String[] {"99"};
+        assertThat(cloned).isNotEqualTo(array);
+    }
+
+    @Test
     public void test_clone() {
         Person p = new Person();
         p.setForename("Stephen");

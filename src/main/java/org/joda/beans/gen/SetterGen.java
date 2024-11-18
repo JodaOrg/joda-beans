@@ -145,6 +145,7 @@ abstract class SetterGen {
             for (var line : split) {
                 line = line.replace("$field", "this." + prop.getFieldName());
                 line = line.replace("$value", prop.getPropertyName());
+                line = line.replace("$type", prop.getFieldType());
                 if (split.length == 1 && !line.endsWith(";")) {
                     line += ";";
                 }
