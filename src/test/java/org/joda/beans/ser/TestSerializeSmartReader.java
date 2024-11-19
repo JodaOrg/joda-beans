@@ -51,7 +51,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_binary_immAddress()  throws IOException {
-        ImmAddress bean = SerTestHelper.testImmAddress();
+        ImmAddress bean = SerTestHelper.testImmAddress(false);
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
         BeanAssert.assertBeanEquals(bean, roundtrip);
@@ -100,7 +100,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_json_immAddress()  throws IOException {
-        ImmAddress bean = SerTestHelper.testImmAddress();
+        ImmAddress bean = SerTestHelper.testImmAddress(false);
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmAddress.class);
     }
@@ -164,7 +164,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_xml_immAddress()  throws IOException {
-        ImmAddress bean = SerTestHelper.testImmAddress();
+        ImmAddress bean = SerTestHelper.testImmAddress(false);
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, xml, bean, ImmAddress.class);
     }

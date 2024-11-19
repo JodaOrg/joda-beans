@@ -58,38 +58,35 @@ public class TestSerializeJson {
 
     @Test
     public void test_writeAddress() throws IOException {
-        var address = SerTestHelper.testAddress();
-        var json = JodaBeanSer.PRETTY.jsonWriter().write(address);
+        var bean = SerTestHelper.testAddress();
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/Address.json");
         
-        var bean = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        var parsed = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        var address = SerTestHelper.testImmAddress();
-        var json = JodaBeanSer.PRETTY.jsonWriter().write(address);
+        var bean = SerTestHelper.testImmAddress(false);
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.json");
         
-        var bean = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        var parsed = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeImmOptional() throws IOException {
-        var optional = SerTestHelper.testImmOptional();
-        var json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(optional);
+        var bean = SerTestHelper.testImmOptional();
+        var json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.json");
         
-        var bean = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        var parsed = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
@@ -106,32 +103,29 @@ public class TestSerializeJson {
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.json");
 
         var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
-//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeCollections() throws IOException {
-        var optional = SerTestHelper.testCollections();
-        var json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
+        var bean = SerTestHelper.testCollections();
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.json");
         
-        var bean = JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        var parsed = JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeJodaConvertInterface() {
-        var array = SerTestHelper.testGenericInterfaces();
+        var bean = SerTestHelper.testGenericInterfaces();
         
-        var json = JodaBeanSer.PRETTY.jsonWriter().write(array);
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
         
-        var bean = JodaBeanSer.COMPACT.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, array);
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     private void assertEqualsSerialization(String json, String expectedResource) throws IOException {

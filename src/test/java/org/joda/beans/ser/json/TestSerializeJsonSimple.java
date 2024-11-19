@@ -57,7 +57,6 @@ public class TestSerializeJsonSimple {
         assertEqualsSerialization(json, "/org/joda/beans/ser/SimpleJson.simplejson");
         
         var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, SimpleJson.class);
-//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
@@ -69,7 +68,6 @@ public class TestSerializeJsonSimple {
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.simplejson");
         
         var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmOptional.class);
-//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
@@ -87,7 +85,6 @@ public class TestSerializeJsonSimple {
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.simplejson");
         
         var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
-//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
         
         var oldJsonUrl = TestSerializeJsonSimple.class.getResource("/org/joda/beans/ser/ImmArrays-old.simplejson");
@@ -107,10 +104,10 @@ public class TestSerializeJsonSimple {
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        var address = SerTestHelper.testImmAddress().toBuilder()
-            .mapInMap(new HashMap<>())
-            .beanBeanMap(new HashMap<>())
-            .build();
+        var address = SerTestHelper.testImmAddress(false).toBuilder()
+                .mapInMap(new HashMap<>())
+                .beanBeanMap(new HashMap<>())
+                .build();
         var json = JodaBeanSer.PRETTY.simpleJsonWriter().write(address);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.simplejson");
@@ -119,14 +116,13 @@ public class TestSerializeJsonSimple {
 
     @Test
     public void test_writeCollections()  throws IOException {
-        var optional = SerTestHelper.testCollections();
-        var json = JodaBeanSer.PRETTY.simpleJsonWriter().write(optional);
+        var bean = SerTestHelper.testCollections();
+        var json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.simplejson");
         
-        var bean = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     private void assertEqualsSerialization(String json, String expectedResource) throws IOException {
