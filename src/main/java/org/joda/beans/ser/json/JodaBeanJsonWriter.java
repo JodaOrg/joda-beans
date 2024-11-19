@@ -16,7 +16,6 @@
 package org.joda.beans.ser.json;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -163,18 +162,14 @@ public class JodaBeanJsonWriter {
     public void write(Bean bean, boolean rootType, Appendable output) throws IOException {
         JodaBeanUtils.notNull(bean, "bean");
         JodaBeanUtils.notNull(output, "output");
-        try {
-            this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
-            writeBean(bean, bean.getClass(), rootType ? RootType.ROOT_WITH_TYPE : RootType.ROOT_WITHOUT_TYPE);
-            output.append(settings.getNewLine());
-        } catch (UncheckedIOException ex) {
-            throw ex.getCause();
-        }
+        this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
+        writeBean(bean, bean.getClass(), rootType ? RootType.ROOT_WITH_TYPE : RootType.ROOT_WITHOUT_TYPE);
+        output.append(settings.getNewLine());
     }
 
     //-----------------------------------------------------------------------
     // write a bean as a JSON object
-    private void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) {
+    private void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) throws IOException {
         output.writeObjectStart();
         // type information
         if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
@@ -213,7 +208,7 @@ public class JodaBeanJsonWriter {
 
     //-----------------------------------------------------------------------
     // write a collection
-    private void writeElements(SerIterator itemIterator) {
+    private void writeElements(SerIterator itemIterator) throws IOException {
         if (itemIterator.metaTypeRequired()) {
             output.writeObjectStart();
             output.writeObjectKeyValue(META, itemIterator.metaTypeName());
@@ -236,7 +231,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write list/set/array
-    private void writeArray(SerIterator itemIterator) {
+    private void writeArray(SerIterator itemIterator) throws IOException {
         output.writeArrayStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -247,7 +242,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write map
-    private void writeMap(SerIterator itemIterator) {
+    private void writeMap(SerIterator itemIterator) throws IOException {
         // if key type is known and convertible use short key format, else use full bean format
         if (settings.getConverter().isConvertible(itemIterator.keyType())) {
             writeMapSimple(itemIterator);
@@ -257,7 +252,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write map with simple keys
-    private void writeMapSimple(SerIterator itemIterator) {
+    private void writeMapSimple(SerIterator itemIterator) throws IOException {
         var keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
         output.writeObjectStart();
         while (itemIterator.hasNext()) {
@@ -277,7 +272,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write map with complex keys
-    private void writeMapComplex(SerIterator itemIterator) {
+    private void writeMapComplex(SerIterator itemIterator) throws IOException {
         output.writeArrayStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -297,7 +292,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write table
-    private void writeTable(SerIterator itemIterator) {
+    private void writeTable(SerIterator itemIterator) throws IOException {
         output.writeArrayStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -315,7 +310,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write grid using sparse approach
-    private void writeGrid(SerIterator itemIterator) {
+    private void writeGrid(SerIterator itemIterator) throws IOException {
         output.writeArrayStart();
         output.writeArrayItemStart();
         output.writeInt(itemIterator.dimensionSize(0));
@@ -337,7 +332,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write counted set
-    private void writeCounted(final SerIterator itemIterator) {
+    private void writeCounted(final SerIterator itemIterator) throws IOException {
         output.writeArrayStart();
         while (itemIterator.hasNext()) {
             itemIterator.next();
@@ -353,7 +348,7 @@ public class JodaBeanJsonWriter {
     }
 
     // write collection object
-    private void writeObject(Class<?> declaredType, Object obj, SerIterator parentIterator) {
+    private void writeObject(Class<?> declaredType, Object obj, SerIterator parentIterator) throws IOException {
         if (obj == null) {
             output.writeNull();
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
@@ -374,7 +369,7 @@ public class JodaBeanJsonWriter {
 
     //-----------------------------------------------------------------------
     // write simple type
-    private void writeSimple(Class<?> declaredType, Object value) {
+    private void writeSimple(Class<?> declaredType, Object value) throws IOException {
         // simple types have no need to write a type object
         Class<?> realType = value.getClass();
         if (realType == Integer.class) {
@@ -386,7 +381,6 @@ public class JodaBeanJsonWriter {
                 output.writeDouble(dbl);
                 return;
             }
-            System.out.println("");
         } else if (realType == Boolean.class) {
             output.writeBoolean(((Boolean) value).booleanValue());
             return;
