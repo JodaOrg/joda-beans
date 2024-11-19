@@ -20,6 +20,7 @@ import static org.joda.beans.ser.json.JodaBeanJsonWriter.META;
 import static org.joda.beans.ser.json.JodaBeanJsonWriter.TYPE;
 import static org.joda.beans.ser.json.JodaBeanJsonWriter.VALUE;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -84,7 +86,11 @@ abstract class AbstractJsonReader {
     <T> T parseRoot(JsonInput input, Class<T> declaredType) throws Exception {
         this.input = input;
         Object parsed = parseObject(input.acceptEvent(JsonEvent.OBJECT), declaredType, null, null, null, true);
-        return declaredType.cast(parsed);
+        try {
+            return declaredType.cast(parsed);
+        } catch (ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     // parse a bean, event after object start passed in
@@ -179,12 +185,18 @@ abstract class AbstractJsonReader {
         }
     }
 
-    SerIterable parseUnknownArray(Class<?> declaredType) {
-        throw new IllegalArgumentException("JSON contained an array without information about the Java type");
+    // leniently assume it is am array/List (previously only the simple JSON parser made this assumption)
+    private SerIterable parseUnknownArray(Class<?> declaredType) {
+        if (declaredType.isArray()) {
+            return SerIteratorFactory.array(declaredType.getComponentType());
+        } else {
+            return SerIteratorFactory.list(Object.class, Collections.emptyList());
+        }
     }
 
-    SerIterable parseUnknownObject(Class<?> declaredType) {
-        throw new IllegalArgumentException("JSON contained an object without information about the Java type");
+    // leniently assume it is a Map (previously only the simple JSON parser made this assumption)
+    private SerIterable parseUnknownObject(Class<?> declaredType) {
+        return SerIteratorFactory.map(String.class, Object.class, Collections.emptyList());
     }
 
     private Object parseTypedBean(Class<?> declaredType, boolean rootType) throws Exception {
@@ -371,14 +383,14 @@ abstract class AbstractJsonReader {
                     return Byte.valueOf((byte) value);
                     
                 } else if (type == Double.class || type == double.class) {
-                    double dblVal = (double) value;
+                    double dblVal = value;
                     if (value != (long) dblVal) {
                         throw new IllegalArgumentException("Invalid JSON data: Value exceeds capacity of double: " + value);
                     }
                     return Double.valueOf(dblVal);
                     
                 } else if (type == Float.class || type == float.class) {
-                    float fltVal = (float) value;
+                    float fltVal = value;
                     if (value != (long) fltVal) {
                         throw new IllegalArgumentException("Invalid JSON data: Value exceeds capacity of float: " + value);
                     }

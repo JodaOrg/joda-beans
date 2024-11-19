@@ -16,7 +16,6 @@
 package org.joda.beans.ser.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.offset;
 
@@ -56,7 +55,7 @@ public class TestSerializeJsonSimple {
         SimpleJson bean = SerTestHelper.testSimpleJson();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/SimpleJson.simplejson");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/SimpleJson1.simplejson");
         
         SimpleJson parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, SimpleJson.class);
 //        System.out.println(bean);
@@ -68,7 +67,7 @@ public class TestSerializeJsonSimple {
         ImmOptional bean = SerTestHelper.testImmOptional();
         String json = JodaBeanSer.PRETTY.withIncludeDerived(true).simpleJsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.simplejson");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional1.simplejson");
         
         ImmOptional parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmOptional.class);
 //        System.out.println(bean);
@@ -86,45 +85,48 @@ public class TestSerializeJsonSimple {
                 new boolean[][] {{true, false}, {false}, {}});
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.simplejson");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays1.simplejson");
         
         ImmArrays parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
-//        System.out.println(bean);
+//        System.out.println(parsed);
         BeanAssert.assertBeanEquals(bean, parsed);
+
+        ImmArrays bean2 = loadAndParse("/org/joda/beans/ser/ImmArrays2.simplejson", ImmArrays.class);
+        BeanAssert.assertBeanEquals(bean, bean2);
     }
 
     @Test
     public void test_writeAddress() throws IOException {
-        Address address = SerTestHelper.testAddress();
-        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(address);
+        Address bean = SerTestHelper.testAddress();
+        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Address.simplejson");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Address1.simplejson");
         // no round trip with simple JSON
     }
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress(false).toBuilder()
+        ImmAddress bean = SerTestHelper.testImmAddress(false).toBuilder()
             .mapInMap(new HashMap<>())
             .beanBeanMap(new HashMap<>())
             .build();
-        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(address);
+        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.simplejson");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress1.simplejson");
         // no round trip with simple JSON
     }
 
     @Test
     public void test_writeCollections()  throws IOException {
-        ImmGuava<String> optional = SerTestHelper.testCollections();
-        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(optional);
+        ImmGuava<String> bean = SerTestHelper.testCollections();
+        String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.simplejson");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections1.simplejson");
         
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        ImmGuava<String> parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmGuava.class);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     private void assertEqualsSerialization(String json, String expectedResource) throws IOException {
@@ -132,6 +134,12 @@ public class TestSerializeJsonSimple {
         String expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
         assertThat(json.trim().replace(System.lineSeparator(), "\n"))
             .isEqualTo(expected.trim().replace(System.lineSeparator(), "\n"));
+    }
+
+    private <T> T loadAndParse(String expectedResource, Class<T> type) throws IOException {
+        URL url = TestSerializeJson.class.getResource(expectedResource);
+        String text = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        return JodaBeanSer.PRETTY.simpleJsonReader().read(text, type);
     }
 
     //-----------------------------------------------------------------------
@@ -195,7 +203,7 @@ public class TestSerializeJsonSimple {
 
     @Test
     public void test_read_rootTypeArgumentIncorrect() {
-        assertThatExceptionOfType(ClassCastException.class)
+        assertThatIllegalArgumentException()
             .isThrownBy(() -> JodaBeanSer.COMPACT.simpleJsonReader().read("{}", Integer.class));
     }
 

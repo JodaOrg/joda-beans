@@ -17,12 +17,9 @@ package org.joda.beans.ser.json;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerIterable;
-import org.joda.beans.ser.SerIteratorFactory;
 
 /**
  * Provides the ability for a Joda-Bean to read from JSON.
@@ -76,21 +73,6 @@ public class JodaBeanSimpleJsonReader extends AbstractJsonReader {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    SerIterable parseUnknownArray(Class<?> declaredType) {
-        if (declaredType.isArray()) {
-            return SerIteratorFactory.array(declaredType.getComponentType());
-        } else {
-            return SerIteratorFactory.list(Object.class, Collections.emptyList());
-        }
-    }
-
-    @Override
-    SerIterable parseUnknownObject(Class<?> declaredType) {
-        return SerIteratorFactory.map(String.class, Object.class, Collections.emptyList());
     }
 
 }

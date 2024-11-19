@@ -230,7 +230,7 @@ public class SerIteratorFactory {
                     throw new RuntimeException(ex);
                 }
             }
-            return type.isPrimitive() ? arrayPrimitive(type) : array(type);
+            return array(type);
         }
         return null;
     }
@@ -276,11 +276,7 @@ public class SerIteratorFactory {
                 return map(Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
             if (valueType.isArray()) {
-                if (valueType.getComponentType().isPrimitive()) {
-                    return arrayPrimitive(valueType.getComponentType());
-                } else {
-                    return array(valueType.getComponentType());
-                }
+                return array(valueType.getComponentType());
             }
         }
         return null;
@@ -706,6 +702,9 @@ public class SerIteratorFactory {
      * @return the iterable, not null
      */
     public static SerIterable array(Class<?> valueType) {
+        if (valueType.isPrimitive()) {
+            return arrayPrimitive(valueType);
+        }
         List<Object> list = new ArrayList<>();
         return new SerIterable() {
             @Override

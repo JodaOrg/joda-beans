@@ -62,38 +62,41 @@ public class TestSerializeJson {
 
     @Test
     public void test_writeAddress() throws IOException {
-        Address address = SerTestHelper.testAddress();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
+        Address bean = SerTestHelper.testAddress();
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Address.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Address1.json");
         
-        Address bean = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        Address parsed = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress(false);
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
+        ImmAddress bean = SerTestHelper.testImmAddress(false);
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress1.json");
         
-        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        ImmAddress parsed = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
+
+        ImmAddress bean2 = loadAndParse("/org/joda/beans/ser/ImmAddress2.json", ImmAddress.class);
+        BeanAssert.assertBeanEquals(bean, bean2);
     }
 
     @Test
     public void test_writeImmOptional() throws IOException {
-        ImmOptional optional = SerTestHelper.testImmOptional();
-        String json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(optional);
+        ImmOptional bean = SerTestHelper.testImmOptional();
+        String json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional1.json");
         
-        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        ImmOptional parsed = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
@@ -107,38 +110,41 @@ public class TestSerializeJson {
                 new boolean[][] {{true, false}, {false}, {}});
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays1.json");
 
         ImmArrays parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
-//        System.out.println(bean);
+//        System.out.println(parsed);
         BeanAssert.assertBeanEquals(bean, parsed);
+
+        ImmArrays bean2 = loadAndParse("/org/joda/beans/ser/ImmArrays2.json", ImmArrays.class);
+        BeanAssert.assertBeanEquals(bean, bean2);
     }
 
     @Test
     public void test_writeCollections() throws IOException {
-        ImmGuava<String> optional = SerTestHelper.testCollections();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
+        ImmGuava<String> bean = SerTestHelper.testCollections();
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections1.json");
         
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        ImmGuava<String> parsed = (ImmGuava<String>) JodaBeanSer.PRETTY.jsonReader().read(json);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeJodaConvertInterface() {
-        ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
+        ImmGenericCollections<JodaConvertInterface> bean = SerTestHelper.testGenericInterfaces();
         
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(array);
+        String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
         
         @SuppressWarnings("unchecked")
-        ImmGenericCollections<JodaConvertInterface> bean =
+        ImmGenericCollections<JodaConvertInterface> parsed =
                 (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.jsonReader().read(json);
 //        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, array);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     private void assertEqualsSerialization(String json, String expectedResource) throws IOException {
@@ -146,6 +152,12 @@ public class TestSerializeJson {
         String expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
         assertThat(json.trim().replace(System.lineSeparator(), "\n"))
             .isEqualTo(expected.trim().replace(System.lineSeparator(), "\n"));
+    }
+
+    private <T> T loadAndParse(String expectedResource, Class<T> type) throws IOException {
+        URL url = TestSerializeJson.class.getResource(expectedResource);
+        String text = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        return JodaBeanSer.PRETTY.jsonReader().read(text, type);
     }
 
     //-----------------------------------------------------------------------
