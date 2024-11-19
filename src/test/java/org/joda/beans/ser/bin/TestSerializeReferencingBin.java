@@ -15,6 +15,7 @@
  */
 package org.joda.beans.ser.bin;
 
+import static java.lang.System.lineSeparator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
@@ -23,11 +24,15 @@ import static org.assertj.core.api.Assertions.offset;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.sample.Company;
+import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmDefault;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGeneric;
@@ -47,16 +52,32 @@ import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.io.Resources;
+
 /**
  * Test property roundtrip using referencing binary.
  */
 public class TestSerializeReferencingBin {
 
     @Test
-    public void test_writeImmOptional() {
+    public void test_writeImmAddress() throws IOException {
+        ImmAddress address = SerTestHelper.testImmAddress(true);
+        byte[] bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(address);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmAddress2.binstr");
+
+        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.binReader().read(bytes);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, address);
+    }
+
+    @Test
+    public void test_writeImmOptional() throws IOException {
+        // derived properties are not supported
         ImmOptional optional = SerTestHelper.testImmOptional();
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(optional);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmOptional2.binstr");
 
         ImmOptional bean = (ImmOptional) JodaBeanSer.COMPACT.binReader().read(bytes);
 //        System.out.println(bean);
@@ -64,10 +85,29 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeCollections() {
+    public void test_writeImmArrays() throws IOException {
+        ImmArrays bean = ImmArrays.of(
+                new int[] {1, 3, 2},
+                new long[] {1, 4, 3},
+                new double[] {1.1, 2.2, 3.3},
+                new boolean[] {true, false},
+                new int[][] {{1, 2}, {2}, {}},
+                new boolean[][] {{true, false}, {false}, {}});
+        byte[] bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(bean);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmArrays2.binstr");
+
+        ImmArrays parsed = JodaBeanSer.PRETTY.binReader().read(bytes, ImmArrays.class);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_writeCollections() throws IOException {
         ImmGuava<String> optional = SerTestHelper.testCollections();
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(optional);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections2.binstr");
 
         @SuppressWarnings("unchecked")
         ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.COMPACT.binReader().read(bytes);
@@ -75,6 +115,14 @@ public class TestSerializeReferencingBin {
         BeanAssert.assertBeanEquals(bean, optional);
     }
 
+    private void assertEqualsSerialization(byte[] actualBytes, String expectedResource) throws IOException {
+        URL url = TestSerializeReferencingBin.class.getResource(expectedResource);
+        String expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        String actual = new MsgPackVisualizer(actualBytes).visualizeData();
+        assertThat(actual.trim().replace(lineSeparator(), "\n")).isEqualTo(expected.trim().replace(lineSeparator(), "\n"));
+    }
+
+    //-------------------------------------------------------------------------
     @Test
     public void test_writeJodaConvertInterface() {
         ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();

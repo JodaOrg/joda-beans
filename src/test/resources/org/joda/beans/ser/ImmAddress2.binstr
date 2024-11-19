@@ -1,0 +1,330 @@
+arr (4)
+- int 2
+- int 17
+- map (11)
+  = str 'String'
+    arr (0)
+  = str 'org.joda.beans.sample.ImmAddress'
+    arr (26)
+    - str 'number'
+    - str 'street'
+    - str 'city'
+    - str 'abstractNumber'
+    - str 'data'
+    - str 'array2d'
+    - str 'owner'
+    - str 'object1'
+    - str 'object2'
+    - str 'risk'
+    - str 'riskLevel'
+    - str 'riskLevels'
+    - str 'serializable'
+    - str 'objectInMap'
+    - str 'listInMap'
+    - str 'listNumericInMap'
+    - str 'listInListInMap'
+    - str 'objectListInListInMap'
+    - str 'mapInMap'
+    - str 'simpleTable'
+    - str 'compoundTable'
+    - str 'sparseGrid'
+    - str 'denseGrid'
+    - str 'beanBeanMap'
+    - str 'doubleVector'
+    - str 'matrix'
+  = str 'Short'
+    arr (0)
+  = str 'org.joda.beans.sample.ImmPerson'
+    arr (10)
+    - str 'forename'
+    - str 'surname'
+    - str 'numberOfCars'
+    - str 'dateOfBirth'
+    - str 'middleNames'
+    - str 'addressList'
+    - str 'otherAddressMap'
+    - str 'addressesList'
+    - str 'mainAddress'
+    - str 'codeCounts'
+  = str 'java.util.Currency'
+    arr (0)
+  = str 'Integer'
+    arr (0)
+  = str 'Locale'
+    arr (0)
+  = str 'Long'
+    arr (0)
+  = str 'java.util.TimeZone'
+    arr (0)
+  = str 'org.joda.beans.sample.Risk'
+    arr (0)
+  = str 'org.joda.beans.sample.RiskPerception'
+    arr (0)
+- arr (27)
+  - ext type=32 '1' (bean)
+  - int 185
+  - map (1)
+    = ext type=35 '8' (refkey)
+      str 'Park Street'
+  - str 'London & Capital of the World <!>
+'
+  - map (1)
+    = ext type=33 '2' (data)
+      int 89
+  - nil
+  - map (1)
+    = ext type=34 'String[][]' (meta)
+      arr (3)
+      - map (1)
+        = ext type=34 'String[]' (meta)
+          arr (1)
+          - map (1)
+            = ext type=35 '3' (refkey)
+              str 'a'
+      - map (1)
+        = ext type=34 'String[]' (meta)
+          arr (0)
+      - map (1)
+        = ext type=34 'String[]' (meta)
+          arr (2)
+          - map (1)
+            = ext type=35 '1' (refkey)
+              str 'b'
+          - map (1)
+            = ext type=35 '6' (refkey)
+              str 'c'
+  - map (1)
+    = ext type=35 '9' (refkey)
+      arr (10)
+      - str 'Etienne'
+      - map (1)
+        = ext type=35 '7' (refkey)
+          str 'Colebourne'
+      - int 1
+      - nil
+      - arr (2)
+        - str 'K'
+        - str 'T'
+      - nil
+      - nil
+      - nil
+      - nil
+      - map (2)
+        = map (1)
+          = ext type=35 '0' (refkey)
+            str 'A'
+          int 2
+        = map (1)
+          = ext type=35 '4' (refkey)
+            str 'B'
+          int 1
+  - map (1)
+    = map (1)
+      = ext type=35 '10' (refkey)
+        ext type=34 'List' (meta)
+      arr (3)
+      - ext type=36 '3' (ref)
+      - ext type=36 '1' (ref)
+      - ext type=36 '6' (ref)
+  - map (1)
+    = ext type=34 'Map' (meta)
+      map (2)
+      = map (1)
+        = ext type=35 '11' (refkey)
+          str 'd'
+        int 1
+      = map (1)
+        = ext type=33 '4' (data)
+          map (1)
+          = ext type=35 '12' (refkey)
+            str 'GBP'
+        int 2
+  - nil
+  - nil
+  - nil
+  - map (1)
+    = ext type=34 '10' (meta)
+      arr (3)
+      - ext type=36 '3' (ref)
+      - ext type=36 '1' (ref)
+      - ext type=36 '6' (ref)
+  - map (4)
+    = ext type=36 '0' (ref)
+      str 'Abba'
+    = ext type=36 '4' (ref)
+      map (1)
+      = ext type=34 'Set' (meta)
+        arr (2)
+        - ext type=36 '3' (ref)
+        - ext type=36 '1' (ref)
+    = str 'C'
+      map (1)
+      = ext type=34 'Set' (meta)
+        arr (2)
+        - map (1)
+          = ext type=33 '6' (data)
+            map (1)
+            = ext type=35 '13' (refkey)
+              str 'fr_CA'
+        - map (1)
+          = ext type=33 '7' (data)
+            int 2
+    = str 'D'
+      map (1)
+      = ext type=34 'Map' (meta)
+        map (2)
+        = ext type=36 '11' (ref)
+          int 1
+        = str 'e'
+          int 2
+  - map (1)
+    = ext type=36 '0' (ref)
+      arr (2)
+      - ext type=36 '4' (ref)
+      - ext type=36 '1' (ref)
+  - map (1)
+    = ext type=36 '0' (ref)
+      arr (3)
+      - int 3
+      - int 2
+      - int 1
+  - map (1)
+    = ext type=36 '0' (ref)
+      arr (1)
+      - map (1)
+        = ext type=34 '10' (meta)
+          arr (3)
+          - int 3
+          - int 2
+          - int 1
+  - map (2)
+    = ext type=36 '0' (ref)
+      arr (1)
+      - map (1)
+        = ext type=34 '10' (meta)
+          arr (2)
+          - ext type=36 '12' (ref)
+          - map (1)
+            = ext type=33 '8' (data)
+              str 'Europe/London'
+    = ext type=36 '4' (ref)
+      arr (1)
+      - map (1)
+        = ext type=34 '10' (meta)
+          arr (2)
+          - ext type=36 '13' (ref)
+          - map (1)
+            = ext type=33 '7' (data)
+              int 2
+  - map (1)
+    = map (1)
+      = ext type=35 '2' (refkey)
+        arr (10)
+        - str 'Etiennette'
+        - ext type=36 '7' (ref)
+        - int 1
+        - nil
+        - arr (0)
+        - nil
+        - nil
+        - nil
+        - nil
+        - nil
+      map (1)
+      = str 'sibling'
+        map (1)
+        = ext type=35 '5' (refkey)
+          arr (10)
+          - str 'Kylie'
+          - ext type=36 '7' (ref)
+          - int 1
+          - nil
+          - arr (0)
+          - nil
+          - nil
+          - nil
+          - nil
+          - nil
+  - arr (2)
+    - arr (3)
+      - int 1
+      - int 1
+      - str 'Hello'
+    - arr (3)
+      - int 1
+      - int 2
+      - str 'There'
+  - arr (3)
+    - arr (3)
+      - int 1
+      - int 1
+      - ext type=36 '9' (ref)
+    - arr (3)
+      - int 1
+      - int 2
+      - ext type=36 '2' (ref)
+    - arr (3)
+      - int 2
+      - int 1
+      - ext type=36 '5' (ref)
+  - arr (3)
+    - int 5
+    - int 5
+    - arr (3)
+      - int 1
+      - int 1
+      - ext type=36 '5' (ref)
+  - arr (8)
+    - int 2
+    - int 3
+    - ext type=36 '2' (ref)
+    - nil
+    - nil
+    - nil
+    - ext type=36 '5' (ref)
+    - nil
+  - map (1)
+    = ext type=36 '2' (ref)
+      arr (26)
+      - int 185
+      - ext type=36 '8' (ref)
+      - str 'London'
+      - nil
+      - bin '404142'
+      - nil
+      - ext type=36 '2' (ref)
+      - map (1)
+        = ext type=33 '9' (data)
+          map (1)
+          = ext type=35 '15' (refkey)
+            str 'MEDIUM'
+      - map (1)
+        = ext type=33 '10' (data)
+          str 'LOW'
+      - map (1)
+        = ext type=35 '16' (refkey)
+          str 'LOW'
+      - str 'HIGH'
+      - arr (2)
+        - ext type=36 '16' (ref)
+        - ext type=36 '15' (ref)
+      - nil
+      - map (0)
+      - map (0)
+      - map (0)
+      - map (0)
+      - map (0)
+      - map (0)
+      - nil
+      - nil
+      - nil
+      - nil
+      - map (0)
+      - nil
+      - nil
+  - str '1.1,2.2,3.3'
+  - map (1)
+    = ext type=34 'double[][]' (meta)
+      arr (2)
+      - str '1.1,2.2'
+      - str '3.2'

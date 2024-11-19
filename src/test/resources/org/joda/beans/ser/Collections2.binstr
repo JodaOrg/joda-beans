@@ -1,0 +1,146 @@
+arr (4)
+- int 2
+- int 6
+- map (2)
+  = str 'String'
+    arr (0)
+  = str 'org.joda.beans.sample.ImmGuava'
+    arr (34)
+    - str 'collection'
+    - str 'list'
+    - str 'set'
+    - str 'sortedSet'
+    - str 'map'
+    - str 'sortedMap'
+    - str 'biMap'
+    - str 'multimap'
+    - str 'listMultimap'
+    - str 'setMultimap'
+    - str 'multiset'
+    - str 'sortedMultiset'
+    - str 'collectionInterface'
+    - str 'listInterface'
+    - str 'setInterface'
+    - str 'sortedSetInterface'
+    - str 'mapInterface'
+    - str 'sortedMapInterface'
+    - str 'biMapInterface'
+    - str 'multimapInterface'
+    - str 'listMultimapInterface'
+    - str 'setMultimapInterface'
+    - str 'multisetInterface'
+    - str 'sortedMultisetInterface'
+    - str 'listWildExtendsT'
+    - str 'listWildExtendsNumber'
+    - str 'listWildExtendsComparable'
+    - str 'setWildExtendsT'
+    - str 'setWildExtendsNumber'
+    - str 'setWildExtendsComparable'
+    - str 'listWildBuilder1'
+    - str 'listWildBuilder2'
+    - str 'mapWildBuilder1'
+    - str 'mapWildKey'
+- arr (35)
+  - ext type=32 '1' (bean)
+  - map (1)
+    = map (1)
+      = ext type=35 '4' (refkey)
+        ext type=34 'List' (meta)
+      arr (0)
+  - arr (2)
+    - map (1)
+      = ext type=33 '0' (data)
+        map (1)
+        = ext type=35 '0' (refkey)
+          str 'A'
+    - map (1)
+      = ext type=33 '0' (data)
+        map (1)
+        = ext type=35 '1' (refkey)
+          str 'B'
+  - arr (2)
+    - ext type=36 '0' (ref)
+    - ext type=36 '1' (ref)
+  - arr (2)
+    - ext type=36 '0' (ref)
+    - ext type=36 '1' (ref)
+  - map (2)
+    = ext type=36 '0' (ref)
+      map (1)
+      = ext type=35 '2' (refkey)
+        str 'AA'
+    = ext type=36 '1' (ref)
+      map (1)
+      = ext type=35 '3' (refkey)
+        str 'BB'
+  - map (2)
+    = ext type=36 '0' (ref)
+      ext type=36 '2' (ref)
+    = ext type=36 '1' (ref)
+      ext type=36 '3' (ref)
+  - map (2)
+    = ext type=36 '0' (ref)
+      ext type=36 '2' (ref)
+    = ext type=36 '1' (ref)
+      ext type=36 '3' (ref)
+  - map (1)
+    = map (1)
+      = ext type=35 '5' (refkey)
+        ext type=34 'ListMultimap' (meta)
+      map (0)
+  - map (0)
+  - map (0)
+  - map (3)
+    = ext type=36 '0' (ref)
+      int 1
+    = ext type=36 '1' (ref)
+      int 2
+    = map (1)
+      = ext type=33 '0' (data)
+        str 'C'
+      int 3
+  - map (0)
+  - map (1)
+    = ext type=34 '4' (meta)
+      arr (0)
+  - arr (2)
+    - ext type=36 '0' (ref)
+    - ext type=36 '1' (ref)
+  - arr (2)
+    - ext type=36 '0' (ref)
+    - ext type=36 '1' (ref)
+  - arr (2)
+    - ext type=36 '0' (ref)
+    - ext type=36 '1' (ref)
+  - map (2)
+    = ext type=36 '0' (ref)
+      ext type=36 '2' (ref)
+    = ext type=36 '1' (ref)
+      ext type=36 '3' (ref)
+  - map (2)
+    = ext type=36 '0' (ref)
+      ext type=36 '2' (ref)
+    = ext type=36 '1' (ref)
+      ext type=36 '3' (ref)
+  - map (2)
+    = ext type=36 '0' (ref)
+      ext type=36 '2' (ref)
+    = ext type=36 '1' (ref)
+      ext type=36 '3' (ref)
+  - map (1)
+    = ext type=34 '5' (meta)
+      map (0)
+  - map (0)
+  - map (0)
+  - map (0)
+  - map (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - map (0)
+  - map (0)

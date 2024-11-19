@@ -1,0 +1,27 @@
+arr (2)
+- int 1
+- map (7)
+  = ext type=32 'org.joda.beans.sample.ImmArrays' (bean)
+    nil
+  = str 'intArray'
+    str '1,3,2'
+  = str 'longArray'
+    str '1,4,3'
+  = str 'doubleArray'
+    str '1.1,2.2,3.3'
+  = str 'booleanArray'
+    str 'TF'
+  = str 'intArray2d'
+    map (1)
+    = ext type=34 'int[][]' (meta)
+      arr (3)
+      - str '1,2'
+      - str '2'
+      - str ''
+  = str 'booleanArray2d'
+    map (1)
+    = ext type=34 'boolean[][]' (meta)
+      arr (3)
+      - str 'TF'
+      - str 'F'
+      - str ''

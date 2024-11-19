@@ -1,0 +1,385 @@
+arr (2)
+- int 1
+- map (23)
+  = ext type=32 'org.joda.beans.sample.ImmAddress' (bean)
+    nil
+  = str 'number'
+    int 185
+  = str 'street'
+    str 'Park Street'
+  = str 'city'
+    str 'London & Capital of the World <!>
+'
+  = str 'abstractNumber'
+    map (1)
+    = ext type=33 'Short' (data)
+      int 89
+  = str 'array2d'
+    map (1)
+    = ext type=34 'String[][]' (meta)
+      arr (3)
+      - map (1)
+        = ext type=34 'String[]' (meta)
+          arr (1)
+          - str 'a'
+      - map (1)
+        = ext type=34 'String[]' (meta)
+          arr (0)
+      - map (1)
+        = ext type=34 'String[]' (meta)
+          arr (2)
+          - str 'b'
+          - str 'c'
+  = str 'owner'
+    map (6)
+    = str 'forename'
+      str 'Etienne'
+    = str 'surname'
+      str 'Colebourne'
+    = str 'numberOfCars'
+      int 1
+    = str 'middleNames'
+      arr (2)
+      - str 'K'
+      - str 'T'
+    = str 'addressList'
+      arr (1)
+      - map (1)
+        = str 'number'
+          int 0
+    = str 'codeCounts'
+      map (2)
+      = str 'A'
+        int 2
+      = str 'B'
+        int 1
+  = str 'object1'
+    map (1)
+    = ext type=34 'List' (meta)
+      arr (3)
+      - str 'a'
+      - str 'b'
+      - str 'c'
+  = str 'object2'
+    map (1)
+    = ext type=34 'Map' (meta)
+      map (2)
+      = str 'd'
+        int 1
+      = map (1)
+        = ext type=33 'java.util.Currency' (data)
+          str 'GBP'
+        int 2
+  = str 'serializable'
+    map (1)
+    = ext type=34 'List' (meta)
+      arr (3)
+      - str 'a'
+      - str 'b'
+      - str 'c'
+  = str 'objectInMap'
+    map (4)
+    = str 'A'
+      str 'Abba'
+    = str 'B'
+      map (1)
+      = ext type=34 'Set' (meta)
+        arr (2)
+        - str 'a'
+        - str 'b'
+    = str 'C'
+      map (1)
+      = ext type=34 'Set' (meta)
+        arr (3)
+        - map (1)
+          = ext type=33 'Locale' (data)
+            str 'fr_CA'
+        - map (1)
+          = ext type=33 'Long' (data)
+            int 2
+        - map (9)
+          = ext type=32 'PrimitiveBean' (bean)
+            nil
+          = str 'valueLong'
+            int 1
+          = str 'valueInt'
+            int 2
+          = str 'valueShort'
+            int 3
+          = str 'valueByte'
+            int 4
+          = str 'valueDouble'
+            dbl 5.0
+          = str 'valueFloat'
+            flt 6.0
+          = str 'valueChar'
+            str '7'
+          = str 'valueBoolean'
+            true
+    = str 'D'
+      map (1)
+      = ext type=34 'Map' (meta)
+        map (2)
+        = str 'd'
+          int 1
+        = str 'e'
+          int 2
+  = str 'listInMap'
+    map (1)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'b'
+  = str 'listNumericInMap'
+    map (1)
+    = str 'A'
+      arr (3)
+      - int 3
+      - int 2
+      - int 1
+  = str 'listInListInMap'
+    map (1)
+    = str 'A'
+      arr (1)
+      - map (1)
+        = ext type=34 'List' (meta)
+          arr (3)
+          - int 3
+          - int 2
+          - int 1
+  = str 'objectListInListInMap'
+    map (2)
+    = str 'A'
+      arr (1)
+      - map (1)
+        = ext type=34 'List' (meta)
+          arr (2)
+          - map (1)
+            = ext type=33 'Currency' (data)
+              str 'GBP'
+          - map (1)
+            = ext type=33 'java.util.TimeZone' (data)
+              str 'Europe/London'
+    = str 'B'
+      arr (1)
+      - map (1)
+        = ext type=34 'List' (meta)
+          arr (3)
+          - map (1)
+            = ext type=33 'Locale' (data)
+              str 'fr_CA'
+          - map (1)
+            = ext type=33 'Long' (data)
+              int 2
+          - map (9)
+            = ext type=32 'PrimitiveBean' (bean)
+              nil
+            = str 'valueLong'
+              int 1
+            = str 'valueInt'
+              int 2
+            = str 'valueShort'
+              int 3
+            = str 'valueByte'
+              int 4
+            = str 'valueDouble'
+              dbl 5.0
+            = str 'valueFloat'
+              flt 6.0
+            = str 'valueChar'
+              str '7'
+            = str 'valueBoolean'
+              true
+  = str 'mapInMap'
+    map (1)
+    = map (4)
+      = str 'forename'
+        str 'Etiennette'
+      = str 'surname'
+        str 'Colebourne'
+      = str 'numberOfCars'
+        int 1
+      = str 'middleNames'
+        arr (0)
+      map (1)
+      = str 'sibling'
+        map (4)
+        = str 'forename'
+          str 'Kylie'
+        = str 'surname'
+          str 'Colebourne'
+        = str 'numberOfCars'
+          int 1
+        = str 'middleNames'
+          arr (0)
+  = str 'simpleTable'
+    arr (2)
+    - arr (3)
+      - int 1
+      - int 1
+      - str 'Hello'
+    - arr (3)
+      - int 1
+      - int 2
+      - str 'There'
+  = str 'compoundTable'
+    arr (3)
+    - arr (3)
+      - int 1
+      - int 1
+      - map (6)
+        = str 'forename'
+          str 'Etienne'
+        = str 'surname'
+          str 'Colebourne'
+        = str 'numberOfCars'
+          int 1
+        = str 'middleNames'
+          arr (2)
+          - str 'K'
+          - str 'T'
+        = str 'addressList'
+          arr (1)
+          - map (1)
+            = str 'number'
+              int 0
+        = str 'codeCounts'
+          map (2)
+          = str 'A'
+            int 2
+          = str 'B'
+            int 1
+    - arr (3)
+      - int 1
+      - int 2
+      - map (4)
+        = str 'forename'
+          str 'Etiennette'
+        = str 'surname'
+          str 'Colebourne'
+        = str 'numberOfCars'
+          int 1
+        = str 'middleNames'
+          arr (0)
+    - arr (3)
+      - int 2
+      - int 1
+      - map (4)
+        = str 'forename'
+          str 'Kylie'
+        = str 'surname'
+          str 'Colebourne'
+        = str 'numberOfCars'
+          int 1
+        = str 'middleNames'
+          arr (0)
+  = str 'sparseGrid'
+    arr (3)
+    - int 5
+    - int 5
+    - arr (3)
+      - int 1
+      - int 1
+      - map (4)
+        = str 'forename'
+          str 'Kylie'
+        = str 'surname'
+          str 'Colebourne'
+        = str 'numberOfCars'
+          int 1
+        = str 'middleNames'
+          arr (0)
+  = str 'denseGrid'
+    arr (8)
+    - int 2
+    - int 3
+    - map (4)
+      = str 'forename'
+        str 'Etiennette'
+      = str 'surname'
+        str 'Colebourne'
+      = str 'numberOfCars'
+        int 1
+      = str 'middleNames'
+        arr (0)
+    - nil
+    - nil
+    - nil
+    - map (4)
+      = str 'forename'
+        str 'Kylie'
+      = str 'surname'
+        str 'Colebourne'
+      = str 'numberOfCars'
+        int 1
+      = str 'middleNames'
+        arr (0)
+    - nil
+  = str 'beanBeanMap'
+    map (1)
+    = map (4)
+      = str 'forename'
+        str 'Etiennette'
+      = str 'surname'
+        str 'Colebourne'
+      = str 'numberOfCars'
+        int 1
+      = str 'middleNames'
+        arr (0)
+      map (17)
+      = str 'number'
+        int 185
+      = str 'street'
+        str 'Park Street'
+      = str 'city'
+        str 'London'
+      = str 'data'
+        bin '404142'
+      = str 'owner'
+        map (4)
+        = str 'forename'
+          str 'Etiennette'
+        = str 'surname'
+          str 'Colebourne'
+        = str 'numberOfCars'
+          int 1
+        = str 'middleNames'
+          arr (0)
+      = str 'object1'
+        map (1)
+        = ext type=33 'Risk' (data)
+          str 'MEDIUM'
+      = str 'object2'
+        map (1)
+        = ext type=33 'RiskPerception' (data)
+          str 'LOW'
+      = str 'risk'
+        str 'LOW'
+      = str 'riskLevel'
+        str 'HIGH'
+      = str 'riskLevels'
+        arr (2)
+        - str 'LOW'
+        - str 'MEDIUM'
+      = str 'objectInMap'
+        map (0)
+      = str 'listInMap'
+        map (0)
+      = str 'listNumericInMap'
+        map (0)
+      = str 'listInListInMap'
+        map (0)
+      = str 'objectListInListInMap'
+        map (0)
+      = str 'mapInMap'
+        map (0)
+      = str 'beanBeanMap'
+        map (0)
+  = str 'doubleVector'
+    str '1.1,2.2,3.3'
+  = str 'matrix'
+    map (1)
+    = ext type=34 'double[][]' (meta)
+      arr (2)
+      - str '1.1,2.2'
+      - str '3.2'

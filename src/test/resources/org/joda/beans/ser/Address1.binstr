@@ -1,0 +1,113 @@
+arr (2)
+- int 1
+- map (5)
+  = ext type=32 'org.joda.beans.sample.Address' (bean)
+    nil
+  = str 'number'
+    int 251
+  = str 'street'
+    str 'Big Road'
+  = str 'city'
+    str 'London & Capital of the World <!>'
+  = str 'owner'
+    map (8)
+    = str 'forename'
+      str 'Etienne'
+    = str 'surname'
+      str 'Colebourne'
+    = str 'numberOfCars'
+      int 0
+    = str 'addressList'
+      arr (3)
+      - map (3)
+        = str 'number'
+          int 65432
+        = str 'street'
+          str 'Big Road'
+        = str 'city'
+          str 'Bigton'
+      - nil
+      - map (5)
+        = ext type=32 'CompanyAddress' (bean)
+          nil
+        = str 'number'
+          int 185
+        = str 'street'
+          str 'Park Street'
+        = str 'city'
+          str 'London'
+        = str 'companyName'
+          str 'OpenGamma'
+    = str 'otherAddressMap'
+      map (3)
+      = str 'other'
+        nil
+      = str 'work'
+        map (5)
+        = ext type=32 'CompanyAddress' (bean)
+          nil
+        = str 'number'
+          int 185
+        = str 'street'
+          str 'Park Street'
+        = str 'city'
+          str 'London'
+        = str 'companyName'
+          str 'OpenGamma'
+      = str 'home'
+        map (3)
+        = str 'number'
+          int 65432
+        = str 'street'
+          str 'Big Road'
+        = str 'city'
+          str 'Bigton'
+    = str 'addressesList'
+      arr (1)
+      - arr (2)
+        - map (3)
+          = str 'number'
+            int 65432
+          = str 'street'
+            str 'Big Road'
+          = str 'city'
+            str 'Bigton'
+        - map (5)
+          = ext type=32 'CompanyAddress' (bean)
+            nil
+          = str 'number'
+            int 185
+          = str 'street'
+            str 'Park Street'
+          = str 'city'
+            str 'London'
+          = str 'companyName'
+            str 'OpenGamma'
+    = str 'mainAddress'
+      map (5)
+      = ext type=32 'CompanyAddress' (bean)
+        nil
+      = str 'number'
+        int 185
+      = str 'street'
+        str 'Park Street'
+      = str 'city'
+        str 'London'
+      = str 'companyName'
+        str 'OpenGamma'
+    = str 'extensions'
+      map (4)
+      = str 'interests'
+        str 'joda'
+      = str 'conferenceCount'
+        int 21
+      = str 'quality'
+        map (1)
+        = ext type=33 'Character' (data)
+          str 'B'
+      = str 'company'
+        map (2)
+        = ext type=32 'Company' (bean)
+          nil
+        = str 'companyName'
+          str 'OpenGamma'

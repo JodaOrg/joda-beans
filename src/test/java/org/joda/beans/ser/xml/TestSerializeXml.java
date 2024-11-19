@@ -82,7 +82,7 @@ public class TestSerializeXml {
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress();
+        ImmAddress address = SerTestHelper.testImmAddress(false);
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
 //        System.out.println(xml);
         assertEqualsSerialization(xml, "/org/joda/beans/ser/ImmAddress.xml");
