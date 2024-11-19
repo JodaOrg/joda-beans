@@ -16,7 +16,6 @@
 package org.joda.beans.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -216,6 +215,9 @@ public final class BeanAssert {
             diffs.add(prefix + ": Was null, but expected " + buildSummary(expected, true));
             return;
         }
+        if (expected.equals(actual)) {
+            return;
+        }
         if (expected instanceof List<?> expectedList && actual instanceof List<?> actualList) {
             if (expectedList.size() != actualList.size()) {
                 diffs.add(prefix + ": List size differs, expected " + expectedList.size() + " but was " + actualList.size());
@@ -311,11 +313,7 @@ public final class BeanAssert {
      */
     private static String buildSummary(Object obj, boolean includeType) {
         var type = obj.getClass().getSimpleName();
-        var toStr = switch (obj) {
-            case double[] arr -> Arrays.toString(arr);
-            case float[] arr -> Arrays.toString(arr);
-            default -> obj.toString();
-        };
+        var toStr = JodaBeanUtils.toString(obj);
         if (toStr.length() > 60) {
             toStr = toStr.substring(0, 57) + "...";
         }
