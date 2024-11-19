@@ -1,0 +1,20 @@
+arr (4)
+- int 2
+- int 0
+- map (1)
+  = str 'org.joda.beans.sample.ImmOptional'
+    arr (6)
+    - str 'optString'
+    - str 'optStringEmpty'
+    - str 'optStringGetter'
+    - str 'optLongGetter'
+    - str 'optIntGetter'
+    - str 'optDoubleGetter'
+- arr (7)
+  - ext type=32 '0' (bean)
+  - str 'A'
+  - nil
+  - nil
+  - nil
+  - nil
+  - nil
