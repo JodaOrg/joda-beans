@@ -104,7 +104,7 @@ public class TestSerializeJsonSimple {
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress().toBuilder()
+        ImmAddress address = SerTestHelper.testImmAddress(false).toBuilder()
             .mapInMap(new HashMap<>())
             .beanBeanMap(new HashMap<>())
             .build();

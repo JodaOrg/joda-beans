@@ -59,78 +59,78 @@ public class TestSerializeXml {
 
     @Test
     public void test_writeAddress() throws IOException {
-        Address address = SerTestHelper.testAddress();
-        String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
+        Address bean = SerTestHelper.testAddress();
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
         assertEqualsSerialization(xml, "/org/joda/beans/ser/Address.xml");
         
-        Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        Address parsed = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeToAppendable() throws IOException {
-        Address address = SerTestHelper.testAddress();
+        Address bean = SerTestHelper.testAddress();
         CharArrayWriter output = new CharArrayWriter();
-        JodaBeanSer.PRETTY.xmlWriter().write(address, output);
+        JodaBeanSer.PRETTY.xmlWriter().write(bean, output);
         String xml = output.toString();
 
-        Address bean = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
-        BeanAssert.assertBeanEquals(bean, address);
+        Address parsed = (Address) JodaBeanSer.PRETTY.xmlReader().read(xml);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress();
-        String xml = JodaBeanSer.PRETTY.xmlWriter().write(address);
+        ImmAddress bean = SerTestHelper.testImmAddress(false);
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
         assertEqualsSerialization(xml, "/org/joda/beans/ser/ImmAddress.xml");
         
         xml = xml.replace("185", "18<!-- comment -->5");
         
-        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        ImmAddress parsed = (ImmAddress) JodaBeanSer.PRETTY.xmlReader().read(xml);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeImmOptional() throws IOException {
-        ImmOptional optional = SerTestHelper.testImmOptional();
-        String xml = JodaBeanSer.PRETTY.withIncludeDerived(true).xmlWriter().write(optional);
+        ImmOptional bean = SerTestHelper.testImmOptional();
+        String xml = JodaBeanSer.PRETTY.withIncludeDerived(true).xmlWriter().write(bean);
 //        System.out.println(xml);
         assertEqualsSerialization(xml, "/org/joda/beans/ser/ImmOptional.xml");
         
-        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.xmlReader().read(xml);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        ImmOptional parsed = (ImmOptional) JodaBeanSer.PRETTY.xmlReader().read(xml);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeCollections() throws IOException {
-        ImmGuava<String> optional = SerTestHelper.testCollections();
-        String xml = JodaBeanSer.PRETTY.xmlWriter().write(optional);
+        ImmGuava<String> bean = SerTestHelper.testCollections();
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
         assertEqualsSerialization(xml, "/org/joda/beans/ser/Collections.xml");
         
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.xmlReader().read(xml);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        ImmGuava<String> parsed = (ImmGuava<String>) JodaBeanSer.PRETTY.xmlReader().read(xml);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeJodaConvertInterface() {
-        ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
+        ImmGenericCollections<JodaConvertInterface> bean = SerTestHelper.testGenericInterfaces();
         
-        String xml = JodaBeanSer.PRETTY.xmlWriter().write(array);
+        String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
         
         @SuppressWarnings("unchecked")
-        ImmGenericCollections<JodaConvertInterface> bean =
+        ImmGenericCollections<JodaConvertInterface> parsed =
                 (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.xmlReader().read(xml);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, array);
+//        System.out.println(parsed);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     private void assertEqualsSerialization(String xml, String expectedResource) throws IOException {

@@ -15,6 +15,7 @@
  */
 package org.joda.beans.ser.bin;
 
+import static java.lang.System.lineSeparator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.assertj.core.api.Assertions.offset;
@@ -22,12 +23,15 @@ import static org.assertj.core.api.Assertions.offset;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmDefault;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGenericCollections;
@@ -44,6 +48,8 @@ import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.io.Resources;
+
 /**
  * Test property roundtrip using binary.
  */
@@ -51,50 +57,80 @@ public class TestSerializeStandardBin {
 
     @Test
     public void test_writeAddress() throws IOException {
-        Address address = SerTestHelper.testAddress();
+        Address bean = SerTestHelper.testAddress();
 
-        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
+        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/Address1.binstr");
 
-        Address bean = (Address) JodaBeanSer.PRETTY.binReader().read(bytes);
+        Address parsed = (Address) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress();
-        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(address);
+        ImmAddress bean = SerTestHelper.testImmAddress(false);
+        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmAddress1.binstr");
 
-        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.binReader().read(bytes);
+        ImmAddress parsed = (ImmAddress) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_writeImmOptional() {
-        ImmOptional optional = SerTestHelper.testImmOptional();
-        byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(optional);
+    public void test_writeImmOptional() throws IOException {
+        ImmOptional bean = SerTestHelper.testImmOptional();
+        byte[] bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmOptional1.binstr");
 
-        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.binReader().read(bytes);
+        ImmOptional parsed = (ImmOptional) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_writeCollections() {
-        ImmGuava<String> optional = SerTestHelper.testCollections();
-        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(optional);
+    public void test_writeImmArrays() throws IOException {
+        ImmArrays bean = ImmArrays.of(
+                new int[] {1, 3, 2},
+                new long[] {1, 4, 3},
+                new double[] {1.1, 2.2, 3.3},
+                new boolean[] {true, false},
+                new int[][] {{1, 2}, {2}, {}},
+                new boolean[][] {{true, false}, {false}, {}});
+        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmArrays1.binstr");
+
+        ImmArrays parsed = JodaBeanSer.PRETTY.binReader().read(bytes, ImmArrays.class);
+//        System.out.println(bean);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_writeCollections() throws IOException {
+        ImmGuava<String> bean = SerTestHelper.testCollections();
+        byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections1.binstr");
 
         @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);
+        ImmGuava<String> parsed = (ImmGuava<String>) JodaBeanSer.PRETTY.binReader().read(bytes);
 //        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    private void assertEqualsSerialization(byte[] actualBytes, String expectedResource) throws IOException {
+        URL url = TestSerializeStandardBin.class.getResource(expectedResource);
+        String expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        String actual = new MsgPackVisualizer(actualBytes).visualizeData();
+        assertThat(actual.trim().replace(lineSeparator(), "\n")).isEqualTo(expected.trim().replace(lineSeparator(), "\n"));
+    }
+
+    //-------------------------------------------------------------------------
     @Test
     public void test_writeJodaConvertInterface() {
         ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();

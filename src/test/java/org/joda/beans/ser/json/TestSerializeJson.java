@@ -74,7 +74,7 @@ public class TestSerializeJson {
 
     @Test
     public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress();
+        ImmAddress address = SerTestHelper.testImmAddress(false);
         String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.json");
