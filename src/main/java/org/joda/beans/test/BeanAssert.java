@@ -16,7 +16,6 @@
 package org.joda.beans.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -216,6 +215,9 @@ public final class BeanAssert {
             diffs.add(prefix + ": Was null, but expected " + buildSummary(expected, true));
             return;
         }
+        if (expected.equals(actual)) {
+            return;
+        }
         if (expected instanceof List && actual instanceof List) {
             List<?> expectedList = (List<?>) expected;
             List<?> actualList = (List<?>) actual;
@@ -319,14 +321,7 @@ public final class BeanAssert {
      */
     private static String buildSummary(Object obj, boolean includeType) {
         String type = obj.getClass().getSimpleName();
-        String toStr;
-        if (obj instanceof double[]) {
-            toStr = Arrays.toString((double[]) obj);
-        } else if (obj instanceof float[]) {
-            toStr = Arrays.toString((float[]) obj);
-        } else {
-            toStr = obj.toString();
-        }
+        String toStr = JodaBeanUtils.toString(obj);
         if (toStr.length() > 60) {
             toStr = toStr.substring(0, 57) + "...";
         }
