@@ -66,15 +66,21 @@ public class TestResolvedType {
                 {ResolvedType.of(String.class),
                         String.class, List.of(),
                         "String"},
+                {ResolvedType.of(List.class),
+                            List.class, List.of(),
+                            "List"},
+                {ResolvedType.from(String.class),
+                        String.class, List.of(),
+                        "String"},
+                {ResolvedType.from(List.class),
+                        List.class, List.of(ResolvedType.OBJECT),
+                        "List<Object>"},
                 {ResolvedType.ofFlat(String.class),
                         String.class, List.of(),
                         "String"},
                 {ResolvedType.ofFlat(List.class, String.class),
                         List.class, List.of(ResolvedType.of(String.class)),
                         "List<String>"},
-                {ResolvedType.of(List.class),
-                        List.class, List.of(ResolvedType.OBJECT),
-                        "List<Object>"},
                 {ResolvedType.of(List.class, ResolvedType.STRING),
                         List.class, List.of(ResolvedType.of(String.class)),
                         "List<String>"},
@@ -93,12 +99,15 @@ public class TestResolvedType {
                 {ResolvedType.ofFlat(List[][].class, String.class),
                         List[][].class, List.of(ResolvedType.of(String.class)),
                         "List<String>[][]"},
-                {ResolvedType.of(List[][].class),
+                {ResolvedType.from(List[][].class),
                         List[][].class, List.of(ResolvedType.of(Object.class)),
                         "List<Object>[][]"},
                 {ResolvedType.ofFlat(Map[].class, String.class, List[].class),
-                        Map[].class, List.of(ResolvedType.STRING, ResolvedType.of(List[].class, ResolvedType.OBJECT)),
-                        "Map<String, List<Object>[]>[]"},
+                        Map[].class, List.of(ResolvedType.STRING, ResolvedType.of(List[].class)),
+                        "Map<String, List[]>[]"},
+                {ResolvedType.of(Map[].class, ResolvedType.STRING, ResolvedType.ofFlat(List[].class, Number.class)),
+                        Map[].class, List.of(ResolvedType.STRING, ResolvedType.of(List[].class, ResolvedType.of(Number.class))),
+                        "Map<String, List<Number>[]>[]"},
                 {ResolvedType.from(Person.meta().addressList().propertyGenericType(), Person.class),
                         List.class, List.of(ResolvedType.of(Address.class)),
                         "List<org.joda.beans.sample.Address>"},
@@ -184,6 +193,9 @@ public class TestResolvedType {
                         "org.joda.beans.sample.AbstractResult<org.joda.beans.sample.CompanyAddress>"},
                 // recursive generics
                 {ResolvedType.of(Enum.class),
+                        Enum.class, List.of(),
+                        "java.lang.Enum"},
+                {ResolvedType.from(Enum.class),
                         Enum.class, List.of(ResolvedType.ofFlat(Enum.class, Object.class)),
                         "java.lang.Enum<java.lang.Enum<Object>>"},
                 {ResolvedType.from(Enum.class, Thread.State.class),  // also test nested classes
@@ -227,39 +239,30 @@ public class TestResolvedType {
             String expectedToString) {
 
         if (expectedArgTypes.isEmpty()) {
-            assertThatIllegalArgumentException()
-                    .isThrownBy(() -> test.getArgument(0))
-                    .withMessage("Unexpected generic type access for " + expectedToString + ", index 0 is invalid");
             assertThat(test.getArgumentOrDefault(0)).isEqualTo(ResolvedType.OBJECT);
+            assertThat(test.isRaw()).isEqualTo(expectedRawType.getTypeParameters().length != 0);
         } else if (expectedArgTypes.size() == 1) {
-            assertThat(test.getArgument(0)).isEqualTo(expectedArgTypes.get(0));
-            assertThatIllegalArgumentException()
-                    .isThrownBy(() -> test.getArgument(1))
-                    .withMessage("Unexpected generic type access for " + expectedToString + ", index 1 is invalid");
             assertThat(test.getArgumentOrDefault(0)).isEqualTo(expectedArgTypes.get(0));
             assertThat(test.getArgumentOrDefault(1)).isEqualTo(ResolvedType.OBJECT);
+            assertThat(test.isRaw()).isFalse();
         } else if (expectedArgTypes.size() == 2) {
-            assertThat(test.getArgument(0)).isEqualTo(expectedArgTypes.get(0));
-            assertThat(test.getArgument(1)).isEqualTo(expectedArgTypes.get(1));
-            assertThatIllegalArgumentException()
-                    .isThrownBy(() -> test.getArgument(-1))
-                    .withMessage("Unexpected generic type access for " + expectedToString + ", index -1 is invalid");
-            assertThatIllegalArgumentException()
-                    .isThrownBy(() -> test.getArgument(2))
-                    .withMessage("Unexpected generic type access for " + expectedToString + ", index 2 is invalid");
             assertThat(test.getArgumentOrDefault(0)).isEqualTo(expectedArgTypes.get(0));
             assertThat(test.getArgumentOrDefault(1)).isEqualTo(expectedArgTypes.get(1));
             assertThat(test.getArgumentOrDefault(2)).isEqualTo(ResolvedType.OBJECT);
+            assertThat(test.isRaw()).isFalse();
         }
         if (expectedRawType.isArray()) {
+            assertThat(test.isArray()).isTrue();
             assertThat(test.toComponentType())
                     .isEqualTo(ResolvedType.of(expectedRawType.getComponentType(), test.getArguments().toArray(new ResolvedType[0])));
         } else {
+            assertThat(test.isArray()).isFalse();
             assertThatIllegalStateException()
                     .isThrownBy(() -> test.toComponentType())
                     .withMessage("Unable to get component type for " + expectedToString + ", type is not an array");
         }
         assertThat(test.toArrayType().toComponentType()).isEqualTo(test);
+        assertThat(test.isPrimitive()).isEqualTo(expectedRawType.isPrimitive());
     }
 
     @ParameterizedTest
