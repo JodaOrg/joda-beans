@@ -62,11 +62,11 @@ public final class ResolvedType {
     /**
      * The resolved type for {@code Object.class}.
      */
-    public static final ResolvedType OBJECT = new ResolvedType(Object.class, List.of());
+    public static final ResolvedType OBJECT = new ResolvedType(Object.class);
     /**
      * The resolved type for {@code String.class}.
      */
-    public static final ResolvedType STRING = new ResolvedType(String.class, List.of());
+    public static final ResolvedType STRING = new ResolvedType(String.class);
 
     /**
      * Pattern for class name.
@@ -122,6 +122,15 @@ public final class ResolvedType {
      * The type arguments.
      */
     private final List<ResolvedType> arguments;
+
+    /**
+     * Restricted constructor.
+     */
+    private ResolvedType(Class<?> rawType) {
+        // validation occurs in the calling code
+        this.rawType = rawType;
+        this.arguments = List.of();
+    }
 
     /**
      * Restricted constructor.
@@ -194,7 +203,7 @@ public final class ResolvedType {
             }
             // handle an array
             if (separator.startsWith("[")) {
-                for (int i = 0; i < separator.length() / 2; i++) {
+                for (var i = 0; i < separator.length() / 2; i++) {
                     parsedRawType = parsedRawType.arrayType();
                 }
                 continue;
@@ -211,41 +220,62 @@ public final class ResolvedType {
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains an instance from a raw type and type arguments.
+     * Obtains an instance from a raw type.
      * <p>
-     * The number of type arguments must match the number of type parameters on the raw type.
+     * This factory method is most useful for wrapping types that are not generic, such as {@code String}.
+     * If the input class has generic type parameters, the result will represent the raw type, and the arguments will be empty.
+     * Use {@link #from(Class)} if you want a method that defaults the type parameters to their upper bounds.
+     * <p>
+     * For example, passing {@code Map.class} to this method will simply wrap the input returning "Map",
+     * and not "Map&lt;Object, Object&gt;".
      * 
      * @param rawType  the raw type, not null
-     * @param arguments  the type arguments, not null
      * @return the resolved type
      * @throws NullPointerException if null is passed in
-     * @throws IllegalArgumentException if the number of arguments do not match the number of generics type parameters
      */
-    public static ResolvedType of(Class<?> rawType, ResolvedType... arguments) {
+    public static ResolvedType of(Class<?> rawType) {
         Objects.requireNonNull(rawType, "rawType must not be null");
-        Objects.requireNonNull(arguments, "arguments must not be null");
-        var baseType = extractBaseComponentType(rawType);
-        var actualTypeParamCount = baseType.getTypeParameters().length;
-        if (actualTypeParamCount != arguments.length) {
-            throw invalidTypeParamCount(rawType, actualTypeParamCount, arguments.length);
-        }
-        return new ResolvedType(rawType, List.of(arguments));
+        return new ResolvedType(rawType);
     }
 
     /**
      * Obtains an instance from a raw type and type arguments.
      * <p>
-     * The number of type arguments must match the number of type parameters on the raw type.
+     * The number of type arguments must match the number of type parameters on the raw type or be empty.
+     * For example, calling this method with {@code Map.class} requires the type arguments to either be
+     * size 2 (generified) or size 0 (raw).
      * 
      * @param rawType  the raw type, not null
      * @param arguments  the type arguments, not null
      * @return the resolved type
      * @throws NullPointerException if null is passed in
-     * @throws IllegalArgumentException if the number of arguments do not match the number of generics type parameters
+     * @throws IllegalArgumentException if the number of arguments do not match the number of generics type parameters or zero
+     */
+    public static ResolvedType of(Class<?> rawType, ResolvedType... arguments) {
+        Objects.requireNonNull(rawType, "rawType must not be null");
+        Objects.requireNonNull(arguments, "arguments must not be null");
+        return of(rawType, List.of(arguments));
+    }
+
+    /**
+     * Obtains an instance from a raw type and type arguments.
+     * <p>
+     * The number of type arguments must match the number of type parameters on the raw type or be empty.
+     * For example, calling this method with {@code Map.class} requires the type arguments to either be
+     * size 2 (generified) or size 0 (raw).
+     * 
+     * @param rawType  the raw type, not null
+     * @param arguments  the type arguments, not null
+     * @return the resolved type
+     * @throws NullPointerException if null is passed in
+     * @throws IllegalArgumentException if the number of arguments do not match the number of generics type parameters or zero
      */
     public static ResolvedType of(Class<?> rawType, List<ResolvedType> arguments) {
         Objects.requireNonNull(rawType, "rawType must not be null");
         Objects.requireNonNull(arguments, "arguments must not be null");
+        if (arguments.isEmpty()) {
+            return new ResolvedType(rawType);
+        }
         var baseType = extractBaseComponentType(rawType);
         var actualTypeParamCount = baseType.getTypeParameters().length;
         if (actualTypeParamCount != arguments.size()) {
@@ -261,53 +291,53 @@ public final class ResolvedType {
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains an instance from a raw type, defaulting any type parameters.
-     * <p>
-     * This factory method is most useful for wrapping types that are not generic, such as {@code String}.
-     * If the input class has generic type parameters, they will be resolved to their upper bound, typically {@code Object.class}.
-     * 
-     * @param rawType  the raw type, not null
-     * @return the resolved type
-     * @throws NullPointerException if null is passed in
-     */
-    public static ResolvedType of(Class<?> rawType) {
-        Objects.requireNonNull(rawType, "rawType must not be null");
-        return resolveClass(rawType, Object.class);
-    }
-
-    /**
      * Obtains an instance from a single-level flat list of raw types.
      * <p>
      * This factory method is most useful for wrapping types with single-level generics like {@code List<String>},
-     * simply call {@code of(List.class, String.class}.
+     * simply call {@code ofFlat(List.class, String.class)}.
      * <p>
-     * Multi-level generic classes can be created, however the nested classes will be resolved to their upper bound,
-     * typically {@code Object.class}. For example, {@code of(List.class, Optional.class} will resolve to the
-     * upper bound of {@code Optional} resulting in {@code List<Optional<Object>>}. to control the signature
-     * of {@code Optional} use #of(Class, ResolvedType...).
+     * Multi-level generic classes can be created, however the nested classes will be raw.
+     * For example, {@code ofFlat(List.class, Optional.class} will resolve to "List&lt;Optional&gt;",
+     * and not "List&lt;Optional&lt;Object&gt;&gt;".
+     * To provide nested generics for {@code Optional} use {@link #of(Class, ResolvedType...)}.
      * 
      * @param rawType  the raw type, not null
      * @param arguments  the type arguments, not null
      * @return the resolved type
      * @throws NullPointerException if null is passed in
-     * @throws IllegalArgumentException if the number of arguments do not match the number of generics type parameters
+     * @throws IllegalArgumentException if the number of arguments do not match the number of generics type parameters or zero
      */
     public static ResolvedType ofFlat(Class<?> rawType, Class<?>... arguments) {
         Objects.requireNonNull(rawType, "rawType must not be null");
         Objects.requireNonNull(arguments, "arguments must not be null");
-        var baseType = extractBaseComponentType(rawType);
-        var actualTypeParamCount = baseType.getTypeParameters().length;
-        if (actualTypeParamCount != arguments.length) {
-            throw invalidTypeParamCount(rawType, actualTypeParamCount, arguments.length);
+        if (arguments.length == 0) {
+            return new ResolvedType(rawType);
         }
         var resolvedArgs = new ResolvedType[arguments.length];
-        for (int i = 0; i < arguments.length; i++) {
-            resolvedArgs[i] = resolveClass(arguments[i], Object.class);
+        for (var i = 0; i < arguments.length; i++) {
+            resolvedArgs[i] = new ResolvedType(arguments[i]);
         }
-        return new ResolvedType(rawType, List.of(resolvedArgs));
+        return of(rawType, List.of(resolvedArgs));
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Obtains an instance from a raw type, defaulting any type parameters.
+     * <p>
+     * If the input class has generic type parameters, they will be resolved to their upper bound,
+     * typically {@code Object.class}. Use {@link #of(Class)} if you simply want to obtain a wrapper around the raw type.
+     * <p>
+     * For example, passing {@code Map.class} to this method will determine the upper bounds, returning "Map&lt;Object, Object&gt;".
+     * 
+     * @param rawType  the raw type, not null
+     * @return the resolved type
+     * @throws NullPointerException if null is passed in
+     */
+    public static ResolvedType from(Class<?> rawType) {
+        Objects.requireNonNull(rawType, "rawType must not be null");
+        return resolveClass(rawType, Object.class);
+    }
+
     /**
      * Obtains an instance from a type and context class.
      * <p>
@@ -329,8 +359,13 @@ public final class ResolvedType {
             case GenericArrayType arrType -> resolveGenericArrayType(arrType, contextClass);
             case TypeVariable<?> tvar -> resolveTypeVariable(tvar, contextClass);
             case WildcardType wild -> resolveWildcard(wild, contextClass);
-            default -> throw new IllegalArgumentException("Unknown generic type class: " + type);
+            default -> throw unknownGenericTypeClass(type);
         };
+    }
+
+    // should never happen, but might do if someone implements Type manually, or the JDK adds a new kind of Type
+    private static IllegalArgumentException unknownGenericTypeClass(Type type) {
+        return new IllegalArgumentException("Unknown generic type class: " + type);
     }
 
     // resolve a Class
@@ -338,7 +373,7 @@ public final class ResolvedType {
         var baseType = extractBaseComponentType(cls);
         var typeVariables = baseType.getTypeParameters();
         var typeArguments = new ResolvedType[typeVariables.length];
-        for (int i = 0; i < typeArguments.length; i++) {
+        for (var i = 0; i < typeArguments.length; i++) {
             typeArguments[i] = resolveTypeVariable(typeVariables[i], contextClass);
         }
         return new ResolvedType(cls, List.of(typeArguments));
@@ -348,13 +383,11 @@ public final class ResolvedType {
     private static ResolvedType resolveParameterizedType(ParameterizedType parameterizedType, Class<?> contextClass) {
         var actualTypeArguments = parameterizedType.getActualTypeArguments();
         var typeArguments = new ResolvedType[actualTypeArguments.length];
-        for (int i = 0; i < typeArguments.length; i++) {
+        for (var i = 0; i < typeArguments.length; i++) {
             typeArguments[i] = from(actualTypeArguments[i], contextClass);
         }
-        if (!(parameterizedType.getRawType() instanceof Class<?> rawType)) {
-            throw new IllegalArgumentException("Unknown generic type class: " + parameterizedType);
-        }
-        return new ResolvedType(rawType, List.of(typeArguments));
+        // all known instances of ParameterizedType return Class
+        return new ResolvedType((Class<?>) parameterizedType.getRawType(), List.of(typeArguments));
     }
 
     // resolve things like Optional<String>[]
@@ -386,7 +419,7 @@ public final class ResolvedType {
                 if (typeArgs.length == 0) {
                     yield resolveClass(rawType, Object.class);  // ignore weird situations
                 }
-                for (int i = 0; i < typeArgs.length; i++) {
+                for (var i = 0; i < typeArgs.length; i++) {
                     resolvedTypeArgs[i] = typeArgs[i] instanceof TypeVariable<?> ?
                             OBJECT :  // resolve <T extends Comparable<T>> into Comparable<Object>
                             resolveGenericBound(typeArgs[i]);
@@ -423,23 +456,10 @@ public final class ResolvedType {
     }
 
     /**
-     * Gets the matching type argument.
+     * Gets the matching type argument or the default value of {@code Object}.
      * <p>
-     * This is equivalent to {@code getArguments().get(index)} with a better error message.
-     * 
-     * @param index  the index of the generic parameter
-     * @return the type
-     * @throws IllegalArgumentException if the index is invalid
-     */
-    public ResolvedType getArgument(int index) {
-        if (index < 0 || index >= arguments.size()) {
-            throw invalidTypeArgumentIndex(index);
-        }
-        return arguments.get(index);
-    }
-
-    /**
-     * Gets the matching type argument or the default value of {@code Object}
+     * No check is performed to see if the index is valid for the raw type.
+     * For example, you could request index 3 from a {@code Map}.
      * 
      * @param index  the index of the generic parameter
      * @return the type, defaulted to Object
@@ -451,11 +471,44 @@ public final class ResolvedType {
         return arguments.get(index);
     }
 
-    private IllegalArgumentException invalidTypeArgumentIndex(int index) {
-        return new IllegalArgumentException("Unexpected generic type access for " + this + ", index " + index + " is invalid");
+    //-------------------------------------------------------------------------
+    /**
+     * Checks whether this is a raw type.
+     * 
+     * @return true if this is a generified type (with type parameters) and the type arguments are empty
+     */
+    public boolean isRaw() {
+        return arguments.isEmpty() && rawType.getTypeParameters().length != 0;
+    }
+
+    /**
+     * Checks whether this is a primitive type.
+     * 
+     * @return true if this is one of the 8 primitive types or void
+     */
+    public boolean isPrimitive() {
+        return rawType.isPrimitive();
+    }
+
+    /**
+     * Checks whether this is an array type.
+     * 
+     * @return true if this is an array type
+     */
+    public boolean isArray() {
+        return rawType.isArray();
     }
 
     //-------------------------------------------------------------------------
+    /**
+     * Gets the raw type, effectively dropping the generics.
+     * 
+     * @return the underlying raw type, as a {@code ResolvedType}
+     */
+    public ResolvedType toRawType() {
+        return arguments.isEmpty() ? this : new ResolvedType(rawType);
+    }
+
     /**
      * Gets the component type if the raw type is an array.
      * <p>
@@ -538,7 +591,7 @@ public final class ResolvedType {
             return shortenedClassName + suffix;
         } else {
             var builder = new StringBuilder(shortenedClassName).append('<');
-            for (int i = 0; i < arguments.size(); i++) {
+            for (var i = 0; i < arguments.size(); i++) {
                 if (i > 0) {
                     builder.append(", ");
                 }
