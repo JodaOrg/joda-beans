@@ -62,7 +62,7 @@ public class TestSerializeReferencingBin {
         var bean = SerTestHelper.testImmAddress(true);
         var bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
-        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmAddress2.binstr");
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmAddress1.refbinstr");
 
         var parsed = (ImmAddress) JodaBeanSer.PRETTY.binReader().read(bytes);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -74,7 +74,7 @@ public class TestSerializeReferencingBin {
         var bean = SerTestHelper.testImmOptional();
         var bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
-        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmOptional2.binstr");
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmOptional1.refbinstr");
 
         var parsed = (ImmOptional) JodaBeanSer.COMPACT.binReader().read(bytes);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -91,7 +91,7 @@ public class TestSerializeReferencingBin {
                 new boolean[][] {{true, false}, {false}, {}});
         var bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
-        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmArrays2.binstr");
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmArrays1.refbinstr");
 
         var parsed = JodaBeanSer.PRETTY.binReader().read(bytes, ImmArrays.class);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -102,7 +102,7 @@ public class TestSerializeReferencingBin {
         var bean = SerTestHelper.testCollections();
         var bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
-        assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections2.binstr");
+        assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections1.refbinstr");
 
         @SuppressWarnings("unchecked")
         var parsed = (ImmGuava<String>) JodaBeanSer.COMPACT.binReader().read(bytes);
