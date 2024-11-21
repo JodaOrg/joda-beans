@@ -56,6 +56,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.LinkedHashMultiset;
@@ -1009,11 +1010,11 @@ public final class JodaBeanUtils {
 
         private static Cloner getInstance() {
             try {
-                Class.forName("org.joda.collect.grid.Grid");
+                ImmutableGrid.of();  // check if class is available
                 return new CollectCloner();
             } catch (Exception | LinkageError ex) {
                 try {
-                    Class.forName("com.google.common.collect.Multimap");
+                    ImmutableMultiset.of();  // check if class is available
                     return new GuavaCloner();
                 } catch (Exception | LinkageError ex2) {
                     return new Cloner();

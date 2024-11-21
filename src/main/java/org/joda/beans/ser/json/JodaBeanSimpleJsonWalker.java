@@ -25,8 +25,10 @@ import org.joda.beans.Bean;
 import org.joda.beans.ResolvedType;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.collect.grid.Grid;
+import org.joda.collect.grid.ImmutableGrid;
 import org.joda.convert.ToStringConverter;
 
+import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
@@ -318,9 +320,11 @@ class JodaBeanSimpleJsonWalker {
 
         private static final BaseJsonHandlers getInstance() {
             try {
+                ImmutableGrid.of();  // check if class is available
                 return new CollectJsonHandlers();
             } catch (RuntimeException | LinkageError ex) {
                 try {
+                    ImmutableMultiset.of();  // check if class is available
                     return new GuavaJsonHandlers();
                 } catch (RuntimeException | LinkageError ex2) {
                     return new BaseJsonHandlers();

@@ -35,6 +35,9 @@ import java.util.TreeSet;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.collect.grid.ImmutableGrid;
+
+import com.google.common.collect.ImmutableMultiset;
 
 /**
  * A factory used to create wrappers around collection-like objects.
@@ -48,11 +51,11 @@ public class SerIteratorFactory {
 
     private static SerIteratorFactory getInstance() {
         try {
-            Class.forName("org.joda.collect.grid.Grid");
+            ImmutableGrid.of();  // check if class is available
             return new CollectSerIteratorFactory();
         } catch (Exception | LinkageError ex) {
             try {
-                Class.forName("com.google.common.collect.Multimap");
+                ImmutableMultiset.of();  // check if class is available
                 return new GuavaSerIteratorFactory();
             } catch (Exception | LinkageError ex2) {
                 return new SerIteratorFactory();
