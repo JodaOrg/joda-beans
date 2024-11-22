@@ -24,6 +24,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -209,7 +210,12 @@ abstract class AbstractBinReader extends MsgPack {
                 childIterable = settings.getIteratorFactory().createIterable(parentIterable);
             }
             if (childIterable == null) {
-                throw new IllegalArgumentException("Invalid binary data: Unable to create collection type");
+                // handle array types sent without a metatype
+                if (effectiveType.isArray()) {
+                    childIterable = SerIteratorFactory.array(effectiveType.getComponentType());
+                } else {
+                    throw new IllegalArgumentException("Invalid binary data: Unable to create collection type");
+                }
             }
             return parseIterable(typeByte, childIterable);
         } else {
@@ -301,7 +307,7 @@ abstract class AbstractBinReader extends MsgPack {
     Object parseSimple(int typeByte, Class<?> type) throws Exception {
         if (isString(typeByte)) {
             var text = acceptString(typeByte);
-            if (type == String.class || type == Object.class) {
+            if (type == String.class || type.isAssignableFrom(String.class)) {
                 return text;
             }
             return settings.getConverter().convertFromString(type, text);
