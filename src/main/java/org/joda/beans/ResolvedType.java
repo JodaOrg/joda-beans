@@ -473,12 +473,23 @@ public final class ResolvedType {
 
     //-------------------------------------------------------------------------
     /**
+     * Checks whether this is a parameterized generic type, irrespective of whether the type arguments are known.
+     * <p>
+     * For example, "List" and "List&lt;String&gt;" return true, while "String" returns false.
+     * 
+     * @return true if this is a type with generic type parameters
+     */
+    public boolean isParameterized() {
+        return rawType.getTypeParameters().length != 0;
+    }
+
+    /**
      * Checks whether this is a raw type.
      * 
-     * @return true if this is a generified type (with type parameters) and the type arguments are empty
+     * @return true if this is a parameterized generic type but the type arguments are empty
      */
     public boolean isRaw() {
-        return arguments.isEmpty() && rawType.getTypeParameters().length != 0;
+        return arguments.isEmpty() && isParameterized();
     }
 
     /**

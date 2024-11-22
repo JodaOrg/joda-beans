@@ -263,6 +263,7 @@ public class TestResolvedType {
         }
         assertThat(test.toArrayType().toComponentType()).isEqualTo(test);
         assertThat(test.isPrimitive()).isEqualTo(expectedRawType.isPrimitive());
+        assertThat(test.isParameterized()).isEqualTo(expectedRawType.getTypeParameters().length > 0);
     }
 
     @ParameterizedTest

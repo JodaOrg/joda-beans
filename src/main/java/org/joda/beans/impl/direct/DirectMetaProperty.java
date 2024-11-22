@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,10 +28,12 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyStyle;
+import org.joda.beans.ResolvedType;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
@@ -46,6 +49,10 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     private final MetaBean metaBean;
     /** The property type. */
     private final Class<P> propertyType;
+    /** The property generic type. */
+    private final Type propertyGenericType;
+    /** The function to create the resolved type of the property. */
+    private final Function<Class<?>, ResolvedType> propertyResolvedTypeFn;
     /** The declaring type. */
     private final Class<?> declaringType;
     /** The field or method implementing the property. */
@@ -193,9 +200,19 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
         super(propertyName);
         this.metaBean = Objects.requireNonNull(metaBean, "metaBean must not be null");
         this.propertyType = Objects.requireNonNull(propertyType, "propertyType must not be null");
+        this.propertyGenericType = switch (fieldOrMethod) {
+            case Field field -> field.getGenericType();
+            case Method method -> method.getGenericReturnType();
+            case null, default -> propertyType;
+        };
         this.declaringType = Objects.requireNonNull(declaringType, "declaringType must not be null");
         this.style = Objects.requireNonNull(style, "style must not be null");
         this.fieldOrMethod = fieldOrMethod;  // may be null
+        var beanType = metaBean.beanType();
+        var resolvedType = ResolvedType.from(propertyGenericType, beanType);
+        this.propertyResolvedTypeFn = !resolvedType.isParameterized() || Modifier.isFinal(beanType.getModifiers()) ?
+                contextClass -> resolvedType :
+                contextClass -> contextClass == beanType ? resolvedType : ResolvedType.from(propertyGenericType, contextClass);
     }
 
     //-----------------------------------------------------------------------
@@ -216,11 +233,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Type propertyGenericType() {
-        return switch (fieldOrMethod) {
-            case Field field -> field.getGenericType();
-            case Method method -> method.getGenericReturnType();
-            case null, default -> propertyType;
-        };
+        return propertyGenericType;
+    }
+
+    @Override
+    public ResolvedType propertyResolvedType(Class<?> contextClass) {
+        return propertyResolvedTypeFn.apply(contextClass);
     }
 
     @Override
