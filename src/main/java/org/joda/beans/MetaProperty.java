@@ -89,9 +89,21 @@ public interface MetaProperty<P> {
      * <p>
      * This provides access to the generic type declared in the source code.
      * 
-     * @return the full generic type of the property, unmodifiable, not null
+     * @return the full generic type of the property, not null
      */
     public abstract Type propertyGenericType();
+
+    /**
+     * Gets the resolved generic type of the property.
+     * <p>
+     * This provides access to the generic type resolved relative to the context class.
+     * 
+     * @param contextClass  the context class, typically the bean implementation class
+     * @return the resolved generic type of the property, not null
+     */
+    public default ResolvedType propertyResolvedType(Class<?> contextClass) {
+        return ResolvedType.from(propertyGenericType(), contextClass);
+    }
 
     /**
      * Gets the style of the property, such as read-only, read-write or write-only.
