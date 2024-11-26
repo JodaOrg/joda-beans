@@ -56,17 +56,17 @@ abstract class BeanPack {
     /**
      * Map - followed by the size as an unsigned short.
      */
-    static final int MAP_16 = 0xFFFFFFBE;
+    static final int MAP_16 = 0xFFFFFF8E;
     /**
      * Map - followed by the size as an unsigned long.
      */
-    static final int MAP_32 = 0xFFFFFFBF;
+    static final int MAP_32 = 0xFFFFFF8F;
 
     // arrays
     /**
      * Min fixed array - up to length 12.
      */
-    static final int MIN_FIX_ARRAY = 0xFFFFFF90;
+    static final int MIN_FIX_ARRAY = 0xFFFFFF90;  // must be same as MsgPack
     /**
      * Max fixed array.
      */
@@ -224,15 +224,16 @@ abstract class BeanPack {
 
     // types and references
     /**
-     * Type name - followed by BeanPack string, followed by UTF-8 type name and the actual value.
+     * Type definition - followed by a BeanPack string and the actual value.
      */
-    static final int TYPE_NAME = 0xFFFFFFEB;
+    static final int TYPE_DEFN = 0xFFFFFFEB;
     /**
      * Reference to a type name - followed by a BeanPack int reference and the actual value.
      */
     static final int TYPE_REF = 0xFFFFFFEC;
     /**
-     * Bean with full definition - followed by a map of property names and values, nulls replacing non-serialized entries.
+     * Bean with full definition - followed by a BeanPack int count of properties, then each property name,
+     * then each property value, nulls replacing non-serialized entries.
      */
     static final int BEAN_DEFN = 0xFFFFFFED;
     /**
@@ -304,21 +305,4 @@ abstract class BeanPack {
     static String toHex(int b) {
         return String.format("%02X", (byte) b);
     }
-
-    static boolean isMap(int typeByte) {
-        return (typeByte & MIN_FIX_MAP) == MIN_FIX_MAP;
-    }
-
-    static boolean isArray(int typeByte) {
-        return (typeByte & MIN_FIX_ARRAY) == MIN_FIX_ARRAY;
-    }
-
-    static boolean isString(int typeByte) {
-        return typeByte >= MIN_FIX_STR && typeByte <= STR_32;
-    }
-
-    static boolean isIntegral(int typeByte) {
-        return (typeByte >= FLOAT_32 && typeByte <= MAX_FIX_INT);
-    }
-
 }

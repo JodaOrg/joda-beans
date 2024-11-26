@@ -46,7 +46,7 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Table;
 
 /**
- * Writes a Joda-Bean in a binary format with strings deduplicated by reference.
+ * Writes the Joda-Bean BeanPack binary format with strings deduplicated by reference.
  * <p>
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
@@ -65,7 +65,7 @@ final class JodaBeanPackedBinWriter {
             }
             // these primitive types are always written and interpretted without a type
             if (type == String.class) {
-                return (writer, declaredType, propName, value) -> writer.writeString(declaredType, propName, (String) value);
+                return (writer, declaredType, propName, value) -> writer.writeString((String) value);
             }
             if (type == Integer.class || type == int.class) {
                 return (writer, declaredType, propName, value) -> writer.output.writeInt((Integer) value);
@@ -165,7 +165,7 @@ final class JodaBeanPackedBinWriter {
             output.writeArrayHeader(2);
             output.writeInt(3);  // version 3
             // root always outputs the bean, not Joda-Convert form
-            writeBean(ResolvedType.OBJECT, "", bean, true);
+            writeBean(ResolvedType.OBJECT, bean, true);
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
@@ -189,31 +189,34 @@ final class JodaBeanPackedBinWriter {
         if (settings.getConverter().isConvertible(bean.getClass())) {
             writeSimple(declaredType, propertyName, bean);
         } else {
-            writeBean(declaredType, propertyName, bean, false);
+            writeBean(declaredType, bean, false);
         }
     }
 
     // writes a bean, with meta type information if necessary
-    private void writeBean(ResolvedType declaredType, String propertyName, Bean bean, boolean isRoot) throws IOException {
+    private void writeBean(ResolvedType declaredType, Bean bean, boolean isRoot) throws IOException {
         var beanClass = bean.getClass();
-        if (beanClass != declaredType.getRawType()) {
-            writeTypeNameOrReference(beanClass, isRoot);
-        }
-        if (bean instanceof DynamicBean) {
-            writeBeanMap(bean);
-        } else {
-            if (!beanDefinitions.containsKey(bean.getClass())) {
-                beanDefinitions.put(beanClass, null);
-                output.writeBeanDefinitionMarker();
-                writeBeanMap(bean);
+        if (!beanDefinitions.containsKey(beanClass)) {
+            if (bean instanceof DynamicBean) {
+                if (beanClass != declaredType.getRawType()) {
+                    writeTypeNameOrReference(beanClass, isRoot);
+                }
+                writeDynamicBean(bean);
             } else {
-                writeBeanValues(bean);
+                beanDefinitions.put(beanClass, null);
+                writeTypeNameOrReference(beanClass, isRoot);
+                writeBeanWithDefinition(bean);
             }
+        } else {
+            if (beanClass != declaredType.getRawType()) {
+                writeTypeNameOrReference(beanClass, isRoot);
+            }
+            writeBeanValues(bean);
         }
     }
 
-    // writes the bean as a map of property name to property value
-    private void writeBeanMap(Bean bean) throws IOException {
+    // writes the dynamic bean as a map of property name to property value
+    private void writeDynamicBean(Bean bean) throws IOException {
         var beanClass = bean.getClass();
         var metaBean = bean.metaBean();
         output.writeMapHeader(metaBean.metaPropertyCount());
@@ -226,6 +229,30 @@ final class JodaBeanPackedBinWriter {
                 writeObject(resolvedType, childPropertyName, value);
             } else {
                 output.writeNull();
+                output.writeNull();
+            }
+        }
+    }
+
+    // writes the bean definition structure
+    private void writeBeanWithDefinition(Bean bean) throws IOException {
+        var beanClass = bean.getClass();
+        var metaBean = bean.metaBean();
+        output.writeBeanDefinitionHeader(metaBean.metaPropertyCount());
+        for (var metaProperty : metaBean.metaPropertyIterable()) {
+            if (settings.isSerialized(metaProperty)) {
+                output.writeString(metaProperty.name());
+            } else {
+                output.writeNull();
+            }
+        }
+        for (var metaProperty : metaBean.metaPropertyIterable()) {
+            if (settings.isSerialized(metaProperty)) {
+                var resolvedType = metaProperty.propertyResolvedType(beanClass);
+                var childPropertyName = metaProperty.name();
+                var value = metaProperty.get(bean);
+                writeObject(resolvedType, childPropertyName, value);
+            } else {
                 output.writeNull();
             }
         }
@@ -252,8 +279,8 @@ final class JodaBeanPackedBinWriter {
     //-----------------------------------------------------------------------
     // writes a simple type, with meta type information if necessary
     // this method is never called for primitive types like int/long/LocalDate
-    private void writeString(ResolvedType declaredType, String propertyName, String str) throws IOException {
-        if (str.length() >= 8) {
+    private void writeString(String str) throws IOException {
+        if (str.length() >= 6) {
             var ref = valueDefinitions.get(str);
             if (ref == null) {
                 valueDefinitions.put(str, valueDefinitionIndex++);
@@ -276,7 +303,13 @@ final class JodaBeanPackedBinWriter {
             effectiveType = settings.getConverter().findTypedConverter(effectiveType).getEffectiveType();
             writeTypeNameOrReference(effectiveType, false);
         }
-        writeJodaConvert(effectiveType, propertyName, value);
+        // write the reference, or call Joda-Convert if first time value is seen
+        var ref = valueDefinitions.get(value);
+        if (ref == null) {
+            writeJodaConvert(effectiveType, propertyName, value);
+        } else {
+            output.writeValueReference(ref);
+        }
     }
 
     // writes the object as a String using Joda-Convert
@@ -286,7 +319,16 @@ final class JodaBeanPackedBinWriter {
             if (converted == null) {
                 throw invalidNullString(propertyName, value);
             }
-            output.writeString(converted);
+            var ref = valueDefinitions.get(converted);
+            if (ref == null) {
+                valueDefinitions.put(value, valueDefinitionIndex);
+                valueDefinitions.put(converted, valueDefinitionIndex++);
+                output.writeValueDefinitionMarker();
+                output.writeString(converted);
+            } else {
+                valueDefinitions.put(value, ref);
+                output.writeValueReference(ref);
+            }
         } catch (RuntimeException ex) {
             throw invalidConversionMsg(propertyName, value, ex);
         }

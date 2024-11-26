@@ -415,7 +415,7 @@ final class BeanPackOutput extends BeanPack {
      * @throws IOException if an error occurs
      */
     void writeTypeName(String className) throws IOException {
-        output.write(TYPE_NAME);
+        output.write(TYPE_DEFN);
         writeString(className);
     }
 
@@ -431,16 +431,18 @@ final class BeanPackOutput extends BeanPack {
     }
 
     /**
-     * Writes a bean definition header market.
+     * Writes a bean definition header.
      * 
+     * @param propertyCount  the count of properties
      * @throws IOException if an error occurs
      */
-    void writeBeanDefinitionMarker() throws IOException {
+    void writeBeanDefinitionHeader(int propertyCount) throws IOException {
         output.write(BEAN_DEFN);
+        writeInt(propertyCount);
     }
 
     /**
-     * Writes a value definition header market.
+     * Writes a value definition header marker.
      * 
      * @throws IOException if an error occurs
      */

@@ -29,7 +29,7 @@ import org.joda.beans.ser.JodaBeanSer;
  * <p>
  * This class is immutable and may be used from multiple threads.
  * 
- * <h3>Standard format</h3>
+ * <h3>Standard format, version 1</h3>
  * The binary format is based on MessagePack v2.0.
  * Each bean is output as a map using the property name.
  * <p>
@@ -56,7 +56,7 @@ import org.joda.beans.ser.JodaBeanSer;
  * Type names are shortened by the package of the root type if possible.
  * Certain basic types are also handled, such as String, Integer, File and URI.
  * 
- * <h3>Referencing format</h3>
+ * <h3>Referencing format, version 2</h3>
  * The referencing format is based on the standard format.
  * As a more complex format, it is intended to be consumed only by Joda-Beans
  * (whereas the standard format could be consumed by any consumer using MsgPack).
@@ -86,6 +86,11 @@ import org.joda.beans.ser.JodaBeanSer;
  * For references, when an object will be referred back to it is written as a map of size one with 'ext' as the key
  * and the object that should be referred to as the value.
  * When that same object is referred back to it is written as 'ext' with the data from the initial 'ext'.
+ * 
+ * <h3>Packed format, version 3</h3>
+ * This format uses a structure similar to MessagePack, but distinctly different.
+ * The exact format is not specified and may change over time.
+ * Types, beans and string values are captured the first time they are found and then referred to by reference.
  */
 public class JodaBeanBinWriter {
 
@@ -94,9 +99,9 @@ public class JodaBeanBinWriter {
      */
     private final JodaBeanSer settings;
     /**
-     * Whether to use referencing.
+     * The format version.
      */
-    private final boolean referencing;
+    private final int version;
 
     //-----------------------------------------------------------------------
     /**
@@ -113,10 +118,23 @@ public class JodaBeanBinWriter {
      * 
      * @param settings  the settings to use, not null
      * @param referencing  whether to use referencing
+     * @deprecated Use the version number instead of the boolean flag
      */
+    @Deprecated
     public JodaBeanBinWriter(JodaBeanSer settings, boolean referencing) {
         this.settings = Objects.requireNonNull(settings, "settings must not be null");
-        this.referencing = referencing;
+        this.version = referencing ? 2 : 1;
+    }
+
+    /**
+     * Creates an instance.
+     * 
+     * @param settings  the settings to use, not null
+     * @param version  the version, 1, 2 or 3
+     */
+    public JodaBeanBinWriter(JodaBeanSer settings, int version) {
+        this.settings = Objects.requireNonNull(settings, "settings must not be null");
+        this.version = version;
     }
 
     //-----------------------------------------------------------------------
@@ -173,14 +191,17 @@ public class JodaBeanBinWriter {
     public void write(Bean bean, boolean rootType, OutputStream output) throws IOException {
         Objects.requireNonNull(bean, "bean must not be null");
         Objects.requireNonNull(output, "output must not be null");
-        if (referencing) {
-            if (!(bean instanceof ImmutableBean)) {
-                throw new IllegalArgumentException(
-                    "Referencing binary format can only write ImmutableBean instances: " + bean.getClass().getName());
+        switch (version) {
+            case 1 -> new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);
+            case 2 -> {
+                if (!(bean instanceof ImmutableBean immutable)) {
+                    throw new IllegalArgumentException(
+                            "Referencing binary format can only write ImmutableBean instances: " + bean.getClass().getName());
+                }
+                new JodaBeanReferencingBinWriter(settings, output).write(immutable);
             }
-            new JodaBeanReferencingBinWriter(settings, output).write((ImmutableBean) bean);
-        } else {
-            new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);
+            case 3 -> new JodaBeanPackedBinWriter(settings, output).write(bean);
+            default -> throw new IllegalArgumentException("Invalid bin version, must be 1, 2 or 3");
         }
     }
 

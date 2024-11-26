@@ -41,6 +41,8 @@ public class TestBinPerformance {
         invokeOld(address);
         invokeNew3(address);
         invokeOld(address);
+        invokeNew3(address);
+        invokeOld(address);
         System.out.println("---");
         invokeNew3(address);
         invokeOld(address);
@@ -59,11 +61,15 @@ public class TestBinPerformance {
                 if (bytes.length < 100) {
                     System.out.println();
                 }
+//                var reader = new JodaBeanBinReader(JodaBeanSer.COMPACT);
+//                var obj = reader.read(bytes, Address.class);
+//                System.out.println(obj);
+//                System.exit(0);
             }
             watch.stop();
             total = total.plus(watch.elapsed());
         }
-        System.out.println(new BeanPackVisualizer(bytes).visualizeData());
+//        System.out.println(new BeanPackVisualizer(bytes).visualizeData());
         System.out.println("NEW-AVG-B: " + ((total.dividedBy(REPEAT_OUTER).toNanos() / 1000) / 1000d) + " ms");
     }
 

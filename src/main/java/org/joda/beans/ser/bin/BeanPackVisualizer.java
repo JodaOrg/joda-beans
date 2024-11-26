@@ -211,6 +211,7 @@ final class BeanPackVisualizer extends BeanPackInput {
         buf.append("]").append(System.lineSeparator());
     }
 
+    //-------------------------------------------------------------------------
     @Override
     void handleTypeName(String typeName) throws IOException {
         buf.append("@type ").append(typeName).append(System.lineSeparator());
@@ -224,23 +225,26 @@ final class BeanPackVisualizer extends BeanPackInput {
     }
 
     @Override
-    void handleBeanDefinition() throws IOException {
-        buf.append("@beandefn ").append(System.lineSeparator());
-        readAnnotatedValue();
+    void handleBeanDefinition(int propertyCount) throws IOException {
+        buf.append("bean (").append(propertyCount).append(")").append(System.lineSeparator());
+        for (var i = 0; i < propertyCount * 2; i++) {
+            readArrayItem();
+        }
     }
 
     @Override
     void handleValueDefinition() throws IOException {
-        buf.append("@valuedefn ").append(System.lineSeparator());
+        buf.append("@value ").append(System.lineSeparator());
         readAnnotatedValue();
         valueDefinitions.add(lastString);
     }
 
     @Override
-    void handleValueReference(int ref) throws IOException {
+    void handleValueReference(int ref) {
         buf.append("ref ").append(ref).append(" '").append(valueDefinitions.get(ref)).append('\'').append(System.lineSeparator());
     }
 
+    //-------------------------------------------------------------------------
     @Override
     void handleUnknown(byte b) {
         buf.append("Unknown - ").append(String.format("%02X ", b)).append(System.lineSeparator());

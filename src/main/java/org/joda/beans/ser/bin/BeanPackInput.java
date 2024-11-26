@@ -117,8 +117,8 @@ abstract class BeanPackInput extends BeanPack {
                 case DOUBLE_64 -> handleDouble(input.readDouble());
                 case BYTE_8 -> handleByte(input.readByte());
                 case SHORT_16 -> handleShort(input.readShort());
-                case INT_8 -> handleInt(input.readUnsignedByte());
-                case INT_16 -> handleInt(input.readUnsignedShort());
+                case INT_8 -> handleInt(input.readByte());
+                case INT_16 -> handleInt(input.readShort());
                 case INT_32 -> handleInt(input.readInt());
                 case LONG_8 -> handleLong(input.readByte());
                 case LONG_16 -> handleLong(input.readShort());
@@ -135,9 +135,9 @@ abstract class BeanPackInput extends BeanPack {
                 case DOUBLE_ARRAY_8 -> doubleArray(input.readUnsignedByte());
                 case DOUBLE_ARRAY_16 -> doubleArray(input.readUnsignedShort());
                 case DOUBLE_ARRAY_32 -> doubleArray(input.readInt());
-                case TYPE_NAME -> typeName();
+                case TYPE_DEFN -> typeName();
                 case TYPE_REF -> handleTypeReference(acceptInt());
-                case BEAN_DEFN -> handleBeanDefinition();
+                case BEAN_DEFN -> handleBeanDefinition(acceptInt());
                 case VALUE_DEFN -> handleValueDefinition();
                 case VALUE_REF -> handleValueReference(acceptInt());
                 default -> handleUnknown(b);
@@ -338,13 +338,13 @@ abstract class BeanPackInput extends BeanPack {
     void handleTypeReference(int ref) throws IOException {
     }
 
-    void handleBeanDefinition() throws IOException {
+    void handleBeanDefinition(int propertyCount) throws IOException {
     }
 
     void handleValueDefinition() throws IOException {
     }
 
-    void handleValueReference(int ref) throws IOException {
+    void handleValueReference(int ref) {
     }
 
     void handleUnknown(byte b) {

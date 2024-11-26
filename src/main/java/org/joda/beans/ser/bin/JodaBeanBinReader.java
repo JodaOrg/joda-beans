@@ -138,6 +138,12 @@ public class JodaBeanBinReader extends MsgPack {
                             "Invalid binary data: Expected array with 4 elements, but was: 0x" + toHex(arrayByte));
                 }
                 return new JodaBeanReferencingBinReader(settings, input).read(declaredType);
+            case 3:
+                if (arrayByte != MIN_FIX_ARRAY + 2) {
+                    throw new IllegalArgumentException(
+                            "Invalid binary data: Expected array with 2 elements, but was: 0x" + toHex(arrayByte));
+                }
+                return new JodaBeanPackedBinReader(settings, input).read(declaredType);
             default:
                 throw new IllegalArgumentException(
                         "Invalid binary data: Expected version 1 or 2, but was: 0x" + toHex(versionByte));
