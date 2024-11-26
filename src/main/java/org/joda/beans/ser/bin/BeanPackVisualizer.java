@@ -18,11 +18,17 @@ package org.joda.beans.ser.bin;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Allows MsgPack data to be visualized.
+ * Allows BeanPack data to be visualized.
  */
-final class BeanPackVisualizer extends MsgPackInput {
+final class BeanPackVisualizer extends BeanPackInput {
 
     /**
      * The current indent.
@@ -32,6 +38,14 @@ final class BeanPackVisualizer extends MsgPackInput {
      * The buffer.
      */
     private final StringBuilder buf = new StringBuilder(1024);
+    /**
+     * The value definitions.
+     */
+    private final List<Object> valueDefinitions = new ArrayList<>();
+    /**
+     * The last string that was read.
+     */
+    private String lastString;
 
     /**
      * Creates an instance.
@@ -97,29 +111,15 @@ final class BeanPackVisualizer extends MsgPackInput {
         indent = indent.replace("-", " ").replace("=", " ");
     }
 
+    //-------------------------------------------------------------------------
+    @Override
+    void handleNull() {
+        buf.append("null").append(System.lineSeparator());
+    }
+
     @Override
     void handleBoolean(boolean bool) {
         buf.append(bool).append(System.lineSeparator());
-    }
-
-    @Override
-    void handleNil() {
-        buf.append("nil").append(System.lineSeparator());
-    }
-
-    @Override
-    void handleInt(int value) {
-        buf.append("int ").append(value).append(System.lineSeparator());
-    }
-
-    @Override
-    void handleUnsignedLong(long value) {
-        buf.append("int ").append(value).append(" unsigned").append(System.lineSeparator());
-    }
-
-    @Override
-    void handleSignedLong(long value) {
-        buf.append("int ").append(value).append(" signed").append(System.lineSeparator());
     }
 
     @Override
@@ -133,13 +133,50 @@ final class BeanPackVisualizer extends MsgPackInput {
     }
 
     @Override
-    void handleUnknown(byte b) {
-        buf.append("Unknown - ").append(String.format("%02X ", b)).append(System.lineSeparator());
+    void handleByte(byte value) {
+        buf.append("byt ").append(value).append(System.lineSeparator());
     }
 
     @Override
-    void handleString(String str) {
-        buf.append("str '").append(str).append('\'').append(System.lineSeparator());
+    void handleShort(short value) {
+        buf.append("sht ").append(value).append(System.lineSeparator());
+    }
+
+    @Override
+    void handleInt(int value) {
+        buf.append("int ").append(value).append(System.lineSeparator());
+    }
+
+    @Override
+    void handleLong(long value) {
+        buf.append("lng ").append(value).append(System.lineSeparator());
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    void handleDate(LocalDate date) {
+        buf.append(date).append(System.lineSeparator());
+    }
+
+    @Override
+    void handleTime(LocalTime time) {
+        buf.append(time).append(System.lineSeparator());
+    }
+
+    @Override
+    void handleInstant(Instant instant) {
+        buf.append(instant).append(System.lineSeparator());
+    }
+
+    @Override
+    void handleDuration(Duration duration) {
+        buf.append(duration).append(System.lineSeparator());
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    void handleMapHeader(int size) {
+        buf.append("map (").append(size).append(")").append(System.lineSeparator());
     }
 
     @Override
@@ -148,8 +185,9 @@ final class BeanPackVisualizer extends MsgPackInput {
     }
 
     @Override
-    void handleMapHeader(int size) {
-        buf.append("map (").append(size).append(")").append(System.lineSeparator());
+    void handleString(String str) {
+        buf.append("str '").append(str).append('\'').append(System.lineSeparator());
+        lastString = str;
     }
 
     @Override
@@ -162,37 +200,49 @@ final class BeanPackVisualizer extends MsgPackInput {
     }
 
     @Override
-    void handleExtension(int type, boolean numeric, byte[] bytes) {
-        String str;
-        if (numeric) {
-            var value = 0;
-            for (byte b : bytes) {
-                value = (value << 8) | (0xFF & b);
+    void handleDoubleArray(double[] values) {
+        buf.append("dbl [");
+        for (int i = 0; i < values.length; i++) {
+            for (int j = 0; j < 4 && i < values.length; j++, i++) {
+                buf.append(values[i]).append(',');
             }
-            if (bytes.length == 1) {
-                value = Byte.toUnsignedInt((byte) value);
-            } else if (bytes.length == 2) {
-                value = Short.toUnsignedInt((short) value);
-            }
-            str = Integer.toString(value);
-        } else {
-            str = new String(bytes, UTF_8);            
+            buf.append(System.lineSeparator()).append("     ");
         }
-        buf.append("ext type=")
-            .append(type)
-            .append(" '")
-            .append(str)
-            .append("'");
-        switch (type) {
-            case JODA_TYPE_BEAN -> buf.append(" (bean)");
-            case JODA_TYPE_DATA -> buf.append(" (data)");
-            case JODA_TYPE_META -> buf.append(" (meta)");
-            case JODA_TYPE_REF_KEY -> buf.append(" (refkey)");
-            case JODA_TYPE_REF -> buf.append(" (ref)");
-            default -> {
-            }
-        }
-        buf.append(System.lineSeparator());
+        buf.append("]").append(System.lineSeparator());
     }
 
+    @Override
+    void handleTypeName(String typeName) throws IOException {
+        buf.append("@type ").append(typeName).append(System.lineSeparator());
+        readAnnotatedValue();
+    }
+
+    @Override
+    void handleTypeReference(int ref) throws IOException {
+        buf.append("@typeref ").append(ref).append(System.lineSeparator());
+        readAnnotatedValue();
+    }
+
+    @Override
+    void handleBeanDefinition() throws IOException {
+        buf.append("@beandefn ").append(System.lineSeparator());
+        readAnnotatedValue();
+    }
+
+    @Override
+    void handleValueDefinition() throws IOException {
+        buf.append("@valuedefn ").append(System.lineSeparator());
+        readAnnotatedValue();
+        valueDefinitions.add(lastString);
+    }
+
+    @Override
+    void handleValueReference(int ref) throws IOException {
+        buf.append("ref ").append(ref).append(" '").append(valueDefinitions.get(ref)).append('\'').append(System.lineSeparator());
+    }
+
+    @Override
+    void handleUnknown(byte b) {
+        buf.append("Unknown - ").append(String.format("%02X ", b)).append(System.lineSeparator());
+    }
 }

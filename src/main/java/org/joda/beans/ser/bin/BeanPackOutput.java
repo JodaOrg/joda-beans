@@ -23,8 +23,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.joda.beans.MetaBean;
-
 /**
  * Outputter for BeanPack data, which is derived from ideas in MsgPack.
  */
@@ -42,10 +40,6 @@ final class BeanPackOutput extends BeanPack {
      * Mask to check if value is a signed short.
      */
     private static final int MASK_INT16 = 0x7FFF8000;
-    /**
-     * Mask to check if value is a small positive integer.
-     */
-    private static final long MASK_SMALL_LONG_POSITIVE = 0xFFFF_FFFF_FFFF_FF80L;
     /**
      * Mask to check if value is a signed byte.
      */
@@ -107,6 +101,56 @@ final class BeanPackOutput extends BeanPack {
     }
 
     /**
+     * Writes a float.
+     * 
+     * @param value  the value
+     * @throws IOException if an error occurs
+     */
+    void writeFloat(float value) throws IOException {
+        output.writeByte(FLOAT_32);
+        output.writeFloat(value);
+    }
+
+    /**
+     * Writes a double.
+     * 
+     * @param value  the value
+     * @throws IOException if an error occurs
+     */
+    void writeDouble(double value) throws IOException {
+        var intValue = (int) value;
+        if (value == intValue) {
+            output.writeByte(DOUBLE_INT);
+            output.writeInt(intValue);
+        } else {
+            output.writeByte(DOUBLE_64);
+            output.writeDouble(value);
+        }
+    }
+
+    /**
+     * Writes a byte.
+     * 
+     * @param value  the value
+     * @throws IOException if an error occurs
+     */
+    void writeByte(byte value) throws IOException {
+        output.writeByte(SHORT_16);
+        output.writeByte(value);
+    }
+
+    /**
+     * Writes a short.
+     * 
+     * @param value  the value
+     * @throws IOException if an error occurs
+     */
+    void writeShort(short value) throws IOException {
+        output.writeByte(SHORT_16);
+        output.writeShort(value);
+    }
+
+    /**
      * Writes an int.
      * 
      * @param value  the value
@@ -150,9 +194,7 @@ final class BeanPackOutput extends BeanPack {
      */
     void writeLong(long value) throws IOException {
         if (value >= 0) {
-            if ((value & MASK_SMALL_LONG_POSITIVE) == 0) {
-                output.writeByte((byte) value);
-            } else if ((value & MASK_LONG8) == 0) {
+            if ((value & MASK_LONG8) == 0) {
                 output.writeByte(LONG_8);
                 output.writeByte((byte) value);
             } else if ((value & MASK_LONG16) == 0) {
@@ -166,9 +208,7 @@ final class BeanPackOutput extends BeanPack {
                 output.writeInt((int) value);
             }
         } else {
-            if (value >= MIN_FIX_INT) {
-                output.writeByte((byte) value);
-            } else if (value >= -256) {
+            if (value >= -256) {
                 output.writeByte(LONG_8);
                 output.writeByte((byte) value);
             } else if (value >= -256 * 256) {
@@ -181,168 +221,6 @@ final class BeanPackOutput extends BeanPack {
                 output.writeByte(LONG_64);
                 output.writeInt((int) value);
             }
-        }
-    }
-
-    /**
-     * Writes a short.
-     * 
-     * @param value  the value
-     * @throws IOException if an error occurs
-     */
-    void writeShort(short value) throws IOException {
-        output.writeByte(SHORT_16);
-        output.writeShort(value);
-    }
-
-    /**
-     * Writes a byte.
-     * 
-     * @param value  the value
-     * @throws IOException if an error occurs
-     */
-    void writeByte(byte value) throws IOException {
-        output.writeByte(SHORT_16);
-        output.writeByte(value);
-    }
-
-    /**
-     * Writes a float.
-     * 
-     * @param value  the value
-     * @throws IOException if an error occurs
-     */
-    void writeFloat(float value) throws IOException {
-        output.writeByte(FLOAT_32);
-        output.writeFloat(value);
-    }
-
-    /**
-     * Writes a double.
-     * 
-     * @param value  the value
-     * @throws IOException if an error occurs
-     */
-    void writeDouble(double value) throws IOException {
-        output.writeByte(DOUBLE_64);
-        output.writeDouble(value);
-    }
-
-    /**
-     * Writes a double[].
-     * 
-     * @param values  the values, not null
-     * @throws IOException if an error occurs
-     */
-    void writeDoubles(double[] values) throws IOException {
-        var size = values.length;
-        if (size <= 255) {
-            output.writeByte(DOUBLE_ARRAY_8);
-            output.writeShort(size);
-        } else if (size <= 65535) {
-            output.writeByte(DOUBLE_ARRAY_16);
-            output.writeShort(size);
-        } else {
-            output.writeByte(DOUBLE_ARRAY_32);
-            output.writeInt(size);
-        }
-        for (double value : values) {
-            output.writeDouble(value);
-        }
-    }
-
-    /**
-     * Writes a byte[].
-     * 
-     * @param bytes  the bytes, not null
-     * @throws IOException if an error occurs
-     */
-    void writeBytes(byte[] bytes) throws IOException {
-        var size = bytes.length;
-        if (size <= 255) {
-            output.writeByte(BIN_8);
-            output.writeShort(size);
-        } else if (size <= 65535) {
-            output.writeByte(BIN_16);
-            output.writeShort(size);
-        } else {
-            output.writeByte(BIN_32);
-            output.writeInt(size);
-        }
-        output.write(bytes);
-    }
-
-    /**
-     * Writes a String.
-     * 
-     * @param value  the value
-     * @throws IOException if an error occurs
-     */
-    void writeString(String value) throws IOException {
-        // Java 21 performance testing showed manually converting to UTF-8 to be slower
-        var bytes = value.getBytes(UTF_8);
-        var size = bytes.length;
-        if (size <= 45) {
-            output.writeByte(MIN_FIX_STR + size);
-        } else if (size < 256) {
-            output.writeByte(STR_8);
-            output.writeByte(size);
-        } else {
-            writeStringHeaderLarge(size);
-        }
-        output.write(bytes);
-    }
-
-    // separate out larger strings, which may benefit hotspot
-    private void writeStringHeaderLarge(int size) throws IOException {
-        if (size < 65536) {
-            output.writeByte(STR_16);
-            output.writeShort(size);
-        } else {
-            output.writeByte(STR_32);
-            output.writeInt(size);
-        }
-    }
-
-    /**
-     * Writes a MessagePack array header.
-     * 
-     * @param size  the size
-     * @throws IOException if an error occurs
-     */
-    void writeArrayHeader(int size) throws IOException {
-        if (size <= 12) {
-            output.writeByte(MIN_FIX_ARRAY + size);
-        } else if (size < 256) {
-            output.writeByte(ARRAY_8);
-            output.writeByte(size);
-        } else if (size < 65536) {
-            output.writeByte(ARRAY_16);
-            output.writeShort(size);
-        } else {
-            output.writeByte(ARRAY_32);
-            output.writeInt(size);
-        }
-    }
-
-    /**
-     * Writes a MessagePack map header.
-     * 
-     * @param size  the size
-     * @throws IOException if an error occurs
-     */
-    void writeMapHeader(int size) throws IOException {
-        if (size <= 12) {
-            output.writeByte(MIN_FIX_MAP + size);
-        } else if (size < 256) {
-            output.writeByte(MAP_8);
-            output.writeByte(size);
-        } else if (size < 65536) {
-            output.writeByte(MAP_16);
-            output.writeShort(size);
-        } else {
-            output.writeByte(MAP_32);
-            output.writeInt(size);
         }
     }
 
@@ -404,35 +282,132 @@ final class BeanPackOutput extends BeanPack {
      * @throws IOException if an error occurs
      */
     void writeDuration(Duration duration) throws IOException {
-        output.write(INSTANT);
+        output.write(DURATION);
         output.writeLong(duration.getSeconds());
         output.writeInt(duration.getNano());
     }
 
     //-------------------------------------------------------------------------
     /**
-     * Writes a bean definition.
+     * Writes a byte[].
      * 
-     * @param metaBean  the meta-bean
-     * @param className  the class name
+     * @param bytes  the bytes, not null
      * @throws IOException if an error occurs
      */
-    void writeBeanDefinitionHeader(MetaBean metaBean, String className) throws IOException {
-        output.write(BEAN_DEFN);
-        output.write(className.getBytes(UTF_8));
+    void writeBytes(byte[] bytes) throws IOException {
+        var size = bytes.length;
+        if (size <= 255) {
+            output.writeByte(BIN_8);
+            output.writeShort(size);
+        } else if (size <= 65535) {
+            output.writeByte(BIN_16);
+            output.writeShort(size);
+        } else {
+            output.writeByte(BIN_32);
+            output.writeInt(size);
+        }
+        output.write(bytes);
     }
 
     /**
-     * Writes a bean reference.
+     * Writes a double[].
      * 
-     * @param ref  the reference
+     * @param values  the values, not null
      * @throws IOException if an error occurs
      */
-    void writeBeanReference(int ref) throws IOException {
-        output.write(BEAN_REF);
-        writeInt(ref);
+    void writeDoubles(double[] values) throws IOException {
+        var size = values.length;
+        if (size <= 255) {
+            output.writeByte(DOUBLE_ARRAY_8);
+            output.writeShort(size);
+        } else if (size <= 65535) {
+            output.writeByte(DOUBLE_ARRAY_16);
+            output.writeShort(size);
+        } else {
+            output.writeByte(DOUBLE_ARRAY_32);
+            output.writeInt(size);
+        }
+        for (double value : values) {
+            output.writeDouble(value);
+        }
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Writes a map header.
+     * 
+     * @param size  the size
+     * @throws IOException if an error occurs
+     */
+    void writeMapHeader(int size) throws IOException {
+        if (size <= 12) {
+            output.writeByte(MIN_FIX_MAP + size);
+        } else if (size < 256) {
+            output.writeByte(MAP_8);
+            output.writeByte(size);
+        } else if (size < 65536) {
+            output.writeByte(MAP_16);
+            output.writeShort(size);
+        } else {
+            output.writeByte(MAP_32);
+            output.writeInt(size);
+        }
+    }
+
+    /**
+     * Writes an array header.
+     * 
+     * @param size  the size
+     * @throws IOException if an error occurs
+     */
+    void writeArrayHeader(int size) throws IOException {
+        if (size <= 12) {
+            output.writeByte(MIN_FIX_ARRAY + size);
+        } else if (size < 256) {
+            output.writeByte(ARRAY_8);
+            output.writeByte(size);
+        } else if (size < 65536) {
+            output.writeByte(ARRAY_16);
+            output.writeShort(size);
+        } else {
+            output.writeByte(ARRAY_32);
+            output.writeInt(size);
+        }
+    }
+
+    /**
+     * Writes a String.
+     * 
+     * @param value  the value
+     * @throws IOException if an error occurs
+     */
+    void writeString(String value) throws IOException {
+        // Java 21 performance testing showed manually converting to UTF-8 to be slower
+        var bytes = value.getBytes(UTF_8);
+        var size = bytes.length;
+        if (size <= 45) {
+            output.writeByte(MIN_FIX_STR + size);
+        } else {
+            writeStringHeaderLarge(size);
+        }
+        output.write(bytes);
+    }
+
+    // separate out larger strings, which may benefit hotspot
+    private void writeStringHeaderLarge(int size) throws IOException {
+        if (size < 256) {
+            output.writeByte(STR_8);
+            output.writeByte(size);
+        } else if (size < 65536) {
+            output.writeByte(STR_16);
+            output.writeShort(size);
+        } else {
+            output.writeByte(STR_32);
+            output.writeInt(size);
+        }
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Writes a type name.
      * 
@@ -441,7 +416,7 @@ final class BeanPackOutput extends BeanPack {
      */
     void writeTypeName(String className) throws IOException {
         output.write(TYPE_NAME);
-        output.write(className.getBytes(UTF_8));
+        writeString(className);
     }
 
     /**
@@ -453,6 +428,24 @@ final class BeanPackOutput extends BeanPack {
     void writeTypeReference(int ref) throws IOException {
         output.write(TYPE_REF);
         writeInt(ref);
+    }
+
+    /**
+     * Writes a bean definition header market.
+     * 
+     * @throws IOException if an error occurs
+     */
+    void writeBeanDefinitionMarker() throws IOException {
+        output.write(BEAN_DEFN);
+    }
+
+    /**
+     * Writes a value definition header market.
+     * 
+     * @throws IOException if an error occurs
+     */
+    void writeValueDefinitionMarker() throws IOException {
+        output.write(VALUE_DEFN);
     }
 
     /**

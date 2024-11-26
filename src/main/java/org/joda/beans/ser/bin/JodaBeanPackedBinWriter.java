@@ -25,11 +25,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.joda.beans.Bean;
+import org.joda.beans.DynamicBean;
 import org.joda.beans.ResolvedType;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTypeMapper;
@@ -49,7 +51,7 @@ import com.google.common.collect.Table;
  * This class contains mutable state and cannot be used from multiple threads.
  * A new instance must be created for each message.
  */
-final class JodaBeanReferenceBinWriter {
+final class JodaBeanPackedBinWriter {
 
     // why is there an ugly ClassValue setup here?
     // because this is O(1) whereas switch with pattern match which is O(n)
@@ -59,11 +61,11 @@ final class JodaBeanReferenceBinWriter {
         @Override
         protected BinHandler computeValue(Class<?> type) {
             if (Bean.class.isAssignableFrom(type)) {
-                return (BinHandler<Bean>) JodaBeanReferenceBinWriter::writeBeanMaybeSimple;
+                return (BinHandler<Bean>) JodaBeanPackedBinWriter::writeBeanMaybeSimple;
             }
             // these primitive types are always written and interpretted without a type
             if (type == String.class) {
-                return (writer, declaredType, propName, value) -> writer.output.writeString((String) value);
+                return (writer, declaredType, propName, value) -> writer.writeString(declaredType, propName, (String) value);
             }
             if (type == Integer.class || type == int.class) {
                 return (writer, declaredType, propName, value) -> writer.output.writeInt((Integer) value);
@@ -117,15 +119,7 @@ final class JodaBeanReferenceBinWriter {
     /**
      * The known types.
      */
-    private final Map<Class<?>, String> knownTypes = new HashMap<>();
-    /**
-     * The bean definitions that have been output.
-     */
-    private int beanDefinitionIndex;
-    /**
-     * The bean definitions that have been output.
-     */
-    private final Map<Class<?>, Integer> beanDefinitions = new HashMap<>();
+    private final Map<Class<?>, String> knownTypes = new IdentityHashMap<>();
     /**
      * The type definitions that have been output.
      */
@@ -133,7 +127,19 @@ final class JodaBeanReferenceBinWriter {
     /**
      * The type definitions that have been output.
      */
-    private final Map<Class<?>, Integer> typeDefinitions = new HashMap<>();
+    private final Map<Class<?>, Integer> typeDefinitions = new IdentityHashMap<>();
+    /**
+     * The bean definitions that have been output (effectively an IdentityHashSet).
+     */
+    private final Map<Class<?>, Void> beanDefinitions = new IdentityHashMap<>();
+    /**
+     * The type definitions that have been output.
+     */
+    private int valueDefinitionIndex;
+    /**
+     * The value definitions that have been output.
+     */
+    private final Map<Object, Integer> valueDefinitions = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -141,7 +147,7 @@ final class JodaBeanReferenceBinWriter {
      * @param settings  the settings to use, not null
      * @param out  the output stream, not null
      */
-    JodaBeanReferenceBinWriter(JodaBeanSer settings, OutputStream out) {
+    JodaBeanPackedBinWriter(JodaBeanSer settings, OutputStream out) {
         this.settings = settings;
         this.output = new BeanPackOutput(out);
     }
@@ -189,40 +195,28 @@ final class JodaBeanReferenceBinWriter {
 
     // writes a bean, with meta type information if necessary
     private void writeBean(ResolvedType declaredType, String propertyName, Bean bean, boolean isRoot) throws IOException {
-        var ref = beanDefinitions.get(bean.getClass());
-        if (ref != null) {
-            writeBeanRef(bean, ref);
-        } else {
-            writeBeanDefinition(bean, isRoot);
-        }
-    }
-
-    // writes the bean, referring back to the original definition
-    private void writeBeanRef(Bean bean, int ref) throws IOException {
         var beanClass = bean.getClass();
-        var metaBean = bean.metaBean();
-        output.writeBeanReference(ref);
-        for (var metaProperty : metaBean.metaPropertyIterable()) {
-            if (settings.isSerialized(metaProperty)) {
-                var resolvedType = metaProperty.propertyResolvedType(beanClass);
-                var childPropertyName = metaProperty.name();
-                var value = metaProperty.get(bean);
-                writeObject(resolvedType, childPropertyName, value);
+        if (beanClass != declaredType.getRawType()) {
+            writeTypeNameOrReference(beanClass, isRoot);
+        }
+        if (bean instanceof DynamicBean) {
+            writeBeanMap(bean);
+        } else {
+            if (!beanDefinitions.containsKey(bean.getClass())) {
+                beanDefinitions.put(beanClass, null);
+                output.writeBeanDefinitionMarker();
+                writeBeanMap(bean);
+            } else {
+                writeBeanValues(bean);
             }
         }
     }
 
-    // writes the bean definition
-    private void writeBeanDefinition(Bean bean, boolean isRoot) throws IOException {
+    // writes the bean as a map of property name to property value
+    private void writeBeanMap(Bean bean) throws IOException {
         var beanClass = bean.getClass();
-        beanDefinitions.put(beanClass, beanDefinitionIndex++);
-
-        var encodedClassName = SerTypeMapper.encodeType(beanClass, settings, basePackage, knownTypes);
-        if (basePackage == null && isRoot) {
-            basePackage = beanClass.getPackage().getName() + ".";
-        }
         var metaBean = bean.metaBean();
-        output.writeBeanDefinitionHeader(metaBean, encodedClassName);
+        output.writeMapHeader(metaBean.metaPropertyCount());
         for (var metaProperty : metaBean.metaPropertyIterable()) {
             if (settings.isSerialized(metaProperty)) {
                 var resolvedType = metaProperty.propertyResolvedType(beanClass);
@@ -230,12 +224,49 @@ final class JodaBeanReferenceBinWriter {
                 var value = metaProperty.get(bean);
                 output.writeString(childPropertyName);
                 writeObject(resolvedType, childPropertyName, value);
+            } else {
+                output.writeNull();
+                output.writeNull();
             }
         }
-        output.writeNull();
+    }
+
+    // writes the bean values without property names, effectively referring back to the original definition
+    private void writeBeanValues(Bean bean) throws IOException {
+        // have kept the extraneous array header as it makes it easier to parse
+        var beanClass = bean.getClass();
+        var metaBean = bean.metaBean();
+        output.writeArrayHeader(metaBean.metaPropertyCount());
+        for (var metaProperty : metaBean.metaPropertyIterable()) {
+            if (settings.isSerialized(metaProperty)) {
+                var resolvedType = metaProperty.propertyResolvedType(beanClass);
+                var childPropertyName = metaProperty.name();
+                var value = metaProperty.get(bean);
+                writeObject(resolvedType, childPropertyName, value);
+            } else {
+                output.writeNull();
+            }
+        }
     }
 
     //-----------------------------------------------------------------------
+    // writes a simple type, with meta type information if necessary
+    // this method is never called for primitive types like int/long/LocalDate
+    private void writeString(ResolvedType declaredType, String propertyName, String str) throws IOException {
+        if (str.length() >= 8) {
+            var ref = valueDefinitions.get(str);
+            if (ref == null) {
+                valueDefinitions.put(str, valueDefinitionIndex++);
+                output.writeValueDefinitionMarker();
+                output.writeString(str);
+            } else {
+                output.writeValueReference(ref);
+            }
+        } else {
+            output.writeString(str);
+        }
+    }
+
     // writes a simple type, with meta type information if necessary
     // this method is never called for primitive types like int/long/LocalDate
     private void writeSimple(ResolvedType declaredType, String propertyName, Object value) throws IOException {
@@ -243,21 +274,9 @@ final class JodaBeanReferenceBinWriter {
         var effectiveType = value.getClass();
         if (effectiveType != declaredType.getRawType()) {
             effectiveType = settings.getConverter().findTypedConverter(effectiveType).getEffectiveType();
-            writeSimpleTypeDescription(effectiveType);
+            writeTypeNameOrReference(effectiveType, false);
         }
         writeJodaConvert(effectiveType, propertyName, value);
-    }
-
-    // writes the meta type header
-    private final void writeSimpleTypeDescription(Class<?> realType) throws IOException {
-        var ref = typeDefinitions.get(realType);
-        if (ref != null) {
-            output.writeTypeReference(ref);
-        } else {
-            var encodedClassName = SerTypeMapper.encodeType(realType, settings, basePackage, knownTypes);
-            typeDefinitions.put(realType, typeDefinitionIndex++);
-            output.writeTypeName(encodedClassName);
-        }
     }
 
     // writes the object as a String using Joda-Convert
@@ -284,6 +303,21 @@ final class JodaBeanReferenceBinWriter {
         return new IllegalArgumentException(msg, ex);
     }
 
+    // writes the type header
+    private final void writeTypeNameOrReference(Class<?> type, boolean isRoot) throws IOException {
+        var ref = typeDefinitions.get(type);
+        if (ref == null) {
+            var encodedClassName = SerTypeMapper.encodeType(type, settings, basePackage, knownTypes);
+            if (isRoot && basePackage == null) {
+                basePackage = type.getPackage().getName() + ".";
+            }
+            typeDefinitions.put(type, typeDefinitionIndex++);
+            output.writeTypeName(encodedClassName);
+        } else {
+            output.writeTypeReference(ref);
+        }
+    }
+
     // gets the weakened type, which exists for backwards compatibility
     // once the parser can handle ResolvedType this method can, in theory, be removed
     private static ResolvedType toWeakenedType(ResolvedType base) {
@@ -299,7 +333,7 @@ final class JodaBeanReferenceBinWriter {
     //-------------------------------------------------------------------------
     private static interface BinHandler<T> {
         public abstract void handle(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 T obj) throws IOException;
@@ -362,11 +396,11 @@ final class JodaBeanReferenceBinWriter {
             if (Map.class.isAssignableFrom(type)) {
                 return (CollectionBinHandler<Map<?, ?>>) BaseBinHandlers::writeMap;
             }
-            return JodaBeanReferenceBinWriter::writeSimple;
+            return JodaBeanPackedBinWriter::writeSimple;
         }
 
         private static void writeOptional(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Optional<?> opt) throws IOException {
@@ -382,7 +416,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes an array, with meta type information if necessary
         private static void writeArray(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Object[] array) throws IOException {
@@ -402,7 +436,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a primitive array, with meta type information if necessary
         private static void writePrimitiveArray(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Object array) throws IOException {
@@ -414,7 +448,7 @@ final class JodaBeanReferenceBinWriter {
             }
             // write content
             var componentType = toWeakenedType(declaredType.toComponentType());
-            var handler = JodaBeanReferenceBinWriter.LOOKUP.get(componentType.getRawType());
+            var handler = JodaBeanPackedBinWriter.LOOKUP.get(componentType.getRawType());
             var arrayLength = Array.getLength(array);
             writer.output.writeArrayHeader(arrayLength);
             for (int i = 0; i < arrayLength; i++) {
@@ -423,14 +457,14 @@ final class JodaBeanReferenceBinWriter {
         }
 
         // writes the meta type header
-        private static final void writeArrayTypeDescription(JodaBeanReferenceBinWriter writer, Class<?> arrayType) throws IOException {
+        private static final void writeArrayTypeDescription(JodaBeanPackedBinWriter writer, Class<?> arrayType) throws IOException {
             var ref = writer.typeDefinitions.get(arrayType);
-            if (ref != null) {
-                writer.output.writeTypeReference(ref);
-            } else {
+            if (ref == null) {
                 var encodedClassName = metaTypeArrayName(arrayType.getComponentType());
                 writer.typeDefinitions.put(arrayType, writer.typeDefinitionIndex++);
                 writer.output.writeTypeName(encodedClassName);
+            } else {
+                writer.output.writeTypeReference(ref);
             }
         }
 
@@ -450,7 +484,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a collection, with meta type information if necessary
         private static void writeCollection(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Collection<?> coll) throws IOException {
@@ -471,7 +505,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a map, with meta type information if necessary
         private static void writeMap(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Map<?, ?> map) throws IOException {
@@ -486,7 +520,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a map given map entries, code shared with Multimap
         static <K, V> void writeMapEntries(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Collection<Map.Entry<K, V>> mapEntries) throws IOException {
@@ -532,7 +566,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a multimap, with meta type information if necessary
         private static void writeMultimap(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Multimap<?, ?> mmap) throws IOException {
@@ -549,7 +583,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a multiset, with meta type information if necessary
         private static void writeMultiset(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Multiset<?> mset) throws IOException {
@@ -570,7 +604,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a table, with meta type information if necessary
         private static void writeTable(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Table<?, ?, ?> table) throws IOException {
@@ -594,7 +628,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a BiMap, with meta type information if necessary
         private static void writeBiMap(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 BiMap<?, ?> biMap) throws IOException {
@@ -621,7 +655,7 @@ final class JodaBeanReferenceBinWriter {
 
         // writes a grid, with meta type information if necessary
         private static void writeGrid(
-                JodaBeanReferenceBinWriter writer,
+                JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
                 Grid<?> grid) throws IOException {

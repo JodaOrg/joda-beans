@@ -119,123 +119,130 @@ abstract class BeanPack {
      * True.
      */
     static final int TRUE = 0xFFFFFFD2;
+    /**
+     * Unused.
+     */
+    static final int UNUSED = 0xFFFFFFD3;
+
+    // numbers
+    /**
+     * Float - followed by 4 bytes.
+     */
+    static final int FLOAT_32 = 0xFFFFFFD4;
+    /**
+     * Double  - followed by a BasePack int.
+     */
+    static final int DOUBLE_INT = 0xFFFFFFD5;
+    /**
+     * Double - followed by 8 bytes.
+     */
+    static final int DOUBLE_64 = 0xFFFFFFD6;
+    /**
+     * Byte (signed) - followed by 1 byte.
+     */
+    static final int BYTE_8 = 0xFFFFFFD7;
+    /**
+     * Short (signed) - followed by 2 bytes.
+     */
+    static final int SHORT_16 = 0xFFFFFFD8;
+    /**
+     * Int (signed) - followed by 1 byte.
+     */
+    static final int INT_8 = 0xFFFFFFD9;
+    /**
+     * Int (signed) - followed by 2 bytes.
+     */
+    static final int INT_16 = 0xFFFFFFDA;
+    /**
+     * Int (signed) - followed by 4 bytes.
+     */
+    static final int INT_32 = 0xFFFFFFDB;
+    /**
+     * Long (signed) - followed by 1 byte.
+     */
+    static final int LONG_8 = 0xFFFFFFDC;
+    /**
+     * Long (signed) - followed by 2 bytes.
+     */
+    static final int LONG_16 = 0xFFFFFFDD;
+    /**
+     * Long (signed) - followed by 4 bytes.
+     */
+    static final int LONG_32 = 0xFFFFFFDE;
+    /**
+     * Long (signed) - followed by 8 bytes.
+     */
+    static final int LONG_64 = 0xFFFFFFDF;
 
     // date/time
     /**
      * LocalDate (2 bytes) - packed format from year 2000 to 2170, 11 bits for year-month from 2000, 5 bits for day-of-month.
      */
-    static final int DATE_PACKED = 0xFFFFFFD3;
+    static final int DATE_PACKED = 0xFFFFFFE0;
     /**
-     * LocalDate (6 bytes) - int year, byte month, byte day-of-month.
+     * LocalDate (6 bytes) - 4 byte int year, 1 byte month, 1 byte day-of-month.
      */
-    static final int DATE = 0xFFFFFFD4;
+    static final int DATE = 0xFFFFFFE1;
     /**
-     * LocalTime - nano-of-day (6 bytes).
+     * LocalTime (6 bytes) - 6 byte nano-of-day.
      */
-    static final int TIME = 0xFFFFFFD5;
+    static final int TIME = 0xFFFFFFE2;
     /**
-     * Instant - 12 bytes, 8 for the seconds and 4 for the nanoseconds.
+     * Instant (12 bytes) - 8 for the seconds and 4 for the nanoseconds.
      */
-    static final int INSTANT = 0xFFFFFFD6;
+    static final int INSTANT = 0xFFFFFFE3;
     /**
-     * Duration - 12 bytes, 8 for the seconds and 4 for the nanoseconds.
+     * Duration (12 bytes) - 8 for the seconds and 4 for the nanoseconds.
      */
-    static final int DURATION = 0xFFFFFFD7;
-    // D8 and D9 are free at present
+    static final int DURATION = 0xFFFFFFE4;
 
     // byte[]/double[]
     /**
      * byte[] - followed by the size as an unsigned short.
      */
-    static final int BIN_8 = 0xFFFFFFDA;
+    static final int BIN_8 = 0xFFFFFFE5;
     /**
      * byte[] - followed by the size as an unsigned short.
      */
-    static final int BIN_16 = 0xFFFFFFDB;
+    static final int BIN_16 = 0xFFFFFFE6;
     /**
      * byte[] - followed by the size as an unsigned int.
      */
-    static final int BIN_32 = 0xFFFFFFDC;
+    static final int BIN_32 = 0xFFFFFFE7;
     /**
      * double[] - followed by the size as an unsigned byte.
      */
-    static final int DOUBLE_ARRAY_8 = 0xFFFFFFDD;
+    static final int DOUBLE_ARRAY_8 = 0xFFFFFFE8;
     /**
      * double[] - followed by the size as an unsigned short.
      */
-    static final int DOUBLE_ARRAY_16 = 0xFFFFFFDE;
+    static final int DOUBLE_ARRAY_16 = 0xFFFFFFE9;
     /**
      * double[] - followed by the size as an unsigned int.
      */
-    static final int DOUBLE_ARRAY_32 = 0xFFFFFFDF;
+    static final int DOUBLE_ARRAY_32 = 0xFFFFFFEA;
 
-    // beans and references
+    // types and references
     /**
-     * Bean with full definition - followed by the string type name and null terminated array of property names and values.
+     * Type name - followed by BeanPack string, followed by UTF-8 type name and the actual value.
      */
-    static final int BEAN_DEFN = 0xFFFFFFE0;
+    static final int TYPE_NAME = 0xFFFFFFEB;
     /**
-     * Reference to a bean - followed by an int reference to the bean definition and array of property values.
+     * Reference to a type name - followed by a BeanPack int reference and the actual value.
      */
-    static final int BEAN_REF = 0xFFFFFFE1;
+    static final int TYPE_REF = 0xFFFFFFEC;
     /**
-     * Type name - followed by the string type name and the actual value.
+     * Bean with full definition - followed by a map of property names and values, nulls replacing non-serialized entries.
      */
-    static final int TYPE_NAME = 0xFFFFFFE2;
+    static final int BEAN_DEFN = 0xFFFFFFED;
     /**
-     * Reference to a type name - followed by an int reference and the actual value.
+     * Value with full definition - followed by the value.
      */
-    static final int TYPE_REF = 0xFFFFFFE3;
+    static final int VALUE_DEFN = 0xFFFFFFEE;
     /**
-     * Reference to a previous string value - followed by an int reference.
+     * Reference to a previous string value - followed by a BeanPack int reference.
      */
-    static final int VALUE_REF = 0xFFFFFFE4;
-
-    // numbers
-    /**
-     * Float - 4 bytes.
-     */
-    static final int FLOAT_32 = 0xFFFFFFE5;
-    /**
-     * Double - 8 bytes.
-     */
-    static final int DOUBLE_64 = 0xFFFFFFE6;
-    /**
-     * Long (signed) - up to 8 bytes.
-     */
-    static final int BYTE_8 = 0xFFFFFFE7;
-    /**
-     * Long (signed) - up to 8 bytes.
-     */
-    static final int SHORT_16 = 0xFFFFFFE8;
-    /**
-     * Int (signed) - up to 1 byte.
-     */
-    static final int INT_8 = 0xFFFFFFE9;
-    /**
-     * Int (signed) - up to 2 bytes.
-     */
-    static final int INT_16 = 0xFFFFFFEA;
-    /**
-     * Int (signed) - up to 4 bytes.
-     */
-    static final int INT_32 = 0xFFFFFFEB;
-    /**
-     * Long (signed) - up to 1 byte.
-     */
-    static final int LONG_8 = 0xFFFFFFEC;
-    /**
-     * Long (signed) - up to 2 bytes.
-     */
-    static final int LONG_16 = 0xFFFFFFED;
-    /**
-     * Long (signed) - up to 4 bytes.
-     */
-    static final int LONG_32 = 0xFFFFFFEE;
-    /**
-     * Long (signed) - up to 8 bytes.
-     */
-    static final int LONG_64 = 0xFFFFFFEF;
+    static final int VALUE_REF = 0xFFFFFFEF;
 
     //-------------------------------------------------------------------------
     /**
