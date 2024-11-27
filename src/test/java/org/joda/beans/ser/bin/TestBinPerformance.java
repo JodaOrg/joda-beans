@@ -15,7 +15,6 @@
  */
 package org.joda.beans.ser.bin;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 
@@ -55,9 +54,7 @@ public class TestBinPerformance {
         for (int i = 0; i < REPEAT_OUTER; i++) {
             Stopwatch watch = Stopwatch.createStarted();
             for (int j = 0; j < REPEAT_INNER; j++) {
-                var baos = new ByteArrayOutputStream(1024);
-                new JodaBeanPackedBinWriter(JodaBeanSer.PRETTY, baos).write(address);
-                bytes = baos.toByteArray();
+                bytes = new JodaBeanBinWriter(JodaBeanSer.PRETTY, JodaBeanBinFormat.PACKED).write(address);
                 if (bytes.length < 100) {
                     System.out.println();
                 }
@@ -79,7 +76,7 @@ public class TestBinPerformance {
         for (int i = 0; i < REPEAT_OUTER; i++) {
             Stopwatch watch = Stopwatch.createStarted();
             for (int j = 0; j < REPEAT_INNER; j++) {
-                bytes = new JodaBeanBinWriter(JodaBeanSer.PRETTY).write(address);
+                bytes = new JodaBeanBinWriter(JodaBeanSer.PRETTY, JodaBeanBinFormat.STANDARD).write(address);
                 if (bytes.length < 100) {
                     System.out.println();
                 }

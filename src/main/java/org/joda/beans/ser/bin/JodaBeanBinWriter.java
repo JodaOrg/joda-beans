@@ -15,13 +15,15 @@
  */
 package org.joda.beans.ser.bin;
 
+import static org.joda.beans.ser.bin.JodaBeanBinFormat.REFERENCING;
+import static org.joda.beans.ser.bin.JodaBeanBinFormat.STANDARD;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
 import org.joda.beans.Bean;
-import org.joda.beans.ImmutableBean;
 import org.joda.beans.ser.JodaBeanSer;
 
 /**
@@ -99,16 +101,18 @@ public class JodaBeanBinWriter {
      */
     private final JodaBeanSer settings;
     /**
-     * The format version.
+     * The format.
      */
-    private final int version;
+    private final JodaBeanBinFormat format;
 
     //-----------------------------------------------------------------------
     /**
      * Creates an instance.
      * 
      * @param settings  the settings to use, not null
+     * @deprecated Pass the format explicitly 
      */
+    @Deprecated
     public JodaBeanBinWriter(JodaBeanSer settings) {
         this(settings, false);
     }
@@ -118,23 +122,24 @@ public class JodaBeanBinWriter {
      * 
      * @param settings  the settings to use, not null
      * @param referencing  whether to use referencing
-     * @deprecated Use the version number instead of the boolean flag
+     * @deprecated Use the format instead of the boolean flag
      */
     @Deprecated
     public JodaBeanBinWriter(JodaBeanSer settings, boolean referencing) {
         this.settings = Objects.requireNonNull(settings, "settings must not be null");
-        this.version = referencing ? 2 : 1;
+        this.format = referencing ? REFERENCING : STANDARD;
     }
 
     /**
      * Creates an instance.
      * 
      * @param settings  the settings to use, not null
-     * @param version  the version, 1, 2 or 3
+     * @param format  the format, not null
+     * @since 3.0.0
      */
-    public JodaBeanBinWriter(JodaBeanSer settings, int version) {
+    public JodaBeanBinWriter(JodaBeanSer settings, JodaBeanBinFormat format) {
         this.settings = Objects.requireNonNull(settings, "settings must not be null");
-        this.version = version;
+        this.format = Objects.requireNonNull(format, "format must not be null");
     }
 
     //-----------------------------------------------------------------------
@@ -191,16 +196,12 @@ public class JodaBeanBinWriter {
     public void write(Bean bean, boolean rootType, OutputStream output) throws IOException {
         Objects.requireNonNull(bean, "bean must not be null");
         Objects.requireNonNull(output, "output must not be null");
-        switch (version) {
-            case 1 -> new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);
-            case 2 -> {
-                if (!(bean instanceof ImmutableBean immutable)) {
-                    throw new IllegalArgumentException(
-                            "Referencing binary format can only write ImmutableBean instances: " + bean.getClass().getName());
-                }
-                new JodaBeanReferencingBinWriter(settings, output).write(immutable);
+        switch (format) {
+            case STANDARD -> new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);
+            case REFERENCING -> {
+                new JodaBeanReferencingBinWriter(settings, output).write(bean);
             }
-            case 3 -> new JodaBeanPackedBinWriter(settings, output).write(bean);
+            case PACKED -> new JodaBeanPackedBinWriter(settings, output).write(bean);
             default -> throw new IllegalArgumentException("Invalid bin version, must be 1, 2 or 3");
         }
     }

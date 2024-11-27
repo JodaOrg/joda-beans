@@ -19,7 +19,6 @@ import static java.lang.System.lineSeparator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.assertj.core.api.Assertions.offset;
-import static org.joda.beans.ser.bin.JodaBeanBinFormat.STANDARD;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -53,13 +52,13 @@ import com.google.common.io.Resources;
 /**
  * Test property roundtrip using binary.
  */
-public class TestSerializeStandardBin {
+public class TestSerializePackedBin {
 
     @Test
     public void test_writeAddress() throws IOException {
         var bean = SerTestHelper.testAddress();
 
-        var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/Address2.binstr");
 
@@ -70,7 +69,7 @@ public class TestSerializeStandardBin {
     @Test
     public void test_writeImmAddress() throws IOException {
         var bean = SerTestHelper.testImmAddress(false);
-        var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmAddress2.binstr");
 
@@ -83,7 +82,7 @@ public class TestSerializeStandardBin {
     @Test
     public void test_writeImmOptional() throws IOException {
         var bean = SerTestHelper.testImmOptional();
-        var bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmOptional2.binstr");
 
@@ -100,7 +99,7 @@ public class TestSerializeStandardBin {
                 new boolean[] {true, false},
                 new int[][] {{1, 2}, {2}, {}},
                 new boolean[][] {{true, false}, {false}, {}});
-        var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/ImmArrays2.binstr");
 
@@ -113,7 +112,7 @@ public class TestSerializeStandardBin {
     @Test
     public void test_writeCollections() throws IOException {
         var bean = SerTestHelper.testCollections();
-        var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections2.binstr");
 
@@ -125,7 +124,7 @@ public class TestSerializeStandardBin {
     }
 
     private void assertEqualsSerialization(byte[] actualBytes, String expectedResource) throws IOException {
-        var url = TestSerializeStandardBin.class.getResource(expectedResource);
+        var url = TestSerializePackedBin.class.getResource(expectedResource);
         var expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
         var actual = new MsgPackVisualizer(actualBytes).visualizeData();
         assertThat(actual.trim().replace(lineSeparator(), "\n")).isEqualTo(expected.trim().replace(lineSeparator(), "\n"));
@@ -136,7 +135,7 @@ public class TestSerializeStandardBin {
     public void test_writeJodaConvertInterface() {
         var bean = SerTestHelper.testGenericInterfaces();
 
-        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.COMPACT.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes);
@@ -147,7 +146,7 @@ public class TestSerializeStandardBin {
     public void test_writeIntermediateInterface() {
         var bean = SerTestHelper.testIntermediateInterfaces();
 
-        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.COMPACT.binWriter().write(bean);
         //        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmKeyList.class);
@@ -159,7 +158,7 @@ public class TestSerializeStandardBin {
         // immutable bean that is serialized as joda convert
         var bean = ImmNamedKey.of("name");
 
-        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean);
+        var bytes = JodaBeanSer.COMPACT.binWriter().write(bean);
         //        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         var parsed = (ImmNamedKey) JodaBeanSer.COMPACT.binReader().read(bytes);
@@ -214,7 +213,7 @@ public class TestSerializeStandardBin {
         bean.set("sht", Short.valueOf((short) 2));
         bean.set("flt", Float.valueOf(1.2f));
         bean.set("dbl", Double.valueOf(1.8d));
-        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean, false);
+        var bytes = JodaBeanSer.COMPACT.binWriter().write(bean, false);
         assertThat(bytes).isEqualTo(expected);
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -276,7 +275,7 @@ public class TestSerializeStandardBin {
         var bean = new JodaConvertBean("Hello:9");
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
-        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(wrapper, false);
+        var bytes = JodaBeanSer.COMPACT.binWriter().write(wrapper, false);
         assertThat(bytes).isEqualTo(expected);
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, JodaConvertWrapper.class);
         BeanAssert.assertBeanEquals(wrapper, parsed);
@@ -300,7 +299,7 @@ public class TestSerializeStandardBin {
         var expected = baos.toByteArray();
 
         var bean = new JodaConvertBean("Hello:9");
-        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean, false);
+        var bytes = JodaBeanSer.COMPACT.binWriter().write(bean, false);
         assertThat(bytes).isEqualTo(expected);
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, JodaConvertBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -579,7 +578,7 @@ public class TestSerializeStandardBin {
         var bean = new Person();
         bean.getOtherAddressMap().put(null, address);
         assertThatRuntimeException()
-                .isThrownBy(() -> JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binWriter().write(bean));
     }
 
 }

@@ -17,6 +17,7 @@ package org.joda.beans.ser;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.bin.JodaBeanBinFormat;
 import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
 import org.joda.beans.ser.json.JodaBeanJsonReader;
@@ -280,6 +281,18 @@ public final class JodaBeanSer {
 
     //-----------------------------------------------------------------------
     /**
+     * Creates a binary writer using the specified format.
+     * <p>
+     * It is recommended, though not necessary, to create a new instance of the writer for each message.
+     * 
+     * @param format  the format, not null
+     * @return the binary writer, not null
+     */
+    public JodaBeanBinWriter binWriter(JodaBeanBinFormat format) {
+        return new JodaBeanBinWriter(this, format);
+    }
+
+    /**
      * Creates a binary writer using the standard format.
      * <p>
      * It is recommended, though not necessary, to create a new instance of the writer for each message.
@@ -287,7 +300,7 @@ public final class JodaBeanSer {
      * @return the binary writer, not null
      */
     public JodaBeanBinWriter binWriter() {
-        return new JodaBeanBinWriter(this, false);
+        return new JodaBeanBinWriter(this, JodaBeanBinFormat.PACKED);
     }
 
     /**
@@ -305,13 +318,15 @@ public final class JodaBeanSer {
      * The reader {@link #binReader()} handles both the standard and referencing formats.
      * 
      * @return the referencing binary writer, not null
+     * @deprecated Pass the format explicitly 
      */
+    @Deprecated
     public JodaBeanBinWriter binWriterReferencing() {
-        return new JodaBeanBinWriter(this, true);
+        return new JodaBeanBinWriter(this, JodaBeanBinFormat.REFERENCING);
     }
 
     /**
-     * Creates a binary reader that handles both the standard and referencing binary formats.
+     * Creates a binary reader that handles all binary formats that can be written.
      * <p>
      * It is recommended, though not necessary, to create a new instance of the reader for each message.
      * 
