@@ -541,6 +541,21 @@ public final class ResolvedType {
     }
 
     /**
+     * Gets the component type if the raw type is an array, defaulting to {@code Object} if the type is not an array.
+     * <p>
+     * Note that the component type may be an array type if this type is a higher-dimension array.
+     * 
+     * @return the component type
+     */
+    public ResolvedType toComponentTypeOrDefault() {
+        var componentType = rawType.getComponentType();
+        if (componentType == null) {
+            return ResolvedType.OBJECT;
+        }
+        return new ResolvedType(componentType, arguments);
+    }
+
+    /**
      * Returns an instance representing the array type of the raw type.
      * 
      * @return the array type

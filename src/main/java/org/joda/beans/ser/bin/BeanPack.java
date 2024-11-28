@@ -298,7 +298,7 @@ abstract class BeanPack {
     /**
      * String[] type code, followed by an array of values.
      */
-    static final int TYPE_CODE_STRING_ARRAY = -12;
+    static final int TYPE_CODE_STRING_ARRAY = -13;
 
     //-----------------------------------------------------------------------
     /**

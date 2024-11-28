@@ -17,12 +17,17 @@ package org.joda.beans.ser.bin;
 
 import static java.lang.System.lineSeparator;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.assertj.core.api.Assertions.offset;
+import static org.joda.beans.ser.bin.BeanPack.BIN_16;
+import static org.joda.beans.ser.bin.BeanPack.BIN_8;
 import static org.joda.beans.ser.bin.BeanPack.BYTE_8;
 import static org.joda.beans.ser.bin.BeanPack.DATE;
 import static org.joda.beans.ser.bin.BeanPack.DATE_PACKED;
 import static org.joda.beans.ser.bin.BeanPack.DOUBLE_64;
+import static org.joda.beans.ser.bin.BeanPack.DOUBLE_ARRAY_16;
+import static org.joda.beans.ser.bin.BeanPack.DOUBLE_ARRAY_8;
 import static org.joda.beans.ser.bin.BeanPack.DOUBLE_INT;
 import static org.joda.beans.ser.bin.BeanPack.DURATION;
 import static org.joda.beans.ser.bin.BeanPack.FLOAT_32;
@@ -48,6 +53,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
@@ -139,7 +145,7 @@ class TestSerializePackedBin {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
-    private void assertEqualsSerialization(byte[] actualBytes, String expectedResource) throws IOException {
+    private static void assertEqualsSerialization(byte[] actualBytes, String expectedResource) throws IOException {
         var url = TestSerializePackedBin.class.getResource(expectedResource);
         var expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
         var actual = JodaBeanBinReader.visualize(actualBytes);
@@ -175,7 +181,7 @@ class TestSerializePackedBin {
         var bean = ImmNamedKey.of("name");
 
         var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean);
-        //        System.out.println(JodaBeanBinReader.visualize(bytes));
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
 
         var parsed = (ImmNamedKey) JodaBeanSer.COMPACT.binReader().read(bytes);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -395,7 +401,41 @@ class TestSerializePackedBin {
 //        });
     }
 
-    static void assertValueSerializesAsObject(Object value, int typeByte, ThrowingConsumer<DataOutputStream> fn) throws Throwable {
+    @Test
+    void test_readWrite_byteArrayAsObject() throws Throwable {
+        assertValueSerializesAsObject(new byte[] {}, BIN_8, out -> out.writeByte(0));
+        assertValueSerializesAsObject(new byte[] {5}, BIN_8, out -> {
+            out.writeByte(1);
+            out.writeByte(5);
+        });
+        assertValueSerializesAsObject(new byte[255], BIN_8, out -> {
+            out.writeByte(255);
+            out.write(new byte[255]);
+        });
+        assertValueSerializesAsObject(new byte[256], BIN_16, out -> {
+            out.writeShort(256);
+            out.write(new byte[256]);
+        });
+    }
+
+    @Test
+    void test_readWrite_doubleArrayAsObject() throws Throwable {
+        assertValueSerializesAsObject(new double[] {}, DOUBLE_ARRAY_8, out -> out.writeByte(0));
+        assertValueSerializesAsObject(new double[] {5.23d}, DOUBLE_ARRAY_8, out -> {
+            out.writeByte(1);
+            out.writeDouble(5.23d);
+        });
+        assertValueSerializesAsObject(new double[255], DOUBLE_ARRAY_8, out -> {
+            out.writeByte(255);
+            out.write(new byte[255 * 8]);
+        });
+        assertValueSerializesAsObject(new double[256], DOUBLE_ARRAY_16, out -> {
+            out.writeShort(256);
+            out.write(new byte[256 * 8]);
+        });
+    }
+
+    private static void assertValueSerializesAsObject(Object value, int typeByte, ThrowingConsumer<DataOutputStream> fn) throws Throwable {
         var baos = new ByteArrayOutputStream();
         var out = new BeanPackOutput(baos);
         out.writeArrayHeader(3);
@@ -409,6 +449,102 @@ class TestSerializePackedBin {
 
         FlexiBean bean = new FlexiBean();
         bean.set("value", value);
+        var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean, false);
+        assertThat(bytes).isEqualTo(expected);
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    void test_readWrite_optionalAsObject() throws IOException {
+        var baos = new ByteArrayOutputStream();
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeMapHeader(2);
+        out.writeString("present");
+        out.writeTypeReference(BeanPack.TYPE_CODE_OPTIONAL);
+        out.writeArrayHeader(1);
+        out.writeInt(6);
+        out.writeString("empty");
+        out.writeTypeReference(BeanPack.TYPE_CODE_OPTIONAL);
+        out.writeArrayHeader(0);
+        var expected = baos.toByteArray();
+
+        FlexiBean bean = new FlexiBean();
+        bean.set("present", Optional.of(6));
+        bean.set("empty", Optional.empty());
+        var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean, false);
+        assertThat(bytes).isEqualTo(expected);
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_stringArrayAsObject() throws IOException {
+        var baos = new ByteArrayOutputStream();
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeMapHeader(1);
+        out.writeString("value");
+        out.writeTypeReference(BeanPack.TYPE_CODE_STRING_ARRAY);
+        out.writeArrayHeader(2);
+        out.writeString("A");
+        out.writeString("B");
+        var expected = baos.toByteArray();
+
+        FlexiBean bean = new FlexiBean();
+        bean.set("value", new String[] {"A", "B"});
+        var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean, false);
+        assertThat(bytes).isEqualTo(expected);
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_objectArrayAsObject() throws IOException {
+        var baos = new ByteArrayOutputStream();
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeMapHeader(1);
+        out.writeString("value");
+        out.writeTypeReference(BeanPack.TYPE_CODE_OBJECT_ARRAY);
+        out.writeArrayHeader(2);
+        out.writeString("A");
+        out.writeInt(6);
+        var expected = baos.toByteArray();
+
+        FlexiBean bean = new FlexiBean();
+        bean.set("value", new Object[] {"A", 6});
+        var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean, false);
+        assertThat(bytes).isEqualTo(expected);
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_intArrayAsObject() throws IOException {
+        var baos = new ByteArrayOutputStream();
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeMapHeader(1);
+        out.writeString("value");
+        out.writeTypeName("int[]");
+        out.writeArrayHeader(2);
+        out.writeInt(4);
+        out.writeInt(6);
+        var expected = baos.toByteArray();
+
+        FlexiBean bean = new FlexiBean();
+        bean.set("value", new int[] {4, 6});
         var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean, false);
         assertThat(bytes).isEqualTo(expected);
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
@@ -450,7 +586,6 @@ class TestSerializePackedBin {
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
         var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(wrapper, false);
-        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertThat(bytes).isEqualTo(expected);
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, JodaConvertWrapper.class);
         BeanAssert.assertBeanEquals(wrapper, parsed);
@@ -526,10 +661,9 @@ class TestSerializePackedBin {
     @Test
     void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
-            out.writeByte(1);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(1);
+        out.writeInt(3);
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
@@ -538,11 +672,11 @@ class TestSerializePackedBin {
     @Test
     void test_read_wrongVersion() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(-1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 0);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(0);
+        out.writeNull();
+        out.writeMapHeader(0);
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
@@ -551,23 +685,24 @@ class TestSerializePackedBin {
     @Test
     void test_read_rootTypeNotSpecified_FlexiBean() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 0);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeMapHeader(0);
         var bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class);
+        assertThatNoException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
     }
 
     @Test
     void test_read_rootTypeNotSpecified_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 0);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeMapHeader(0);
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
@@ -576,33 +711,26 @@ class TestSerializePackedBin {
     @Test
     void test_read_rootTypeValid_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
-            out.writeByte(FlexiBean.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
-            out.write(FlexiBean.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.NIL);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeTypeName(FlexiBean.class.getName());
+        out.writeMapHeader(0);
         var bytes = baos.toByteArray();
-        JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class);
+        assertThatNoException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
     }
 
     @Test
     void test_read_rootTypeInvalid_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
-            out.writeByte(String.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
-            out.write(String.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.NIL);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeTypeName(String.class.getName());
+        out.writeMapHeader(0);
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
@@ -611,36 +739,13 @@ class TestSerializePackedBin {
     @Test
     void test_read_rootTypeInvalid_incompatible() throws IOException {
         var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
-            out.writeByte(Company.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
-            out.write(Company.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.NIL);
-        }
+        var out = new BeanPackOutput(baos);
+        out.writeArrayHeader(3);
+        out.writeInt(3);
+        out.writeNull();
+        out.writeTypeName(Company.class.getName());
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
-    }
-
-    @Test
-    void test_read_invalidFormat_noNilValueAfterType() throws IOException {
-        var baos = new ByteArrayOutputStream();
-        try (var out = new DataOutputStream(baos)) {
-            out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
-            out.writeByte(1);
-            out.writeByte(MsgPack.MIN_FIX_MAP + 1);
-            out.writeByte(MsgPack.EXT_8);
-            out.writeByte(FlexiBean.class.getName().length());
-            out.writeByte(MsgPack.JODA_TYPE_BEAN);
-            out.write(FlexiBean.class.getName().getBytes(MsgPack.UTF_8));
-            out.writeByte(MsgPack.TRUE);  // should be NIL
-        }
-        var bytes = baos.toByteArray();
-        assertThatRuntimeException()
-                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
     }
 }

@@ -719,6 +719,8 @@ final class JodaBeanPackedBinReader extends BeanPack {
                 case TYPE_CODE_SET -> Set.class;
                 case TYPE_CODE_MAP -> Map.class;
                 case TYPE_CODE_OPTIONAL -> Optional.class;
+                case TYPE_CODE_OBJECT_ARRAY -> Object[].class;
+                case TYPE_CODE_STRING_ARRAY -> String[].class;
                 default -> throw new IllegalArgumentException("Invalid binary data: Unknown type code: " + typeCode);
             };
         }

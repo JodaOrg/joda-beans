@@ -324,7 +324,8 @@ final class JodaBeanPackedBinWriter {
         try {
             var converted = settings.getConverter().convertToString(effectiveType, value);
             if (converted == null) {
-                throw invalidNullString(propertyName, value);
+                output.writeNull();
+                return;
             }
             var ref = valueDefinitions.get(converted);
             if (ref == null) {
@@ -339,11 +340,6 @@ final class JodaBeanPackedBinWriter {
         } catch (RuntimeException ex) {
             throw invalidConversionMsg(propertyName, value, ex);
         }
-    }
-
-    private static IllegalArgumentException invalidNullString(String propertyName, Object value) throws IOException {
-        return new IllegalArgumentException(
-                "Unable to write property '" + propertyName + "' because converter returned a null string: " + value);
     }
 
     private IllegalArgumentException invalidConversionMsg(String propertyName, Object value, RuntimeException ex) {
@@ -453,10 +449,16 @@ final class JodaBeanPackedBinWriter {
             // write actual type
             var actualComponentType = array.getClass().getComponentType();
             if (!declaredType.isArray() || declaredType.getRawType().getComponentType() != actualComponentType) {
-                writeArrayTypeDescription(writer, actualComponentType);
+                if (actualComponentType == String.class) {
+                    writer.output.writeTypeReference(BeanPack.TYPE_CODE_STRING_ARRAY);
+                } else if (actualComponentType == Object.class) {
+                    writer.output.writeTypeReference(BeanPack.TYPE_CODE_OBJECT_ARRAY);
+                } else {
+                    writeArrayTypeDescription(writer, array.getClass());
+                }
             }
             // write content
-            var componentType = declaredType.toComponentType();
+            var componentType = declaredType.toComponentTypeOrDefault();
             writer.output.writeArrayHeader(array.length);
             for (var item : array) {
                 writer.writeObject(componentType, "", item);
@@ -476,7 +478,7 @@ final class JodaBeanPackedBinWriter {
                 writeArrayTypeDescription(writer, arrayType);
             }
             // write content
-            var componentType = declaredType.toComponentType();
+            var componentType = declaredType.toComponentTypeOrDefault();
             var handler = JodaBeanPackedBinWriter.LOOKUP.get(componentType.getRawType());
             var arrayLength = Array.getLength(array);
             writer.output.writeArrayHeader(arrayLength);
