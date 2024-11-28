@@ -300,7 +300,7 @@ public final class JodaBeanSer {
      * @return the binary writer, not null
      */
     public JodaBeanBinWriter binWriter() {
-        return new JodaBeanBinWriter(this, JodaBeanBinFormat.PACKED);
+        return new JodaBeanBinWriter(this, JodaBeanBinFormat.STANDARD);
     }
 
     /**

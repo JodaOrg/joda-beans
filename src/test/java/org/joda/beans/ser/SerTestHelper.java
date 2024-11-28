@@ -55,6 +55,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableSet;
@@ -211,21 +212,26 @@ public class SerTestHelper {
         ImmutableSortedMap<String, String> sortedMap = ImmutableSortedMap.of("A", "AA", "B", "BB");
         ImmutableBiMap<String, String> bimap = ImmutableBiMap.of("A", "AA", "B", "BB");
         ImmutableMultiset<String> multiset = ImmutableMultiset.of("A", "B", "C", "B", "C", "C");
-        return ImmGuava.<String> builder()
-            .list(list)
-            .listInterface(list)
-            .set(set)
-            .setInterface(set)
-            .sortedSet(sortedSet)
-            .sortedSetInterface(sortedSet)
-            .map(map)
-            .mapInterface(map)
-            .sortedMap(sortedMap)
-            .sortedMapInterface(sortedMap)
-            .biMap(bimap)
-            .biMapInterface(bimap)
-            .multiset(multiset)
-            .build();
+        ImmutableListMultimap<String, String> listMultimap = ImmutableListMultimap.of("A", "B", "A", "C", "B", "D");
+        return ImmGuava.<String>builder()
+                .list(list)
+                .listInterface(list)
+                .set(set)
+                .setInterface(set)
+                .sortedSet(sortedSet)
+                .sortedSetInterface(sortedSet)
+                .map(map)
+                .mapInterface(map)
+                .sortedMap(sortedMap)
+                .sortedMapInterface(sortedMap)
+                .biMap(bimap)
+                .biMapInterface(bimap)
+                .multiset(multiset)
+                .multimap(listMultimap)
+                .multimapInterface(listMultimap)
+                .listMultimap(listMultimap)
+                .listMultimapInterface(listMultimap)
+                .build();
     }
 
     public static ImmGenericCollections<JodaConvertInterface> testGenericInterfaces() {

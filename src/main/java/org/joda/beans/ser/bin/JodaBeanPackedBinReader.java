@@ -17,20 +17,50 @@ package org.joda.beans.ser.bin;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ResolvedType;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTypeMapper;
+import org.joda.collect.grid.DenseGrid;
+import org.joda.collect.grid.Grid;
+import org.joda.collect.grid.ImmutableGrid;
+import org.joda.collect.grid.SparseGrid;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.SortedMultiset;
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeMultiset;
 
 /**
  * Reads the Joda-Bean BeanPack binary format with strings deduplicated by reference.
@@ -39,6 +69,17 @@ import org.joda.beans.ser.SerTypeMapper;
  * A new instance must be created for each message.
  */
 final class JodaBeanPackedBinReader extends BeanPack {
+
+    // why is there an ugly ClassValue setup here?
+    // because this is O(1) whereas switch with pattern match which is O(n)
+    private static final ClassValue<BinHandler> LOOKUP = new ClassValue<>() {
+
+        @SuppressWarnings("rawtypes")  // sneaky use of raw type to allow typed value in each method below
+        @Override
+        protected BinHandler computeValue(Class<?> type) {
+            return BaseBinHandlers.INSTANCE.createHandler(type);
+        }
+    };
 
     /**
      * Settings.
@@ -94,6 +135,7 @@ final class JodaBeanPackedBinReader extends BeanPack {
 
     <T> T parseRemaining(Class<T> declaredType) throws Exception {
         // the array and version has already been read
+        basePackage = acceptStringOrNull();
         var parsed = parseObject(ResolvedType.from(declaredType), true);
         return declaredType.cast(parsed);
     }
@@ -156,11 +198,11 @@ final class JodaBeanPackedBinReader extends BeanPack {
             case LONG_16 -> parseLong(input.readShort(), declaredType);
             case LONG_32 -> parseLong(input.readInt(), declaredType);
             case LONG_64 -> parseLong(input.readLong(), declaredType);
-//            case DATE_PACKED -> datePacked();
-//            case DATE -> date();
-//            case TIME -> time();
-//            case INSTANT -> instant();
-//            case DURATION -> duration();
+            case DATE_PACKED -> parseDatePacked();
+            case DATE -> parseDate();
+            case TIME -> parseTime();
+            case INSTANT -> parseInstant();
+            case DURATION -> parseDuration();
             case BIN_8 -> parseByteArray(input.readUnsignedByte());
             case BIN_16 -> parseByteArray(input.readUnsignedShort());
             case BIN_32 -> parseByteArray(input.readInt());
@@ -184,7 +226,7 @@ final class JodaBeanPackedBinReader extends BeanPack {
         if (Bean.class.isAssignableFrom(declaredType.getRawType())) {
             return parseMapAsBean(mapSize, declaredType.getRawType(), isBeanDefinition);
         } else {
-            return parseMapAsCollection(mapSize, declaredType);
+            return parseViaHandler(mapSize, declaredType);
         }
     }
 
@@ -193,13 +235,14 @@ final class JodaBeanPackedBinReader extends BeanPack {
         if (Bean.class.isAssignableFrom(declaredType.getRawType())) {
             return parseArrayAsBean(arraySize, declaredType.getRawType());
         } else {
-            return parseArrayAsList(arraySize, declaredType);
+            return parseViaHandler(arraySize, declaredType);
         }
     }
 
     // parse a BeanPack string
     private Object parseString(int strLen, ResolvedType declaredType) throws Exception {
         var str = acceptStringBytes(strLen);
+//        if (declaredType.getRawType() == String.class || declaredType.getRawType() == Object.class) {
         if (declaredType.getRawType().isAssignableFrom(String.class)) {
             return str;
         } else {
@@ -217,9 +260,6 @@ final class JodaBeanPackedBinReader extends BeanPack {
     private Object parseTypeDefinition(ResolvedType declaredType, boolean isBeanDefinition) throws Exception {
         var typeName = acceptString();
         var decodedType = SerTypeMapper.decodeType(typeName, settings, basePackage, knownTypes, Object.class);
-        if (basePackage == null) {  // TODO: move base package to root
-            basePackage = decodedType.getPackage().getName() + ".";
-        }
         var effectiveType = ResolvedType.from(decodedType);
         validateEffectiveType(declaredType, effectiveType);
         typeDefinitions.add(decodedType);
@@ -230,14 +270,7 @@ final class JodaBeanPackedBinReader extends BeanPack {
     private Object parseTypeRef(ResolvedType declaredType, boolean isBeanDefinition) throws Exception {
         var typeRef = acceptInt();
         if (typeRef < 0) {
-            // TODO: handle properly
-            var effectiveType = switch (typeRef) {
-                case TYPE_CODE_LIST -> ResolvedType.of(List.class);
-                case TYPE_CODE_SET -> ResolvedType.of(Set.class);
-                case TYPE_CODE_MAP -> ResolvedType.of(Map.class);
-                case TYPE_CODE_OPTIONAL -> ResolvedType.of(Optional.class);
-                default -> throw new IllegalArgumentException("Invalid binary data: Unexpected type code: " + typeRef);
-            };
+            var effectiveType = ResolvedType.of(BaseBinHandlers.INSTANCE.classForTypeCode(typeRef));
             return parseObject(effectiveType, isBeanDefinition);
         } else {
             var effectiveType = ResolvedType.of(typeDefinitions.get(typeRef));
@@ -248,8 +281,9 @@ final class JodaBeanPackedBinReader extends BeanPack {
 
     private void validateEffectiveType(ResolvedType declaredType, ResolvedType effectiveType) {
         if (!declaredType.getRawType().isAssignableFrom(effectiveType.getRawType())) {
-            throw new IllegalArgumentException("Invalid binary data: Specified type is incompatible with declared type: " +
-                    declaredType + " and " + effectiveType);
+            throw new IllegalArgumentException(
+                    "Invalid binary data: Declared type " + declaredType +
+                            " is incompatible with effective type " + effectiveType);
         }
     }
 
@@ -281,7 +315,7 @@ final class JodaBeanPackedBinReader extends BeanPack {
             for (var i = 0; i < propertyCount; i++) {
                 var metaProp = metaProperties.get(i);
                 if (metaProp == null) {
-                    MsgPackInput.skipObject(input);  // TODO: need to capture definitions
+                    skipObject();
                 } else {
                     propName = metaProp.name();
                     var value = parseObject(metaProp.propertyResolvedType(beanType), false);
@@ -327,7 +361,7 @@ final class JodaBeanPackedBinReader extends BeanPack {
                 propName = acceptString();
                 var metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                 if (metaProp == null || metaProp.style().isDerived()) {
-                    MsgPackInput.skipObject(input);  // TODO: need to capture definitions
+                    skipObject();
                     metaProperties.add(null);
                 } else {
                     var value = parseObject(metaProp.propertyResolvedType(beanType), false);
@@ -366,7 +400,7 @@ final class JodaBeanPackedBinReader extends BeanPack {
             for (var i = 0; i < arraySize; i++) {
                 var metaProp = metaProperties.get(i);
                 if (metaProp == null) {
-                    MsgPackInput.skipObject(input);  // TODO: need to capture definitions
+                    skipObject();
                 } else {
                     propName = metaProp.name();
                     var value = parseObject(metaProp.propertyResolvedType(beanType), false);
@@ -383,27 +417,9 @@ final class JodaBeanPackedBinReader extends BeanPack {
     }
 
     // parse a BeanPack map as a Map
-    private Object parseMapAsCollection(int mapSize, ResolvedType effectiveType) throws Exception {
-        var keyType = effectiveType.getArgumentOrDefault(0);
-        var valueType = effectiveType.getArgumentOrDefault(1);
-        var map = new LinkedHashMap<>();
-        for (var i = 0; i < mapSize; i++) {
-            var key = parseObject(keyType, false);
-            var value = parseObject(valueType, false);
-            map.put(key, value);
-        }
-        return map;
-    }
-
-    // parse a BeanPack array as a List
-    private Object parseArrayAsList(int arraySize, ResolvedType effectiveType) throws Exception {
-        var itemType = effectiveType.getArgumentOrDefault(0);
-        var list = new ArrayList<>();
-        for (var i = 0; i < arraySize; i++) {
-            var item = parseObject(itemType, false);
-            list.add(item);
-        }
-        return list;
+    private Object parseViaHandler(int size, ResolvedType declaredType) throws Exception {
+        var handler = LOOKUP.get(declaredType.getRawType());
+        return handler.handle(this, declaredType, size);
     }
 
     //-------------------------------------------------------------------------
@@ -501,6 +517,42 @@ final class JodaBeanPackedBinReader extends BeanPack {
         return value;
     }
 
+    //-------------------------------------------------------------------------
+    private LocalDate parseDatePacked() throws IOException {
+        var packed = input.readUnsignedShort();
+        var dom = packed & 31;
+        var ym = packed >> 5;
+        return LocalDate.of((ym / 12) + 2000, (ym % 12) + 1, dom);
+    }
+
+    private LocalDate parseDate() throws IOException {
+        var upper = input.readInt();
+        var lower = input.readUnsignedByte();
+        var year = upper >> 1;
+        var month = ((upper & 1) << 3) + (lower >>> 5);
+        var dom = lower & 31;
+        return LocalDate.of(year, month, dom);
+    }
+
+    private LocalTime parseTime() throws IOException {
+        var upper = input.readShort();
+        var lower = Integer.toUnsignedLong(input.readInt());
+        var nod = ((long) upper << 32) + lower;
+        return LocalTime.ofNanoOfDay(nod);
+    }
+
+    private Instant parseInstant() throws IOException {
+        var second = input.readLong();
+        var nanos = input.readInt();
+        return Instant.ofEpochSecond(second, nanos);
+    }
+
+    private Duration parseDuration() throws IOException {
+        var seconds = input.readLong();
+        var nanos = input.readInt();
+        return Duration.ofSeconds(seconds, nanos);
+    }
+
     //-----------------------------------------------------------------------
     // parses a byte array
     private byte[] parseByteArray(int size) throws IOException {
@@ -519,8 +571,20 @@ final class JodaBeanPackedBinReader extends BeanPack {
     }
 
     //-------------------------------------------------------------------------
+    private void skipObject() throws IOException {
+        MsgPackInput.skipObject(input);  // TODO: need to capture definitions
+    }
+
     private String acceptString() throws IOException {
+        return acceptString(input.readByte());
+    }
+
+    private String acceptStringOrNull() throws IOException {
         var typeByte = input.readByte();
+        return typeByte == NULL ? null : acceptString(typeByte);
+    }
+
+    private String acceptString(int typeByte) throws IOException {
         int size;
         if (typeByte >= MIN_FIX_STR && typeByte <= MAX_FIX_STR) {
             size = typeByte - MIN_FIX_STR;
@@ -565,9 +629,339 @@ final class JodaBeanPackedBinReader extends BeanPack {
         };
     }
 
+    private int acceptMap() throws IOException {
+        var typeByte = input.readByte();
+        if (typeByte >= MIN_FIX_MAP && typeByte <= MAX_FIX_MAP) {
+            return typeByte - MIN_FIX_MAP;
+        }
+        return switch (typeByte) {
+            case MAP_8 -> input.readByte();
+            case MAP_16 -> input.readShort();
+            case MAP_32 -> input.readInt();
+            default -> throw invalidBinaryData("map", typeByte);
+        };
+    }
+
+    private int acceptArray() throws IOException {
+        var typeByte = input.readByte();
+        if (typeByte >= MIN_FIX_ARRAY && typeByte <= MAX_FIX_ARRAY) {
+            return typeByte - MIN_FIX_ARRAY;
+        }
+        return switch (typeByte) {
+            case ARRAY_8 -> input.readByte();
+            case ARRAY_16 -> input.readShort();
+            case ARRAY_32 -> input.readInt();
+            default -> throw invalidBinaryData("array", typeByte);
+        };
+    }
+
     private IllegalArgumentException invalidBinaryData(String expected, int actualByte) {
         return new IllegalArgumentException(
                 "Invalid binary data: Expected " + expected + ", but was: 0x" + toHex(actualByte));
     }
 
+    //-------------------------------------------------------------------------
+    private static interface BinHandler {
+        public abstract Object handle(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size) throws Exception;
+    }
+
+    //-------------------------------------------------------------------------
+    private static sealed class BaseBinHandlers {
+
+        // an instance loaded dependent on the classpath
+        private static final BaseBinHandlers INSTANCE = getInstance();
+
+        private static final BaseBinHandlers getInstance() {
+            try {
+                ImmutableGrid.of();  // check if class is available
+                return new CollectBinHandlers();
+            } catch (Exception | LinkageError ex) {
+                try {
+                    ImmutableMultiset.of();  // check if class is available
+                    return new GuavaBinHandlers();
+                } catch (Exception | LinkageError ex2) {
+                    return new BaseBinHandlers();
+                }
+            }
+        }
+
+        BinHandler createHandler(Class<?> type) {
+            if (SortedSet.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseCollection(reader, declType, size, new TreeSet<>());
+            }
+            if (Set.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseCollection(reader, declType, size, new LinkedHashSet<>());
+            }
+            if (Collection.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseCollection(reader, declType, size, new ArrayList<>());
+            }
+            if (SortedMap.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMap(reader, declType, size, new TreeMap<>());
+            }
+            if (Map.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMap(reader, declType, size, new LinkedHashMap<>());
+            }
+            if (Optional.class.isAssignableFrom(type)) {
+                return BaseBinHandlers::parseOptional;
+            }
+            if (type.isArray()) {
+                return BaseBinHandlers::parseArray;
+            }
+            throw new IllegalArgumentException("Invalid binary data: Unknown collection: " + type.getName());
+        }
+
+        Class<?> classForTypeCode(int typeCode) {
+            return switch (typeCode) {
+                case TYPE_CODE_LIST -> List.class;
+                case TYPE_CODE_SET -> Set.class;
+                case TYPE_CODE_MAP -> Map.class;
+                case TYPE_CODE_OPTIONAL -> Optional.class;
+                default -> throw new IllegalArgumentException("Invalid binary data: Unknown type code: " + typeCode);
+            };
+        }
+
+        // collection - parsed from a BeanPack array
+        private static Collection<?> parseCollection(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size,
+                Collection<Object> collection) throws Exception {
+
+            var itemType = declaredType.getArgumentOrDefault(0);
+            for (var i = 0; i < size; i++) {
+                collection.add(reader.parseObject(itemType, false));
+            }
+            return collection;
+        }
+
+        // map - parsed from a BeanPack map
+        static Map<?, ?> parseMap(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size,
+                Map<Object, Object> map) throws Exception {
+
+            var keyType = declaredType.getArgumentOrDefault(0);
+            var valueType = declaredType.getArgumentOrDefault(1);
+            for (var i = 0; i < size; i++) {
+                var key = reader.parseObject(keyType, false);
+                var value = reader.parseObject(valueType, false);
+                map.put(key, value);
+            }
+            return map;
+        }
+
+        // optional - parsed from a BeanPack array, size 0 or 1
+        private static Optional<?> parseOptional(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size) throws Exception {
+
+            return switch (size) {
+                case 0 -> Optional.empty();
+                case 1 -> {
+                    var itemType = declaredType.getArgumentOrDefault(0);
+                    var value = reader.parseObject(itemType, false);
+                    yield Optional.ofNullable(value);
+                }
+                default -> throw new IllegalArgumentException(
+                        "Invalid binary data: Optional must be an array of size zero or one, but was " + size);
+            };
+        }
+
+        // array - parsed from a BeanPack array
+        private static Object parseArray(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size) throws Exception {
+
+            var componentType = declaredType.toComponentType();
+            var array = Array.newInstance(componentType.getRawType(), size);
+            for (var i = 0; i < size; i++) {
+                Array.set(array, i, reader.parseObject(componentType, false));
+            }
+            return array;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    private static sealed class GuavaBinHandlers extends BaseBinHandlers {
+
+        @Override
+        BinHandler createHandler(Class<?> type) {
+            if (SortedMultiset.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMultiset(reader, declType, size, TreeMultiset.create());
+            }
+            if (Multiset.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMultiset(reader, declType, size, HashMultiset.create());
+            }
+            if (SetMultimap.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMultimap(reader, declType, size, HashMultimap.create());
+            }
+            if (Multimap.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMultimap(reader, declType, size, ArrayListMultimap.create());
+            }
+            if (Table.class.isAssignableFrom(type)) {
+                return GuavaBinHandlers::parseTable;
+            }
+            if (BiMap.class.isAssignableFrom(type)) {
+                return (reader, declType, size) -> parseMap(reader, declType, size, HashBiMap.create());
+            }
+            if (com.google.common.base.Optional.class.isAssignableFrom(type)) {
+                return GuavaBinHandlers::parseOptional;
+            }
+            // TODO: immutable collections
+            return super.createHandler(type);
+        }
+
+        @Override
+        Class<?> classForTypeCode(int typeCode) {
+            return switch (typeCode) {
+                case TYPE_CODE_MULTISET -> Multiset.class;
+                case TYPE_CODE_LIST_MULTIMAP -> ListMultimap.class;
+                case TYPE_CODE_SET_MULTIMAP -> SetMultimap.class;
+                case TYPE_CODE_TABLE -> Table.class;
+                case TYPE_CODE_BIMAP -> BiMap.class;
+                case TYPE_CODE_GUAVA_OPTIONAL -> com.google.common.base.Optional.class;
+                default -> super.classForTypeCode(typeCode);
+            };
+        }
+
+        // multiset - parsed from a BeanPack map of value to count
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        private static Multiset<?> parseMultiset(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size,
+                Multiset mset) throws Exception {
+
+            var itemType = declaredType.getArgumentOrDefault(0);
+            for (var i = 0; i < size; i++) {
+                var item = reader.parseObject(itemType, false);
+                var count = reader.acceptInt();
+                mset.add(item, count);
+            }
+            return mset;
+        }
+
+        // multimap - parsed from a BeanPack map of key to array of values
+        private static Multimap<?, ?> parseMultimap(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size,
+                Multimap<Object, Object> mmap) throws Exception {
+
+            var keyType = declaredType.getArgumentOrDefault(0);
+            var valueType = declaredType.getArgumentOrDefault(1);
+            for (var i = 0; i < size; i++) {
+                var key = reader.parseObject(keyType, false);
+                var valueSize = reader.acceptArray();
+                for (var j = 0; j < valueSize; j++) {
+                    var value = reader.parseObject(valueType, false);
+                    mmap.put(key, value);
+                }
+            }
+            return mmap;
+        }
+
+        // table - parsed from a BeanPack map of row to map of column to value
+        private static Table<?, ?, ?> parseTable(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size) throws Exception {
+
+            var rowType = declaredType.getArgumentOrDefault(0);
+            var columnType = declaredType.getArgumentOrDefault(1);
+            var valueType = declaredType.getArgumentOrDefault(2);
+            var table = HashBasedTable.create();
+            for (var i = 0; i < size; i++) {
+                var row = reader.parseObject(rowType, false);
+                var colSize = reader.acceptMap();
+                for (var j = 0; j < colSize; j++) {
+                    var column = reader.parseObject(columnType, false);
+                    var value = reader.parseObject(valueType, false);
+                    table.put(row, column, value);
+                }
+            }
+            return table;
+        }
+
+        // optional - parsed from a BeanPack array, size 0 or 1
+        private static com.google.common.base.Optional<?> parseOptional(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size) throws Exception {
+
+            return switch (size) {
+                case 0 -> com.google.common.base.Optional.absent();
+                case 1 -> {
+                    var itemType = declaredType.getArgumentOrDefault(0);
+                    var value = reader.parseObject(itemType, false);
+                    yield com.google.common.base.Optional.fromNullable(value);
+                }
+                default -> throw new IllegalArgumentException(
+                        "Invalid binary data: Optional must be an array of size zero or one, but was " + size);
+            };
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    private static final class CollectBinHandlers extends GuavaBinHandlers {
+
+        @Override
+        BinHandler createHandler(Class<?> type) {
+            if (Grid.class.isAssignableFrom(type)) {
+                return CollectBinHandlers::parseGrid;
+            }
+            return super.createHandler(type);
+        }
+
+        @Override
+        Class<?> classForTypeCode(int typeCode) {
+            return switch (typeCode) {
+                case TYPE_CODE_GRID -> Grid.class;
+                default -> super.classForTypeCode(typeCode);
+            };
+        }
+
+        // grid
+        private static Grid<?> parseGrid(
+                JodaBeanPackedBinReader reader,
+                ResolvedType declaredType,
+                int size) throws Exception {
+
+            var valueType = declaredType.getArgumentOrDefault(0);
+            if (size != 3) {
+                throw new IllegalArgumentException(
+                        "Invalid binary data: Grid must be an array of size three, but was " + size);
+            }
+            var rowCount = reader.acceptInt();
+            var colCount = reader.acceptInt();
+            var arraySize = reader.acceptArray();
+            if (arraySize == rowCount * colCount) {
+                // dense
+                var grid = DenseGrid.create(rowCount, colCount);
+                for (var row = 0; row < rowCount; row++) {
+                    for (var col = 0; col < colCount; col++) {
+                        var value = reader.parseObject(valueType, false);
+                        grid.put(row, col, value);
+                    }
+                }
+                return grid;
+            } else {
+                // sparse
+                var grid = SparseGrid.create(rowCount, colCount);
+                for (var i = 0; i < size; i++) {
+                    var row = reader.acceptInt();
+                    var col = reader.acceptInt();
+                    var value = reader.parseObject(valueType, false);
+                    grid.put(row, col, value);
+                }
+                return grid;
+            }
+        }
+    }
 }

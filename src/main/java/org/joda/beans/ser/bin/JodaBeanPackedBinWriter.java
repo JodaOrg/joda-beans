@@ -17,7 +17,6 @@ package org.joda.beans.ser.bin;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.time.Duration;
 import java.time.Instant;
@@ -33,6 +32,8 @@ import java.util.Set;
 import org.joda.beans.Bean;
 import org.joda.beans.DynamicBean;
 import org.joda.beans.ResolvedType;
+import org.joda.beans.impl.flexi.FlexiBean;
+import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTypeMapper;
 import org.joda.collect.grid.Grid;
@@ -157,18 +158,24 @@ final class JodaBeanPackedBinWriter {
      * Writes the bean to the {@code OutputStream}.
      * 
      * @param bean  the bean to output, not null
+     * @param includeRootType  whether to include the root type
      * @throws IOException if an error occurs
      */
-    void write(Bean bean) throws IOException {
-        try {
-            // these first two bytes in BeanPack are compatible with MsgPack!
-            output.writeArrayHeader(2);
-            output.writeInt(3);  // version 3
-            // root always outputs the bean, not Joda-Convert form
-            writeBean(ResolvedType.OBJECT, bean, true);
-        } catch (UncheckedIOException ex) {
-            throw ex.getCause();
+    void write(Bean bean, boolean includeRootType) throws IOException {
+        var beanClass = bean.getClass();
+        // these first two bytes in BeanPack are compatible with MsgPack!
+        output.writeArrayHeader(3);
+        output.writeInt(3);  // version 3
+        if (includeRootType && beanClass != FlexiBean.class && beanClass != MapBean.class && settings.isShortTypes()) {
+            basePackage = beanClass.getPackage().getName() + '.';
+            SerTypeMapper.encodeType(beanClass, settings, basePackage, knownTypes);
+            output.writeString(basePackage);
+        } else {
+            basePackage = null;
+            output.writeNull();
         }
+        // root always outputs the bean, not Joda-Convert form
+        writeBean(ResolvedType.of(beanClass), bean, includeRootType);
     }
 
     //-----------------------------------------------------------------------
@@ -189,27 +196,27 @@ final class JodaBeanPackedBinWriter {
         if (settings.getConverter().isConvertible(bean.getClass())) {
             writeSimple(declaredType, propertyName, bean);
         } else {
-            writeBean(declaredType, bean, false);
+            writeBean(declaredType, bean, true);
         }
     }
 
     // writes a bean, with meta type information if necessary
-    private void writeBean(ResolvedType declaredType, Bean bean, boolean isRoot) throws IOException {
+    private void writeBean(ResolvedType declaredType, Bean bean, boolean includeRootType) throws IOException {
         var beanClass = bean.getClass();
         if (!beanDefinitions.containsKey(beanClass)) {
-            if (bean instanceof DynamicBean) {
+            if (bean instanceof DynamicBean || !includeRootType) {
                 if (beanClass != declaredType.getRawType()) {
-                    writeTypeNameOrReference(beanClass, isRoot);
+                    writeTypeNameOrReference(beanClass);
                 }
                 writeDynamicBean(bean);
             } else {
                 beanDefinitions.put(beanClass, null);
-                writeTypeNameOrReference(beanClass, isRoot);
+                writeTypeNameOrReference(beanClass);
                 writeBeanWithDefinition(bean);
             }
         } else {
             if (beanClass != declaredType.getRawType()) {
-                writeTypeNameOrReference(beanClass, isRoot);
+                writeTypeNameOrReference(beanClass);
             }
             writeBeanValues(bean);
         }
@@ -301,7 +308,7 @@ final class JodaBeanPackedBinWriter {
         var effectiveType = value.getClass();
         if (effectiveType != declaredType.getRawType()) {
             effectiveType = settings.getConverter().findTypedConverter(effectiveType).getEffectiveType();
-            writeTypeNameOrReference(effectiveType, false);
+            writeTypeNameOrReference(effectiveType);
         }
         // write the reference, or call Joda-Convert if first time value is seen
         var ref = valueDefinitions.get(value);
@@ -346,30 +353,15 @@ final class JodaBeanPackedBinWriter {
     }
 
     // writes the type header
-    private final void writeTypeNameOrReference(Class<?> type, boolean isRoot) throws IOException {
+    private final void writeTypeNameOrReference(Class<?> type) throws IOException {
         var ref = typeDefinitions.get(type);
         if (ref == null) {
             var encodedClassName = SerTypeMapper.encodeType(type, settings, basePackage, knownTypes);
-            if (isRoot && basePackage == null) {
-                basePackage = type.getPackage().getName() + ".";
-            }
             typeDefinitions.put(type, typeDefinitionIndex++);
             output.writeTypeName(encodedClassName);
         } else {
             output.writeTypeReference(ref);
         }
-    }
-
-    // gets the weakened type, which exists for backwards compatibility
-    // once the parser can handle ResolvedType this method can, in theory, be removed
-    private static ResolvedType toWeakenedType(ResolvedType base) {
-        for (var arg : base.getArguments()) {
-            var rawType = arg.getRawType();
-            if (LOOKUP.get(rawType).isCollection(rawType)) {
-                return base.toRawType();
-            }
-        }
-        return base;
     }
 
     //-------------------------------------------------------------------------
@@ -379,17 +371,6 @@ final class JodaBeanPackedBinWriter {
                 ResolvedType declaredType,
                 String propertyName,
                 T obj) throws IOException;
-
-        public default boolean isCollection(Class<?> type) {
-            return false;
-        }
-    }
-
-    private static interface CollectionBinHandler<T> extends BinHandler<T> {
-        @Override
-        public default boolean isCollection(Class<?> type) {
-            return true;
-        }
     }
 
     //-------------------------------------------------------------------------
@@ -416,7 +397,7 @@ final class JodaBeanPackedBinWriter {
         // creates the handler, called from ClassValue.computeValue()
         BinHandler<?> createHandler(Class<?> type) {
             if (Optional.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Optional<?>>) BaseBinHandlers::writeOptional;
+                return (BinHandler<Optional<?>>) BaseBinHandlers::writeOptional;
             }
             if (type == byte[].class) {
                 return (writer, declaredType, propName, value) -> writer.output.writeBytes((byte[]) value);
@@ -427,20 +408,21 @@ final class JodaBeanPackedBinWriter {
             if (type.isArray()) {
                 var componentType = type.getComponentType();
                 if (componentType.isPrimitive()) {
-                    return (CollectionBinHandler<Object>) BaseBinHandlers::writePrimitiveArray;
+                    return (BinHandler<Object>) BaseBinHandlers::writePrimitiveArray;
                 } else {
-                    return (CollectionBinHandler<Object[]>) BaseBinHandlers::writeArray;
+                    return (BinHandler<Object[]>) BaseBinHandlers::writeArray;
                 }
             }
             if (Collection.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Collection<?>>) BaseBinHandlers::writeCollection;
+                return (BinHandler<Collection<?>>) BaseBinHandlers::writeCollection;
             }
             if (Map.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Map<?, ?>>) BaseBinHandlers::writeMap;
+                return (BinHandler<Map<?, ?>>) BaseBinHandlers::writeMap;
             }
             return JodaBeanPackedBinWriter::writeSimple;
         }
 
+        // writes an optional, with meta type information if necessary
         private static void writeOptional(
                 JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
@@ -451,9 +433,14 @@ final class JodaBeanPackedBinWriter {
             if (!Optional.class.isAssignableFrom(declaredType.getRawType())) {
                 writer.output.writeTypeReference(BeanPack.TYPE_CODE_OPTIONAL);
             }
-            // write content
-            var valueType = declaredType.getArgumentOrDefault(0).toRawType();
-            writer.writeObject(valueType, "", opt.orElse(null));
+            // write content, using an array of size 0 or 1
+            var valueType = declaredType.getArgumentOrDefault(0);
+            if (opt.isEmpty()) {
+                writer.output.writeArrayHeader(0);
+            } else {
+                writer.output.writeArrayHeader(1);
+                writer.writeObject(valueType, "", opt.get());
+            }
         }
 
         // writes an array, with meta type information if necessary
@@ -469,7 +456,7 @@ final class JodaBeanPackedBinWriter {
                 writeArrayTypeDescription(writer, actualComponentType);
             }
             // write content
-            var componentType = toWeakenedType(declaredType.toComponentType());
+            var componentType = declaredType.toComponentType();
             writer.output.writeArrayHeader(array.length);
             for (var item : array) {
                 writer.writeObject(componentType, "", item);
@@ -489,7 +476,7 @@ final class JodaBeanPackedBinWriter {
                 writeArrayTypeDescription(writer, arrayType);
             }
             // write content
-            var componentType = toWeakenedType(declaredType.toComponentType());
+            var componentType = declaredType.toComponentType();
             var handler = JodaBeanPackedBinWriter.LOOKUP.get(componentType.getRawType());
             var arrayLength = Array.getLength(array);
             writer.output.writeArrayHeader(arrayLength);
@@ -538,7 +525,7 @@ final class JodaBeanPackedBinWriter {
                 writer.output.writeTypeReference(BeanPack.TYPE_CODE_LIST);
             }
             // write content
-            var itemType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+            var itemType = declaredType.getArgumentOrDefault(0);
             writer.output.writeArrayHeader(coll.size());
             for (var item : coll) {
                 writer.writeObject(itemType, "", item);
@@ -567,22 +554,13 @@ final class JodaBeanPackedBinWriter {
                 String propertyName,
                 Collection<Map.Entry<K, V>> mapEntries) throws IOException {
 
-            var keyType = toWeakenedType(declaredType.getArgumentOrDefault(0));
-            var valueType = toWeakenedType(declaredType.getArgumentOrDefault(1));
+            var keyType = declaredType.getArgumentOrDefault(0);
+            var valueType = declaredType.getArgumentOrDefault(1);
             writer.output.writeMapHeader(mapEntries.size());
             for (var entry : mapEntries) {
-                var key = entry.getKey();
-                if (key == null) {
-                    throw invalidNullMapKey(propertyName);
-                }
                 writer.writeObject(keyType, "", entry.getKey());
                 writer.writeObject(valueType, "", entry.getValue());
             }
-        }
-
-        private static IllegalArgumentException invalidNullMapKey(String propertyName) throws IOException {
-            return new IllegalArgumentException(
-                    "Unable to write property '" + propertyName + "', map key must not be null");
         }
     }
 
@@ -591,19 +569,43 @@ final class JodaBeanPackedBinWriter {
 
         @Override
         BinHandler<?> createHandler(Class<?> type) {
+            if (com.google.common.base.Optional.class.isAssignableFrom(type)) {
+                return (BinHandler<com.google.common.base.Optional<?>>) GuavaBinHandlers::writeOptional;
+            }
             if (Multimap.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Multimap<?, ?>>) GuavaBinHandlers::writeMultimap;
+                return (BinHandler<Multimap<?, ?>>) GuavaBinHandlers::writeMultimap;
             }
             if (Multiset.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Multiset<?>>) GuavaBinHandlers::writeMultiset;
+                return (BinHandler<Multiset<?>>) GuavaBinHandlers::writeMultiset;
             }
             if (Table.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Table<?, ?, ?>>) GuavaBinHandlers::writeTable;
+                return (BinHandler<Table<?, ?, ?>>) GuavaBinHandlers::writeTable;
             }
             if (BiMap.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<BiMap<?, ?>>) GuavaBinHandlers::writeBiMap;
+                return (BinHandler<BiMap<?, ?>>) GuavaBinHandlers::writeBiMap;
             }
             return super.createHandler(type);
+        }
+
+        // writes an optional, with meta type information if necessary
+        private static void writeOptional(
+                JodaBeanPackedBinWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                com.google.common.base.Optional<?> opt) throws IOException {
+
+            // write actual type
+            if (!com.google.common.base.Optional.class.isAssignableFrom(declaredType.getRawType())) {
+                writer.output.writeTypeReference(BeanPack.TYPE_CODE_OPTIONAL);
+            }
+            // write content, using an array of size 0 or 1
+            var valueType = declaredType.getArgumentOrDefault(0);
+            if (opt.isPresent()) {
+                writer.output.writeArrayHeader(1);
+                writer.writeObject(valueType, "", opt.get());
+            } else {
+                writer.output.writeArrayHeader(0);
+            }
         }
 
         // writes a multimap, with meta type information if necessary
@@ -619,8 +621,19 @@ final class JodaBeanPackedBinWriter {
             } else if (!Multimap.class.isAssignableFrom(declaredType.getRawType())) {
                 writer.output.writeTypeReference(BeanPack.TYPE_CODE_LIST_MULTIMAP);
             }
-            // write content
-            writeMapEntries(writer, declaredType, propertyName, mmap.entries());
+            // write content, using a map of key to array of values
+            var keyType = declaredType.getArgumentOrDefault(0);
+            var valueType = declaredType.getArgumentOrDefault(1);
+            var map = mmap.asMap();
+            writer.output.writeMapHeader(map.size());
+            for (var entry : map.entrySet()) {
+                writer.writeObject(keyType, "", entry.getKey());
+                var values = entry.getValue();
+                writer.output.writeArrayHeader(values.size());
+                for (var value : values) {
+                    writer.writeObject(valueType, "", value);
+                }
+            }
         }
 
         // writes a multiset, with meta type information if necessary
@@ -634,8 +647,8 @@ final class JodaBeanPackedBinWriter {
             if (!Multiset.class.isAssignableFrom(declaredType.getRawType())) {
                 writer.output.writeTypeReference(BeanPack.TYPE_CODE_MULTISET);
             }
-            // write content
-            var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+            // write content, using a map of value to count
+            var valueType = declaredType.getArgumentOrDefault(0);
             var entrySet = mset.entrySet();
             writer.output.writeMapHeader(entrySet.size());
             for (var entry : entrySet) {
@@ -655,16 +668,19 @@ final class JodaBeanPackedBinWriter {
             if (!Table.class.isAssignableFrom(declaredType.getRawType())) {
                 writer.output.writeTypeReference(BeanPack.TYPE_CODE_TABLE);
             }
-            // write content
-            var rowType = toWeakenedType(declaredType.getArgumentOrDefault(0));
-            var columnType = toWeakenedType(declaredType.getArgumentOrDefault(1));
-            var valueType = toWeakenedType(declaredType.getArgumentOrDefault(2));
-            writer.output.writeArrayHeader(table.size());
-            for (var cell : table.cellSet()) {
-                writer.output.writeArrayHeader(3);
-                writer.writeObject(rowType, "", cell.getRowKey());
-                writer.writeObject(columnType, "", cell.getColumnKey());
-                writer.writeObject(valueType, "", cell.getValue());
+            // write content, using a map of row to map of column to value
+            var rowType = declaredType.getArgumentOrDefault(0);
+            var columnType = declaredType.getArgumentOrDefault(1);
+            var valueType = declaredType.getArgumentOrDefault(2);
+            var rowMap = table.rowMap();
+            writer.output.writeMapHeader(rowMap.size());
+            for (var rowEntry : rowMap.entrySet()) {
+                writer.writeObject(rowType, "", rowEntry.getKey());
+                writer.output.writeMapHeader(3);
+                for (var colEntry : rowEntry.getValue().entrySet()) {
+                    writer.writeObject(columnType, "", colEntry.getKey());
+                    writer.writeObject(valueType, "", colEntry.getValue());
+                }
             }
         }
 
@@ -690,7 +706,7 @@ final class JodaBeanPackedBinWriter {
         @Override
         BinHandler<?> createHandler(Class<?> type) {
             if (Grid.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Grid<?>>) CollectBinHandlers::writeGrid;
+                return (BinHandler<Grid<?>>) CollectBinHandlers::writeGrid;
             }
             return super.createHandler(type);
         }
@@ -707,27 +723,25 @@ final class JodaBeanPackedBinWriter {
                 writer.output.writeTypeReference(BeanPack.TYPE_CODE_GRID);
             }
             // write content using sparse or dense approach
-            var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+            var valueType = declaredType.getArgumentOrDefault(0);
             var rows = grid.rowCount();
             var columns = grid.columnCount();
             var totalSize = rows * columns;
             var gridSize = grid.size();
-            if (gridSize < (totalSize / 4)) {
+            writer.output.writeArrayHeader(3);
+            writer.output.writeInt(rows);
+            writer.output.writeInt(columns);
+            if (gridSize < (totalSize / 3)) {
                 // sparse
-                writer.output.writeArrayHeader(gridSize + 2);
-                writer.output.writeInt(rows);
-                writer.output.writeInt(columns);
+                writer.output.writeArrayHeader(gridSize * 3);
                 for (var cell : grid.cells()) {
-                    writer.output.writeArrayHeader(3);
                     writer.output.writeInt(cell.getRow());
                     writer.output.writeInt(cell.getColumn());
                     writer.writeObject(valueType, "", cell.getValue());
                 }
             } else {
                 // dense
-                writer.output.writeArrayHeader(totalSize + 2);
-                writer.output.writeInt(rows);
-                writer.output.writeInt(columns);
+                writer.output.writeArrayHeader(totalSize);
                 for (var row = 0; row < rows; row++) {
                     for (var column = 0; column < columns; column++) {
                         writer.writeObject(valueType, "", grid.get(row, column));

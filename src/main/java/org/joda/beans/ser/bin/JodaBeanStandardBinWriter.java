@@ -17,7 +17,6 @@ package org.joda.beans.ser.bin;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,15 +114,11 @@ final class JodaBeanStandardBinWriter {
      * @throws IOException if an error occurs
      */
     void write(Bean bean, boolean includeRootType) throws IOException {
-        try {
-            var rootType = includeRootType ? ResolvedType.OBJECT : ResolvedType.of(bean.getClass());
-            output.writeArrayHeader(2);
-            output.writeInt(1);  // version 1
-            // root always outputs the bean, not Joda-Convert form
-            writeBean(rootType, "", bean, true);
-        } catch (UncheckedIOException ex) {
-            throw ex.getCause();
-        }
+        var rootType = includeRootType ? ResolvedType.OBJECT : ResolvedType.of(bean.getClass());
+        output.writeArrayHeader(2);
+        output.writeInt(1);  // version 1
+        // root always outputs the bean, not Joda-Convert form
+        writeBean(rootType, "", bean, true);
     }
 
     //-----------------------------------------------------------------------

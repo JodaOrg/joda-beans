@@ -1,0 +1,20 @@
+arr (3)
+- int 3
+- str 'org.joda.beans.sample.'
+- @type ImmOptional
+  bean (7)
+  - str 'optString'
+  - str 'optStringEmpty'
+  - str 'optStringGetter'
+  - str 'optLongGetter'
+  - str 'optIntGetter'
+  - str 'optDoubleGetter'
+  - str 'twelve'
+  - arr (1)
+    - str 'A'
+  - arr (0)
+  - null
+  - null
+  - null
+  - null
+  - int 12

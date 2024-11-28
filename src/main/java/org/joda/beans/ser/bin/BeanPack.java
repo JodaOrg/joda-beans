@@ -176,11 +176,12 @@ abstract class BeanPack {
 
     // date/time
     /**
-     * LocalDate (2 bytes) - packed format from year 2000 to 2170, 11 bits for year-month from 2000, 5 bits for day-of-month.
+     * LocalDate (2 bytes) - packed format from year 2000 to 2169 inclusive,
+     * 11 bits for year-month from 2000, 5 bits for 1-based day-of-month.
      */
     static final int DATE_PACKED = 0xFFFFFFE0;
     /**
-     * LocalDate (6 bytes) - 4 byte int year, 1 byte month, 1 byte day-of-month.
+     * LocalDate (5 bytes) - 27 bits for year-month, 5 bits for 1-based day-of-month.
      */
     static final int DATE = 0xFFFFFFE1;
     /**
@@ -283,13 +284,17 @@ abstract class BeanPack {
      */
     static final int TYPE_CODE_TABLE = -9;
     /**
+     * Optional (Guava) type code, followed by a value, where a null value means empty.
+     */
+    static final int TYPE_CODE_GUAVA_OPTIONAL = -10;
+    /**
      * Grid type code.
      */
-    static final int TYPE_CODE_GRID = -10;
+    static final int TYPE_CODE_GRID = -11;
     /**
      * Object[] type code, followed by an array of values.
      */
-    static final int TYPE_CODE_OBJECT_ARRAY = -11;
+    static final int TYPE_CODE_OBJECT_ARRAY = -12;
     /**
      * String[] type code, followed by an array of values.
      */

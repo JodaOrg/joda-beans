@@ -194,16 +194,18 @@ abstract class BeanPackInput extends BeanPack {
     }
 
     private void date() throws IOException {
-        var year = input.readInt();
-        var month = input.readUnsignedByte();
-        var dom = input.readUnsignedByte();
+        var upper = input.readInt();
+        var lower = input.readUnsignedByte();
+        var year = upper >> 1;
+        var month = ((upper & 1) << 3) + (lower >>> 5);
+        var dom = lower & 31;
         handleDate(LocalDate.of(year, month, dom));
     }
 
     private void time() throws IOException {
-        var upper = (long) input.readShort();
+        var upper = input.readUnsignedShort();
         var lower = Integer.toUnsignedLong(input.readInt());
-        var nod = (upper << 32) + lower;
+        var nod = ((long) upper << 32) + lower;
         handleTime(LocalTime.ofNanoOfDay(nod));
     }
 

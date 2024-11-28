@@ -1,0 +1,104 @@
+arr (3)
+- int 3
+- str 'org.joda.beans.sample.'
+- @type Address
+  bean (4)
+  - str 'number'
+  - str 'street'
+  - str 'city'
+  - str 'owner'
+  - int 251
+  - @value 
+    str 'Big Road'
+  - @value 
+    str 'London & Capital of the World <!>'
+  - @type Person
+    bean (8)
+    - str 'forename'
+    - str 'surname'
+    - str 'numberOfCars'
+    - str 'addressList'
+    - str 'otherAddressMap'
+    - str 'addressesList'
+    - str 'mainAddress'
+    - str 'extensions'
+    - @value 
+      str 'Etienne'
+    - @value 
+      str 'Colebourne'
+    - int 0
+    - arr (3)
+      - arr (4)
+        - int 65432
+        - ref 0 'Big Road'
+        - @value 
+          str 'Bigton'
+        - null
+      - null
+      - @type CompanyAddress
+        bean (5)
+        - str 'number'
+        - str 'street'
+        - str 'city'
+        - str 'owner'
+        - str 'companyName'
+        - int 185
+        - @value 
+          str 'Park Street'
+        - @value 
+          str 'London'
+        - null
+        - @value 
+          str 'OpenGamma'
+    - map (3)
+      = str 'other'
+        null
+      = str 'work'
+        @typeref 2
+        arr (5)
+        - int 185
+        - ref 5 'Park Street'
+        - ref 6 'London'
+        - null
+        - ref 7 'OpenGamma'
+      = str 'home'
+        arr (4)
+        - int 65432
+        - ref 0 'Big Road'
+        - ref 4 'Bigton'
+        - null
+    - arr (1)
+      - arr (2)
+        - arr (4)
+          - int 65432
+          - ref 0 'Big Road'
+          - ref 4 'Bigton'
+          - null
+        - @typeref 2
+          arr (5)
+          - int 185
+          - ref 5 'Park Street'
+          - ref 6 'London'
+          - null
+          - ref 7 'OpenGamma'
+    - @typeref 2
+      arr (5)
+      - int 185
+      - ref 5 'Park Street'
+      - ref 6 'London'
+      - null
+      - ref 7 'OpenGamma'
+    - map (4)
+      = str 'interests'
+        str 'joda'
+      = str 'conferenceCount'
+        int 21
+      = str 'quality'
+        @type Character
+        @value 
+        str 'B'
+      = str 'company'
+        @type Company
+        bean (1)
+        - str 'companyName'
+        - ref 7 'OpenGamma'

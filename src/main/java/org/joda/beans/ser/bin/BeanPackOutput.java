@@ -32,26 +32,6 @@ final class BeanPackOutput extends BeanPack {
      * Mask to check if value is a small positive integer.
      */
     private static final int MASK_SMALL_INT_POSITIVE = 0xFFFFFF80;
-    /**
-     * Mask to check if value is a signed byte.
-     */
-    private static final int MASK_INT8 = 0x7FFFFF80;
-    /**
-     * Mask to check if value is a signed short.
-     */
-    private static final int MASK_INT16 = 0x7FFF8000;
-    /**
-     * Mask to check if value is a signed byte.
-     */
-    private static final long MASK_LONG8 = 0x7FFF_FFFF_FFFF_FF80L;
-    /**
-     * Mask to check if value is a signed short.
-     */
-    private static final long MASK_LONG16 = 0x7FFF_FFFF_FFFF_8000L;
-    /**
-     * Mask to check if value is a signed int.
-     */
-    private static final long MASK_LONG32 = 0x7FFF_FFFF_8000_0000L;
 
     /**
      * The stream to write to.
@@ -65,15 +45,6 @@ final class BeanPackOutput extends BeanPack {
      */
     BeanPackOutput(OutputStream stream) {
         this.output = new DataOutputStream(stream);
-    }
-
-    /**
-     * Creates an instance.
-     * 
-     * @param stream  the stream to write to, not null
-     */
-    BeanPackOutput(DataOutputStream stream) {
-        this.output = stream;
     }
 
     //-----------------------------------------------------------------------
@@ -119,9 +90,9 @@ final class BeanPackOutput extends BeanPack {
      */
     void writeDouble(double value) throws IOException {
         var intValue = (int) value;
-        if (value == intValue) {
+        if (value == intValue && Double.compare(value, -0d) != 0) {
             output.writeByte(DOUBLE_INT);
-            output.writeInt(intValue);
+            writeInt(intValue);
         } else {
             output.writeByte(DOUBLE_64);
             output.writeDouble(value);
@@ -135,7 +106,7 @@ final class BeanPackOutput extends BeanPack {
      * @throws IOException if an error occurs
      */
     void writeByte(byte value) throws IOException {
-        output.writeByte(SHORT_16);
+        output.writeByte(BYTE_8);
         output.writeByte(value);
     }
 
@@ -157,13 +128,10 @@ final class BeanPackOutput extends BeanPack {
      * @throws IOException if an error occurs
      */
     void writeInt(int value) throws IOException {
-        if (value >= 0) {
-            if ((value & MASK_SMALL_INT_POSITIVE) == 0) {
-                output.writeByte(value);
-            } else if ((value & MASK_INT8) == 0) {
-                output.writeByte(INT_8);
-                output.writeByte((byte) value);
-            } else if ((value & MASK_INT16) == 0) {
+        if ((value & MASK_SMALL_INT_POSITIVE) == 0) {
+            output.writeByte(value);
+        } else if (value >= 0) {
+            if (value <= Short.MAX_VALUE) {
                 output.writeByte(INT_16);
                 output.writeShort((short) value);
             } else {
@@ -173,10 +141,10 @@ final class BeanPackOutput extends BeanPack {
         } else {
             if (value >= MIN_FIX_INT) {
                 output.writeByte(value);
-            } else if (value >= -256) {
+            } else if (value >= Byte.MIN_VALUE) {
                 output.writeByte(INT_8);
                 output.writeByte((byte) value);
-            } else if (value >= -256 * 256) {
+            } else if (value >= Short.MIN_VALUE) {
                 output.writeByte(INT_16);
                 output.writeShort((short) value);
             } else {
@@ -194,32 +162,32 @@ final class BeanPackOutput extends BeanPack {
      */
     void writeLong(long value) throws IOException {
         if (value >= 0) {
-            if ((value & MASK_LONG8) == 0) {
+            if (value <= Byte.MAX_VALUE) {
                 output.writeByte(LONG_8);
                 output.writeByte((byte) value);
-            } else if ((value & MASK_LONG16) == 0) {
+            } else if (value <= Short.MAX_VALUE) {
                 output.writeByte(LONG_16);
                 output.writeShort((short) value);
-            } else if ((value & MASK_LONG32) == 0) {
+            } else if (value <= Integer.MAX_VALUE) {
                 output.writeByte(LONG_32);
                 output.writeInt((int) value);
             } else {
                 output.writeByte(LONG_64);
-                output.writeInt((int) value);
+                output.writeLong(value);
             }
         } else {
-            if (value >= -256) {
+            if (value >= Byte.MIN_VALUE) {
                 output.writeByte(LONG_8);
                 output.writeByte((byte) value);
-            } else if (value >= -256 * 256) {
+            } else if (value >= Short.MIN_VALUE) {
                 output.writeByte(LONG_16);
                 output.writeShort((short) value);
-            } else if (value >= -256L * 256 * 256 * 256) {
+            } else if (value >= Integer.MIN_VALUE) {
                 output.writeByte(LONG_32);
                 output.writeInt((int) value);
             } else {
                 output.writeByte(LONG_64);
-                output.writeInt((int) value);
+                output.writeLong(value);
             }
         }
     }
@@ -235,16 +203,16 @@ final class BeanPackOutput extends BeanPack {
         var year = date.getYear();
         var month = date.getMonthValue();
         var dom = date.getDayOfMonth();
-        if (year >= 2000 && year <= 2170) {
+        if (year >= 2000 && year <= 2169) {
             var ym2000 = (year - 2000) * 12 + (month - 1);
             output.write(DATE_PACKED);
-            var packed = ym2000 << 5 + dom;
+            var packed = (ym2000 << 5) + dom;
             output.writeShort(packed);
         } else {
             output.write(DATE);
-            output.writeInt(year);
-            output.writeByte(month);
-            output.writeByte(dom);
+            var packed = (((long) year) << 9) + (month << 5) + dom;
+            output.writeInt((int) (packed >> 8));
+            output.writeByte((byte) (packed & 0xFF));
         }
     }
 
@@ -296,10 +264,10 @@ final class BeanPackOutput extends BeanPack {
      */
     void writeBytes(byte[] bytes) throws IOException {
         var size = bytes.length;
-        if (size <= 255) {
+        if (size <= 0xFF) {
             output.writeByte(BIN_8);
-            output.writeShort(size);
-        } else if (size <= 65535) {
+            output.writeByte(size);
+        } else if (size <= 0xFFFF) {
             output.writeByte(BIN_16);
             output.writeShort(size);
         } else {
@@ -317,10 +285,10 @@ final class BeanPackOutput extends BeanPack {
      */
     void writeDoubles(double[] values) throws IOException {
         var size = values.length;
-        if (size <= 255) {
+        if (size <= 0xFF) {
             output.writeByte(DOUBLE_ARRAY_8);
-            output.writeShort(size);
-        } else if (size <= 65535) {
+            output.writeByte(size);
+        } else if (size <= 0xFFFF) {
             output.writeByte(DOUBLE_ARRAY_16);
             output.writeShort(size);
         } else {
@@ -342,10 +310,10 @@ final class BeanPackOutput extends BeanPack {
     void writeMapHeader(int size) throws IOException {
         if (size <= 12) {
             output.writeByte(MIN_FIX_MAP + size);
-        } else if (size < 256) {
+        } else if (size <= 0xFF) {
             output.writeByte(MAP_8);
             output.writeByte(size);
-        } else if (size < 65536) {
+        } else if (size <= 0xFFFF) {
             output.writeByte(MAP_16);
             output.writeShort(size);
         } else {
@@ -363,10 +331,10 @@ final class BeanPackOutput extends BeanPack {
     void writeArrayHeader(int size) throws IOException {
         if (size <= 12) {
             output.writeByte(MIN_FIX_ARRAY + size);
-        } else if (size < 256) {
+        } else if (size <= 0xFF) {
             output.writeByte(ARRAY_8);
             output.writeByte(size);
-        } else if (size < 65536) {
+        } else if (size <= 0xFFFF) {
             output.writeByte(ARRAY_16);
             output.writeShort(size);
         } else {
@@ -395,10 +363,10 @@ final class BeanPackOutput extends BeanPack {
 
     // separate out larger strings, which may benefit hotspot
     private void writeStringHeaderLarge(int size) throws IOException {
-        if (size < 256) {
+        if (size <= 0xFF) {
             output.writeByte(STR_8);
             output.writeByte(size);
-        } else if (size < 65536) {
+        } else if (size <= 0xFFFF) {
             output.writeByte(STR_16);
             output.writeShort(size);
         } else {

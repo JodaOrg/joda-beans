@@ -189,19 +189,19 @@ public class JodaBeanBinWriter {
      * Writes the bean to the {@code OutputStream}.
      * 
      * @param bean  the bean to output, not null
-     * @param rootType  true to output the root type
+     * @param includeRootType  true to output the root type
      * @param output  the output stream, not null
      * @throws IOException if an error occurs
      */
-    public void write(Bean bean, boolean rootType, OutputStream output) throws IOException {
+    public void write(Bean bean, boolean includeRootType, OutputStream output) throws IOException {
         Objects.requireNonNull(bean, "bean must not be null");
         Objects.requireNonNull(output, "output must not be null");
         switch (format) {
-            case STANDARD -> new JodaBeanStandardBinWriter(settings, output).write(bean, rootType);
+            case STANDARD -> new JodaBeanStandardBinWriter(settings, output).write(bean, includeRootType);
             case REFERENCING -> {
                 new JodaBeanReferencingBinWriter(settings, output).write(bean);
             }
-            case PACKED -> new JodaBeanPackedBinWriter(settings, output).write(bean);
+            case PACKED -> new JodaBeanPackedBinWriter(settings, output).write(bean, includeRootType);
             default -> throw new IllegalArgumentException("Invalid bin version, must be 1, 2 or 3");
         }
     }

@@ -203,10 +203,15 @@ final class BeanPackVisualizer extends BeanPackInput {
     void handleDoubleArray(double[] values) {
         buf.append("dbl [");
         for (int i = 0; i < values.length; i++) {
-            for (int j = 0; j < 4 && i < values.length; j++, i++) {
-                buf.append(values[i]).append(',');
+            if (i > 0) {
+                buf.append(System.lineSeparator()).append("     ");
             }
-            buf.append(System.lineSeparator()).append("     ");
+            for (int j = 0; j < 8 && i < values.length; j++, i++) {
+                if (j > 0) {
+                    buf.append(',');
+                }
+                buf.append(values[i]);
+            }
         }
         buf.append("]").append(System.lineSeparator());
     }
