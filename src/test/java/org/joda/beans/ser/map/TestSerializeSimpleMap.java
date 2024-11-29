@@ -64,12 +64,12 @@ public class TestSerializeSimpleMap {
 
     @Test
     public void test_writeCollections() {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(false);
         Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
 //        System.out.println(map);
         
         @SuppressWarnings("unchecked")
-        ImmGuava<String> parsed = (ImmGuava<String>) JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmGuava.class);
+        ImmGuava<String> parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmGuava.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }

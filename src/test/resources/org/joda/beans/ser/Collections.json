@@ -48,10 +48,37 @@
  }, "BB"]],
  "multimap": {
   "@meta": "ListMultimap",
-  "value": []
+  "value": [[{
+   "@type": "String",
+   "value": "A"
+  }, "B"], [{
+   "@type": "String",
+   "value": "A"
+  }, "C"], [{
+   "@type": "String",
+   "value": "B"
+  }, "D"]]
  },
- "listMultimap": [],
- "setMultimap": [],
+ "listMultimap": [[{
+  "@type": "String",
+  "value": "A"
+ }, "B"], [{
+  "@type": "String",
+  "value": "A"
+ }, "C"], [{
+  "@type": "String",
+  "value": "B"
+ }, "D"]],
+ "setMultimap": [[{
+  "@type": "String",
+  "value": "A"
+ }, "B"], [{
+  "@type": "String",
+  "value": "A"
+ }, "C"], [{
+  "@type": "String",
+  "value": "B"
+ }, "D"]],
  "multiset": [[{
   "@type": "String",
   "value": "A"
@@ -111,10 +138,37 @@
  }, "BB"]],
  "multimapInterface": {
   "@meta": "ListMultimap",
-  "value": []
+  "value": [[{
+   "@type": "String",
+   "value": "A"
+  }, "B"], [{
+   "@type": "String",
+   "value": "A"
+  }, "C"], [{
+   "@type": "String",
+   "value": "B"
+  }, "D"]]
  },
- "listMultimapInterface": [],
- "setMultimapInterface": [],
+ "listMultimapInterface": [[{
+  "@type": "String",
+  "value": "A"
+ }, "B"], [{
+  "@type": "String",
+  "value": "A"
+ }, "C"], [{
+  "@type": "String",
+  "value": "B"
+ }, "D"]],
+ "setMultimapInterface": [[{
+  "@type": "String",
+  "value": "A"
+ }, "B"], [{
+  "@type": "String",
+  "value": "A"
+ }, "C"], [{
+  "@type": "String",
+  "value": "B"
+ }, "D"]],
  "multisetInterface": [],
  "sortedMultisetInterface": [],
  "listWildExtendsT": [],
@@ -126,5 +180,6 @@
  "listWildBuilder1": [],
  "listWildBuilder2": [],
  "mapWildBuilder1": {},
- "mapWildKey": []
+ "mapWildKey": [],
+ "table": [["A", 1, "B"], ["A", 2, "C"], ["B", 3, "D"]]
 }

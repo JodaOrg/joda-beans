@@ -99,7 +99,7 @@ public class TestSerializeReferencingBin {
 
     @Test
     public void test_writeCollections() throws IOException {
-        var bean = SerTestHelper.testCollections();
+        var bean = SerTestHelper.testCollections(true);
         var bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections1.refbinstr");
