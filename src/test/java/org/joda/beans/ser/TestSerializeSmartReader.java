@@ -67,7 +67,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_binary_collections()  throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
         BeanAssert.assertBeanEquals(bean, roundtrip);
@@ -84,7 +84,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_binaryReferencing_collections()  throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         byte[] bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
         BeanAssert.assertBeanEquals(bean, roundtrip);
@@ -114,7 +114,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_json_collections()  throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmGuava.class);
     }
@@ -149,7 +149,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_simpleJson_collections()  throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmGuava.class);
     }
@@ -178,7 +178,7 @@ public class TestSerializeSmartReader {
 
     @Test
     public void test_xml_collections()  throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, xml, bean, ImmGuava.class);
     }

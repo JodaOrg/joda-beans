@@ -50,6 +50,7 @@
  "listWildBuilder1": [],
  "listWildBuilder2": [],
  "mapWildBuilder1": {},
- "mapWildKey": {}
+ "mapWildKey": {},
+ "table": []
 }
 

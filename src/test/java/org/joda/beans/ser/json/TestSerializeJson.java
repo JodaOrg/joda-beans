@@ -108,7 +108,7 @@ public class TestSerializeJson {
 
     @Test
     public void test_writeCollections() throws IOException {
-        var bean = SerTestHelper.testCollections();
+        var bean = SerTestHelper.testCollections(true);
         var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.json");

@@ -1,6 +1,6 @@
 arr (2)
 - int 1
-- map (35)
+- map (36)
   = ext type=32 'org.joda.beans.sample.ImmGuava' (bean)
     nil
   = str 'collection'
@@ -40,11 +40,29 @@ arr (2)
   = str 'multimap'
     map (1)
     = ext type=34 'ListMultimap' (meta)
-      map (0)
+      map (3)
+      = str 'A'
+        str 'B'
+      = str 'A'
+        str 'C'
+      = str 'B'
+        str 'D'
   = str 'listMultimap'
-    map (0)
+    map (3)
+    = str 'A'
+      str 'B'
+    = str 'A'
+      str 'C'
+    = str 'B'
+      str 'D'
   = str 'setMultimap'
-    map (0)
+    map (3)
+    = str 'A'
+      str 'B'
+    = str 'A'
+      str 'C'
+    = str 'B'
+      str 'D'
   = str 'multiset'
     map (3)
     = str 'A'
@@ -92,11 +110,29 @@ arr (2)
   = str 'multimapInterface'
     map (1)
     = ext type=34 'ListMultimap' (meta)
-      map (0)
+      map (3)
+      = str 'A'
+        str 'B'
+      = str 'A'
+        str 'C'
+      = str 'B'
+        str 'D'
   = str 'listMultimapInterface'
-    map (0)
+    map (3)
+    = str 'A'
+      str 'B'
+    = str 'A'
+      str 'C'
+    = str 'B'
+      str 'D'
   = str 'setMultimapInterface'
-    map (0)
+    map (3)
+    = str 'A'
+      str 'B'
+    = str 'A'
+      str 'C'
+    = str 'B'
+      str 'D'
   = str 'multisetInterface'
     map (0)
   = str 'sortedMultisetInterface'
@@ -121,3 +157,17 @@ arr (2)
     map (0)
   = str 'mapWildKey'
     map (0)
+  = str 'table'
+    arr (3)
+    - arr (3)
+      - str 'A'
+      - int 1
+      - str 'B'
+    - arr (3)
+      - str 'A'
+      - int 2
+      - str 'C'
+    - arr (3)
+      - str 'B'
+      - int 3
+      - str 'D'
