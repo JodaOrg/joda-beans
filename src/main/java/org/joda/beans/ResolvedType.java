@@ -521,6 +521,40 @@ public final class ResolvedType {
     }
 
     /**
+     * Returns the boxed type equivalent to this type.
+     * <p>
+     * If this type is one of the nine primitive types, the equivalent box is returned.
+     * Otherwise, {@code this} is returned.
+     * 
+     * @return the equivalent boxed type
+     */
+    public ResolvedType toBoxed() {
+        return rawType.isPrimitive() ? boxed() : this;
+    }
+
+    private ResolvedType boxed() {
+        if (rawType == int.class) {
+            return ResolvedType.of(Integer.class);
+        } else if (rawType == long.class) {
+            return ResolvedType.of(Long.class);
+        } else if (rawType == double.class) {
+            return ResolvedType.of(Double.class);
+        } else if (rawType == boolean.class) {
+            return ResolvedType.of(Boolean.class);
+        } else if (rawType == byte.class) {
+            return ResolvedType.of(Byte.class);
+        } else if (rawType == char.class) {
+            return ResolvedType.of(Character.class);
+        } else if (rawType == short.class) {
+            return ResolvedType.of(Short.class);
+        } else if (rawType == float.class) {
+            return ResolvedType.of(Float.class);
+        } else {
+            return ResolvedType.of(Void.class);
+        }
+    }
+
+    /**
      * Gets the component type if the raw type is an array.
      * <p>
      * Note that the component type may be an array type if this type is a higher-dimension array.
@@ -538,6 +572,21 @@ public final class ResolvedType {
 
     private IllegalStateException invalidArrayType() {
         return new IllegalStateException("Unable to get component type for " + this + ", type is not an array");
+    }
+
+    /**
+     * Gets the component type if the raw type is an array, defaulting to {@code Object} if the type is not an array.
+     * <p>
+     * Note that the component type may be an array type if this type is a higher-dimension array.
+     * 
+     * @return the component type
+     */
+    public ResolvedType toComponentTypeOrDefault() {
+        var componentType = rawType.getComponentType();
+        if (componentType == null) {
+            return ResolvedType.OBJECT;
+        }
+        return new ResolvedType(componentType, arguments);
     }
 
     /**
