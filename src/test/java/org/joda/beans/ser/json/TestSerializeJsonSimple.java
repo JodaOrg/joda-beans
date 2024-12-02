@@ -118,7 +118,7 @@ public class TestSerializeJsonSimple {
 
     @Test
     public void test_writeCollections()  throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
         assertEqualsSerialization(json, "/org/joda/beans/ser/Collections1.simplejson");

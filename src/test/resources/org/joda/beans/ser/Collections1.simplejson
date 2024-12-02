@@ -15,9 +15,21 @@
   "A": "AA",
   "B": "BB"
  },
- "multimap": {},
- "listMultimap": {},
- "setMultimap": {},
+ "multimap": {
+  "A": "B",
+  "A": "C",
+  "B": "D"
+ },
+ "listMultimap": {
+  "A": "B",
+  "A": "C",
+  "B": "D"
+ },
+ "setMultimap": {
+  "A": "B",
+  "A": "C",
+  "B": "D"
+ },
  "multiset": [["A", 1], ["B", 2], ["C", 3]],
  "sortedMultiset": [],
  "collectionInterface": [],
@@ -36,9 +48,21 @@
   "A": "AA",
   "B": "BB"
  },
- "multimapInterface": {},
- "listMultimapInterface": {},
- "setMultimapInterface": {},
+ "multimapInterface": {
+  "A": "B",
+  "A": "C",
+  "B": "D"
+ },
+ "listMultimapInterface": {
+  "A": "B",
+  "A": "C",
+  "B": "D"
+ },
+ "setMultimapInterface": {
+  "A": "B",
+  "A": "C",
+  "B": "D"
+ },
  "multisetInterface": [],
  "sortedMultisetInterface": [],
  "listWildExtendsT": [],
@@ -50,6 +74,6 @@
  "listWildBuilder1": [],
  "listWildBuilder2": [],
  "mapWildBuilder1": {},
- "mapWildKey": {}
+ "mapWildKey": {},
+ "table": [["A", 1, "B"], ["A", 2, "C"], ["B", 3, "D"]]
 }
-

@@ -114,7 +114,7 @@ public class TestSerializeStandardBin {
 
     @Test
     public void test_writeCollections() throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
         assertEqualsSerialization(bytes, "/org/joda/beans/ser/Collections1.binstr");

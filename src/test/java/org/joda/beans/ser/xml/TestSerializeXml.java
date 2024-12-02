@@ -108,7 +108,7 @@ public class TestSerializeXml {
 
     @Test
     public void test_writeCollections() throws IOException {
-        ImmGuava<String> bean = SerTestHelper.testCollections();
+        ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
         assertEqualsSerialization(xml, "/org/joda/beans/ser/Collections.xml");

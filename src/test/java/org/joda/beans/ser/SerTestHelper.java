@@ -55,9 +55,11 @@ import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ImmutableTable;
@@ -203,7 +205,7 @@ public class SerTestHelper {
         return optional;
     }
 
-    public static ImmGuava<String> testCollections() {
+    public static ImmGuava<String> testCollections(boolean extended) {
         ImmutableList<String> list = ImmutableList.of("A", "B");
         ImmutableSet<String> set = ImmutableSet.of("A", "B");
         ImmutableSortedSet<String> sortedSet = ImmutableSortedSet.of("A", "B");
@@ -211,21 +213,39 @@ public class SerTestHelper {
         ImmutableSortedMap<String, String> sortedMap = ImmutableSortedMap.of("A", "AA", "B", "BB");
         ImmutableBiMap<String, String> bimap = ImmutableBiMap.of("A", "AA", "B", "BB");
         ImmutableMultiset<String> multiset = ImmutableMultiset.of("A", "B", "C", "B", "C", "C");
-        return ImmGuava.<String> builder()
-            .list(list)
-            .listInterface(list)
-            .set(set)
-            .setInterface(set)
-            .sortedSet(sortedSet)
-            .sortedSetInterface(sortedSet)
-            .map(map)
-            .mapInterface(map)
-            .sortedMap(sortedMap)
-            .sortedMapInterface(sortedMap)
-            .biMap(bimap)
-            .biMapInterface(bimap)
-            .multiset(multiset)
-            .build();
+        ImmutableListMultimap<String, String> listMultimap = ImmutableListMultimap.of("A", "B", "A", "C", "B", "D");
+        ImmutableSetMultimap<String, String> setMultimap = ImmutableSetMultimap.of("A", "B", "A", "C", "B", "D");
+        ImmutableTable<String, Integer, String> table = ImmutableTable.<String, Integer, String>builder()
+                .put("A", 1, "B")
+                .put("A", 2, "C")
+                .put("B", 3, "D")
+                .build();
+        ImmGuava.Builder<String> builder = ImmGuava.<String>builder()
+                .list(list)
+                .listInterface(list)
+                .set(set)
+                .setInterface(set)
+                .sortedSet(sortedSet)
+                .sortedSetInterface(sortedSet)
+                .map(map)
+                .mapInterface(map)
+                .sortedMap(sortedMap)
+                .sortedMapInterface(sortedMap)
+                .biMap(bimap)
+                .biMapInterface(bimap)
+                .multiset(multiset);
+        if (extended) {
+            // ImmutableMultimap.copyOf always creates a ListMultimap, even though deserialization sends a SetMultimap
+            // so must be .multimapInterface(listMultimap)  not .multimapInterface(setMultimap)  
+            builder.multimap(listMultimap)
+                    .multimapInterface(listMultimap)
+                    .listMultimap(listMultimap)
+                    .listMultimapInterface(listMultimap)
+                    .setMultimap(setMultimap)
+                    .setMultimapInterface(setMultimap)
+                    .table(table);
+        }
+        return builder.build();
     }
 
     public static ImmGenericCollections<JodaConvertInterface> testGenericInterfaces() {
