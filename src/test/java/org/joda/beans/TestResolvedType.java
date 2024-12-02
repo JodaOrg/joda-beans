@@ -255,11 +255,14 @@ public class TestResolvedType {
             assertThat(test.isArray()).isTrue();
             assertThat(test.toComponentType())
                     .isEqualTo(ResolvedType.of(expectedRawType.getComponentType(), test.getArguments().toArray(new ResolvedType[0])));
+            assertThat(test.toComponentTypeOrDefault())
+                    .isEqualTo(ResolvedType.of(expectedRawType.getComponentType(), test.getArguments().toArray(new ResolvedType[0])));
         } else {
             assertThat(test.isArray()).isFalse();
             assertThatIllegalStateException()
                     .isThrownBy(() -> test.toComponentType())
                     .withMessage("Unable to get component type for " + expectedToString + ", type is not an array");
+            assertThat(test.toComponentTypeOrDefault()).isEqualTo(ResolvedType.OBJECT);
         }
         assertThat(test.toArrayType().toComponentType()).isEqualTo(test);
         assertThat(test.isPrimitive()).isEqualTo(expectedRawType.isPrimitive());
@@ -280,6 +283,32 @@ public class TestResolvedType {
         assertThat(obj).isEqualTo(test);
     }
 
+    //-------------------------------------------------------------------------
+    @SuppressWarnings("serial")
+    static Object[][] data_boxed() {
+        return new Object[][] {
+                {String.class, String.class},
+                {long.class, Long.class},
+                {int.class, Integer.class},
+                {short.class, Short.class},
+                {byte.class, Byte.class},
+                {double.class, Double.class},
+                {float.class, Float.class},
+                {char.class, Character.class},
+                {boolean.class, Boolean.class},
+                {void.class, Void.class},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_boxed")
+    void test_boxed(Class<?> primitive, Class<?> box) {
+        var test = ResolvedType.of(primitive);
+        assertThat(test.isPrimitive()).isEqualTo(primitive != String.class);
+        assertThat(test.toBoxed()).isEqualTo(ResolvedType.of(box));
+    }
+
+    //-------------------------------------------------------------------------
     @SuppressWarnings("serial")
     static Object[][] data_invalidParse() {
         return new Object[][] {
