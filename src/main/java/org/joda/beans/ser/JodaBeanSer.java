@@ -17,6 +17,7 @@ package org.joda.beans.ser;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.ser.bin.JodaBeanBinFormat;
 import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
 import org.joda.beans.ser.json.JodaBeanJsonReader;
@@ -88,7 +89,11 @@ public final class JodaBeanSer {
      * @param deserializers  the deserializers to use, not null
      */
     private JodaBeanSer(String indent, String newLine, StringConvert converter,
-                SerIteratorFactory iteratorFactory, boolean shortTypes, SerDeserializers deserializers, boolean includeDerived) {
+            SerIteratorFactory iteratorFactory,
+            boolean shortTypes,
+            SerDeserializers deserializers,
+            boolean includeDerived) {
+
         this.indent = indent;
         this.newLine = newLine;
         this.converter = converter;
@@ -248,12 +253,13 @@ public final class JodaBeanSer {
      * This is used to set the output to include derived properties.
      * 
      * @param includeDerived  whether to include derived properties on output
-     * @return a copy of this object with the converter changed, not null
+     * @return a copy of this object with the derived flag changed, not null
      */
     public JodaBeanSer withIncludeDerived(boolean includeDerived) {
         return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
     }
 
+    //-------------------------------------------------------------------------
     /**
      * Checks if the property is serialized.
      * 
@@ -287,7 +293,20 @@ public final class JodaBeanSer {
      * @return the binary writer, not null
      */
     public JodaBeanBinWriter binWriter() {
-        return new JodaBeanBinWriter(this, false);
+        return new JodaBeanBinWriter(this, JodaBeanBinFormat.STANDARD);
+    }
+
+    /**
+     * Creates a binary writer using the specified format.
+     * <p>
+     * It is recommended, though not necessary, to create a new instance of the writer for each message.
+     * 
+     * @param format  the format, not null
+     * @return the binary writer, not null
+     * @since 3.0.0
+     */
+    public JodaBeanBinWriter binWriter(JodaBeanBinFormat format) {
+        return new JodaBeanBinWriter(this, format);
     }
 
     /**
@@ -305,13 +324,15 @@ public final class JodaBeanSer {
      * The reader {@link #binReader()} handles both the standard and referencing formats.
      * 
      * @return the referencing binary writer, not null
+     * @deprecated Pass the format explicitly 
      */
+    @Deprecated
     public JodaBeanBinWriter binWriterReferencing() {
-        return new JodaBeanBinWriter(this, true);
+        return new JodaBeanBinWriter(this, JodaBeanBinFormat.REFERENCING);
     }
 
     /**
-     * Creates a binary reader that handles both the standard and referencing binary formats.
+     * Creates a binary reader that handles all binary formats that can be written.
      * <p>
      * It is recommended, though not necessary, to create a new instance of the reader for each message.
      * 

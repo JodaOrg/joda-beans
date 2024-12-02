@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test ser.
  */
-public class TestSerDeserializerProvider {
+class TestSerDeserializerProvider {
 
     private static final SerDeserializer DESER = new SerDeserializer() {
         
@@ -66,13 +66,13 @@ public class TestSerDeserializerProvider {
     };
 
     @Test
-    public void test_provider() {
+    void test_provider() {
         SerDeserializers deser = new SerDeserializers(PROVIDER);
         assertThat(deser.findDeserializer(Person.class)).isSameAs(DESER);
     }
 
     @Test
-    public void test_classpathImmKey() {
+    void test_classpathImmKey() {
         assertThat(SerDeserializers.INSTANCE.getDeserializers()).containsKey(ImmKey.class);
         assertThat(SerDeserializers.LENIENT.getDeserializers()).containsKey(ImmKey.class);
         assertThat(new SerDeserializers(PROVIDER).getDeserializers()).containsKey(ImmKey.class);
@@ -84,7 +84,7 @@ public class TestSerDeserializerProvider {
     }
 
     @Test
-    public void test_classpathPair() {
+    void test_classpathPair() {
         assertThat(SerDeserializers.INSTANCE.getDeserializers()).containsKey(Pair.class);
         assertThat(SerDeserializers.LENIENT.getDeserializers()).containsKey(Pair.class);
         assertThat(new SerDeserializers(PROVIDER).getDeserializers()).containsKey(Pair.class);
