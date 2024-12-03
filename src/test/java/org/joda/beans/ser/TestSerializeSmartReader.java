@@ -39,10 +39,10 @@ import com.google.common.primitives.Bytes;
 /**
  * Test smart reader.
  */
-public class TestSerializeSmartReader {
+class TestSerializeSmartReader {
 
     @Test
-    public void test_binary_address()  throws IOException {
+    void test_binary_address() throws IOException {
         Address bean = SerTestHelper.testAddress();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
@@ -50,7 +50,7 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_binary_immAddress()  throws IOException {
+    void test_binary_immAddress() throws IOException {
         ImmAddress bean = SerTestHelper.testImmAddress(false);
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
@@ -58,7 +58,7 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_binary_optional()  throws IOException {
+    void test_binary_optional() throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
@@ -66,7 +66,7 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_binary_collections()  throws IOException {
+    void test_binary_collections() throws IOException {
         ImmGuava<String> bean = SerTestHelper.testCollections(true);
         byte[] bytes = JodaBeanSer.PRETTY.binWriter().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
@@ -75,7 +75,7 @@ public class TestSerializeSmartReader {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_binaryReferencing_optional()  throws IOException {
+    void test_binaryReferencing_optional() throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
         byte[] bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
@@ -83,7 +83,7 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_binaryReferencing_collections()  throws IOException {
+    void test_binaryReferencing_collections() throws IOException {
         ImmGuava<String> bean = SerTestHelper.testCollections(true);
         byte[] bytes = JodaBeanSer.PRETTY.binWriterReferencing().write(bean);
         Bean roundtrip = JodaBeanSer.PRETTY.smartReader().read(bytes);
@@ -92,63 +92,63 @@ public class TestSerializeSmartReader {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_json_address()  throws IOException {
+    void test_json_address() throws IOException {
         Address bean = SerTestHelper.testAddress();
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, Address.class);
     }
 
     @Test
-    public void test_json_immAddress()  throws IOException {
+    void test_json_immAddress() throws IOException {
         ImmAddress bean = SerTestHelper.testImmAddress(false);
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmAddress.class);
     }
 
     @Test
-    public void test_json_optional()  throws IOException {
+    void test_json_optional() throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmOptional.class);
     }
 
     @Test
-    public void test_json_collections()  throws IOException {
+    void test_json_collections() throws IOException {
         ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmGuava.class);
     }
 
     @Test
-    public void test_json_minimal() throws IOException {
+    void test_json_minimal() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(new byte[] { '{', '}' })).isTrue();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(new byte[] { '{', '\n', ' ', '}' })).isTrue();
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_simpleJson_empty()  throws IOException {
+    void test_simpleJson_empty() throws IOException {
         ImmEmpty bean = ImmEmpty.builder().build();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmEmpty.class);
     }
 
     @Test
-    public void test_simpleJson_basic()  throws IOException {
+    void test_simpleJson_basic() throws IOException {
         SimpleJson bean = SerTestHelper.testSimpleJson();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, SimpleJson.class);
     }
 
     @Test
-    public void test_simpleJson_optional()  throws IOException {
+    void test_simpleJson_optional() throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmOptional.class);
     }
 
     @Test
-    public void test_simpleJson_collections()  throws IOException {
+    void test_simpleJson_collections() throws IOException {
         ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, json, bean, ImmGuava.class);
@@ -156,35 +156,35 @@ public class TestSerializeSmartReader {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_xml_address()  throws IOException {
+    void test_xml_address() throws IOException {
         Address bean = SerTestHelper.testAddress();
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, xml, bean, Address.class);
     }
 
     @Test
-    public void test_xml_immAddress()  throws IOException {
+    void test_xml_immAddress() throws IOException {
         ImmAddress bean = SerTestHelper.testImmAddress(false);
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, xml, bean, ImmAddress.class);
     }
 
     @Test
-    public void test_xml_optional()  throws IOException {
+    void test_xml_optional() throws IOException {
         ImmOptional bean = SerTestHelper.testImmOptional();
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, xml, bean, ImmOptional.class);
     }
 
     @Test
-    public void test_xml_collections()  throws IOException {
+    void test_xml_collections() throws IOException {
         ImmGuava<String> bean = SerTestHelper.testCollections(true);
         String xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
         assertCharsets(JodaBeanSer.PRETTY, xml, bean, ImmGuava.class);
     }
 
     @Test
-    public void test_xml_minimal() throws IOException {
+    void test_xml_minimal() throws IOException {
         byte[] bytes = "<bean></bean>".getBytes(StandardCharsets.UTF_8);
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(bytes)).isTrue();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(bytes)).isTrue();
@@ -204,7 +204,7 @@ public class TestSerializeSmartReader {
     }
 
     //-----------------------------------------------------------------------
-    public static Object[][] data_badFormat() {
+    static Object[][] data_badFormat() {
         return new Object[][] {
                 { "xml" },
                 { "<beax" },
@@ -219,13 +219,13 @@ public class TestSerializeSmartReader {
 
     @ParameterizedTest
     @MethodSource("data_badFormat")
-    public void test_badFormat(String text) throws IOException {
+    void test_badFormat(String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         assertThatIllegalArgumentException()
             .isThrownBy(() -> JodaBeanSer.COMPACT.smartReader().read(bytes, FlexiBean.class));
     }
 
-    public static Object[][] data_unknownFormat() {
+    static Object[][] data_unknownFormat() {
         return new Object[][] {
                 { "xml" },
                 { "<beax" },
@@ -238,13 +238,13 @@ public class TestSerializeSmartReader {
 
     @ParameterizedTest
     @MethodSource("data_unknownFormat")
-    public void test_isKnownFormat_false(String text) throws IOException {
+    void test_isKnownFormat_false(String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(bytes)).isFalse();
     }
 
     @Test
-    public void test_isKnownFormat_utf8_wrong() throws IOException {
+    void test_isKnownFormat_utf8_wrong() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
                 new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, '?' })).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
@@ -256,7 +256,7 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_isKnownFormat_utf16le_wrong() throws IOException {
+    void test_isKnownFormat_utf16le_wrong() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
                 new byte[] { (byte) 0xff, (byte) 0xfe, '?', (byte) 0x00 })).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
@@ -268,7 +268,7 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_isKnownFormat_utf16be_wrong() throws IOException {
+    void test_isKnownFormat_utf16be_wrong() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
                 new byte[] { (byte) 0xfe, (byte) 0xff, (byte) 0x00, '?' })).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
@@ -280,13 +280,13 @@ public class TestSerializeSmartReader {
     }
 
     @Test
-    public void test_isKnownFormat_binary_false() throws IOException {
+    void test_isKnownFormat_binary_false() throws IOException {
         byte[] bytes = new byte[] {(byte) 0x92, (byte) 0x00};
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(bytes)).isFalse();
     }
 
     @Test
-    public void test_isKnownFormat_binaryRef_false() throws IOException {
+    void test_isKnownFormat_binaryRef_false() throws IOException {
         byte[] bytes = new byte[] {(byte) 0x94, (byte) 0x00};
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(bytes)).isFalse();
     }

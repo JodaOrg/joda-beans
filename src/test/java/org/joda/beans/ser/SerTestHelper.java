@@ -102,7 +102,7 @@ public class SerTestHelper {
         return address;
     }
 
-    public static ImmAddress testImmAddress(boolean immutable) {
+    public static ImmAddress testImmAddress(boolean isImmutable) {
         Map<String, List<String>> map = new HashMap<>();
         map.put("A", Arrays.asList("B", "b"));
         Map<String, List<Integer>> map2 = new HashMap<>();
@@ -121,7 +121,7 @@ public class SerTestHelper {
         primitives.setValueChar('7');
         primitives.setValueBoolean(true);
         List<Object> objects1 = Arrays.<Object>asList(Currency.getInstance("GBP"), TimeZone.getTimeZone("Europe/London"));
-        List<Object> objects2 = immutable ?
+        List<Object> objects2 = isImmutable ?
                 Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2)) :
                 Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2), primitives);
         map5.put("A", Arrays.asList(objects1));
@@ -135,7 +135,7 @@ public class SerTestHelper {
                 .forename("Etienne")
                 .middleNames("K", "T")
                 .surname("Colebourne")
-                .addressList(immutable ? null : Arrays.asList(new Address()))
+                .addressList(isImmutable ? null : Arrays.asList(new Address()))
                 .codeCounts(ImmutableMultiset.of("A", "A", "B"))
                 .build();
         ImmPerson child = ImmPerson.builder()

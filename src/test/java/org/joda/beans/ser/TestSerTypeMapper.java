@@ -30,13 +30,13 @@ import org.junit.jupiter.api.Test;
 /**
  * Test ser.
  */
-public class TestSerTypeMapper {
+class TestSerTypeMapper {
 
     private static final JodaBeanSer SETTINGS = JodaBeanSer.PRETTY;
     private static final JodaBeanSer SETTINGS_NO_SHORT = JodaBeanSer.PRETTY.withShortTypes(false);
 
     @Test
-    public void test_encodeType() {
+    void test_encodeType() {
         Map<Class<?>, String> cache = new HashMap<>();
         // base package type
         assertThat(SerTypeMapper.encodeType(BitSet.class, SETTINGS, "java.util.", cache)).isEqualTo("BitSet");
@@ -71,7 +71,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_encodeType_sillyNames() {
+    void test_encodeType_sillyNames() {
         Map<Class<?>, String> cache = new HashMap<>();
         // user type - silly name
         assertThat(SerTypeMapper.encodeType(BigDecimal.class, SETTINGS, "org.joda.beans.ser.", cache)).isEqualTo("org.joda.beans.ser.BigDecimal");
@@ -82,7 +82,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_encodeType_noCache() {
+    void test_encodeType_noCache() {
         // user type
         assertThat(SerTypeMapper.encodeType(AtomicIntegerArray.class, SETTINGS, "java.util.", null))
             .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
@@ -98,7 +98,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_encodeType_noBasePackage() {
+    void test_encodeType_noBasePackage() {
         Map<Class<?>, String> cache = new HashMap<>();
         // basic type
         assertThat(SerTypeMapper.encodeType(File.class, SETTINGS, null, cache)).isEqualTo("File");
@@ -112,7 +112,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_encodeType_noShortTypes() {
+    void test_encodeType_noShortTypes() {
         Map<Class<?>, String> cache = new HashMap<>();
         // base package type
         assertThat(SerTypeMapper.encodeType(BitSet.class, SETTINGS_NO_SHORT, "java.util.", cache)).isEqualTo("java.util.BitSet");
@@ -129,7 +129,7 @@ public class TestSerTypeMapper {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_decodeType() throws Exception {
+    void test_decodeType() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         // base package type
         assertThat(SerTypeMapper.decodeType("BitSet", SETTINGS, "java.util.", cache)).isEqualTo(BitSet.class);
@@ -156,7 +156,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_decodeType_noCache() throws Exception {
+    void test_decodeType_noCache() throws Exception {
         // base package type
         assertThat(SerTypeMapper.decodeType("BitSet", SETTINGS, "java.util.", null)).isEqualTo(BitSet.class);
         // basic type
@@ -166,7 +166,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_decodeType_noBasePackage() throws Exception {
+    void test_decodeType_noBasePackage() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         // basic type
         assertThat(SerTypeMapper.decodeType("File", SETTINGS, null, cache)).isEqualTo(File.class);
@@ -175,7 +175,7 @@ public class TestSerTypeMapper {
     }
 
     @Test
-    public void test_decodeType_emptyClassName() throws Exception {
+    void test_decodeType_emptyClassName() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         assertThatExceptionOfType(ClassNotFoundException.class)
             .isThrownBy(() -> SerTypeMapper.decodeType("", SETTINGS, "java.util.", cache));

@@ -39,9 +39,13 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
 
     //-----------------------------------------------------------------------
     // writes the bean
-    void write(ImmutableBean bean) throws IOException {
+    void write(Bean bean) throws IOException {
+        if (!(bean instanceof ImmutableBean immutable)) {
+            throw new IllegalArgumentException(
+                    "Referencing binary format can only write ImmutableBean instances: " + bean.getClass().getName());
+        }
         // sets up the map of beans - classes & classSerializationCount
-        references = BeanReferences.find(bean, settings);
+        references = BeanReferences.find(immutable, settings);
 
         // write array of 4 items - Version, Ref Count, Class Info, Root Bean
         output.writeArrayHeader(4);
