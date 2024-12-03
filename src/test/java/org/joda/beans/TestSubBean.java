@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test beans extending other beans.
  */
-public class TestSubBean {
+class TestSubBean {
 
     @Test
-    public void test_subbean_toBuilder() {
+    void test_subbean_toBuilder() {
 
         // This sequence needs to be split like this as forename and surname returns ImmPersonNonFinal.Builder
         // instead of ImmSubPersonNonFinal.Builder

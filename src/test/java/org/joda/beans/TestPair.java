@@ -24,11 +24,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test Pair.
  */
-public class TestPair {
+class TestPair {
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
-    public void test_equalsHashCode() {
+    void test_equalsHashCode() {
         // even though TwekedPair adds no new properties, we treat it as different
         // this can be avoided (see Git history) but at a performance cost
         Pair a1 = new Pair();
@@ -48,12 +47,13 @@ public class TestPair {
         assertThat(a1.equals(b)).isFalse();
         assertThat(b.equals(a1)).isFalse();
         
-        assertThat(b.equals("Weird type")).isFalse();
+        Object obj = "Weird type";
+        assertThat(b.equals(obj)).isFalse();
         assertThat(b.equals(null)).isFalse();
     }
 
     @Test
-    public void test_toString() {
+    void test_toString() {
         Pair test = new Pair();
         test.setFirst("A");
         test.setSecond("B");

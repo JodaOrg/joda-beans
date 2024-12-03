@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test property using Person.
  */
-public class TestPerson {
+class TestPerson {
 
     private static final int NUM_PROPERTIES = 8;
     private static final String FORENAME = "forename";
@@ -46,7 +46,7 @@ public class TestPerson {
     private static final String NUMBER_OF_CARS = "numberOfCars";
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         Bean test = Person.meta().builder().build();
         
         assertThat(test instanceof Person).isTrue();
@@ -64,7 +64,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_bean_invalidPropertyName() {
+    void test_bean_invalidPropertyName() {
         Bean test = Person.meta().builder().build();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> test.property("Rubbish"));
@@ -72,7 +72,7 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MetaBean test = Person.meta();
         
         assertThat(test.isBuildable()).isTrue();
@@ -98,14 +98,14 @@ public class TestPerson {
     }
 
     @Test
-    public void test_metaBean_invalidPropertyName() {
+    void test_metaBean_invalidPropertyName() {
         MetaBean test = Person.meta();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> test.metaProperty("Rubbish"));
     }
 
     @Test
-    public void test_metaProperty_annotation_notFound() {
+    void test_metaProperty_annotation_notFound() {
         MetaProperty<FlexiBean> prop = Person.meta().extensions();
         assertThatExceptionOfType(NoSuchElementException.class)
             .isThrownBy(() -> prop.annotation(ClassAnnotation.class));
@@ -113,7 +113,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_metaBean_abstract() {
+    void test_metaBean_abstract() {
         MetaBean test = AbstractResult.meta();
         
         assertThat(test.isBuildable()).isFalse();
@@ -128,7 +128,7 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_namedPropertyMethod() {
+    void test_namedPropertyMethod() {
         Person person = new Person();
         Property<String> test = person.forename();
         
@@ -146,7 +146,7 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_property_String() {
+    void test_property_String() {
         Person person = new Person();
         Property<String> test = person.property(FORENAME);
         
@@ -164,7 +164,7 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_namedMetaPropertyMethod() {
+    void test_namedMetaPropertyMethod() {
         Person person = new Person();
         MetaProperty<String> test = Person.meta().forename();
         
@@ -184,7 +184,7 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_String() {
+    void test_metaProperty_String() {
         Person person = new Person();
         MetaProperty<String> test = Person.meta().metaProperty(FORENAME);
         
@@ -204,7 +204,7 @@ public class TestPerson {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_types_addressList() {
+    void test_metaProperty_types_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
         assertThat(test.metaBean().beanType()).isEqualTo(Person.class);
@@ -219,7 +219,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_BeanUtils_addressList() {
+    void test_BeanUtils_addressList() {
         MetaProperty<List<Address>> test = Person.meta().addressList();
         
         assertThat(test.metaBean().beanType()).isEqualTo(Person.class);
@@ -234,7 +234,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_metaProperty_types_otherAddressMap() {
+    void test_metaProperty_types_otherAddressMap() {
         MetaProperty<Map<String, Address>> test = Person.meta().otherAddressMap();
         
         assertThat(test.metaBean().beanType()).isEqualTo(Person.class);
@@ -250,7 +250,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_metaProperty_annotations_addressList() {
+    void test_metaProperty_annotations_addressList() {
         MetaProperty<List<Address>> prop = Person.meta().addressList();
         List<Annotation> test = prop.annotations();
         
@@ -259,7 +259,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_metaProperty_annotations_extensions() {
+    void test_metaProperty_annotations_extensions() {
         MetaProperty<FlexiBean> prop = Person.meta().extensions();
         List<Annotation> annos = prop.annotations();
         
@@ -272,7 +272,7 @@ public class TestPerson {
     }
 
     @Test
-    public void test_metaBean_annotations() {
+    void test_metaBean_annotations() {
         Person.Meta meta = Person.meta();
         List<Annotation> annos = meta.annotations();
         

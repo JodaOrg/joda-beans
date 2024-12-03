@@ -24,28 +24,28 @@ import org.junit.jupiter.api.Test;
 /**
  * Test list with builder.
  */
-public class TestMutableListBeans {
+class TestMutableListBeans {
 
     @Test
-    public void test_finalBean_noList() {
+    void test_finalBean_noList() {
         MutableListFinalBean test = MutableListFinalBean.builder().build();
         assertThat(test.getStrings()).isNull();
     }
 
     @Test
-    public void test_finalBean_list() {
+    void test_finalBean_list() {
         MutableListFinalBean test = MutableListFinalBean.builder().strings("A", "B").build();
         assertThat(test.getStrings()).containsExactly("A", "B");
     }
 
     @Test
-    public void test_nonFinalBean_noList() {
+    void test_nonFinalBean_noList() {
         MutableListNonFinalBean test = MutableListNonFinalBean.builder().build();
         assertThat(test.getStrings()).isNull();
     }
 
     @Test
-    public void test_nonFinalBean_list() {
+    void test_nonFinalBean_list() {
         MutableListNonFinalBean test = MutableListNonFinalBean.builder().strings("A", "B").build();
         assertThat(test.getStrings()).containsExactly("A", "B");
     }

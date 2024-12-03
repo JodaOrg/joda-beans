@@ -56,10 +56,10 @@ import com.google.common.io.Resources;
 /**
  * Test property roundtrip using referencing binary.
  */
-public class TestSerializeReferencingBin {
+class TestSerializeReferencingBin {
 
     @Test
-    public void test_writeImmAddress() throws IOException {
+    void test_writeImmAddress() throws IOException {
         var bean = SerTestHelper.testImmAddress(true);
         var bytes = JodaBeanSer.PRETTY.binWriter(REFERENCING).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -70,7 +70,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeImmOptional() throws IOException {
+    void test_writeImmOptional() throws IOException {
         // derived properties are not supported
         var bean = SerTestHelper.testImmOptional();
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
@@ -82,7 +82,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeImmArrays() throws IOException {
+    void test_writeImmArrays() throws IOException {
         var bean = ImmArrays.of(
                 new int[] {1, 3, 2},
                 new long[] {1, 4, 3},
@@ -99,7 +99,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeCollections() throws IOException {
+    void test_writeCollections() throws IOException {
         var bean = SerTestHelper.testCollections(true);
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -119,7 +119,7 @@ public class TestSerializeReferencingBin {
 
     //-------------------------------------------------------------------------
     @Test
-    public void test_writeJodaConvertInterface() {
+    void test_writeJodaConvertInterface() {
         var bean = SerTestHelper.testGenericInterfaces();
 
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
@@ -131,7 +131,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeIntermediateInterface() {
+    void test_writeIntermediateInterface() {
         var bean = SerTestHelper.testIntermediateInterfaces();
 
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
@@ -142,7 +142,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeJodaConvert() {
+    void test_writeJodaConvert() {
         // immutable bean that is serialized as joda convert
         var bean = ImmNamedKey.of("name");
 
@@ -154,7 +154,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeGenericCollections() {
+    void test_writeGenericCollections() {
         var bean = SerTestHelper.testGenericNestedCollections();
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -165,7 +165,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeFirstInstanceOfBeanHasNullProperties() {
+    void test_writeFirstInstanceOfBeanHasNullProperties() {
         var bean = SerTestHelper.testGenericArrayWithNulls();
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -176,7 +176,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_writeTree() {
+    void test_writeTree() {
         var bean = SerTestHelper.testTree();
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(bean);
         var regularBytes = JodaBeanSer.COMPACT.binWriter().write(bean);
@@ -189,7 +189,7 @@ public class TestSerializeReferencingBin {
 
     //-------------------------------------------------------------------------
     @Test
-    public void test_read_deserializerReferencesUnseenClass() {
+    void test_read_deserializerReferencesUnseenClass() {
         var immKeyHolder = SerTestHelper.testImmKeyHolder();
         var bytes = JodaBeanSer.COMPACT.binWriter(REFERENCING).write(immKeyHolder);
         var bean = (ImmKeyHolder) JodaBeanSer.COMPACT.binReader().read(bytes);
@@ -197,7 +197,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_read_primitiveTypeChanged() throws IOException {
+    void test_read_primitiveTypeChanged() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -232,7 +232,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_read_optionalTypeToDefaulted() throws IOException {
+    void test_read_optionalTypeToDefaulted() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -262,7 +262,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_read_wrongVersion() throws IOException {
+    void test_read_wrongVersion() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -270,11 +270,11 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class));
     }
 
     @Test
-    public void test_read_wrongVersionTooHigh() throws IOException {
+    void test_read_wrongVersionTooHigh() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -282,12 +282,12 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmDoubleFloat.class));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWriteJodaConvertWrapper() throws IOException {
+    void test_readWriteJodaConvertWrapper() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -327,7 +327,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_readWriteJodaConvertBean() throws IOException {
+    void test_readWriteJodaConvertBean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -364,7 +364,7 @@ public class TestSerializeReferencingBin {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_nonStandard_JodaConvertWrapper_expanded() throws IOException {
+    void test_read_nonStandard_JodaConvertWrapper_expanded() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -408,7 +408,6 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
 
-
         var parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertWrapper.class);
         var bean = new ImmJodaConvertBean("Hello:9");
         var wrapper = ImmJodaConvertWrapper.of(bean, "Weird");
@@ -416,7 +415,7 @@ public class TestSerializeReferencingBin {
     }
 
     @Test
-    public void test_read_nonStandard_JodaConvertBean_flattened() throws IOException {
+    void test_read_nonStandard_JodaConvertBean_flattened() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -435,7 +434,7 @@ public class TestSerializeReferencingBin {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
+    void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
@@ -443,11 +442,11 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class));
     }
 
     @Test
-    public void test_read_rootTypeNotSpecified_Bean() throws IOException {
+    void test_read_rootTypeNotSpecified_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -456,11 +455,11 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class));
     }
 
     @Test
-    public void test_read_rootTypeInvalid_Bean() throws IOException {
+    void test_read_rootTypeInvalid_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -474,11 +473,11 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmutableBean.class));
     }
 
     @Test
-    public void test_read_rootTypeInvalid_incompatible() throws IOException {
+    void test_read_rootTypeInvalid_incompatible() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 4);
@@ -498,7 +497,7 @@ public class TestSerializeReferencingBin {
         }
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, ImmJodaConvertBean.class));
     }
 
 }

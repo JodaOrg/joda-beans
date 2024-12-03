@@ -25,15 +25,13 @@ import org.joda.beans.ser.SerDeserializer;
 
 /**
  * Mock deserializer that handles a renamed property.
- *
- * @author Stephen Colebourne
  */
-public class MockTypeChangeDeserializer extends DefaultDeserializer {
+class MockTypeChangeDeserializer extends DefaultDeserializer {
 
     /**
      * Singleton.
      */
-    public static final SerDeserializer INSTANCE = new MockTypeChangeDeserializer();
+    static final SerDeserializer INSTANCE = new MockTypeChangeDeserializer();
 
     /**
      * The number of cars String property.
@@ -57,17 +55,17 @@ public class MockTypeChangeDeserializer extends DefaultDeserializer {
 
     @Override
     public void setValue(BeanBuilder<?> builder, MetaProperty<?> metaProp, Object value) {
-      Object valueToSet = value;
+        Object valueToSet = value;
         if (metaProp == NUMBER_OF_CARS_STRING && value != null) {
             String oldValue = value.toString();
             if (oldValue.equals("None")) {
-              valueToSet = 0;
+                valueToSet = 0;
             } else if (oldValue.equals("One")) {
-              valueToSet = 1;
+                valueToSet = 1;
             } else if (oldValue.equals("Two")) {
-              valueToSet = 2;
+                valueToSet = 2;
             } else if (oldValue.equals("Lots")) {
-              valueToSet = 3;
+                valueToSet = 3;
             }
         }
         super.setValue(builder, metaProp, valueToSet);

@@ -17,19 +17,19 @@ package org.joda.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.joda.beans.impl.BasicBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.CompanyAddress;
 import org.joda.beans.sample.Person;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test BasicBean.
+ * Test {@link BasicBean}.
  */
-public class TestBasicBean {
+class TestBasicBean {
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
-    public void test_equals() {
+    void test_equals() {
         Person a1 = new Person();
         Person a2 = new Person();
         Person b = new Person();
@@ -46,12 +46,13 @@ public class TestBasicBean {
         assertThat(a1.equals(b)).isFalse();
         assertThat(b.equals(a1)).isFalse();
         
-        assertThat(b.equals("Weird type")).isFalse();
+        Object obj = "Weird type";
+        assertThat(b.equals(obj)).isFalse();
         assertThat(b.equals(null)).isFalse();
     }
 
     @Test
-    public void test_hashCode() {
+    void test_hashCode() {
         Person a1 = new Person();
         Person a2 = new Person();
         
@@ -62,7 +63,7 @@ public class TestBasicBean {
     }
 
     @Test
-    public void test_toString() {
+    void test_toString() {
         Person a = new Person();
         a.setForename("Stephen");
         a.setSurname("Colebourne");
@@ -76,7 +77,7 @@ public class TestBasicBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_property_equals() {
+    void test_property_equals() {
         Address obj1 = new Address();
         CompanyAddress obj2 = new CompanyAddress();
         Property<String> p1 = obj1.city();
@@ -89,7 +90,7 @@ public class TestBasicBean {
     }
 
     @Test
-    public void test_property_hashCode() {
+    void test_property_hashCode() {
         Person obj1 = new Person();
         Person obj2 = new Person();
         Property<String> p1 = obj1.forename();
@@ -102,7 +103,7 @@ public class TestBasicBean {
     }
 
     @Test
-    public void test_property_toString() {
+    void test_property_toString() {
         Person obj1 = new Person();
         Property<String> p1 = obj1.forename();
         
@@ -113,7 +114,7 @@ public class TestBasicBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_equals() {
+    void test_metaProperty_equals() {
         MetaProperty<String> p1 = Address.meta().city();
         MetaProperty<String> p2 = CompanyAddress.meta().city();
         
@@ -121,7 +122,7 @@ public class TestBasicBean {
     }
 
     @Test
-    public void test_metaProperty_hashCode() {
+    void test_metaProperty_hashCode() {
         MetaProperty<String> p1 = Person.meta().forename();
         MetaProperty<String> p2 = Person.meta().forename();
         
@@ -129,7 +130,7 @@ public class TestBasicBean {
     }
 
     @Test
-    public void test_metaProperty_toString() {
+    void test_metaProperty_toString() {
         MetaProperty<String> mp1 = Person.meta().forename();
         
         assertThat(mp1).hasToString("Person:forename");

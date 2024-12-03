@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test property using Person.
  */
-public class TestAddress {
+class TestAddress {
 
     private static final int NUM_PROPERTIES = 4;
     private static final String STREET = "street";
@@ -38,7 +38,7 @@ public class TestAddress {
     private static final String NUMBER = "number";
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         Bean test = new Address();
         
         assertThat(test).isInstanceOf(Address.class);
@@ -56,14 +56,14 @@ public class TestAddress {
     }
 
     @Test
-    public void test_bean_invalidPropertyName() {
+    void test_bean_invalidPropertyName() {
         Bean test = Address.meta().builder().build();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> test.property("Rubbish"));
     }
 
     @Test
-    public void test_builder1() {
+    void test_builder1() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set("street", "Main Street");
         assertThat(builder.get("street")).isEqualTo("Main Street");
@@ -84,7 +84,7 @@ public class TestAddress {
     }
 
     @Test
-    public void test_builder2() {
+    void test_builder2() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         builder.set(Address.meta().street(), "Main Street");
         builder.set(Address.meta().number(), 12);
@@ -98,14 +98,14 @@ public class TestAddress {
     }
 
     @Test
-    public void test_builder_getInvalidPropertyName() {
+    void test_builder_getInvalidPropertyName() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> builder.get("Rubbish"));
     }
 
     @Test
-    public void test_builder_setInvalidPropertyName() {
+    void test_builder_setInvalidPropertyName() {
         BeanBuilder<? extends Address> builder = Address.meta().builder();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> builder.set("Rubbish", ""));
@@ -113,7 +113,7 @@ public class TestAddress {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MetaBean test = Address.meta();
         
         assertThat(test.beanType()).isEqualTo(Address.class);
@@ -141,7 +141,7 @@ public class TestAddress {
     }
 
     @Test
-    public void test_metaBean_invalidPropertyName() {
+    void test_metaBean_invalidPropertyName() {
         MetaBean test = Address.meta();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> test.metaProperty("Rubbish"));
@@ -149,7 +149,7 @@ public class TestAddress {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_namedPropertyMethod() {
+    void test_namedPropertyMethod() {
         Address address = new Address();
         Property<String> test = address.street();
         
@@ -167,7 +167,7 @@ public class TestAddress {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_property_String() {
+    void test_property_String() {
         Address address = new Address();
         Property<String> test = address.property(STREET);
         
@@ -185,7 +185,7 @@ public class TestAddress {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_namedMetaPropertyMethod() {
+    void test_namedMetaPropertyMethod() {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().street();
         
@@ -205,7 +205,7 @@ public class TestAddress {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_String() {
+    void test_metaProperty_String() {
         Address address = new Address();
         MetaProperty<String> test = Address.meta().metaProperty(STREET);
         
@@ -225,7 +225,7 @@ public class TestAddress {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_types() {
+    void test_metaProperty_types() {
         MetaProperty<String> test = Address.meta().street();
         
         assertThat(test.metaBean().beanType()).isEqualTo(Address.class);
@@ -234,7 +234,7 @@ public class TestAddress {
     }
 
     @Test
-    public void test_metaProperty_annotations() {
+    void test_metaProperty_annotations() {
         MetaProperty<String> prop = Address.meta().street();
         List<Annotation> test = prop.annotations();
         

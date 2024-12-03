@@ -35,10 +35,10 @@ import com.google.common.collect.ImmutableList;
 /**
  * Test style=light.
  */
-public class TestLight {
+class TestLight {
 
     @Test
-    public void test_immutable() {
+    void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         LightImmutable bean = LightImmutable.meta().builder()
                 .set("number", 12)
@@ -109,7 +109,7 @@ public class TestLight {
     }
 
     @Test
-    public void test_immutable_order() {
+    void test_immutable_order() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         LightImmutable bean = LightImmutable.meta().builder()
                 .set("number", 12)
@@ -138,7 +138,7 @@ public class TestLight {
     }
 
     @Test
-    public void test_mutable() {
+    void test_mutable() {
         LightMutable bean = LightMutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")

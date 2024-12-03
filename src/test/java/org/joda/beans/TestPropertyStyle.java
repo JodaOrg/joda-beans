@@ -20,12 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test PropertyStyle.
+ * Test {@link PropertyStyle}.
  */
-public class TestPropertyStyle {
+class TestPropertyStyle {
 
     @Test
-    public void test_READ_ONLY() {
+    void test_READ_ONLY() {
         assertThat(PropertyStyle.READ_ONLY.isReadable()).isTrue();
         assertThat(PropertyStyle.READ_ONLY.isWritable()).isFalse();
         assertThat(PropertyStyle.READ_ONLY.isBuildable()).isFalse();
@@ -35,7 +35,7 @@ public class TestPropertyStyle {
     }
 
     @Test
-    public void test_READ_WRITE() {
+    void test_READ_WRITE() {
         assertThat(PropertyStyle.READ_WRITE.isReadable()).isTrue();
         assertThat(PropertyStyle.READ_WRITE.isWritable()).isTrue();
         assertThat(PropertyStyle.READ_WRITE.isBuildable()).isTrue();
@@ -45,7 +45,7 @@ public class TestPropertyStyle {
     }
 
     @Test
-    public void test_WRITE_ONLY() {
+    void test_WRITE_ONLY() {
         assertThat(PropertyStyle.WRITE_ONLY.isReadable()).isFalse();
         assertThat(PropertyStyle.WRITE_ONLY.isWritable()).isTrue();
         assertThat(PropertyStyle.WRITE_ONLY.isBuildable()).isTrue();
@@ -55,7 +55,7 @@ public class TestPropertyStyle {
     }
 
     @Test
-    public void test_DERIVED() {
+    void test_DERIVED() {
         assertThat(PropertyStyle.DERIVED.isReadable()).isTrue();
         assertThat(PropertyStyle.DERIVED.isWritable()).isFalse();
         assertThat(PropertyStyle.DERIVED.isBuildable()).isFalse();
@@ -65,7 +65,7 @@ public class TestPropertyStyle {
     }
 
     @Test
-    public void test_IMMUTABLE() {
+    void test_IMMUTABLE() {
         assertThat(PropertyStyle.IMMUTABLE.isReadable()).isTrue();
         assertThat(PropertyStyle.IMMUTABLE.isWritable()).isFalse();
         assertThat(PropertyStyle.IMMUTABLE.isBuildable()).isTrue();

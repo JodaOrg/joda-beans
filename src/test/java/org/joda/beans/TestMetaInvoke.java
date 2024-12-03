@@ -45,10 +45,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test property using Person.
  */
-public class TestMetaInvoke {
+class TestMetaInvoke {
 
     @Test
-    public void test_method_call_compiles() {
+    void test_method_call_compiles() {
         @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> a = AbstractResult.meta();
         assertThat(a).isNotNull();

@@ -29,13 +29,13 @@ import org.joda.beans.sample.Person;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test utils.
+ * Test {@link PropertyPath}.
  */
-public class TestPropertyPath {
+class TestPropertyPath {
 
     //-------------------------------------------------------------------------
     @Test
-    public void test_get() {
+    void test_get() {
         Person person1 = new Person();
         person1.setForename("Angus");
         Address address1 = new Address();

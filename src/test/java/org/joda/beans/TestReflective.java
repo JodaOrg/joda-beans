@@ -25,11 +25,11 @@ import org.junit.jupiter.api.Test;
 /**
  * Test {@code ReflectiveMetaBean}.
  */
-public class TestReflective {
+class TestReflective {
 
     @Test
-    public void test_mutable() {
-        ReflectiveMutable bean = (ReflectiveMutable) ReflectiveMutable.META_BEAN.builder()
+    void test_mutable() {
+        ReflectiveMutable bean = ReflectiveMutable.META_BEAN.builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", ReflectiveMutable.META_BEAN, String.class), "Smallville")

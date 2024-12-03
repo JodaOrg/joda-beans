@@ -22,15 +22,13 @@ import org.joda.beans.ser.SerDeserializer;
 
 /**
  * Mock deserializer that handles a renamed property.
- *
- * @author Stephen Colebourne
  */
-public class MockRenameDeserializer extends DefaultDeserializer {
+class MockRenameDeserializer extends DefaultDeserializer {
 
     /**
      * Singleton.
      */
-    public static final SerDeserializer INSTANCE = new MockRenameDeserializer();
+    static final SerDeserializer INSTANCE = new MockRenameDeserializer();
 
     /**
      * Creates an instance.

@@ -36,38 +36,38 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Test property roundtrip using JSON.
+ * Test property roundtrip using a map-structure.
  */
-public class TestSerializeSimpleMap {
+class TestSerializeSimpleMap {
 
     @Test
-    public void test_writeSimpleJson() {
+    void test_writeSimpleJson() {
         SimpleJson bean = SerTestHelper.testSimpleJson();
         Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
 //        System.out.println(map);
-        
+
         SimpleJson parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, SimpleJson.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_writeImmOptional() {
+    void test_writeImmOptional() {
         ImmOptional bean = SerTestHelper.testImmOptional();
         Map<String, Object> map = JodaBeanSer.PRETTY.withIncludeDerived(true).simpleMapWriter().write(bean);
 //        System.out.println(map);
-        
+
         ImmOptional parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmOptional.class);
 //        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_writeCollections() {
+    void test_writeCollections() {
         ImmGuava<String> bean = SerTestHelper.testCollections(false);
         Map<String, Object> map = JodaBeanSer.PRETTY.simpleMapWriter().write(bean);
 //        System.out.println(map);
-        
+
         @SuppressWarnings("unchecked")
         ImmGuava<String> parsed = JodaBeanSer.PRETTY.simpleMapReader().read(map, ImmGuava.class);
 //        System.out.println(bean);
@@ -76,7 +76,7 @@ public class TestSerializeSimpleMap {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWriteBeanEmptyChild() {
+    void test_readWriteBeanEmptyChild() {
         FlexiBean bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", new HashMap<String, String>());
@@ -88,7 +88,7 @@ public class TestSerializeSimpleMap {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWrite_boolean_true() {
+    void test_readWrite_boolean_true() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
         Map<String, Object> map = JodaBeanSer.COMPACT.simpleMapWriter().write(bean);
@@ -98,7 +98,7 @@ public class TestSerializeSimpleMap {
     }
 
     @Test
-    public void test_readWrite_boolean_false() {
+    void test_readWrite_boolean_false() {
         FlexiBean bean = new FlexiBean();
         bean.set("data", Boolean.FALSE);
         Map<String, Object> map = JodaBeanSer.COMPACT.simpleMapWriter().write(bean);
@@ -109,56 +109,56 @@ public class TestSerializeSimpleMap {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_emptyFlexiBean() {
+    void test_read_emptyFlexiBean() {
         FlexiBean parsed = JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
     @Test
-    public void test_read_rootTypeArgumentIncorrect() {
+    void test_read_rootTypeArgumentIncorrect() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), Integer.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.simpleMapReader().read(new HashMap<>(), Integer.class));
     }
 
     @Test
-    public void test_write_nullKeyInMap() {
+    void test_write_nullKeyInMap() {
         Address address = new Address();
         Person bean = new Person();
         bean.getOtherAddressMap().put(null, address);
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.simpleMapWriter().write(bean));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.simpleMapWriter().write(bean));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_writer_nullSettings() {
+    void test_writer_nullSettings() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new JodaBeanSimpleMapWriter(null));
+                .isThrownBy(() -> new JodaBeanSimpleMapWriter(null));
     }
 
     @Test
-    public void test_writer_write_nullBean() {
+    void test_writer_write_nullBean() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new JodaBeanSimpleMapWriter(JodaBeanSer.PRETTY).write(null));
+                .isThrownBy(() -> new JodaBeanSimpleMapWriter(JodaBeanSer.PRETTY).write(null));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_reader_nullSettings() {
+    void test_reader_nullSettings() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new JodaBeanSimpleMapReader(null));
+                .isThrownBy(() -> new JodaBeanSimpleMapReader(null));
     }
 
     @Test
-    public void test_reader_read_nullBean() {
+    void test_reader_read_nullBean() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(null, FlexiBean.class));
+                .isThrownBy(() -> new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(null, FlexiBean.class));
     }
 
     @Test
-    public void test_reader_read_nullType() {
+    void test_reader_read_nullType() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<>(), null));
+                .isThrownBy(() -> new JodaBeanSimpleMapReader(JodaBeanSer.PRETTY).read(new HashMap<>(), null));
     }
 
 }

@@ -21,8 +21,6 @@ import org.joda.beans.sample.Person;
 
 /**
  * Examples using Person.
- * 
- * @author Stephen Colebourne
  */
 public class Examples {
 
@@ -56,7 +54,7 @@ public class Examples {
         System.out.println(p);
         
         // create the bean the hard way - could just do new Address() instead
-        Address a = (Address) Address.meta().builder().build();
+        Address a = Address.meta().builder().build();
         // set surname using normal method
         a.setStreet("Barnsnap Close");
         // query using property method

@@ -141,11 +141,11 @@ public class SerTestHelper {
         ImmPerson child = ImmPerson.builder()
                 .forename("Etiennette")
                 .surname("Colebourne")
-                . build();
+                .build();
         ImmPerson child2 = ImmPerson.builder()
                 .forename("Kylie")
                 .surname("Colebourne")
-                . build();
+                .build();
         ImmAddress childAddress = ImmAddress.builder()
                 .owner(child)
                 .number(185)
@@ -169,39 +169,39 @@ public class SerTestHelper {
         denseGrid.put(0, 0, child);
         denseGrid.put(1, 1, child2);
         ImmAddress address = ImmAddress.builder()
-            .owner(person)
-            .number(185)
-            .street("Park Street")
-            .city("London & Capital of the World <!>\n")
-            .abstractNumber(Short.valueOf((short) 89))
-            .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
-            .object1(ImmutableList.of("a", "b", "c"))
-            .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
-            .serializable(ImmutableList.of("a", "b", "c"))
-            .objectInMap(map6)
-            .listInMap(map)
-            .listNumericInMap(map2)
-            .listInListInMap(map3)
-            .objectListInListInMap(map5)
-            .mapInMap(map4)
-            .simpleTable(ImmutableTable.<Integer, Integer, String>builder()
-                .put(1, 1, "Hello")
-                .put(1, 2, "There")
-                .build())
-            .compoundTable(table)
-            .sparseGrid(sparseGrid)
-            .denseGrid(denseGrid)
-            .beanBeanMap(ImmutableMap.of(child, childAddress))
-            .doubleVector(new double[] {1.1, 2.2, 3.3})
-            .matrix(new double[][] {{1.1, 2.2}, {3.2}})
-            .build();
+                .owner(person)
+                .number(185)
+                .street("Park Street")
+                .city("London & Capital of the World <!>\n")
+                .abstractNumber(Short.valueOf((short) 89))
+                .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
+                .object1(ImmutableList.of("a", "b", "c"))
+                .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
+                .serializable(ImmutableList.of("a", "b", "c"))
+                .objectInMap(map6)
+                .listInMap(map)
+                .listNumericInMap(map2)
+                .listInListInMap(map3)
+                .objectListInListInMap(map5)
+                .mapInMap(map4)
+                .simpleTable(ImmutableTable.<Integer, Integer, String>builder()
+                        .put(1, 1, "Hello")
+                        .put(1, 2, "There")
+                        .build())
+                .compoundTable(table)
+                .sparseGrid(sparseGrid)
+                .denseGrid(denseGrid)
+                .beanBeanMap(ImmutableMap.of(child, childAddress))
+                .doubleVector(new double[] {1.1, 2.2, 3.3})
+                .matrix(new double[][] {{1.1, 2.2}, {3.2}})
+                .build();
         return address;
     }
 
     public static ImmOptional testImmOptional() {
         ImmOptional optional = ImmOptional.builder()
-            .optString(Optional.of("A"))
-            .build();
+                .optString(Optional.of("A"))
+                .build();
         return optional;
     }
 
@@ -250,10 +250,10 @@ public class SerTestHelper {
 
     public static ImmGenericCollections<JodaConvertInterface> testGenericInterfaces() {
         return ImmGenericCollections.<JodaConvertInterface>builder()
-            .map(ImmutableMap.of(
-                "First", JodaConvertInterface.of("First"),
-                "Second", JodaConvertInterface.of("Second")))
-            .build();
+                .map(ImmutableMap.of(
+                        "First", JodaConvertInterface.of("First"),
+                        "Second", JodaConvertInterface.of("Second")))
+                .build();
     }
 
     public static ImmKeyList testIntermediateInterfaces() {
@@ -261,64 +261,64 @@ public class SerTestHelper {
         // third and fourth are serialized as an intermediate Joda-Convert interface INamedKey
         // (Root interface) IKey -> (Joda-Convert interface) INamedKey -> (Concrete Bean) ImmNamedKey 
         return ImmKeyList.builder()
-            .keys(
-                ImmKey.builder().name("First").build(),
-                JodaConvertInterface.of("Second"),
-                INamedKey.of("Third"),
-                ImmNamedKey.of("Fourth"))
-            .build();
+                .keys(
+                        ImmKey.builder().name("First").build(),
+                        JodaConvertInterface.of("Second"),
+                        INamedKey.of("Third"),
+                        ImmNamedKey.of("Fourth"))
+                .build();
     }
 
     public static ImmGenericCollections<Map<ImmJodaConvertBean, String>> testGenericNestedCollections() {
         return ImmGenericCollections.<Map<ImmJodaConvertBean, String>>builder()
-            .map(ImmutableMap.of(
-                "Key",
-                ImmutableMap.of(
-                    new ImmJodaConvertBean("Hello:8"), "Done",
-                    new ImmJodaConvertBean("Hello:10"), "Done2")))
-            .build();
+                .map(ImmutableMap.of(
+                        "Key",
+                        ImmutableMap.of(
+                                new ImmJodaConvertBean("Hello:8"), "Done",
+                                new ImmJodaConvertBean("Hello:10"), "Done2")))
+                .build();
     }
 
     public static ImmGenericArray<ImmGeneric<?>> testGenericArrayWithNulls() {
-        return ImmGenericArray.of(new ImmGeneric<?>[]{
-            ImmGeneric.<String>builder()
-                .value("Help")
-                .build(),
-            ImmGeneric.<ImmJodaConvertWrapper>builder()
-                .value(ImmJodaConvertWrapper.of(null, "null"))
-                .build(),
-            ImmGeneric.<ImmJodaConvertWrapper>builder()
-                .value(ImmJodaConvertWrapper.of(new ImmJodaConvertBean("Bean:5"), "null"))
-                .build()
+        return ImmGenericArray.of(new ImmGeneric<?>[] {
+                ImmGeneric.<String>builder()
+                        .value("Help")
+                        .build(),
+                ImmGeneric.<ImmJodaConvertWrapper>builder()
+                        .value(ImmJodaConvertWrapper.of(null, "null"))
+                        .build(),
+                ImmGeneric.<ImmJodaConvertWrapper>builder()
+                        .value(ImmJodaConvertWrapper.of(new ImmJodaConvertBean("Bean:5"), "null"))
+                        .build()
         });
     }
 
     public static ImmTreeNode testTree() {
         ImmutableList<ImmTreeNode> childList = ImmutableList.of(
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build());
-        return ImmTreeNode.of(
-            "Root Node",
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build(),
-            ImmutableList.of(
                 ImmTreeNode.builder().name("First child").build(),
+                ImmTreeNode.builder().name("Second child").build(),
+                ImmTreeNode.builder().name("Third child").build());
+        return ImmTreeNode.of(
+                "Root Node",
+                ImmTreeNode.builder().name("First child").build(),
+                ImmTreeNode.builder().name("Second child").build(),
                 ImmTreeNode.builder().name("Third child").build(),
-                ImmTreeNode.builder()
-                    .name("Fourth child")
-                    .child3(ImmTreeNode.builder().name("Third child")
-                        .childList(childList)
-                        .build())
-                    .childList(childList)
-                    .build()));
+                ImmutableList.of(
+                        ImmTreeNode.builder().name("First child").build(),
+                        ImmTreeNode.builder().name("Third child").build(),
+                        ImmTreeNode.builder()
+                                .name("Fourth child")
+                                .child3(ImmTreeNode.builder().name("Third child")
+                                        .childList(childList)
+                                        .build())
+                                .childList(childList)
+                                .build()));
     }
 
     public static ImmKeyHolder testImmKeyHolder() {
         return ImmKeyHolder.builder()
-            .value(ImmKey.builder().name("foo").build())
-            .build();
+                .value(ImmKey.builder().name("foo").build())
+                .build();
     }
 
     public static SimpleJson testSimpleJson() {

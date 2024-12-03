@@ -27,14 +27,14 @@ import org.junit.jupiter.api.Test;
 /**
  * Test code coverage helper.
  */
-public class TestCoverage {
+class TestCoverage {
 
     private Person person;
     private MutableBaseBean mutableBase;
     private MutableDerivedBean mutableDerived;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         person = new Person();
         person.setForename("Vince");
         person.setSurname("Cable");
@@ -67,17 +67,17 @@ public class TestCoverage {
     }
 
     @Test
-    public void test_coveragePerson() {
+    void test_coveragePerson() {
         assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(person));
     }
 
     @Test
-    public void test_coverageMutableBase() {
+    void test_coverageMutableBase() {
         assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(mutableBase));
     }
 
     @Test
-    public void test_coverageMutableDerived() {
+    void test_coverageMutableDerived() {
         assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(mutableDerived));
     }
 

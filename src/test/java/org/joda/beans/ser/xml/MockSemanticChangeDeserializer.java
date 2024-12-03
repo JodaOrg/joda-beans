@@ -24,15 +24,13 @@ import org.joda.beans.ser.SerDeserializer;
 
 /**
  * Mock deserializer that handles a semantic change.
- *
- * @author Stephen Colebourne
  */
-public class MockSemanticChangeDeserializer extends DefaultDeserializer {
+class MockSemanticChangeDeserializer extends DefaultDeserializer {
 
     /**
      * Singleton.
      */
-    public static final SerDeserializer INSTANCE = new MockSemanticChangeDeserializer();
+    static final SerDeserializer INSTANCE = new MockSemanticChangeDeserializer();
 
     /**
      * Creates an instance.

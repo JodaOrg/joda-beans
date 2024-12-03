@@ -121,8 +121,8 @@ class TestSerializeSmartReader {
 
     @Test
     void test_json_minimal() throws IOException {
-        assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(new byte[] { '{', '}' })).isTrue();
-        assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(new byte[] { '{', '\n', ' ', '}' })).isTrue();
+        assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(new byte[] {'{', '}'})).isTrue();
+        assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(new byte[] {'{', '\n', ' ', '}'})).isTrue();
     }
 
     //-----------------------------------------------------------------------
@@ -206,14 +206,14 @@ class TestSerializeSmartReader {
     //-----------------------------------------------------------------------
     static Object[][] data_badFormat() {
         return new Object[][] {
-                { "xml" },
-                { "<beax" },
-                { "{,}" },
-                { "{  \t\r\n " },
-                { "{1,2}" },
-                { "{\"a\",6}" },
-                { "{\"a\":[}}" },
-                { "" },
+                {"xml"},
+                {"<beax"},
+                {"{,}"},
+                {"{  \t\r\n "},
+                {"{1,2}"},
+                {"{\"a\",6}"},
+                {"{\"a\":[}}"},
+                {""},
         };
     }
 
@@ -222,17 +222,17 @@ class TestSerializeSmartReader {
     void test_badFormat(String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.smartReader().read(bytes, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.smartReader().read(bytes, FlexiBean.class));
     }
 
     static Object[][] data_unknownFormat() {
         return new Object[][] {
-                { "xml" },
-                { "<beax" },
-                { "{,}" },
-                { "{  \t\r\n " },
-                { "{1,2}" },
-                { "" },
+                {"xml"},
+                {"<beax"},
+                {"{,}"},
+                {"{  \t\r\n "},
+                {"{1,2}"},
+                {""},
         };
     }
 
@@ -246,37 +246,37 @@ class TestSerializeSmartReader {
     @Test
     void test_isKnownFormat_utf8_wrong() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, '?' })).isFalse();
+                new byte[] {(byte) 0xef, (byte) 0xbb, (byte) 0xbf, '?'})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xb0, '<' })).isFalse();
+                new byte[] {(byte) 0xef, (byte) 0xbb, (byte) 0xb0, '<'})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xef, (byte) 0xb0, (byte) 0xbf, '<' })).isFalse();
+                new byte[] {(byte) 0xef, (byte) 0xb0, (byte) 0xbf, '<'})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xe0, (byte) 0xbb, (byte) 0xbf, '<' })).isFalse();
+                new byte[] {(byte) 0xe0, (byte) 0xbb, (byte) 0xbf, '<'})).isFalse();
     }
 
     @Test
     void test_isKnownFormat_utf16le_wrong() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xff, (byte) 0xfe, '?', (byte) 0x00 })).isFalse();
+                new byte[] {(byte) 0xff, (byte) 0xfe, '?', (byte) 0x00})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xff, (byte) 0xfe, '<', (byte) 0x01 })).isFalse();
+                new byte[] {(byte) 0xff, (byte) 0xfe, '<', (byte) 0x01})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xff, (byte) 0xf0, '<', (byte) 0x00 })).isFalse();
+                new byte[] {(byte) 0xff, (byte) 0xf0, '<', (byte) 0x00})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xf0, (byte) 0xfe, '<', (byte) 0x00 })).isFalse();
+                new byte[] {(byte) 0xf0, (byte) 0xfe, '<', (byte) 0x00})).isFalse();
     }
 
     @Test
     void test_isKnownFormat_utf16be_wrong() throws IOException {
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xfe, (byte) 0xff, (byte) 0x00, '?' })).isFalse();
+                new byte[] {(byte) 0xfe, (byte) 0xff, (byte) 0x00, '?'})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xfe, (byte) 0xff, (byte) 0x01, '<' })).isFalse();
+                new byte[] {(byte) 0xfe, (byte) 0xff, (byte) 0x01, '<'})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xfe, (byte) 0xf0, (byte) 0x00, '<' })).isFalse();
+                new byte[] {(byte) 0xfe, (byte) 0xf0, (byte) 0x00, '<'})).isFalse();
         assertThat(JodaBeanSer.COMPACT.smartReader().isKnownFormat(
-                new byte[] { (byte) 0xf0, (byte) 0xff, (byte) 0x00, '<' })).isFalse();
+                new byte[] {(byte) 0xf0, (byte) 0xff, (byte) 0x00, '<'})).isFalse();
     }
 
     @Test
