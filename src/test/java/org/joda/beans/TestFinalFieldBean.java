@@ -30,13 +30,13 @@ import org.junit.jupiter.api.Test;
 /**
  * Test FinalFieldBean.
  */
-public class TestFinalFieldBean {
+class TestFinalFieldBean {
 
     /** Bean. */
     private FinalFieldBean bean;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         bean = new FinalFieldBean("Hello");
         bean.setFieldNonFinal("Hello");
         bean.getListFinal().add("Hello");
@@ -46,7 +46,7 @@ public class TestFinalFieldBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_finalString() {
+    void test_finalString() {
         assertThat(bean.getFieldFinal()).isEqualTo("Hello");
         assertThat(bean.fieldFinal().get()).isEqualTo("Hello");
         assertThat(bean.fieldFinal().metaProperty().declaringType()).isEqualTo(FinalFieldBean.class);
@@ -64,7 +64,7 @@ public class TestFinalFieldBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_nonFinalString() {
+    void test_nonFinalString() {
         assertThat(bean.getFieldNonFinal()).isEqualTo("Hello");
         assertThat(bean.fieldNonFinal().get()).isEqualTo("Hello");
         assertThat(bean.fieldNonFinal().metaProperty().declaringType()).isEqualTo(FinalFieldBean.class);
@@ -83,7 +83,7 @@ public class TestFinalFieldBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_finalList() {
+    void test_finalList() {
         List<String> list = new ArrayList<>();
         list.add("Hello");
         assertThat(bean.getListFinal()).isEqualTo(list);
@@ -107,7 +107,7 @@ public class TestFinalFieldBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_finalBean() {
+    void test_finalBean() {
         FlexiBean flexi = new FlexiBean();
         flexi.append("Hello", "World");
         assertThat(bean.getFlexiFinal()).isEqualTo(flexi);
@@ -131,7 +131,7 @@ public class TestFinalFieldBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_finalPerson() {
+    void test_finalPerson() {
         Person person = new Person();
         person.setSurname("Hello");
         assertThat(bean.getPersonFinal()).isEqualTo(person);

@@ -50,10 +50,10 @@ import com.google.common.io.Resources;
 /**
  * Test property roundtrip using JSON.
  */
-public class TestSerializeJsonSimple {
+class TestSerializeJsonSimple {
 
     @Test
-    public void test_writeSimpleJson() throws IOException {
+    void test_writeSimpleJson() throws IOException {
         var bean = SerTestHelper.testSimpleJson();
         var json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
@@ -64,7 +64,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_writeImmOptional() throws IOException {
+    void test_writeImmOptional() throws IOException {
         var bean = SerTestHelper.testImmOptional();
         var json = JodaBeanSer.PRETTY.withIncludeDerived(true).simpleJsonWriter().write(bean);
 //        System.out.println(json);
@@ -75,7 +75,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_writeImmArrays() throws IOException {
+    void test_writeImmArrays() throws IOException {
         var bean = ImmArrays.of(
                 new int[] {1, 3, 2},
                 new long[] {1, 4, 3},
@@ -95,7 +95,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_writeAddress() throws IOException {
+    void test_writeAddress() throws IOException {
         var bean = SerTestHelper.testAddress();
         var json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
@@ -107,7 +107,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_writeImmAddress() throws IOException {
+    void test_writeImmAddress() throws IOException {
         var bean = SerTestHelper.testImmAddress(false).toBuilder()
                 .mapInMap(new HashMap<>())
                 .beanBeanMap(new HashMap<>())
@@ -123,7 +123,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_writeCollections() throws IOException {
+    void test_writeCollections() throws IOException {
         var bean = SerTestHelper.testCollections(false);
         var json = JodaBeanSer.PRETTY.simpleJsonWriter().write(bean);
 //        System.out.println(json);
@@ -148,7 +148,7 @@ public class TestSerializeJsonSimple {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWriteBeanEmptyChild_pretty() {
+    void test_readWriteBeanEmptyChild_pretty() {
         var bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", new HashMap<String, String>());
@@ -159,7 +159,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_readWriteBeanEmptyChild_compact() {
+    void test_readWriteBeanEmptyChild_compact() {
         var bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", new HashMap<String, String>());
@@ -170,7 +170,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_read_primitiveTypeChanged() throws IOException {
+    void test_read_primitiveTypeChanged() throws IOException {
         var json = "{\"a\":6,\"b\":5}";
         var parsed = JodaBeanSer.COMPACT.simpleJsonReader().read(json, ImmDoubleFloat.class);
         assertThat(parsed.getA()).isCloseTo(6, offset(1e-10));
@@ -179,7 +179,7 @@ public class TestSerializeJsonSimple {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWrite_boolean_true() {
+    void test_readWrite_boolean_true() {
         var bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
         var json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
@@ -189,7 +189,7 @@ public class TestSerializeJsonSimple {
     }
 
     @Test
-    public void test_readWrite_boolean_false() {
+    void test_readWrite_boolean_false() {
         var bean = new FlexiBean();
         bean.set("data", Boolean.FALSE);
         var json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
@@ -200,19 +200,19 @@ public class TestSerializeJsonSimple {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_emptyFlexiBean() {
+    void test_read_emptyFlexiBean() {
         var parsed = JodaBeanSer.COMPACT.simpleJsonReader().read("{}", FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
     @Test
-    public void test_read_rootTypeArgumentIncorrect() {
+    void test_read_rootTypeArgumentIncorrect() {
         assertThatExceptionOfType(ClassCastException.class)
                 .isThrownBy(() -> JodaBeanSer.COMPACT.simpleJsonReader().read("{}", Integer.class));
     }
 
     @Test
-    public void test_write_nullKeyInMap() {
+    void test_write_nullKeyInMap() {
         var address = new Address();
         var bean = new Person();
         bean.getOtherAddressMap().put(null, address);
@@ -221,7 +221,7 @@ public class TestSerializeJsonSimple {
     }
 
     //-----------------------------------------------------------------------
-    public static Object[][] data_badFormat() {
+    static Object[][] data_badFormat() {
         return new Object[][] {
                 {"{,}"},
                 {"{1,2}"},
@@ -232,75 +232,75 @@ public class TestSerializeJsonSimple {
 
     @ParameterizedTest
     @MethodSource("data_badFormat")
-    public void test_badFormat(String text) throws IOException {
+    void test_badFormat(String text) throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.simpleJsonReader().read(text, FlexiBean.class));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_writer_nullSettings() {
+    void test_writer_nullSettings() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonWriter(null));
     }
 
     @Test
-    public void test_writer_write1_nullBean() {
+    void test_writer_write1_nullBean() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonWriter(JodaBeanSer.PRETTY).write(null));
     }
 
     @Test
-    public void test_writer_write2_nullBean() throws IOException {
+    void test_writer_write2_nullBean() throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonWriter(JodaBeanSer.PRETTY).write(null, new StringBuilder()));
     }
 
     @Test
-    public void test_writer_write2_nullAppendable() throws IOException {
+    void test_writer_write2_nullAppendable() throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonWriter(JodaBeanSer.PRETTY).write(new FlexiBean(), null));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_reader_nullSettings() {
+    void test_reader_nullSettings() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(null));
     }
 
     @Test
-    public void test_reader_readReader_null() {
+    void test_reader_readReader_null() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((Reader) null, FlexiBean.class));
     }
 
     @Test
-    public void test_reader_readString_null() {
+    void test_reader_readString_null() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((String) null, FlexiBean.class));
     }
 
     @Test
-    public void test_reader_readReaderType_nullReader() throws IOException {
+    void test_reader_readReaderType_nullReader() throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((Reader) null, Bean.class));
     }
 
     @Test
-    public void test_reader_readReaderType_nullType() throws IOException {
+    void test_reader_readReaderType_nullType() throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read(new StringReader(""), null));
     }
 
     @Test
-    public void test_reader_readStringType_nullString() throws IOException {
+    void test_reader_readStringType_nullString() throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read((String) null, Bean.class));
     }
 
     @Test
-    public void test_reader_readStringType_nullType() throws IOException {
+    void test_reader_readStringType_nullType() throws IOException {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new JodaBeanSimpleJsonReader(JodaBeanSer.PRETTY).read("", null));
     }

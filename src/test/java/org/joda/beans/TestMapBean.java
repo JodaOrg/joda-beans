@@ -21,12 +21,12 @@ import org.joda.beans.impl.map.MapBean;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test MapBean.
+ * Test {@link MapBean}.
  */
-public class TestMapBean {
+class TestMapBean {
 
     @Test
-    public void test_clone() {
+    void test_clone() {
         MapBean a = new MapBean();
         a.put("A", "AA");
         a.put("B", "BB");
@@ -45,9 +45,8 @@ public class TestMapBean {
         assertThat(b.get("B")).isEqualTo("BB");
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
-    public void test_equalsHashCode() {
+    void test_equalsHashCode() {
         MapBean a1 = new MapBean();
         MapBean a2 = new MapBean();
         MapBean b = new MapBean();
@@ -65,12 +64,13 @@ public class TestMapBean {
         assertThat(a1.equals(b)).isFalse();
         assertThat(b.equals(a1)).isFalse();
         
-        assertThat(b.equals("Weird type")).isFalse();
+        Object obj = "Weird type";
+        assertThat(b.equals(obj)).isFalse();
         assertThat(b.equals(null)).isFalse();
     }
 
     @Test
-    public void test_propertyDefine_propertyRemove() {
+    void test_propertyDefine_propertyRemove() {
         MapBean mapBean = new MapBean();
         assertThat(mapBean.propertyNames().size()).isEqualTo(0);
         mapBean.propertyDefine("name", String.class);
@@ -83,7 +83,7 @@ public class TestMapBean {
     }
 
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MapBean mapBean = new MapBean();
         DynamicMetaBean meta = mapBean.metaBean();
         assertThat(meta.metaPropertyCount()).isEqualTo(0);

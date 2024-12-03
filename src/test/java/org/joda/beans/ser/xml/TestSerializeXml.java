@@ -43,7 +43,6 @@ import org.joda.beans.sample.SimplePerson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
-import org.joda.beans.ser.json.TestSerializeJson;
 import org.joda.beans.test.BeanAssert;
 import org.junit.jupiter.api.Test;
 
@@ -53,10 +52,10 @@ import com.google.common.io.Resources;
 /**
  * Test property roundtrip using XML.
  */
-public class TestSerializeXml {
+class TestSerializeXml {
 
     @Test
-    public void test_writeAddress() throws IOException {
+    void test_writeAddress() throws IOException {
         var bean = SerTestHelper.testAddress();
         var xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
@@ -67,7 +66,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeToAppendable() throws IOException {
+    void test_writeToAppendable() throws IOException {
         var bean = SerTestHelper.testAddress();
         var output = new CharArrayWriter();
         JodaBeanSer.PRETTY.xmlWriter().write(bean, output);
@@ -78,7 +77,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeImmAddress() throws IOException {
+    void test_writeImmAddress() throws IOException {
         var bean = SerTestHelper.testImmAddress(false);
         var xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
@@ -91,7 +90,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeImmOptional() throws IOException {
+    void test_writeImmOptional() throws IOException {
         var bean = SerTestHelper.testImmOptional();
         var xml = JodaBeanSer.PRETTY.withIncludeDerived(true).xmlWriter().write(bean);
 //        System.out.println(xml);
@@ -102,7 +101,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeCollections() throws IOException {
+    void test_writeCollections() throws IOException {
         var bean = SerTestHelper.testCollections(true);
         var xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
 //        System.out.println(xml);
@@ -113,7 +112,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_writeJodaConvertInterface() {
+    void test_writeJodaConvertInterface() {
         var bean = SerTestHelper.testGenericInterfaces();
 
         var xml = JodaBeanSer.PRETTY.xmlWriter().write(bean);
@@ -125,7 +124,7 @@ public class TestSerializeXml {
     }
 
     private void assertEqualsSerialization(String xml, String expectedResource) throws IOException {
-        var url = TestSerializeJson.class.getResource(expectedResource);
+        var url = TestSerializeXml.class.getResource(expectedResource);
         var expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
         assertThat(xml.trim().replace(System.lineSeparator(), "\n"))
                 .isEqualTo(expected.trim().replace(System.lineSeparator(), "\n"));
@@ -133,7 +132,7 @@ public class TestSerializeXml {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWriteBeanEmptyChild_pretty() {
+    void test_readWriteBeanEmptyChild_pretty() {
         var bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
@@ -151,7 +150,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_readWriteBeanEmptyChild_compact() {
+    void test_readWriteBeanEmptyChild_compact() {
         var bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
@@ -165,7 +164,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_readWriteJodaConvertWrapper() {
+    void test_readWriteJodaConvertWrapper() {
         var wrapper = new JodaConvertWrapper();
         var bean = new JodaConvertBean("Hello:9");
         wrapper.setBean(bean);
@@ -180,7 +179,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_readWriteJodaConvertBean() {
+    void test_readWriteJodaConvertBean() {
         var bean = new JodaConvertBean("Hello:9");
         var xml = JodaBeanSer.COMPACT.xmlWriter().write(bean);
         assertThat(xml)
@@ -192,7 +191,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_read_primitiveTypeChanged() throws IOException {
+    void test_read_primitiveTypeChanged() throws IOException {
         var xml = "<bean><a>6</a><b>5</b></bean>";
         var parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, ImmDoubleFloat.class);
         assertThat(parsed.getA()).isCloseTo(6, offset(1e-10));
@@ -201,7 +200,7 @@ public class TestSerializeXml {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_nonStandard_JodaConvertWrapper_expanded() {
+    void test_read_nonStandard_JodaConvertWrapper_expanded() {
         var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<bean type=\"org.joda.beans.sample.JodaConvertWrapper\">" +
                 "<bean><base>Hello</base><extra>9</extra></bean><description>Weird</description></bean>";
@@ -214,7 +213,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_read_nonStandard_JodaConvertBean_flattened() {
+    void test_read_nonStandard_JodaConvertBean_flattened() {
         var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<bean type=\"org.joda.beans.sample.JodaConvertBean\">Hello:9</bean>";
         var parsed = JodaBeanSer.COMPACT.xmlReader().read(xml);
@@ -223,7 +222,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_read_nonStandard_withCommentBeanRoot() {
+    void test_read_nonStandard_withCommentBeanRoot() {
         var xml = "<bean><!-- comment --><element>Test</element></bean>";
         var parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         var bean = new FlexiBean();
@@ -232,7 +231,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_read_nonStandard_withCommentInProperty() {
+    void test_read_nonStandard_withCommentInProperty() {
         var xml = "<bean><element><!-- comment -->Test</element></bean>";
         var parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         var bean = new FlexiBean();
@@ -242,7 +241,7 @@ public class TestSerializeXml {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_aliased() {
+    void test_read_aliased() {
         var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<bean type=\"org.joda.beans.sample.SimpleName\">" +
                 "<firstName>A</firstName><givenName>B</givenName></bean>";
@@ -254,7 +253,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_readWriteInterfaceKeyMap() {
+    void test_readWriteInterfaceKeyMap() {
         var key1 = ImmKey.builder().name("Alpha").build();
         var person1 = ImmPerson.builder().forename("Bob").surname("Builder").build();
         var key2 = ImmKey.builder().name("Beta").build();
@@ -267,7 +266,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_read_badTypeInMap() {
+    void test_read_badTypeInMap() {
         var xml = "<bean><element metatype=\"Map\"><entry><item>work</item>" +
                 "<item type=\"com.foo.UnknownEnum\">BIGWIG</item></entry></element></bean>";
         var parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).xmlReader().read(xml, FlexiBean.class);
@@ -277,7 +276,7 @@ public class TestSerializeXml {
     }
 
     @Test
-    public void test_read_ignoreProperty() {
+    void test_read_ignoreProperty() {
         var xml = "<bean><name>foo</name><wibble>ignored</wibble></bean>";
         var parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).xmlReader().read(xml, ImmKey.class);
         var bean = ImmKey.builder().name("foo").build();
@@ -286,45 +285,45 @@ public class TestSerializeXml {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_noBeanElementAtRoot() {
+    void test_read_noBeanElementAtRoot() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read("<foo></foo>", Bean.class));
     }
 
     @Test
-    public void test_read_noTypeAttributeAtRoot() {
+    void test_read_noTypeAttributeAtRoot() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", Bean.class));
     }
 
     @Test
-    public void test_read_noTypeAttributeAtRootButTypeSpecified() {
+    void test_read_noTypeAttributeAtRootButTypeSpecified() {
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
     @Test
-    public void test_read_rootTypeAttributeNotBean() {
+    void test_read_rootTypeAttributeNotBean() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader()
                         .read("<bean type=\"java.lang.Integer\"></bean>", Bean.class));
     }
 
     @Test
-    public void test_read_rootTypeInvalid() {
+    void test_read_rootTypeInvalid() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader()
                         .read("<bean type=\"org.joda.beans.impl.flexi.FlexiBean\"></bean>", SimplePerson.class));
     }
 
     @Test
-    public void test_read_rootTypeArgumentInvalid() {
+    void test_read_rootTypeArgumentInvalid() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read("<bean></bean>", Integer.class));
     }
 
     @Test
-    public void test_write_nullKeyInMap() {
+    void test_write_nullKeyInMap() {
         var address = new Address();
         var bean = new Person();
         bean.getOtherAddressMap().put(null, address);

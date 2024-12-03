@@ -25,13 +25,13 @@ import org.joda.beans.sample.MetaBeanLoad;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test MetaBean statics.
+ * Test {@link MetaBean}.
  */
-public class TestMetaBean {
+class TestMetaBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_registerMetaBean() {
+    void test_registerMetaBean() {
         // register once OK
         assertThat(ImmPerson.meta()).isNotNull();
         // register second time not OK
@@ -41,24 +41,24 @@ public class TestMetaBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MetaBean metaBean = MetaBean.of(MetaBeanLoad.class);
         assertThat(metaBean).isNotNull();
         assertThat(metaBean).isEqualTo(MetaBeanLoad.meta());
     }
 
     @Test
-    public void test_metaBean_FlexiBean() {
+    void test_metaBean_FlexiBean() {
         assertThat(MetaBean.of(FlexiBean.class).builder().build().getClass()).isEqualTo(FlexiBean.class);
     }
 
     @Test
-    public void test_metaBean_MapBean() {
+    void test_metaBean_MapBean() {
         assertThat(MetaBean.of(MapBean.class).builder().build().getClass()).isEqualTo(MapBean.class);
     }
 
     @Test
-    public void test_metaBean_notFound() {
+    void test_metaBean_notFound() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> MetaBean.of(String.class));
     }

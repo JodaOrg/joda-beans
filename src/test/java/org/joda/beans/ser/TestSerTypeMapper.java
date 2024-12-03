@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test ser.
+ * Test {@link SerTypeMapper}.
  */
 class TestSerTypeMapper {
 
@@ -46,18 +46,18 @@ class TestSerTypeMapper {
         assertThat(cache).doesNotContainKey(File.class);
         // user type
         assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS, "java.util.", cache))
-            .isEqualTo("java.util.concurrent.atomic.AtomicReference");
+                .isEqualTo("java.util.concurrent.atomic.AtomicReference");
         assertThat(cache.get(AtomicReference.class)).isEqualTo("AtomicReference");
         // user type - second occurrence
         assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS, "java.util.", cache)).isEqualTo("AtomicReference");
         assertThat(cache.get(AtomicReference.class)).isEqualTo("AtomicReference");
         // user type - already cached name
         assertThat(SerTypeMapper.encodeType(org.joda.beans.ser.AtomicReference.class, SETTINGS, "java.util.", cache))
-            .isEqualTo("org.joda.beans.ser.AtomicReference");
+                .isEqualTo("org.joda.beans.ser.AtomicReference");
         assertThat(cache.get(org.joda.beans.ser.AtomicReference.class)).isEqualTo("org.joda.beans.ser.AtomicReference");
         // user type
         assertThat(SerTypeMapper.encodeType(AtomicIntegerArray.class, SETTINGS, "java.util.", cache))
-            .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
+                .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
         assertThat(cache.get(AtomicIntegerArray.class)).isEqualTo("AtomicIntegerArray");
         // user type - second occurrence
         assertThat(SerTypeMapper.encodeType(AtomicIntegerArray.class, SETTINGS, "java.util.", cache)).isEqualTo("AtomicIntegerArray");
@@ -74,10 +74,12 @@ class TestSerTypeMapper {
     void test_encodeType_sillyNames() {
         Map<Class<?>, String> cache = new HashMap<>();
         // user type - silly name
-        assertThat(SerTypeMapper.encodeType(BigDecimal.class, SETTINGS, "org.joda.beans.ser.", cache)).isEqualTo("org.joda.beans.ser.BigDecimal");
+        assertThat(SerTypeMapper.encodeType(BigDecimal.class, SETTINGS, "org.joda.beans.ser.", cache))
+                .isEqualTo("org.joda.beans.ser.BigDecimal");
         assertThat(cache.get(BigDecimal.class)).isEqualTo("org.joda.beans.ser.BigDecimal");
         // user type - silly name
-        assertThat(SerTypeMapper.encodeType(lowerCase.class, SETTINGS, "org.joda.beans.ser.", cache)).isEqualTo("org.joda.beans.ser.lowerCase");
+        assertThat(SerTypeMapper.encodeType(lowerCase.class, SETTINGS, "org.joda.beans.ser.", cache))
+                .isEqualTo("org.joda.beans.ser.lowerCase");
         assertThat(cache.get(lowerCase.class)).isEqualTo("org.joda.beans.ser.lowerCase");
     }
 
@@ -85,16 +87,18 @@ class TestSerTypeMapper {
     void test_encodeType_noCache() {
         // user type
         assertThat(SerTypeMapper.encodeType(AtomicIntegerArray.class, SETTINGS, "java.util.", null))
-            .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
+                .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
         // user type - second occurrence
         assertThat(SerTypeMapper.encodeType(AtomicIntegerArray.class, SETTINGS, "java.util.", null))
-            .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
+                .isEqualTo("java.util.concurrent.atomic.AtomicIntegerArray");
         // user type - normal
         assertThat(SerTypeMapper.encodeType(Normal.class, SETTINGS, "org.joda.beans.ser.", null)).isEqualTo("Normal");
         // user type - silly name
-        assertThat(SerTypeMapper.encodeType(BigDecimal.class, SETTINGS, "org.joda.beans.ser.", null)).isEqualTo("org.joda.beans.ser.BigDecimal");
+        assertThat(SerTypeMapper.encodeType(BigDecimal.class, SETTINGS, "org.joda.beans.ser.", null))
+                .isEqualTo("org.joda.beans.ser.BigDecimal");
         // user type - silly name
-        assertThat(SerTypeMapper.encodeType(lowerCase.class, SETTINGS, "org.joda.beans.ser.", null)).isEqualTo("org.joda.beans.ser.lowerCase");
+        assertThat(SerTypeMapper.encodeType(lowerCase.class, SETTINGS, "org.joda.beans.ser.", null))
+                .isEqualTo("org.joda.beans.ser.lowerCase");
     }
 
     @Test
@@ -104,7 +108,8 @@ class TestSerTypeMapper {
         assertThat(SerTypeMapper.encodeType(File.class, SETTINGS, null, cache)).isEqualTo("File");
         assertThat(cache).doesNotContainKey(File.class);
         // user type
-        assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS, null, cache)).isEqualTo("java.util.concurrent.atomic.AtomicReference");
+        assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS, null, cache))
+                .isEqualTo("java.util.concurrent.atomic.AtomicReference");
         assertThat(cache.get(AtomicReference.class)).isEqualTo("AtomicReference");
         // user type - second occurrence
         assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS, null, cache)).isEqualTo("AtomicReference");
@@ -120,10 +125,10 @@ class TestSerTypeMapper {
         assertThat(SerTypeMapper.encodeType(File.class, SETTINGS_NO_SHORT, "java.util.", cache)).isEqualTo("File");
         // user type
         assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS_NO_SHORT, "java.util.", cache))
-            .isEqualTo("java.util.concurrent.atomic.AtomicReference");
+                .isEqualTo("java.util.concurrent.atomic.AtomicReference");
         // user type - second occurrence
         assertThat(SerTypeMapper.encodeType(AtomicReference.class, SETTINGS_NO_SHORT, "java.util.", cache))
-            .isEqualTo("java.util.concurrent.atomic.AtomicReference");
+                .isEqualTo("java.util.concurrent.atomic.AtomicReference");
         assertThat(cache).isEmpty();
     }
 
@@ -138,7 +143,8 @@ class TestSerTypeMapper {
         assertThat(SerTypeMapper.decodeType("File", SETTINGS, "java.util.", cache)).isEqualTo(File.class);
         assertThat(cache).doesNotContainKey("File");
         // user type
-        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, "java.util.", cache)).isEqualTo(AtomicReference.class);
+        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, "java.util.", cache))
+                .isEqualTo(AtomicReference.class);
         assertThat(cache.get("java.util.concurrent.atomic.AtomicReference")).isEqualTo(AtomicReference.class);
         assertThat(cache.get("AtomicReference")).isEqualTo(AtomicReference.class);
         // user type
@@ -146,7 +152,8 @@ class TestSerTypeMapper {
         assertThat(cache.get("java.util.concurrent.atomic.AtomicReference")).isEqualTo(AtomicReference.class);
         assertThat(cache.get("AtomicReference")).isEqualTo(AtomicReference.class);
         // user type
-        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicIntegerArray", SETTINGS, "java.util.", cache)).isEqualTo(AtomicIntegerArray.class);
+        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicIntegerArray", SETTINGS, "java.util.", cache))
+                .isEqualTo(AtomicIntegerArray.class);
         assertThat(cache.get("java.util.concurrent.atomic.AtomicIntegerArray")).isEqualTo(AtomicIntegerArray.class);
         assertThat(cache.get("AtomicIntegerArray")).isEqualTo(AtomicIntegerArray.class);
         // user type
@@ -162,7 +169,8 @@ class TestSerTypeMapper {
         // basic type
         assertThat(SerTypeMapper.decodeType("File", SETTINGS, "java.util.", null)).isEqualTo(File.class);
         // user type
-        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, "java.util.", null)).isEqualTo(AtomicReference.class);
+        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, "java.util.", null))
+                .isEqualTo(AtomicReference.class);
     }
 
     @Test
@@ -171,14 +179,15 @@ class TestSerTypeMapper {
         // basic type
         assertThat(SerTypeMapper.decodeType("File", SETTINGS, null, cache)).isEqualTo(File.class);
         // user type
-        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, null, cache)).isEqualTo(AtomicReference.class);
+        assertThat(SerTypeMapper.decodeType("java.util.concurrent.atomic.AtomicReference", SETTINGS, null, cache))
+                .isEqualTo(AtomicReference.class);
     }
 
     @Test
     void test_decodeType_emptyClassName() throws Exception {
         Map<String, Class<?>> cache = new HashMap<>();
         assertThatExceptionOfType(ClassNotFoundException.class)
-            .isThrownBy(() -> SerTypeMapper.decodeType("", SETTINGS, "java.util.", cache));
+                .isThrownBy(() -> SerTypeMapper.decodeType("", SETTINGS, "java.util.", cache));
     }
 
 }

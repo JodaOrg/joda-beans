@@ -38,10 +38,10 @@ import com.google.common.collect.ImmutableMultiset;
 /**
  * Test property using Person.
  */
-public class TestImmutable {
+class TestImmutable {
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         ImmAddress address = ImmAddress.builder()
                 .number(12)
                 .street("Park Lane")
@@ -54,7 +54,7 @@ public class TestImmutable {
     }
 
     @Test
-    public void test_builder() {
+    void test_builder() {
         Builder builder = ImmAddress.builder()
                 .set("number", 12)
                 .set("street", "Park Lane");
@@ -73,7 +73,7 @@ public class TestImmutable {
     }
 
     @Test
-    public void test_with() {
+    void test_with() {
         ImmAddress address = ImmAddress.builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
@@ -88,7 +88,7 @@ public class TestImmutable {
     }
 
     @Test
-    public void test_annotations() {
+    void test_annotations() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
 
         assertThat(person.metaBean().numberOfCars().annotationOpt(SimpleAnnotation.class))
@@ -106,14 +106,14 @@ public class TestImmutable {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_builder_getInvalidPropertyName() {
+    void test_builder_getInvalidPropertyName() {
         BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> builder.get("Rubbish"));
     }
 
     @Test
-    public void test_builder_setInvalidPropertyName() {
+    void test_builder_setInvalidPropertyName() {
         BeanBuilder<ImmAddress> builder = ImmAddress.meta().builder();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> builder.set("Rubbish", ""));
@@ -121,7 +121,7 @@ public class TestImmutable {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_builder_subclass() {
+    void test_builder_subclass() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
         builder.set(ImmPersonNonFinal.meta().forename(), "Bobby");
         builder.set(ImmSubPersonNonFinal.meta().middleName(), "Joe");
@@ -140,14 +140,14 @@ public class TestImmutable {
     }
 
     @Test
-    public void test_builder_subclass_getInvalidPropertyName() {
+    void test_builder_subclass_getInvalidPropertyName() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> builder.get("Rubbish"));
     }
 
     @Test
-    public void test_builder_subclass_setInvalidPropertyName() {
+    void test_builder_subclass_setInvalidPropertyName() {
         ImmSubSubPersonFinal.Builder builder = ImmSubSubPersonFinal.meta().builder();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> builder.set("Rubbish", ""));
@@ -155,7 +155,7 @@ public class TestImmutable {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_builder_defaultValue() {
+    void test_builder_defaultValue() {
         ImmPerson person = ImmPerson.builder()
             .forename("A")
             .surname("B")
@@ -167,7 +167,7 @@ public class TestImmutable {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_builder_methodTypes() {
+    void test_builder_methodTypes() {
         Calendar cal = Calendar.getInstance();
         GregorianCalendar gcal = new GregorianCalendar(2015, 5, 30);
         ImmutableList<Calendar> listCal = ImmutableList.of(cal);

@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test arrays using SimpleName.
  */
-public class TestArray {
+class TestArray {
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         SimpleName person1 = new SimpleName();
         person1.setForename("Etienne");
         person1.setMiddleNames(new String[] {"Yakusa", "Mohito"});

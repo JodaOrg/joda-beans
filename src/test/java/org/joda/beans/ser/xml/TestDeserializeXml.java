@@ -28,13 +28,13 @@ import org.junit.jupiter.api.Test;
 /**
  * Test deserialization using XML.
  */
-public class TestDeserializer {
+class TestDeserializeXml {
 
     @Test
-    public void test_read_renamedType() {
+    void test_read_renamedType() {
         String xml = "<bean type=\"org.jodabeans.FlexibleBean\"><surname>Smith</surname></bean>";
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class));
         RenameHandler.INSTANCE.renamedType("org.jodabeans.FlexibleBean", FlexiBean.class);
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -43,13 +43,13 @@ public class TestDeserializer {
     }
 
     @Test
-    public void test_read_renamedTypeLower() {
+    void test_read_renamedTypeLower() {
         String xml = "<bean>" +
                 "<extra type=\"org.jodabeans.SPerson\"><surname>Smith</surname></extra>" +
                 "<person type=\"SPerson\"><surname>Jones</surname></person>" +
                 "</bean>";
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class));
         RenameHandler.INSTANCE.renamedType("org.jodabeans.SPerson", SimplePerson.class);
         FlexiBean parsed = JodaBeanSer.COMPACT.xmlReader().read(xml, FlexiBean.class);
         FlexiBean expected = new FlexiBean();
@@ -63,7 +63,7 @@ public class TestDeserializer {
     }
 
     @Test
-    public void test_read_withSemanticChangeDeserializer() {
+    void test_read_withSemanticChangeDeserializer() {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockSemanticChangeDeserializer.INSTANCE);
         String xml = "<bean>" +
@@ -84,7 +84,7 @@ public class TestDeserializer {
     }
 
     @Test
-    public void test_read_withRenameDeserializer() {
+    void test_read_withRenameDeserializer() {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockRenameDeserializer.INSTANCE);
         String xml = "<bean>" +
@@ -105,7 +105,7 @@ public class TestDeserializer {
     }
 
     @Test
-    public void test_read_withTypeChangeDeserializer() {
+    void test_read_withTypeChangeDeserializer() {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockTypeChangeDeserializer.INSTANCE);
         String xml = "<bean>" +
@@ -126,11 +126,11 @@ public class TestDeserializer {
     }
 
     @Test
-    public void test_read_withBadEntity() {
+    void test_read_withBadEntity() {
         SerDeserializers desers = new SerDeserializers();
         desers.register(SimplePerson.class, MockTypeChangeDeserializer.INSTANCE);
         String xml = "<?xml version=\"1.0\" encoding =\"UTF-8\"?>" +
-             "<!DOCTYPE foobar[<!ENTITY x100 \"foobar\">";
+                "<!DOCTYPE foobar[<!ENTITY x100 \"foobar\">";
         for (int i = 99; i > 0; i--) {
             xml += "<!ENTITY  x" + i + " \"&x" + (i + 1) + ";&x" + (i + 1) + ";\">";
         }
@@ -140,7 +140,7 @@ public class TestDeserializer {
                 "</bean>";
         String finalXml = xml;
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(finalXml, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.withDeserializers(desers).xmlReader().read(finalXml, FlexiBean.class));
     }
 
 }

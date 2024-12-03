@@ -36,12 +36,12 @@ import com.google.common.collect.ImmutableList;
 /**
  * Test style=minimal.
  */
-public class TestMinimal {
+class TestMinimal {
 
     @Test
-    public void test_immutable() {
+    void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
+        MinimalImmutable bean = MinimalImmutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", MinimalImmutable.meta(), String.class), "Smallville")
@@ -101,9 +101,9 @@ public class TestMinimal {
     }
 
     @Test
-    public void test_immutable_order() {
+    void test_immutable_order() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        MinimalImmutable bean = (MinimalImmutable) MinimalImmutable.meta().builder()
+        MinimalImmutable bean = MinimalImmutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", MinimalImmutable.meta(), String.class), "Smallville")
@@ -125,8 +125,8 @@ public class TestMinimal {
     }
 
     @Test
-    public void test_mutable() {
-        MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
+    void test_mutable() {
+        MinimalMutable bean = MinimalMutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", MinimalMutable.meta(), String.class), "Smallville")
@@ -193,8 +193,8 @@ public class TestMinimal {
     }
 
     @Test
-    public void test_mutable_order() {
-        MinimalMutable bean = (MinimalMutable) MinimalMutable.meta().builder()
+    void test_mutable_order() {
+        MinimalMutable bean = MinimalMutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", MinimalMutable.meta(), String.class), "Smallville")

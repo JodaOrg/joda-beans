@@ -58,7 +58,7 @@ import com.google.common.collect.ImmutableMultiset;
 /**
  * Test {@link ResolvedType}.
  */
-public class TestResolvedType {
+class TestResolvedType {
 
     @SuppressWarnings("serial")
     static Object[][] data_resolvedTypes() {

@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test property using Person.
  */
-public class TestResult {
+class TestResult {
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         Bean test = new AddressResult();
         
         assertThat(test.metaBean()).isEqualTo(AddressResult.meta());
@@ -46,7 +46,7 @@ public class TestResult {
     }
 
     @Test
-    public void test_bean_invalidPropertyName() {
+    void test_bean_invalidPropertyName() {
         Bean test = AddressResult.meta().builder().build();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> test.property("Rubbish"));
@@ -54,7 +54,7 @@ public class TestResult {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MetaBean test = AddressResult.meta();
         assertThat(test.beanType()).isEqualTo(AddressResult.class);
         assertThat(test.beanName()).isEqualTo(AddressResult.class.getName());
@@ -66,7 +66,7 @@ public class TestResult {
     }
 
     @Test
-    public void test_metaBean_invalidPropertyName() {
+    void test_metaBean_invalidPropertyName() {
         MetaBean test = AddressResult.meta();
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> test.metaProperty("Rubbish"));
@@ -74,7 +74,7 @@ public class TestResult {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_genericType_abstract() {
+    void test_genericType_abstract() {
         @SuppressWarnings("unchecked")
         AbstractResult.Meta<Address> test = AbstractResult.meta();
         assertThat(test.docs().propertyType()).isEqualTo(List.class);
@@ -82,7 +82,7 @@ public class TestResult {
     }
 
     @Test
-    public void test_genericType_Address() {
+    void test_genericType_Address() {
         AddressResult obj = new AddressResult();
         AddressResult.Meta test = AddressResult.meta();
         assertThat(test.docs().propertyType()).isEqualTo(List.class);
@@ -91,7 +91,7 @@ public class TestResult {
     }
 
     @Test
-    public void test_genericType_CompanyAddress() {
+    void test_genericType_CompanyAddress() {
         CompanyAddressResult obj = new CompanyAddressResult();
         CompanyAddressResult.Meta test = CompanyAddressResult.meta();
         assertThat(test.docs().propertyType()).isEqualTo(List.class);
@@ -101,7 +101,7 @@ public class TestResult {
     }
 
     @Test
-    public void test_genericType_CompanyAddressMid() {
+    void test_genericType_CompanyAddressMid() {
         CompanyAddressMidResult obj = new CompanyAddressMidResult();
         CompanyAddressMidResult.Meta test = CompanyAddressMidResult.meta();
         assertThat(test.docs().propertyType()).isEqualTo(List.class);

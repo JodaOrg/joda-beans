@@ -23,14 +23,14 @@ import org.joda.beans.gen.BeanCodeGenException;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test exception, message is parsed by plugins.
+ * Test {@link BeanCodeGenException}, message is parsed by plugins.
  */
-public class TestBeanCodeGenException {
+class TestBeanCodeGenException {
 
     private static final File FILE = new File(".");
 
     @Test
-    public void testMessage() {
+    void testMessage() {
         BeanCodeGenException test = new BeanCodeGenException("rubbish", FILE, 123);
         assertThat(test.getMessage()).isEqualTo("Error in bean: " + FILE.toString() + ", Line: 123, Message: rubbish");
     }

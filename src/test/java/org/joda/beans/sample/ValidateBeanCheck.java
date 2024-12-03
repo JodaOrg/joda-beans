@@ -13,11 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.beans.ser;
+package org.joda.beans.sample;
+
+import org.joda.beans.gen.PropertyDefinition;
 
 /**
- * Mock class with a silly name.
+ * Class to prove that {@link PropertyDefinition#validate()} works with an external class.
  */
-class BigDecimal {
+class ValidateBeanCheck {
+
+    static void checkInTest(Object value, String name) {
+        if ("C".equals(value)) {
+            return;
+        }
+        throw new IllegalArgumentException(name);
+    }
 
 }

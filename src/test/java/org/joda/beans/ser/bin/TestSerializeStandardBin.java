@@ -53,10 +53,10 @@ import com.google.common.io.Resources;
 /**
  * Test property roundtrip using binary.
  */
-public class TestSerializeStandardBin {
+class TestSerializeStandardBin {
 
     @Test
-    public void test_writeAddress() throws IOException {
+    void test_writeAddress() throws IOException {
         var bean = SerTestHelper.testAddress();
 
         var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
@@ -68,7 +68,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_writeImmAddress() throws IOException {
+    void test_writeImmAddress() throws IOException {
         var bean = SerTestHelper.testImmAddress(false);
         var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -81,7 +81,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_writeImmOptional() throws IOException {
+    void test_writeImmOptional() throws IOException {
         var bean = SerTestHelper.testImmOptional();
         var bytes = JodaBeanSer.PRETTY.withIncludeDerived(true).binWriter(STANDARD).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -92,7 +92,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_writeImmArrays() throws IOException {
+    void test_writeImmArrays() throws IOException {
         var bean = ImmArrays.of(
                 new int[] {1, 3, 2},
                 new long[] {1, 4, 3},
@@ -111,7 +111,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_writeCollections() throws IOException {
+    void test_writeCollections() throws IOException {
         var bean = SerTestHelper.testCollections(true);
         var bytes = JodaBeanSer.PRETTY.binWriter(STANDARD).write(bean);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
@@ -133,7 +133,7 @@ public class TestSerializeStandardBin {
 
     //-------------------------------------------------------------------------
     @Test
-    public void test_writeJodaConvertInterface() {
+    void test_writeJodaConvertInterface() {
         var bean = SerTestHelper.testGenericInterfaces();
 
         var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean);
@@ -144,7 +144,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_writeIntermediateInterface() {
+    void test_writeIntermediateInterface() {
         var bean = SerTestHelper.testIntermediateInterfaces();
 
         var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean);
@@ -155,7 +155,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_writeJodaConvert() {
+    void test_writeJodaConvert() {
         // immutable bean that is serialized as joda convert
         var bean = ImmNamedKey.of("name");
 
@@ -168,7 +168,7 @@ public class TestSerializeStandardBin {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWrite_primitives() throws IOException {
+    void test_readWrite_primitives() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -221,7 +221,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_primitiveTypeChanged() throws IOException {
+    void test_read_primitiveTypeChanged() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -241,7 +241,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_optionalTypeToDefaulted() throws IOException {
+    void test_read_optionalTypeToDefaulted() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -255,7 +255,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_readWriteJodaConvertWrapper() throws IOException {
+    void test_readWriteJodaConvertWrapper() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -283,7 +283,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_readWriteJodaConvertBean() throws IOException {
+    void test_readWriteJodaConvertBean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -308,7 +308,7 @@ public class TestSerializeStandardBin {
 
     //-------------------------------------------------------------------------
     @Test
-    public void test_readOldPrimitiveArrayFormat() throws IOException {
+    void test_readOldPrimitiveArrayFormat() throws IOException {
         // test format written by v2.12 can still be read
         var baos = new ByteArrayOutputStream();
         var out = new MsgPackOutput(baos);
@@ -334,7 +334,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_readOldStringArrayWithMetaFormat() throws IOException {
+    void test_readOldStringArrayWithMetaFormat() throws IOException {
         // test format written by v2.12 can still be read
         var baos = new ByteArrayOutputStream();
         var out = new MsgPackOutput(baos);
@@ -368,7 +368,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public <T extends Comparable<T>> void test_readOldListWithMetaFormat() throws IOException {
+    <T extends Comparable<T>> void test_readOldListWithMetaFormat() throws IOException {
         // test format written by v2.12 can still be read (meta caused by List<Comparable> declaration)
         var baos = new ByteArrayOutputStream();
         var out = new MsgPackOutput(baos);
@@ -397,7 +397,7 @@ public class TestSerializeStandardBin {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_nonStandard_JodaConvertWrapper_expanded() throws IOException {
+    void test_read_nonStandard_JodaConvertWrapper_expanded() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -429,7 +429,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_nonStandard_JodaConvertBean_flattened() throws IOException {
+    void test_read_nonStandard_JodaConvertBean_flattened() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -447,7 +447,7 @@ public class TestSerializeStandardBin {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
+    void test_read_invalidFormat_sizeOneArrayAtRoot() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 1);
@@ -459,7 +459,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_wrongVersion() throws IOException {
+    void test_read_wrongVersion() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -472,7 +472,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_rootTypeNotSpecified_FlexiBean() throws IOException {
+    void test_read_rootTypeNotSpecified_FlexiBean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -484,7 +484,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_rootTypeNotSpecified_Bean() throws IOException {
+    void test_read_rootTypeNotSpecified_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -497,7 +497,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_rootTypeValid_Bean() throws IOException {
+    void test_read_rootTypeValid_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -514,7 +514,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_rootTypeInvalid_Bean() throws IOException {
+    void test_read_rootTypeInvalid_Bean() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -532,7 +532,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_rootTypeInvalid_incompatible() throws IOException {
+    void test_read_rootTypeInvalid_incompatible() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -550,7 +550,7 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_invalidFormat_noNilValueAfterType() throws IOException {
+    void test_read_invalidFormat_noNilValueAfterType() throws IOException {
         var baos = new ByteArrayOutputStream();
         try (var out = new DataOutputStream(baos)) {
             out.writeByte(MsgPack.MIN_FIX_ARRAY + 2);
@@ -568,13 +568,13 @@ public class TestSerializeStandardBin {
     }
 
     @Test
-    public void test_read_byteArray_nullByteArray() {
+    void test_read_byteArray_nullByteArray() {
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read((byte[]) null, Company.class));
     }
 
     @Test
-    public void test_write_nullKeyInMap() {
+    void test_write_nullKeyInMap() {
         var address = new Address();
         var bean = new Person();
         bean.getOtherAddressMap().put(null, address);

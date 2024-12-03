@@ -24,24 +24,24 @@ import org.junit.jupiter.api.Test;
 /**
  * Test ValidateBean.
  */
-public class TestValidateBean {
+class TestValidateBean {
 
     @Test
-    public void test_notNull_set() {
+    void test_notNull_set() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setFirst(null));
     }
 
     @Test
-    public void test_notNull_propertySet() {
+    void test_notNull_propertySet() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.first().set(null));
     }
 
     @Test
-    public void test_notNull_create() {
+    void test_notNull_create() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder()
                         .set("first", null)
@@ -52,35 +52,35 @@ public class TestValidateBean {
     }
 
     @Test
-    public void test_notNull_create_notIncluded() {
+    void test_notNull_create_notIncluded() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder().set("second", "B").set("third", "C").set("fourth", "D").build());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_notBlank_set_null() {
+    void test_notBlank_set_null() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setFifth(null));
     }
 
     @Test
-    public void test_notBlank_set_empty() {
+    void test_notBlank_set_empty() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setFifth(" "));
     }
 
     @Test
-    public void test_notBlank_propertySet_null() {
+    void test_notBlank_propertySet_null() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.fifth().set(null));
     }
 
     @Test
-    public void test_notBlank_propertySet_empty() {
+    void test_notBlank_propertySet_empty() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.fifth().set(" "));
@@ -88,35 +88,35 @@ public class TestValidateBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_notEmpty_set_null() {
+    void test_notEmpty_set_null() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setSecond(null));
     }
 
     @Test
-    public void test_notEmpty_set_empty() {
+    void test_notEmpty_set_empty() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setSecond(""));
     }
 
     @Test
-    public void test_notEmpty_propertySet_null() {
+    void test_notEmpty_propertySet_null() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.second().set(null));
     }
 
     @Test
-    public void test_notEmpty_propertySet_empty() {
+    void test_notEmpty_propertySet_empty() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.second().set(""));
     }
 
     @Test
-    public void test_notEmpty_create_null() {
+    void test_notEmpty_create_null() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder()
                         .set("first", "A")
@@ -126,7 +126,7 @@ public class TestValidateBean {
     }
 
     @Test
-    public void test_notEmpty_create_empty() {
+    void test_notEmpty_create_empty() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder()
                         .set("first", "A")
@@ -137,7 +137,7 @@ public class TestValidateBean {
     }
 
     @Test
-    public void test_notEmpty_create_notIncluded() {
+    void test_notEmpty_create_notIncluded() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder()
                         .set("first", "A")
@@ -148,21 +148,21 @@ public class TestValidateBean {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_static_set() {
+    void test_static_set() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setThird(null));
     }
 
     @Test
-    public void test_static_propertySet() {
+    void test_static_propertySet() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.third().set(null));
     }
 
     @Test
-    public void test_static_create() {
+    void test_static_create() {
         assertThatIllegalArgumentException()
                 .isThrownBy(
                         () -> ValidateBean.meta().builder()
@@ -175,28 +175,28 @@ public class TestValidateBean {
     }
 
     @Test
-    public void test_static_create_notIncluded() {
+    void test_static_create_notIncluded() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder().set("first", "A").set("second", "B").set("fourth", "D").build());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_bean_set() {
+    void test_bean_set() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.setFourth(null));
     }
 
     @Test
-    public void test_bean_propertySet() {
+    void test_bean_propertySet() {
         ValidateBean test = new ValidateBean();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.fourth().set(null));
     }
 
     @Test
-    public void test_bean_create() {
+    void test_bean_create() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ValidateBean.meta().builder()
                         .set("first", "A")
@@ -208,14 +208,14 @@ public class TestValidateBean {
     }
 
     @Test
-    public void test_bean_create_notIncluded() {
+    void test_bean_create_notIncluded() {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> ValidateBean.meta().builder().set("first", "A").set("second", "B").set("third", "C").build());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_subbean_create_notIncluded() {
+    void test_subbean_create_notIncluded() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> SubValidateBean.meta().builder()
                         .set("first", "A")
@@ -224,14 +224,6 @@ public class TestValidateBean {
                         .set("fourth", "D")
                         .build())
                 .withMessageContaining("sub");
-    }
-
-    //-----------------------------------------------------------------------
-    public static void checkInTest(Object value, String name) {
-        if ("C".equals(value)) {
-            return;
-        }
-        throw new IllegalArgumentException(name);
     }
 
 }

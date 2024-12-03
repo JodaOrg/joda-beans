@@ -26,10 +26,10 @@ import com.google.common.base.Optional;
 /**
  * Test ImmOptional.
  */
-public class TestOptionalBean {
+class TestOptionalBean {
 
     @Test
-    public void test_optional_empty() {
+    void test_optional_empty() {
         ImmOptional test = ImmOptional.builder()
             .optString(Optional.of("A"))
             .optStringGetter("A")
@@ -41,15 +41,15 @@ public class TestOptionalBean {
         assertThat(test.getOptLongGetter()).isEqualTo(Optional.absent());
 
         // check that meta bean can be assigned to the metaImplements interface
-        ImmOptionalMeta meta1 = ImmOptional.meta();
-        ImmOptionalMeta meta2 = test.metaBean();
+        ImmOptionalMeta<?> meta1 = ImmOptional.meta();
+        ImmOptionalMeta<?> meta2 = test.metaBean();
         assertThat(meta1.optString().get(test)).isEqualTo(Optional.of("A"));
         assertThat(meta1.optStringGetter().get(test)).isEqualTo("A");
         assertThat(meta2.optDoubleGetter().get(test)).isNull();
     }
 
     @Test
-    public void test_optional_full() {
+    void test_optional_full() {
         ImmOptional test = ImmOptional.builder()
             .optString(Optional.of("A"))
             .optDoubleGetter(1.2d)
@@ -63,7 +63,7 @@ public class TestOptionalBean {
     }
 
     @Test
-    public void test_optional_property() {
+    void test_optional_property() {
         ImmOptional test = ImmOptional.builder()
             .optStringGetter("A")
             .build();

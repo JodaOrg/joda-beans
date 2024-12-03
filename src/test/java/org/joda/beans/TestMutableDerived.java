@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test mutable derived beans.
  */
-public class TestMutableDerived {
+class TestMutableDerived {
 
     @Test
-    public void test_mutableDerivedBean() {
+    void test_mutableDerivedBean() {
         MutableDerivedBean test = (MutableDerivedBean) MutableDerivedBean.builder()
                 .baseBeanString("HopeNotHate")
                 .build();
@@ -45,8 +45,8 @@ public class TestMutableDerived {
     }
 
     @Test
-    public void test_mutableDerivedBean_builder() {
-        MutableDerivedBean test = (MutableDerivedBean) MutableDerivedBean.builder()
+    void test_mutableDerivedBean_builder() {
+        MutableDerivedBean test = MutableDerivedBean.builder()
                 .set("baseBeanString", "HopeNotHate")
                 .build();
         assertThat(test.getBaseBeanString()).isEqualTo("HopeNotHate");

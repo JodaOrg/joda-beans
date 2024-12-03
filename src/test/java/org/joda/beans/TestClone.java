@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Test property using ClonePerson.
  */
-public class TestClone {
+class TestClone {
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         ClonePerson base = new ClonePerson();
         base.setSurname("Cable");
         base.setMiddleNames(new String[] {"A", "B", "C"});
@@ -60,7 +60,7 @@ public class TestClone {
     }
 
     @Test
-    public void test_noclone_on_mutable_bean_option() {
+    void test_noclone_on_mutable_bean_option() {
         Class<?> c = NoClone.class;
         Method[] noCloneMethods = c.getDeclaredMethods();
 

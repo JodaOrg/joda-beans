@@ -22,7 +22,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-public class TestMetaBeans {
+/**
+ * Test {@link MetaBeans}.
+ */
+class TestMetaBeans {
 
   @Test
   public void test_metaBeanProviderAnnotation() {
