@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 class TestMetaBeans {
 
   @Test
-  public void test_metaBeanProviderAnnotation() {
+  void test_metaBeanProviderAnnotation() {
     MetaBean metaBean = MetaBeans.lookup(AnnotatedBean.class);
     assertThat(metaBean).isInstanceOf(AnnotatedMetaBean.class);
   }

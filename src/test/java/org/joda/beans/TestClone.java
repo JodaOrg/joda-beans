@@ -61,6 +61,7 @@ class TestClone {
 
     @Test
     void test_noclone_on_mutable_bean_option() {
+        // test that clone() was not code-generated
         Class<?> c = NoClone.class;
         Method[] noCloneMethods = c.getDeclaredMethods();
 
