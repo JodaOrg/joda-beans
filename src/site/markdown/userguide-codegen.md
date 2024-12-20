@@ -17,7 +17,7 @@ The code generator then produces all the getters and setters, plus additional he
 
 Here is an example `UserAccount` class showing the parts that a developer has to write:
 
-```
+```java
 @BeanDefinition
 public final class UserAccount implements Bean {
 
@@ -139,7 +139,7 @@ In most cases, the default "smart" setting is sufficient:
 
 For example, using the optional wrappers:
 
-```
+```java
  @BeanDefinition
  public final class Foo implements Bean {
    @PropertyDefinition(get = "optional")
@@ -172,7 +172,7 @@ In most cases, the default "smart" setting is sufficient:
 
 For example, to have a private setter:
 
-```
+```java
  @BeanDefinition
  public final class Foo implements Bean {
    @PropertyDefinition(set = "private")
@@ -198,7 +198,7 @@ Validation can be specified using the annotation parameter "validate":
 * "{staticMethodName}" - a custom validation method located on this class
 * "{className}.{staticMethodName}" - a custom validation method located on any class
 
-```
+```java
  @BeanDefinition
  public final class Foo implements Bean {
    @PropertyDefinition(validate = "notNull")
@@ -211,7 +211,7 @@ For example, if the field is declared as an `ArrayList` but the public type of t
 should be `List` then that can be achieved.
 Simply add the annotation parameter `type = "List<>"` (the generics are inserted during generation).
 
-```
+```java
  @BeanDefinition
  public final class Foo implements Bean {
    @PropertyDefinition(type = "List<>")
@@ -227,7 +227,7 @@ For example, if the field is declared as an `ImmutableList<Address>` but the pub
 should be `List<? extends Address>` then that can be achieved.
 Simply add the annotation parameter `builderType = "List<? extends Address>"`.
 
-```
+```java
  @BeanDefinition
  public final class Foo implements Bean {
    @PropertyDefinition(builderType = "List<? extends Address>")
@@ -245,7 +245,7 @@ A properties getter and/or setter can be declared to override a superclass.
 Simply add the annotation parameter `overrideGet = true` or `overrideSet = true`
 and the requisite `@Override` annotation will be placed on the getter/setter.
 
-```
+```java
  @BeanDefinition
  public final class Foo implements Bean {
    @PropertyDefinition(overrideGet = true)
@@ -288,7 +288,7 @@ All fields in an immutable bean must be final.
 It is recommended that immutable beans are final,
 do not extend any other bean class and directly implement [ImmutableBean](apidocs/org.joda.beans/org/joda/beans/ImmutableBean.html).
 
-```
+```java
  @BeanDefinition
  public final class Foo implements ImmutableBean {
    // code generated immutable bean with public builder
@@ -310,7 +310,7 @@ Simply declare a private void method taking no arguments annotated with
 [@ImmutableValidator](apidocs/org.joda.beans/org/joda/beans/gen/ImmutableValidator.html).
 The method will be called during the validation phase of the constructor.
 
-```
+```java
  @ImmutableValidator
  private void validate() {
    // validate the instance variables of the bean
@@ -325,7 +325,7 @@ Simply declare a private static void method taking one 'Builder' argument annota
 [@ImmutableDefaults](apidocs/org.joda.beans/org/joda/beans/gen/ImmutableDefaults.html).
 The method will be called before the empty builder is made available for population.
 
-```
+```java
  @ImmutableDefaults
  private static void applyDefaults(Builder builder) {
    // set default property values directly into the builder
@@ -341,7 +341,7 @@ Simply declare a private static void method taking one 'Builder' argument annota
 [@ImmutablePreBuild](apidocs/org.joda.beans/org/joda/beans/gen/ImmutablePreBuild.html).
 The method will be called when `build()` is invoked on the builder.
 
-```
+```java
  @ImmutablePreBuild
  private static void preBuild(Builder builder) {
    // query the builder and make any necessary changes
@@ -357,7 +357,7 @@ A constructor with parameters matching each property must be written and annotat
 It may be easier to generate the bean without the annotation and move the generated constructor out
 into user code, adding the annotation only at that point.
 
-```
+```java
  @ImmutableConstructor
  private MyBean(String surname, String forename) {
    // a constructor entirely under application control
@@ -369,7 +369,7 @@ In most cases this is not necessary, but if the bean is used as a hash key, then
 
 Simply set the boolean 'cacheHashCode' flag of '@BeanDefinition' to true.
 
-```
+```java
  @BeanDefinition(cacheHashCode = true)
  public final class Foo implements ImmutableBean {
    // code generated immutable bean with cached hash code
@@ -382,7 +382,7 @@ This supports code based manipulation, using the `toBuilder()` method.
 The scope of the builder, public private or package-scoped, may be controlled in the bean definition.
 The default is public for immutable beans and no-builder for mutable beans:
 
-```
+```java
  @BeanDefinition(builderScope = "private")
  public final class Bar implements ImmutableBean {
    // code generated immutable bean with private builder
@@ -395,7 +395,7 @@ The scope of the factory is always public, and it always contains all properties
 Any additional customisation should involve moving the generated factory outside the autogenerated block.
 To create the factory, specify the method name:
 
-```
+```java
  @BeanDefinition(factoryName = "of")
  public final class Bar implements ImmutableBean {
    // code generated immutable bean with static factory named "of"
@@ -405,7 +405,7 @@ To create the factory, specify the method name:
 The scope of the meta-bean, public private or package-scoped, may also be controlled in the bean definition.
 The default is public:
 
-```
+```java
  @BeanDefinition(metaScope = "package")
  public final class Bar implements ImmutableBean {
    // code generated immutable bean with package-scoped meta-bean
@@ -415,7 +415,7 @@ The default is public:
 The scope of the generated constructor for immutable beans can be controlled.
 The default is to be as private as possible for the needs of the builder, typically private:
 
-```
+```java
  @BeanDefinition(constructorScope = "package")
  public final class Bar implements ImmutableBean {
    // code generated immutable bean with package-scoped constructor
@@ -424,7 +424,7 @@ The default is to be as private as possible for the needs of the builder, typica
 
 An option also exists to generate the ConstructorProperties annotation:
 
-```
+```java
  @BeanDefinition(constructorScope = "public@ConstructorProperties")
  public final class Bar implements ImmutableBean {
    // code generated immutable bean with annotated public constructor
@@ -433,7 +433,7 @@ An option also exists to generate the ConstructorProperties annotation:
 
 A user-defined interface can be added to the meta-bean using the bean definition:
 
-```
+```java
  @BeanDefinition(metaImplements = "ShapeMeta")
  public final class Square implements Shape, ImmutableBean {
    // code generated meta-bean that implements ShapeMeta
@@ -447,7 +447,7 @@ It is possible for an immutable bean to be non-final.
 Any subclass should logically also be immutable, but must set the
 `BeanDefinition` annotation value `hierarchy` to "immutable":
 
-```
+```java
  // superclass
  @BeanDefinition
  public abstract class SuperFoo implements ImmutableBean {
@@ -478,7 +478,7 @@ It is possible to generate a very light-weight bean.
 This approach has no Meta class or Builder (the objects exist behind the scenes).
 This is the approach with the lowest code generation.
 
-```
+```java
  // superclass
  @BeanDefinition(style = "light")
  public final class LightBean implements ImmutableBean {
@@ -498,7 +498,7 @@ It is possible to generate a minimal bean.
 This approach has no Meta class, but does have a Builder for immutable classes.
 This is the approach with the medium amount of code generation.
 
-```
+```java
  // superclass
  @BeanDefinition(style = "minimal")
  public final class MinimalBean implements ImmutableBean {
@@ -516,7 +516,7 @@ Both immutable and mutable minimal beans can be generated.
 It is possible to write the builder class manually and still have the generated code refer to it.
 A manual builder can be an inner class or top-level class.
 
-```
+```java
  @BeanDefinition(builderName = "PersonBuilder", constructorScope = "package")
  public final class Person implements ImmutableBean {
    // code generation of a minimal immutable bean

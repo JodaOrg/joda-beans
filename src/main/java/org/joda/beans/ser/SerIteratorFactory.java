@@ -585,9 +585,6 @@ public class SerIteratorFactory {
 
             @Override
             public void add(Object key, Object column, Object value, int count) {
-                if (key == null) {
-                    throw new IllegalArgumentException("Missing key");
-                }
                 if (count != 1) {
                     throw new IllegalArgumentException("Unexpected count");
                 }
