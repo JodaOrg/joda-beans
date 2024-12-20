@@ -15,6 +15,8 @@
  */
 package org.joda.beans.ser.bin;
 
+import org.joda.beans.ser.JodaBeanSer;
+
 /**
  * Provides control over the binary format.
  * 
@@ -85,7 +87,17 @@ public enum JodaBeanBinFormat {
      * and the object that should be referred to as the value.
      * When that same object is referred back to it is written as 'ext' with the data from the initial 'ext'.
      */
-    REFERENCING(2);
+    REFERENCING(2),
+    /**
+     * Packed format, version 3
+     * <p>
+     * This format uses a structure called BeanPack that is similar to MessagePack, but distinctly different.
+     * The exact format is not specified and may change over time.
+     * Types, bean definitions and string values are captured the first time they are found and then used by reference.
+     * In addition, {@link JodaBeanSer#getBeanValueClasses()} is taken into account, with instances of the specified
+     * value classes being deduplicated in the binary form.
+     */
+    PACKED(3);
 
     /**
      * The format version.

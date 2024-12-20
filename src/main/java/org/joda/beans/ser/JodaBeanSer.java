@@ -15,6 +15,9 @@
  */
 package org.joda.beans.ser;
 
+import java.util.Set;
+
+import org.joda.beans.ImmutableBean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.bin.JodaBeanBinFormat;
@@ -42,12 +45,12 @@ public final class JodaBeanSer {
      * Obtains the singleton compact instance.
      */
     public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false, Set.of());
     /**
      * Obtains the singleton pretty-printing instance.
      */
     public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false);
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false, Set.of());
 
     /**
      * The indent to use.
@@ -77,6 +80,12 @@ public final class JodaBeanSer {
      * Whether to include derived properties.
      */
     private final boolean includeDerived;
+    /**
+     * The set of bean classes that are to be treated as values, caching by reference where possible.
+     * Types convertible by Joda-Convert are always treated as value classes.
+     * Note that most serializers do not cache by reference.
+     */
+    private final Set<Class<? extends ImmutableBean>> beanValueClasses;
 
     /**
      * Creates an instance.
@@ -87,12 +96,14 @@ public final class JodaBeanSer {
      * @param iteratorFactory  the iterator factory, not null
      * @param shortTypes  whether to use short types
      * @param deserializers  the deserializers to use, not null
+     * @param beanValueClasses  the bean value classes, not null
      */
     private JodaBeanSer(String indent, String newLine, StringConvert converter,
             SerIteratorFactory iteratorFactory,
             boolean shortTypes,
             SerDeserializers deserializers,
-            boolean includeDerived) {
+            boolean includeDerived,
+            Set<Class<? extends ImmutableBean>> beanValueClasses) {
 
         this.indent = indent;
         this.newLine = newLine;
@@ -101,6 +112,7 @@ public final class JodaBeanSer {
         this.shortTypes = shortTypes;
         this.deserializers = deserializers;
         this.includeDerived = includeDerived;
+        this.beanValueClasses = Set.copyOf(beanValueClasses);
     }
 
     //-----------------------------------------------------------------------
@@ -121,7 +133,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIndent(String indent) {
         JodaBeanUtils.notNull(indent, "indent");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     /**
@@ -141,7 +153,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withNewLine(String newLine) {
         JodaBeanUtils.notNull(newLine, "newLine");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     /**
@@ -165,7 +177,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withConverter(StringConvert converter) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     /**
@@ -185,7 +197,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(iteratorFactory, "iteratorFactory");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     /**
@@ -204,7 +216,7 @@ public final class JodaBeanSer {
      * @return a copy of this object with the short types flag changed, not null
      */
     public JodaBeanSer withShortTypes(boolean shortTypes) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     /**
@@ -230,7 +242,7 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withDeserializers(SerDeserializers deserializers) {
         JodaBeanUtils.notNull(deserializers, "deserializers");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     //-----------------------------------------------------------------------
@@ -256,7 +268,29 @@ public final class JodaBeanSer {
      * @return a copy of this object with the derived flag changed, not null
      */
     public JodaBeanSer withIncludeDerived(boolean includeDerived) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived);
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the bean value classes.
+     * 
+     * @return the bean value classes, not null
+     * @since 3.0.0
+     */
+    public Set<Class<? extends ImmutableBean>> getBeanValueClasses() {
+        return beanValueClasses;
+    }
+
+    /**
+     * Returns a copy of this serializer with the bean value classes changed.
+     * 
+     * @param beanValueClasses  the bean value classes
+     * @return a copy of this object with the bean value classes changed, not null
+     * @since 3.0.0
+     */
+    public JodaBeanSer withBeanValueClasses(Set<Class<? extends ImmutableBean>> beanValueClasses) {
+        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
     }
 
     //-------------------------------------------------------------------------
