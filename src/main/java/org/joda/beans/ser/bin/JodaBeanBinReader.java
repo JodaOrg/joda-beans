@@ -45,6 +45,9 @@ public class JodaBeanBinReader extends MsgPack {
      * @return the visualization
      */
     public static String visualize(byte[] input) {
+        if (input.length >= 2 && input[1] == 3) {
+            return new BeanPackVisualizer(input).visualizeData();
+        }
         return new MsgPackVisualizer(input).visualizeData();
     }
 
@@ -138,9 +141,15 @@ public class JodaBeanBinReader extends MsgPack {
                             "Invalid binary data: Expected array with 4 elements, but was: 0x" + toHex(arrayByte));
                 }
                 return new JodaBeanReferencingBinReader(settings, input).read(declaredType);
+            case 3:
+                if (arrayByte != MIN_FIX_ARRAY + 3) {
+                    throw new IllegalArgumentException(
+                            "Invalid binary data: Expected array with 3 elements, but was: 0x" + toHex(arrayByte));
+                }
+                return new JodaBeanPackedBinReader(settings, input).read(declaredType);
             default:
                 throw new IllegalArgumentException(
-                        "Invalid binary data: Expected version 1 or 2, but was: 0x" + toHex(versionByte));
+                        "Invalid binary data: Expected version 1, 2 or 3, but was: 0x" + toHex(versionByte));
         }
     }
 

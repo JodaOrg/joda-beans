@@ -1,0 +1,37 @@
+arr (3)
+- int 3
+- str 'org.joda.beans.sample.'
+- @type ImmArrays
+  bean (6)
+  - str 'intArray'
+  - str 'longArray'
+  - str 'doubleArray'
+  - str 'booleanArray'
+  - str 'intArray2d'
+  - str 'booleanArray2d'
+  - arr (3)
+    - int 1
+    - int 3
+    - int 2
+  - arr (3)
+    - lng 1
+    - lng 4
+    - lng 3
+  - dbl [1.1,2.2,3.3]
+  - arr (2)
+    - true
+    - false
+  - arr (3)
+    - arr (2)
+      - int 1
+      - int 2
+    - arr (1)
+      - int 2
+    - arr (0)
+  - arr (3)
+    - arr (2)
+      - true
+      - false
+    - arr (1)
+      - false
+    - arr (0)

@@ -136,7 +136,8 @@ public class JodaBeanBinWriter {
         switch (format) {
             case STANDARD -> new JodaBeanStandardBinWriter(settings, output).write(bean, includeRootType);
             case REFERENCING -> new JodaBeanReferencingBinWriter(settings, output).write(bean);
-            default -> throw new IllegalArgumentException("Invalid bin format, must be 1 or 2");
+            case PACKED -> new JodaBeanPackedBinWriter(settings, output).write(bean, includeRootType);
+            default -> throw new IllegalArgumentException("Invalid bin format, must be Standard, Referencing or Packed");
         }
     }
 

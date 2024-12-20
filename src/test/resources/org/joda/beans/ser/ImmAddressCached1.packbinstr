@@ -1,0 +1,292 @@
+arr (3)
+- int 3
+- str 'org.joda.beans.sample.'
+- @type ImmAddress
+  bean (26)
+  - str 'number'
+  - str 'street'
+  - str 'city'
+  - str 'abstractNumber'
+  - str 'data'
+  - str 'array2d'
+  - str 'owner'
+  - str 'object1'
+  - str 'object2'
+  - str 'risk'
+  - str 'riskLevel'
+  - str 'riskLevels'
+  - str 'serializable'
+  - str 'objectInMap'
+  - str 'listInMap'
+  - str 'listNumericInMap'
+  - str 'listInListInMap'
+  - str 'objectListInListInMap'
+  - str 'mapInMap'
+  - str 'simpleTable'
+  - str 'compoundTable'
+  - str 'sparseGrid'
+  - str 'denseGrid'
+  - str 'beanBeanMap'
+  - str 'doubleVector'
+  - str 'matrix'
+  - int 185
+  - str 'Park Street'
+  - str 'London & Capital of the World <!>
+'
+  - sht 89
+  - null
+  - arr (3)
+    - arr (1)
+      - str 'a'
+    - arr (0)
+    - arr (2)
+      - str 'b'
+      - str 'c'
+  - @value 
+    @type ImmPerson
+    bean (10)
+    - str 'forename'
+    - str 'surname'
+    - str 'numberOfCars'
+    - str 'dateOfBirth'
+    - str 'middleNames'
+    - str 'addressList'
+    - str 'otherAddressMap'
+    - str 'addressesList'
+    - str 'mainAddress'
+    - str 'codeCounts'
+    - str 'Etienne'
+    - str 'Colebourne'
+    - int 1
+    - null
+    - arr (2)
+      - str 'K'
+      - str 'T'
+    - arr (1)
+      - @type Address
+        bean (4)
+        - ref 1 'number'
+        - ref 2 'street'
+        - ref 3 'city'
+        - ref 7 'owner'
+        - int 0
+        - null
+        - null
+        - null
+    - null
+    - null
+    - null
+    - map (2)
+      = str 'A'
+        int 2
+      = str 'B'
+        int 1
+  - @typeref List
+    arr (3)
+    - str 'a'
+    - str 'b'
+    - str 'c'
+  - @typeref Map
+    map (2)
+    = str 'd'
+      int 1
+    = @value 
+      @type java.util.Currency
+      str 'GBP'
+      int 2
+  - null
+  - null
+  - null
+  - @typeref List
+    arr (3)
+    - str 'a'
+    - str 'b'
+    - str 'c'
+  - map (4)
+    = str 'A'
+      str 'Abba'
+    = str 'B'
+      @typeref Set
+      arr (2)
+      - str 'a'
+      - str 'b'
+    = str 'C'
+      @typeref Set
+      arr (3)
+      - @value 
+        @type Locale
+        str 'fr_CA'
+      - lng 2
+      - @type PrimitiveBean
+        bean (8)
+        - str 'valueLong'
+        - str 'valueInt'
+        - str 'valueShort'
+        - str 'valueByte'
+        - str 'valueDouble'
+        - str 'valueFloat'
+        - str 'valueChar'
+        - str 'valueBoolean'
+        - lng 1
+        - int 2
+        - sht 3
+        - byt 4
+        - dbl 5.0
+        - flt 6.0
+        - chr 7
+        - true
+    = str 'D'
+      @typeref Map
+      map (2)
+      = str 'd'
+        int 1
+      = str 'e'
+        int 2
+  - map (1)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'b'
+  - map (1)
+    = str 'A'
+      arr (3)
+      - int 3
+      - int 2
+      - int 1
+  - map (1)
+    = str 'A'
+      arr (1)
+      - arr (3)
+        - int 3
+        - int 2
+        - int 1
+  - map (2)
+    = str 'A'
+      arr (1)
+      - arr (2)
+        - ref 43 'GBP'
+        - @value 
+          @type java.util.TimeZone
+          str 'Europe/London'
+    = str 'B'
+      arr (1)
+      - arr (3)
+        - ref 46 'fr_CA'
+        - lng 2
+        - @typeref 5 PrimitiveBean
+          arr (8)
+          - lng 1
+          - int 2
+          - sht 3
+          - byt 4
+          - dbl 5.0
+          - flt 6.0
+          - chr 7
+          - true
+  - map (1)
+    = @value 
+      @typeref 1 ImmPerson
+      arr (10)
+      - str 'Etiennette'
+      - ref 40 'Colebourne'
+      - int 1
+      - null
+      - arr (0)
+      - null
+      - null
+      - null
+      - null
+      - null
+      map (1)
+      = str 'sibling'
+        @value 
+        @typeref 1 ImmPerson
+        arr (10)
+        - str 'Kylie'
+        - ref 40 'Colebourne'
+        - int 1
+        - null
+        - arr (0)
+        - null
+        - null
+        - null
+        - null
+        - null
+  - map (1)
+    = int 1
+      map (2)
+      = int 1
+        str 'Hello'
+      = int 2
+        str 'There'
+  - map (2)
+    = int 1
+      map (2)
+      = int 1
+        ref 41 '<bean>'
+      = int 2
+        ref 58 '<bean>'
+    = int 2
+      map (1)
+      = int 1
+        ref 61 '<bean>'
+  - arr (3)
+    - int 5
+    - int 5
+    - arr (3)
+      - int 1
+      - int 1
+      - ref 61 '<bean>'
+  - arr (3)
+    - int 2
+    - int 3
+    - arr (6)
+      - int 0
+      - int 0
+      - ref 58 '<bean>'
+      - int 1
+      - int 1
+      - ref 61 '<bean>'
+  - map (1)
+    = ref 58 '<bean>'
+      arr (26)
+      - int 185
+      - ref 27 'Park Street'
+      - str 'London'
+      - null
+      - bin '404142'
+      - null
+      - ref 58 '<bean>'
+      - @value 
+        @type Risk
+        str 'MEDIUM'
+      - @value 
+        @type RiskPerception
+        str 'LOW'
+      - @value 
+        @typeref 7 Risk
+        ref 67 'LOW'
+      - @value 
+        @typeref 7 Risk
+        str 'HIGH'
+      - arr (2)
+        - ref 69 'LOW'
+        - ref 66 'MEDIUM'
+      - null
+      - map (0)
+      - map (0)
+      - map (0)
+      - map (0)
+      - map (0)
+      - map (0)
+      - null
+      - null
+      - null
+      - null
+      - map (0)
+      - null
+      - null
+  - dbl [1.1,2.2,3.3]
+  - arr (2)
+    - dbl [1.1,2.2]
+    - dbl [3.2]

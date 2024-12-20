@@ -1,0 +1,169 @@
+arr (3)
+- int 3
+- str 'org.joda.beans.sample.'
+- @type ImmGuava
+  bean (35)
+  - str 'collection'
+  - str 'list'
+  - str 'set'
+  - str 'sortedSet'
+  - str 'map'
+  - str 'sortedMap'
+  - str 'biMap'
+  - str 'multimap'
+  - str 'listMultimap'
+  - str 'setMultimap'
+  - str 'multiset'
+  - str 'sortedMultiset'
+  - str 'collectionInterface'
+  - str 'listInterface'
+  - str 'setInterface'
+  - str 'sortedSetInterface'
+  - str 'mapInterface'
+  - str 'sortedMapInterface'
+  - str 'biMapInterface'
+  - str 'multimapInterface'
+  - str 'listMultimapInterface'
+  - str 'setMultimapInterface'
+  - str 'multisetInterface'
+  - str 'sortedMultisetInterface'
+  - str 'listWildExtendsT'
+  - str 'listWildExtendsNumber'
+  - str 'listWildExtendsComparable'
+  - str 'setWildExtendsT'
+  - str 'setWildExtendsNumber'
+  - str 'setWildExtendsComparable'
+  - str 'listWildBuilder1'
+  - str 'listWildBuilder2'
+  - str 'mapWildBuilder1'
+  - str 'mapWildKey'
+  - str 'table'
+  - arr (0)
+  - arr (2)
+    - str 'A'
+    - str 'B'
+  - arr (2)
+    - str 'A'
+    - str 'B'
+  - arr (2)
+    - str 'A'
+    - str 'B'
+  - map (2)
+    = str 'A'
+      str 'AA'
+    = str 'B'
+      str 'BB'
+  - map (2)
+    = str 'A'
+      str 'AA'
+    = str 'B'
+      str 'BB'
+  - map (2)
+    = str 'A'
+      str 'AA'
+    = str 'B'
+      str 'BB'
+  - map (2)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'C'
+    = str 'B'
+      arr (1)
+      - str 'D'
+  - map (2)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'C'
+    = str 'B'
+      arr (1)
+      - str 'D'
+  - map (2)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'C'
+    = str 'B'
+      arr (1)
+      - str 'D'
+  - map (3)
+    = str 'A'
+      int 1
+    = str 'B'
+      int 2
+    = str 'C'
+      int 3
+  - map (0)
+  - arr (0)
+  - arr (2)
+    - str 'A'
+    - str 'B'
+  - arr (2)
+    - str 'A'
+    - str 'B'
+  - arr (2)
+    - str 'A'
+    - str 'B'
+  - map (2)
+    = str 'A'
+      str 'AA'
+    = str 'B'
+      str 'BB'
+  - map (2)
+    = str 'A'
+      str 'AA'
+    = str 'B'
+      str 'BB'
+  - map (2)
+    = str 'A'
+      str 'AA'
+    = str 'B'
+      str 'BB'
+  - map (2)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'C'
+    = str 'B'
+      arr (1)
+      - str 'D'
+  - map (2)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'C'
+    = str 'B'
+      arr (1)
+      - str 'D'
+  - map (2)
+    = str 'A'
+      arr (2)
+      - str 'B'
+      - str 'C'
+    = str 'B'
+      arr (1)
+      - str 'D'
+  - map (0)
+  - map (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - arr (0)
+  - map (0)
+  - map (0)
+  - map (2)
+    = str 'A'
+      map (2)
+      = int 1
+        str 'B'
+      = int 2
+        str 'C'
+    = str 'B'
+      map (1)
+      = int 3
+        str 'D'
