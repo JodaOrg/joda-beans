@@ -141,11 +141,7 @@ abstract class AbstractBinWriter {
         output.writeMapHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            var key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null");
-            }
-            writeObject(itemIterator.keyType(), key, null);
+            writeObject(itemIterator.keyType(), itemIterator.key(), null);
             writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
         }
     }

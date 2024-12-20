@@ -578,8 +578,9 @@ class TestSerializeStandardBin {
         var address = new Address();
         var bean = new Person();
         bean.getOtherAddressMap().put(null, address);
-        assertThatRuntimeException()
-                .isThrownBy(() -> JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean));
+        var bytes = JodaBeanSer.COMPACT.binWriter(STANDARD).write(bean);
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes);
+        assertThat(parsed).isEqualTo(bean);
     }
 
 }

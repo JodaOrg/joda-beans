@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.stream.StreamSupport;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ResolvedType;
@@ -32,6 +34,8 @@ import org.joda.beans.ser.SerTypeMapper;
 import org.joda.collect.grid.Grid;
 import org.joda.collect.grid.ImmutableGrid;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
@@ -332,6 +336,9 @@ final class JodaBeanStandardBinWriter {
 
         // creates the handler, called from ClassValue.computeValue()
         BinHandler<?> createHandler(Class<?> type) {
+            if (type == Optional.class) {
+                return OptionalBinHandler.INSTANCE;
+            }
             if (type.isArray()) {
                 var componentType = type.getComponentType();
                 if (componentType.isPrimitive()) {
@@ -344,14 +351,14 @@ final class JodaBeanStandardBinWriter {
                     return (CollectionBinHandler<Object[]>) BaseBinHandlers::writeArray;
                 }
             }
-            if (Collection.class.isAssignableFrom(type)) {
-                return (CollectionBinHandler<Collection<?>>) BaseBinHandlers::writeCollection;
-            }
             if (Map.class.isAssignableFrom(type)) {
                 return (CollectionBinHandler<Map<?, ?>>) BaseBinHandlers::writeMap;
             }
-            if (type == Optional.class) {
-                return OptionalBinHandler.INSTANCE;
+            if (Collection.class.isAssignableFrom(type)) {
+                return (CollectionBinHandler<Collection<?>>) BaseBinHandlers::writeCollection;
+            }
+            if (Iterable.class.isAssignableFrom(type)) {
+                return (CollectionBinHandler<Iterable<?>>) BaseBinHandlers::writeIterable;
             }
             return JodaBeanStandardBinWriter::writeSimple;
         }
@@ -401,17 +408,31 @@ final class JodaBeanStandardBinWriter {
         }
 
         // determines the meta type name to use
-        private static String metaTypeArrayName(Class<?> arrayType) {
-            if (arrayType.isArray()) {
-                return metaTypeArrayName(arrayType.getComponentType()) + "[]";
+        private static String metaTypeArrayName(Class<?> valueType) {
+            if (valueType.isArray()) {
+                return metaTypeArrayName(valueType.getComponentType()) + "[]";
             }
-            if (arrayType == Object.class) {
+            if (valueType == Object.class) {
                 return "Object[]";
             }
-            if (arrayType == String.class) {
+            if (valueType == String.class) {
                 return "String[]";
             }
-            return arrayType.getName() + "[]";
+            return valueType.getName() + "[]";
+        }
+
+        // writes an iterable, with meta type information if necessary
+        private static void writeIterable(
+                JodaBeanStandardBinWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Iterable<?> iterable) throws IOException {
+
+            // convert to a list, which is necessary as there is no size() on Iterable
+            // this ensures that the generics of the iterable are retained
+            var list = StreamSupport.stream(iterable::spliterator, Spliterator.ORDERED, false).toList();
+            var adjustedType = ResolvedType.of(List.class, declaredType.getArguments());
+            writeCollection(writer, adjustedType, propertyName, list);
         }
 
         // writes a collection, with meta type information if necessary
@@ -463,18 +484,9 @@ final class JodaBeanStandardBinWriter {
             var valueType = toWeakenedType(declaredType.getArgumentOrDefault(1));
             writer.output.writeMapHeader(mapEntries.size());
             for (var entry : mapEntries) {
-                var key = entry.getKey();
-                if (key == null) {
-                    throw invalidNullMapKey(propertyName);
-                }
                 writer.writeObject(keyType, "", entry.getKey());
                 writer.writeObject(valueType, "", entry.getValue());
             }
-        }
-
-        private static IllegalArgumentException invalidNullMapKey(String propertyName) throws IOException {
-            return new IllegalArgumentException(
-                    "Unable to write property '" + propertyName + "', map key must not be null");
         }
     }
 
@@ -491,6 +503,9 @@ final class JodaBeanStandardBinWriter {
             }
             if (Table.class.isAssignableFrom(type)) {
                 return (CollectionBinHandler<Table<?, ?, ?>>) GuavaBinHandlers::writeTable;
+            }
+            if (BiMap.class.isAssignableFrom(type)) {
+                return (CollectionBinHandler<BiMap<?, ?>>) GuavaBinHandlers::writeBiMap;
             }
             if (com.google.common.base.Optional.class.isAssignableFrom(type)) {
                 return GuavaOptionalBinHandler.INSTANCE;
@@ -513,7 +528,7 @@ final class JodaBeanStandardBinWriter {
             } else if (!Multimap.class.isAssignableFrom(declaredType.getRawType())) {
                 writeMetaPropertyReference(writer, "Multimap");
             }
-            // write content
+            // write content, using a map with repeated keys
             writeMapEntries(writer, declaredType, propertyName, mmap.entries());
         }
 
@@ -528,7 +543,7 @@ final class JodaBeanStandardBinWriter {
             if (!Multiset.class.isAssignableFrom(declaredType.getRawType())) {
                 writeMetaPropertyReference(writer, "Multiset");
             }
-            // write content
+            // write content, using a map of value to count
             var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
             var entrySet = mset.entrySet();
             writer.output.writeMapHeader(entrySet.size());
@@ -549,7 +564,7 @@ final class JodaBeanStandardBinWriter {
             if (!Table.class.isAssignableFrom(declaredType.getRawType())) {
                 writeMetaPropertyReference(writer, "Table");
             }
-            // write content
+            // write content, using an array of cells
             var rowType = toWeakenedType(declaredType.getArgumentOrDefault(0));
             var columnType = toWeakenedType(declaredType.getArgumentOrDefault(1));
             var valueType = toWeakenedType(declaredType.getArgumentOrDefault(2));
@@ -560,6 +575,27 @@ final class JodaBeanStandardBinWriter {
                 writer.writeObject(columnType, "", cell.getColumnKey());
                 writer.writeObject(valueType, "", cell.getValue());
             }
+        }
+
+        // writes a BiMap, with meta type information if necessary
+        private static void writeBiMap(
+                JodaBeanStandardBinWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                BiMap<?, ?> biMap) throws IOException {
+
+            // write actual type
+            if (!BiMap.class.isAssignableFrom(declaredType.getRawType())) {
+                // hack around Guava annoyance by assuming that size 0 and 1 ImmutableBiMap
+                // was actually meant to be an ImmutableMap
+                if ((declaredType.getRawType() != Map.class && declaredType.getRawType() != ImmutableMap.class) || biMap.size() >= 2) {
+                    writeMetaPropertyReference(writer, "BiMap");
+                } else if (!Map.class.isAssignableFrom(declaredType.getRawType())) {
+                    writeMetaPropertyReference(writer, "Map");
+                }
+            }
+            // write content
+            writeMapEntries(writer, declaredType, propertyName, biMap.entrySet());
         }
     }
 

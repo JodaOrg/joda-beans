@@ -75,6 +75,7 @@ import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.JodaConvertBean;
 import org.joda.beans.sample.JodaConvertWrapper;
 import org.joda.beans.sample.Pair;
+import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
 import org.joda.beans.sample.RiskLevel;
 import org.joda.beans.sample.TupleFinal;
@@ -1139,5 +1140,15 @@ class TestSerializePackedBin {
         var bytes = baos.toByteArray();
         assertThatRuntimeException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
+    }
+
+    @Test
+    void test_write_nullKeyInMap() {
+        var address = new Address();
+        var bean = new Person();
+        bean.getOtherAddressMap().put(null, address);
+        var bytes = JodaBeanSer.COMPACT.binWriter(PACKED).write(bean);
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes);
+        assertThat(parsed).isEqualTo(bean);
     }
 }

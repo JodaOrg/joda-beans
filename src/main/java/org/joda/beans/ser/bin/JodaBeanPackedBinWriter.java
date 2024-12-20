@@ -464,14 +464,14 @@ final class JodaBeanPackedBinWriter {
                     return (BinHandler<Object[]>) BaseBinHandlers::writeArray;
                 }
             }
+            if (Map.class.isAssignableFrom(type)) {
+                return (BinHandler<Map<?, ?>>) BaseBinHandlers::writeMap;
+            }
             if (Collection.class.isAssignableFrom(type)) {
                 return (BinHandler<Collection<?>>) BaseBinHandlers::writeCollection;
             }
             if (Iterable.class.isAssignableFrom(type)) {
                 return (BinHandler<Iterable<?>>) BaseBinHandlers::writeIterable;
-            }
-            if (Map.class.isAssignableFrom(type)) {
-                return (BinHandler<Map<?, ?>>) BaseBinHandlers::writeMap;
             }
             return (writer, declaredType, propertyName, value) -> writer.writeSimple(propertyName, value);
         }
@@ -570,7 +570,7 @@ final class JodaBeanPackedBinWriter {
             return valueType.getName() + "[]";
         }
 
-        // writes a collection, with meta type information if necessary
+        // writes an iterable, with meta type information if necessary
         private static void writeIterable(
                 JodaBeanPackedBinWriter writer,
                 ResolvedType declaredType,
@@ -770,6 +770,8 @@ final class JodaBeanPackedBinWriter {
                 // was actually meant to be an ImmutableMap
                 if ((declaredType.getRawType() != Map.class && declaredType.getRawType() != ImmutableMap.class) || biMap.size() >= 2) {
                     writer.output.writeTypeReference(BeanPack.TYPE_CODE_BIMAP);
+                } else if (!Map.class.isAssignableFrom(declaredType.getRawType())) {
+                    writer.output.writeTypeReference(BeanPack.TYPE_CODE_MAP);
                 }
             }
             // write content
