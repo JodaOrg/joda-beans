@@ -122,7 +122,7 @@ final class JodaBeanStandardBinWriter {
         output.writeArrayHeader(2);
         output.writeInt(1);  // version 1
         // root always outputs the bean, not Joda-Convert form
-        writeBean(rootType, "", bean, true);
+        writeBean(rootType, "", bean, includeRootType);
     }
 
     //-----------------------------------------------------------------------
@@ -148,7 +148,7 @@ final class JodaBeanStandardBinWriter {
     }
 
     // writes a bean, with meta type information if necessary
-    private void writeBean(ResolvedType declaredType, String propertyName, Bean bean, boolean isRoot) throws IOException {
+    private void writeBean(ResolvedType declaredType, String propertyName, Bean bean, boolean isRootAndInclRootType) throws IOException {
         // have to determine the number of properties being output before starting to write
         var count = bean.metaBean().metaPropertyCount();
         var propHandlers = new PropertyHandler[count];
@@ -169,12 +169,12 @@ final class JodaBeanStandardBinWriter {
         }
         // write out the header, potentially including the type
         if (bean.getClass() != declaredType.getRawType()) {
-            var type = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
-            if (basePackage == null && isRoot) {
+            var typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
+            if (isRootAndInclRootType) {
                 basePackage = bean.getClass().getPackage().getName() + ".";
             }
             output.writeMapHeader(size + 1);
-            output.writeExtensionString(MsgPack.JODA_TYPE_BEAN, type);
+            output.writeExtensionString(MsgPack.JODA_TYPE_BEAN, typeStr);
             output.writeNil();
         } else {
             output.writeMapHeader(size);
@@ -258,7 +258,7 @@ final class JodaBeanStandardBinWriter {
     }
 
     // writes the meta type header
-    private static final void writeMetaPropertyReference(JodaBeanStandardBinWriter writer, String metaTypeName) throws IOException {
+    private static final void writeMetaType(JodaBeanStandardBinWriter writer, String metaTypeName) throws IOException {
         writer.output.writeMapHeader(1);
         writer.output.writeExtensionString(MsgPack.JODA_TYPE_META, metaTypeName);
     }
@@ -373,9 +373,9 @@ final class JodaBeanStandardBinWriter {
             // write actual type
             var valueType = array.getClass().getComponentType();
             if (valueType == Object.class && !Object[].class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, metaTypeArrayName(valueType));
+                writeMetaType(writer, metaTypeArrayName(valueType));
             } else if (valueType == String.class && !String[].class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, metaTypeArrayName(valueType));
+                writeMetaType(writer, metaTypeArrayName(valueType));
             }
             // write content
             var componentType = toWeakenedType(declaredType.toComponentType());
@@ -395,15 +395,15 @@ final class JodaBeanStandardBinWriter {
             // write actual type
             var valueType = array.getClass().getComponentType();
             if (!declaredType.isArray()) {
-                writeMetaPropertyReference(writer, metaTypeArrayName(valueType));
+                writeMetaType(writer, metaTypeArrayName(valueType));
             }
             // write content
-            var componentType = toWeakenedType(declaredType.toComponentType());
+            var componentType = declaredType.toComponentType();
             var handler = JodaBeanStandardBinWriter.LOOKUP.get(componentType.getRawType());
             var arrayLength = Array.getLength(array);
             writer.output.writeArrayHeader(arrayLength);
             for (int i = 0; i < arrayLength; i++) {
-                handler.handle(writer, declaredType, propertyName, Array.get(array, i));
+                handler.handle(writer, componentType, propertyName, Array.get(array, i));
             }
         }
 
@@ -444,11 +444,11 @@ final class JodaBeanStandardBinWriter {
 
             // write actual type
             if (coll instanceof Set && !Set.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Set");
+                writeMetaType(writer, "Set");
             } else if (coll instanceof List && !List.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "List");
+                writeMetaType(writer, "List");
             } else if (!Collection.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Collection");
+                writeMetaType(writer, "Collection");
             }
             // write content
             var itemType = toWeakenedType(declaredType.getArgumentOrDefault(0));
@@ -467,7 +467,7 @@ final class JodaBeanStandardBinWriter {
 
             // write actual type
             if (!Map.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Map");
+                writeMetaType(writer, "Map");
             }
             // write content
             writeMapEntries(writer, declaredType, propertyName, map.entrySet());
@@ -522,11 +522,11 @@ final class JodaBeanStandardBinWriter {
 
             // write actual type
             if (mmap instanceof SetMultimap && !SetMultimap.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "SetMultimap");
+                writeMetaType(writer, "SetMultimap");
             } else if (mmap instanceof ListMultimap && !ListMultimap.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "ListMultimap");
+                writeMetaType(writer, "ListMultimap");
             } else if (!Multimap.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Multimap");
+                writeMetaType(writer, "Multimap");
             }
             // write content, using a map with repeated keys
             writeMapEntries(writer, declaredType, propertyName, mmap.entries());
@@ -541,7 +541,7 @@ final class JodaBeanStandardBinWriter {
 
             // write actual type
             if (!Multiset.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Multiset");
+                writeMetaType(writer, "Multiset");
             }
             // write content, using a map of value to count
             var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
@@ -562,7 +562,7 @@ final class JodaBeanStandardBinWriter {
 
             // write actual type
             if (!Table.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Table");
+                writeMetaType(writer, "Table");
             }
             // write content, using an array of cells
             var rowType = toWeakenedType(declaredType.getArgumentOrDefault(0));
@@ -589,9 +589,9 @@ final class JodaBeanStandardBinWriter {
                 // hack around Guava annoyance by assuming that size 0 and 1 ImmutableBiMap
                 // was actually meant to be an ImmutableMap
                 if ((declaredType.getRawType() != Map.class && declaredType.getRawType() != ImmutableMap.class) || biMap.size() >= 2) {
-                    writeMetaPropertyReference(writer, "BiMap");
+                    writeMetaType(writer, "BiMap");
                 } else if (!Map.class.isAssignableFrom(declaredType.getRawType())) {
-                    writeMetaPropertyReference(writer, "Map");
+                    writeMetaType(writer, "Map");
                 }
             }
             // write content
@@ -619,7 +619,7 @@ final class JodaBeanStandardBinWriter {
 
             // write actual type
             if (!Grid.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Grid");
+                writeMetaType(writer, "Grid");
             }
             // write content using sparse or dense approach
             var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
@@ -665,7 +665,7 @@ final class JodaBeanStandardBinWriter {
                 Optional<?> opt) throws IOException {
 
             if (!Optional.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "Optional");
+                writeMetaType(writer, "Optional");
             }
             var valueType = declaredType.getArgumentOrDefault(0).toRawType();
             writer.writeObject(valueType, "", opt.orElse(null));
@@ -702,7 +702,7 @@ final class JodaBeanStandardBinWriter {
                 com.google.common.base.Optional<?> opt) throws IOException {
 
             if (!com.google.common.base.Optional.class.isAssignableFrom(declaredType.getRawType())) {
-                writeMetaPropertyReference(writer, "GuavaOptional");
+                writeMetaType(writer, "GuavaOptional");
             }
             // write content
             var valueType = declaredType.getArgumentOrDefault(0).toRawType();

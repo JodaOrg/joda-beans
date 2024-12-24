@@ -536,11 +536,13 @@ final class JodaBeanPackedBinWriter {
                 writeArrayTypeDescription(writer, arrayType);
             }
             // write content
-            var handler = JodaBeanPackedBinWriter.LOOKUP.get(arrayType.getComponentType());
+            var arrayComponentType = arrayType.getComponentType();
+            var componentType = ResolvedType.of(arrayComponentType);
+            var handler = JodaBeanPackedBinWriter.LOOKUP.get(arrayComponentType);
             var arrayLength = Array.getLength(array);
             writer.output.writeArrayHeader(arrayLength);
             for (int i = 0; i < arrayLength; i++) {
-                handler.handle(writer, declaredType, propertyName, Array.get(array, i));
+                handler.handle(writer, componentType, propertyName, Array.get(array, i));
             }
         }
 

@@ -18,11 +18,8 @@ package org.joda.beans.ser.json;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Spliterator;
-import java.util.stream.StreamSupport;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
@@ -68,7 +65,7 @@ public class JodaBeanSimpleJsonWriter {
         @Override
         protected JsonHandler computeValue(Class<?> type) {
             if (Bean.class.isAssignableFrom(type)) {
-                return (JsonHandler<Bean>) JodaBeanSimpleJsonWriter::writeBean;
+                return (JsonHandler<Bean>) JodaBeanSimpleJsonWriter::writeBeanMaybeSimple;
             }
             if (type.isArray()) {
                 var componentType = type.getComponentType();
@@ -160,7 +157,7 @@ public class JodaBeanSimpleJsonWriter {
         JodaBeanUtils.notNull(bean, "bean");
         JodaBeanUtils.notNull(output, "output");
         this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
-        writeObject(ResolvedType.OBJECT, "", bean);
+        writeBeanMaybeSimple(ResolvedType.OBJECT, "", bean);
         output.append(settings.getNewLine());
     }
 
@@ -176,18 +173,25 @@ public class JodaBeanSimpleJsonWriter {
     }
 
     //-------------------------------------------------------------------------
-    private void writeBean(ResolvedType declaredType, String propertyName, Bean bean) throws IOException {
+    // writes a bean, favouring output as a Joda-Convert type
+    private void writeBeanMaybeSimple(ResolvedType declaredType, String propertyName, Bean bean) throws IOException {
         // check for Joda-Convert cannot be in ClassValue as it relies on the settings
         if (settings.getConverter().isConvertible(bean.getClass())) {
             writeJodaConvert(declaredType, propertyName, bean);
         } else {
-            output.writeObjectStart();
-            writeBeanProperties(declaredType, propertyName, bean);
-            output.writeObjectEnd();
+            writeBean(declaredType, bean, false);
         }
     }
 
-    private void writeBeanProperties(ResolvedType declaredType, String propertyName, Bean bean) throws IOException {
+    // writes a bean as an object with properties
+    private void writeBean(ResolvedType declaredType, Bean bean, boolean isRoot) throws IOException {
+        output.writeObjectStart();
+        writeBeanProperties(declaredType, bean);
+        output.writeObjectEnd();
+    }
+
+    // writes the bean properties
+    private void writeBeanProperties(ResolvedType declaredType, Bean bean) throws IOException {
         for (var metaProperty : bean.metaBean().metaPropertyIterable()) {
             if (settings.isSerialized(metaProperty)) {
                 var value = metaProperty.get(bean);
@@ -218,7 +222,7 @@ public class JodaBeanSimpleJsonWriter {
         output.writeArrayStart();
         for (int i = 0; i < arrayLength; i++) {
             output.writeArrayItemStart();
-            handler.handle(this, declaredType, propertyName, Array.get(array, i));
+            handler.handle(this, componentType, propertyName, Array.get(array, i));
         }
         output.writeArrayEnd();
     }
@@ -257,6 +261,37 @@ public class JodaBeanSimpleJsonWriter {
     private static IllegalArgumentException invalidNullString(String propertyName, Object value) {
         return new IllegalArgumentException(
                 "Unable to write property '" + propertyName + "' because converter returned a null string: " + value);
+    }
+
+    // writes a map given map entries, used by Map/Multimap/BiMap
+    private <K, V> void writeMapEntries(
+            ResolvedType declaredType,
+            String propertyName,
+            Collection<Map.Entry<K, V>> mapEntries) throws IOException {
+
+        var keyType = declaredType.getArgumentOrDefault(0);
+        var valueType = declaredType.getArgumentOrDefault(1);
+        // converter based on the declared type if possible, else based on the runtime type
+        var keyConverterOpt = settings.getConverter().converterFor(keyType.getRawType());
+        ToStringConverter<Object> keyConverter = keyConverterOpt.isPresent() ?
+                keyConverterOpt.get().withoutGenerics() :
+                key -> settings.getConverter().convertToString(key);
+        output.writeObjectStart();
+        for (var entry : mapEntries) {
+            var key = entry.getKey();
+            if (key == null) {
+                throw invalidNullMapKey(propertyName);
+            }
+            var str = keyConverter.convertToString(key);
+            output.writeObjectKey(str);
+            writeObject(valueType, "", entry.getValue());
+        }
+        output.writeObjectEnd();
+    }
+
+    private static IllegalArgumentException invalidNullMapKey(String propertyName) {
+        return new IllegalArgumentException(
+                "Unable to write property '" + propertyName + "', map key must not be null");
     }
 
     //-------------------------------------------------------------------------
@@ -302,27 +337,10 @@ public class JodaBeanSimpleJsonWriter {
             if (Map.class.isAssignableFrom(type)) {
                 return (JsonHandler<Map<?, ?>>) BaseJsonHandlers::writeMap;
             }
-            if (Collection.class.isAssignableFrom(type)) {
+            if (Iterable.class.isAssignableFrom(type)) {
                 return (JsonHandler<Collection<?>>) BaseJsonHandlers::writeCollection;
             }
-            if (Iterable.class.isAssignableFrom(type)) {
-                return (JsonHandler<Collection<?>>) BaseJsonHandlers::writeIterable;
-            }
             return JodaBeanSimpleJsonWriter::writeJodaConvert;
-        }
-
-        // writes an iterable
-        private static void writeIterable(
-                JodaBeanSimpleJsonWriter writer,
-                ResolvedType declaredType,
-                String propertyName,
-                Iterable<?> iterable) throws IOException {
-
-            // convert to a list, which is necessary as there is no size() on Iterable
-            // this ensures that the generics of the iterable are retained
-            var list = StreamSupport.stream(iterable::spliterator, Spliterator.ORDERED, false).toList();
-            var adjustedType = ResolvedType.of(List.class, declaredType.getArguments());
-            writeCollection(writer, adjustedType, propertyName, list);
         }
 
         // writes a collection
@@ -330,7 +348,7 @@ public class JodaBeanSimpleJsonWriter {
                 JodaBeanSimpleJsonWriter writer,
                 ResolvedType declaredType,
                 String propertyName,
-                Collection<?> coll) throws IOException {
+                Iterable<?> coll) throws IOException {
 
             var itemType = declaredType.getArgumentOrDefault(0);
             writer.output.writeArrayStart();
@@ -348,41 +366,9 @@ public class JodaBeanSimpleJsonWriter {
                 String propertyName,
                 Map<?, ?> map) throws IOException {
 
-            writeMapEntries(writer, declaredType, propertyName, map.entrySet());
+            // write content
+            writer.writeMapEntries(declaredType, propertyName, map.entrySet());
         }
-
-        // writes a map given map entries, code shared with Multimap
-        static <K, V> void writeMapEntries(
-                JodaBeanSimpleJsonWriter writer,
-                ResolvedType declaredType,
-                String propertyName,
-                Collection<Map.Entry<K, V>> mapEntries) throws IOException {
-
-            var keyType = declaredType.getArgumentOrDefault(0);
-            var valueType = declaredType.getArgumentOrDefault(1);
-            // converter based on the declared type if possible, else based on the runtime type
-            var keyConverterOpt = writer.settings.getConverter().converterFor(keyType.getRawType());
-            ToStringConverter<Object> keyConverter = keyConverterOpt.isPresent() ?
-                    keyConverterOpt.get().withoutGenerics() :
-                    key -> writer.settings.getConverter().convertToString(key);
-            writer.output.writeObjectStart();
-            for (var entry : mapEntries) {
-                var key = entry.getKey();
-                if (key == null) {
-                    throw invalidNullMapKey(propertyName);
-                }
-                var str = keyConverter.convertToString(key);
-                writer.output.writeObjectKey(str);
-                writer.writeObject(valueType, "", entry.getValue());
-            }
-            writer.output.writeObjectEnd();
-        }
-
-        private static IllegalArgumentException invalidNullMapKey(String propertyName) {
-            return new IllegalArgumentException(
-                    "Unable to write property '" + propertyName + "', map key must not be null");
-        }
-
     }
 
     //-------------------------------------------------------------------------
@@ -416,7 +402,7 @@ public class JodaBeanSimpleJsonWriter {
                 String propertyName,
                 Multimap<?, ?> mmap) throws IOException {
 
-            writeMapEntries(writer, declaredType, propertyName, mmap.entries());
+            writer.writeMapEntries(declaredType, propertyName, mmap.entries());
         }
 
         // writes a multiset
@@ -426,7 +412,7 @@ public class JodaBeanSimpleJsonWriter {
                 String propertyName,
                 Multiset<?> mset) throws IOException {
 
-            // write content, using a map of value to count
+            // write content, using an array of value to count
             var valueType = declaredType.getArgumentOrDefault(0);
             writer.output.writeArrayStart();
             for (var entry : mset.entrySet()) {
@@ -474,7 +460,7 @@ public class JodaBeanSimpleJsonWriter {
                 String propertyName,
                 BiMap<?, ?> biMap) throws IOException {
 
-            writeMapEntries(writer, declaredType, propertyName, biMap.entrySet());
+            writer.writeMapEntries(declaredType, propertyName, biMap.entrySet());
         }
     }
 
