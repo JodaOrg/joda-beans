@@ -17,12 +17,10 @@ package org.joda.beans.ser.json;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
+import java.io.UncheckedIOException;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerIterable;
-import org.joda.beans.ser.SerIteratorFactory;
 
 /**
  * Provides the ability for a Joda-Bean to read from JSON.
@@ -51,6 +49,8 @@ public class JodaBeanSimpleJsonReader extends AbstractJsonReader {
      * @param input  the input string, not null
      * @param rootType  the root type, not null
      * @return the bean, not null
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
     public <T> T read(String input, Class<T> rootType) {
         JodaBeanUtils.notNull(input, "input");
@@ -64,33 +64,14 @@ public class JodaBeanSimpleJsonReader extends AbstractJsonReader {
      * @param input  the input reader, not null
      * @param rootType  the root type, not null
      * @return the bean, not null
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
     public <T> T read(Reader input, Class<T> rootType) {
         JodaBeanUtils.notNull(input, "input");
         JodaBeanUtils.notNull(rootType, "rootType");
-        try {
-            var jsonInput = new JsonInput(input);
-            return parseRoot(jsonInput, rootType);
-        } catch (RuntimeException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    SerIterable parseUnknownArray(Class<?> declaredType) {
-        if (declaredType.isArray()) {
-            return SerIteratorFactory.array(declaredType.getComponentType());
-        } else {
-            return SerIteratorFactory.list(Object.class, Collections.emptyList());
-        }
-    }
-
-    @Override
-    SerIterable parseUnknownObject(Class<?> declaredType) {
-        return SerIteratorFactory.map(String.class, Object.class, Collections.emptyList());
+        var jsonInput = new JsonInput(input);
+        return parseRoot(jsonInput, rootType);
     }
 
 }

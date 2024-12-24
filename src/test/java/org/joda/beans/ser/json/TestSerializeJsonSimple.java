@@ -16,7 +16,6 @@
 package org.joda.beans.ser.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.offset;
@@ -207,7 +206,7 @@ class TestSerializeJsonSimple {
 
     @Test
     void test_read_rootTypeArgumentIncorrect() {
-        assertThatExceptionOfType(ClassCastException.class)
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> JodaBeanSer.COMPACT.simpleJsonReader().read("{}", Integer.class));
     }
 

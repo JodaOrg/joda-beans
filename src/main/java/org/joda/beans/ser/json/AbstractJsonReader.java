@@ -20,15 +20,20 @@ import static org.joda.beans.ser.json.JodaBeanJsonWriter.META;
 import static org.joda.beans.ser.json.JodaBeanJsonWriter.TYPE;
 import static org.joda.beans.ser.json.JodaBeanJsonWriter.VALUE;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.beans.ResolvedType;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -76,16 +81,23 @@ abstract class AbstractJsonReader {
      * @param input  the JSON input
      * @param declaredType  the declared type, not null
      * @return the bean, not null
-     * @throws Exception if an error occurs
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
-    <T> T parseRoot(JsonInput input, Class<T> declaredType) throws Exception {
-        this.input = input;
-        var parsed = parseObject(input.acceptEvent(JsonEvent.OBJECT), declaredType, null, null, null, true);
-        return declaredType.cast(parsed);
+    <T> T parseRoot(JsonInput input, Class<T> declaredType) {
+        try {
+            this.input = input;
+            var parsed = parseObject(input.acceptEvent(JsonEvent.OBJECT), declaredType, null, null, null, true);
+            return declaredType.cast(parsed);
+        } catch (ClassNotFoundException | ClassCastException ex) {
+            throw new IllegalArgumentException(ex);
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
     }
 
     // parse a bean, event after object start passed in
-    private Object parseBean(JsonEvent event, Class<?> beanType) {
+    private Object parseBean(JsonEvent event, Class<?> beanType) throws IOException {
         var propName = "";
         try {
             var deser = settings.getDeserializers().findDeserializer(beanType);
@@ -107,9 +119,11 @@ abstract class AbstractJsonReader {
                 event = input.acceptObjectSeparator();
             }
             return deser.build(beanType, builder);
+        } catch (IOException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new IllegalArgumentException(
-                    "Error parsing bean: " + beanType.getName() + "::" + propName + ", " + ex.getMessage(), ex);
+                    "Error parsing bean: " + beanType.getName() + "::" + propName + ": " + ex.getMessage(), ex);
         }
     }
 
@@ -120,7 +134,7 @@ abstract class AbstractJsonReader {
             MetaProperty<?> metaProp,
             Class<?> beanType,
             SerIterable parentIterable,
-            boolean rootType) throws Exception {
+            boolean rootType) throws IOException, ClassNotFoundException {
 
         // avoid nulls
         var declaredType = (inputDeclaredType == null ? Object.class : inputDeclaredType);
@@ -176,15 +190,21 @@ abstract class AbstractJsonReader {
         }
     }
 
+    // leniently assume it is am array/List (previously only the simple JSON parser made this assumption)
     SerIterable parseUnknownArray(Class<?> declaredType) {
-        throw new IllegalArgumentException("JSON contained an array without information about the Java type");
+        if (declaredType.isArray()) {
+            return SerIteratorFactory.array(declaredType.getComponentType());
+        } else {
+            return SerIteratorFactory.list(Object.class, Collections.emptyList());
+        }
     }
 
+    // leniently assume it is a Map (previously only the simple JSON parser made this assumption)
     SerIterable parseUnknownObject(Class<?> declaredType) {
-        throw new IllegalArgumentException("JSON contained an object without information about the Java type");
+        return SerIteratorFactory.map(String.class, Object.class, Collections.emptyList());
     }
 
-    private Object parseTypedBean(Class<?> declaredType, boolean rootType) throws Exception {
+    private Object parseTypedBean(Class<?> declaredType, boolean rootType) throws IOException, ClassNotFoundException {
         var typeStr = input.acceptString();
         Class<?> effectiveType = SerTypeMapper.decodeType(typeStr, settings, basePackage, knownTypes);
         if (rootType) {
@@ -204,12 +224,14 @@ abstract class AbstractJsonReader {
         return parseBean(event, effectiveType);
     }
 
-    private Object parseTypedSimple(Class<?> declaredType) throws Exception {
+    private Object parseTypedSimple(Class<?> declaredType) throws IOException, ClassNotFoundException {
         var typeStr = input.acceptString();
         var effectiveType = settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, declaredType);
         if (!declaredType.isAssignableFrom(effectiveType)) {
-            throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
-                declaredType.getName() + " and " + effectiveType.getName());
+            if (!declaredType.isPrimitive() || ResolvedType.of(declaredType).toBoxed().getRawType() != effectiveType) {
+                throw new IllegalArgumentException("Specified type is incompatible with declared type: " +
+                        declaredType.getName() + " and " + effectiveType.getName());
+            }
         }
         input.acceptEvent(JsonEvent.COMMA);
         var valueKey = input.acceptObjectKey(input.readEvent());
@@ -221,7 +243,7 @@ abstract class AbstractJsonReader {
         return result;
     }
 
-    private Object parseTypedMeta() throws Exception {
+    private Object parseTypedMeta() throws IOException, ClassNotFoundException {
         var metaType = input.acceptString();
         var childIterable = settings.getIteratorFactory().createIterable(metaType, settings, knownTypes);
         input.acceptEvent(JsonEvent.COMMA);
@@ -234,7 +256,7 @@ abstract class AbstractJsonReader {
         return result;
     }
 
-    private Object parseIterable(JsonEvent event, SerIterable iterable) throws Exception {
+    private Object parseIterable(JsonEvent event, SerIterable iterable) throws IOException, ClassNotFoundException {
         if (iterable.category() == SerCategory.MAP) {
             return parseIterableMap(event, iterable);
         } else if (iterable.category() == SerCategory.COUNTED) {
@@ -248,7 +270,7 @@ abstract class AbstractJsonReader {
         }
     }
 
-    private Object parseIterableMap(JsonEvent event, SerIterable iterable) throws Exception {
+    private Object parseIterableMap(JsonEvent event, SerIterable iterable) throws IOException, ClassNotFoundException {
         if (event == JsonEvent.OBJECT) {
             event = input.readEvent();
             while (event != JsonEvent.OBJECT_END) {
@@ -276,7 +298,7 @@ abstract class AbstractJsonReader {
         return iterable.build();
     }
 
-    private Object parseIterableTable(JsonEvent event, SerIterable iterable) throws Exception {
+    private Object parseIterableTable(JsonEvent event, SerIterable iterable) throws IOException, ClassNotFoundException {
         input.ensureEvent(event, JsonEvent.ARRAY);
         event = input.readEvent();
         while (event != JsonEvent.ARRAY_END) {
@@ -293,7 +315,7 @@ abstract class AbstractJsonReader {
         return iterable.build();
     }
 
-    private Object parseIterableGrid(JsonEvent event, SerIterable iterable) throws Exception {
+    private Object parseIterableGrid(JsonEvent event, SerIterable iterable) throws IOException, ClassNotFoundException {
         input.ensureEvent(event, JsonEvent.ARRAY);
         input.acceptEvent(JsonEvent.NUMBER_INTEGRAL);
         var rows = (int) input.parseNumberIntegral();
@@ -318,7 +340,7 @@ abstract class AbstractJsonReader {
         return iterable.build();
     }
 
-    private Object parseIterableCounted(JsonEvent event, SerIterable iterable) throws Exception {
+    private Object parseIterableCounted(JsonEvent event, SerIterable iterable) throws IOException, ClassNotFoundException {
         input.ensureEvent(event, JsonEvent.ARRAY);
         event = input.readEvent();
         while (event != JsonEvent.ARRAY_END) {
@@ -333,7 +355,7 @@ abstract class AbstractJsonReader {
         return iterable.build();
     }
 
-    private Object parseIterableArray(JsonEvent event, SerIterable iterable) throws Exception {
+    private Object parseIterableArray(JsonEvent event, SerIterable iterable) throws IOException, ClassNotFoundException {
         input.ensureEvent(event, JsonEvent.ARRAY);
         event = input.readEvent();
         while (event != JsonEvent.ARRAY_END) {
@@ -344,7 +366,7 @@ abstract class AbstractJsonReader {
         return iterable.build();
     }
 
-    private Object parseSimple(JsonEvent event, Class<?> type) throws Exception {
+    private Object parseSimple(JsonEvent event, Class<?> type) throws IOException {
         switch (event) {
             case STRING: {
                 var text = input.parseString();
