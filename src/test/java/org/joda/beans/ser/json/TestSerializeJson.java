@@ -31,6 +31,7 @@ import org.joda.beans.sample.ImmAddress;
 import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
+import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmMappedKey;
 import org.joda.beans.sample.ImmOptional;
@@ -61,7 +62,7 @@ class TestSerializeJson {
         var bean = SerTestHelper.testAddress();
         var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Address.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Address2.json");
 
         var parsed = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -72,10 +73,13 @@ class TestSerializeJson {
         var bean = SerTestHelper.testImmAddress(false);
         var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress2.json");
 
         var parsed = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
+
+        var oldParsed = loadAndParse("/org/joda/beans/ser/ImmAddress1.json", ImmAddress.class);
+        BeanAssert.assertBeanEquals(bean, oldParsed);
     }
 
     @Test
@@ -83,7 +87,7 @@ class TestSerializeJson {
         var bean = SerTestHelper.testImmOptional();
         var json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional2.json");
 
         var parsed = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
@@ -100,10 +104,13 @@ class TestSerializeJson {
                 new boolean[][] {{true, false}, {false}, {}});
         var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays2.json");
 
         var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
         BeanAssert.assertBeanEquals(bean, parsed);
+
+        var oldParsed = loadAndParse("/org/joda/beans/ser/ImmArrays1.json", ImmArrays.class);
+        BeanAssert.assertBeanEquals(bean, oldParsed);
     }
 
     @Test
@@ -111,10 +118,13 @@ class TestSerializeJson {
         var bean = SerTestHelper.testCollections(true);
         var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.json");
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections2.json");
 
         var parsed = JodaBeanSer.PRETTY.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
+
+        var oldParsed = loadAndParse("/org/joda/beans/ser/Collections1.json", ImmGuava.class);
+        BeanAssert.assertBeanEquals(bean, oldParsed);
     }
 
     @Test
@@ -133,6 +143,12 @@ class TestSerializeJson {
         var expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
         assertThat(json.trim().replace(System.lineSeparator(), "\n"))
                 .isEqualTo(expected.trim().replace(System.lineSeparator(), "\n"));
+    }
+
+    private <T> T loadAndParse(String expectedResource, Class<T> type) throws IOException {
+        var url = TestSerializeJson.class.getResource(expectedResource);
+        var text = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        return JodaBeanSer.PRETTY.simpleJsonReader().read(text, type);
     }
 
     //-----------------------------------------------------------------------
@@ -193,6 +209,64 @@ class TestSerializeJson {
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
+    //-------------------------------------------------------------------------
+    @Test
+    void test_readWrite_objectArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new Object[] {"1", 2, 3L, 4d, 5f});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"Object[]",\
+                "value":["1",2,{"@type":"Long","value":3},4.0,{"@type":"Float","value":5.0}]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_stringArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new String[] {"1", "2"});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"String[]","value":["1","2"]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_numberArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new Number[] {1, 2.3, 4L});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"java.lang.Number[]","value":[1,2.3,{"@type":"Long","value":4}]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_longArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new long[] {1L, 2L, 3L});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"long[]","value":[1,2,3]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_intArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new int[] {1, 2, 3});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"int[]","value":[1,2,3]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-------------------------------------------------------------------------
     @Test
     void test_readWrite_boolean_true() {
         var bean = new FlexiBean();
