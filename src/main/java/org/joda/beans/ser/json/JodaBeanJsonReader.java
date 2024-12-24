@@ -17,6 +17,7 @@ package org.joda.beans.ser.json;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
@@ -47,6 +48,8 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
      * 
      * @param input  the input string, not null
      * @return the bean, not null
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
     public Bean read(String input) {
         return read(input, Bean.class);
@@ -59,6 +62,8 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
      * @param input  the input string, not null
      * @param rootType  the root type, not null
      * @return the bean, not null
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
     public <T> T read(String input, Class<T> rootType) {
         JodaBeanUtils.notNull(input, "input");
@@ -70,6 +75,8 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
      * 
      * @param input  the input reader, not null
      * @return the bean, not null
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
     public Bean read(Reader input) {
         return read(input, Bean.class);
@@ -82,18 +89,14 @@ public class JodaBeanJsonReader extends AbstractJsonReader {
      * @param input  the input reader, not null
      * @param rootType  the root type, not null
      * @return the bean, not null
+     * @throws UncheckedIOException if unable to read the stream
+     * @throws IllegalArgumentException if unable to parse the JSON
      */
     public <T> T read(Reader input, Class<T> rootType) {
         JodaBeanUtils.notNull(input, "input");
         JodaBeanUtils.notNull(rootType, "rootType");
-        try {
-            var jsonInput = new JsonInput(input);
-            return parseRoot(jsonInput, rootType);
-        } catch (RuntimeException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        var jsonInput = new JsonInput(input);
+        return parseRoot(jsonInput, rootType);
     }
 
 }
