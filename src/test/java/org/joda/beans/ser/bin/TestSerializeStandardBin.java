@@ -43,11 +43,13 @@ import org.joda.beans.sample.JodaConvertBean;
 import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.JodaConvertWrapper;
 import org.joda.beans.sample.Person;
+import org.joda.beans.sample.SimpleJson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Resources;
 
 /**
@@ -134,10 +136,10 @@ public class TestSerializeStandardBin {
     @Test
     public void test_writeJodaConvertInterface() {
         ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
-        
+
         byte[] bytes = JodaBeanSer.COMPACT.binWriter().write(array);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
-        
+
         @SuppressWarnings("unchecked")
         ImmGenericCollections<JodaConvertInterface> bean =
                 (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.binReader().read(bytes);
@@ -243,7 +245,7 @@ public class TestSerializeStandardBin {
         assertThat(parsed.getA()).isCloseTo(6, offset(1e-10));
         assertThat(parsed.getB()).isCloseTo(5, offset(1e-10));
     }
-    
+
     @Test
     public void test_read_optionalTypeToDefaulted() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -253,7 +255,7 @@ public class TestSerializeStandardBin {
             out.writeByte(MsgPack.MIN_FIX_MAP);
         }
         byte[] bytes = baos.toByteArray();
-        
+
         ImmDefault parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmDefault.class);
         assertThat(parsed.getValue()).isEqualTo("Defaulted");
     }
@@ -308,6 +310,89 @@ public class TestSerializeStandardBin {
         assertThat(bytes).isEqualTo(expected);
         Bean parsed = JodaBeanSer.COMPACT.binReader().read(bytes, JodaConvertBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_readNewPrimitiveArrayFormat() throws IOException {
+        // test format written by v3.x can be read
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        MsgPackOutput out = new MsgPackOutput(baos);
+        out.writeArrayHeader(2);
+        out.writeInt(1);
+        out.writeMapHeader(2);
+        out.writeString("intArray");
+        out.writeArrayHeader(3);
+        out.writeInt(1);
+        out.writeInt(3);
+        out.writeInt(2);
+        out.writeString("intArray2d");
+        out.writeArrayHeader(3);
+        out.writeArrayHeader(2);
+        out.writeInt(1);
+        out.writeInt(2);
+        out.writeArrayHeader(1);
+        out.writeInt(2);
+        out.writeArrayHeader(0);
+        byte[] bytes = baos.toByteArray();
+
+        ImmArrays expected = ImmArrays.builder()
+                .intArray(1, 3, 2)
+                .intArray2d(new int[][] {{1, 2}, {2}, {}})
+                .build();
+
+        ImmArrays parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmArrays.class);
+        BeanAssert.assertBeanEquals(expected, parsed);
+    }
+
+    @Test
+    public void test_readNewStringArrayWithoutMetaFormat() throws IOException {
+        // test format written by v3.x can be read
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        MsgPackOutput out = new MsgPackOutput(baos);
+        out.writeArrayHeader(2);
+        out.writeInt(1);
+        out.writeMapHeader(1);
+        out.writeString("array2d");
+        out.writeArrayHeader(3);
+        out.writeArrayHeader(1);
+        out.writeString("a");
+        out.writeArrayHeader(0);
+        out.writeArrayHeader(2);
+        out.writeString("b");
+        out.writeString("c");
+        byte[] bytes = baos.toByteArray();
+
+        SimpleJson expected = SimpleJson.builder()
+                .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
+                .build();
+
+        SimpleJson parsed = JodaBeanSer.COMPACT.binReader().read(bytes, SimpleJson.class);
+        BeanAssert.assertBeanEquals(expected, parsed);
+    }
+
+    @Test
+    public <T extends Comparable<T>> void test_readOldListWithMetaFormat() throws IOException {
+        // test format written by v3.x can be read (meta caused by List<Comparable> declaration)
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        MsgPackOutput out = new MsgPackOutput(baos);
+        out.writeArrayHeader(2);
+        out.writeInt(1);
+        out.writeMapHeader(1);
+        out.writeString("list");
+        out.writeArrayHeader(2);
+        out.writeString("A");
+        out.writeString("B");
+        byte[] bytes = baos.toByteArray();
+
+        @SuppressWarnings("unchecked")
+        ImmutableList<T> list = (ImmutableList<T>) ImmutableList.of("A", "B");
+        ImmGuava<T> expected = ImmGuava.<T>builder()
+                .list(list)
+                .build();
+
+        ImmGuava<T> parsed = JodaBeanSer.COMPACT.binReader().read(bytes, ImmGuava.class);
+        BeanAssert.assertBeanEquals(expected, parsed);
     }
 
     //-----------------------------------------------------------------------
@@ -370,7 +455,7 @@ public class TestSerializeStandardBin {
         }
         byte[] bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
     }
 
     @Test
@@ -383,7 +468,7 @@ public class TestSerializeStandardBin {
         }
         byte[] bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
     }
 
     @Test
@@ -408,7 +493,7 @@ public class TestSerializeStandardBin {
         }
         byte[] bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
     }
 
     @Test
@@ -443,7 +528,7 @@ public class TestSerializeStandardBin {
         }
         byte[] bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
     }
 
     @Test
@@ -461,7 +546,7 @@ public class TestSerializeStandardBin {
         }
         byte[] bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, FlexiBean.class));
     }
 
     @Test
@@ -479,13 +564,13 @@ public class TestSerializeStandardBin {
         }
         byte[] bytes = baos.toByteArray();
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read(bytes, Bean.class));
     }
 
     @Test
     public void test_read_byteArray_nullByteArray() {
-	assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read((byte[]) null, Company.class));
+        assertThatRuntimeException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binReader().read((byte[]) null, Company.class));
     }
 
     @Test
@@ -494,7 +579,7 @@ public class TestSerializeStandardBin {
         Person bean = new Person();
         bean.getOtherAddressMap().put(null, address);
         assertThatRuntimeException()
-            .isThrownBy(() -> JodaBeanSer.COMPACT.binWriter().write(bean));
+                .isThrownBy(() -> JodaBeanSer.COMPACT.binWriter().write(bean));
     }
 
 }

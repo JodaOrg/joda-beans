@@ -28,6 +28,7 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
+import org.joda.beans.ser.SerIteratorFactory;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
 
@@ -180,7 +181,12 @@ abstract class AbstractBinReader extends MsgPack {
                     childIterable = settings.getIteratorFactory().createIterable(parentIterable);
                 }
                 if (childIterable == null) {
-                    throw new IllegalArgumentException("Invalid binary data: Invalid metaType: " + metaType);
+                    // handle array types sent without a metatype
+                    if (effectiveType.isArray()) {
+                        childIterable = SerIteratorFactory.array(effectiveType.getComponentType());
+                    } else {
+                        throw new IllegalArgumentException("Invalid binary data: Unable to create collection type");
+                    }
                 }
                 return parseIterable(typeByte, childIterable);
             } else {
@@ -292,7 +298,7 @@ abstract class AbstractBinReader extends MsgPack {
     Object parseSimple(int typeByte, Class<?> type) throws Exception {
         if (isString(typeByte)) {
             String text = acceptString(typeByte);
-            if (type == String.class || type == Object.class) {
+            if (type == String.class || type.isAssignableFrom(String.class)) {
                 return text;
             }
             return settings.getConverter().convertFromString(type, text);
@@ -490,7 +496,7 @@ abstract class AbstractBinReader extends MsgPack {
             case UINT_16:
                 return input.readUnsignedShort();
             case UINT_32: {
-                return ((long) input.readInt()) & 0xFFFFFFFFL;
+                return (input.readInt()) & 0xFFFFFFFFL;
             }
             case UINT_64: {
                 long val = input.readLong();
