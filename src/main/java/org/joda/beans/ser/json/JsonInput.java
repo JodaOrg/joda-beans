@@ -22,6 +22,8 @@ import java.io.Reader;
  * Reader of JSON data.
  */
 final class JsonInput {
+    // this code parses the literals NaN, Infinity, -Infinity, +Infinity
+    // any number may be prefixed by +
 
     /** encoding JSON */
     private static final String[] REPLACE = new String[128];
@@ -92,10 +94,12 @@ final class JsonInput {
             case '[' -> JsonEvent.ARRAY;
             case ']' -> JsonEvent.ARRAY_END;
             case '"' -> JsonEvent.STRING;
-            case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> acceptNumber(next);
+            case '-', '+', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> acceptNumber(next);
             case 'n' -> acceptNull();
             case 't' -> acceptTrue();
             case 'f' -> acceptFalse();
+            case 'N' -> acceptNaN();
+            case 'I' -> acceptInfinity();
             case ',' -> JsonEvent.COMMA;
             case ':' -> JsonEvent.COLON;
             default -> throw new IllegalArgumentException("Invalid JSON data: Expected JSON character but found '" + next + "'");
@@ -233,16 +237,22 @@ final class JsonInput {
         buf.append(first);
         var last = first;
         var next = readNext();
-        while ((next >= '0' && next <= '9') || next == '.' || next == '-' || next == '+' || next == 'e' || next == 'E') {
+        while ((next >= '0' && next <= '9') || next == '.' || next == '-' || next == '+' || next == 'e' || next == 'E' || next == 'I') {
             buf.append(next);
             last = next;
             next = readNext();
         }
         pushBack(next);
-        if (last < '0' || last > '9') {
+        var str = buf.toString();
+        if (str.equals("-I")) {
+            acceptInfinity();
+            floating = Double.NEGATIVE_INFINITY;
+            return JsonEvent.NUMBER_FLOATING;
+        } else if (str.equals("+I")) {
+            return acceptInfinity();
+        } else if (last < '0' || last > '9') {
             throw new IllegalArgumentException("Invalid JSON data: Expected number but found invalid last char '" + last + "'");
         }
-        var str = buf.toString();
         if (str.equals("0")) {
             integral = 0;
             return JsonEvent.NUMBER_INTEGRAL;
@@ -278,6 +288,25 @@ final class JsonInput {
         acceptChar('s');
         acceptChar('e');
         return JsonEvent.FALSE;
+    }
+
+    private JsonEvent acceptNaN() throws IOException {
+        acceptChar('a');
+        acceptChar('N');
+        floating = Double.NaN;
+        return JsonEvent.NUMBER_FLOATING;
+    }
+
+    private JsonEvent acceptInfinity() throws IOException {
+        acceptChar('n');
+        acceptChar('f');
+        acceptChar('i');
+        acceptChar('n');
+        acceptChar('i');
+        acceptChar('t');
+        acceptChar('y');
+        floating = Double.POSITIVE_INFINITY;
+        return JsonEvent.NUMBER_FLOATING;
     }
 
     private void acceptChar(char ch) throws IOException {

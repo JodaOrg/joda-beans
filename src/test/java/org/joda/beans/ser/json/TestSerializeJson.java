@@ -427,7 +427,31 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_double_PositiveInfinity() {
+    void test_readWrite_double_NaN_null() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.NAN_AS_NULL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":null,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NaN_literal() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.LITERAL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":NaN,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_PositiveInfinity_string() {
         var bean = new PrimitiveBean();
         bean.setValueDouble(Double.POSITIVE_INFINITY);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -439,13 +463,48 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_double_NegativeInfinity() {
+    void test_readWrite_double_PositiveInfinity_literal() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.LITERAL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":Infinity,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_PositiveInfinity_string() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":+Infinity,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NegativeInfinity_string() {
         var bean = new PrimitiveBean();
         bean.setValueDouble(Double.NEGATIVE_INFINITY);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
         assertThat(json).isEqualTo("""
                 {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
                 "valueDouble":"-Infinity","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NegativeInfinity_literal() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NEGATIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.LITERAL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":-Infinity,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
         var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }

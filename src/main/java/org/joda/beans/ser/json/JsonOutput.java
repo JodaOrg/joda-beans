@@ -46,6 +46,10 @@ final class JsonOutput {
      */
     private final Appendable output;
     /**
+     * The number format.
+     */
+    private final JodaBeanJsonNumberFormat numberFormat;
+    /**
      * The indent amount.
      */
     private final String indent;
@@ -72,18 +76,20 @@ final class JsonOutput {
      * @param output  the output to write to, not null
      */
     JsonOutput(Appendable output) {
-        this(output, "", "");
+        this(output, JodaBeanJsonNumberFormat.STRING, "", "");
     }
 
     /**
      * Creates an instance where the output format can be controlled.
      * 
      * @param output  the output to write to, not null
+     * @param numberFormat  the number format, not null
      * @param indent  the pretty format indent
      * @param newLine  the pretty format new line
      */
-    JsonOutput(Appendable output, String indent, String newLine) {
+    JsonOutput(Appendable output, JodaBeanJsonNumberFormat numberFormat, String indent, String newLine) {
         this.output = output;
+        this.numberFormat = numberFormat;
         this.indent = indent;
         this.newLine = newLine;
     }
@@ -142,8 +148,18 @@ final class JsonOutput {
      * @throws IOException if an error occurs
      */
     void writeFloat(float value) throws IOException {
-        if (Float.isNaN(value) || Float.isInfinite(value)) {
-            output.append('"').append(Float.toString(value)).append('"');
+        if (Float.isNaN(value)) {
+            switch (numberFormat) {
+                case LITERAL -> output.append("NaN");
+                case NAN_AS_NULL -> writeNull();
+                default -> output.append("\"NaN\"");
+            }
+        } else if (Float.isInfinite(value)) {
+            var str = value > 0 ? "Infinity" : "-Infinity";
+            switch (numberFormat) {
+                case LITERAL -> output.append(str);
+                default -> output.append('"').append(str).append('"');
+            }
         } else {
             output.append(Float.toString(value));
         }
@@ -158,8 +174,18 @@ final class JsonOutput {
      * @throws IOException if an error occurs
      */
     void writeDouble(double value) throws IOException {
-        if (Double.isNaN(value) || Double.isInfinite(value)) {
-            output.append('"').append(Double.toString(value)).append('"');
+        if (Double.isNaN(value)) {
+            switch (numberFormat) {
+                case LITERAL -> output.append("NaN");
+                case NAN_AS_NULL -> writeNull();
+                default -> output.append("\"NaN\"");
+            }
+        } else if (Double.isInfinite(value)) {
+            var str = value > 0 ? "Infinity" : "-Infinity";
+            switch (numberFormat) {
+                case LITERAL -> output.append(str);
+                default -> output.append('"').append(str).append('"');
+            }
         } else {
             output.append(Double.toString(value));
         }

@@ -37,7 +37,7 @@ class TestJsonOutput {
     void setUp() {
         buf = new StringBuilder();
         outputCompact = new JsonOutput(buf);
-        outputPretty = new JsonOutput(buf, " ", "\n");
+        outputPretty = new JsonOutput(buf, JodaBeanJsonNumberFormat.STRING, " ", "\n");
     }
 
     //-----------------------------------------------------------------------

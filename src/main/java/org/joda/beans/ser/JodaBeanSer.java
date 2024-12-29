@@ -23,6 +23,7 @@ import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.bin.JodaBeanBinFormat;
 import org.joda.beans.ser.bin.JodaBeanBinReader;
 import org.joda.beans.ser.bin.JodaBeanBinWriter;
+import org.joda.beans.ser.json.JodaBeanJsonNumberFormat;
 import org.joda.beans.ser.json.JodaBeanJsonReader;
 import org.joda.beans.ser.json.JodaBeanJsonWriter;
 import org.joda.beans.ser.json.JodaBeanSimpleJsonReader;
@@ -45,12 +46,12 @@ public final class JodaBeanSer {
      * Obtains the singleton compact instance.
      */
     public static final JodaBeanSer COMPACT = new JodaBeanSer("", "", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false, Set.of());
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false, Set.of(), JodaBeanJsonNumberFormat.STRING);
     /**
      * Obtains the singleton pretty-printing instance.
      */
     public static final JodaBeanSer PRETTY = new JodaBeanSer(" ", "\n", StringConvert.create(),
-            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false, Set.of());
+            SerIteratorFactory.INSTANCE, true, SerDeserializers.INSTANCE, false, Set.of(), JodaBeanJsonNumberFormat.STRING);
 
     /**
      * The indent to use.
@@ -86,6 +87,10 @@ public final class JodaBeanSer {
      * Note that most serializers do not cache by reference.
      */
     private final Set<Class<? extends ImmutableBean>> beanValueClasses;
+    /**
+     * The JSON number format.
+     */
+    private final JodaBeanJsonNumberFormat jsonNumberFormat;
 
     /**
      * Creates an instance.
@@ -97,13 +102,15 @@ public final class JodaBeanSer {
      * @param shortTypes  whether to use short types
      * @param deserializers  the deserializers to use, not null
      * @param beanValueClasses  the bean value classes, not null
+     * @param jsonNumberFormat  the JSON number format, not null
      */
     private JodaBeanSer(String indent, String newLine, StringConvert converter,
             SerIteratorFactory iteratorFactory,
             boolean shortTypes,
             SerDeserializers deserializers,
             boolean includeDerived,
-            Set<Class<? extends ImmutableBean>> beanValueClasses) {
+            Set<Class<? extends ImmutableBean>> beanValueClasses,
+            JodaBeanJsonNumberFormat jsonNumberFormat) {
 
         this.indent = indent;
         this.newLine = newLine;
@@ -113,6 +120,7 @@ public final class JodaBeanSer {
         this.deserializers = deserializers;
         this.includeDerived = includeDerived;
         this.beanValueClasses = Set.copyOf(beanValueClasses);
+        this.jsonNumberFormat = jsonNumberFormat;
     }
 
     //-----------------------------------------------------------------------
@@ -133,7 +141,8 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIndent(String indent) {
         JodaBeanUtils.notNull(indent, "indent");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     /**
@@ -153,7 +162,8 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withNewLine(String newLine) {
         JodaBeanUtils.notNull(newLine, "newLine");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     /**
@@ -177,7 +187,8 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withConverter(StringConvert converter) {
         JodaBeanUtils.notNull(converter, "converter");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     /**
@@ -197,7 +208,8 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withIteratorFactory(SerIteratorFactory iteratorFactory) {
         JodaBeanUtils.notNull(iteratorFactory, "iteratorFactory");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     /**
@@ -216,7 +228,8 @@ public final class JodaBeanSer {
      * @return a copy of this object with the short types flag changed, not null
      */
     public JodaBeanSer withShortTypes(boolean shortTypes) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     /**
@@ -242,7 +255,8 @@ public final class JodaBeanSer {
      */
     public JodaBeanSer withDeserializers(SerDeserializers deserializers) {
         JodaBeanUtils.notNull(deserializers, "deserializers");
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     //-----------------------------------------------------------------------
@@ -268,7 +282,8 @@ public final class JodaBeanSer {
      * @return a copy of this object with the derived flag changed, not null
      */
     public JodaBeanSer withIncludeDerived(boolean includeDerived) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     //-----------------------------------------------------------------------
@@ -285,12 +300,38 @@ public final class JodaBeanSer {
     /**
      * Returns a copy of this serializer with the bean value classes changed.
      * 
-     * @param beanValueClasses  the bean value classes
+     * @param beanValueClasses  the bean value classes, not null
      * @return a copy of this object with the bean value classes changed, not null
      * @since 3.0.0
      */
     public JodaBeanSer withBeanValueClasses(Set<Class<? extends ImmutableBean>> beanValueClasses) {
-        return new JodaBeanSer(indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses);
+        JodaBeanUtils.notNull(beanValueClasses, "beanValueClasses");
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the JSON number format.
+     * 
+     * @return the JSON number format, not null
+     * @since 3.0.0
+     */
+    public JodaBeanJsonNumberFormat getJsonNumberFormat() {
+        return jsonNumberFormat;
+    }
+
+    /**
+     * Returns a copy of this serializer with the JSON number format changed.
+     * 
+     * @param jsonNumberFormat  the JSON number format, not null
+     * @return a copy of this object with the bean value classes changed, not null
+     * @since 3.0.0
+     */
+    public JodaBeanSer withJsonNumberFormat(JodaBeanJsonNumberFormat jsonNumberFormat) {
+        JodaBeanUtils.notNull(jsonNumberFormat, "jsonNumberFormat");
+        return new JodaBeanSer(
+                indent, newLine, converter, iteratorFactory, shortTypes, deserializers, includeDerived, beanValueClasses, jsonNumberFormat);
     }
 
     //-------------------------------------------------------------------------
