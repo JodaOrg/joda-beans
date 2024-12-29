@@ -268,7 +268,7 @@ class TestSerializeJson {
 
     //-------------------------------------------------------------------------
     @Test
-    void test_readWrite_boolean_true() {
+    void test_readWrite_booleanObject_true() {
         var bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -290,7 +290,7 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_long() {
+    void test_readWrite_longObject() {
         var bean = new FlexiBean();
         bean.set("data", (long) 6);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -301,7 +301,7 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_short() {
+    void test_readWrite_shortObject() {
         var bean = new FlexiBean();
         bean.set("data", (short) 6);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -312,7 +312,7 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_byte() {
+    void test_readWrite_byteObject() {
         var bean = new FlexiBean();
         bean.set("data", (byte) 6);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -323,7 +323,7 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_float() {
+    void test_readWrite_floatObject() {
         var bean = new FlexiBean();
         bean.set("data", (float) 6);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -334,7 +334,7 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_float_NaN() {
+    void test_readWrite_floatObject_NaN() {
         var bean = new FlexiBean();
         bean.set("data", Float.NaN);
         var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
@@ -354,73 +354,6 @@ class TestSerializeJson {
     }
 
     @Test
-    void test_readWrite_double() {
-        var bean = new FlexiBean();
-        bean.set("data", (double) 6);
-        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertThat(json)
-                .isEqualTo("{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":6.0}");
-        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    void test_readWrite_double_alternateFormat() {
-        var bean = new FlexiBean();
-        bean.set("data", (double) 6);
-        var json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":6.0}}";
-        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    void test_readWrite_double_NaN() {
-        var bean = new FlexiBean();
-        bean.set("data", Double.NaN);
-        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertThat(json).isEqualTo(
-                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"NaN\"}}");
-        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    void test_readWrite_double_Infinity() {
-        var bean = new FlexiBean();
-        bean.set("data", Double.POSITIVE_INFINITY);
-        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertThat(json).isEqualTo(
-                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"Infinity\"}}");
-        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    void test_read_double_integer_flexiWithTypeAnnotation() {
-        var bean = new FlexiBean();
-        bean.set("data", Double.valueOf(6));
-        var json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"6\"}}";
-        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    void test_read_double_fromInteger() {
-        var bean = new PrimitiveBean();
-        bean.setValueDouble(6d);
-        var json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":6}";
-        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    void test_read_double_fromIntegerTooBig() {
-        var json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":123456789123456789}";
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(json));
-    }
-
-    @Test
     void test_read_float_fromInteger() {
         var bean = new PrimitiveBean();
         bean.setValueFloat(6f);
@@ -436,13 +369,133 @@ class TestSerializeJson {
                 .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(json));
     }
 
+    //-------------------------------------------------------------------------
     @Test
-    void test_read_double_NaN_asNull() {
-        var bean = new PrimitiveBean();
-        bean.setValueDouble(Double.NaN);
-        var json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":null}";
+    void test_readWrite_doubleObject() {
+        var bean = new FlexiBean();
+        bean.set("data", (double) 6);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":6.0}""");
         var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_doubleObject_NaN() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.NaN);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":"NaN"}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_doubleObject_PositiveInfinity() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.POSITIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":"Infinity"}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_doubleObject_NegativeInfinity() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.NEGATIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":"-Infinity"}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NaN() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":"NaN","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_PositiveInfinity() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":"Infinity","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NegativeInfinity() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NEGATIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":"-Infinity","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_doubleObject_alternateFormat() {
+        var bean = new FlexiBean();
+        bean.set("data", (double) 6);
+        var json = """
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":6.0}}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_doubleObject_integer_flexiWithTypeAnnotation() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.valueOf(6));
+        var json = """
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":6}}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_NaN_asNull_alternateFormat() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueDouble":null}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_fromInteger() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(6d);
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueDouble":6}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_fromIntegerTooBig() {
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","data":{"@type":"Double","value":123456789123456789}}""";
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(json));
     }
 
     //-----------------------------------------------------------------------

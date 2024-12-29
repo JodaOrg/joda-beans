@@ -136,11 +136,11 @@ public class JodaBeanJsonWriter {
     /**
      * The settings to use.
      */
-    private final JodaBeanSer settings;
+    final JodaBeanSer settings;  // CSIGNORE
     /**
      * The outputter.
      */
-    private JsonOutput output;
+    JsonOutput output;  // CSIGNORE
     /**
      * The base package including the trailing dot.
      */
@@ -223,7 +223,7 @@ public class JodaBeanJsonWriter {
 
     //-----------------------------------------------------------------------
     // walk an object, by determining the runtime type
-    private void writeObject(ResolvedType declaredType, String propertyName, Object value) throws IOException {
+    void writeObject(ResolvedType declaredType, String propertyName, Object value) throws IOException {
         if (value == null) {
             output.writeNull();
         } else {
@@ -252,7 +252,7 @@ public class JodaBeanJsonWriter {
     }
 
     // optionally writes the type of the bean
-    private void writeBeanType(ResolvedType declaredType, Bean bean, boolean includeRootType) throws IOException {
+    void writeBeanType(ResolvedType declaredType, Bean bean, boolean includeRootType) throws IOException {
         if (bean.getClass() != declaredType.getRawType()) {
             var typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
             if (includeRootType) {
@@ -277,7 +277,7 @@ public class JodaBeanJsonWriter {
     }
 
     //-------------------------------------------------------------------------
-    private void writeLong(ResolvedType declaredType, Long val) throws IOException {
+    void writeLong(ResolvedType declaredType, Long val) throws IOException {
         if (declaredType.getRawType() == long.class) {
             output.writeLong(val);
         } else {
@@ -289,7 +289,7 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeShort(ResolvedType declaredType, Short val) throws IOException {
+    void writeShort(ResolvedType declaredType, Short val) throws IOException {
         if (declaredType.getRawType() == short.class) {
             output.writeInt(val);
         } else {
@@ -301,7 +301,7 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeByte(ResolvedType declaredType, Byte val) throws IOException {
+    void writeByte(ResolvedType declaredType, Byte val) throws IOException {
         if (declaredType.getRawType() == byte.class) {
             output.writeInt(val);
         } else {
@@ -313,7 +313,7 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeDouble(ResolvedType declaredType, Double val) throws IOException {
+    void writeDouble(ResolvedType declaredType, Double val) throws IOException {
         if (declaredType.getRawType() == double.class || (!Double.isNaN(val) && !Double.isInfinite(val))) {
             output.writeDouble(val);
         } else {
@@ -325,7 +325,7 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeFloat(ResolvedType declaredType, Float val) throws IOException {
+    void writeFloat(ResolvedType declaredType, Float val) throws IOException {
         if (declaredType.getRawType() == float.class) {
             output.writeFloat(val);
         } else {
@@ -337,7 +337,8 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeSimple(ResolvedType declaredType, String propertyName, Object value) throws IOException {
+    // writes a simple type
+    void writeSimple(ResolvedType declaredType, String propertyName, Object value) throws IOException {
         // handle no declared type and subclasses
         Class<?> realType = value.getClass();
         Class<?> effectiveType = declaredType.getRawType();
@@ -363,22 +364,6 @@ public class JodaBeanJsonWriter {
         }
 
         writeJodaConvert(declaredType, propertyName, value);
-//        // long/short/byte/float only processed now to ensure that exact numeric type can be identified
-//        if (realType == Long.class || realType == long.class) {
-//            output.writeLong(((Long) value).longValue());
-//
-//        } else if (realType == Short.class) {
-//            output.writeInt(((Short) value).shortValue());
-//
-//        } else if (realType == Byte.class) {
-//            output.writeInt(((Byte) value).byteValue());
-//
-//        } else if (realType == Float.class) {
-//            output.writeFloat(((Float) value).floatValue());
-//
-//        } else {
-//            writeJodaConvert(declaredType, propertyName, value);
-//        }
 
         // close open map
         if (requiresClose) {
@@ -386,7 +371,8 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeJodaConvert(ResolvedType declaredType, String propertyName, Object value) throws IOException {
+    // writes using Joda-Convert
+    void writeJodaConvert(ResolvedType declaredType, String propertyName, Object value) throws IOException {
         var realType = value.getClass();
         try {
             var converted = settings.getConverter().convertToString(value);
@@ -407,7 +393,7 @@ public class JodaBeanJsonWriter {
     }
 
     // writes a map given map entries, code shared with Multimap
-    private <K, V> void writeMapEntries(
+    <K, V> void writeMapEntries(
             ResolvedType declaredType,
             String propertyName,
             Collection<Map.Entry<K, V>> mapEntries) throws IOException {
@@ -470,12 +456,12 @@ public class JodaBeanJsonWriter {
         output.writeArrayEnd();
     }
 
-    private static IllegalArgumentException invalidNullMapKey(String propertyName) {
+    static IllegalArgumentException invalidNullMapKey(String propertyName) {
         return new IllegalArgumentException(
                 "Unable to write property '" + propertyName + "', map key must not be null");
     }
 
-    private static IllegalArgumentException invalidConvertedNullMapKey(String propertyName) {
+    static IllegalArgumentException invalidConvertedNullMapKey(String propertyName) {
         return new IllegalArgumentException(
                 "Unable to write property '" + propertyName + "', converted map key must not be null");
     }
@@ -483,7 +469,7 @@ public class JodaBeanJsonWriter {
     //-------------------------------------------------------------------------
     // gets the weakened type, which exists for backwards compatibility
     // once the parser can handle ResolvedType this method can, in theory, be removed
-    private static ResolvedType toWeakenedType(ResolvedType base) {
+    static ResolvedType toWeakenedType(ResolvedType base) {
         for (var arg : base.getArguments()) {
             var rawType = arg.getRawType();
             if (LOOKUP.get(rawType).isCollection()) {
@@ -495,17 +481,17 @@ public class JodaBeanJsonWriter {
 
     //-------------------------------------------------------------------------
     // handler for meta types, but with IOException
-    private static interface MetaTypeHandler {
+    static interface MetaTypeHandler {
         public abstract String handle() throws IOException;
     }
 
     // handler for meta type content, but with IOException
-    private static interface ContentHandler {
+    static interface ContentHandler {
         public abstract void handle() throws IOException;
     }
 
     // writes content with a meta type
-    private void writeWithMetaType(ContentHandler contentHandler, MetaTypeHandler metaTypeHandler) throws IOException {
+    void writeWithMetaType(ContentHandler contentHandler, MetaTypeHandler metaTypeHandler) throws IOException {
         var metaTypeName = metaTypeHandler.handle();
         if (metaTypeName != null) {
             output.writeObjectStart();
@@ -518,7 +504,8 @@ public class JodaBeanJsonWriter {
         }
     }
 
-    private void writeWithMetaType(ContentHandler contentHandler, Class<?> cls, ResolvedType declaredType, String metaTypeName)
+    // writes content with a meta type
+    void writeWithMetaType(ContentHandler contentHandler, Class<?> cls, ResolvedType declaredType, String metaTypeName)
             throws IOException {
 
         if (!cls.isAssignableFrom(declaredType.getRawType())) {

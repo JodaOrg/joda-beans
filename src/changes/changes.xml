@@ -50,7 +50,7 @@
         Incompatible change:
         The JSON serialization formats have changed requiring fewer @meta and @type annotations.
         For example, where the type of the collection is Object,
-        previously a String value was explicitly typed as a String, now the type is implcit.
+        previously a String value was explicitly typed as a String, now the type is implicit.
         This is a much more natural JSON format.
         The old format cam still be parsed successfully.
       </action>
