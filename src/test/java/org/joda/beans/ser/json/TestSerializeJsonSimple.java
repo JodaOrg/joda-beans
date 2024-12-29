@@ -35,6 +35,7 @@ import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.Person;
+import org.joda.beans.sample.PrimitiveBean;
 import org.joda.beans.sample.SimpleJson;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
@@ -191,6 +192,72 @@ public class TestSerializeJsonSimple {
         String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
         assertThat(json).isEqualTo("{\"data\":false}");
         FlexiBean parsed = JodaBeanSer.COMPACT.simpleJsonReader().read(new StringReader(json), FlexiBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_write_doubleObject() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("data", (double) 6);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"data\":6.0}");
+    }
+
+    @Test
+    public void test_write_doubleObject_NaN() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("data", Double.NaN);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"data\":null}");
+    }
+
+    @Test
+    public void test_write_doubleObject_PositiveInfinity() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("data", Double.POSITIVE_INFINITY);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"data\":\"Infinity\"}");
+    }
+
+    @Test
+    public void test_write_doubleObject_NegativeInfinity() {
+        FlexiBean bean = new FlexiBean();
+        bean.set("data", Double.NEGATIVE_INFINITY);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"data\":\"-Infinity\"}");
+    }
+
+    @Test
+    public void test_readWrite_double_NaN() {
+        PrimitiveBean bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"valueLong\":0,\"valueInt\":0,\"valueShort\":0,\"valueByte\":0," +
+                "\"valueDouble\":null,\"valueFloat\":0.0,\"valueChar\":\"\\u0000\",\"valueBoolean\":false}");
+        PrimitiveBean parsed = JodaBeanSer.COMPACT.jsonReader().read(json, PrimitiveBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_readWrite_double_PositiveInfinity() {
+        PrimitiveBean bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"valueLong\":0,\"valueInt\":0,\"valueShort\":0,\"valueByte\":0," +
+                "\"valueDouble\":\"Infinity\",\"valueFloat\":0.0,\"valueChar\":\"\\u0000\",\"valueBoolean\":false}");
+        PrimitiveBean parsed = JodaBeanSer.COMPACT.jsonReader().read(json, PrimitiveBean.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    public void test_readWrite_double_NegativeInfinity() {
+        PrimitiveBean bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NEGATIVE_INFINITY);
+        String json = JodaBeanSer.COMPACT.simpleJsonWriter().write(bean);
+        assertThat(json).isEqualTo("{\"valueLong\":0,\"valueInt\":0,\"valueShort\":0,\"valueByte\":0," +
+                "\"valueDouble\":\"-Infinity\",\"valueFloat\":0.0,\"valueChar\":\"\\u0000\",\"valueBoolean\":false}");
+        PrimitiveBean parsed = JodaBeanSer.COMPACT.jsonReader().read(json, PrimitiveBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
