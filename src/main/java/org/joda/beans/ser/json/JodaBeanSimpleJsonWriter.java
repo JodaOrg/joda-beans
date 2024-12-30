@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.joda.beans.Bean;
+import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.ResolvedType;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.convert.ToStringConverter;
@@ -52,7 +53,16 @@ public class JodaBeanSimpleJsonWriter extends JodaBeanJsonWriter {
      * @param settings  the settings to use, not null
      */
     public JodaBeanSimpleJsonWriter(JodaBeanSer settings) {
-        super(settings);
+        super(adjustSettings(settings));
+    }
+
+    private static JodaBeanSer adjustSettings(JodaBeanSer settings) {
+        JodaBeanUtils.notNull(settings, "settings");
+        if (settings.getJsonNumberFormat() == JodaBeanJsonNumberFormat.COMPATIBLE_V2) {
+            return settings.withJsonNumberFormat(JodaBeanJsonNumberFormat.NAN_AS_NULL);
+        } else {
+            return settings;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -109,21 +119,13 @@ public class JodaBeanSimpleJsonWriter extends JodaBeanJsonWriter {
     @Override
     void writeDouble(ResolvedType declaredType, Double val) throws IOException {
         // do not write type
-        if (Double.isNaN(val)) {
-            output.writeNull();
-        } else {
-            output.writeDouble(val);
-        }
+        output.writeDouble(val);
     }
 
     @Override
     void writeFloat(ResolvedType declaredType, Float val) throws IOException {
         // do not write type
-        if (Float.isNaN(val)) {
-            output.writeNull();
-        } else {
-            output.writeFloat(val);
-        }
+        output.writeFloat(val);
     }
 
     //-------------------------------------------------------------------------

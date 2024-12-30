@@ -54,9 +54,11 @@
         This is a much more natural JSON format.
         The old format cam still be parsed successfully.
       </action>
-      <action dev="jodastephen" type="fix">
-        Fix `BeanAssert` to output the correct message.
-        Previously there was no check for equals at the property level, nor were arrays properly converted to `String`.
+      <action dev="jodastephen" type="update" issue="192">
+        Incompatible change:
+        The simple JSON serialization format now uses a string instead of null for NaN for consistency.
+        The new configuration 'JodaBeanJsonNumberFormat' can be used to control how NaN and Infinity are output.
+        As part of this change, the extended literals from 'The JSON5 Data Interchange Format' can be used if desired.
       </action>
     </release>
     <release version="2.12.0" date="SNAPSHOT" description="v2.12.0">
@@ -65,10 +67,19 @@
         Properties of type 'boolean[]' and 2-dimensional arrays are now cloned by default in immutable beans
         in line with existing behaviour. Cloning is opt-in for mutable beans using new settings on `PropertyDefinition`.
       </action>
+      <action dev="jodastephen" type="fix" issue="424">
+        Potentially incompatible bug fix:
+        Binary and JSON parsers now accept the formats produced by v3.x.
+        Certain edge cases now succeed when previously an exception would have been thrown.
+      </action>
       <action dev="jodastephen" type="fix" issue="405">
         Fix code generation for property names that clash with code generated method parameters.
         Properties named `obj`, `other` or `propertyName` caused problems.
         These are now prefixed by `this` to avoid the clash.
+      </action>
+      <action dev="jodastephen" type="fix">
+        Fix `BeanAssert` to output the correct message.
+        Previously there was no check for equals at the property level, nor were arrays properly converted to `String`.
       </action>
       <action dev="jodastephen" type="fix" issue="410">
         Fix code generation of light beans for `short`, `byte` and `char` fields.

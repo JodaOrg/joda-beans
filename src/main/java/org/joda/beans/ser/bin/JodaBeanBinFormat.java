@@ -25,7 +25,7 @@ import org.joda.beans.ser.JodaBeanSer;
 public enum JodaBeanBinFormat {
 
     /**
-     * The Standard format, version 1
+     * The Standard format, version 1.
      * <p>
      * The binary format is based on MessagePack v2.0.
      * Each bean is output as a map using the property name.
@@ -55,7 +55,7 @@ public enum JodaBeanBinFormat {
      */
     STANDARD(1),
     /**
-     * The Referencing format, version 2
+     * The Referencing format, version 2.
      * <p>
      * The referencing format is based on the standard format.
      * As a more complex format, it is intended to be consumed only by Joda-Beans
@@ -89,7 +89,7 @@ public enum JodaBeanBinFormat {
      */
     REFERENCING(2),
     /**
-     * Packed format, version 3
+     * Packed format, version 3.
      * <p>
      * This format uses a structure called BeanPack that is similar to MessagePack, but distinctly different.
      * The exact format is not specified and may change over time.

@@ -156,8 +156,13 @@ public class JodaBeanJsonWriter {
      * @param settings  the settings to use, not null
      */
     public JodaBeanJsonWriter(JodaBeanSer settings) {
+        // COMPATIBLE_V2 value is eliminated here and in the subclass
         JodaBeanUtils.notNull(settings, "settings");
-        this.settings = settings;
+        if (settings.getJsonNumberFormat() == JodaBeanJsonNumberFormat.COMPATIBLE_V2) {
+            this.settings = settings.withJsonNumberFormat(JodaBeanJsonNumberFormat.STRING);
+        } else {
+            this.settings = settings;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -214,7 +219,7 @@ public class JodaBeanJsonWriter {
     public void write(Bean bean, boolean includeRootType, Appendable output) throws IOException {
         JodaBeanUtils.notNull(bean, "bean");
         JodaBeanUtils.notNull(output, "output");
-        this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
+        this.output = new JsonOutput(output, settings.getJsonNumberFormat(), settings.getIndent(), settings.getNewLine());
         var rootType = includeRootType ? ResolvedType.OBJECT : ResolvedType.of(bean.getClass());
         // root always outputs the bean, not Joda-Convert form
         writeBean(rootType, bean, includeRootType);
@@ -320,7 +325,7 @@ public class JodaBeanJsonWriter {
             output.writeObjectStart();
             output.writeObjectKeyValue(TYPE, "Double");
             output.writeObjectKey(VALUE);
-            output.writeString(Double.toString(val));
+            output.writeDouble(val);
             output.writeObjectEnd();
         }
     }
