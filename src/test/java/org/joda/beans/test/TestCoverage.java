@@ -15,24 +15,26 @@
  */
 package org.joda.beans.test;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.MutableBaseBean;
 import org.joda.beans.sample.MutableDerivedBean;
 import org.joda.beans.sample.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test code coverage helper.
  */
-public class TestCoverage {
+class TestCoverage {
 
     private Person person;
     private MutableBaseBean mutableBase;
     private MutableDerivedBean mutableDerived;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         person = new Person();
         person.setForename("Vince");
         person.setSurname("Cable");
@@ -65,18 +67,18 @@ public class TestCoverage {
     }
 
     @Test
-    public void test_coveragePerson() {
-        JodaBeanTests.coverMutableBean(person);
+    void test_coveragePerson() {
+        assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(person));
     }
 
     @Test
-    public void test_coverageMutableBase() {
-        JodaBeanTests.coverMutableBean(mutableBase);
+    void test_coverageMutableBase() {
+        assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(mutableBase));
     }
 
     @Test
-    public void test_coverageMutableDerived() {
-        JodaBeanTests.coverMutableBean(mutableDerived);
+    void test_coverageMutableDerived() {
+        assertThatNoException().isThrownBy(() -> JodaBeanTests.coverMutableBean(mutableDerived));
     }
 
 }

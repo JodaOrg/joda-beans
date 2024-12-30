@@ -287,14 +287,14 @@ public class PrimitiveBean extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             PrimitiveBean other = (PrimitiveBean) obj;
-            return (getValueLong() == other.getValueLong()) &&
-                    (getValueInt() == other.getValueInt()) &&
-                    (getValueShort() == other.getValueShort()) &&
-                    (getValueByte() == other.getValueByte()) &&
-                    JodaBeanUtils.equal(getValueDouble(), other.getValueDouble()) &&
-                    JodaBeanUtils.equal(getValueFloat(), other.getValueFloat()) &&
-                    (getValueChar() == other.getValueChar()) &&
-                    (isValueBoolean() == other.isValueBoolean());
+            return (this.getValueLong() == other.getValueLong()) &&
+                    (this.getValueInt() == other.getValueInt()) &&
+                    (this.getValueShort() == other.getValueShort()) &&
+                    (this.getValueByte() == other.getValueByte()) &&
+                    JodaBeanUtils.equal(this.getValueDouble(), other.getValueDouble()) &&
+                    JodaBeanUtils.equal(this.getValueFloat(), other.getValueFloat()) &&
+                    (this.getValueChar() == other.getValueChar()) &&
+                    (this.isValueBoolean() == other.isValueBoolean());
         }
         return false;
     }
@@ -411,21 +411,21 @@ public class PrimitiveBean extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -765940851:  // valueLong
-                    return valueLong;
+                    return this.valueLong;
                 case -1410184002:  // valueInt
-                    return valueInt;
+                    return this.valueInt;
                 case 2031894923:  // valueShort
-                    return valueShort;
+                    return this.valueShort;
                 case -766228967:  // valueByte
-                    return valueByte;
+                    return this.valueByte;
                 case -1858576222:  // valueDouble
-                    return valueDouble;
+                    return this.valueDouble;
                 case 2020007787:  // valueFloat
-                    return valueFloat;
+                    return this.valueFloat;
                 case -766216089:  // valueChar
-                    return valueChar;
+                    return this.valueChar;
                 case 733421943:  // valueBoolean
-                    return valueBoolean;
+                    return this.valueBoolean;
             }
             return super.metaPropertyGet(propertyName);
         }

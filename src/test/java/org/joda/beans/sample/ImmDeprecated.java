@@ -159,10 +159,10 @@ public final class ImmDeprecated implements Cloneable, ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDeprecated other = (ImmDeprecated) obj;
-            return JodaBeanUtils.equal(deprecatedBoth, other.deprecatedBoth) &&
-                    JodaBeanUtils.equal(deprecatedJavadoc, other.deprecatedJavadoc) &&
-                    JodaBeanUtils.equal(deprecatedAnnotation, other.deprecatedAnnotation) &&
-                    JodaBeanUtils.equal(deprecatedOptional, other.deprecatedOptional);
+            return JodaBeanUtils.equal(this.deprecatedBoth, other.deprecatedBoth) &&
+                    JodaBeanUtils.equal(this.deprecatedJavadoc, other.deprecatedJavadoc) &&
+                    JodaBeanUtils.equal(this.deprecatedAnnotation, other.deprecatedAnnotation) &&
+                    JodaBeanUtils.equal(this.deprecatedOptional, other.deprecatedOptional);
         }
         return false;
     }
@@ -239,13 +239,13 @@ public final class ImmDeprecated implements Cloneable, ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1108081708:  // deprecatedBoth
-                    return deprecatedBoth;
+                    return this.deprecatedBoth;
                 case -1632501085:  // deprecatedJavadoc
-                    return deprecatedJavadoc;
+                    return this.deprecatedJavadoc;
                 case 1044703554:  // deprecatedAnnotation
-                    return deprecatedAnnotation;
+                    return this.deprecatedAnnotation;
                 case 1434300979:  // deprecatedOptional
-                    return deprecatedOptional;
+                    return this.deprecatedOptional;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -366,13 +366,13 @@ public final class ImmDeprecated implements Cloneable, ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -1108081708:  // deprecatedBoth
-                    return deprecatedBoth;
+                    return this.deprecatedBoth;
                 case -1632501085:  // deprecatedJavadoc
-                    return deprecatedJavadoc;
+                    return this.deprecatedJavadoc;
                 case 1044703554:  // deprecatedAnnotation
-                    return deprecatedAnnotation;
+                    return this.deprecatedAnnotation;
                 case 1434300979:  // deprecatedOptional
-                    return deprecatedOptional;
+                    return this.deprecatedOptional;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

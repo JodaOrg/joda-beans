@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean type="org.joda.beans.sample.Address">
+ <number>251</number>
+ <street>Big Road</street>
+ <city>London &amp; Capital of the World &lt;!&gt;</city>
+ <owner>
+  <forename>Etienne</forename>
+  <surname>Colebourne</surname>
+  <numberOfCars>0</numberOfCars>
+  <addressList>
+   <item>
+    <number>65432</number>
+    <street>Big Road</street>
+    <city>Bigton</city>
+   </item>
+   <item null="true"/>
+   <item type="CompanyAddress">
+    <number>185</number>
+    <street>Park Street</street>
+    <city>London</city>
+    <companyName>OpenGamma</companyName>
+   </item>
+  </addressList>
+  <otherAddressMap>
+   <entry key="other" null="true"/>
+   <entry key="work" type="CompanyAddress">
+    <number>185</number>
+    <street>Park Street</street>
+    <city>London</city>
+    <companyName>OpenGamma</companyName>
+   </entry>
+   <entry key="home">
+    <number>65432</number>
+    <street>Big Road</street>
+    <city>Bigton</city>
+   </entry>
+  </otherAddressMap>
+  <addressesList>
+   <item>
+    <item>
+     <number>65432</number>
+     <street>Big Road</street>
+     <city>Bigton</city>
+    </item>
+    <item type="CompanyAddress">
+     <number>185</number>
+     <street>Park Street</street>
+     <city>London</city>
+     <companyName>OpenGamma</companyName>
+    </item>
+   </item>
+  </addressesList>
+  <mainAddress type="CompanyAddress">
+   <number>185</number>
+   <street>Park Street</street>
+   <city>London</city>
+   <companyName>OpenGamma</companyName>
+  </mainAddress>
+  <extensions>
+   <interests>joda</interests>
+   <conferenceCount type="Integer">21</conferenceCount>
+   <quality type="Character">B</quality>
+   <company type="Company">
+    <companyName>OpenGamma</companyName>
+   </company>
+  </extensions>
+ </owner>
+</bean>

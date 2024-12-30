@@ -15,6 +15,8 @@
  */
 package org.joda.beans.impl;
 
+import java.util.Objects;
+
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
@@ -55,14 +57,8 @@ public final class BasicProperty<P> implements Property<P> {
      * @param metaProperty  the meta property, not null
      */
     private BasicProperty(Bean bean, MetaProperty<P> metaProperty) {
-        if (bean == null) {
-            throw new NullPointerException("Bean must not be null");
-        }
-        if (metaProperty == null) {
-            throw new NullPointerException("MetaProperty must not be null");
-        }
-        this.bean = bean;
-        this.metaProperty = metaProperty;
+        this.bean = Objects.requireNonNull(bean, "bean must not be null");
+        this.metaProperty = Objects.requireNonNull(metaProperty, "metaProperty must not be null");
     }
 
     //-----------------------------------------------------------------------
@@ -80,24 +76,15 @@ public final class BasicProperty<P> implements Property<P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof Property) {
-            Property<?> other = (Property<?>) obj;
-            if (metaProperty.equals(other.metaProperty())) {
-                Object a = get();
-                Object b = other.get();
-                return a == null ? b == null : a.equals(b);
-            }
-        }
-        return false;
+        return obj == this ||
+                (obj instanceof Property<?> other &&
+                        metaProperty.equals(other.metaProperty()) &&
+                        Objects.equals(get(), other.get()));
     }
 
     @Override
     public int hashCode() {
-        P value = get();
-        return metaProperty.hashCode() ^ (value == null ? 0 : value.hashCode());
+        return metaProperty.hashCode() ^ Objects.hashCode(get());
     }
 
     /**

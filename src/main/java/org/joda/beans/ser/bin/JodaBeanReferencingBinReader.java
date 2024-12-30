@@ -22,12 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
 import org.joda.beans.ImmutableBean;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -87,25 +84,25 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         parseClassDescriptions();
 
         // parse
-        Object parsed = parseObject(declaredType, null, null, null, true);
+        var parsed = parseObject(declaredType, null, null, null, true);
         return declaredType.cast(parsed);
     }
 
     //-----------------------------------------------------------------------
     // parses the references
     private void parseClassDescriptions() throws Exception {
-        int refCount = acceptInteger(input.readByte());
+        var refCount = acceptInteger(input.readByte());
         if (refCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected count of references, but was: " + refCount);
         }
         refs = new Object[refCount];
 
-        int classMapSize = acceptMap(input.readByte());
+        var classMapSize = acceptMap(input.readByte());
         classes = new ClassInfo[classMapSize]; // Guaranteed non-negative by acceptMap()
         classMap = new HashMap<>(classMapSize);
 
-        for (int position = 0; position < classMapSize; position++) {
-            ClassInfo classInfo = parseClassInfo();
+        for (var position = 0; position < classMapSize; position++) {
+            var classInfo = parseClassInfo();
             classes[position] = classInfo;
             classMap.put(classInfo.type, classInfo);
         }
@@ -113,19 +110,19 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
 
     // parses the class information
     private ClassInfo parseClassInfo() throws Exception {
-        String className = acceptString(input.readByte());
-        Class<?> type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
-        int propertyCount = acceptArray(input.readByte());
+        var className = acceptString(input.readByte());
+        var type = SerTypeMapper.decodeType(className, settings, overrideBasePackage, null);
+        var propertyCount = acceptArray(input.readByte());
         if (propertyCount < 0) {
             throw new IllegalArgumentException("Invalid binary data: Expected array with 0 to many elements, but was: " + propertyCount);
         }
 
-        MetaProperty<?>[] metaProperties = new MetaProperty<?>[propertyCount];
+        var metaProperties = new MetaProperty<?>[propertyCount];
         if (ImmutableBean.class.isAssignableFrom(type)) {
-            SerDeserializer deser = settings.getDeserializers().findDeserializer(type);
-            MetaBean metaBean = deser.findMetaBean(type);
-            for (int i = 0; i < propertyCount; i++) {
-                String propertyName = acceptString(input.readByte());
+            var deser = settings.getDeserializers().findDeserializer(type);
+            var metaBean = deser.findMetaBean(type);
+            for (var i = 0; i < propertyCount; i++) {
+                var propertyName = acceptString(input.readByte());
                 metaProperties[i] = deser.findMetaProperty(type, metaBean, propertyName);
             }
         } else if (propertyCount != 0) {
@@ -136,21 +133,21 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
 
     // parses the bean using the class information
     private Object parseBean(int propertyCount, ClassInfo classInfo) {
-        String propName = "";
+        var propName = "";
         if (classInfo.metaProperties.length != propertyCount) {
             throw new IllegalArgumentException("Invalid binary data: Expected " + classInfo.metaProperties.length + " properties but was: " + propertyCount);
         }
         try {
-            SerDeserializer deser = settings.getDeserializers().findDeserializer(classInfo.type);
-            MetaBean metaBean = deser.findMetaBean(classInfo.type);
-            BeanBuilder<?> builder = deser.createBuilder(classInfo.type, metaBean);
-            for (MetaProperty<?> metaProp : classInfo.metaProperties) {
+            var deser = settings.getDeserializers().findDeserializer(classInfo.type);
+            var metaBean = deser.findMetaBean(classInfo.type);
+            var builder = deser.createBuilder(classInfo.type, metaBean);
+            for (var metaProp : classInfo.metaProperties) {
                 if (metaProp == null) {
                     MsgPackInput.skipObject(input);
                 } else {
                     propName = metaProp.name();
-                    Object value = parseObject(SerOptional.extractType(metaProp, classInfo.type), metaProp, classInfo.type, null, false);
-                    Object wrappedValue = SerOptional.wrapValue(metaProp, classInfo.type, value);
+                    var value = parseObject(SerOptional.extractType(metaProp, classInfo.type), metaProp, classInfo.type, null, false);
+                    var wrappedValue = SerOptional.wrapValue(metaProp, classInfo.type, value);
                     if (wrappedValue != null) {
                         // null is the same as a value not being set
                         // in the case of defaults we want those to take precedence
@@ -181,19 +178,19 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         Integer ref = null;
         int typeByte = input.readByte();
 
-        // Unwrap nested references and meta data
+        // Unwrap nested references and metadata
         while (isMap(typeByte)) {
 
             input.mark(18);
-            int mapSize = acceptMap(typeByte);
+            var mapSize = acceptMap(typeByte);
             if (mapSize > 0) {
                 int typeByteTemp = input.readByte();
 
                 if (isIntExtension(typeByteTemp)) {
 
-                    int nestedTypeByteTemp = typeByteTemp;
+                    var nestedTypeByteTemp = typeByteTemp;
                     typeByteTemp = input.readByte();
-                    int reference = acceptIntExtension(nestedTypeByteTemp);
+                    var reference = acceptIntExtension(nestedTypeByteTemp);
 
                     if (typeByteTemp == JODA_TYPE_DATA) {
                         if (mapSize != 1) {
@@ -208,7 +205,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                         if (mapSize != 1) {
                             throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
                         }
-                        Object value = refs[reference];
+                        var value = refs[reference];
                         if (!(value instanceof String)) {
                             throw new IllegalArgumentException("Invalid binary data: Expected reference to meta type name, but was: " + reference + ", " + value);
                         }
@@ -230,7 +227,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                         break;
                     }
                 } else if (typeByteTemp == EXT_8) {
-                    int size = input.readUnsignedByte();
+                    var size = input.readUnsignedByte();
                     typeByteTemp = input.readByte();
                     if (typeByteTemp != JODA_TYPE_META) {
                         throw new IllegalArgumentException("Invalid binary data: Expected meta information, but was: 0x" + toHex(typeByteTemp));
@@ -245,9 +242,9 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
                     typeByteTemp = input.readByte();
                     // Check for nested JODA_TYPE_META with a reference as the key
                     if (isIntExtension(typeByteTemp)) {
-                        int nestedTypeByteTemp = typeByteTemp;
+                        var nestedTypeByteTemp = typeByteTemp;
                         typeByteTemp = input.readByte();
-                        int reference = acceptIntExtension(nestedTypeByteTemp);
+                        var reference = acceptIntExtension(nestedTypeByteTemp);
                         if (typeByteTemp == JODA_TYPE_REF_KEY) {
                             if (mapSize != 1) {
                                 throw new IllegalArgumentException("Invalid binary data: Expected map size 1, but was: " + mapSize);
@@ -256,7 +253,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
 
                             // Check for nested JODA_TYPE_META
                             if (typeByteTemp == EXT_8) {
-                                int size = input.readUnsignedByte();
+                                var size = input.readUnsignedByte();
                                 typeByteTemp = input.readByte();
                                 // Meta is the only type serialized using EXT_8
                                 if (typeByteTemp != JODA_TYPE_META) {
@@ -289,17 +286,17 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
 
         if (isArray(typeByte)) {
             input.mark(11);
-            int arraySize = acceptArray(typeByte);
+            var arraySize = acceptArray(typeByte);
             if (arraySize > 0) {
                 int typeByteTemp = input.readByte();
                 if (isIntExtension(typeByteTemp)) {
-                    int nestedTypeByteTemp = typeByteTemp;
+                    var nestedTypeByteTemp = typeByteTemp;
                     typeByteTemp = input.readByte();
-                    int reference = acceptIntExtension(nestedTypeByteTemp);
+                    var reference = acceptIntExtension(nestedTypeByteTemp);
 
                     if (typeByteTemp == JODA_TYPE_BEAN) {
                         classInfo = classes[reference];
-                        Object bean = parseBean(declaredType, rootType, classInfo, arraySize);
+                        var bean = parseBean(declaredType, rootType, classInfo, arraySize);
                         if (ref != null) {
                             refs[ref] = bean;
                         }
@@ -318,12 +315,12 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         if (isIntExtension(typeByte)) {
             input.mark(5);
             int typeByteTemp = input.readByte();
-            int reference = acceptIntExtension(typeByte);
+            var reference = acceptIntExtension(typeByte);
             // JODA_TYPE_REF is the only thing serialized in isolation, others are serialized as map keys or the start of an array
             if (typeByteTemp != JODA_TYPE_REF) {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was: 0x" + toHex(typeByteTemp));
             }
-            Object value = refs[reference];
+            var value = refs[reference];
             if (value == null) {
                 throw new IllegalArgumentException("Invalid binary data: Expected reference to previous object, but was null: " + reference);
             }
@@ -333,7 +330,7 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         if (classInfo != null) {
             effectiveType = classInfo.type;
         }
-        Object value = parseObject(metaProp, beanType, parentIterable, effectiveType, metaType, typeByte);
+        var value = parseObject(metaProp, beanType, parentIterable, effectiveType, metaType, typeByte);
 
         if (ref != null) {
             refs[ref] = value; // This object was keyed and is repeated
@@ -356,8 +353,9 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         }
         if (Bean.class.isAssignableFrom(effectiveType)) {
             if (isArray(typeByte)) {
-                int arraySize = acceptArray(typeByte);
-                return parseBean(arraySize, classMap.get(effectiveType));
+                var arraySize = acceptArray(typeByte);
+                var classInfo = classMap.computeIfAbsent(effectiveType, this::lookupClassInfo);
+                return parseBean(arraySize, classInfo);
             } else {
                 return parseSimple(typeByte, effectiveType);
             }
@@ -381,14 +379,30 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
         }
     }
 
+    // looks up information of classes that are not known upfront, e.g. are used by custom de-serializers
+    private ClassInfo lookupClassInfo(Class<?> type) {
+        var deser = settings.getDeserializers().findDeserializer(type);
+        var metaBean = deser.findMetaBean(type);
+        if (metaBean == null) {
+            throw new RuntimeException("Could not find type: " + type.getName());
+        }
+        var propertyCount = metaBean.metaPropertyCount();
+        var metaProperties = new MetaProperty[propertyCount];
+        var i = 0;
+        for (var metaProperty : metaBean.metaPropertyIterable()) {
+            metaProperties[i++] = metaProperty;
+        }
+        return new ClassInfo(type, metaProperties);
+    }
+
     private Object parseBean(Class<?> declaredType, boolean rootType, ClassInfo classInfo, int arraySize) {
         if (rootType) {
-            if (Bean.class.isAssignableFrom(classInfo.type) == false) {
+            if (!Bean.class.isAssignableFrom(classInfo.type)) {
                 throw new IllegalArgumentException("Root type is not a Joda-Bean: " + classInfo.type.getName());
             }
             overrideBasePackage = classInfo.type.getPackage().getName() + ".";
         }
-        if (declaredType.isAssignableFrom(classInfo.type) == false) {
+        if (!declaredType.isAssignableFrom(classInfo.type)) {
             throw new IllegalArgumentException("Specified type is incompatible with declared type: " + declaredType.getName() + " and " + classInfo.type.getName());
         }
         return parseBean(arraySize - 1, classInfo);
@@ -400,17 +414,13 @@ class JodaBeanReferencingBinReader extends AbstractBinReader {
     }
 
     private int acceptIntExtension(int typeByte) throws IOException {
-        if (typeByte == MsgPack.FIX_EXT_1) {
-            return input.readUnsignedByte();
-        }
-        if (typeByte == MsgPack.FIX_EXT_2) {
-            return input.readUnsignedShort();
-        }
-        if (typeByte == MsgPack.FIX_EXT_4) {
-            return input.readInt();
-        }
-        throw new IllegalArgumentException(
-                "Invalid binary data: Expected int extension type, but was: 0x" + toHex(typeByte));
+        return switch (typeByte) {
+            case MsgPack.FIX_EXT_1 -> input.readUnsignedByte();
+            case MsgPack.FIX_EXT_2 -> input.readUnsignedShort();
+            case MsgPack.FIX_EXT_4 -> input.readInt();
+            default -> throw new IllegalArgumentException(
+                    "Invalid binary data: Expected int extension type, but was: 0x" + toHex(typeByte));
+        };
     }
 
     //-----------------------------------------------------------------------

@@ -18,15 +18,12 @@ package org.joda.beans.gen;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -34,10 +31,6 @@ import java.util.Set;
  */
 public final class BeanGenConfig {
 
-    /**
-     * The copy generators.
-     */
-    private static final Charset UTF8 = Charset.availableCharsets().get("UTF-8");
     /**
      * The copy generators.
      */
@@ -92,184 +85,128 @@ public final class BeanGenConfig {
      * @return the configuration
      */
     public static BeanGenConfig parse(String resourceLocator) {
-        String fullFile;
-        if (resourceLocator.contains("/") || resourceLocator.endsWith(".ini")) {
-            fullFile = resourceLocator;
-        } else if (resourceLocator.equals("jdk6")) {  // compatibility
-            fullFile = "org/joda/beans/gen/jdk.ini";
-        } else {
-            fullFile = "org/joda/beans/gen/" + resourceLocator + ".ini";
-        }
-        ClassLoader loader = BeanGenConfig.class.getClassLoader();
-        if (loader == null) {
-            throw new IllegalArgumentException("ClassLoader was null: " + fullFile);
-        }
-        URL url = loader.getResource(fullFile);
-        if (url == null) {
-            throw new IllegalArgumentException("Configuration file not found: " + fullFile);
-        }
-        List<String> lines = new ArrayList<>();
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new InputStreamReader(url.openStream(), UTF8));
-            String line = in.readLine();
-            while (line != null) {
-                if (line.trim().startsWith("#") == false && line.trim().length() > 0) {
-                    lines.add(line);
-                }
-                line = in.readLine();
+        var fileName = createConfigFileName(resourceLocator);
+        try (var in = BeanGenConfig.class.getResourceAsStream(fileName)) {
+            if (in == null) {
+                throw new IllegalArgumentException("Configuration file not found in classpath: " + fileName);
             }
-            return parse(lines);
+            try (var reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                var lines = reader.lines()
+                        .filter(line -> !line.trim().startsWith("#") && !line.trim().isEmpty())
+                        .toList();
+                return parse(lines);
+            }
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ex1) {
-                    // ignore
-                }
-            }
+        }
+    }
+
+    private static String createConfigFileName(String resourceLocator) {
+        if (resourceLocator.contains("/") || resourceLocator.endsWith(".ini")) {
+            return resourceLocator.startsWith("/") ? resourceLocator : "/" + resourceLocator;
+        } else if (resourceLocator.equals("jdk6")) {  // compatibility
+            return "/org/joda/beans/gen/jdk.ini";
+        } else {
+            return "/org/joda/beans/gen/" + resourceLocator + ".ini";
         }
     }
 
     private static BeanGenConfig parse(List<String> lines) {
-        Map<String, String> immutableCopiers = new HashMap<>();
-        Map<String, String> mutableCopiers = new HashMap<>();
-        Map<String, String> immutableGetClones = new HashMap<>();
-        Map<String, String> immutableVarArgs = new HashMap<>();
-        Map<String, String> builderInits = new HashMap<>();
-        Map<String, String> builderTypes = new HashMap<>();
-        Set<String> invalidImmutableTypes = new HashSet<>();
-        for (ListIterator<String> iterator = lines.listIterator(); iterator.hasNext(); ) {
-            String line = iterator.next().trim();
-            if (line.equals("[immutable.builder.to.immutable]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    if (line.startsWith("[")) {
-                        iterator.previous();
-                        break;
-                    }
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
-                    }
-                    String key = line.substring(0, pos).trim();
-                    String value = line.substring(pos + 1).trim();
-                    immutableCopiers.put(key, value);
+        var immutableCopiers = new HashMap<String, String>();
+        var mutableCopiers = new HashMap<String, String>();
+        var immutableGetClones = new HashMap<String, String>();
+        var immutableVarArgs = new HashMap<String, String>();
+        var builderInits = new HashMap<String, String>();
+        var builderTypes = new HashMap<String, String>();
+        var invalidImmutableTypes = new HashSet<String>();
+        for (var iterator = lines.listIterator(); iterator.hasNext();) {  // CSIGNORE
+            var line = iterator.next().trim();
+            switch (line) {
+                case "[immutable.builder.to.immutable]" -> {
+                    parseConfig(iterator, immutableCopiers);
                 }
-            } else if (line.equals("[immutable.builder.to.mutable]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    if (line.startsWith("[")) {
-                        iterator.previous();
-                        break;
-                    }
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
-                    }
-                    String key = line.substring(0, pos).trim();
-                    String value = line.substring(pos + 1).trim();
-                    mutableCopiers.put(key, value);
+                case "[immutable.builder.to.mutable]" -> {
+                    parseConfig(iterator, mutableCopiers);
                 }
-            } else if (line.equals("[immutable.invalid.type]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
+                case "[immutable.invalid.type]" -> {
+                    while (iterator.hasNext()) {
+                        line = iterator.next().trim();
+                        var pos = line.indexOf('=');
+                        if (pos <= 0) {
+                            throw new IllegalArgumentException("Invalid ini file line: " + line);
+                        }
+                        var key = line.substring(0, pos).trim();
+                        invalidImmutableTypes.add(key);
                     }
-                    String key = line.substring(0, pos).trim();
-                    invalidImmutableTypes.add(key);
                 }
-            } else if (line.equals("[immutable.get.clone]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    if (line.startsWith("[")) {
-                        iterator.previous();
-                        break;
+                case "[immutable.get.clone]" -> {
+                    while (iterator.hasNext()) {
+                        line = iterator.next().trim();
+                        if (line.startsWith("[")) {
+                            iterator.previous();
+                            break;
+                        }
+                        var pos = line.indexOf('=');
+                        if (pos <= 0) {
+                            throw new IllegalArgumentException("Invalid ini file line: " + line);
+                        }
+                        var key = line.substring(0, pos).trim();
+                        var value = line.substring(pos + 1).trim();
+                        if (!value.equals("clone") && !value.equals("cloneCast") && !value.equals("cloneArray")) {
+                            throw new IllegalArgumentException("Value for [immutable.get.clone] must be 'clone', 'cloneCast' or 'cloneArray'");
+                        }
+                        immutableGetClones.put(key, value);
                     }
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
-                    }
-                    String key = line.substring(0, pos).trim();
-                    String value = line.substring(pos + 1).trim();
-                    if (value.equals("clone") == false && value.equals("cloneCast") == false) {
-                        throw new IllegalArgumentException("Value for [immutable.get.clone] must be 'clone' or 'cloneCast'");
-                    }
-                    immutableGetClones.put(key, value);
                 }
-            } else if (line.equals("[immutable.builder.varargs]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    if (line.startsWith("[")) {
-                        iterator.previous();
-                        break;
-                    }
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
-                    }
-                    String key = line.substring(0, pos).trim();
-                    String value = line.substring(pos + 1).trim();
-                    immutableVarArgs.put(key, value);
+                case "[immutable.builder.varargs]" -> {
+                    parseConfig(iterator, immutableVarArgs);
                 }
-            } else if (line.equals("[immutable.builder.type]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    if (line.startsWith("[")) {
-                        iterator.previous();
-                        break;
-                    }
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
-                    }
-                    String key = line.substring(0, pos).trim();
-                    String value = line.substring(pos + 1).trim();
-                    builderTypes.put(key, value);
+                case "[immutable.builder.type]" -> {
+                    parseConfig(iterator, builderTypes);
                 }
-            } else if (line.equals("[immutable.builder.init]")) {
-                while (iterator.hasNext()) {
-                    line = iterator.next().trim();
-                    if (line.startsWith("[")) {
-                        iterator.previous();
-                        break;
-                    }
-                    int pos = line.indexOf('=');
-                    if (pos <= 0) {
-                        throw new IllegalArgumentException("Invalid ini file line: " + line);
-                    }
-                    String key = line.substring(0, pos).trim();
-                    String value = line.substring(pos + 1).trim();
-                    builderInits.put(key, value);
+                case "[immutable.builder.init]" -> {
+                    parseConfig(iterator, builderInits);
                 }
-            } else {
-                throw new IllegalArgumentException("Invalid ini file section: " + line);
+                default -> throw new IllegalArgumentException("Invalid ini file section: " + line);
             }
         }
         // adjust to results
-        Map<String, BuilderGen> builderGenerators = new HashMap<>();
-        for (Entry<String, String> entry : builderInits.entrySet()) {
-            String type = builderTypes.get(entry.getKey());
+        var builderGenerators = new HashMap<String, BuilderGen>();
+        for (var entry : builderInits.entrySet()) {
+            var type = builderTypes.get(entry.getKey());
             if (type == null) {
                 type = entry.getKey() + "<>";
             }
             builderGenerators.put(entry.getKey(), new BuilderGen.PatternBuilderGen(type, entry.getValue()));
         }
-        Map<String, CopyGen> copyGenerators = new HashMap<>();
-        for (Entry<String, String> entry : immutableCopiers.entrySet()) {
-            String fieldType = entry.getKey();
-            String immutableCopier = entry.getValue();
-            String mutableCopier = mutableCopiers.get(fieldType);
+        var copyGenerators = new HashMap<String, CopyGen>();
+        for (var entry : immutableCopiers.entrySet()) {
+            var fieldType = entry.getKey();
+            var immutableCopier = entry.getValue();
+            var mutableCopier = mutableCopiers.get(fieldType);
             if (mutableCopier == null) {
                 throw new IllegalArgumentException("[immutable.builder.to.immutable] and [immutable.builder.to.mutable] entries must match: " + fieldType);
             }
-            copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier));
+            copyGenerators.put(fieldType, new CopyGen.PatternCopyGen(immutableCopier, mutableCopier, false));
         }
         return new BeanGenConfig(copyGenerators, builderGenerators, builderTypes, invalidImmutableTypes, immutableVarArgs, immutableGetClones);
+    }
+
+    private static void parseConfig(ListIterator<String> iterator, HashMap<String, String> mutableMap) {
+        while (iterator.hasNext()) {
+            var line = iterator.next().trim();
+            if (line.startsWith("[")) {
+                iterator.previous();
+                break;
+            }
+            var pos = line.indexOf('=');
+            if (pos <= 0) {
+                throw new IllegalArgumentException("Invalid ini file line: " + line);
+            }
+            var key = line.substring(0, pos).trim();
+            var value = line.substring(pos + 1).trim();
+            mutableMap.put(key, value);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -304,7 +241,7 @@ public final class BeanGenConfig {
      * 
      * @return the generators, not null
      */
-    public Map<String, CopyGen> getCopyGenerators() {
+    Map<String, CopyGen> getCopyGenerators() {
         return copyGenerators;
     }
 
@@ -313,7 +250,7 @@ public final class BeanGenConfig {
      * 
      * @return the generators, not null
      */
-    public Map<String, BuilderGen> getBuilderGenerators() {
+    Map<String, BuilderGen> getBuilderGenerators() {
         return builderGenerators;
     }
 

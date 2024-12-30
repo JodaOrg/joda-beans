@@ -1,0 +1,94 @@
+arr (3)
+- int 3
+- str 'org.joda.beans.sample.'
+- @type Address
+  bean (4)
+  - str 'number'
+  - str 'street'
+  - str 'city'
+  - str 'owner'
+  - int 251
+  - str 'Big Road'
+  - str 'London & Capital of the World <!>'
+  - @type Person
+    bean (8)
+    - str 'forename'
+    - str 'surname'
+    - str 'numberOfCars'
+    - str 'addressList'
+    - str 'otherAddressMap'
+    - str 'addressesList'
+    - str 'mainAddress'
+    - str 'extensions'
+    - str 'Etienne'
+    - str 'Colebourne'
+    - int 0
+    - arr (3)
+      - arr (4)
+        - int 65432
+        - ref 5 'Big Road'
+        - str 'Bigton'
+        - null
+      - null
+      - @type CompanyAddress
+        bean (5)
+        - ref 1 'number'
+        - ref 2 'street'
+        - ref 3 'city'
+        - ref 4 'owner'
+        - str 'companyName'
+        - int 185
+        - str 'Park Street'
+        - str 'London'
+        - null
+        - str 'OpenGamma'
+    - map (3)
+      = str 'other'
+        null
+      = str 'work'
+        @typeref 2 CompanyAddress
+        arr (5)
+        - int 185
+        - ref 19 'Park Street'
+        - ref 20 'London'
+        - null
+        - ref 21 'OpenGamma'
+      = str 'home'
+        arr (4)
+        - int 65432
+        - ref 5 'Big Road'
+        - ref 17 'Bigton'
+        - null
+    - arr (1)
+      - arr (2)
+        - arr (4)
+          - int 65432
+          - ref 5 'Big Road'
+          - ref 17 'Bigton'
+          - null
+        - @typeref 2 CompanyAddress
+          arr (5)
+          - int 185
+          - ref 19 'Park Street'
+          - ref 20 'London'
+          - null
+          - ref 21 'OpenGamma'
+    - @typeref 2 CompanyAddress
+      arr (5)
+      - int 185
+      - ref 19 'Park Street'
+      - ref 20 'London'
+      - null
+      - ref 21 'OpenGamma'
+    - map (4)
+      = str 'interests'
+        str 'joda'
+      = str 'conferenceCount'
+        int 21
+      = str 'quality'
+        chr B
+      = str 'company'
+        @type Company
+        bean (1)
+        - ref 18 'companyName'
+        - ref 21 'OpenGamma'

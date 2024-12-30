@@ -110,7 +110,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             GenericWrapperDocumentation<?> other = (GenericWrapperDocumentation<?>) obj;
-            return JodaBeanUtils.equal(getName(), other.getName()) &&
+            return JodaBeanUtils.equal(this.getName(), other.getName()) &&
                     super.equals(obj);
         }
         return false;
@@ -176,7 +176,7 @@ public class GenericWrapperDocumentation<T extends Address> extends Documentatio
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }

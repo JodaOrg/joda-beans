@@ -15,24 +15,24 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
 import org.joda.beans.gen.BeanCodeGenException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * Test exception, message is parsed by plugins.
+ * Test {@link BeanCodeGenException}, message is parsed by plugins.
  */
-public class TestBeanCodeGenException {
+class TestBeanCodeGenException {
 
     private static final File FILE = new File(".");
 
     @Test
-    public void testMessage() {
+    void testMessage() {
         BeanCodeGenException test = new BeanCodeGenException("rubbish", FILE, 123);
-        assertEquals(test.getMessage(), "Error in bean: " + FILE.toString() + ", Line: 123, Message: rubbish");
+        assertThat(test.getMessage()).isEqualTo("Error in bean: " + FILE.toString() + ", Line: 123, Message: rubbish");
     }
 
 }

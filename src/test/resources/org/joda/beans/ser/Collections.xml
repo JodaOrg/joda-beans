@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean type="org.joda.beans.sample.ImmGuava">
+ <collection metatype="List"/>
+ <list>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </list>
+ <set>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </set>
+ <sortedSet>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </sortedSet>
+ <map>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </map>
+ <sortedMap>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </sortedMap>
+ <biMap>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </biMap>
+ <multimap metatype="ListMultimap">
+  <entry>
+   <item>A</item>
+   <item>B</item>
+  </entry>
+  <entry>
+   <item>A</item>
+   <item>C</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>D</item>
+  </entry>
+ </multimap>
+ <listMultimap>
+  <entry>
+   <item>A</item>
+   <item>B</item>
+  </entry>
+  <entry>
+   <item>A</item>
+   <item>C</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>D</item>
+  </entry>
+ </listMultimap>
+ <setMultimap>
+  <entry>
+   <item>A</item>
+   <item>B</item>
+  </entry>
+  <entry>
+   <item>A</item>
+   <item>C</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>D</item>
+  </entry>
+ </setMultimap>
+ <multiset>
+  <item type="String">A</item>
+  <item count="2" type="String">B</item>
+  <item count="3" type="String">C</item>
+ </multiset>
+ <sortedMultiset/>
+ <collectionInterface metatype="List"/>
+ <listInterface>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </listInterface>
+ <setInterface>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </setInterface>
+ <sortedSetInterface>
+  <item type="String">A</item>
+  <item type="String">B</item>
+ </sortedSetInterface>
+ <mapInterface>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </mapInterface>
+ <sortedMapInterface>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </sortedMapInterface>
+ <biMapInterface>
+  <entry>
+   <item>A</item>
+   <item>AA</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>BB</item>
+  </entry>
+ </biMapInterface>
+ <multimapInterface metatype="ListMultimap">
+  <entry>
+   <item>A</item>
+   <item>B</item>
+  </entry>
+  <entry>
+   <item>A</item>
+   <item>C</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>D</item>
+  </entry>
+ </multimapInterface>
+ <listMultimapInterface>
+  <entry>
+   <item>A</item>
+   <item>B</item>
+  </entry>
+  <entry>
+   <item>A</item>
+   <item>C</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>D</item>
+  </entry>
+ </listMultimapInterface>
+ <setMultimapInterface>
+  <entry>
+   <item>A</item>
+   <item>B</item>
+  </entry>
+  <entry>
+   <item>A</item>
+   <item>C</item>
+  </entry>
+  <entry>
+   <item>B</item>
+   <item>D</item>
+  </entry>
+ </setMultimapInterface>
+ <multisetInterface/>
+ <sortedMultisetInterface/>
+ <listWildExtendsT/>
+ <listWildExtendsNumber/>
+ <listWildExtendsComparable/>
+ <setWildExtendsT/>
+ <setWildExtendsNumber/>
+ <setWildExtendsComparable/>
+ <listWildBuilder1/>
+ <listWildBuilder2/>
+ <mapWildBuilder1/>
+ <mapWildKey/>
+ <table>
+  <item row="A" col="1">B</item>
+  <item row="A" col="2">C</item>
+  <item row="B" col="3">D</item>
+ </table>
+</bean>

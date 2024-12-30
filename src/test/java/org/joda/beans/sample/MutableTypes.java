@@ -144,8 +144,8 @@ public final class MutableTypes<T extends Comparable<T>> implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MutableTypes<?> other = (MutableTypes<?>) obj;
-            return JodaBeanUtils.equal(getListWildNullable(), other.getListWildNullable()) &&
-                    JodaBeanUtils.equal(getListWildPublic(), other.getListWildPublic());
+            return JodaBeanUtils.equal(this.getListWildNullable(), other.getListWildNullable()) &&
+                    JodaBeanUtils.equal(this.getListWildPublic(), other.getListWildPublic());
         }
         return false;
     }
@@ -210,9 +210,9 @@ public final class MutableTypes<T extends Comparable<T>> implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -911478519:  // listWildNullable
-                    return listWildNullable;
+                    return this.listWildNullable;
                 case -355160559:  // listWildPublic
-                    return listWildPublic;
+                    return this.listWildPublic;
             }
             return super.metaPropertyGet(propertyName);
         }

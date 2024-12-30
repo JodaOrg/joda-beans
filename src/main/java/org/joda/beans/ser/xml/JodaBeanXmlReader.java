@@ -35,20 +35,16 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
-import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerDeserializer;
 import org.joda.beans.ser.SerIterable;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -69,7 +65,7 @@ public class JodaBeanXmlReader {
     // then you need to update your JDK to 8u20 or later, see JDK-8028111
     private static final XMLInputFactory XML_FACTORY;
     static {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        var factory = XMLInputFactory.newInstance();
         factory.setProperty(XMLInputFactory.IS_COALESCING, true);
         factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
         factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
@@ -92,7 +88,7 @@ public class JodaBeanXmlReader {
     /**
      * The known types.
      */
-    private Map<String, Class<?>> knownTypes = new HashMap<>();
+    private final Map<String, Class<?>> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
@@ -205,27 +201,27 @@ public class JodaBeanXmlReader {
      * @throws Exception if an error occurs
      */
     private <T> T read(final Class<T> rootType) throws Exception {
-        StartElement start = advanceToStartElement();
-        if (start.getName().equals(BEAN_QNAME) == false) {
+        var start = advanceToStartElement();
+        if (!start.getName().equals(BEAN_QNAME)) {
             throw new IllegalArgumentException("Expected root element 'bean' but found '" + start.getName() + "'");
         }
-        Attribute attr = start.getAttributeByName(TYPE_QNAME);
+        var attr = start.getAttributeByName(TYPE_QNAME);
         if (attr == null && rootType == Bean.class) {
             throw new IllegalArgumentException("Root element attribute must specify '" + TYPE + "'");
         }
         Class<?> effectiveType = rootType;
         if (attr != null) {
-            String typeStr = attr.getValue();
+            var typeStr = attr.getValue();
             effectiveType = SerTypeMapper.decodeType(typeStr, settings, null, knownTypes);
-            if (rootType.isAssignableFrom(effectiveType) == false) {
+            if (!rootType.isAssignableFrom(effectiveType)) {
                 throw new IllegalArgumentException("Specified root type is incompatible with XML root type: " + rootType.getName() + " and " + effectiveType.getName());
             }
         }
-        if (Bean.class.isAssignableFrom(effectiveType) == false) {
+        if (!Bean.class.isAssignableFrom(effectiveType)) {
             throw new IllegalArgumentException("Root type is not a Joda-Bean: " + effectiveType.getName());
         }
         basePackage = effectiveType.getPackage().getName() + ".";
-        Object parsed = parseBean(effectiveType);
+        var parsed = parseBean(effectiveType);
         return rootType.cast(parsed);
     }
 
@@ -238,13 +234,13 @@ public class JodaBeanXmlReader {
      * @return the bean, not null
      */
     @SuppressWarnings("null")
-    private Object parseBean(final Class<?> beanType) throws Exception {
-        String propName = "";
+    private Object parseBean(final Class<?> beanType) {
+        var propName = "";
         try {
             XMLEvent event = null;
             // handle case where whole bean is Joda-Convert string
             if (settings.getConverter().isConvertible(beanType)) {
-                StringBuilder buf = new StringBuilder();
+                var buf = new StringBuilder();
                 while (reader.hasNext()) {
                     event = nextEvent(">btxt ");
                     if (event.isCharacters()) {
@@ -261,19 +257,19 @@ public class JodaBeanXmlReader {
                 event = nextEvent(">bean ");
             }
             // handle structured bean
-            SerDeserializer deser = settings.getDeserializers().findDeserializer(beanType);
-            MetaBean metaBean = deser.findMetaBean(beanType);
+            var deser = settings.getDeserializers().findDeserializer(beanType);
+            var metaBean = deser.findMetaBean(beanType);
             BeanBuilder<?> builder = deser.createBuilder(beanType, metaBean);
             // handle beans with structure
-            while (event.isEndElement() == false) {
+            while (!event.isEndElement()) {
                 if (event.isStartElement()) {
-                    StartElement start = event.asStartElement();
+                    var start = event.asStartElement();
                     propName = start.getName().getLocalPart();
                     MetaProperty<?> metaProp = deser.findMetaProperty(beanType, metaBean, propName);
                     if (metaProp == null || metaProp.style().isDerived()) {
-                        int depth = 0;
+                        var depth = 0;
                         event = nextEvent(" skip ");
-                        while (event.isEndElement() == false || depth > 0) {
+                        while (!event.isEndElement() || depth > 0) {
                             if (event.isStartElement()) {
                                 depth++;
                             } else if (event.isEndElement()) {
@@ -288,12 +284,12 @@ public class JodaBeanXmlReader {
                         if (Bean.class.isAssignableFrom(childType)) {
                             value = parseBean(childType);
                         } else {
-                            SerIterable iterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
+                            var iterable = settings.getIteratorFactory().createIterable(metaProp, beanType);
                             if (iterable != null) {
                                 value = parseIterable(start, iterable);
                             } else {
                                 // metatype
-                                Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
+                                var metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                                 if (metaTypeAttr != null) {
                                     iterable = settings.getIteratorFactory().createIterable(metaTypeAttr.getValue(), settings, knownTypes);
                                     if (iterable == null) {
@@ -301,7 +297,7 @@ public class JodaBeanXmlReader {
                                     }
                                     value = parseIterable(start, iterable);
                                 } else {
-                                    String text = advanceAndParseText();
+                                    var text = advanceAndParseText();
                                     value = settings.getConverter().convertFromString(childType, text);
                                 }
                             }
@@ -325,43 +321,43 @@ public class JodaBeanXmlReader {
      * @return the iterable, not null
      */
     private Object parseIterable(final StartElement iterableEvent, final SerIterable iterable) throws Exception {
-        Attribute rowsAttr = iterableEvent.getAttributeByName(ROWS_QNAME);
-        Attribute columnsAttr = iterableEvent.getAttributeByName(COLS_QNAME);
+        var rowsAttr = iterableEvent.getAttributeByName(ROWS_QNAME);
+        var columnsAttr = iterableEvent.getAttributeByName(COLS_QNAME);
         if (rowsAttr != null && columnsAttr != null) {
             iterable.dimensions(new int[] {Integer.parseInt(rowsAttr.getValue()), Integer.parseInt(columnsAttr.getValue())});
         }
-        XMLEvent event = nextEvent(">iter ");
-        while (event.isEndElement() == false) {
+        var event = nextEvent(">iter ");
+        while (!event.isEndElement()) {
             if (event.isStartElement()) {
-                StartElement start = event.asStartElement();
-                QName expectedType = iterable.category() == SerCategory.MAP ? ENTRY_QNAME : ITEM_QNAME;
-                if (start.getName().equals(expectedType) == false) {
+                var start = event.asStartElement();
+                var expectedType = iterable.category() == SerCategory.MAP ? ENTRY_QNAME : ITEM_QNAME;
+                if (!start.getName().equals(expectedType)) {
                     throw new IllegalArgumentException("Expected '" + expectedType.getLocalPart() + "' but found '" + start.getName() + "'");
                 }
-                int count = 1;
+                var count = 1;
                 Object key = null;
                 Object column = null;
                 Object value = null;
                 if (iterable.category() == SerCategory.COUNTED) {
-                    Attribute countAttr = start.getAttributeByName(COUNT_QNAME);
+                    var countAttr = start.getAttributeByName(COUNT_QNAME);
                     if (countAttr != null) {
                         count = Integer.parseInt(countAttr.getValue());
                     }
                     value = parseValue(iterable, start);
                     
                 } else if (iterable.category() == SerCategory.TABLE || iterable.category() == SerCategory.GRID) {
-                    Attribute rowAttr = start.getAttributeByName(ROW_QNAME);
-                    Attribute colAttr = start.getAttributeByName(COL_QNAME);
+                    var rowAttr = start.getAttributeByName(ROW_QNAME);
+                    var colAttr = start.getAttributeByName(COL_QNAME);
                     if (rowAttr == null || colAttr == null) {
                         throw new IllegalArgumentException("Unable to read table as row/col attribute missing");
                     }
-                    String rowStr = rowAttr.getValue();
+                    var rowStr = rowAttr.getValue();
                     if (iterable.keyType() != null) {
                         key = settings.getConverter().convertFromString(iterable.keyType(), rowStr);
                     } else {
                         key = rowStr;
                     }
-                    String colStr = colAttr.getValue();
+                    var colStr = colAttr.getValue();
                     if (iterable.columnType() != null) {
                         column = settings.getConverter().convertFromString(iterable.columnType(), colStr);
                     } else {
@@ -370,10 +366,10 @@ public class JodaBeanXmlReader {
                     value = parseValue(iterable, start);
                     
                 } else if (iterable.category() == SerCategory.MAP) {
-                    Attribute keyAttr = start.getAttributeByName(KEY_QNAME);
+                    var keyAttr = start.getAttributeByName(KEY_QNAME);
                     if (keyAttr != null) {
                         // item is value with a key attribute
-                        String keyStr = keyAttr.getValue();
+                        var keyStr = keyAttr.getValue();
                         if (iterable.keyType() != null) {
                             key = settings.getConverter().convertFromString(iterable.keyType(), keyStr);
                         } else {
@@ -384,11 +380,11 @@ public class JodaBeanXmlReader {
                     } else {
                         // two items nested in this entry
                         event = nextEvent(">>map ");
-                        int loop = 0;
-                        while (event.isEndElement() == false) {
+                        var loop = 0;
+                        while (!event.isEndElement()) {
                             if (event.isStartElement()) {
                                 start = event.asStartElement();
-                                if (start.getName().equals(ITEM_QNAME) == false) {
+                                if (!start.getName().equals(ITEM_QNAME)) {
                                     throw new IllegalArgumentException("Expected 'item' but found '" + start.getName() + "'");
                                 }
                                 if (key == null) {
@@ -430,9 +426,9 @@ public class JodaBeanXmlReader {
     private Object parseValue(final SerIterable iterable, StartElement start) throws Exception {
         // null
         Object value;
-        Attribute nullAttr = start.getAttributeByName(NULL_QNAME);
+        var nullAttr = start.getAttributeByName(NULL_QNAME);
         if (nullAttr != null) {
-            if (nullAttr.getValue().equals("true") == false) {
+            if (!nullAttr.getValue().equals("true")) {
                 throw new IllegalArgumentException("Unexpected value for null attribute");
             }
             advanceAndParseText();  // move to end tag and ignore any text
@@ -444,12 +440,12 @@ public class JodaBeanXmlReader {
                 value = parseBean(childType);
             } else {
                 // try deep generic parameters
-                SerIterable childIterable = settings.getIteratorFactory().createIterable(iterable);
+                var childIterable = settings.getIteratorFactory().createIterable(iterable);
                 if (childIterable != null) {
                     value = parseIterable(start, childIterable);
                 } else {
                     // metatype
-                    Attribute metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
+                    var metaTypeAttr = start.getAttributeByName(METATYPE_QNAME);
                     if (metaTypeAttr != null) {
                         childIterable = settings.getIteratorFactory().createIterable(metaTypeAttr.getValue(), settings, knownTypes);
                         if (childIterable == null) {
@@ -457,7 +453,7 @@ public class JodaBeanXmlReader {
                         }
                         value = parseIterable(start, childIterable);
                     } else {
-                        String text = advanceAndParseText();
+                        var text = advanceAndParseText();
                         value = settings.getConverter().convertFromString(childType, text);
                     }
                 }
@@ -468,18 +464,18 @@ public class JodaBeanXmlReader {
 
     //-----------------------------------------------------------------------
     private Class<?> parseTypeAttribute(StartElement start, Class<?> defaultType) throws ClassNotFoundException {
-        Attribute typeAttr = start.getAttributeByName(TYPE_QNAME);
+        var typeAttr = start.getAttributeByName(TYPE_QNAME);
         if (typeAttr == null) {
             return (defaultType == Object.class ? String.class : defaultType);
         }
-        String typeStr = typeAttr.getValue();
+        var typeStr = typeAttr.getValue();
         return settings.getDeserializers().decodeType(typeStr, settings, basePackage, knownTypes, defaultType);
     }
 
     // reader can be anywhere, but normally at StartDocument
     private StartElement advanceToStartElement() throws Exception {
         while (reader.hasNext()) {
-            XMLEvent event = nextEvent("advnc ");
+            var event = nextEvent("advnc ");
             if (event.isStartElement()) {
                 return event.asStartElement();
             }
@@ -489,9 +485,9 @@ public class JodaBeanXmlReader {
 
     // reader must be at StartElement
     private String advanceAndParseText() throws Exception {
-        StringBuilder buf = new StringBuilder();
+        var buf = new StringBuilder();
         while (reader.hasNext()) {
-            XMLEvent event = nextEvent("text  ");
+            var event = nextEvent("text  ");
             if (event.isCharacters()) {
                 buf.append(event.asCharacters().getData());
             } else if (event.isEndElement()) {
@@ -505,7 +501,7 @@ public class JodaBeanXmlReader {
 
     // provide for debugging
     private XMLEvent nextEvent(String location) throws Exception {
-        XMLEvent event = reader.nextEvent();
+        var event = reader.nextEvent();
 //        System.out.println(location + event.toString().replace('\n', ' ') + " " + event.getClass().getSimpleName());
         return event;
     }

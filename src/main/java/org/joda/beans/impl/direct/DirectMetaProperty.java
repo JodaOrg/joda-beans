@@ -16,16 +16,24 @@
 package org.joda.beans.impl.direct;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyStyle;
+import org.joda.beans.ResolvedType;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
@@ -41,10 +49,14 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     private final MetaBean metaBean;
     /** The property type. */
     private final Class<P> propertyType;
+    /** The property generic type. */
+    private final Type propertyGenericType;
+    /** The function to create the resolved type of the property. */
+    private final Function<Class<?>, ResolvedType> propertyResolvedTypeFn;
     /** The declaring type. */
     private final Class<?> declaringType;
-    /** The field implementing the property. */
-    private final Field field;
+    /** The field or method implementing the property. */
+    private final AccessibleObject fieldOrMethod;
     /** The style. */
     private final PropertyStyle style;
 
@@ -60,7 +72,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofReadWrite(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_WRITE, field);
     }
 
@@ -76,7 +88,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofReadOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY, field);
     }
 
@@ -92,7 +104,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofWriteOnly(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.WRITE_ONLY, field);
     }
 
@@ -108,7 +120,7 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofReadOnlyBuildable(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.READ_ONLY_BUILDABLE, field);
     }
 
@@ -124,12 +136,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofDerived(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
-        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, field);
+        var method = findMethod(metaBean, propertyName);
+        return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.DERIVED, method);
     }
 
     /**
-     * Factory to create an imutable meta-property avoiding duplicate generics.
+     * Factory to create an immutable meta-property avoiding duplicate generics.
      * 
      * @param <P>  the property type
      * @param metaBean  the meta-bean, not null
@@ -140,27 +152,37 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      */
     public static <P> DirectMetaProperty<P> ofImmutable(
             MetaBean metaBean, String propertyName, Class<?> declaringType, Class<P> propertyType) {
-        Field field = findField(metaBean, propertyName);
+        var field = findField(metaBean, propertyName);
         return new DirectMetaProperty<>(metaBean, propertyName, declaringType, propertyType, PropertyStyle.IMMUTABLE, field);
     }
 
     private static Field findField(MetaBean metaBean, String propertyName) {
-        Field field = null;
         Class<?> cls = metaBean.beanType();
         while (cls != DirectBean.class && cls != Object.class && cls != null) {
             try {
-                field = cls.getDeclaredField(propertyName);
-                break;
+                return cls.getDeclaredField(propertyName);
             } catch (NoSuchFieldException ex) {
                 try {
-                    field = cls.getDeclaredField("_" + propertyName);
-                    break;
+                    return cls.getDeclaredField("_" + propertyName);
                 } catch (NoSuchFieldException ex2) {
                     cls = cls.getSuperclass();
                 }
             }
         }
-        return field;
+        return null;
+    }
+
+    private static AccessibleObject findMethod(MetaBean metaBean, String propertyName) {
+        var methodName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        Class<?> cls = metaBean.beanType();
+        while (cls != DirectBean.class && cls != Object.class && cls != null) {
+            try {
+                return cls.getDeclaredMethod(methodName);
+            } catch (NoSuchMethodException ex) {
+                cls = cls.getSuperclass();
+            }
+        }
+        return findField(metaBean, propertyName);  // backwards compatibility
     }
 
     /**
@@ -171,28 +193,26 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
      * @param declaringType  the declaring type, not null
      * @param propertyType  the property type, not null
      * @param style  the style, not null
-     * @param field  the reflected field, not null
+     * @param fieldOrMethod  the reflected field or method, not null
      */
     private DirectMetaProperty(MetaBean metaBean, String propertyName, Class<?> declaringType,
-            Class<P> propertyType, PropertyStyle style, Field field) {
+            Class<P> propertyType, PropertyStyle style, AccessibleObject fieldOrMethod) {
         super(propertyName);
-        if (metaBean == null) {
-            throw new NullPointerException("MetaBean must not be null");
-        }
-        if (declaringType == null) {
-            throw new NullPointerException("Declaring type must not be null");
-        }
-        if (propertyType == null) {
-            throw new NullPointerException("Property type must not be null");
-        }
-        if (style == null) {
-            throw new NullPointerException("PropertyStyle must not be null");
-        }
-        this.metaBean = metaBean;
-        this.propertyType = propertyType;
-        this.declaringType = declaringType;
-        this.style = style;
-        this.field = field;  // may be null
+        this.metaBean = Objects.requireNonNull(metaBean, "metaBean must not be null");
+        this.propertyType = Objects.requireNonNull(propertyType, "propertyType must not be null");
+        this.propertyGenericType = switch (fieldOrMethod) {
+            case Field field -> field.getGenericType();
+            case Method method -> method.getGenericReturnType();
+            case null, default -> propertyType;
+        };
+        this.declaringType = Objects.requireNonNull(declaringType, "declaringType must not be null");
+        this.style = Objects.requireNonNull(style, "style must not be null");
+        this.fieldOrMethod = fieldOrMethod;  // may be null
+        var beanType = metaBean.beanType();
+        var resolvedType = ResolvedType.from(propertyGenericType, beanType);
+        this.propertyResolvedTypeFn = !resolvedType.isParameterized() || Modifier.isFinal(beanType.getModifiers()) ?
+                contextClass -> resolvedType :
+                contextClass -> contextClass == beanType ? resolvedType : ResolvedType.from(propertyGenericType, contextClass);
     }
 
     //-----------------------------------------------------------------------
@@ -213,10 +233,12 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public Type propertyGenericType() {
-        if (field == null) {
-            return propertyType;
-        }
-        return field.getGenericType();
+        return propertyGenericType;
+    }
+
+    @Override
+    public ResolvedType propertyResolvedType(Class<?> contextClass) {
+        return propertyResolvedTypeFn.apply(contextClass);
     }
 
     @Override
@@ -226,10 +248,10 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
 
     @Override
     public <A extends Annotation> A annotation(Class<A> annotationClass) {
-        if (field == null) {
+        if (fieldOrMethod == null) {
             throw new UnsupportedOperationException("Field not found for property: " + name());
         }
-        A annotation = field.getAnnotation(annotationClass);
+        var annotation = fieldOrMethod.getAnnotation(annotationClass);
         if (annotation == null) {
             throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
         }
@@ -237,24 +259,31 @@ public final class DirectMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     @Override
+    public <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
+        return fieldOrMethod == null ?
+                Optional.empty() :
+                Optional.ofNullable(fieldOrMethod.getAnnotation(annotationClass));
+    }
+
+    @Override
     public List<Annotation> annotations() {
-        if (field == null) {
+        if (fieldOrMethod == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList(field.getDeclaredAnnotations());
+        return Arrays.asList(fieldOrMethod.getDeclaredAnnotations());
     }
 
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
     public P get(Bean bean) {
-        DirectMetaBean meta = (DirectMetaBean) bean.metaBean();
+        var meta = (DirectMetaBean) bean.metaBean();
         return (P) meta.propertyGet(bean, name(), false);
     }
 
     @Override
     public void set(Bean bean, Object value) {
-        DirectMetaBean meta = (DirectMetaBean) bean.metaBean();
+        var meta = (DirectMetaBean) bean.metaBean();
         meta.propertySet(bean, name(), value, false);
     }
 

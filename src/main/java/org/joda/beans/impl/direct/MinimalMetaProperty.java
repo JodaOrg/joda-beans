@@ -18,6 +18,7 @@ package org.joda.beans.impl.direct;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyStyle;
+import org.joda.beans.ResolvedType;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
@@ -43,6 +45,8 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
     private final Class<P> propertyType;
     /** The type of the property. */
     private final Type propertyGenericType;
+    /** The function to create the resolved type of the property. */
+    private final Function<Class<?>, ResolvedType> propertyResolvedTypeFn;
     /** The annotations. */
     private final List<Annotation> annotations;
     /** The read method. */
@@ -54,7 +58,7 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance.
+     * Creates an instance from a {@code Field}.
      * 
      * @param metaBean  the meta bean, not null
      * @param propertyName  the property name, not empty
@@ -82,10 +86,11 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
         } else {
             this.style = setter != null ? PropertyStyle.READ_WRITE : PropertyStyle.READ_ONLY;
         }
+        this.propertyResolvedTypeFn = createResolvedTypeFunction();
     }
 
     /**
-     * Creates an instance.
+     * Creates an instance from a derived {@code Method}.
      * 
      * @param metaBean  the meta bean, not null
      * @param method  the method, not null
@@ -113,6 +118,15 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
         };
         this.setter = null;
         this.style = PropertyStyle.DERIVED;
+        this.propertyResolvedTypeFn = createResolvedTypeFunction();
+    }
+
+    private Function<Class<?>, ResolvedType> createResolvedTypeFunction() {
+        var beanType = metaBean.beanType();
+        var resolvedType = ResolvedType.from(propertyGenericType, beanType);
+        return !resolvedType.isParameterized() || Modifier.isFinal(beanType.getModifiers()) ?
+                contextClass -> resolvedType :
+                contextClass -> contextClass == beanType ? resolvedType : ResolvedType.from(propertyGenericType, contextClass);
     }
 
     //-----------------------------------------------------------------------
@@ -134,6 +148,11 @@ final class MinimalMetaProperty<P> extends BasicMetaProperty<P> {
     @Override
     public Type propertyGenericType() {
         return propertyGenericType;
+    }
+
+    @Override
+    public ResolvedType propertyResolvedType(Class<?> contextClass) {
+        return propertyResolvedTypeFn.apply(contextClass);
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.joda.beans.ser.bin;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
+import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ser.JodaBeanSer;
@@ -44,6 +45,9 @@ public class JodaBeanBinReader extends MsgPack {
      * @return the visualization
      */
     public static String visualize(byte[] input) {
+        if (input.length >= 2 && input[1] == 3) {
+            return new BeanPackVisualizer(input).visualizeData();
+        }
         return new MsgPackVisualizer(input).visualizeData();
     }
 
@@ -54,10 +58,7 @@ public class JodaBeanBinReader extends MsgPack {
      * @param settings  the settings, not null
      */
     public JodaBeanBinReader(JodaBeanSer settings) {
-        if (settings == null) {
-            throw new NullPointerException("settings");
-        }
-        this.settings = settings;
+        this.settings = Objects.requireNonNull(settings, "settings must not be null");
     }
 
     //-----------------------------------------------------------------------
@@ -80,9 +81,7 @@ public class JodaBeanBinReader extends MsgPack {
      * @return the bean, not null
      */
     public <T> T read(byte[] input, Class<T> rootType) {
-        if (input == null) {
-            throw new NullPointerException("input");
-        }
+        Objects.requireNonNull(input, "input must not be null");
         return read(new ByteArrayInputStream(input), rootType);
     }
 
@@ -98,6 +97,8 @@ public class JodaBeanBinReader extends MsgPack {
 
     /**
      * Reads and parses to a bean.
+     * <p>
+     * Unusually for a method of this type, it closes the input stream.
      * 
      * @param <T>  the root type
      * @param input  the input stream, not null
@@ -105,23 +106,14 @@ public class JodaBeanBinReader extends MsgPack {
      * @return the bean, not null
      */
     public <T> T read(InputStream input, Class<T> rootType) {
-        if (input == null) {
-            throw new NullPointerException("input");
-        }
-        if (rootType == null) {
-            throw new NullPointerException("rootType");
-        }
-        DataInputStream dataInput;
-        if (input instanceof DataInputStream) {
-            dataInput = (DataInputStream) input;
-        } else {
-            dataInput = new DataInputStream(input);
-        }
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(rootType, "rootType must not be null");
         try {
-            try {
+            try (input) {
+                var dataInput = input instanceof DataInputStream din ?
+                        din :
+                        new DataInputStream(input);
                 return parseVersion(dataInput, rootType);
-            } finally {
-                input.close();
             }
         } catch (RuntimeException ex) {
             throw ex;
@@ -149,9 +141,15 @@ public class JodaBeanBinReader extends MsgPack {
                             "Invalid binary data: Expected array with 4 elements, but was: 0x" + toHex(arrayByte));
                 }
                 return new JodaBeanReferencingBinReader(settings, input).read(declaredType);
+            case 3:
+                if (arrayByte != MIN_FIX_ARRAY + 3) {
+                    throw new IllegalArgumentException(
+                            "Invalid binary data: Expected array with 3 elements, but was: 0x" + toHex(arrayByte));
+                }
+                return new JodaBeanPackedBinReader(settings, input).read(declaredType);
             default:
                 throw new IllegalArgumentException(
-                        "Invalid binary data: Expected version 1 or 2, but was: 0x" + toHex(versionByte));
+                        "Invalid binary data: Expected version 1, 2 or 3, but was: 0x" + toHex(versionByte));
         }
     }
 

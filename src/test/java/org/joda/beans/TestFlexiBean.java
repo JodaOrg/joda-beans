@@ -15,27 +15,47 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.offset;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.joda.beans.impl.flexi.FlexiBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * Test FlexiBean.
+ * Test {@link FlexiBean}.
  */
-public class TestFlexiBean {
+class TestFlexiBean {
 
     @Test
-    public void test_serialization() throws Exception {
+    void test_constructor() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+    }
+
+    @Test
+    void test_constructor_copy() {
+        FlexiBean base = new FlexiBean();
+        base.set("a", "x");
+        base.set("b", "y");
+        FlexiBean test = new FlexiBean(base);
+        assertThat(test).isNotSameAs(base);
+        assertThat(test).isEqualTo(base);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    void test_serialization() throws Exception {
         FlexiBean test = new FlexiBean();
         test.put("name", "Etienne");
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(test);
@@ -44,90 +64,266 @@ public class TestFlexiBean {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
             try (ObjectInputStream ois = new ObjectInputStream(bais)) {
                 Object obj = ois.readObject();
-                assertEquals(test, obj);
+                assertThat(test).isEqualTo(obj);
             }
         }
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    //-------------------------------------------------------------------------
     @Test
-    public void test_equalsHashCode() {
+    void test_clone() {
+        FlexiBean base = new FlexiBean();
+        base.set("a", "x");
+        base.set("b", "y");
+        FlexiBean test = base.clone();
+        assertThat(test).isNotSameAs(base);
+        assertThat(test).isEqualTo(base);
+    }
+
+    @Test
+    void test_equalsHashCode() {
         FlexiBean a1 = new FlexiBean();
         FlexiBean a2 = new FlexiBean();
         FlexiBean b = new FlexiBean();
-        
+
         a1.set("first", "A");
         a2.set("first", "A");
         b.set("first", "B");
-        
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a2.equals(a1), true);
-        assertEquals(a2.equals(a2), true);
-        assertEquals(a1.hashCode(), a2.hashCode());
-        
-        assertEquals(a1.equals(b), false);
-        assertEquals(b.equals(a1), false);
-        
-        assertEquals(b.equals("Weird type"), false);
-        assertEquals(b.equals(null), false);
+
+        assertThat(a1.equals(a1)).isTrue();
+        assertThat(a1.equals(a2)).isTrue();
+        assertThat(a2.equals(a1)).isTrue();
+        assertThat(a2.equals(a2)).isTrue();
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
+
+        assertThat(a1.equals(b)).isFalse();
+        assertThat(b.equals(a1)).isFalse();
+
+        Object obj = "Weird type";
+        assertThat(b.equals(obj)).isFalse();
+        assertThat(b.equals(null)).isFalse();
     }
 
     @Test
-    public void test_propertyDefine_propertyRemove() {
+    void test_toString() {
+        FlexiBean test = new FlexiBean();
+        test.set("a", "b");
+        assertThat(test.toString()).isEqualTo("FlexiBean{a=b}");
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    void test_basics() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        assertThat(test.contains("a")).isFalse();
+        assertThat(test.contains("b")).isFalse();
+        assertThat(test.get("a")).isNull();
+        assertThat(test.get("b")).isNull();
+
+        test.set("a", "x");
+        assertThat(test.size()).isEqualTo(1);
+        assertThat(test.contains("a")).isTrue();
+        assertThat(test.contains("b")).isFalse();
+        assertThat(test.get("a")).isEqualTo("x");
+        assertThat(test.get("b")).isNull();
+
+        test.set("b", "y");
+        assertThat(test.size()).isEqualTo(2);
+        assertThat(test.contains("a")).isTrue();
+        assertThat(test.contains("b")).isTrue();
+        assertThat(test.get("a")).isEqualTo("x");
+        assertThat(test.get("b")).isEqualTo("y");
+
+        test.set("b", "z");
+        assertThat(test.size()).isEqualTo(2);
+        assertThat(test.contains("a")).isTrue();
+        assertThat(test.contains("b")).isTrue();
+        assertThat(test.get("a")).isEqualTo("x");
+        assertThat(test.get("b")).isEqualTo("z");
+
+        test.remove("b");
+        assertThat(test.size()).isEqualTo(1);
+        assertThat(test.contains("a")).isTrue();
+        assertThat(test.contains("b")).isFalse();
+        assertThat(test.get("a")).isEqualTo("x");
+        assertThat(test.get("b")).isNull();
+    }
+
+    @Test
+    void test_type_string() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        test.set("a", "x");
+        assertThat(test.get("a")).isEqualTo("x");
+        assertThat(test.get("a", String.class)).isEqualTo("x");
+        assertThat(test.getString("a")).isEqualTo("x");
+        assertThat(test.getString("b")).isNull();
+    }
+
+    @Test
+    void test_type_long() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        test.set("a", Long.valueOf(2));
+        assertThat(test.get("a")).isEqualTo(Long.valueOf(2));
+        assertThat(test.get("a", Long.class)).isEqualTo(Long.valueOf(2));
+        assertThat(test.getLong("a")).isEqualTo(2L);
+        assertThat(test.getLong("a", 1L)).isEqualTo(2);
+        assertThat(test.getLong("b", 1L)).isEqualTo(1);
+    }
+
+    @Test
+    void test_type_int() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        test.set("a", Integer.valueOf(2));
+        assertThat(test.get("a")).isEqualTo(Integer.valueOf(2));
+        assertThat(test.get("a", Integer.class)).isEqualTo(Integer.valueOf(2));
+        assertThat(test.getInt("a")).isEqualTo(2);
+        assertThat(test.getInt("a", 1)).isEqualTo(2);
+        assertThat(test.getInt("b", 1)).isEqualTo(1);
+    }
+
+    @Test
+    void test_type_double() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        test.set("a", Double.valueOf(1.2d));
+        assertThat(test.get("a")).isEqualTo(Double.valueOf(1.2d));
+        assertThat(test.get("a", Double.class)).isEqualTo(Double.valueOf(1.2d));
+        assertThat(test.getDouble("a")).isEqualTo(1.2d);
+        assertThat(test.getDouble("a", 0.5d)).isEqualTo(1.2d);
+        assertThat(test.getDouble("b", 0.5d)).isEqualTo(0.5d, offset(0.0001d));
+    }
+
+    @Test
+    void test_type_boolean() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        test.set("a", Boolean.TRUE);
+        assertThat(test.get("a")).isEqualTo(Boolean.TRUE);
+        assertThat(test.get("a", Boolean.class)).isEqualTo(Boolean.TRUE);
+        assertThat(test.getBoolean("a")).isTrue();
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    void test_propertyDefine_propertyRemove() {
         FlexiBean flexi = new FlexiBean();
-        assertEquals(flexi.propertyNames().size(), 0);
+        assertThat(flexi.propertyNames().size()).isEqualTo(0);
         flexi.propertyDefine("name", String.class);
-        assertEquals(flexi.propertyNames().size(), 1);
+        assertThat(flexi.propertyNames().size()).isEqualTo(1);
         Property<Object> prop = flexi.property("name");
-        assertEquals(prop.name(), "name");
-        assertEquals(prop.get(), null);
+        assertThat(prop.name()).isEqualTo("name");
+        assertThat(prop.get()).isNull();
         flexi.propertyRemove("name");
-        assertEquals(flexi.propertyNames().size(), 0);
+        assertThat(flexi.propertyNames().size()).isEqualTo(0);
     }
 
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         FlexiBean flexi = new FlexiBean();
         DynamicMetaBean meta = flexi.metaBean();
-        assertEquals(meta.metaPropertyCount(), 0);
-        
+        assertThat(meta.metaPropertyCount()).isEqualTo(0);
+
         meta.metaPropertyDefine("name", String.class);
-        assertEquals(meta.metaPropertyCount(), 1);
+        assertThat(meta.metaPropertyCount()).isEqualTo(1);
         MetaProperty<Object> prop = meta.metaProperty("name");
-        assertEquals(prop.name(), "name");
-        assertEquals(prop.get(flexi), null);
-        
+        assertThat(prop.name()).isEqualTo("name");
+        assertThat(prop.get(flexi)).isNull();
+
         meta.metaPropertyDefine("name", String.class);
-        assertEquals(meta.metaPropertyCount(), 1);
-        
+        assertThat(meta.metaPropertyCount()).isEqualTo(1);
+
         MetaProperty<Object> prop2 = meta.metaProperty("address");
-        assertNotNull(prop2);
-        assertEquals(meta.metaPropertyCount(), 1);  // meta-property object created but data not changed
+        assertThat(prop2).isNotNull();
+        assertThat(meta.metaPropertyCount()).isEqualTo(1); // meta-property object created but data not changed
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_invalidProperty() {
-        FlexiBean flexi = new FlexiBean();
-        flexi.propertyDefine("bad-name", String.class);
+    //-----------------------------------------------------------------------
+    @Test
+    void test_putAll() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        Map<String, Object> map = new HashMap<>();
+        test.putAll(map);
+        assertThat(test.size()).isEqualTo(0);
+        map.put("a", "x");
+        map.put("b", "y");
+        test.putAll(map);
+        assertThat(test.size()).isEqualTo(2);
+        assertThat(test.contains("a")).isTrue();
+        assertThat(test.contains("b")).isTrue();
+        map.clear();
+        map.put("c", "z");
+        test.putAll(map);
+        assertThat(test.size()).isEqualTo(3);
+        assertThat(test.contains("a")).isTrue();
+        assertThat(test.contains("b")).isTrue();
+        assertThat(test.contains("c")).isTrue();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_append_invalidProperty() {
-        FlexiBean flexi = new FlexiBean();
-        flexi.append("bad-name", "a");
+    @Test
+    void test_remove() {
+        FlexiBean test = new FlexiBean();
+        assertThat(test.size()).isEqualTo(0);
+        test.remove("a");
+        assertThat(test.size()).isEqualTo(0);
+        test.put("a", "x");
+        test.remove("a");
+        assertThat(test.size()).isEqualTo(0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_set_invalidProperty() {
-        FlexiBean flexi = new FlexiBean();
-        flexi.set("bad-name", "a");
+    @Test
+    void test_toMap() {
+        FlexiBean base = new FlexiBean();
+        Map<String, Object> test = base.toMap();
+        assertThat(test.size()).isEqualTo(0);
+        base.put("a", "x");
+        base.put("b", "y");
+        test = base.toMap();
+        assertThat(test.size()).isEqualTo(2);
+        assertThat(test.containsKey("a")).isTrue();
+        assertThat(test.containsKey("b")).isTrue();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_put_invalidProperty() {
+    //-------------------------------------------------------------------------
+    @Test
+    void test_invalidProperty() {
         FlexiBean flexi = new FlexiBean();
-        flexi.put("bad-name", "a");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.propertyDefine("bad-name", String.class));
+    }
+
+    @Test
+    void test_append_invalidProperty() {
+        FlexiBean flexi = new FlexiBean();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.append("bad-name", "a"));
+    }
+
+    @Test
+    void test_set_invalidProperty() {
+        FlexiBean flexi = new FlexiBean();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.set("bad-name", "a"));
+    }
+
+    @Test
+    void test_put_invalidProperty() {
+        FlexiBean flexi = new FlexiBean();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> flexi.put("bad-name", "a"));
+    }
+
+    @Test
+    void test_putAll_invalidKey() {
+        FlexiBean test = new FlexiBean();
+        Map<String, Object> map = new HashMap<>();
+        map.put("1", "x");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> test.putAll(map));
     }
 
 }

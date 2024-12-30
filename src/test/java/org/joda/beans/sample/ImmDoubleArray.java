@@ -15,22 +15,22 @@
  */
 package org.joda.beans.sample;
 
-import org.joda.beans.*;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import org.joda.beans.Bean;
+import org.joda.beans.BeanBuilder;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
 import org.joda.beans.gen.BeanDefinition;
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
 import org.joda.beans.impl.direct.DirectPrivateBeanBuilder;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import org.joda.beans.Bean;
-import org.joda.beans.BeanBuilder;
-import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
 
 /**
  * Mock JavaBean, used for testing.
@@ -132,8 +132,8 @@ public final class ImmDoubleArray<T> implements Serializable, ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDoubleArray<?> other = (ImmDoubleArray<?>) obj;
-            return JodaBeanUtils.equal(values, other.values) &&
-                    JodaBeanUtils.equal(values2, other.values2);
+            return JodaBeanUtils.equal(this.values, other.values) &&
+                    JodaBeanUtils.equal(this.values2, other.values2);
         }
         return false;
     }
@@ -196,9 +196,9 @@ public final class ImmDoubleArray<T> implements Serializable, ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -823812830:  // values
-                    return values;
+                    return this.values;
                 case 231606096:  // values2
-                    return values2;
+                    return this.values2;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -280,9 +280,9 @@ public final class ImmDoubleArray<T> implements Serializable, ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -823812830:  // values
-                    return values;
+                    return this.values;
                 case 231606096:  // values2
-                    return values2;
+                    return this.values2;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

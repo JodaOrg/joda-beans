@@ -35,6 +35,8 @@ class BeanData {
     private String beanStyle;
     /** The bean meta scope. */
     private String beanMetaScope;
+    /** The bean meta implements. */
+    private String beanMetaImplements;
     /** The bean builder scope. */
     private String beanBuilderScope;
     /** The bean builder style. */
@@ -80,7 +82,7 @@ class BeanData {
     /** The generic argument of the bean superclass. */
     private String superTypeGeneric;
     /** The list of properties, in the order they are declared. */
-    private List<PropertyData> properties = new ArrayList<>();
+    private final List<PropertyData> properties = new ArrayList<>();
     /** The serializable flag. */
     private boolean serializable;
     /** The manual serialization version id flag. */
@@ -121,8 +123,16 @@ class BeanData {
      * @param cls  the class, not null
      */
     public void ensureImport(Class<?> cls) {
-        if (currentImports.contains(cls.getName()) == false) {
-            newImports.add(cls.getName());
+        ensureImport(cls.getName());
+    }
+
+    /**
+     * Ensures an import is present.
+     * @param className  the class name, not null
+     */
+    void ensureImport(String className) {
+        if (!currentImports.contains(className)) {
+            newImports.add(className);
         }
     }
 
@@ -207,7 +217,7 @@ class BeanData {
      * @return the flag
      */
     public boolean isBeanStyleGenerateProperties() {
-        return "full".equals(beanStyle) || ("smart".equals(beanStyle) && isImmutable() == false);
+        return "full".equals(beanStyle) || ("smart".equals(beanStyle) && !isImmutable());
     }
 
     /**
@@ -251,7 +261,7 @@ class BeanData {
      * @return the scope
      */
     public String getEffectiveMetaScope() {
-        String scope = beanMetaScope;
+        var scope = beanMetaScope;
         if ("smart".equals(scope)) {
             scope = typeScope;
         }
@@ -264,6 +274,23 @@ class BeanData {
      */
     public boolean isMetaScopePrivate() {
         return "private".equals(beanMetaScope) || isBeanStyleLight();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the bean meta implements.
+     * @return the meta implements
+     */
+    public String getBeanMetaImplements() {
+        return beanMetaImplements;
+    }
+
+    /**
+     * Sets the bean meta implements.
+     * @param metaImplements  the meta implements
+     */
+    public void setBeanMetaImplements(String metaImplements) {
+        this.beanMetaImplements = metaImplements;
     }
 
     //-----------------------------------------------------------------------
@@ -299,7 +326,7 @@ class BeanData {
      * @return the scope
      */
     public String getEffectiveBuilderScope() {
-        String scope = beanBuilderScope;
+        var scope = beanBuilderScope;
         if ("smart".equals(scope)) {
             scope = typeScope;
         }
@@ -336,7 +363,7 @@ class BeanData {
      * @return true if generated
      */
     public boolean isSkipBuilderGeneration() {
-        return (isMutable() && isBuilderScopeVisible() == false) || isBeanStyleLight() || isBeanBuilderManual();
+        return (isMutable() && !isBuilderScopeVisible()) || isBeanStyleLight() || isBeanBuilderManual();
     }
 
     //-----------------------------------------------------------------------
@@ -386,7 +413,7 @@ class BeanData {
      * @return the factory name
      */
     public boolean isFactoryRequired() {
-        return factoryName.length() > 0;
+        return !factoryName.isEmpty();
     }
 
     /**
@@ -428,12 +455,7 @@ class BeanData {
      * @return the flag
      */
     public boolean isPropertyChangeSupport() {
-        for (PropertyData prop : properties) {
-            if (prop.isBound()) {
-                return true;
-            }
-        }
-        return false;
+        return properties.stream().anyMatch(PropertyData::isBound);
     }
 
     //-----------------------------------------------------------------------
@@ -716,7 +738,7 @@ class BeanData {
     }
 
     /**
-     * Is the clone method to be skiped.
+     * Is the clone method to be skipped.
      * @return true to generate
      */
     public boolean isSkipCloneGeneration() {
@@ -807,7 +829,7 @@ class BeanData {
 
     /**
      * Gets the scope of the type.
-     * @return true if manual
+     * @return the scope
      */
     public String getTypeScope() {
         return typeScope;
@@ -869,17 +891,17 @@ class BeanData {
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getTypeGeneric(boolean includeBrackets) {
-        if (isTypeGeneric() == false) {
+        if (!isTypeGeneric()) {
             return "";
         }
-        String result = typeGenericName[0] + typeGenericExtends[0];
+        var result = typeGenericName[0] + typeGenericExtends[0];
         if (typeGenericExtends.length > 1) {
             result += ", " + typeGenericName[1] + typeGenericExtends[1];
             if (typeGenericExtends.length > 2) {
                 result += ", " + typeGenericName[2] + typeGenericExtends[2];
             }
         }
-        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+        return includeBrackets && !result.isEmpty() ? '<' + result + '>' : result;
     }
 
     /**
@@ -888,17 +910,17 @@ class BeanData {
      * @return the generic type name, or a blank string if not generic, not null
      */
     public String getTypeGenericName(boolean includeBrackets) {
-        if (isTypeGeneric() == false) {
+        if (!isTypeGeneric()) {
             return "";
         }
-        String result = typeGenericName[0];
+        var result = typeGenericName[0];
         if (typeGenericExtends.length > 1) {
             result += ", " + typeGenericName[1];
             if (typeGenericExtends.length > 2) {
                 result += ", " + typeGenericName[2];
             }
         }
-        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+        return includeBrackets && !result.isEmpty() ? '<' + result + '>' : result;
     }
 
     /**
@@ -924,8 +946,8 @@ class BeanData {
      * @return the generic type name, not null
      */
     public String getTypeGenericName(int typeParamIndex, boolean includeBrackets) {
-        String result = typeGenericName[typeParamIndex];
-        return includeBrackets && result.length() > 0 ? '<' + result + '>' : result;
+        var result = typeGenericName[typeParamIndex];
+        return includeBrackets && !result.isEmpty() ? '<' + result + '>' : result;
     }
 
     /**
@@ -934,7 +956,7 @@ class BeanData {
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
     public String getTypeGenericErased(int typeParamIndex) {
-        String extend = typeGenericExtends[typeParamIndex];
+        var extend = typeGenericExtends[typeParamIndex];
         return extend.startsWith(" extends ") ? extend.substring(9) : "Object";
     }
 
@@ -954,9 +976,9 @@ class BeanData {
      * @return the generic type extends clause, or a blank string if not generic or no extends, not null
      */
     public String getTypeGenericExtends(int typeParamIndex, String[] typeParamNames) {
-        String genericClause = typeGenericExtends[typeParamIndex];
+        var genericClause = typeGenericExtends[typeParamIndex];
         genericClause = genericClause.replace("<" + typeGenericName[typeParamIndex] + ">", "<" + typeParamNames[typeParamIndex] + ">");
-        for (int i = 0; i < typeGenericName.length; i++) {
+        for (var i = 0; i < typeGenericName.length; i++) {
             genericClause = genericClause.replace("<" + typeGenericName[i] + ">", "<" + typeParamNames[i] + ">");
             genericClause = genericClause.replace(" extends " + typeGenericName[i] + ">", " extends " + typeParamNames[i] + ">");
             genericClause = genericClause.replace(" super " + typeGenericName[i] + ">", " super " + typeParamNames[i] + ">");
@@ -985,10 +1007,10 @@ class BeanData {
      * @return the wildcarded type, not null
      */
     public String getTypeWildcard() {
-        if (isTypeGeneric() == false) {
+        if (!isTypeGeneric()) {
             return typeRaw;
         }
-        String result = "?";
+        var result = "?";
         if (typeGenericExtends.length > 1) {
             result += ", ?";
             if (typeGenericExtends.length > 2) {
@@ -1004,10 +1026,7 @@ class BeanData {
      * @return true if a type parameter of this bean
      */
     public boolean isTypeGenerifiedBy(String type) {
-        if (typeGenericName.length > 2 && typeGenericName[2].equals(type)) {
-            return true;
-        }
-        if (typeGenericName.length > 1 && typeGenericName[1].equals(type)) {
+        if ((typeGenericName.length > 2 && typeGenericName[2].equals(type)) || (typeGenericName.length > 1 && typeGenericName[1].equals(type))) {
             return true;
         }
         if (typeGenericName.length > 0 && typeGenericName[0].equals(type)) {
@@ -1022,7 +1041,7 @@ class BeanData {
      * @return true if generified
      */
     public boolean isSuperTypeGeneric() {
-        return superTypeGeneric.length() > 0;
+        return !superTypeGeneric.isEmpty();
     }
 
     /**
@@ -1039,7 +1058,7 @@ class BeanData {
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getSuperTypeGeneric(boolean includeBrackets) {
-        return includeBrackets && superTypeGeneric.length() > 0 ? '<' + superTypeGeneric + '>' : superTypeGeneric;
+        return includeBrackets && !superTypeGeneric.isEmpty() ? '<' + superTypeGeneric + '>' : superTypeGeneric;
     }
 
     /**
@@ -1055,12 +1074,7 @@ class BeanData {
      * @return true if validated
      */
     public boolean isValidated() {
-        for (PropertyData property : properties) {
-            if (property.isValidated()) {
-                return true;
-            }
-        }
-        return false;
+        return properties.stream().anyMatch(PropertyData::isValidated);
     }
 
     /**

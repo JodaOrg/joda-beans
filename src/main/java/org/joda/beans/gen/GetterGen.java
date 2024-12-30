@@ -16,7 +16,6 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,9 +48,12 @@ abstract class GetterGen {
         static final GetGetterGen PRIVATE = new GetGetterGen("private ");
         private final String access;
         static GetGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private GetGetterGen(String access) {
             this.access = access;
@@ -69,9 +71,12 @@ abstract class GetterGen {
         static final IsGetterGen PRIVATE = new IsGetterGen("private ");
         private final String access;
         static IsGetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private IsGetterGen(String access) {
             this.access = access;
@@ -93,9 +98,12 @@ abstract class GetterGen {
         static final GetterGen PRIVATE = new CloneNNGetterGen("private ");
         private final String access;
         static GetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private CloneNNGetterGen(String access) {
             this.access = access;
@@ -113,9 +121,12 @@ abstract class GetterGen {
         static final GetterGen PRIVATE = new CloneGetterGen("private ");
         private final String access;
         static GetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private CloneGetterGen(String access) {
             this.access = access;
@@ -133,9 +144,12 @@ abstract class GetterGen {
         static final GetterGen PRIVATE = new CloneCastNNGetterGen("private ");
         private final String access;
         static GetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private CloneCastNNGetterGen(String access) {
             this.access = access;
@@ -153,9 +167,12 @@ abstract class GetterGen {
         static final GetterGen PRIVATE = new CloneCastGetterGen("private ");
         private final String access;
         static GetterGen of(String access) {
-            return (access.equals("private") ? PRIVATE :
-                    access.equals("package") ? PACKAGE :
-                    access.equals("protected") ? PROTECTED : PUBLIC);
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
         }
         private CloneCastGetterGen(String access) {
             this.access = access;
@@ -166,14 +183,41 @@ abstract class GetterGen {
         }
     }
 
+    static final class CloneArrayGetterGen extends GetterGen {
+        static final GetterGen PUBLIC = new CloneArrayGetterGen("public ");
+        static final GetterGen PROTECTED = new CloneArrayGetterGen("protected ");
+        static final GetterGen PACKAGE = new CloneArrayGetterGen("");
+        static final GetterGen PRIVATE = new CloneArrayGetterGen("private ");
+        private final String access;
+
+        static GetterGen of(String access) {
+            return switch (access) {
+                case "private" -> PRIVATE;
+                case "package" -> PACKAGE;
+                case "protected" -> PROTECTED;
+                default -> PUBLIC;
+            };
+        }
+
+        private CloneArrayGetterGen(String access) {
+            this.access = access;
+        }
+
+        @Override
+        List<String> generateGetter(PropertyData prop) {
+            return doGenerateGetter(prop, access, "get",
+                    "(" + prop.getFieldType() + ") JodaBeanUtils.cloneArray(" + prop.getFieldName() + ")");
+        }
+    }
+
     static final class Optional8GetterGen extends GetterGen {
         static final GetterGen PUBLIC = new Optional8GetterGen();
         @Override
         List<String> generateGetter(PropertyData prop) {
-            List<String> list = new ArrayList<>();
+            var list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Gets " + prop.getFirstComment());
-            for (String comment : prop.getComments()) {
+            for (var comment : prop.getComments()) {
                 list.add("\t * " + comment);
             }
             list.add("\t * @return the optional value of the property, not null");
@@ -187,21 +231,26 @@ abstract class GetterGen {
             if (prop.isDeprecated()) {
                 list.add("\t@Deprecated");
             }
-            if ("Double".equals(prop.getType())) {
-                list.add("\tpublic OptionalDouble get" + prop.getUpperName() + "() {");
-                list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
-                    "OptionalDouble.of(" + prop.getFieldName() + ") : OptionalDouble.empty();");
-            } else if ("Integer".equals(prop.getType())) {
-                list.add("\tpublic OptionalInt get" + prop.getUpperName() + "() {");
-                list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
-                    "OptionalInt.of(" + prop.getFieldName() + ") : OptionalInt.empty();");
-            } else if ("Long".equals(prop.getType())) {
-                list.add("\tpublic OptionalLong get" + prop.getUpperName() + "() {");
-                list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
-                    "OptionalLong.of(" + prop.getFieldName() + ") : OptionalLong.empty();");
-            } else {
-                list.add("\tpublic Optional<" + prop.getType() + "> get" + prop.getUpperName() + "() {");
-                list.add("\t\treturn Optional.ofNullable(" + prop.getFieldName() + ");");
+            switch (prop.getType()) {
+                case "Double" -> {
+                    list.add("\tpublic OptionalDouble get" + prop.getUpperName() + "() {");
+                    list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
+                            "OptionalDouble.of(" + prop.getFieldName() + ") : OptionalDouble.empty();");
+                }
+                case "Integer" -> {
+                    list.add("\tpublic OptionalInt get" + prop.getUpperName() + "() {");
+                    list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
+                            "OptionalInt.of(" + prop.getFieldName() + ") : OptionalInt.empty();");
+                }
+                case "Long" -> {
+                    list.add("\tpublic OptionalLong get" + prop.getUpperName() + "() {");
+                    list.add("\t\treturn " + prop.getFieldName() + " != null ? " +
+                            "OptionalLong.of(" + prop.getFieldName() + ") : OptionalLong.empty();");
+                }
+                case null, default -> {
+                    list.add("\tpublic Optional<" + prop.getType() + "> get" + prop.getUpperName() + "() {");
+                    list.add("\t\treturn Optional.ofNullable(" + prop.getFieldName() + ");");
+                }
             }
             list.add("\t}");
             list.add("");
@@ -217,10 +266,10 @@ abstract class GetterGen {
         static final GetterGen PUBLIC = new OptionalGuavaGetterGen();
         @Override
         List<String> generateGetter(PropertyData prop) {
-            List<String> list = new ArrayList<>();
+            var list = new ArrayList<String>();
             list.add("\t/**");
             list.add("\t * Gets " + prop.getFirstComment());
-            for (String comment : prop.getComments()) {
+            for (var comment : prop.getComments()) {
                 list.add("\t * " + comment);
             }
             list.add("\t * @return the optional value of the property, not null");
@@ -250,7 +299,7 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new ManualGetterGen();
         @Override
         List<String> generateGetter(PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 
@@ -258,7 +307,7 @@ abstract class GetterGen {
         static final GetterGen INSTANCE = new NoGetterGen();
         @Override
         List<String> generateGetter(PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
         @Override
         String generateGetInvoke(PropertyData prop) {
@@ -267,10 +316,10 @@ abstract class GetterGen {
     }
 
     private static List<String> doGenerateGetter(PropertyData prop, String access, String prefix, String expression) {
-        List<String> list = new ArrayList<>();
+        var list = new ArrayList<String>();
         list.add("\t/**");
         list.add("\t * Gets " + prop.getFirstComment());
-        for (String comment : prop.getComments()) {
+        for (var comment : prop.getComments()) {
             list.add("\t * " + comment);
         }
         list.add("\t * @return the value of the property" + prop.getNotNullJavadoc());

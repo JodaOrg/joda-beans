@@ -15,41 +15,39 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.MutableListFinalBean;
 import org.joda.beans.sample.MutableListNonFinalBean;
-import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test list with builder.
  */
-public class TestMutableListBeans {
+class TestMutableListBeans {
 
     @Test
-    public void test_finalBean_noList() {
+    void test_finalBean_noList() {
         MutableListFinalBean test = MutableListFinalBean.builder().build();
-        assertEquals(test.getStrings(), null);
+        assertThat(test.getStrings()).isNull();
     }
 
     @Test
-    public void test_finalBean_list() {
+    void test_finalBean_list() {
         MutableListFinalBean test = MutableListFinalBean.builder().strings("A", "B").build();
-        assertEquals(test.getStrings(), ImmutableList.of("A", "B"));
+        assertThat(test.getStrings()).containsExactly("A", "B");
     }
 
     @Test
-    public void test_nonFinalBean_noList() {
+    void test_nonFinalBean_noList() {
         MutableListNonFinalBean test = MutableListNonFinalBean.builder().build();
-        assertEquals(test.getStrings(), null);
+        assertThat(test.getStrings()).isNull();
     }
 
     @Test
-    public void test_nonFinalBean_list() {
+    void test_nonFinalBean_list() {
         MutableListNonFinalBean test = MutableListNonFinalBean.builder().strings("A", "B").build();
-        assertEquals(test.getStrings(), ImmutableList.of("A", "B"));
+        assertThat(test.getStrings()).containsExactly("A", "B");
     }
 
 }

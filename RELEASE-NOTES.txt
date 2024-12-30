@@ -3,6 +3,8 @@ Joda-Beans
 ================================================
 Joda-Beans is a library that provides full bean and property support for the JDK.
 
+The release runs on Java 21 or later.
+
 See https://www.joda.org/joda-beans/changes-report.html for changes
 
 

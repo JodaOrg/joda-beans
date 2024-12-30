@@ -1,0 +1,9 @@
+arr (2)
+- int 1
+- map (3)
+  = ext type=32 'org.joda.beans.sample.ImmOptional' (bean)
+    nil
+  = str 'optString'
+    str 'A'
+  = str 'twelve'
+    int 12

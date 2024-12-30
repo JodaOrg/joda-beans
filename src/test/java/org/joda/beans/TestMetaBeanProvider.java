@@ -15,7 +15,10 @@
  */
 package org.joda.beans;
 
-public class TestMetaBeanProvider implements MetaBeanProvider {
+/**
+ * A mock {@link MetaBeanProvider} for testing.
+ */
+class TestMetaBeanProvider implements MetaBeanProvider {
 
   @Override
   public MetaBean findMetaBean(Class<?> cls) {

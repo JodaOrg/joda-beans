@@ -15,8 +15,8 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -25,12 +25,12 @@ import java.util.NoSuchElementException;
 
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.sample.CompanyAddress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using Person.
  */
-public class TestCompanyAddress {
+class TestCompanyAddress {
 
     private static final int NUM_PROPERTIES = 5;
     private static final String STREET = "street";
@@ -39,239 +39,231 @@ public class TestCompanyAddress {
     private static final String COMPANY_NAME = "companyName";
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         Bean test = CompanyAddress.meta().builder().build();
         
-        assertEquals(test instanceof CompanyAddress, true);
+        assertThat(test instanceof CompanyAddress).isTrue();
         
-        assertEquals(test.metaBean(), CompanyAddress.meta());
+        assertThat(test.metaBean()).isEqualTo(CompanyAddress.meta());
         
-        assertEquals(test.propertyNames().contains(STREET), true);
-        assertEquals(test.propertyNames().contains(CITY), true);
-        assertEquals(test.propertyNames().contains(NUMBER), true);
-        assertEquals(test.propertyNames().contains(COMPANY_NAME), true);
-        assertEquals(test.propertyNames().contains("Rubbish"), false);
+        assertThat(test.propertyNames()).contains(STREET);
+        assertThat(test.propertyNames()).contains(CITY);
+        assertThat(test.propertyNames()).contains(NUMBER);
+        assertThat(test.propertyNames()).contains(COMPANY_NAME);
+        assertThat(test.propertyNames()).doesNotContain("Rubbish");
         
-        assertEquals(test.property(STREET).name(), STREET);
-        assertEquals(test.property(CITY).name(), CITY);
-        assertEquals(test.property(NUMBER).name(), NUMBER);
-        assertEquals(test.property(COMPANY_NAME).name(), COMPANY_NAME);
+        assertThat(test.property(STREET).name()).isEqualTo(STREET);
+        assertThat(test.property(CITY).name()).isEqualTo(CITY);
+        assertThat(test.property(NUMBER).name()).isEqualTo(NUMBER);
+        assertThat(test.property(COMPANY_NAME).name()).isEqualTo(COMPANY_NAME);
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void test_bean_invalidPropertyName() {
+    @Test
+    void test_bean_invalidPropertyName() {
         Bean test = CompanyAddress.meta().builder().build();
-        try {
-            test.property("Rubbish");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> test.property("Rubbish"));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MetaBean test = CompanyAddress.meta();
         
-        assertEquals(test.beanType(), CompanyAddress.class);
+        assertThat(test.beanType()).isEqualTo(CompanyAddress.class);
         
-        assertEquals(test.beanName(), CompanyAddress.class.getName());
+        assertThat(test.beanName()).isEqualTo(CompanyAddress.class.getName());
         
-        assertEquals(test.metaPropertyCount(), NUM_PROPERTIES);
+        assertThat(test.metaPropertyCount()).isEqualTo(NUM_PROPERTIES);
         
-        assertEquals(test.metaPropertyExists(STREET), true);
-        assertEquals(test.metaPropertyExists(CITY), true);
-        assertEquals(test.metaPropertyExists(NUMBER), true);
-        assertEquals(test.metaPropertyExists("Rubbish"), false);
+        assertThat(test.metaPropertyExists(STREET)).isTrue();
+        assertThat(test.metaPropertyExists(CITY)).isTrue();
+        assertThat(test.metaPropertyExists(NUMBER)).isTrue();
+        assertThat(test.metaPropertyExists("Rubbish")).isFalse();
         
-        assertEquals(test.metaProperty(STREET).name(), STREET);
-        assertEquals(test.metaProperty(CITY).name(), CITY);
-        assertEquals(test.metaProperty(NUMBER).name(), NUMBER);
+        assertThat(test.metaProperty(STREET).name()).isEqualTo(STREET);
+        assertThat(test.metaProperty(CITY).name()).isEqualTo(CITY);
+        assertThat(test.metaProperty(NUMBER).name()).isEqualTo(NUMBER);
         
         Map<String, MetaProperty<?>> map = test.metaPropertyMap();
-        assertEquals(map.size(), NUM_PROPERTIES);
-        assertEquals(map.containsKey(STREET), true);
-        assertEquals(map.containsKey(CITY), true);
-        assertEquals(map.containsKey(NUMBER), true);
+        assertThat(map.size()).isEqualTo(NUM_PROPERTIES);
+        assertThat(map.containsKey(STREET)).isTrue();
+        assertThat(map.containsKey(CITY)).isTrue();
+        assertThat(map.containsKey(NUMBER)).isTrue();
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void test_metaBean_invalidPropertyName() {
+    @Test
+    void test_metaBean_invalidPropertyName() {
         MetaBean test = CompanyAddress.meta();
-        try {
-            test.metaProperty("Rubbish");
-        } catch (NoSuchElementException ex) {
-            System.out.println(ex.getMessage());
-            throw ex;
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> test.metaProperty("Rubbish"));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_namedPropertyMethod_street() {
+    void test_namedPropertyMethod_street() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.street();
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().street());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().street());
         
-        assertEquals(test.get(), null);
+        assertThat(test.get()).isNull();
         address.setStreet("A");
-        assertEquals(test.get(), "A");
+        assertThat(test.get()).isEqualTo("A");
         test.set("B");
-        assertEquals(test.get(), "B");
-        assertEquals(test.put("C"), "B");
-        assertEquals(test.get(), "C");
+        assertThat(test.get()).isEqualTo("B");
+        assertThat(test.put("C")).isEqualTo("B");
+        assertThat(test.get()).isEqualTo("C");
     }
 
     @Test
-    public void test_namedPropertyMethod_companyName() {
+    void test_namedPropertyMethod_companyName() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.companyName();
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().companyName());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().companyName());
         
-        assertEquals(test.get(), null);
+        assertThat(test.get()).isNull();
         address.setCompanyName("A");
-        assertEquals(test.get(), "A");
+        assertThat(test.get()).isEqualTo("A");
         test.set("B");
-        assertEquals(test.get(), "B");
-        assertEquals(test.put("C"), "B");
-        assertEquals(test.get(), "C");
+        assertThat(test.get()).isEqualTo("B");
+        assertThat(test.put("C")).isEqualTo("B");
+        assertThat(test.get()).isEqualTo("C");
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_property_String_street() {
+    void test_property_String_street() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.property(STREET);
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().street());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().street());
         
-        assertEquals(test.get(), null);
+        assertThat(test.get()).isNull();
         address.setStreet("A");
-        assertEquals(test.get(), "A");
+        assertThat(test.get()).isEqualTo("A");
         test.set("B");
-        assertEquals(test.get(), "B");
-        assertEquals(test.put("C"), "B");
-        assertEquals(test.get(), "C");
+        assertThat(test.get()).isEqualTo("B");
+        assertThat(test.put("C")).isEqualTo("B");
+        assertThat(test.get()).isEqualTo("C");
     }
 
     @Test
-    public void test_property_String_companyName() {
+    void test_property_String_companyName() {
         CompanyAddress address = new CompanyAddress();
         Property<String> test = address.property(COMPANY_NAME);
         
-        assertSame(test.bean(), address);
-        assertSame(test.metaProperty(), CompanyAddress.meta().companyName());
+        assertThat((Object) test.bean()).isSameAs(address);
+        assertThat(test.metaProperty()).isSameAs(CompanyAddress.meta().companyName());
         
-        assertEquals(test.get(), null);
+        assertThat(test.get()).isNull();
         address.setCompanyName("A");
-        assertEquals(test.get(), "A");
+        assertThat(test.get()).isEqualTo("A");
         test.set("B");
-        assertEquals(test.get(), "B");
-        assertEquals(test.put("C"), "B");
-        assertEquals(test.get(), "C");
+        assertThat(test.get()).isEqualTo("B");
+        assertThat(test.put("C")).isEqualTo("B");
+        assertThat(test.get()).isEqualTo("C");
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_namedMetaPropertyMethod_street() {
+    void test_namedMetaPropertyMethod_street() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().street();
         
-        assertEquals(test.metaBean().beanType(), CompanyAddress.class);
-        assertEquals(test.propertyType(), String.class);
-        assertEquals(test.name(), STREET);
-        assertEquals(test.style(), PropertyStyle.READ_WRITE);
+        assertThat(test.metaBean().beanType()).isEqualTo(CompanyAddress.class);
+        assertThat(test.propertyType()).isEqualTo(String.class);
+        assertThat(test.name()).isEqualTo(STREET);
+        assertThat(test.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
-        assertEquals(test.get(address), null);
+        assertThat(test.get(address)).isNull();
         address.setStreet("A");
-        assertEquals(test.get(address), "A");
+        assertThat(test.get(address)).isEqualTo("A");
         test.set(address, "B");
-        assertEquals(test.get(address), "B");
-        assertEquals(test.put(address, "C"), "B");
-        assertEquals(test.get(address), "C");
+        assertThat(test.get(address)).isEqualTo("B");
+        assertThat(test.put(address, "C")).isEqualTo("B");
+        assertThat(test.get(address)).isEqualTo("C");
     }
 
     @Test
-    public void test_namedMetaPropertyMethod_companyName() {
+    void test_namedMetaPropertyMethod_companyName() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().companyName();
         
-        assertEquals(test.metaBean().beanType(), CompanyAddress.class);
-        assertEquals(test.propertyType(), String.class);
-        assertEquals(test.name(), COMPANY_NAME);
-        assertEquals(test.style(), PropertyStyle.READ_WRITE);
+        assertThat(test.metaBean().beanType()).isEqualTo(CompanyAddress.class);
+        assertThat(test.propertyType()).isEqualTo(String.class);
+        assertThat(test.name()).isEqualTo(COMPANY_NAME);
+        assertThat(test.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
-        assertEquals(test.get(address), null);
+        assertThat(test.get(address)).isNull();
         address.setCompanyName("A");
-        assertEquals(test.get(address), "A");
+        assertThat(test.get(address)).isEqualTo("A");
         test.set(address, "B");
-        assertEquals(test.get(address), "B");
-        assertEquals(test.put(address, "C"), "B");
-        assertEquals(test.get(address), "C");
+        assertThat(test.get(address)).isEqualTo("B");
+        assertThat(test.put(address, "C")).isEqualTo("B");
+        assertThat(test.get(address)).isEqualTo("C");
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_String_street() {
+    void test_metaProperty_String_street() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().metaProperty(STREET);
         
-        assertEquals(test.metaBean().beanType(), CompanyAddress.class);
-        assertEquals(test.propertyType(), String.class);
-        assertEquals(test.name(), STREET);
-        assertEquals(test.style(), PropertyStyle.READ_WRITE);
+        assertThat(test.metaBean().beanType()).isEqualTo(CompanyAddress.class);
+        assertThat(test.propertyType()).isEqualTo(String.class);
+        assertThat(test.name()).isEqualTo(STREET);
+        assertThat(test.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
-        assertEquals(test.get(address), null);
+        assertThat(test.get(address)).isNull();
         address.setStreet("A");
-        assertEquals(test.get(address), "A");
+        assertThat(test.get(address)).isEqualTo("A");
         test.set(address, "B");
-        assertEquals(test.get(address), "B");
-        assertEquals(test.put(address, "C"), "B");
-        assertEquals(test.get(address), "C");
+        assertThat(test.get(address)).isEqualTo("B");
+        assertThat(test.put(address, "C")).isEqualTo("B");
+        assertThat(test.get(address)).isEqualTo("C");
     }
 
     @Test
-    public void test_metaProperty_String_companyName() {
+    void test_metaProperty_String_companyName() {
         CompanyAddress address = new CompanyAddress();
         MetaProperty<String> test = CompanyAddress.meta().metaProperty(COMPANY_NAME);
         
-        assertEquals(test.metaBean().beanType(), CompanyAddress.class);
-        assertEquals(test.propertyType(), String.class);
-        assertEquals(test.name(), COMPANY_NAME);
-        assertEquals(test.style(), PropertyStyle.READ_WRITE);
+        assertThat(test.metaBean().beanType()).isEqualTo(CompanyAddress.class);
+        assertThat(test.propertyType()).isEqualTo(String.class);
+        assertThat(test.name()).isEqualTo(COMPANY_NAME);
+        assertThat(test.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
-        assertEquals(test.get(address), null);
+        assertThat(test.get(address)).isNull();
         address.setCompanyName("A");
-        assertEquals(test.get(address), "A");
+        assertThat(test.get(address)).isEqualTo("A");
         test.set(address, "B");
-        assertEquals(test.get(address), "B");
-        assertEquals(test.put(address, "C"), "B");
-        assertEquals(test.get(address), "C");
+        assertThat(test.get(address)).isEqualTo("B");
+        assertThat(test.put(address, "C")).isEqualTo("B");
+        assertThat(test.get(address)).isEqualTo("C");
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaProperty_types() {
+    void test_metaProperty_types() {
         MetaProperty<String> test = CompanyAddress.meta().companyName();
         
-        assertEquals(test.metaBean().beanType(), CompanyAddress.class);
-        assertEquals(test.propertyType(), String.class);
-        assertEquals(test.propertyGenericType(), String.class);
+        assertThat(test.metaBean().beanType()).isEqualTo(CompanyAddress.class);
+        assertThat(test.propertyType()).isEqualTo(String.class);
+        assertThat(test.propertyGenericType()).isEqualTo(String.class);
     }
 
     @Test
-    public void test_metaProperty_annotations() {
+    void test_metaProperty_annotations() {
         MetaProperty<String> prop = CompanyAddress.meta().companyName();
         List<Annotation> test = prop.annotations();
         
-        assertEquals(test.size(), 1);
-        assertEquals(test.get(0) instanceof PropertyDefinition, true);
+        assertThat(test).hasSize(1);
+        assertThat(test.get(0)).isInstanceOf(PropertyDefinition.class);
     }
 
 }

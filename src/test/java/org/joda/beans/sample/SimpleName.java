@@ -161,9 +161,9 @@ public class SimpleName
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             SimpleName other = (SimpleName) obj;
-            return JodaBeanUtils.equal(getForename(), other.getForename()) &&
-                    JodaBeanUtils.equal(getMiddleNames(), other.getMiddleNames()) &&
-                    JodaBeanUtils.equal(getSurname(), other.getSurname());
+            return JodaBeanUtils.equal(this.getForename(), other.getForename()) &&
+                    JodaBeanUtils.equal(this.getMiddleNames(), other.getMiddleNames()) &&
+                    JodaBeanUtils.equal(this.getSurname(), other.getSurname());
         }
         return false;
     }
@@ -241,12 +241,12 @@ public class SimpleName
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
                 case 132835675:  // firstName (alias)
-                    return forename;
+                    return this.forename;
                 case 404996787:  // middleNames
-                    return middleNames;
+                    return this.middleNames;
                 case -1852993317:  // surname
                 case 1469046696:  // givenName (alias)
-                    return surname;
+                    return this.surname;
             }
             return super.metaPropertyGet(propertyName);
         }

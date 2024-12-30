@@ -128,8 +128,8 @@ public final class ImmJodaConvertWrapper implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmJodaConvertWrapper other = (ImmJodaConvertWrapper) obj;
-            return JodaBeanUtils.equal(bean, other.bean) &&
-                    JodaBeanUtils.equal(description, other.description);
+            return JodaBeanUtils.equal(this.bean, other.bean) &&
+                    JodaBeanUtils.equal(this.description, other.description);
         }
         return false;
     }
@@ -190,9 +190,9 @@ public final class ImmJodaConvertWrapper implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3019696:  // bean
-                    return bean;
+                    return this.bean;
                 case -1724546052:  // description
-                    return description;
+                    return this.description;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -281,9 +281,9 @@ public final class ImmJodaConvertWrapper implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3019696:  // bean
-                    return bean;
+                    return this.bean;
                 case -1724546052:  // description
-                    return description;
+                    return this.description;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

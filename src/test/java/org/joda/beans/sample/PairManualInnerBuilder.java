@@ -114,8 +114,8 @@ public final class PairManualInnerBuilder implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             PairManualInnerBuilder other = (PairManualInnerBuilder) obj;
-            return JodaBeanUtils.equal(first, other.first) &&
-                    JodaBeanUtils.equal(second, other.second);
+            return JodaBeanUtils.equal(this.first, other.first) &&
+                    JodaBeanUtils.equal(this.second, other.second);
         }
         return false;
     }
@@ -126,6 +126,16 @@ public final class PairManualInnerBuilder implements ImmutableBean {
         hash = hash * 31 + JodaBeanUtils.hashCode(first);
         hash = hash * 31 + JodaBeanUtils.hashCode(second);
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder(96);
+        buf.append("PairManualInnerBuilder{");
+        buf.append("first").append('=').append(JodaBeanUtils.toString(first)).append(',').append(' ');
+        buf.append("second").append('=').append(JodaBeanUtils.toString(second));
+        buf.append('}');
+        return buf.toString();
     }
 
     //-----------------------------------------------------------------------
@@ -166,9 +176,9 @@ public final class PairManualInnerBuilder implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
             }
             return super.metaPropertyGet(propertyName);
         }

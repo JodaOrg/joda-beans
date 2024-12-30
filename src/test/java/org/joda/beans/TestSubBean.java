@@ -15,18 +15,18 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.ImmSubPersonNonFinal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test beans extending other beans.
  */
-public class TestSubBean {
+class TestSubBean {
 
     @Test
-    public void test_subbean_toBuilder() {
+    void test_subbean_toBuilder() {
 
         // This sequence needs to be split like this as forename and surname returns ImmPersonNonFinal.Builder
         // instead of ImmSubPersonNonFinal.Builder
@@ -38,6 +38,6 @@ public class TestSubBean {
         ImmSubPersonNonFinal person = builder.build();
 
         ImmSubPersonNonFinal rebuilt = person.toBuilder().build();
-        assertEquals(rebuilt, person);
+        assertThat(rebuilt).isEqualTo(person);
     }
 }

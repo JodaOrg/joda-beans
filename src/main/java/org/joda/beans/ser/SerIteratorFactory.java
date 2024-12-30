@@ -35,6 +35,9 @@ import java.util.TreeSet;
 
 import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaProperty;
+import org.joda.collect.grid.ImmutableGrid;
+
+import com.google.common.collect.ImmutableMultiset;
 
 /**
  * A factory used to create wrappers around collection-like objects.
@@ -45,19 +48,21 @@ public class SerIteratorFactory {
      * Singleton instance.
      */
     public static final SerIteratorFactory INSTANCE = getInstance();
+
     private static SerIteratorFactory getInstance() {
         try {
-            Class.forName("org.joda.collect.grid.Grid");
+            ImmutableGrid.of();  // check if class is available
             return new CollectSerIteratorFactory();
         } catch (Exception | LinkageError ex) {
             try {
-                Class.forName("com.google.common.collect.Multimap");
+                ImmutableMultiset.of();  // check if class is available
                 return new GuavaSerIteratorFactory();
             } catch (Exception | LinkageError ex2) {
                 return new SerIteratorFactory();
             }
         }
     }
+
     /**
      * An empty list of classes.
      */
@@ -118,20 +123,20 @@ public class SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass) {
-        Class<?> declaredType = prop.propertyType();
-        if (value instanceof Collection) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return collection((Collection<?>) value, declaredType, valueType, valueTypeTypes);
+        var declaredType = prop.propertyType();
+        if (value instanceof Collection<?> collection) {
+            var valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return collection(collection, declaredType, valueType, valueTypeTypes);
         }
-        if (value instanceof Map) {
-            Class<?> keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
-            return map((Map<?, ?>) value, declaredType, keyType, valueType, valueTypeTypes);
+        if (value instanceof Map<?, ?> map) {
+            var keyType = defaultToObjectClass(JodaBeanUtils.mapKeyType(prop, beanClass));
+            var valueType = defaultToObjectClass(JodaBeanUtils.mapValueType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            return map(map, declaredType, keyType, valueType, valueTypeTypes);
         }
-        if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
-            Object[] array = (Object[]) value;
+        if (value.getClass().isArray() && !value.getClass().getComponentType().isPrimitive()) {
+            var array = (Object[]) value;
             return array(array, declaredType, array.getClass().getComponentType());
         }
         return null;
@@ -148,22 +153,22 @@ public class SerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     public SerIterator createChild(Object value, SerIterator parent) {
-        Class<?> declaredType = parent.valueType();
-        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
-        if (value instanceof Collection) {
+        var declaredType = parent.valueType();
+        var childGenericTypes = parent.valueTypeTypes();
+        if (value instanceof Collection<?> collection) {
             if (childGenericTypes.size() == 1) {
-                return collection((Collection<?>) value, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
+                return collection(collection, declaredType, childGenericTypes.getFirst(), EMPTY_VALUE_TYPES);
             }
-            return collection((Collection<?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            return collection(collection, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
-        if (value instanceof Map) {
+        if (value instanceof Map<?, ?> map) {
             if (childGenericTypes.size() == 2) {
-                return map((Map<?, ?>) value, declaredType, childGenericTypes.get(0), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
+                return map(map, declaredType, childGenericTypes.getFirst(), childGenericTypes.get(1), EMPTY_VALUE_TYPES);
             }
-            return map((Map<?, ?>) value, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            return map(map, Object.class, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
-        if (value.getClass().isArray() && value.getClass().getComponentType().isPrimitive() == false) {
-            Object[] array = (Object[]) value;
+        if (value.getClass().isArray() && !value.getClass().getComponentType().isPrimitive()) {
+            var array = (Object[]) value;
             return array(array, Object.class, value.getClass().getComponentType());
         }
         return null;
@@ -192,10 +197,7 @@ public class SerIteratorFactory {
         if (metaTypeDescription.equals("Set")) {
             return set(Object.class, EMPTY_VALUE_TYPES);
         }
-        if (metaTypeDescription.equals("List")) {
-            return list(Object.class, EMPTY_VALUE_TYPES);
-        }
-        if (metaTypeDescription.equals("Collection")) {
+        if (metaTypeDescription.equals("List") || metaTypeDescription.equals("Collection")) {
             return list(Object.class, EMPTY_VALUE_TYPES);
         }
         if (metaTypeDescription.equals("Map")) {
@@ -205,30 +207,30 @@ public class SerIteratorFactory {
             throw new IllegalArgumentException("Three-dimensional arrays cannot be parsed");
         }
         if (metaTypeDescription.endsWith("[][]")) {
-            Class<?> type = META_TYPE_MAP.get(metaTypeDescription);
+            var type = META_TYPE_MAP.get(metaTypeDescription);
             if (type != null) {
                 return array(type);
             }
-            String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 4);
+            var clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 4);
             try {
-                Class<?> cls = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
-                String compound = "[L" + cls.getName() + ";";
+                var cls = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
+                var compound = "[L" + cls.getName() + ";";
                 return array(Class.forName(compound));  // needs to be Class.forName
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
         }
         if (metaTypeDescription.endsWith("[]")) {
-            Class<?> type = META_TYPE_MAP.get(metaTypeDescription);
+            var type = META_TYPE_MAP.get(metaTypeDescription);
             if (type == null) {
-                String clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
+                var clsStr = metaTypeDescription.substring(0, metaTypeDescription.length() - 2);
                 try {
                     type = SerTypeMapper.decodeType(clsStr, settings, null, knownTypes);
                 } catch (ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
             }
-            return type.isPrimitive() ? arrayPrimitive(type) : array(type);
+            return array(type);
         }
         return null;
     }
@@ -240,9 +242,9 @@ public class SerIteratorFactory {
      * @return the iterable, null if not a collection-like type
      */
     public SerIterable createIterable(SerIterable iterable) {
-        List<Class<?>> valueTypeTypes = iterable.valueTypeTypes();
-        if (valueTypeTypes.size() > 0) {
-            Class<?> valueType = iterable.valueType();
+        var valueTypeTypes = iterable.valueTypeTypes();
+        if (!valueTypeTypes.isEmpty()) {
+            var valueType = iterable.valueType();
             if (NavigableSet.class.isAssignableFrom(valueType)) {
                 return navigableSet(valueTypeTypes.get(0), EMPTY_VALUE_TYPES);
             }
@@ -274,11 +276,7 @@ public class SerIteratorFactory {
                 return map(Object.class, Object.class, EMPTY_VALUE_TYPES);
             }
             if (valueType.isArray()) {
-                if (valueType.getComponentType().isPrimitive()) {
-                    return arrayPrimitive(valueType.getComponentType());
-                } else {
-                    return array(valueType.getComponentType());
-                }
+                return array(valueType.getComponentType());
             }
         }
         return null;
@@ -310,45 +308,46 @@ public class SerIteratorFactory {
      * @return the iterable, null if not a collection-like type
      */
     public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass) {
-        if (NavigableSet.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+        var propType = prop.propertyType();
+        if (NavigableSet.class.isAssignableFrom(propType)) {
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return navigableSet(valueType, valueTypeTypes);
         }
         if (SortedSet.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return sortedSet(valueType, valueTypeTypes);
         }
         if (Set.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return set(valueType, valueTypeTypes);
         }
         if (Collection.class.isAssignableFrom(prop.propertyType())) {  // includes List
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return list(valueType, valueTypeTypes);
         }
         if (NavigableMap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return navigableMap(keyType, valueType, valueTypeTypes);
         }
         if (SortedMap.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return sortedMap(keyType, valueType, valueTypeTypes);
         }
         if (Map.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
-            Class<?> valueType = JodaBeanUtils.mapValueType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
+            var keyType = JodaBeanUtils.mapKeyType(prop, beanClass);
+            var valueType = JodaBeanUtils.mapValueType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.mapValueTypeTypes(prop, beanClass);
             return map(keyType, valueType, valueTypeTypes);
         }
-        if (prop.propertyType().isArray() && prop.propertyType().getComponentType().isPrimitive() == false) {
+        if (prop.propertyType().isArray() && !prop.propertyType().getComponentType().isPrimitive()) {
             return array(prop.propertyType().getComponentType());
         }
         return null;
@@ -362,31 +361,34 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable list(
-            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final List<Object> coll = new ArrayList<>();
+    public static SerIterable list(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        List<Object> coll = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return collection(coll, Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     coll.add(value);
                 }
             }
+
             @Override
             public Object build() {
                 return coll;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -401,8 +403,8 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable set(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Set<Object> coll = new HashSet<>();
+    public static SerIterable set(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Set<Object> coll = new HashSet<>();
         return set(valueType, valueTypeTypes, coll);
     }
 
@@ -413,8 +415,8 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable sortedSet(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final SortedSet<Object> coll = new TreeSet<>();
+    public static SerIterable sortedSet(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        SortedSet<Object> coll = new TreeSet<>();
         return set(valueType, valueTypeTypes, coll);
     }
 
@@ -425,35 +427,38 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable navigableSet(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final NavigableSet<Object> coll = new TreeSet<>();
+    public static SerIterable navigableSet(Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        NavigableSet<Object> coll = new TreeSet<>();
         return set(valueType, valueTypeTypes, coll);
     }
 
-    private static SerIterable set(
-            final Class<?> valueType, final List<Class<?>> valueTypeTypes, final Set<Object> coll) {
+    private static SerIterable set(Class<?> valueType, List<Class<?>> valueTypeTypes, Set<Object> coll) {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return collection(coll, Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
                     throw new IllegalArgumentException("Unexpected key");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     coll.add(value);
                 }
             }
+
             @Override
             public Object build() {
                 return coll;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -471,8 +476,8 @@ public class SerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator collection(
-            final Collection<?> coll, final Class<?> declaredType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator collection(
+            Collection<?> coll, Class<?> declaredType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = coll.iterator();
             private Object current;
@@ -487,36 +492,43 @@ public class SerIteratorFactory {
                 }
                 return "Collection";
             }
+
             @Override
             public boolean metaTypeRequired() {
                 if (coll instanceof Set) {
-                    return Set.class.isAssignableFrom(declaredType) == false;
+                    return !Set.class.isAssignableFrom(declaredType);
                 }
                 if (coll instanceof List) {
-                    return List.class.isAssignableFrom(declaredType) == false;
+                    return !List.class.isAssignableFrom(declaredType);
                 }
-                return Collection.class.isAssignableFrom(declaredType) == false;
+                return !Collection.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public int size() {
                 return coll.size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = it.next();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
             }
+
             @Override
             public Object value() {
                 return current;
@@ -533,8 +545,8 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable map(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final Map<Object, Object> map = new HashMap<>();
+    public static SerIterable map(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        Map<Object, Object> map = new HashMap<>();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
@@ -546,8 +558,8 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable sortedMap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final SortedMap<Object, Object> map = new TreeMap<>();
+    public static SerIterable sortedMap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        SortedMap<Object, Object> map = new TreeMap<>();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
@@ -559,45 +571,46 @@ public class SerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable navigableMap(final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
-        final NavigableMap<Object, Object> map = new TreeMap<>();
+    public static SerIterable navigableMap(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
+        NavigableMap<Object, Object> map = new TreeMap<>();
         return map(keyType, valueType, valueTypeTypes, map);
     }
 
-    static SerIterable map(
-            final Class<?> keyType, final Class<?> valueType,
-            final List<Class<?>> valueTypeTypes, final Map<Object, Object> map) {
+    static SerIterable map(Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes, Map<Object, Object> map) {
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return map(map, Object.class, keyType, valueType, valueTypeTypes);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
-                if (key == null) {
-                    throw new IllegalArgumentException("Missing key");
-                }
                 if (count != 1) {
                     throw new IllegalArgumentException("Unexpected count");
                 }
                 map.put(key, value);
             }
+
             @Override
             public Object build() {
                 return map;
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -616,9 +629,8 @@ public class SerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator map(
-            final Map<?, ?> map, final Class<?> declaredType,
-            final Class<?> keyType, final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator map(
+            Map<?, ?> map, Class<?> declaredType, Class<?> keyType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = map.entrySet().iterator();
             private Entry current;
@@ -627,42 +639,52 @@ public class SerIteratorFactory {
             public String metaTypeName() {
                 return "Map";
             }
+
             @Override
             public boolean metaTypeRequired() {
-                return Map.class.isAssignableFrom(declaredType) == false;
+                return !Map.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.MAP;
             }
+
             @Override
             public int size() {
                 return map.size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = (Entry) it.next();
             }
+
             @Override
             public Class<?> keyType() {
                 return keyType;
             }
+
             @Override
             public Object key() {
                 return current.getKey();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
             }
+
             @Override
             public Object value() {
                 return current.getValue();
@@ -677,13 +699,17 @@ public class SerIteratorFactory {
      * @param valueType  the value type, not null
      * @return the iterable, not null
      */
-    public static final SerIterable array(final Class<?> valueType) {
-        final List<Object> list = new ArrayList<>();
+    public static SerIterable array(Class<?> valueType) {
+        if (valueType.isPrimitive()) {
+            return arrayPrimitive(valueType);
+        }
+        List<Object> list = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return array(build(), Object.class, valueType);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
@@ -692,19 +718,22 @@ public class SerIteratorFactory {
                 if (count != 1) {
                     throw new IllegalArgumentException("Unexpected count");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     list.add(value);
                 }
             }
+
             @Override
             public Object[] build() {
-                Object[] array = (Object[]) Array.newInstance(valueType, list.size());
+                var array = (Object[]) Array.newInstance(valueType, list.size());
                 return list.toArray(array);
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return EMPTY_VALUE_TYPES;
@@ -718,13 +747,14 @@ public class SerIteratorFactory {
      * @param valueType  the value type, not null
      * @return the iterable, not null
      */
-    static final SerIterable arrayPrimitive(final Class<?> valueType) {
-        final List<Object> list = new ArrayList<>();
+    static SerIterable arrayPrimitive(Class<?> valueType) {
+        List<Object> list = new ArrayList<>();
         return new SerIterable() {
             @Override
             public SerIterator iterator() {
                 return arrayPrimitive(build(), Object.class, valueType);
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (key != null) {
@@ -733,22 +763,25 @@ public class SerIteratorFactory {
                 if (count != 1) {
                     throw new IllegalArgumentException("Unexpected count");
                 }
-                for (int i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++) {
                     list.add(value);
                 }
             }
+
             @Override
             public Object build() {
-                Object array = Array.newInstance(valueType, list.size());
-                for (int i = 0; i < list.size(); i++) {
+                var array = Array.newInstance(valueType, list.size());
+                for (var i = 0; i < list.size(); i++) {
                     Array.set(array, i, list.get(i));
                 }
                 return array;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return EMPTY_VALUE_TYPES;
@@ -764,8 +797,7 @@ public class SerIteratorFactory {
      * @param valueType  the value type, not null
      * @return the iterator, not null
      */
-    public static final SerIterator array(
-            final Object[] array, final Class<?> declaredType, final Class<?> valueType) {
+    public static SerIterator array(Object[] array, Class<?> declaredType, Class<?> valueType) {
         return new SerIterator() {
             private int index = -1;
 
@@ -773,6 +805,7 @@ public class SerIteratorFactory {
             public String metaTypeName() {
                 return metaTypeNameBase(valueType);
             }
+
             private String metaTypeNameBase(Class<?> arrayType) {
                 if (arrayType.isArray()) {
                     return metaTypeNameBase(arrayType.getComponentType()) + "[]";
@@ -785,36 +818,43 @@ public class SerIteratorFactory {
                 }
                 return arrayType.getName() + "[]";
             }
+
             @Override
             public boolean metaTypeRequired() {
                 if (valueType == Object.class) {
-                    return Object[].class.isAssignableFrom(declaredType) == false;
+                    return !Object[].class.isAssignableFrom(declaredType);
                 }
                 if (valueType == String.class) {
-                    return String[].class.isAssignableFrom(declaredType) == false;
+                    return !String[].class.isAssignableFrom(declaredType);
                 }
                 return true;
             }
+
             @Override
             public int size() {
                 return array.length;
             }
+
             @Override
             public boolean hasNext() {
                 return (index + 1) < array.length;
             }
+
             @Override
             public void next() {
                 index++;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return Collections.emptyList();
             }
+
             @Override
             public Object value() {
                 return array[index];
@@ -830,9 +870,8 @@ public class SerIteratorFactory {
      * @param valueType  the value type, not null
      * @return the iterator, not null
      */
-    static final SerIterator arrayPrimitive(
-            final Object array, final Class<?> declaredType, final Class<?> valueType) {
-        final int arrayLength = Array.getLength(array);
+    static SerIterator arrayPrimitive(Object array, Class<?> declaredType, Class<?> valueType) {
+        var arrayLength = Array.getLength(array);
         return new SerIterator() {
             private int index = -1;
 
@@ -840,6 +879,7 @@ public class SerIteratorFactory {
             public String metaTypeName() {
                 return metaTypeNameBase(valueType);
             }
+
             private String metaTypeNameBase(Class<?> arrayType) {
                 if (arrayType.isArray()) {
                     return metaTypeNameBase(arrayType.getComponentType()) + "[]";
@@ -852,36 +892,43 @@ public class SerIteratorFactory {
                 }
                 return arrayType.getName() + "[]";
             }
+
             @Override
             public boolean metaTypeRequired() {
                 if (valueType == Object.class) {
-                    return Object[].class.isAssignableFrom(declaredType) == false;
+                    return !Object[].class.isAssignableFrom(declaredType);
                 }
                 if (valueType == String.class) {
-                    return String[].class.isAssignableFrom(declaredType) == false;
+                    return !String[].class.isAssignableFrom(declaredType);
                 }
                 return true;
             }
+
             @Override
             public int size() {
                 return arrayLength;
             }
+
             @Override
             public boolean hasNext() {
                 return (index + 1) < arrayLength;
             }
+
             @Override
             public void next() {
                 index++;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return Collections.emptyList();
             }
+
             @Override
             public Object value() {
                 return Array.get(array, index);

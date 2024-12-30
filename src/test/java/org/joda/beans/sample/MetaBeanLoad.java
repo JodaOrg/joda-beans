@@ -114,7 +114,7 @@ public class MetaBeanLoad
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MetaBeanLoad other = (MetaBeanLoad) obj;
-            return JodaBeanUtils.equal(getName(), other.getName());
+            return JodaBeanUtils.equal(this.getName(), other.getName());
         }
         return false;
     }
@@ -175,7 +175,7 @@ public class MetaBeanLoad
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }

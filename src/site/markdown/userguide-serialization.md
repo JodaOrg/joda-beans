@@ -10,28 +10,67 @@ The `org.joda.beans.ser` package provides support for serializing Joda-Beans via
 The main class is [JodaBeanSer](apidocs/org.joda.beans/org/joda/beans/ser/JodaBeanSer.html).
 It contains the relevant settings and methods to access the serialization and deserialization.
 
-```
- // write to XML
- JodaBeanSer.COMPACT.xmlWriter().write(bean);
- // read from XML
- MyBean bean = JodaBeanSer.COMPACT.xmlReader().read(xmlStr, MyBean.class);
-```
+The serializer makes use the meta-data in the bean to minimize the output size.
+In effect, the Joda-Bean acts as a schema to interpret the data.
 
 Two standard layouts are provided - COMPACT and PRETTY.
 The compact layout has no whitespace, whereas the pretty layout uses indentation and new-lines.
 Methods on `JodaBeanSer` allow for further customization.
 
-For binary, replace `xmlWriter()` by `binWriter()` and `xmlReader()` by `binReader()`.
-If the object model is entirely formed of immutable beans, it is usually worth using the referencing binary
-writer which is typically faster/smaller, see `binWriterReferencing()`.
+### XML
 
-For JSON, replace `xmlWriter()` by `jsonWriter()` and `xmlReader()` by `jsonReader()`.
+```java
+ // write to XML
+ String xmlStr = JodaBeanSer.COMPACT.xmlWriter().write(bean);
+ // read from XML
+ MyBean bean = JodaBeanSer.COMPACT.xmlReader().read(xmlStr, MyBean.class);
+```
 
-There is also a simple JSON reader/writer that does not expose Java types,
-and a simple Map-base reader/writer for interoperation with other libraries.
+### JSON
 
-The serializer makes use the meta-data in the bean to minimize the output size.
-In effect, the Joda-Bean acts as a schema to interpret the data.
+```java
+ // write to JSON
+ String jsonStr = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+ // read from JSON
+ MyBean bean = JodaBeanSer.COMPACT.jsonReader().read(jsonStr, MyBean.class);
+```
+
+There is also a simple JSON reader/writer that does not expose Java types.
+
+### Binary
+
+For binary there are three different formats available:
+
+* `binReader(STANDARD)` is the default and suitable for most uses.
+* `binReader(REFERENCING)` deduplicates all beans it sees, which can be slow.
+* `binReader(PACKED)` is the effective replacement for REFERENCING where callers choose which beans to deduplicate.
+
+The classes to deduplicate can be controlled in the PACKED format using `JodaBeanSer.withBeanValueClasses()`.
+
+```java
+ // write to Binary
+ var bytes = JodaBeanSer.COMPACT.binWriter(JodaBeanBinFormat.PACKED).write(bean);
+ // read from Binary
+ MyBean bean = JodaBeanSer.COMPACT.binReader().read(bytes, MyBean.class);
+```
+
+Note that COMPACT vs PRETTY makes no difference in binary mode.
+
+
+## Supported types
+
+The serialization mechanism supports implementations of `Bean`, `Collection`, `Map`, `Optional` and arrays.
+Some formats also support `Iterable`.
+If Guava is present, implementations of `Multimap`, `Multiset`, `Table`, `BiMap` and Guava's `Optional` are supported.
+If Joda-Collect is present, implementations of `Grid` are supported.
+
+The serialization format is generally stable over different versions of the API.
+The following incompatibilities apply:
+
+* The simple JSON format in v3.x alters two-dimensional primitive arrays to be written using
+the natural format `[[1, 2], [2, 3]]` instead of the previous format `["1,2", "2,3"]`.
+* The standard binary format in v3.x adjusts two-dimensional primitive arrays in a similar way to JSON.
+* The binary formats in v3.x permit null keys in maps.
 
 
 ## Handling change

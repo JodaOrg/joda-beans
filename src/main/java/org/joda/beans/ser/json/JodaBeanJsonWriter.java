@@ -16,18 +16,31 @@
 package org.joda.beans.ser.json;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaProperty;
+import org.joda.beans.ResolvedType;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
-import org.joda.beans.ser.SerIterator;
-import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
-import org.joda.convert.StringConverter;
+import org.joda.collect.grid.Grid;
+import org.joda.collect.grid.ImmutableGrid;
+import org.joda.convert.ToStringConverter;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Table;
 
 /**
  * Provides the ability for a Joda-Bean to be written to JSON.
@@ -82,14 +95,52 @@ public class JodaBeanJsonWriter {
      */
     static final String VALUE = "value";
 
+    // why is there an ugly ClassValue setup here?
+    // because this is O(1) whereas switch with pattern match which is O(n)
+    private static final ClassValue<JsonHandler<Object>> LOOKUP = new ClassValue<>() {
+
+        @SuppressWarnings("rawtypes")  // sneaky use of raw type to allow typed value in each method below
+        @Override
+        protected JsonHandler computeValue(Class<?> type) {
+            if (Bean.class.isAssignableFrom(type)) {
+                return (JsonHandler<Bean>) JodaBeanJsonWriter::writeBeanMaybeSimple;
+            }
+            if (type == String.class) {
+                return (writer, declaredType, propName, value) -> writer.output.writeString((String) value);
+            }
+            if (type == Long.class || type == long.class) {
+                return (writer, declaredType, propName, value) -> writer.writeLong(declaredType, (Long) value);
+            }
+            if (type == Integer.class || type == int.class) {
+                return (writer, declaredType, propName, value) -> writer.output.writeInt((Integer) value);
+            }
+            if (type == Short.class || type == short.class) {
+                return (writer, declaredType, propName, value) -> writer.writeShort(declaredType, (Short) value);
+            }
+            if (type == Byte.class || type == byte.class) {
+                return (writer, declaredType, propName, value) -> writer.writeByte(declaredType, (Byte) value);
+            }
+            if (type == Double.class || type == double.class) {
+                return (writer, declaredType, propName, value) -> writer.writeDouble(declaredType, (Double) value);
+            }
+            if (type == Float.class || type == float.class) {
+                return (writer, declaredType, propName, value) -> writer.writeFloat(declaredType, (Float) value);
+            }
+            if (type == Boolean.class || type == boolean.class) {
+                return (writer, declaredType, propName, value) -> writer.output.writeBoolean((Boolean) value);
+            }
+            return BaseJsonHandlers.INSTANCE.computeValue(type);
+        }
+    };
+
     /**
      * The settings to use.
      */
-    private final JodaBeanSer settings;
+    final JodaBeanSer settings;  // CSIGNORE
     /**
      * The outputter.
      */
-    private JsonOutput output;
+    JsonOutput output;  // CSIGNORE
     /**
      * The base package including the trailing dot.
      */
@@ -97,16 +148,21 @@ public class JodaBeanJsonWriter {
     /**
      * The known types.
      */
-    private Map<Class<?>, String> knownTypes = new HashMap<>();
+    private final Map<Class<?>, String> knownTypes = new HashMap<>();
 
     /**
      * Creates an instance.
      * 
      * @param settings  the settings to use, not null
      */
-    public JodaBeanJsonWriter(final JodaBeanSer settings) {
+    public JodaBeanJsonWriter(JodaBeanSer settings) {
+        // COMPATIBLE_V2 value is eliminated here and in the subclass
         JodaBeanUtils.notNull(settings, "settings");
-        this.settings = settings;
+        if (settings.getJsonNumberFormat() == JodaBeanJsonNumberFormat.COMPATIBLE_V2) {
+            this.settings = settings.withJsonNumberFormat(JodaBeanJsonNumberFormat.STRING);
+        } else {
+            this.settings = settings;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -126,13 +182,13 @@ public class JodaBeanJsonWriter {
      * Writes the bean to a string specifying whether to include the type at the root.
      * 
      * @param bean  the bean to output, not null
-     * @param rootType  true to output the root type
+     * @param includeRootType  true to output the root type
      * @return the JSON, not null
      */
-    public String write(Bean bean, boolean rootType) {
-        StringBuilder buf = new StringBuilder(1024);
+    public String write(Bean bean, boolean includeRootType) {
+        var buf = new StringBuilder(1024);
         try {
-            write(bean, rootType, buf);
+            write(bean, includeRootType, buf);
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
@@ -156,244 +212,146 @@ public class JodaBeanJsonWriter {
      * Writes the bean to the {@code Appendable} specifying whether to include the type at the root.
      * 
      * @param bean  the bean to output, not null
-     * @param rootType  true to output the root type
+     * @param includeRootType  true to output the root type
      * @param output  the output appendable, not null
      * @throws IOException if an error occurs
      */
-    public void write(Bean bean, boolean rootType, Appendable output) throws IOException {
+    public void write(Bean bean, boolean includeRootType, Appendable output) throws IOException {
         JodaBeanUtils.notNull(bean, "bean");
         JodaBeanUtils.notNull(output, "output");
-        this.output = new JsonOutput(output, settings.getIndent(), settings.getNewLine());
-        writeBean(bean, bean.getClass(), rootType ? RootType.ROOT_WITH_TYPE : RootType.ROOT_WITHOUT_TYPE);
+        this.output = new JsonOutput(output, settings.getJsonNumberFormat(), settings.getIndent(), settings.getNewLine());
+        var rootType = includeRootType ? ResolvedType.OBJECT : ResolvedType.of(bean.getClass());
+        // root always outputs the bean, not Joda-Convert form
+        writeBean(rootType, bean, includeRootType);
         output.append(settings.getNewLine());
     }
 
     //-----------------------------------------------------------------------
-    // write a bean as a JSON object
-    private void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) throws IOException {
+    // walk an object, by determining the runtime type
+    void writeObject(ResolvedType declaredType, String propertyName, Object value) throws IOException {
+        if (value == null) {
+            output.writeNull();
+        } else {
+            var handler = LOOKUP.get(value.getClass());
+            handler.handle(this, declaredType, propertyName, value);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // writes a bean, favouring output as a Joda-Convert type
+    private void writeBeanMaybeSimple(ResolvedType declaredType, String propertyName, Bean bean) throws IOException {
+        // check for Joda-Convert cannot be in ClassValue as it relies on the settings
+        if (settings.getConverter().isConvertible(bean.getClass())) {
+            writeSimple(declaredType, propertyName, bean);
+        } else {
+            writeBean(declaredType, bean, false);
+        }
+    }
+
+    // writes a bean, with meta type information if necessary
+    private void writeBean(ResolvedType declaredType, Bean bean, boolean isRoot) throws IOException {
         output.writeObjectStart();
-        // type information
-        if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
-            String typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
-            if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
+        writeBeanType(declaredType, bean, isRoot);
+        writeBeanProperties(declaredType, bean);
+        output.writeObjectEnd();
+    }
+
+    // optionally writes the type of the bean
+    void writeBeanType(ResolvedType declaredType, Bean bean, boolean includeRootType) throws IOException {
+        if (bean.getClass() != declaredType.getRawType()) {
+            var typeStr = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
+            if (includeRootType) {
                 basePackage = bean.getClass().getPackage().getName() + ".";
             }
             output.writeObjectKeyValue(BEAN, typeStr);
         }
-        // property information
-        for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
-            if (prop.style().isSerializable() || (prop.style().isDerived() && settings.isIncludeDerived())) {
-                Object value = SerOptional.extractValue(prop, bean);
+    }
+
+    // optionally writes the type of the bean
+    private void writeBeanProperties(ResolvedType declaredType, Bean bean) throws IOException {
+        for (var metaProperty : bean.metaBean().metaPropertyIterable()) {
+            if (settings.isSerialized(metaProperty)) {
+                var value = metaProperty.get(bean);
                 if (value != null) {
-                    output.writeObjectKey(prop.name());
-                    Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-                    if (value instanceof Bean) {
-                        if (settings.getConverter().isConvertible(value.getClass())) {
-                            writeSimple(propType, value);
-                        } else {
-                            writeBean((Bean) value, propType, RootType.NOT_ROOT);
-                        }
-                    } else {
-                        SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
-                        if (itemIterator != null) {
-                            writeElements(itemIterator);
-                        } else {
-                            writeSimple(propType, value);
-                        }
-                    }
+                    var resolvedType = ResolvedType.from(metaProperty.propertyGenericType(), bean.getClass());
+                    var handler = LOOKUP.get(value.getClass());
+                    handler.handleProperty(this, resolvedType, metaProperty.name(), value);
                 }
             }
         }
-        output.writeObjectEnd();
     }
 
-    //-----------------------------------------------------------------------
-    // write a collection
-    private void writeElements(SerIterator itemIterator) throws IOException {
-        if (itemIterator.metaTypeRequired()) {
-            output.writeObjectStart();
-            output.writeObjectKeyValue(META, itemIterator.metaTypeName());
-            output.writeObjectKey(VALUE);
-        }
-        if (itemIterator.category() == SerCategory.MAP) {
-            writeMap(itemIterator);
-        } else if (itemIterator.category() == SerCategory.COUNTED) {
-            writeCounted(itemIterator);
-        } else if (itemIterator.category() == SerCategory.TABLE) {
-            writeTable(itemIterator);
-        } else if (itemIterator.category() == SerCategory.GRID) {
-            writeGrid(itemIterator);
+    //-------------------------------------------------------------------------
+    void writeLong(ResolvedType declaredType, Long val) throws IOException {
+        if (declaredType.getRawType() == long.class) {
+            output.writeLong(val);
         } else {
-            writeArray(itemIterator);
-        }
-        if (itemIterator.metaTypeRequired()) {
+            output.writeObjectStart();
+            output.writeObjectKeyValue(TYPE, "Long");
+            output.writeObjectKey(VALUE);
+            output.writeLong(val);
             output.writeObjectEnd();
         }
     }
 
-    // write list/set/array
-    private void writeArray(SerIterator itemIterator) throws IOException {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-        output.writeArrayEnd();
-    }
-
-    // write map
-    private void writeMap(SerIterator itemIterator) throws IOException {
-        // if key type is known and convertible use short key format, else use full bean format
-        if (settings.getConverter().isConvertible(itemIterator.keyType())) {
-            writeMapSimple(itemIterator);
+    void writeShort(ResolvedType declaredType, Short val) throws IOException {
+        if (declaredType.getRawType() == short.class) {
+            output.writeInt(val);
         } else {
-            writeMapComplex(itemIterator);
+            output.writeObjectStart();
+            output.writeObjectKeyValue(TYPE, "Short");
+            output.writeObjectKey(VALUE);
+            output.writeInt(val);
+            output.writeObjectEnd();
         }
     }
 
-    // write map with simple keys
-    private void writeMapSimple(SerIterator itemIterator) throws IOException {
-        StringConverter<Object> keyConverter = settings.getConverter().findConverterNoGenerics(itemIterator.keyType());
-        output.writeObjectStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            Object key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null");
-            }
-            String str = keyConverter.convertToString(itemIterator.key());
-            if (str == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be a null string");
-            }
-            output.writeObjectKey(str);
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-        }
-        output.writeObjectEnd();
-    }
-
-    // write map with complex keys
-    private void writeMapComplex(SerIterator itemIterator) throws IOException {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            Object key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
-            }
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.keyType(), key, null);
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write table
-    private void writeTable(SerIterator itemIterator) throws IOException {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.keyType(), itemIterator.key(), null);
-            output.writeArrayItemStart();
-            writeObject(itemIterator.columnType(), itemIterator.column(), null);
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write grid using sparse approach
-    private void writeGrid(SerIterator itemIterator) throws IOException {
-        output.writeArrayStart();
-        output.writeArrayItemStart();
-        output.writeInt(itemIterator.dimensionSize(0));
-        output.writeArrayItemStart();
-        output.writeInt(itemIterator.dimensionSize(1));
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            output.writeInt((Integer) itemIterator.key());
-            output.writeArrayItemStart();
-            output.writeInt((Integer) itemIterator.column());
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write counted set
-    private void writeCounted(final SerIterator itemIterator) throws IOException {
-        output.writeArrayStart();
-        while (itemIterator.hasNext()) {
-            itemIterator.next();
-            output.writeArrayItemStart();
-            output.writeArrayStart();
-            output.writeArrayItemStart();
-            writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
-            output.writeArrayItemStart();
-            output.writeInt(itemIterator.count());
-            output.writeArrayEnd();
-        }
-        output.writeArrayEnd();
-    }
-
-    // write collection object
-    private void writeObject(Class<?> declaredType, Object obj, SerIterator parentIterator) throws IOException {
-        if (obj == null) {
-            output.writeNull();
-        } else if (settings.getConverter().isConvertible(obj.getClass())) {
-            writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean) {
-            writeBean((Bean) obj, declaredType, RootType.NOT_ROOT);
-        } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
-            if (childIterator != null) {
-                writeElements(childIterator);
-            } else {
-                writeSimple(declaredType, obj);
-            }
+    void writeByte(ResolvedType declaredType, Byte val) throws IOException {
+        if (declaredType.getRawType() == byte.class) {
+            output.writeInt(val);
         } else {
-            writeSimple(declaredType, obj);
+            output.writeObjectStart();
+            output.writeObjectKeyValue(TYPE, "Byte");
+            output.writeObjectKey(VALUE);
+            output.writeInt(val);
+            output.writeObjectEnd();
         }
     }
 
-    //-----------------------------------------------------------------------
-    // write simple type
-    private void writeSimple(Class<?> declaredType, Object value) throws IOException {
-        // simple types have no need to write a type object
-        Class<?> realType = value.getClass();
-        if (realType == Integer.class) {
-            output.writeInt(((Integer) value).intValue());
-            return;
-        } else if (realType == Double.class) {
-            double dbl = ((Double) value).doubleValue();
-            if (Double.isNaN(dbl) == false && Double.isInfinite(dbl) == false) {
-                output.writeDouble(dbl);
-                return;
-            }
-        } else if (realType == Boolean.class) {
-            output.writeBoolean(((Boolean) value).booleanValue());
-            return;
+    void writeDouble(ResolvedType declaredType, Double val) throws IOException {
+        if (declaredType.getRawType() == double.class || (!Double.isNaN(val) && !Double.isInfinite(val))) {
+            output.writeDouble(val);
+        } else {
+            output.writeObjectStart();
+            output.writeObjectKeyValue(TYPE, "Double");
+            output.writeObjectKey(VALUE);
+            output.writeDouble(val);
+            output.writeObjectEnd();
         }
-        
+    }
+
+    void writeFloat(ResolvedType declaredType, Float val) throws IOException {
+        if (declaredType.getRawType() == float.class) {
+            output.writeFloat(val);
+        } else {
+            output.writeObjectStart();
+            output.writeObjectKeyValue(TYPE, "Float");
+            output.writeObjectKey(VALUE);
+            output.writeFloat(val);
+            output.writeObjectEnd();
+        }
+    }
+
+    // writes a simple type
+    void writeSimple(ResolvedType declaredType, String propertyName, Object value) throws IOException {
         // handle no declared type and subclasses
-        Class<?> effectiveType = declaredType;
-        boolean requiresClose = false;
-        if (declaredType == Object.class) {
+        Class<?> realType = value.getClass();
+        Class<?> effectiveType = declaredType.getRawType();
+        var requiresClose = false;
+        if (effectiveType == Object.class) {
             if (realType != String.class) {
                 effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-                String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                var typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 output.writeObjectStart();
                 output.writeObjectKeyValue(TYPE, typeStr);
                 output.writeObjectKey(VALUE);
@@ -401,53 +359,593 @@ public class JodaBeanJsonWriter {
             } else {
                 effectiveType = realType;
             }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
+        } else if (!settings.getConverter().isConvertible(effectiveType)) {
             effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            String typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+            var typeStr = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
             output.writeObjectStart();
             output.writeObjectKeyValue(TYPE, typeStr);
             output.writeObjectKey(VALUE);
             requiresClose = true;
         }
-        
-        // long/short/byte/float only processed now to ensure that exact numeric type can be identified
-        if (realType == Long.class) {
-            output.writeLong(((Long) value).longValue());
-            
-        } else if (realType == Short.class) {
-            output.writeInt(((Short) value).shortValue());
-            
-        } else if (realType == Byte.class) {
-            output.writeInt(((Byte) value).byteValue());
-            
-        } else if (realType == Float.class) {
-            output.writeFloat(((Float) value).floatValue());
-            
-        } else {
-            // write as a string
-            try {
-                String converted = settings.getConverter().convertToString(effectiveType, value);
-                if (converted == null) {
-                    throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
-                }
-                output.writeString(converted);
-            } catch (RuntimeException ex) {
-                throw new IllegalArgumentException(
-                        "Unable to convert type " + effectiveType.getName() + " declared as " + declaredType.getName(), ex);
-            }
-        }
-        
+
+        writeJodaConvert(declaredType, propertyName, value);
+
         // close open map
         if (requiresClose) {
             output.writeObjectEnd();
         }
     }
 
-    //-----------------------------------------------------------------------
-    enum RootType {
-        ROOT_WITH_TYPE,
-        ROOT_WITHOUT_TYPE,
-        NOT_ROOT,
+    // writes using Joda-Convert
+    void writeJodaConvert(ResolvedType declaredType, String propertyName, Object value) throws IOException {
+        var realType = value.getClass();
+        try {
+            var converted = settings.getConverter().convertToString(value);
+            if (converted == null) {
+                throw invalidNullString(propertyName, value);
+            }
+            output.writeString(converted);
+        } catch (RuntimeException ex) {
+            throw new IllegalArgumentException(
+                    "Unable to write property '" + propertyName + "', type " + realType.getName() + " could not be converted to a String",
+                    ex);
+        }
     }
 
+    private static IllegalArgumentException invalidNullString(String propertyName, Object value) {
+        return new IllegalArgumentException(
+                "Unable to write property '" + propertyName + "' because converter returned a null string: " + value);
+    }
+
+    // writes a map given map entries, code shared with Multimap
+    <K, V> void writeMapEntries(
+            ResolvedType declaredType,
+            String propertyName,
+            Collection<Map.Entry<K, V>> mapEntries) throws IOException {
+
+        // if key type is known and convertible use short key format, else use full bean format
+        var keyType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+        var keyConverterOpt = settings.getConverter().converterFor(keyType.getRawType());
+        if (keyConverterOpt.isPresent()) {
+            writeMapEntriesSimple(declaredType, propertyName, mapEntries, keyType, keyConverterOpt.get().withoutGenerics());
+        } else {
+            writeMapComplex(declaredType, propertyName, mapEntries, keyType);
+        }
+    }
+
+    private <K, V> void writeMapEntriesSimple(
+            ResolvedType declaredType,
+            String propertyName,
+            Collection<Map.Entry<K, V>> mapEntries,
+            ResolvedType keyType,
+            ToStringConverter<Object> keyConverter) throws IOException {
+
+        var valueType = toWeakenedType(declaredType.getArgumentOrDefault(1));
+        output.writeObjectStart();
+        for (var entry : mapEntries) {
+            var key = entry.getKey();
+            if (key == null) {
+                throw invalidNullMapKey(propertyName);
+            }
+            var str = keyConverter.convertToString(key);
+            if (str == null) {
+                throw invalidConvertedNullMapKey(propertyName);
+            }
+            output.writeObjectKey(str);
+            writeObject(valueType, "", entry.getValue());
+        }
+        output.writeObjectEnd();
+    }
+
+    private <K, V> void writeMapComplex(
+            ResolvedType declaredType,
+            String propertyName,
+            Collection<Map.Entry<K, V>> mapEntries,
+            ResolvedType keyType) throws IOException {
+
+        var valueType = toWeakenedType(declaredType.getArgumentOrDefault(1));
+        output.writeArrayStart();
+        for (var entry : mapEntries) {
+            var key = entry.getKey();
+            if (key == null) {
+                throw invalidNullMapKey(propertyName);
+            }
+            output.writeArrayItemStart();
+            output.writeArrayStart();
+            output.writeArrayItemStart();
+            writeObject(keyType, "", key);
+            output.writeArrayItemStart();
+            writeObject(valueType, "", entry.getValue());
+            output.writeArrayEnd();
+        }
+        output.writeArrayEnd();
+    }
+
+    static IllegalArgumentException invalidNullMapKey(String propertyName) {
+        return new IllegalArgumentException(
+                "Unable to write property '" + propertyName + "', map key must not be null");
+    }
+
+    static IllegalArgumentException invalidConvertedNullMapKey(String propertyName) {
+        return new IllegalArgumentException(
+                "Unable to write property '" + propertyName + "', converted map key must not be null");
+    }
+
+    //-------------------------------------------------------------------------
+    // gets the weakened type, which exists for backwards compatibility
+    // once the parser can handle ResolvedType this method can, in theory, be removed
+    static ResolvedType toWeakenedType(ResolvedType base) {
+        for (var arg : base.getArguments()) {
+            var rawType = arg.getRawType();
+            if (LOOKUP.get(rawType).isCollection()) {
+                return base.toRawType();
+            }
+        }
+        return base;
+    }
+
+    //-------------------------------------------------------------------------
+    // handler for meta types, but with IOException
+    static interface MetaTypeHandler {
+        public abstract String handle() throws IOException;
+    }
+
+    // handler for meta type content, but with IOException
+    static interface ContentHandler {
+        public abstract void handle() throws IOException;
+    }
+
+    // writes content with a meta type
+    void writeWithMetaType(ContentHandler contentHandler, MetaTypeHandler metaTypeHandler) throws IOException {
+        var metaTypeName = metaTypeHandler.handle();
+        if (metaTypeName != null) {
+            output.writeObjectStart();
+            output.writeObjectKeyValue(META, metaTypeName);
+            output.writeObjectKey(VALUE);
+            contentHandler.handle();
+            output.writeObjectEnd();
+        } else {
+            contentHandler.handle();
+        }
+    }
+
+    // writes content with a meta type
+    void writeWithMetaType(ContentHandler contentHandler, Class<?> cls, ResolvedType declaredType, String metaTypeName)
+            throws IOException {
+
+        if (!cls.isAssignableFrom(declaredType.getRawType())) {
+            output.writeObjectStart();
+            output.writeObjectKeyValue(META, metaTypeName);
+            output.writeObjectKey(VALUE);
+            contentHandler.handle();
+            output.writeObjectEnd();
+        } else {
+            contentHandler.handle();
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    private static interface JsonHandler<T> {
+        public abstract void handle(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                T obj) throws IOException;
+
+        public default void handleProperty(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                T obj) throws IOException {
+
+            writer.output.writeObjectKey(propertyName);
+            handle(writer, declaredType, propertyName, obj);
+        }
+
+        public default boolean isCollection() {
+            return false;
+        }
+    }
+
+    private static interface CollectionJsonHandler<T> extends JsonHandler<T> {
+        @Override
+        public default boolean isCollection() {
+            return true;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    private static sealed class BaseJsonHandlers {
+
+        private static final BaseJsonHandlers INSTANCE = getInstance();
+
+        private static final BaseJsonHandlers getInstance() {
+            try {
+                ImmutableGrid.of();  // check if class is available
+                return new CollectJsonHandlers();
+            } catch (RuntimeException | LinkageError ex) {
+                try {
+                    ImmutableMultiset.of();  // check if class is available
+                    return new GuavaJsonHandlers();
+                } catch (RuntimeException | LinkageError ex2) {
+                    return new BaseJsonHandlers();
+                }
+            }
+        }
+
+        @SuppressWarnings("rawtypes")  // sneaky use of raw type to allow typed value in each method below
+        JsonHandler computeValue(Class<?> type) {
+            if (type == Optional.class) {
+                return OptionalJsonHandler.INSTANCE;
+            }
+            if (type.isArray()) {
+                var componentType = type.getComponentType();
+                if (componentType.isPrimitive()) {
+                    if (componentType == byte.class) {
+                        return JodaBeanJsonWriter::writeSimple;
+                    } else {
+                        return (CollectionJsonHandler<Object>) BaseJsonHandlers::writePrimitiveArray;
+                    }
+                } else {
+                    return (CollectionJsonHandler<Object[]>) BaseJsonHandlers::writeArray;
+                }
+            }
+            if (Map.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<Map<?, ?>>) BaseJsonHandlers::writeMap;
+            }
+            if (Iterable.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<Collection<?>>) BaseJsonHandlers::writeCollection;
+            }
+            return JodaBeanJsonWriter::writeSimple;
+        }
+
+        // writes an array, with meta type information if necessary
+        private static void writeArray(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Object[] array) throws IOException {
+
+            var arrayComponentType = array.getClass().getComponentType();
+            // check actual type
+            MetaTypeHandler metaTypeHandler = () -> {
+                if (declaredType.getRawType() != array.getClass()) {
+                    return metaTypeArrayName(arrayComponentType);
+                }
+                return null;
+            };
+            // write content
+            ContentHandler contentHandler = () -> {
+                var componentType = toWeakenedType(ResolvedType.of(arrayComponentType));
+                writer.output.writeArrayStart();
+                for (var item : array) {
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(componentType, "", item);
+                }
+                writer.output.writeArrayEnd();
+            };
+            writer.writeWithMetaType(contentHandler, metaTypeHandler);
+        }
+
+        // writes a primitive array, with meta type information if necessary
+        private static void writePrimitiveArray(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Object array) throws IOException {
+
+            var arrayComponentType = array.getClass().getComponentType();
+            // check actual type
+            MetaTypeHandler metaTypeHandler = () -> {
+                if (declaredType.getRawType() != array.getClass()) {
+                    return metaTypeArrayName(arrayComponentType);
+                }
+                return null;
+            };
+            // write content
+            ContentHandler contentHandler = () -> {
+                var componentType = ResolvedType.of(arrayComponentType);
+                var handler = JodaBeanJsonWriter.LOOKUP.get(arrayComponentType);
+                var arrayLength = Array.getLength(array);
+                writer.output.writeArrayStart();
+                for (int i = 0; i < arrayLength; i++) {
+                    writer.output.writeArrayItemStart();
+                    handler.handle(writer, componentType, propertyName, Array.get(array, i));
+                }
+                writer.output.writeArrayEnd();
+            };
+            writer.writeWithMetaType(contentHandler, metaTypeHandler);
+        }
+
+        // determines the meta type name to use
+        private static String metaTypeArrayName(Class<?> valueType) {
+            if (valueType.isArray()) {
+                return metaTypeArrayName(valueType.getComponentType()) + "[]";
+            }
+            if (valueType == Object.class) {
+                return "Object[]";
+            }
+            if (valueType == String.class) {
+                return "String[]";
+            }
+            return valueType.getName() + "[]";
+        }
+
+        // writes a collection
+        private static void writeCollection(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Iterable<?> coll) throws IOException {
+
+            // check actual type
+            MetaTypeHandler metaTypeHandler = () -> {
+                if (coll instanceof Set && !Set.class.isAssignableFrom(declaredType.getRawType())) {
+                    return "Set";
+                } else if (coll instanceof List && !List.class.isAssignableFrom(declaredType.getRawType())) {
+                    return "List";
+                } else if (!Collection.class.isAssignableFrom(declaredType.getRawType())) {
+                    return "Collection";
+                }
+                return null;
+            };
+            // write content, using an array
+            ContentHandler contentHandler = () -> {
+                var itemType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+                writer.output.writeArrayStart();
+                for (var item : coll) {
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(itemType, "", item);
+                }
+                writer.output.writeArrayEnd();
+            };
+            writer.writeWithMetaType(contentHandler, metaTypeHandler);
+        }
+
+        // writes a map, with meta type information if necessary
+        private static void writeMap(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Map<?, ?> map) throws IOException {
+
+            // write content, using a map
+            ContentHandler contentHandler = () -> writer.writeMapEntries(declaredType, propertyName, map.entrySet());
+            writer.writeWithMetaType(contentHandler, Map.class, declaredType, "Map");
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    private static sealed class GuavaJsonHandlers extends BaseJsonHandlers {
+
+        @Override
+        @SuppressWarnings("rawtypes")  // sneaky use of raw type to allow typed value in each method below
+        JsonHandler computeValue(Class<?> type) {
+            if (Multimap.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<Multimap<?, ?>>) GuavaJsonHandlers::writeMultimap;
+            }
+            if (Multiset.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<Multiset<?>>) GuavaJsonHandlers::writeMultiset;
+            }
+            if (Table.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<Table<?, ?, ?>>) GuavaJsonHandlers::writeTable;
+            }
+            if (BiMap.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<BiMap<?, ?>>) GuavaJsonHandlers::writeBiMap;
+            }
+            if (com.google.common.base.Optional.class.isAssignableFrom(type)) {
+                return GuavaOptionalJsonHandler.INSTANCE;
+            }
+            return super.computeValue(type);
+        }
+
+        // writes a multimap
+        private static void writeMultimap(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Multimap<?, ?> mmap) throws IOException {
+
+            // check actual type
+            MetaTypeHandler metaTypeHandler = () -> {
+                if (mmap instanceof SetMultimap && !SetMultimap.class.isAssignableFrom(declaredType.getRawType())) {
+                    return "SetMultimap";
+                } else if (mmap instanceof ListMultimap && !ListMultimap.class.isAssignableFrom(declaredType.getRawType())) {
+                    return "ListMultimap";
+                } else if (!Multimap.class.isAssignableFrom(declaredType.getRawType())) {
+                    return "Multimap";
+                }
+                return null;
+            };
+            // write content, using a map
+            ContentHandler contentHandler = () -> writer.writeMapEntries(declaredType, propertyName, mmap.entries());
+            writer.writeWithMetaType(contentHandler, metaTypeHandler);
+        }
+
+        // writes a multiset
+        private static void writeMultiset(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Multiset<?> mset) throws IOException {
+
+            // write content, using an array of value to count
+            ContentHandler contentHandler = () -> {
+                var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+                writer.output.writeArrayStart();
+                for (var entry : mset.entrySet()) {
+                    writer.output.writeArrayItemStart();
+                    writer.output.writeArrayStart();
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(valueType, "", entry.getElement());
+                    writer.output.writeArrayItemStart();
+                    writer.output.writeInt(entry.getCount());
+                    writer.output.writeArrayEnd();
+                }
+                writer.output.writeArrayEnd();
+            };
+            writer.writeWithMetaType(contentHandler, Multiset.class, declaredType, "Multiset");
+        }
+
+        // writes a table
+        private static void writeTable(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Table<?, ?, ?> table) throws IOException {
+
+            // write content, using an array of cells
+            ContentHandler contentHandler = () -> {
+                var rowType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+                var columnType = toWeakenedType(declaredType.getArgumentOrDefault(1));
+                var valueType = toWeakenedType(declaredType.getArgumentOrDefault(2));
+                writer.output.writeArrayStart();
+                for (var cell : table.cellSet()) {
+                    writer.output.writeArrayItemStart();
+                    writer.output.writeArrayStart();
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(rowType, "", cell.getRowKey());
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(columnType, "", cell.getColumnKey());
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(valueType, "", cell.getValue());
+                    writer.output.writeArrayEnd();
+                }
+                writer.output.writeArrayEnd();
+            };
+            writer.writeWithMetaType(contentHandler, Table.class, declaredType, "Table");
+        }
+
+        // writes a BiMap, with meta type information if necessary
+        private static void writeBiMap(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                BiMap<?, ?> biMap) throws IOException {
+
+            MetaTypeHandler metaTypeHandler = () -> {
+                if (!BiMap.class.isAssignableFrom(declaredType.getRawType())) {
+                    // hack around Guava annoyance by assuming that size 0 and 1 ImmutableBiMap
+                    // was actually meant to be an ImmutableMap
+                    if ((declaredType.getRawType() != Map.class && declaredType.getRawType() != ImmutableMap.class) || biMap.size() >= 2) {
+                        return "BiMap";
+                    } else if (!Map.class.isAssignableFrom(declaredType.getRawType())) {
+                        return "Map";
+                    }
+                }
+                return null;
+            };
+            ContentHandler contentHandler = () -> writer.writeMapEntries(declaredType, propertyName, biMap.entrySet());
+            writer.writeWithMetaType(contentHandler, metaTypeHandler);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    private static final class CollectJsonHandlers extends GuavaJsonHandlers {
+
+        @Override
+        @SuppressWarnings("rawtypes")  // sneaky use of raw type to allow typed value in each method below
+        JsonHandler computeValue(Class<?> type) {
+            if (Grid.class.isAssignableFrom(type)) {
+                return (CollectionJsonHandler<Grid<?>>) CollectJsonHandlers::writeGrid;
+            }
+            return super.computeValue(type);
+        }
+
+        private static void writeGrid(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Grid<?> grid) throws IOException {
+
+            // write grid using sparse approach
+            ContentHandler contentHandler = () -> {
+                var valueType = toWeakenedType(declaredType.getArgumentOrDefault(0));
+                writer.output.writeArrayStart();
+                writer.output.writeArrayItemStart();
+                writer.output.writeInt(grid.rowCount());
+                writer.output.writeArrayItemStart();
+                writer.output.writeInt(grid.columnCount());
+                for (var cell : grid.cells()) {
+                    writer.output.writeArrayItemStart();
+                    writer.output.writeArrayStart();
+                    writer.output.writeArrayItemStart();
+                    writer.output.writeInt(cell.getRow());
+                    writer.output.writeArrayItemStart();
+                    writer.output.writeInt(cell.getColumn());
+                    writer.output.writeArrayItemStart();
+                    writer.writeObject(valueType, "", cell.getValue());
+                    writer.output.writeArrayEnd();
+                }
+                writer.output.writeArrayEnd();
+            };
+            writer.writeWithMetaType(contentHandler, Grid.class, declaredType, "Grid");
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    static final class OptionalJsonHandler implements JsonHandler<Optional<?>> {
+        private static final OptionalJsonHandler INSTANCE = new OptionalJsonHandler();
+
+        // when Optional is not a property, it is processed as a kind of collection
+        @Override
+        public void handle(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Optional<?> opt) throws IOException {
+
+            var valueType = declaredType.getArgumentOrDefault(0);
+            writer.writeObject(valueType, "", opt.orElse(null));
+        }
+
+        // when Optional is a property, it is ignored if empty
+        @Override
+        public void handleProperty(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                Optional<?> opt) throws IOException {
+
+            var value = opt.orElse(null);
+            if (value != null) {
+                var valueType = declaredType.getArgumentOrDefault(0);
+                writer.output.writeObjectKey(propertyName);
+                writer.writeObject(valueType, propertyName, value);
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    static final class GuavaOptionalJsonHandler implements JsonHandler<com.google.common.base.Optional<?>> {
+        private static final GuavaOptionalJsonHandler INSTANCE = new GuavaOptionalJsonHandler();
+
+        // when Optional is not a property, it is processed as a kind of collection
+        @Override
+        public void handle(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                com.google.common.base.Optional<?> opt) throws IOException {
+
+            var valueType = declaredType.getArgumentOrDefault(0);
+            writer.writeObject(valueType, "", opt.orNull());
+        }
+
+        // when Optional is a property, it is ignored if empty
+        @Override
+        public void handleProperty(
+                JodaBeanJsonWriter writer,
+                ResolvedType declaredType,
+                String propertyName,
+                com.google.common.base.Optional<?> opt) throws IOException {
+
+            var value = opt.orNull();
+            if (value != null) {
+                var valueType = declaredType.getArgumentOrDefault(0);
+                writer.output.writeObjectKey(propertyName);
+                writer.writeObject(valueType, propertyName, value);
+            }
+        }
+    }
 }

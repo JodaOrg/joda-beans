@@ -110,7 +110,7 @@ public class MutableDerived extends MutableEmptyBase {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MutableDerived other = (MutableDerived) obj;
-            return JodaBeanUtils.equal(getName(), other.getName()) &&
+            return JodaBeanUtils.equal(this.getName(), other.getName()) &&
                     super.equals(obj);
         }
         return false;
@@ -174,7 +174,7 @@ public class MutableDerived extends MutableEmptyBase {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -255,7 +255,7 @@ public class MutableDerived extends MutableEmptyBase {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3373707:  // name
-                    return name;
+                    return this.name;
                 default:
                     return super.get(propertyName);
             }

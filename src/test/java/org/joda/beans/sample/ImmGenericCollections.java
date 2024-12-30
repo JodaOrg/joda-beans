@@ -115,7 +115,7 @@ public class ImmGenericCollections<T> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmGenericCollections<?> other = (ImmGenericCollections<?>) obj;
-            return JodaBeanUtils.equal(map, other.map);
+            return JodaBeanUtils.equal(this.map, other.map);
         }
         return false;
     }
@@ -179,7 +179,7 @@ public class ImmGenericCollections<T> implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 107868:  // map
-                    return map;
+                    return this.map;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -258,7 +258,7 @@ public class ImmGenericCollections<T> implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 107868:  // map
-                    return map;
+                    return this.map;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

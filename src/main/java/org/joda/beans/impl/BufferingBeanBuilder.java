@@ -15,7 +15,7 @@
  */
 package org.joda.beans.impl;
 
-import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -62,10 +62,7 @@ public class BufferingBeanBuilder<T extends Bean>
      * @param metaBean  the target meta-bean, not null
      */
     public BufferingBeanBuilder(MetaBean metaBean) {
-        if (metaBean == null) {
-            throw new NullPointerException("MetaBean must not be null");
-        }
-        this.metaBean = metaBean;
+        this.metaBean = Objects.requireNonNull(metaBean, "metaBean must not be null");
     }
 
     //-----------------------------------------------------------------------
@@ -131,8 +128,8 @@ public class BufferingBeanBuilder<T extends Bean>
     @Override
     public T build() {
         @SuppressWarnings("unchecked")
-        BeanBuilder<T> builder = (BeanBuilder<T>) getMetaBean().builder();
-        for (Entry<MetaProperty<?>, Object> entry : getBuffer().entrySet()) {
+        var builder = (BeanBuilder<T>) getMetaBean().builder();
+        for (var entry : getBuffer().entrySet()) {
             builder.set(entry.getKey(), entry.getValue());
         }
         return builder.build();

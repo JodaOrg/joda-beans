@@ -167,9 +167,9 @@ public class Documentation<T> extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             Documentation<?> other = (Documentation<?>) obj;
-            return JodaBeanUtils.equal(getType(), other.getType()) &&
-                    JodaBeanUtils.equal(getContent(), other.getContent()) &&
-                    JodaBeanUtils.equal(getMap(), other.getMap());
+            return JodaBeanUtils.equal(this.getType(), other.getType()) &&
+                    JodaBeanUtils.equal(this.getContent(), other.getContent()) &&
+                    JodaBeanUtils.equal(this.getMap(), other.getMap());
         }
         return false;
     }
@@ -250,11 +250,11 @@ public class Documentation<T> extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3575610:  // type
-                    return type;
+                    return this.type;
                 case 951530617:  // content
-                    return content;
+                    return this.content;
                 case 107868:  // map
-                    return map;
+                    return this.map;
             }
             return super.metaPropertyGet(propertyName);
         }

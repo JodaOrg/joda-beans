@@ -40,12 +40,12 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterator create(final Object value, final MetaProperty<?> prop, Class<?> beanClass) {
-        Class<?> declaredType = prop.propertyType();
-        if (value instanceof Grid) {
-            Class<?> valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
-            return grid((Grid<?>) value, declaredType, valueType, valueTypeTypes);
+    public SerIterator create(Object value, MetaProperty<?> prop, Class<?> beanClass) {
+        var declaredType = prop.propertyType();
+        if (value instanceof Grid<?> grid) {
+            var valueType = defaultToObjectClass(JodaBeanUtils.collectionType(prop, beanClass));
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            return grid(grid, declaredType, valueType, valueTypeTypes);
         }
         return super.create(value, prop, beanClass);
     }
@@ -61,14 +61,14 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterator createChild(final Object value, final SerIterator parent) {
-        Class<?> declaredType = parent.valueType();
-        List<Class<?>> childGenericTypes = parent.valueTypeTypes();
-        if (value instanceof Grid) {
+    public SerIterator createChild(Object value, SerIterator parent) {
+        var declaredType = parent.valueType();
+        var childGenericTypes = parent.valueTypeTypes();
+        if (value instanceof Grid<?> grid) {
             if (childGenericTypes.size() == 1) {
-                return grid((Grid<?>) value, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
+                return grid(grid, declaredType, childGenericTypes.get(0), EMPTY_VALUE_TYPES);
             }
-            return grid((Grid<?>) value, Object.class, Object.class, EMPTY_VALUE_TYPES);
+            return grid(grid, Object.class, Object.class, EMPTY_VALUE_TYPES);
         }
         return super.createChild(value, parent);
     }
@@ -83,7 +83,7 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterable createIterable(final String metaTypeDescription, final JodaBeanSer settings, final Map<String, Class<?>> knownTypes) {
+    public SerIterable createIterable(String metaTypeDescription, JodaBeanSer settings, Map<String, Class<?>> knownTypes) {
         if (metaTypeDescription.equals("Grid")) {
             return grid(Object.class, EMPTY_VALUE_TYPES);
         }
@@ -98,10 +98,10 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * @return the iterator, null if not a collection-like type
      */
     @Override
-    public SerIterable createIterable(final MetaProperty<?> prop, Class<?> beanClass) {
+    public SerIterable createIterable(MetaProperty<?> prop, Class<?> beanClass) {
         if (Grid.class.isAssignableFrom(prop.propertyType())) {
-            Class<?> valueType = JodaBeanUtils.collectionType(prop, beanClass);
-            List<Class<?>> valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
+            var valueType = JodaBeanUtils.collectionType(prop, beanClass);
+            var valueTypeTypes = JodaBeanUtils.collectionTypeTypes(prop, beanClass);
             return grid(valueType, valueTypeTypes);
         }
         return super.createIterable(prop, beanClass);
@@ -115,48 +115,57 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * @param valueTypeTypes  the generic parameters of the value type
      * @return the iterable, not null
      */
-    public static final SerIterable grid(final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterable grid(Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterable() {
             private final List<Grid.Cell<?>> cells = new ArrayList<>();
             private int[] dimensions;
+
             @Override
             public SerIterator iterator() {
                 return grid(build(), Object.class, valueType, valueTypeTypes);
             }
+
             @Override
             public void dimensions(int[] dimensions) {
                 this.dimensions = dimensions;
             }
+
             @Override
             public void add(Object key, Object column, Object value, int count) {
                 if (value != null) {
                     cells.add(ImmutableCell.of((Integer) key, (Integer) column, value));
                 }
             }
+
             @Override
-            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @SuppressWarnings({"unchecked", "rawtypes"})
             public Grid<?> build() {
                 if (dimensions == null || dimensions.length != 2) {
                     throw new IllegalArgumentException("Expected 2 dimensions, rowCount and columnCount");
                 }
                 return ImmutableGrid.copyOf(dimensions[0], dimensions[1], (Iterable) cells);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.GRID;
             }
+
             @Override
             public Class<?> keyType() {
                 return Integer.class;
             }
+
             @Override
             public Class<?> columnType() {
                 return Integer.class;
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;
@@ -174,9 +183,7 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
      * @return the iterator, not null
      */
     @SuppressWarnings("rawtypes")
-    public static final SerIterator grid(
-            final Grid<?> grid, final Class<?> declaredType,
-            final Class<?> valueType, final List<Class<?>> valueTypeTypes) {
+    public static SerIterator grid(Grid<?> grid, Class<?> declaredType, Class<?> valueType, List<Class<?>> valueTypeTypes) {
         return new SerIterator() {
             private final Iterator it = grid.cells().iterator();
             private Grid.Cell current;
@@ -185,58 +192,72 @@ public class CollectSerIteratorFactory extends GuavaSerIteratorFactory {
             public String metaTypeName() {
                 return "Grid";
             }
+
             @Override
             public boolean metaTypeRequired() {
-                return Grid.class.isAssignableFrom(declaredType) == false;
+                return !Grid.class.isAssignableFrom(declaredType);
             }
+
             @Override
             public SerCategory category() {
                 return SerCategory.GRID;
             }
+
             @Override
             public int dimensionSize(int dimension) {
                 return (dimension == 0 ? grid.rowCount() : grid.columnCount());
             }
+
             @Override
             public int size() {
                 return grid.size();
             }
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
+
             @Override
             public void next() {
                 current = (Grid.Cell) it.next();
             }
+
             @Override
             public Class<?> keyType() {
                 return Integer.class;
             }
+
             @Override
             public Object key() {
                 return current.getRow();
             }
+
             @Override
             public Class<?> columnType() {
                 return Integer.class;
             }
+
             @Override
             public Object column() {
                 return current.getColumn();
             }
+
             @Override
             public Class<?> valueType() {
                 return valueType;
             }
+
             @Override
             public Object value() {
                 return current.getValue();
             }
+
             @Override
             public Object value(int row, int column) {
                 return grid.get(row, column);
             }
+
             @Override
             public List<Class<?>> valueTypeTypes() {
                 return valueTypeTypes;

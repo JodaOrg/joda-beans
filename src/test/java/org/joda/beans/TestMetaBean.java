@@ -15,50 +15,52 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.MetaBeanLoad;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * Test MetaBean statics.
+ * Test {@link MetaBean}.
  */
-public class TestMetaBean {
+class TestMetaBean {
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
-    public void test_registerMetaBean() {
+    @Test
+    void test_registerMetaBean() {
         // register once OK
-        assertNotNull(ImmPerson.meta());
+        assertThat(ImmPerson.meta()).isNotNull();
         // register second time not OK
-        MetaBean.register(ImmPerson.meta());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> MetaBean.register(ImmPerson.meta()));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_metaBean() {
+    void test_metaBean() {
         MetaBean metaBean = MetaBean.of(MetaBeanLoad.class);
-        assertNotNull(metaBean);
-        assertEquals(metaBean, MetaBeanLoad.meta());
+        assertThat(metaBean).isNotNull();
+        assertThat(metaBean).isEqualTo(MetaBeanLoad.meta());
     }
 
     @Test
-    public void test_metaBean_FlexiBean() {
-        assertEquals(MetaBean.of(FlexiBean.class).builder().build().getClass(), FlexiBean.class);
+    void test_metaBean_FlexiBean() {
+        assertThat(MetaBean.of(FlexiBean.class).builder().build().getClass()).isEqualTo(FlexiBean.class);
     }
 
     @Test
-    public void test_metaBean_MapBean() {
-        assertEquals(MetaBean.of(MapBean.class).builder().build().getClass(), MapBean.class);
+    void test_metaBean_MapBean() {
+        assertThat(MetaBean.of(MapBean.class).builder().build().getClass()).isEqualTo(MapBean.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_metaBean_notFound() {
-        MetaBean.of(String.class);
+    @Test
+    void test_metaBean_notFound() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> MetaBean.of(String.class));
     }
 
 }

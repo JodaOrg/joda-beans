@@ -1,0 +1,8 @@
+{
+ "intArray": [1, 3, 2],
+ "longArray": [1, 4, 3],
+ "doubleArray": [1.1, 2.2, 3.3],
+ "booleanArray": [true, false],
+ "intArray2d": ["1,2", "2", ""],
+ "booleanArray2d": ["TF", "F", ""]
+}

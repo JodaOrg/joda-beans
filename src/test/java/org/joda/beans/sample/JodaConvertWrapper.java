@@ -134,8 +134,8 @@ public class JodaConvertWrapper extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             JodaConvertWrapper other = (JodaConvertWrapper) obj;
-            return JodaBeanUtils.equal(getBean(), other.getBean()) &&
-                    JodaBeanUtils.equal(getDescription(), other.getDescription());
+            return JodaBeanUtils.equal(this.getBean(), other.getBean()) &&
+                    JodaBeanUtils.equal(this.getDescription(), other.getDescription());
         }
         return false;
     }
@@ -204,9 +204,9 @@ public class JodaConvertWrapper extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3019696:  // bean
-                    return bean;
+                    return this.bean;
                 case -1724546052:  // description
-                    return description;
+                    return this.description;
             }
             return super.metaPropertyGet(propertyName);
         }

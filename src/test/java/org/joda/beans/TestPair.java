@@ -15,20 +15,19 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.Pair;
 import org.joda.beans.sample.TweakedPair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test Pair.
  */
-public class TestPair {
+class TestPair {
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
-    public void test_equalsHashCode() {
+    void test_equalsHashCode() {
         // even though TwekedPair adds no new properties, we treat it as different
         // this can be avoided (see Git history) but at a performance cost
         Pair a1 = new Pair();
@@ -39,25 +38,26 @@ public class TestPair {
         a2.setFirst("A");
         b.setFirst("A");
         
-        assertEquals(a1.equals(a1), true);
-        assertEquals(a1.equals(a2), true);
-        assertEquals(a2.equals(a1), true);
-        assertEquals(a2.equals(a2), true);
-        assertEquals(a1.hashCode(), a2.hashCode());
+        assertThat(a1.equals(a1)).isTrue();
+        assertThat(a1.equals(a2)).isTrue();
+        assertThat(a2.equals(a1)).isTrue();
+        assertThat(a2.equals(a2)).isTrue();
+        assertThat(a1.hashCode()).isEqualTo(a2.hashCode());
         
-        assertEquals(a1.equals(b), false);
-        assertEquals(b.equals(a1), false);
+        assertThat(a1.equals(b)).isFalse();
+        assertThat(b.equals(a1)).isFalse();
         
-        assertEquals(b.equals("Weird type"), false);
-        assertEquals(b.equals(null), false);
+        Object obj = "Weird type";
+        assertThat(b.equals(obj)).isFalse();
+        assertThat(b.equals(null)).isFalse();
     }
 
     @Test
-    public void test_toString() {
+    void test_toString() {
         Pair test = new Pair();
         test.setFirst("A");
         test.setSecond("B");
-        assertEquals(test.toString(), "Pair{first=A, second=B}");
+        assertThat(test).hasToString("Pair{first=A, second=B}");
     }
 
 }

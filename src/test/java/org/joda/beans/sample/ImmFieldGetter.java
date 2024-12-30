@@ -109,7 +109,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmFieldGetter<?> other = (ImmFieldGetter<?>) obj;
-            return JodaBeanUtils.equal(value, other.value);
+            return JodaBeanUtils.equal(this.value, other.value);
         }
         return false;
     }
@@ -164,7 +164,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -243,7 +243,7 @@ public final class ImmFieldGetter<T> implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

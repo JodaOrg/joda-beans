@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * Used to test annotation parsing.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.TYPE })
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface SimpleAnnotation {
 
     String first() default "";

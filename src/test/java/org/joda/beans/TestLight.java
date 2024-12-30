@@ -15,22 +15,19 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.NoSuchElementException;
 
 import org.joda.beans.impl.StandaloneMetaProperty;
-import org.joda.beans.impl.light.LightMetaBean;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.LightImmutable;
 import org.joda.beans.sample.LightMutable;
 import org.joda.beans.ser.JodaBeanSer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -38,10 +35,10 @@ import com.google.common.collect.ImmutableList;
 /**
  * Test style=light.
  */
-public class TestLight {
+class TestLight {
 
     @Test
-    public void test_immutable() {
+    void test_immutable() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
         LightImmutable bean = LightImmutable.meta().builder()
                 .set("number", 12)
@@ -51,73 +48,70 @@ public class TestLight {
                 .set("list", new ArrayList<String>())
                 .set("currency", Currency.getInstance("USD"))
                 .set("hiddenText", "wow")
+                .set("valueChar", 'a')  // XML does not support char zero
                 .build();
         
-        assertEquals(bean.getNumber(), 12);
-        assertEquals(bean.getTown(), Optional.absent());
-        assertEquals(bean.getCity(), "Smallville");
-        assertEquals(bean.getStreetName(), "Park Lane");
-        assertEquals(bean.getOwner(), person);
-        assertEquals(bean.getList(), ImmutableList.of());
+        assertThat(bean.getNumber()).isEqualTo(12);
+        assertThat(bean.getTown()).isEqualTo(Optional.absent());
+        assertThat(bean.getCity()).isEqualTo("Smallville");
+        assertThat(bean.getStreetName()).isEqualTo("Park Lane");
+        assertThat(bean.getOwner()).isEqualTo(person);
+        assertThat(bean.getList()).isEqualTo(ImmutableList.of());
         
-        assertEquals(bean.metaBean().beanType(), LightImmutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 10);
-        assertEquals(bean.metaBean().metaPropertyExists("number"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("town"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("address"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        assertThat(bean.metaBean().beanType()).isEqualTo(LightImmutable.class);
+        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(14);
+        assertThat(bean.metaBean().metaPropertyExists("number")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("town")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("address")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("foobar")).isFalse();
         
-        assertEquals(bean.metaBean().metaPropertyExists("place"), false);
-        assertEquals(bean.metaBean().metaProperty("place"), bean.metaBean().metaProperty("city"));
+        assertThat(bean.metaBean().metaPropertyExists("place")).isFalse();
+        assertThat(bean.metaBean().metaProperty("place")).isEqualTo(bean.metaBean().metaProperty("city"));
         LightImmutable builtWithAlias = LightImmutable.meta().builder()
                 .set("place", "Place")
                 .set("street", "Park Lane")
                 .set("owner", person)
                 .build();
-        assertEquals(builtWithAlias.getCity(), "Place");
+        assertThat(builtWithAlias.getCity()).isEqualTo("Place");
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
-        assertEquals(mp.propertyType(), int.class);
-        assertEquals(mp.declaringType(), LightImmutable.class);
-        assertEquals(mp.get(bean), 12);
-        assertEquals(mp.style(), PropertyStyle.IMMUTABLE);
+        assertThat(mp.propertyType()).isEqualTo(int.class);
+        assertThat(mp.declaringType()).isEqualTo(LightImmutable.class);
+        assertThat(mp.get(bean)).isEqualTo(12);
+        assertThat(mp.style()).isEqualTo(PropertyStyle.IMMUTABLE);
         
         MetaProperty<Object> mp2 = bean.metaBean().metaProperty("town");
-        assertEquals(mp2.propertyType(), String.class);
-        assertEquals(mp2.propertyGenericType(), String.class);
-        assertEquals(mp2.declaringType(), LightImmutable.class);
-        assertEquals(mp2.get(bean), null);
-        assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
+        assertThat(mp2.propertyType()).isEqualTo(String.class);
+        assertThat(mp2.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp2.declaringType()).isEqualTo(LightImmutable.class);
+        assertThat(mp2.get(bean)).isNull();
+        assertThat(mp2.style()).isEqualTo(PropertyStyle.IMMUTABLE);
         
         MetaProperty<Object> mp3 = bean.metaBean().metaProperty("address");
-        assertEquals(mp3.propertyType(), String.class);
-        assertEquals(mp3.propertyGenericType(), String.class);
-        assertEquals(mp3.declaringType(), LightImmutable.class);
-        assertEquals(mp3.get(bean), "12 Park Lane Smallville");
-        assertEquals(mp3.style(), PropertyStyle.DERIVED);
+        assertThat(mp3.propertyType()).isEqualTo(String.class);
+        assertThat(mp3.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp3.declaringType()).isEqualTo(LightImmutable.class);
+        assertThat(mp3.get(bean)).isEqualTo("12 Park Lane Smallville");
+        assertThat(mp3.style()).isEqualTo(PropertyStyle.DERIVED);
         
         MetaProperty<Object> mp4 = bean.metaBean().metaProperty("hiddenText");
-        assertEquals(mp4.propertyType(), String.class);
-        assertEquals(mp4.propertyGenericType(), String.class);
-        assertEquals(mp4.declaringType(), LightImmutable.class);
-        assertEquals(mp4.get(bean), "wow");
-        assertEquals(mp4.style(), PropertyStyle.IMMUTABLE);
+        assertThat(mp4.propertyType()).isEqualTo(String.class);
+        assertThat(mp4.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp4.declaringType()).isEqualTo(LightImmutable.class);
+        assertThat(mp4.get(bean)).isEqualTo("wow");
+        assertThat(mp4.style()).isEqualTo(PropertyStyle.IMMUTABLE);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
         
-        try {
-            LightImmutable.meta().builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> LightImmutable.meta().builder().set(mp3, "Nothing"));
     }
 
     @Test
-    public void test_immutable_order() {
+    void test_immutable_order() {
         ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        LightImmutable bean = (LightImmutable) LightImmutable.meta().builder()
+        LightImmutable bean = LightImmutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
                 .set(StandaloneMetaProperty.of("city", LightImmutable.meta(), String.class), "Smallville")
@@ -127,20 +121,24 @@ public class TestLight {
                 .build();
 
         ImmutableList<MetaProperty<?>> mps = ImmutableList.copyOf(bean.metaBean().metaPropertyIterable());
-        assertEquals(mps.get(0).name(), "number");
-        assertEquals(mps.get(1).name(), "flag");
-        assertEquals(mps.get(2).name(), "street");
-        assertEquals(mps.get(3).name(), "town");
-        assertEquals(mps.get(4).name(), "city");
-        assertEquals(mps.get(5).name(), "owner");
-        assertEquals(mps.get(6).name(), "list");
-        assertEquals(mps.get(7).name(), "currency");
-        assertEquals(mps.get(8).name(), "hiddenText");
-        assertEquals(mps.get(9).name(), "address");
+        assertThat(mps.get(0).name()).isEqualTo("number");
+        assertThat(mps.get(1).name()).isEqualTo("flag");
+        assertThat(mps.get(2).name()).isEqualTo("street");
+        assertThat(mps.get(3).name()).isEqualTo("town");
+        assertThat(mps.get(4).name()).isEqualTo("city");
+        assertThat(mps.get(5).name()).isEqualTo("owner");
+        assertThat(mps.get(6).name()).isEqualTo("list");
+        assertThat(mps.get(7).name()).isEqualTo("currency");
+        assertThat(mps.get(8).name()).isEqualTo("hiddenText");
+        assertThat(mps.get(9).name()).isEqualTo("valueLong");
+        assertThat(mps.get(10).name()).isEqualTo("valueShort");
+        assertThat(mps.get(11).name()).isEqualTo("valueChar");
+        assertThat(mps.get(12).name()).isEqualTo("valueByte");
+        assertThat(mps.get(13).name()).isEqualTo("address");
     }
 
     @Test
-    public void test_mutable() {
+    void test_mutable() {
         LightMutable bean = LightMutable.meta().builder()
                 .set("number", 12)
                 .set("street", "Park Lane")
@@ -150,142 +148,69 @@ public class TestLight {
                 .set("hiddenText", "wow")
                 .build();
         
-        assertEquals(bean.getNumber(), 12);
-        assertEquals(bean.getTown(), Optional.absent());
-        assertEquals(bean.getCity(), "Smallville");
-        assertEquals(bean.getStreetName(), "Park Lane");
-        assertEquals(bean.getList(), ImmutableList.of());
-        assertEquals(bean.getCurrency(), Optional.of(Currency.getInstance("USD")));
+        assertThat(bean.getNumber()).isEqualTo(12);
+        assertThat(bean.getTown()).isEqualTo(Optional.absent());
+        assertThat(bean.getCity()).isEqualTo("Smallville");
+        assertThat(bean.getStreetName()).isEqualTo("Park Lane");
+        assertThat(bean.getList()).isEqualTo(ImmutableList.of());
+        assertThat(bean.getCurrency()).isEqualTo(Optional.of(Currency.getInstance("USD")));
         
         bean.setCity("Nodnol");
-        assertEquals(bean.getCity(), "Nodnol");
+        assertThat(bean.getCity()).isEqualTo("Nodnol");
         
         bean.property("city").set("Paris");
-        assertEquals(bean.getCity(), "Paris");
+        assertThat(bean.getCity()).isEqualTo("Paris");
         
         bean.metaBean().metaProperty("city").set(bean, "London");
-        assertEquals(bean.getCity(), "London");
+        assertThat(bean.getCity()).isEqualTo("London");
         
-        assertEquals(bean.metaBean().beanType(), LightMutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 9);
-        assertEquals(bean.metaBean().metaPropertyExists("number"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("town"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("address"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
+        assertThat(bean.metaBean().beanType()).isEqualTo(LightMutable.class);
+        assertThat(bean.metaBean().metaPropertyCount()).isEqualTo(9);
+        assertThat(bean.metaBean().metaPropertyExists("number")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("town")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("address")).isTrue();
+        assertThat(bean.metaBean().metaPropertyExists("foobar")).isFalse();
         
-        assertEquals(bean.metaBean().metaPropertyExists("place"), false);
-        assertEquals(bean.metaBean().metaProperty("place"), bean.metaBean().metaProperty("city"));
+        assertThat(bean.metaBean().metaPropertyExists("place")).isFalse();
+        assertThat(bean.metaBean().metaProperty("place")).isEqualTo(bean.metaBean().metaProperty("city"));
         LightMutable builtWithAlias = LightMutable.meta().builder()
                 .set("place", "Place")
                 .set("street", "Park Lane")
                 .build();
-        assertEquals(builtWithAlias.getCity(), "Place");
+        assertThat(builtWithAlias.getCity()).isEqualTo("Place");
         
         MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
-        assertEquals(mp.propertyType(), int.class);
-        assertEquals(mp.declaringType(), LightMutable.class);
-        assertEquals(mp.get(bean), 12);
-        assertEquals(mp.style(), PropertyStyle.READ_WRITE);
+        assertThat(mp.propertyType()).isEqualTo(int.class);
+        assertThat(mp.declaringType()).isEqualTo(LightMutable.class);
+        assertThat(mp.get(bean)).isEqualTo(12);
+        assertThat(mp.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
         MetaProperty<Object> mp2 = bean.metaBean().metaProperty("currency");
-        assertEquals(mp2.propertyType(), Currency.class);
-        assertEquals(mp2.propertyGenericType(), Currency.class);
-        assertEquals(mp2.declaringType(), LightMutable.class);
-        assertEquals(mp2.get(bean), Currency.getInstance("USD"));
-        assertEquals(mp2.style(), PropertyStyle.READ_WRITE);
+        assertThat(mp2.propertyType()).isEqualTo(Currency.class);
+        assertThat(mp2.propertyGenericType()).isEqualTo(Currency.class);
+        assertThat(mp2.declaringType()).isEqualTo(LightMutable.class);
+        assertThat(mp2.get(bean)).isEqualTo(Currency.getInstance("USD"));
+        assertThat(mp2.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
         MetaProperty<Object> mp3 = bean.metaBean().metaProperty("address");
-        assertEquals(mp3.propertyType(), String.class);
-        assertEquals(mp3.propertyGenericType(), String.class);
-        assertEquals(mp3.declaringType(), LightMutable.class);
-        assertEquals(mp3.get(bean), "12 Park Lane London");
-        assertEquals(mp3.style(), PropertyStyle.DERIVED);
+        assertThat(mp3.propertyType()).isEqualTo(String.class);
+        assertThat(mp3.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp3.declaringType()).isEqualTo(LightMutable.class);
+        assertThat(mp3.get(bean)).isEqualTo("12 Park Lane London");
+        assertThat(mp3.style()).isEqualTo(PropertyStyle.DERIVED);
         
         MetaProperty<Object> mp4 = bean.metaBean().metaProperty("hiddenText");
-        assertEquals(mp4.propertyType(), String.class);
-        assertEquals(mp4.propertyGenericType(), String.class);
-        assertEquals(mp4.declaringType(), LightMutable.class);
-        assertEquals(mp4.get(bean), "wow");
-        assertEquals(mp4.style(), PropertyStyle.READ_WRITE);
+        assertThat(mp4.propertyType()).isEqualTo(String.class);
+        assertThat(mp4.propertyGenericType()).isEqualTo(String.class);
+        assertThat(mp4.declaringType()).isEqualTo(LightMutable.class);
+        assertThat(mp4.get(bean)).isEqualTo("wow");
+        assertThat(mp4.style()).isEqualTo(PropertyStyle.READ_WRITE);
         
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).contains("<currency>USD<");
+        assertThat(JodaBeanSer.PRETTY.xmlWriter().write(bean)).doesNotContain("<town>");
         
-        try {
-            LightImmutable.meta().builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Test
-    public void test_immutableOld() {
-        @SuppressWarnings("deprecation")
-        LightMetaBean<LightImmutable> oldMeta = LightMetaBean.of(LightImmutable.class);
-
-        ImmPerson person = ImmPerson.builder().forename("John").surname("Doggett").build();
-        LightImmutable bean = oldMeta.builder()
-                .set("number", 12)
-                .set("street", "Park Lane")
-                .set(StandaloneMetaProperty.of("city", oldMeta, String.class), "Smallville")
-                .set("owner", person)
-                .set("list", new ArrayList<String>())
-                .set("currency", Currency.getInstance("USD"))
-                .set("hiddenText", "wow")
-                .build();
-
-        assertEquals(bean.getNumber(), 12);
-        assertEquals(bean.getTown(), Optional.absent());
-        assertEquals(bean.getCity(), "Smallville");
-        assertEquals(bean.getStreetName(), "Park Lane");
-        assertEquals(bean.getOwner(), person);
-        assertEquals(bean.getList(), ImmutableList.of());
-
-        assertEquals(bean.metaBean().beanType(), LightImmutable.class);
-        assertEquals(bean.metaBean().metaPropertyCount(), 10);
-        assertEquals(bean.metaBean().metaPropertyExists("number"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("town"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("address"), true);
-        assertEquals(bean.metaBean().metaPropertyExists("foobar"), false);
-
-        MetaProperty<Object> mp = bean.metaBean().metaProperty("number");
-        assertEquals(mp.propertyType(), int.class);
-        assertEquals(mp.declaringType(), LightImmutable.class);
-        assertEquals(mp.get(bean), 12);
-        assertEquals(mp.style(), PropertyStyle.IMMUTABLE);
-
-        MetaProperty<Object> mp2 = bean.metaBean().metaProperty("town");
-        assertEquals(mp2.propertyType(), String.class);
-        assertEquals(mp2.propertyGenericType(), String.class);
-        assertEquals(mp2.declaringType(), LightImmutable.class);
-        assertEquals(mp2.get(bean), null);
-        assertEquals(mp2.style(), PropertyStyle.IMMUTABLE);
-
-        MetaProperty<Object> mp3 = bean.metaBean().metaProperty("address");
-        assertEquals(mp3.propertyType(), String.class);
-        assertEquals(mp3.propertyGenericType(), String.class);
-        assertEquals(mp3.declaringType(), LightImmutable.class);
-        assertEquals(mp3.get(bean), "12 Park Lane Smallville");
-        assertEquals(mp3.style(), PropertyStyle.DERIVED);
-
-        MetaProperty<Object> mp4 = bean.metaBean().metaProperty("hiddenText");
-        assertEquals(mp4.propertyType(), String.class);
-        assertEquals(mp4.propertyGenericType(), String.class);
-        assertEquals(mp4.declaringType(), LightImmutable.class);
-        assertEquals(mp4.get(bean), "wow");
-        assertEquals(mp4.style(), PropertyStyle.IMMUTABLE);
-
-        assertTrue(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<currency>USD<"));
-        assertFalse(JodaBeanSer.PRETTY.xmlWriter().write(bean).contains("<town>"));
-
-        try {
-            oldMeta.builder().set(mp3, "Nothing");
-            fail();
-        } catch (NoSuchElementException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> LightImmutable.meta().builder().set(mp3, "Nothing"));
     }
 
 }

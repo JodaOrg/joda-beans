@@ -170,9 +170,9 @@ public final class MinimalMutableGeneric<T extends Number> implements Bean, Seri
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MinimalMutableGeneric<?> other = (MinimalMutableGeneric<?>) obj;
-            return JodaBeanUtils.equal(getNumber(), other.getNumber()) &&
-                    JodaBeanUtils.equal(getList(), other.getList()) &&
-                    JodaBeanUtils.equal(getMap(), other.getMap());
+            return JodaBeanUtils.equal(this.getNumber(), other.getNumber()) &&
+                    JodaBeanUtils.equal(this.getList(), other.getList()) &&
+                    JodaBeanUtils.equal(this.getMap(), other.getMap());
         }
         return false;
     }

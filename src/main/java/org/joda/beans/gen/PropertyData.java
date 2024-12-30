@@ -15,17 +15,15 @@
  */
 package org.joda.beans.gen;
 
-import static java.util.stream.Collectors.joining;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.joda.beans.PropertyStyle;
+import org.joda.beans.gen.CopyGen.PatternCopyGen;
 
 /**
  * A bean that can be generated.
@@ -33,31 +31,27 @@ import org.joda.beans.PropertyStyle;
 class PropertyData {
 
     /** Collection types. */
-    private static final Set<String> COLLECTIONS = new HashSet<>(
-            Arrays.asList(
-                    "Collection", "Set", "SortedSet", "NavigableSet", "List",
-                    "ArrayList", "LinkedList",
-                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
-                    "ImmutableCollection", "ImmutableList", "ImmutableSet", "ImmutableSortedSet"));
+    private static final Set<String> COLLECTIONS = Set.of(
+            "Collection", "Set", "SortedSet", "NavigableSet", "List",
+            "ArrayList", "LinkedList",
+            "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
+            "ImmutableCollection", "ImmutableList", "ImmutableSet", "ImmutableSortedSet");
     /** Set types. */
-    private static final Set<String> SETS = new HashSet<>(
-            Arrays.asList(
-                    "Set", "SortedSet", "NavigableSet",
-                    "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
-                    "ImmutableSet", "ImmutableSortedSet"));
+    private static final Set<String> SETS = Set.of(
+            "Set", "SortedSet", "NavigableSet",
+            "HashSet", "LinkedHashSet", "TreeSet", "ConcurrentSkipListSet, EnumSet",
+            "ImmutableSet", "ImmutableSortedSet");
     /** Set types. */
-    private static final Set<String> SORTED_SETS = new HashSet<>(
-            Arrays.asList(
-                    "SortedSet", "NavigableSet",
-                    "TreeSet", "ConcurrentSkipListSet",
-                    "ImmutableSortedSet"));
+    private static final Set<String> SORTED_SETS = Set.of(
+            "SortedSet", "NavigableSet",
+            "TreeSet", "ConcurrentSkipListSet",
+            "ImmutableSortedSet");
     /** Map types. */
-    private static final Set<String> MAPS = new HashSet<>(
-            Arrays.asList(
-                    "Map", "SortedMap", "NavigableMap", "ConcurrentMap", "ConcurrentNavigableMap",
-                    "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap",
-                    "BiMap", "HashBiMap",
-                    "ImmutableMap", "ImmutableSortedMap", "ImmutableBiMap"));
+    private static final Set<String> MAPS = Set.of(
+            "Map", "SortedMap", "NavigableMap", "ConcurrentMap", "ConcurrentNavigableMap",
+            "HashMap", "LinkedHashMap", "TreeMap", "ConcurrentHashMap", "ConcurrentSkipListMap",
+            "BiMap", "HashBiMap",
+            "ImmutableMap", "ImmutableSortedMap", "ImmutableBiMap");
 
     /** Owning bean. */
     private final BeanData bean;
@@ -286,14 +280,14 @@ class PropertyData {
         if (getTypeStyle() == null) {
             setTypeStyle("");
         }
-        final String fieldType = getFieldType();
-        String generics = "";
+        var fieldType = getFieldType();
+        var generics = "";
         if (fieldType.contains("<")) {
             generics = fieldType.substring(fieldType.indexOf('<'));
         }
         if (getTypeStyle().equals("smart")) {
             setType(fieldType);
-        } else if (getTypeStyle().length() > 0) {
+        } else if (!getTypeStyle().isEmpty()) {
             if (getTypeStyle().contains("<>")) {
                 setType(getTypeStyle().replace("<>", generics));
             } else if (getTypeStyle().contains("<")) {
@@ -313,14 +307,14 @@ class PropertyData {
         if (getBuilderTypeStyle() == null) {
             setBuilderTypeStyle("");
         }
-        final String fieldType = getFieldType();
-        String generics = "";
+        var fieldType = getFieldType();
+        var generics = "";
         if (fieldType.contains("<")) {
             generics = fieldType.substring(fieldType.indexOf('<'));
         }
         if (getBuilderTypeStyle().equals("smart")) {
             setBuilderType(fieldType);
-        } else if (getBuilderTypeStyle().length() > 0) {
+        } else if (!getBuilderTypeStyle().isEmpty()) {
             if (getBuilderTypeStyle().contains("<>")) {
                 setBuilderType(getBuilderTypeStyle().replace("<>", generics));
             } else if (getBuilderTypeStyle().contains("<")) {
@@ -378,7 +372,7 @@ class PropertyData {
      * @param alias  the alias
      */
     public void setAlias(String alias) {
-        this.alias = (alias != null && alias.isEmpty() == false ? alias : null);
+        this.alias = (alias != null && !alias.isEmpty() ? alias : null);
     }
 
     /**
@@ -565,7 +559,7 @@ class PropertyData {
      * Resolves validation.
      */
     public void resolveValidation() {
-        if (isFinal() && getInitializer().length() > 0 &&  getValidation().length() == 0) {
+        if (isFinal() && !getInitializer().isEmpty() && getValidation().isEmpty()) {
             setValidation("notNull");
         }
     }
@@ -633,7 +627,7 @@ class PropertyData {
      * @return true if generified
      */
     public boolean isGenericParamType() {
-        return type.indexOf("<") >= 0;
+        return type.contains("<");
     }
 
     /**
@@ -651,11 +645,8 @@ class PropertyData {
      * @return the generic type, or a blank string if not generic, not null
      */
     public String getGenericParamType() {
-        int pos = type.indexOf("<");
-        if (pos < 0) {
-            return "";
-        }
-        return type.substring(pos + 1, type.length() - 1);
+        var pos = type.indexOf("<");
+        return pos < 0 ? "" : type.substring(pos + 1, type.length() - 1);
     }
 
     /**
@@ -664,10 +655,7 @@ class PropertyData {
      * @return true if matches
      */
     public boolean isBeanGenericType() {
-        String stripped = type;
-        if (isArrayType()) {
-            stripped = type.substring(0, type.length() - 2);
-        }
+        var stripped = isArrayType() ? type.substring(0, type.length() - 2) : type;
         return bean.isTypeGenerifiedBy(stripped);
     }
 
@@ -685,7 +673,7 @@ class PropertyData {
      * @return the raw type
      */
     public String getTypeRaw() {
-        int pos = type.indexOf("<");
+        var pos = type.indexOf("<");
         return (pos < 0 ? type : type.substring(0, pos));
     }
 
@@ -694,7 +682,7 @@ class PropertyData {
      * @return the raw type
      */
     public String getFieldTypeRaw() {
-        int pos = fieldType.indexOf("<");
+        var pos = fieldType.indexOf("<");
         return (pos < 0 ? fieldType : fieldType.substring(0, pos));
     }
 
@@ -706,11 +694,8 @@ class PropertyData {
      * @return the generic part of the type, not null
      */
     public String getTypeGenerics() {
-        final String type = getType();
-        if (type.contains("<")) {
-            return type.substring(type.indexOf('<'));
-        }
-        return "";
+        var type = getType();
+        return type.contains("<") ? type.substring(type.indexOf('<')) : "";
     }
 
     /**
@@ -721,11 +706,8 @@ class PropertyData {
      * @return the generic part of the type, empty if not generic, not null
      */
     public String getTypeGenericsSimple() {
-        final String type = getType();
-        if (type.contains("<")) {
-            return type.substring(type.indexOf('<') + 1, type.length() - 1);
-        }
-        return "";
+        var type = getType();
+        return type.contains("<") ? type.substring(type.indexOf('<') + 1, type.length() - 1) : "";
     }
 
     /**
@@ -735,23 +717,23 @@ class PropertyData {
      */
     public String getTypeBeanErased() {
         if (isBeanGenericType()) {
-            for (int i = 0; i < bean.getTypeGenericCount(); i++) {
+            for (var i = 0; i < bean.getTypeGenericCount(); i++) {
                 if (type.equals(bean.getTypeGenericName(i, false))) {
                     return bean.getTypeGenericErased(i);
                 }
             }
         }
-        String generic = getTypeGenericsSimple();
+        var generic = getTypeGenericsSimple();
         if (generic.isEmpty()) {
             return type;
         }
-        StringTokenizer tkn = new StringTokenizer(generic, ",");
+        var tkn = new StringTokenizer(generic, ",");
         List<String> altered = new ArrayList<>();
         while (tkn.hasMoreTokens()) {
-            String genericType = tkn.nextToken().trim();
-            String erased = genericType;
+            var genericType = tkn.nextToken().trim();
+            var erased = genericType;
             if (bean.isTypeGenerifiedBy(genericType)) {
-                for (int i = 0; i < bean.getTypeGenericCount(); i++) {
+                for (var i = 0; i < bean.getTypeGenericCount(); i++) {
                     if (genericType.equals(bean.getTypeGenericName(i, false))) {
                         erased = bean.getTypeGenericErased(i);
                     }
@@ -759,7 +741,7 @@ class PropertyData {
             }
             altered.add(erased);
         }
-        return getTypeRaw() + "<" + altered.stream().collect(joining(", ")) + ">";
+        return getTypeRaw() + "<" + String.join(", ", altered) + ">";
     }
 
     /**
@@ -780,17 +762,21 @@ class PropertyData {
         if (getGetStyle() == null) {
             setGetStyle("");
         }
-        String style = getGetStyle();
-        String access = "public";
-        if (style.equals("private")) {
-            style = "smart";
-            access = "private";
-        } else if (style.equals("package")) {
-            style = "smart";
-            access = "package";
-        } else if (style.equals("protected")) {
-            style = "smart";
-            access = "protected";
+        var style = getGetStyle();
+        var access = "public";
+        switch (style) {
+            case "private" -> {
+                style = "smart";
+                access = "private";
+            }
+            case "package" -> {
+                style = "smart";
+                access = "package";
+            }
+            case "protected" -> {
+                style = "smart";
+                access = "protected";
+            }
         }
         if (style.equals("get")) {
             getterGen = GetterGen.GetGetterGen.PUBLIC;
@@ -798,15 +784,17 @@ class PropertyData {
             getterGen = GetterGen.IsGetterGen.PUBLIC;
         } else if (style.equals("smart")) {
             if (bean.isImmutable()) {
-                String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
+                var clone = config.getImmutableGetClones().get(getFieldTypeRaw());
                 if ("clone".equals(clone)) {
                     getterGen = isNotNull() ?
-                                    GetterGen.CloneNNGetterGen.of(access) :
-                                    GetterGen.CloneGetterGen.of(access);
+                            GetterGen.CloneNNGetterGen.of(access) :
+                            GetterGen.CloneGetterGen.of(access);
                 } else if ("cloneCast".equals(clone)) {
                     getterGen = isNotNull() ?
-                                    GetterGen.CloneCastNNGetterGen.of(access) :
-                                    GetterGen.CloneCastGetterGen.of(access);
+                            GetterGen.CloneCastNNGetterGen.of(access) :
+                            GetterGen.CloneCastGetterGen.of(access);
+                } else if ("cloneArray".equals(clone)) {
+                    getterGen = GetterGen.CloneArrayGetterGen.of(access);
                 } else if (getType().equals("boolean")) {
                     getterGen = GetterGen.IsGetterGen.of(access);
                 } else {
@@ -817,7 +805,7 @@ class PropertyData {
             } else {
                 getterGen = GetterGen.GetGetterGen.of(access);
             }
-        } else if (style.equals("")) {
+        } else if (style.isEmpty()) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
         } else if (style.equals("field")) {
             getterGen = GetterGen.NoGetterGen.INSTANCE;
@@ -825,6 +813,8 @@ class PropertyData {
             getterGen = isNotNull() ? GetterGen.CloneNNGetterGen.PUBLIC : GetterGen.CloneGetterGen.PUBLIC;
         } else if (style.equals("cloneCast")) {
             getterGen = isNotNull() ? GetterGen.CloneCastNNGetterGen.PUBLIC : GetterGen.CloneCastGetterGen.PUBLIC;
+        } else if (style.equals("cloneArray")) {
+            getterGen = GetterGen.CloneArrayGetterGen.PUBLIC;
         } else if (style.equals("optional")) {
             getterGen = GetterGen.Optional8GetterGen.PUBLIC;
         } else if (style.equals("optionalGuava")) {
@@ -855,17 +845,21 @@ class PropertyData {
         if (getSetStyle() == null) {
             setSetStyle("");
         }
-        String style = getSetStyle().replace("\\n", "\n");
-        String access = "public";
-        if (style.equals("private")) {
-            style = "smart";
-            access = "private";
-        } else if (style.equals("package")) {
-            style = "smart";
-            access = "package";
-        } else if (style.equals("protected")) {
-            style = "smart";
-            access = "protected";
+        var style = getSetStyle().replace("\\n", "\n");
+        var access = "public";
+        switch (style) {
+            case "private" -> {
+                style = "smart";
+                access = "private";
+            }
+            case "package" -> {
+                style = "smart";
+                access = "package";
+            }
+            case "protected" -> {
+                style = "smart";
+                access = "protected";
+            }
         }
         if (style.equals("set")) {
             setterGen = SetterGen.SetSetterGen.PUBLIC;
@@ -880,6 +874,8 @@ class PropertyData {
                 setterGen = SetterGen.ObservableSetterGen.PUBLIC;
                 bound = true;
             }
+        } else if (style.equals("cloneArray")) {
+            setterGen = new SetterGen.PatternSetterGen("$field = ($type) JodaBeanUtils.cloneArray($value);");
         } else if (style.equals("smart")) {
             if (isDerived()) {
                 setterGen = SetterGen.NoSetterGen.INSTANCE;
@@ -894,7 +890,7 @@ class PropertyData {
             } else {
                 setterGen = SetterGen.SetSetterGen.of(access);
             }
-        } else if (style.equals("")) {
+        } else if (style.isEmpty()) {
             setterGen = SetterGen.NoSetterGen.INSTANCE;
         } else if (style.equals("field")) {
             setterGen = SetterGen.FieldSetterGen.INSTANCE;
@@ -946,7 +942,7 @@ class PropertyData {
      * @param lineIndex  the line index
      */
     public void resolveCopyGen(File file, int lineIndex) {
-        if (getBean().isMutable() && getBean().isBuilderScopeVisible() == false) {
+        if (getBean().isMutable() && !getBean().isBuilderScopeVisible()) {
             return;  // no copying
         }
         if (config.getInvalidImmutableTypes().contains(getFieldTypeRaw())) {
@@ -956,19 +952,21 @@ class PropertyData {
         if (isDerived()) {
             copyGen = CopyGen.NoCopyGen.INSTANCE;
         } else {
-            CopyGen copier = config.getCopyGenerators().get(getFieldTypeRaw());
+            var copier = config.getCopyGenerators().get(getFieldTypeRaw());
             if (copier != null) {
                 copyGen = copier;
             } else {
-                String clone = config.getImmutableGetClones().get(getFieldTypeRaw());
+                var clone = config.getImmutableGetClones().get(getFieldTypeRaw());
                 if (clone != null) {
-                    if (clone.equals("clone")) {
-                        copyGen = CopyGen.CLONE;
+                    if (clone.equals("cloneCast")) {
+                        copyGen = PatternCopyGen.CLONE_CAST;
+                    } else if (clone.equals("cloneArray")) {
+                        copyGen = PatternCopyGen.CLONE_ARRAY;
                     } else {
-                        copyGen = CopyGen.CLONE_CAST;
+                        copyGen = PatternCopyGen.CLONE;
                     }
                 } else {
-                    copyGen = CopyGen.ASSIGN;
+                    copyGen = PatternCopyGen.ASSIGN;
                 }
             }
         }
@@ -995,12 +993,8 @@ class PropertyData {
         if (isDerived()) {
             builderGen = BuilderGen.NoBuilderGen.INSTANCE;
         } else {
-            BuilderGen builder = config.getBuilderGenerators().get(getFieldTypeRaw());
-            if (builder != null) {
-                builderGen = builder;
-            } else {
-                builderGen = new BuilderGen.SimpleBuilderGen();
-            }
+            var builder = config.getBuilderGenerators().get(getFieldTypeRaw());
+            builderGen = Objects.requireNonNullElseGet(builder, BuilderGen.SimpleBuilderGen::new);
         }
     }
 
@@ -1079,17 +1073,17 @@ class PropertyData {
         if (getBean().isImmutable()) {
             return PropertyStyle.IMMUTABLE;
         }
-        if (getGetStyle().length() > 0 && getSetStyle().length() > 0 && (getSetterGen().isSetterGenerated(this) || getSetStyle().equals("manual"))) {
+        if (!getGetStyle().isEmpty() && !getSetStyle().isEmpty() && (getSetterGen().isSetterGenerated(this) || getSetStyle().equals("manual"))) {
             return PropertyStyle.READ_WRITE;
         }
-        if (getGetStyle().length() > 0) {
+        if (!getGetStyle().isEmpty()) {
             if (bean.isBuilderScopeVisible()) {
                 return PropertyStyle.READ_ONLY_BUILDABLE;
             } else {
                 return PropertyStyle.READ_ONLY;
             }
         }
-        if (getSetStyle().length() > 0) {
+        if (!getSetStyle().isEmpty()) {
             return PropertyStyle.WRITE_ONLY;
         }
         throw new RuntimeException("Property must have a getter or setter: " +
@@ -1102,7 +1096,7 @@ class PropertyData {
      * @return true if non-null
      */
     public boolean isValidated() {
-        return getValidation() != null && getValidation().length() > 0;
+        return getValidation() != null && !getValidation().isEmpty();
     }
 
     /**
@@ -1120,16 +1114,12 @@ class PropertyData {
      * @return the non-null text
      */
     public String getNotNullJavadoc() {
-        if (getValidation().equals("notNull")) {
-            return ", not null";
-        }
-        if (getValidation().equals("notEmpty")) {
-            return ", not empty";
-        }
-        if (getValidation().equals("notBlank")) {
-            return ", not blank";
-        }
-        return "";
+        return switch (getValidation()) {
+            case "notNull" -> ", not null";
+            case "notEmpty" -> ", not empty";
+            case "notBlank" -> ", not blank";
+            default -> "";
+        };
     }
 
     /**
@@ -1137,7 +1127,7 @@ class PropertyData {
      * @return the method name
      */
     public String getValidationMethodName() {
-        if (isValidated() == false) {
+        if (!isValidated()) {
             throw new IllegalStateException();
         }
         if (getValidation().equals("notNull") ||

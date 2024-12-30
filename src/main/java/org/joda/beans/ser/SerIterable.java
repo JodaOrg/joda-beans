@@ -37,7 +37,7 @@ public abstract class SerIterable {
      * @param dimensions  the dimension, 0 for row, 1 for column
      */
     public void dimensions(int[] dimensions) {
-        throw new IllegalArgumentException("Iterable does not support dimensinos");
+        throw new IllegalArgumentException("Iterable does not support dimensions");
     }
 
     /**

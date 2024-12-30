@@ -101,7 +101,7 @@ public class DocumentationHolder extends DirectBean{
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             DocumentationHolder other = (DocumentationHolder) obj;
-            return JodaBeanUtils.equal(getDocumentation(), other.getDocumentation());
+            return JodaBeanUtils.equal(this.getDocumentation(), other.getDocumentation());
         }
         return false;
     }
@@ -163,7 +163,7 @@ public class DocumentationHolder extends DirectBean{
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
-                    return documentation;
+                    return this.documentation;
             }
             return super.metaPropertyGet(propertyName);
         }

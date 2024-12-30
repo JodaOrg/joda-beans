@@ -18,7 +18,7 @@
  "multimap": {},
  "listMultimap": {},
  "setMultimap": {},
- "multiset": [],
+ "multiset": [["A", 1], ["B", 2], ["C", 3]],
  "sortedMultiset": [],
  "collectionInterface": [],
  "listInterface": ["A", "B"],
@@ -50,6 +50,7 @@
  "listWildBuilder1": [],
  "listWildBuilder2": [],
  "mapWildBuilder1": {},
- "mapWildKey": {}
+ "mapWildKey": {},
+ "table": []
 }
 

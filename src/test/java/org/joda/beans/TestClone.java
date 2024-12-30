@@ -15,9 +15,7 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -27,15 +25,15 @@ import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ClonePerson;
 import org.joda.beans.sample.Company;
 import org.joda.beans.sample.NoClone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test property using ClonePerson.
  */
-public class TestClone {
+class TestClone {
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         ClonePerson base = new ClonePerson();
         base.setSurname("Cable");
         base.setMiddleNames(new String[] {"A", "B", "C"});
@@ -50,24 +48,25 @@ public class TestClone {
         base.setAmounts(new int[] {1, 2});
         
         ClonePerson cloned = base.clone();
-        assertEquals(cloned, base);
-        assertNotSame(cloned.getMiddleNames(), base.getMiddleNames());
-        assertNotSame(cloned.getFirstNames(), base.getFirstNames());
-        assertNotSame(cloned.getDateOfBirth(), base.getDateOfBirth());
-        assertNotSame(cloned.getAddresses(), base.getAddresses());
-        assertNotSame(cloned.getAddresses().get(0), base.getAddresses().get(0));
-        assertNotSame(cloned.getCompanies(), base.getCompanies());
-        assertNotSame(cloned.getCompanies()[0], base.getCompanies()[0]);
-        assertNotSame(cloned.getAmounts(), base.getAmounts());
+        assertThat(cloned).isEqualTo(base);
+        assertThat(cloned.getMiddleNames()).isNotSameAs(base.getMiddleNames());
+        assertThat(cloned.getFirstNames()).isNotSameAs(base.getFirstNames());
+        assertThat(cloned.getDateOfBirth()).isNotSameAs(base.getDateOfBirth());
+        assertThat(cloned.getAddresses()).isNotSameAs(base.getAddresses());
+        assertThat(cloned.getAddresses().get(0)).isNotSameAs(base.getAddresses().get(0));
+        assertThat(cloned.getCompanies()).isNotSameAs(base.getCompanies());
+        assertThat(cloned.getCompanies()[0]).isNotSameAs(base.getCompanies()[0]);
+        assertThat(cloned.getAmounts()).isNotSameAs(base.getAmounts());
     }
 
     @Test
-    public void test_noclone_on_mutable_bean_option() {
+    void test_noclone_on_mutable_bean_option() {
+        // test that clone() was not code-generated
         Class<?> c = NoClone.class;
         Method[] noCloneMethods = c.getDeclaredMethods();
 
         for (Method method : noCloneMethods) {
-            assertNotEquals("clone", method.getName());
+            assertThat("clone").isNotEqualTo(method.getName());
         }
     }
 

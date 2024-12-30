@@ -16,10 +16,8 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -28,7 +26,7 @@ import java.util.regex.Pattern;
 class PropertyParser {
 
     /** The getter pattern. */
-    private static final Pattern ALIAS_PATTERN = Pattern.compile(".*[ ,(]alias[ ]*[=][ ]*[\"]([a-zA-z_][a-zA-z0-9_]*)[\"].*");
+    private static final Pattern ALIAS_PATTERN = Pattern.compile(".*[ ,(]alias[ ]*[=][ ]*[\"]([a-zA-Z_][a-zA-Z0-9_]*)[\"].*");
     /** The getter pattern. */
     private static final Pattern GETTER_PATTERN = Pattern.compile(".*[ ,(]get[ ]*[=][ ]*[\"]([a-zA-Z-]*)[\"].*");
     /** The setter pattern. */
@@ -70,7 +68,7 @@ class PropertyParser {
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
-        PropertyData data = new PropertyData(beanData, beanParser.getConfig(), lineIndex);
+        var data = new PropertyData(beanData, beanParser.getConfig(), lineIndex);
         data.setAlias(parseAlias(content));
         data.setGetStyle(parseGetStyle(content));
         data.setSetStyle(parseSetStyle(content));
@@ -109,7 +107,7 @@ class PropertyParser {
         propertyIndex = lineIndex;
         annotationIndex = parseAnnotationStart(content, lineIndex);
         fieldIndex = parseCodeIndex(content);
-        PropertyData data = new PropertyData(beanData, beanParser.getConfig(), lineIndex);
+        var data = new PropertyData(beanData, beanParser.getConfig(), lineIndex);
         data.setGetStyle("manual");
         data.setSetStyle("");
         data.setTypeStyle("");
@@ -132,11 +130,11 @@ class PropertyParser {
     }
 
     private void parseComments(List<String> content, PropertyData data) {
-        List<String> comments = parseComment(content, data.getPropertyName());
+        var comments = parseComment(content, data.getPropertyName());
         data.setFirstComment(comments.get(0));
         data.getComments().addAll(comments.subList(1, comments.size()));
-        for (Iterator<String> it = data.getComments().iterator(); it.hasNext(); ) {
-            String comment = it.next();
+        for (var it = data.getComments().iterator(); it.hasNext(); ) {
+            var comment = it.next();
             if (comment.trim().startsWith("@deprecated")) {
                 data.setDeprecatedComment(comment.trim());
                 data.setDeprecated(true);
@@ -162,17 +160,18 @@ class PropertyParser {
 
     //-----------------------------------------------------------------------
     private int parseAnnotationStart(List<String> content, int lineIndex) {
-        while (lineIndex > 0 && content.get(lineIndex - 1).trim().startsWith("@")) {
-            lineIndex = lineIndex - 1;
+        var currentIndex = lineIndex;
+        while (currentIndex > 0 && content.get(currentIndex - 1).trim().startsWith("@")) {
+            currentIndex = currentIndex - 1;
         }
-        return lineIndex;
+        return currentIndex;
     }
 
     private int parseCodeIndex(List<String> content) {
-        for (int index = propertyIndex; index < content.size(); index++) {
-            String line = content.get(index).trim();
-            if (line.startsWith("@") == false) {
-                if (line.length() == 0 ||
+        for (var index = propertyIndex; index < content.size(); index++) {
+            var line = content.get(index).trim();
+            if (!line.startsWith("@")) {
+                if (line.isEmpty() ||
                         line.startsWith("//") ||
                         (index > propertyIndex && content.get(index - 1).endsWith(","))) {
                     continue;
@@ -186,8 +185,8 @@ class PropertyParser {
     }
 
     private String parseAlias(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = ALIAS_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = ALIAS_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -195,8 +194,8 @@ class PropertyParser {
     }
 
     private String parseGetStyle(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = GETTER_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = GETTER_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -204,8 +203,8 @@ class PropertyParser {
     }
 
     private String parseSetStyle(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = SETTER_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = SETTER_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -213,8 +212,8 @@ class PropertyParser {
     }
 
     private boolean parseOverrideGet(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = OVERRIDE_GET_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = OVERRIDE_GET_PATTERN.matcher(line);
         if (matcher.matches()) {
             return "true".equals(matcher.group(1));
         }
@@ -222,8 +221,8 @@ class PropertyParser {
     }
 
     private boolean parseOverrideSet(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = OVERRIDE_SET_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = OVERRIDE_SET_PATTERN.matcher(line);
         if (matcher.matches()) {
             return "true".equals(matcher.group(1));
         }
@@ -231,8 +230,8 @@ class PropertyParser {
     }
 
     private String parseTypeStyle(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = TYPE_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = TYPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -240,8 +239,8 @@ class PropertyParser {
     }
 
     private String parseBuilderTypeStyle(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = BUILDER_TYPE_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = BUILDER_TYPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -249,8 +248,8 @@ class PropertyParser {
     }
 
     private String parseEqualsHashCodeStyle(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = EQ_HASH_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = EQ_HASH_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -258,8 +257,8 @@ class PropertyParser {
     }
     
     private String parseToStringStyle(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = TO_STR_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = TO_STR_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -267,8 +266,8 @@ class PropertyParser {
     }
     
     private String parseValidation(List<String> content) {
-        String line = content.get(propertyIndex).trim();
-        Matcher matcher = VALIDATION_PATTERN.matcher(line);
+        var line = content.get(propertyIndex).trim();
+        var matcher = VALIDATION_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -276,8 +275,8 @@ class PropertyParser {
     }
 
     private boolean parseDeprecated(List<String> content) {
-        for (int index = annotationIndex; index < fieldIndex; index++) {
-            String line = content.get(index).trim();
+        for (var index = annotationIndex; index < fieldIndex; index++) {
+            var line = content.get(index).trim();
             if (line.equals("@Deprecated") || line.startsWith("@Deprecated ")) {
                 return true;
             }
@@ -287,9 +286,9 @@ class PropertyParser {
 
     //-----------------------------------------------------------------------
     private String parseFieldName(List<String> content) {
-        String line = parseFieldDefinition(content);
-        String[] parts = line.split(" ");
-        String last = parts[parts.length - 1];
+        var line = parseFieldDefinition(content);
+        var parts = line.split(" ");
+        var last = parts[parts.length - 1];
         if (last.endsWith(";") && last.length() > 1) {
             return last.substring(0, last.length() - 1);
         }
@@ -298,8 +297,8 @@ class PropertyParser {
     }
 
     private boolean parseFinal(List<String> content) {
-        String line = parseFieldDefinition(content);
-        String[] parts = line.split(" ");
+        var line = parseFieldDefinition(content);
+        var parts = line.split(" ");
         if (parts.length < 2) {
             throw new BeanCodeGenException(
                 "Unable to locate field type at line " + (propertyIndex + 1), beanParser.getFile(), propertyIndex + 1);
@@ -312,14 +311,14 @@ class PropertyParser {
     }
 
     private String parseFieldType(List<String> content) {
-        String line = parseFieldDefinition(content);
-        String[] parts = line.split(" ");
+        var line = parseFieldDefinition(content);
+        var parts = line.split(" ");
         if (parts.length < 2) {
             throw new BeanCodeGenException(
                 "Unable to locate field type at line " + (propertyIndex + 1), beanParser.getFile(), propertyIndex + 1);
         }
-        int partsPos = parts.length - 2;
-        String type = parts[partsPos];
+        var partsPos = parts.length - 2;
+        var type = parts[partsPos];
         while (true) {
             int open = 0, openPos = 0, close = 0, closePos = 0;
             while ((openPos = type.indexOf('<', openPos)) >= 0) {
@@ -345,7 +344,7 @@ class PropertyParser {
     }
 
     private String parseFieldDefinition(List<String> content) {
-        String line = content.get(fieldIndex).trim();
+        var line = content.get(fieldIndex).trim();
         if (line.contains("//")) {
             line = line.substring(0, line.indexOf("//")).trim();
         }
@@ -356,13 +355,13 @@ class PropertyParser {
     }
 
     private String parseFieldInitializer(List<String> content) {
-        String line = content.get(fieldIndex).trim();
+        var line = content.get(fieldIndex).trim();
         if (line.contains("//")) {
             line = line.substring(0, line.indexOf("//")).trim();
         }
         if (line.contains(" = ")) {
             line = line.substring(line.indexOf(" = ") + 3).trim();
-            if (line.endsWith(";") == false) {
+            if (!line.endsWith(";")) {
                 throw new BeanCodeGenException("Field line does not end with semi-colon", beanParser.getFile(), fieldIndex);
             }
             return line.substring(0, line.length() - 1).trim();
@@ -372,20 +371,20 @@ class PropertyParser {
 
     //-----------------------------------------------------------------------
     private String parseMethodNameAsPropertyName(List<String> content) {
-        String name = parseMethodDefinition(content)[1];
-        if (name.length() == 0 || Character.isUpperCase(name.charAt(0)) == false) {
+        var name = parseMethodDefinition(content)[1];
+        if (name.isEmpty() || !Character.isUpperCase(name.charAt(0))) {
             throw new BeanCodeGenException("@DerivedProperty method name invalid: '" + name + "'", beanParser.getFile(), fieldIndex);
         }
         return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
 
     private String parseMethodType(List<String> content) {
-        String[] parts = parseMethodDefinition(content);
+        var parts = parseMethodDefinition(content);
         return parts[0];
     }
 
     private String[] parseMethodDefinition(List<String> content) {
-        String line = content.get(fieldIndex).trim();
+        var line = content.get(fieldIndex).trim();
         if (line.startsWith("public ")) {
             line = line.substring(7).trim();
         } else if (line.startsWith("private ")) {
@@ -393,7 +392,7 @@ class PropertyParser {
         } else if (line.startsWith("protected ")) {
             line = line.substring(10).trim();
         }
-        String lineEnd = "() {";
+        var lineEnd = "() {";
         if (line.startsWith("abstract ")) {
             line = line.substring(9).trim();
             lineEnd = "();";
@@ -402,15 +401,15 @@ class PropertyParser {
         } else if (line.startsWith("static ")) {
             throw new BeanCodeGenException("@DerivedProperty method cannot be static", beanParser.getFile(), fieldIndex);
         }
-        int getIndex = line.indexOf(" get");
+        var getIndex = line.indexOf(" get");
         if (getIndex < 0) {
             throw new BeanCodeGenException("@DerivedProperty method must start with 'get'", beanParser.getFile(), fieldIndex);
         }
-        if (line.endsWith(lineEnd) == false) {
+        if (!line.endsWith(lineEnd)) {
             throw new BeanCodeGenException("@DerivedProperty method must end with '" + lineEnd + "'", beanParser.getFile(), fieldIndex);
         }
         line = line.substring(0, line.length() - lineEnd.length());
-        String[] split = new String[2];
+        var split = new String[2];
         split[0] = line.substring(0, getIndex).trim();
         split[1] = line.substring(getIndex + 4).trim();
         return split;
@@ -419,11 +418,11 @@ class PropertyParser {
     //-----------------------------------------------------------------------
     private List<String> parseComment(List<String> content, String propertyName) {
         List<String> comments = new ArrayList<>();
-        String commentEnd = content.get(annotationIndex - 1).trim();
+        var commentEnd = content.get(annotationIndex - 1).trim();
         if (commentEnd.equals("*/")) {
-            int startCommentIndex = -1;
-            for (int index = annotationIndex - 1; index >= 0; index--) {
-                String line = content.get(index).trim();
+            var startCommentIndex = -1;
+            for (var index = annotationIndex - 1; index >= 0; index--) {
+                var line = content.get(index).trim();
                 if (line.equals("/**")) {
                     startCommentIndex = index + 1;
                     break;
@@ -433,32 +432,32 @@ class PropertyParser {
                 throw new BeanCodeGenException("Unable to locate comment start at line " + annotationIndex, beanParser.getFile(), annotationIndex);
             }
             if (startCommentIndex < annotationIndex - 1) {
-                for (int i = startCommentIndex; i < annotationIndex - 1; i++) {
-                    String commentLine = content.get(i).trim();
+                for (var i = startCommentIndex; i < annotationIndex - 1; i++) {
+                    var commentLine = content.get(i).trim();
                     if (commentLine.startsWith("*")) {
                         commentLine = commentLine.substring(1).trim();
                     }
-                    if (commentLine.startsWith("@return") == false && commentLine.startsWith("@param") == false &&
-                            commentLine.startsWith("@throws") == false && commentLine.startsWith("@exception") == false) {
+                    if (!commentLine.startsWith("@return") && !commentLine.startsWith("@param") &&
+                        !commentLine.startsWith("@throws") && !commentLine.startsWith("@exception")) {
                         comments.add(commentLine);
                     }
                 }
-                String firstLine = comments.get(0);
-                if (firstLine.length() > 0) {
+                var firstLine = comments.get(0);
+                if (!firstLine.isEmpty()) {
                     comments.set(0, firstLine.substring(0, 1).toLowerCase(Locale.ENGLISH) + firstLine.substring(1));
                 } else {
                     comments.remove(0);
                 }
             }
         } else if (commentEnd.startsWith("/**") && commentEnd.endsWith("*/")) {
-            int startPos = commentEnd.indexOf("/**") + 3;
-            int endPos = commentEnd.lastIndexOf("*/");
-            String comment = commentEnd.substring(startPos, endPos).trim();
-            if (comment.length() > 0) {
+            var startPos = commentEnd.indexOf("/**") + 3;
+            var endPos = commentEnd.lastIndexOf("*/");
+            var comment = commentEnd.substring(startPos, endPos).trim();
+            if (!comment.isEmpty()) {
                 comments.add(comment.substring(0, 1).toLowerCase(Locale.ENGLISH) + comment.substring(1));
             }
         }
-        if (comments.size() == 0) {
+        if (comments.isEmpty()) {
             comments.add("the " + propertyName + ".");
         }
         return comments;

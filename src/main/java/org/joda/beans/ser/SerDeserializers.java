@@ -28,7 +28,6 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +166,7 @@ public final class SerDeserializers {
      * @return the deserializer, not null
      */
     public SerDeserializer findDeserializer(Class<?> type) {
-        SerDeserializer deser = deserializers.get(type);
+        var deser = deserializers.get(type);
         if (deser != null) {
             return deser;
         }
@@ -213,14 +212,14 @@ public final class SerDeserializers {
         URL url = null;
         try {
             // this is the new location of the file, working on Java 8, Java 9 class path and Java 9 module path
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            var loader = Thread.currentThread().getContextClassLoader();
             if (loader == null) {
                 loader = RenameHandler.class.getClassLoader();
             }
-            Enumeration<URL> en = loader.getResources("META-INF/org/joda/beans/JodaBeans.ini");
+            var en = loader.getResources("META-INF/org/joda/beans/JodaBeans.ini");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
-                List<String> lines = loadRenameFile(url);
+                var lines = loadRenameFile(url);
                 parseRenameFile(lines, url, result);
             }
         } catch (Error | Exception ex) {
@@ -233,7 +232,7 @@ public final class SerDeserializers {
 
     // loads a single rename file
     private static List<String> loadRenameFile(URL url) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), UTF_8))) {
+        try (var reader = new BufferedReader(new InputStreamReader(url.openStream(), UTF_8))) {
             return reader.lines()
                     .filter(line -> !line.isEmpty() && !line.startsWith("#"))
                     .collect(toList());
@@ -243,15 +242,15 @@ public final class SerDeserializers {
     // parses a single rename file
     private static void parseRenameFile(List<String> lines, URL url, Map<Class<?>, SerDeserializer> map) {
         // format allows multiple [deserializers] so file can be merged
-        boolean deserializers = false;
+        var deserializers = false;
         for (String line : lines) {
             try {
                 if (line.equals("[deserializers]")) {
                     deserializers = true;
                 } else if (deserializers) {
-                    int equalsPos = line.indexOf('=');
-                    String beanName = equalsPos >= 0 ? line.substring(0, equalsPos).trim() : line;
-                    String deserName = equalsPos >= 0 ? line.substring(equalsPos + 1).trim() : line;
+                    var equalsPos = line.indexOf('=');
+                    var beanName = equalsPos >= 0 ? line.substring(0, equalsPos).trim() : line;
+                    var deserName = equalsPos >= 0 ? line.substring(equalsPos + 1).trim() : line;
                     registerFromClasspath(beanName, deserName, map);
                 } else {
                     throw new IllegalArgumentException("JodaBeans.ini must start with [deserializers]");
@@ -276,22 +275,22 @@ public final class SerDeserializers {
             if (!Modifier.isStatic(field.getModifiers())) {
                 throw new IllegalStateException("Field " + field + " must be static");
             }
-            deser = SerDeserializer.class.cast(field.get(null));
+            deser = (SerDeserializer) field.get(null);
         } catch (NoSuchFieldException ex) {
             Constructor<?> cons = null;
             try {
                 cons = deserClass.getConstructor();
-                deser = SerDeserializer.class.cast(cons.newInstance());
+                deser = (SerDeserializer) cons.newInstance();
             } catch (NoSuchMethodException ex2) {
                 throw new IllegalStateException(
                         "Class " + deserClass.getName() + " must have field DESERIALIZER or a no-arg constructor");
             } catch (IllegalAccessException ex2) {
                 cons.setAccessible(true);
-                deser = SerDeserializer.class.cast(cons.newInstance());
+                deser = (SerDeserializer) cons.newInstance();
             }
         } catch (IllegalAccessException ex) {
             field.setAccessible(true);
-            deser = SerDeserializer.class.cast(field.get(null));
+            deser = (SerDeserializer) field.get(null);
         }
         map.put(beanClass, deser);
     }

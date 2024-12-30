@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.joda.beans.impl.BasicProperty;
 import org.joda.convert.StringConvert;
@@ -88,9 +89,21 @@ public interface MetaProperty<P> {
      * <p>
      * This provides access to the generic type declared in the source code.
      * 
-     * @return the full generic type of the property, unmodifiable, not null
+     * @return the full generic type of the property, not null
      */
     public abstract Type propertyGenericType();
+
+    /**
+     * Gets the resolved generic type of the property.
+     * <p>
+     * This provides access to the generic type resolved relative to the context class.
+     * 
+     * @param contextClass  the context class, typically the bean implementation class
+     * @return the resolved generic type of the property, not null
+     */
+    public default ResolvedType propertyResolvedType(Class<?> contextClass) {
+        return ResolvedType.from(propertyGenericType(), contextClass);
+    }
 
     /**
      * Gets the style of the property, such as read-only, read-write or write-only.
@@ -108,7 +121,8 @@ public interface MetaProperty<P> {
      * <p>
      * The annotations are queried from the property.
      * This is typically accomplished by querying the annotations of the underlying
-     * instance variable however any strategy is permitted.
+     * instance variable however any strategy is permitted. If the implementation
+     * does not support annotations, an empty list will be returned.
      * 
      * @return the annotations, unmodifiable, not null
      */
@@ -119,22 +133,45 @@ public interface MetaProperty<P> {
      * <p>
      * The annotations are queried from the property.
      * This is typically accomplished by querying the annotations of the underlying
-     * instance variable however any strategy is permitted..
+     * instance variable however any strategy is permitted.
      * 
      * @param <A>  the annotation type
      * @param annotationClass  the annotation class to find, not null
      * @return the annotation, not null
-     * @throws NoSuchElementException if the annotation is not specified
+     * @throws NoSuchElementException if the annotation is not found
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> A annotation(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
             if (annotationClass.isInstance(annotation)) {
                 return (A) annotation;
             }
         }
         throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+    }
+
+    /**
+     * Finds an optional annotation from the property.
+     * <p>
+     * The annotations are queried from the property.
+     * This is typically accomplished by querying the annotations of the underlying
+     * instance variable however any strategy is permitted.
+     * 
+     * @param <A>  the annotation type
+     * @param annotationClass  the annotation class to find, not null
+     * @return the annotation, empty if not found
+     * @since 2.11.0
+     */
+    @SuppressWarnings("unchecked")
+    public default <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return Optional.of((A) annotation);
+            }
+        }
+        return Optional.empty();
     }
 
     //-----------------------------------------------------------------------
@@ -183,7 +220,7 @@ public interface MetaProperty<P> {
      * @throws RuntimeException if the value is rejected by the property (use appropriate subclasses)
      */
     public default P put(Bean bean, Object value) {
-        P old = get(bean);
+        var old = get(bean);
         set(bean, value);
         return old;
     }
@@ -226,7 +263,7 @@ public interface MetaProperty<P> {
      * @throws RuntimeException if the value cannot be converted to a string (use appropriate subclasses)
      */
     public default String getString(Bean bean, StringConvert stringConvert) {
-        P value = get(bean);
+        var value = get(bean);
         return stringConvert.convertToString(propertyType(), value);
     }
 

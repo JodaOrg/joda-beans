@@ -137,8 +137,8 @@ public final class MinimalMutableGenericSimple<T extends Number> implements Bean
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             MinimalMutableGenericSimple<?> other = (MinimalMutableGenericSimple<?>) obj;
-            return (getNumber() == other.getNumber()) &&
-                    JodaBeanUtils.equal(getText(), other.getText());
+            return (this.getNumber() == other.getNumber()) &&
+                    JodaBeanUtils.equal(this.getText(), other.getText());
         }
         return false;
     }

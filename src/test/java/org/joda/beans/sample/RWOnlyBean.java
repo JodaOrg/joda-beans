@@ -285,14 +285,14 @@ public class RWOnlyBean extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             RWOnlyBean other = (RWOnlyBean) obj;
-            return JodaBeanUtils.equal(getRo(), other.getRo()) &&
-                    JodaBeanUtils.equal(wo, other.wo) &&
-                    JodaBeanUtils.equal(getFin(), other.getFin()) &&
-                    JodaBeanUtils.equal(getPriv(), other.getPriv()) &&
-                    JodaBeanUtils.equal(getPkg(), other.getPkg()) &&
-                    JodaBeanUtils.equal(getProt(), other.getProt()) &&
-                    JodaBeanUtils.equal(field, other.field) &&
-                    JodaBeanUtils.equal(getManualGet(), other.getManualGet());
+            return JodaBeanUtils.equal(this.getRo(), other.getRo()) &&
+                    JodaBeanUtils.equal(this.wo, other.wo) &&
+                    JodaBeanUtils.equal(this.getFin(), other.getFin()) &&
+                    JodaBeanUtils.equal(this.getPriv(), other.getPriv()) &&
+                    JodaBeanUtils.equal(this.getPkg(), other.getPkg()) &&
+                    JodaBeanUtils.equal(this.getProt(), other.getProt()) &&
+                    JodaBeanUtils.equal(this.field, other.field) &&
+                    JodaBeanUtils.equal(this.getManualGet(), other.getManualGet());
         }
         return false;
     }
@@ -416,23 +416,23 @@ public class RWOnlyBean extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3645:  // ro
-                    return ro;
+                    return this.ro;
                 case 3800:  // wo
-                    return wo;
+                    return this.wo;
                 case 101387:  // fin
-                    return fin;
+                    return this.fin;
                 case 3449519:  // priv
-                    return priv;
+                    return this.priv;
                 case 111052:  // pkg
-                    return pkg;
+                    return this.pkg;
                 case 3449703:  // prot
-                    return prot;
+                    return this.prot;
                 case 97427706:  // field
-                    return field;
+                    return this.field;
                 case 93508016:  // manualGet
-                    return manualGet;
+                    return this.manualGet;
                 case 1556125213:  // derived
-                    return derived;
+                    return this.derived;
             }
             return super.metaPropertyGet(propertyName);
         }

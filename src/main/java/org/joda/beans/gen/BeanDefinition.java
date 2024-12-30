@@ -50,7 +50,7 @@ public @interface BeanDefinition {
      * Set to 'package' to generate a package-scoped constructor.
      * Set to 'protected' to generate a protected constructor.
      * Set to 'public' to generate a public constructor.
-     * Set to 'public@ConstructorProperties' to generate a public constructor.
+     * Set to 'public@ConstructorProperties' to generate an annotated public constructor.
      * 
      * @return the constructor scope, defaulted to 'smart'
      */
@@ -67,6 +67,16 @@ public @interface BeanDefinition {
      * @return the meta scope, defaulted to 'smart'
      */
     String metaScope() default "smart";
+
+    /**
+     * The interfaces to add to the meta-bean class declaration.
+     * <p>
+     * By default, this adds no interfaces to the implements clause.
+     * This option is only useful if the meta bean is a generated class.
+     * 
+     * @return the meta scope, defaulted to ''
+     */
+    String metaImplements() default "";
 
     /**
      * The scope of the builder class.

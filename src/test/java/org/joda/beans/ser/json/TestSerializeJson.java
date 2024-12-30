@@ -15,28 +15,28 @@
  */
 package org.joda.beans.ser.json;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.offset;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.joda.beans.Bean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.ImmAddress;
+import org.joda.beans.sample.ImmArrays;
 import org.joda.beans.sample.ImmDoubleFloat;
 import org.joda.beans.sample.ImmEmpty;
-import org.joda.beans.sample.ImmGenericCollections;
 import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmMappedKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.JodaConvertBean;
-import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.JodaConvertWrapper;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
@@ -45,482 +45,706 @@ import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerDeserializers;
 import org.joda.beans.ser.SerTestHelper;
 import org.joda.beans.test.BeanAssert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Test property roundtrip using JSON.
  */
-@RunWith(DataProviderRunner.class)
-public class TestSerializeJson {
+class TestSerializeJson {
 
     @Test
-    public void test_writeAddress() throws IOException {
-        Address address = SerTestHelper.testAddress();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
+    void test_writeAddress() throws IOException {
+        var bean = SerTestHelper.testAddress();
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Address.json");
-        
-        Address bean = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Address2.json");
+
+        var parsed = (Address) JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_writeImmAddress() throws IOException {
-        ImmAddress address = SerTestHelper.testImmAddress();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(address);
+    void test_writeImmAddress() throws IOException {
+        var bean = SerTestHelper.testImmAddress(false);
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress.json");
-        
-        ImmAddress bean = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, address);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmAddress2.json");
+
+        var parsed = (ImmAddress) JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+
+        var oldParsed = loadAndParse("/org/joda/beans/ser/ImmAddress1.json", ImmAddress.class);
+        BeanAssert.assertBeanEquals(bean, oldParsed);
     }
 
     @Test
-    public void test_writeImmOptional() throws IOException {
-        ImmOptional optional = SerTestHelper.testImmOptional();
-        String json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(optional);
+    void test_writeImmOptional() throws IOException {
+        var bean = SerTestHelper.testImmOptional();
+        var json = JodaBeanSer.PRETTY.withIncludeDerived(true).jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional.json");
-        
-        ImmOptional bean = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmOptional2.json");
+
+        var parsed = (ImmOptional) JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_writeCollections() throws IOException {
-        ImmGuava<String> optional = SerTestHelper.testCollections();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(optional);
+    void test_writeImmArrays() throws IOException {
+        var bean = ImmArrays.of(
+                new int[] {1, 3, 2},
+                new long[] {1, 4, 3},
+                new double[] {1.1, 2.2, 3.3},
+                new boolean[] {true, false},
+                new int[][] {{1, 2}, {2}, {}},
+                new boolean[][] {{true, false}, {false}, {}});
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections.json");
-        
-        @SuppressWarnings("unchecked")
-        ImmGuava<String> bean = (ImmGuava<String>) JodaBeanSer.PRETTY.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, optional);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/ImmArrays2.json");
+
+        var parsed = JodaBeanSer.PRETTY.simpleJsonReader().read(json, ImmArrays.class);
+        BeanAssert.assertBeanEquals(bean, parsed);
+
+        var oldParsed = loadAndParse("/org/joda/beans/ser/ImmArrays1.json", ImmArrays.class);
+        BeanAssert.assertBeanEquals(bean, oldParsed);
     }
 
     @Test
-    public void test_writeJodaConvertInterface() {
-        ImmGenericCollections<JodaConvertInterface> array = SerTestHelper.testGenericInterfaces();
-        
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(array);
+    void test_writeCollections() throws IOException {
+        var bean = SerTestHelper.testCollections(true);
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
 //        System.out.println(json);
-        
-        @SuppressWarnings("unchecked")
-        ImmGenericCollections<JodaConvertInterface> bean =
-                (ImmGenericCollections<JodaConvertInterface>) JodaBeanSer.COMPACT.jsonReader().read(json);
-//        System.out.println(bean);
-        BeanAssert.assertBeanEquals(bean, array);
+        assertEqualsSerialization(json, "/org/joda/beans/ser/Collections2.json");
+
+        var parsed = JodaBeanSer.PRETTY.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+
+        var oldParsed = loadAndParse("/org/joda/beans/ser/Collections1.json", ImmGuava.class);
+        BeanAssert.assertBeanEquals(bean, oldParsed);
+    }
+
+    @Test
+    void test_writeJodaConvertInterface() {
+        var bean = SerTestHelper.testGenericInterfaces();
+
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
+//        System.out.println(json);
+
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     private void assertEqualsSerialization(String json, String expectedResource) throws IOException {
-        URL url = TestSerializeJson.class.getResource(expectedResource);
-        String expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
-        assertEquals(json.trim().replace(System.lineSeparator(), "\n"), expected.trim().replace(System.lineSeparator(), "\n"));
+        var url = TestSerializeJson.class.getResource(expectedResource);
+        var expected = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        assertThat(json.trim().replace(System.lineSeparator(), "\n"))
+                .isEqualTo(expected.trim().replace(System.lineSeparator(), "\n"));
+    }
+
+    private <T> T loadAndParse(String expectedResource, Class<T> type) throws IOException {
+        var url = TestSerializeJson.class.getResource(expectedResource);
+        var text = Resources.asCharSource(url, StandardCharsets.UTF_8).read();
+        return JodaBeanSer.PRETTY.simpleJsonReader().read(text, type);
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_readWriteBeanEmptyChild_pretty() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWriteBeanEmptyChild_pretty() {
+        var bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
-        assertEquals(json,
-                "{\n \"@bean\": \"org.joda.beans.impl.flexi.FlexiBean\",\n \"element\": \"Test\",\n \"child\": {\n  \"@bean\": \"org.joda.beans.sample.ImmEmpty\"\n }\n}\n");
-        FlexiBean parsed = JodaBeanSer.PRETTY.jsonReader().read(json, FlexiBean.class);
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\n \"@bean\": \"org.joda.beans.impl.flexi.FlexiBean\",\n" +
+                        " \"element\": \"Test\",\n \"child\": {\n  \"@bean\": \"org.joda.beans.sample.ImmEmpty\"\n }\n}\n");
+        var parsed = JodaBeanSer.PRETTY.jsonReader().read(json, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWriteBeanEmptyChild_compact() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWriteBeanEmptyChild_compact() {
+        var bean = new FlexiBean();
         bean.set("element", "Test");
         bean.set("child", ImmEmpty.builder().build());
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json,
-                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":\"Test\",\"child\":{\"@bean\":\"org.joda.beans.sample.ImmEmpty\"}}");
-        FlexiBean parsed = JodaBeanSer.COMPACT.jsonReader().read(json, FlexiBean.class);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\"," +
+                        "\"element\":\"Test\",\"child\":{\"@bean\":\"org.joda.beans.sample.ImmEmpty\"}}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json, FlexiBean.class);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_read_primitiveTypeChanged() throws IOException {
-        String json = "{\"a\":6,\"b\":5}";
-        ImmDoubleFloat parsed = JodaBeanSer.COMPACT.jsonReader().read(json, ImmDoubleFloat.class);
-        assertEquals(6, parsed.getA(), 1e-10);
-        assertEquals(5, parsed.getB(), 1e-10);
+    void test_read_primitiveTypeChanged() throws IOException {
+        var json = "{\"a\":6,\"b\":5}";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json, ImmDoubleFloat.class);
+        assertThat(parsed.getA()).isCloseTo(6, offset(1e-10));
+        assertThat(parsed.getB()).isCloseTo(5, offset(1e-10));
     }
 
     @Test
-    public void test_readWriteJodaConvertWrapper() {
-        JodaConvertWrapper wrapper = new JodaConvertWrapper();
-        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+    void test_readWriteJodaConvertWrapper() {
+        var wrapper = new JodaConvertWrapper();
+        var bean = new JodaConvertBean("Hello:9");
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(wrapper);
-        assertEquals(json,
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(wrapper);
+        assertThat(json).isEqualTo(
                 "{\"@bean\":\"org.joda.beans.sample.JodaConvertWrapper\",\"bean\":\"Hello:9\",\"description\":\"Weird\"}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
     @Test
-    public void test_readWriteJodaConvertBean() {
-        JodaConvertBean bean = new JodaConvertBean("Hello:9");
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.sample.JodaConvertBean\",\"base\":\"Hello\",\"extra\":9}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+    void test_readWriteJodaConvertBean() {
+        var bean = new JodaConvertBean("Hello:9");
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("" +
+                "{\"@bean\":\"org.joda.beans.sample.JodaConvertBean\",\"base\":\"Hello\",\"extra\":9}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    void test_readWrite_objectArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new Object[] {"1", 2, 3L, 4d, 5f});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"Object[]",\
+                "value":["1",2,{"@type":"Long","value":3},4.0,{"@type":"Float","value":5.0}]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_boolean_true() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_stringArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new String[] {"1", "2"});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"String[]","value":["1","2"]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_numberArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new Number[] {1, 2.3, 4L});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"java.lang.Number[]","value":[1,2.3,{"@type":"Long","value":4}]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_longArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new long[] {1L, 2L, 3L});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"long[]","value":[1,2,3]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_intArrayAsObject() {
+        var bean = new FlexiBean();
+        bean.set("data", new int[] {1, 2, 3});
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@meta":"int[]","value":[1,2,3]}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    void test_readWrite_booleanObject_true() {
+        var bean = new FlexiBean();
         bean.set("data", Boolean.TRUE);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":true}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":true}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_boolean_false() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_boolean_false() {
+        var bean = new FlexiBean();
         bean.set("data", Boolean.FALSE);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":false}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":false}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(new StringReader(json));
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_long() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_longObject() {
+        var bean = new FlexiBean();
         bean.set("data", (long) 6);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Long\",\"value\":6}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Long\",\"value\":6}}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_short() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_shortObject() {
+        var bean = new FlexiBean();
         bean.set("data", (short) 6);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Short\",\"value\":6}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Short\",\"value\":6}}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_byte() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_byteObject() {
+        var bean = new FlexiBean();
         bean.set("data", (byte) 6);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Byte\",\"value\":6}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Byte\",\"value\":6}}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_float() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_floatObject() {
+        var bean = new FlexiBean();
         bean.set("data", (float) 6);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Float\",\"value\":6.0}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Float\",\"value\":6.0}}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_float_NaN() {
-        FlexiBean bean = new FlexiBean();
+    void test_readWrite_floatObject_NaN() {
+        var bean = new FlexiBean();
         bean.set("data", Float.NaN);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Float\",\"value\":\"NaN\"}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo(
+                "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Float\",\"value\":\"NaN\"}}");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_float_NaN_asNull() {
-        PrimitiveBean bean = new PrimitiveBean();
+    void test_readWrite_float_NaN_asNull() {
+        var bean = new PrimitiveBean();
         bean.setValueFloat(Float.NaN);
-        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":null}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":null}";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWrite_double() {
-        FlexiBean bean = new FlexiBean();
-        bean.set("data", (double) 6);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":6.0}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    public void test_readWrite_double_alternateFormat() {
-        FlexiBean bean = new FlexiBean();
-        bean.set("data", (double) 6);
-        String json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":6.0}}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    public void test_readWrite_double_NaN() {
-        FlexiBean bean = new FlexiBean();
-        bean.set("data", Double.NaN);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"NaN\"}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    public void test_readWrite_double_Infinity() {
-        FlexiBean bean = new FlexiBean();
-        bean.set("data", Double.POSITIVE_INFINITY);
-        String json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
-        assertEquals(json, "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"Infinity\"}}");
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    public void test_read_double_integer_flexiWithTypeAnnotation() {
-        FlexiBean bean = new FlexiBean();
-        bean.set("data", Double.valueOf(6));
-        String json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"data\":{\"@type\":\"Double\",\"value\":\"6\"}}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test
-    public void test_read_double_fromInteger() {
-        PrimitiveBean bean = new PrimitiveBean();
-        bean.setValueDouble(6d);
-        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":6}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_double_fromIntegerTooBig() {
-        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":123456789123456789}";
-        JodaBeanSer.COMPACT.jsonReader().read(json);
-    }
-
-    @Test
-    public void test_read_float_fromInteger() {
-        PrimitiveBean bean = new PrimitiveBean();
+    void test_read_float_fromInteger() {
+        var bean = new PrimitiveBean();
         bean.setValueFloat(6f);
-        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":6}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":6}";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_float_fromIntegerTooBig() {
-        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":123456789123456789}";
-        JodaBeanSer.COMPACT.jsonReader().read(json);
     }
 
     @Test
-    public void test_read_double_NaN_asNull() {
-        PrimitiveBean bean = new PrimitiveBean();
-        bean.setValueDouble(Double.NaN);
-        String json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueDouble\":null}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+    void test_read_float_fromIntegerTooBig() {
+        var json = "{\"@bean\":\"org.joda.beans.sample.PrimitiveBean\",\"valueFloat\":123456789123456789}";
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(json));
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    void test_readWrite_doubleObject() {
+        var bean = new FlexiBean();
+        bean.set("data", (double) 6);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":6.0}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_doubleObject_NaN() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.NaN);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":"NaN"}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_doubleObject_PositiveInfinity() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.POSITIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":"Infinity"}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_doubleObject_NegativeInfinity() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.NEGATIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":"-Infinity"}}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NaN() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":"NaN","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NaN_null() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.NAN_AS_NULL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":null,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NaN_literal() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.LITERAL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":NaN,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_PositiveInfinity_string() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":"Infinity","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_PositiveInfinity_literal() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.LITERAL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":Infinity,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_PositiveInfinity_string() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.POSITIVE_INFINITY);
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":+Infinity,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NegativeInfinity_string() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NEGATIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":"-Infinity","valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_readWrite_double_NegativeInfinity_literal() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NEGATIVE_INFINITY);
+        var json = JodaBeanSer.COMPACT.withJsonNumberFormat(JodaBeanJsonNumberFormat.LITERAL).jsonWriter().write(bean);
+        assertThat(json).isEqualTo("""
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueLong":0,"valueInt":0,"valueShort":0,"valueByte":0,\
+                "valueDouble":-Infinity,"valueFloat":0.0,"valueChar":"\\u0000","valueBoolean":false}""");
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_doubleObject_alternateFormat() {
+        var bean = new FlexiBean();
+        bean.set("data", (double) 6);
+        var json = """
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":6.0}}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_doubleObject_integer_flexiWithTypeAnnotation() {
+        var bean = new FlexiBean();
+        bean.set("data", Double.valueOf(6));
+        var json = """
+                {"@bean":"org.joda.beans.impl.flexi.FlexiBean","data":{"@type":"Double","value":6}}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_NaN_asNull_alternateFormat() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(Double.NaN);
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueDouble":null}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_fromInteger() {
+        var bean = new PrimitiveBean();
+        bean.setValueDouble(6d);
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","valueDouble":6}""";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        BeanAssert.assertBeanEquals(bean, parsed);
+    }
+
+    @Test
+    void test_read_double_fromIntegerTooBig() {
+        var json = """
+                {"@bean":"org.joda.beans.sample.PrimitiveBean","data":{"@type":"Double","value":123456789123456789}}""";
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(json));
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_read_nonStandard_JodaConvertWrapper_expanded() {
-        String json =
-                "{\"@bean\":\"org.joda.beans.sample.JodaConvertWrapper\",\"bean\":{\"base\":\"Hello\",\"extra\":9},\"description\":\"Weird\"}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        JodaConvertWrapper wrapper = new JodaConvertWrapper();
-        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+    void test_read_nonStandard_JodaConvertWrapper_expanded() {
+        var json = "{\"@bean\":\"org.joda.beans.sample.JodaConvertWrapper\"," +
+                "\"bean\":{\"base\":\"Hello\",\"extra\":9},\"description\":\"Weird\"}";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var wrapper = new JodaConvertWrapper();
+        var bean = new JodaConvertBean("Hello:9");
         wrapper.setBean(bean);
         wrapper.setDescription("Weird");
         BeanAssert.assertBeanEquals(wrapper, parsed);
     }
 
     @Test
-    public void test_read_nonStandard_JodaConvertBean_flattened() {
-        String json = "{\"@type\":\"org.joda.beans.sample.JodaConvertBean\",\"value\":\"Hello:9\"}";
-        Bean parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
-        JodaConvertBean bean = new JodaConvertBean("Hello:9");
+    void test_read_nonStandard_JodaConvertBean_flattened() {
+        var json = "{\"@type\":\"org.joda.beans.sample.JodaConvertBean\",\"value\":\"Hello:9\"}";
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read(json);
+        var bean = new JodaConvertBean("Hello:9");
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_readWriteInterfaceKeyMap() {
-        ImmKey key1 = ImmKey.builder().name("Alpha").build();
-        ImmPerson person1 = ImmPerson.builder().forename("Bob").surname("Builder").build();
-        ImmKey key2 = ImmKey.builder().name("Beta").build();
-        ImmPerson person2 = ImmPerson.builder().forename("Dana").surname("Dash").build();
-        ImmMappedKey mapped = ImmMappedKey.builder().data(ImmutableMap.of(key1, person1, key2, person2)).build();
-        String json = JodaBeanSer.PRETTY.jsonWriter().write(mapped);
-        
-        ImmMappedKey bean = (ImmMappedKey) JodaBeanSer.PRETTY.jsonReader().read(json);
+    void test_readWriteInterfaceKeyMap() {
+        var key1 = ImmKey.builder().name("Alpha").build();
+        var person1 = ImmPerson.builder().forename("Bob").surname("Builder").build();
+        var key2 = ImmKey.builder().name("Beta").build();
+        var person2 = ImmPerson.builder().forename("Dana").surname("Dash").build();
+        var mapped = ImmMappedKey.builder().data(ImmutableMap.of(key1, person1, key2, person2)).build();
+        var json = JodaBeanSer.PRETTY.jsonWriter().write(mapped);
+
+        var bean = (ImmMappedKey) JodaBeanSer.PRETTY.jsonReader().read(json);
         BeanAssert.assertBeanEquals(bean, mapped);
     }
 
     @Test
-    public void test_read_badTypeInMap() {
-        String json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":{" +
+    void test_read_badTypeInMap() {
+        var json = "{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\",\"element\":{" +
                 "\"@meta\": \"Map\"," +
                 "\"value\": [[\"work\", {\"@type\": \"com.foo.UnknownEnum\",\"value\": \"BIGWIG\"}]]}}";
-        FlexiBean parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(json, FlexiBean.class);
-        FlexiBean bean = new FlexiBean();
+        var parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(json, FlexiBean.class);
+        var bean = new FlexiBean();
         bean.set("element", ImmutableMap.of("work", "BIGWIG"));  // converted to a string
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     @Test
-    public void test_read_ignoreProperty() {
-        String xml = "{\"name\":\"foo\",\"wibble\":\"ignored\"}";
-        ImmKey parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(xml, ImmKey.class);
-        ImmKey bean = ImmKey.builder().name("foo").build();
+    void test_read_ignoreProperty() {
+        var xml = "{\"name\":\"foo\",\"wibble\":\"ignored\"}";
+        var parsed = JodaBeanSer.COMPACT.withDeserializers(SerDeserializers.LENIENT).jsonReader().read(xml, ImmKey.class);
+        var bean = ImmKey.builder().name("foo").build();
         BeanAssert.assertBeanEquals(bean, parsed);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_noTypeAttributeAtRoot() {
-        JodaBeanSer.COMPACT.jsonReader().read("{}");
+    @Test
+    void test_read_noTypeAttributeAtRoot() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read("{}"));
     }
 
     @Test
-    public void test_read_noTypeAttributeAtRootButTypeSpecified() {
-        FlexiBean parsed = JodaBeanSer.COMPACT.jsonReader().read("{}", FlexiBean.class);
+    void test_read_noTypeAttributeAtRootButTypeSpecified() {
+        var parsed = JodaBeanSer.COMPACT.jsonReader().read("{}", FlexiBean.class);
         BeanAssert.assertBeanEquals(new FlexiBean(), parsed);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_rootTypeAttributeNotBean() {
-        JodaBeanSer.COMPACT.jsonReader().read("{\"@bean\":\"java.lang.Integer\"}", Bean.class);
+    @Test
+    void test_read_rootTypeAttributeNotBean() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read("{\"@bean\":\"java.lang.Integer\"}", Bean.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_rootTypeInvalid() {
-        JodaBeanSer.COMPACT.jsonReader().read("{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\"}", SimplePerson.class);
+    @Test
+    void test_read_rootTypeInvalid() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader()
+                        .read("{\"@bean\":\"org.joda.beans.impl.flexi.FlexiBean\"}", SimplePerson.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_rootTypeArgumentInvalid() {
-        JodaBeanSer.COMPACT.jsonReader().read("{}", Integer.class);
+    @Test
+    void test_read_rootTypeArgumentInvalid() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read("{}", Integer.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_write_nullKeyInMap() {
-        Address address = new Address();
-        Person bean = new Person();
+    @Test
+    void test_write_nullKeyInMap() {
+        var address = new Address();
+        var bean = new Person();
         bean.getOtherAddressMap().put(null, address);
-        JodaBeanSer.COMPACT.jsonWriter().write(bean);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonWriter().write(bean));
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
-    public static Object[][] data_badFormat() {
+    static Object[][] data_badFormat() {
         return new Object[][] {
-            {"{,}"},
-            {"{1,2}"},
-            {"{\"a\",6}"},
-            {"{\"a\":[}}"},
-            {"{\"a\":{\"@type\":\"Integer\",\"notvalue\":6}}"},
-            {"{\"a\":{\"@type\":\"Integer\",\"value\":[]}}"},
-            {"{\"a\":{\"@type\":\"Integer\",\"value\":" + (((long) Integer.MAX_VALUE) + 1) + "}}"},
-            {"{\"a\":{\"@type\":\"Integer\",\"value\":" + (((long) Integer.MIN_VALUE) - 1) + "}}"},
-            {"{\"a\":{\"@type\":\"Short\",\"value\":" + (((int) Short.MAX_VALUE) + 1) + "}}"},
-            {"{\"a\":{\"@type\":\"Short\",\"value\":" + (((int) Short.MIN_VALUE) - 1) + "}}"},
-            {"{\"a\":{\"@type\":\"Byte\",\"value\":128}}"},
-            {"{\"a\":{\"@type\":\"Byte\",\"value\":-129}}"},
-            {"{\"a\":{\"@meta\":\"List\",\"notvalue\":[]}}"},
-            {"{\"a\":{\"@meta\":\"List\",\"value\":{}}}"},
-            {"{\"a\":{\"@meta\":\"Map\",\"value\":6}}"},
+                {"{,}"},
+                {"{1,2}"},
+                {"{\"a\",6}"},
+                {"{\"a\":[}}"},
+                {"{\"a\":{\"@type\":\"Integer\",\"notvalue\":6}}"},
+                {"{\"a\":{\"@type\":\"Integer\",\"value\":[]}}"},
+                {"{\"a\":{\"@type\":\"Integer\",\"value\":" + (((long) Integer.MAX_VALUE) + 1) + "}}"},
+                {"{\"a\":{\"@type\":\"Integer\",\"value\":" + (((long) Integer.MIN_VALUE) - 1) + "}}"},
+                {"{\"a\":{\"@type\":\"Short\",\"value\":" + ((Short.MAX_VALUE) + 1) + "}}"},
+                {"{\"a\":{\"@type\":\"Short\",\"value\":" + ((Short.MIN_VALUE) - 1) + "}}"},
+                {"{\"a\":{\"@type\":\"Byte\",\"value\":128}}"},
+                {"{\"a\":{\"@type\":\"Byte\",\"value\":-129}}"},
+                {"{\"a\":{\"@meta\":\"List\",\"notvalue\":[]}}"},
+                {"{\"a\":{\"@meta\":\"List\",\"value\":{}}}"},
+                {"{\"a\":{\"@meta\":\"Map\",\"value\":6}}"},
         };
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    @UseDataProvider("data_badFormat")
-    public void test_badFormat(String text) throws IOException {
-        JodaBeanSer.COMPACT.jsonReader().read(text, FlexiBean.class);
+    @ParameterizedTest
+    @MethodSource("data_badFormat")
+    void test_badFormat(String text) throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JodaBeanSer.COMPACT.jsonReader().read(text, FlexiBean.class));
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
-    public void test_writer_nullSettings() {
-        new JodaBeanJsonWriter(null);
+    @Test
+    void test_writer_nullSettings() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonWriter(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_writer_write1_nullBean() {
-        new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null);
+    @Test
+    void test_writer_write1_nullBean() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_writer_write2_nullBean() throws IOException {
-        new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null, new StringBuilder());
+    @Test
+    void test_writer_write2_nullBean() throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(null, new StringBuilder()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_writer_write2_nullAppendable() throws IOException {
-        new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(new FlexiBean(), null);
+    @Test
+    void test_writer_write2_nullAppendable() throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonWriter(JodaBeanSer.PRETTY).write(new FlexiBean(), null));
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_nullSettings() {
-        new JodaBeanJsonReader(null);
+    @Test
+    void test_reader_nullSettings() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_readReader_null() {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null);
+    @Test
+    void test_reader_readReader_null() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_readString_null() {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null);
+    @Test
+    void test_reader_readString_null() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_readReaderType_nullReader() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null, Bean.class);
+    @Test
+    void test_reader_readReaderType_nullReader() throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((Reader) null, Bean.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_readReaderType_nullType() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read(new StringReader(""), null);
+    @Test
+    void test_reader_readReaderType_nullType() throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(JodaBeanSer.PRETTY).read(new StringReader(""), null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_readStringType_nullString() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null, Bean.class);
+    @Test
+    void test_reader_readStringType_nullString() throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(JodaBeanSer.PRETTY).read((String) null, Bean.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_reader_readStringType_nullType() throws IOException {
-        new JodaBeanJsonReader(JodaBeanSer.PRETTY).read("", null);
+    @Test
+    void test_reader_readStringType_nullType() throws IOException {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new JodaBeanJsonReader(JodaBeanSer.PRETTY).read("", null));
     }
 
 }

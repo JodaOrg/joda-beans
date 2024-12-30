@@ -21,7 +21,7 @@ import org.joda.beans.JodaBeanUtils;
 /**
  * Basic implementation of {@code Bean} intended for applications to subclass.
  * <p>
- * The subclass must to provide an implementation for {@link Bean#metaBean()}.
+ * The subclass must provide an implementation for {@link Bean#metaBean()}.
  * This returns the complete definition of the bean at the meta level.
  */
 public abstract class BasicBean implements Bean {
@@ -46,14 +46,10 @@ public abstract class BasicBean implements Bean {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj != null && getClass() == obj.getClass()) {
-            Bean other = (Bean) obj;
-            return JodaBeanUtils.propertiesEqual(this, other);
-        }
-        return false;
+        return obj == this ||
+                (obj instanceof Bean bean &&
+                        getClass() == bean.getClass() &&
+                        JodaBeanUtils.propertiesEqual(this, bean));
     }
 
     /**

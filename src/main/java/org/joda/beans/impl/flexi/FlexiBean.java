@@ -16,6 +16,7 @@
 package org.joda.beans.impl.flexi;
 
 import java.io.ObjectStreamException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -39,16 +40,17 @@ import org.joda.beans.impl.BasicProperty;
  * Each flexi-bean has a different set of properties.
  * As such, there is one instance of meta-bean for each flexi-bean.
  * <p>
- * The keys of a flexi-bean must be simple identifiers as per '[a-zA-z_][a-zA-z0-9_]*'.
+ * The keys of a flexi-bean must be simple identifiers as per '[a-zA-Z_][a-zA-Z0-9_]*'.
  */
 public final class FlexiBean implements DynamicBean, Serializable {
     // Alternate way to implement this would be to create a list/map of real property
     // objects which could then be properly typed
 
     /** Serialization version. */
+    @Serial
     private static final long serialVersionUID = 1L;
     /** Valid regex for keys. */
-    private static final Pattern VALID_KEY = Pattern.compile("[a-zA-z_][a-zA-z0-9_]*");
+    private static final Pattern VALID_KEY = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*");
 
     /** The meta-bean. */
     private final transient FlexiMetaBean metaBean = new FlexiMetaBean(this);  // CSIGNORE
@@ -83,7 +85,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
         putAll(copyFrom.data);
     }
 
-    // resolve to setup transient field
+    // resolve to set up transient field
     private Object readResolve() throws ObjectStreamException {
         return new FlexiBean(this);
     }
@@ -158,7 +160,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @return the value of the property, may be null
      */
     public String getString(String propertyName) {
-        Object obj = get(propertyName);
+        var obj = get(propertyName);
         return obj != null ? obj.toString() : null;
     }
 
@@ -195,8 +197,8 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @throws ClassCastException if the value is not compatible
      */
     public int getInt(String propertyName, int defaultValue) {
-        Object obj = get(propertyName);
-        return obj != null ? ((Number) get(propertyName)).intValue() : defaultValue;
+        var obj = get(propertyName);
+        return obj != null ? ((Number) obj).intValue() : defaultValue;
     }
 
     /**
@@ -220,8 +222,8 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @throws ClassCastException if the value is not compatible
      */
     public long getLong(String propertyName, long defaultValue) {
-        Object obj = get(propertyName);
-        return obj != null ? ((Number) get(propertyName)).longValue() : defaultValue;
+        var obj = get(propertyName);
+        return obj != null ? ((Number) obj).longValue() : defaultValue;
     }
 
     /**
@@ -245,8 +247,8 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @throws ClassCastException if the value is not compatible
      */
     public double getDouble(String propertyName, double defaultValue) {
-        Object obj = get(propertyName);
-        return obj != null ? ((Number) get(propertyName)).doubleValue() : defaultValue;
+        var obj = get(propertyName);
+        return obj != null ? ((Number) obj).doubleValue() : defaultValue;
     }
 
     //-----------------------------------------------------------------------
@@ -286,7 +288,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @return the old value of the property, may be null
      */
     public Object put(String propertyName, Object newValue) {
-        if (VALID_KEY.matcher(propertyName).matches() == false) {
+        if (!VALID_KEY.matcher(propertyName).matches()) {
             throw new IllegalArgumentException("Invalid key for FlexiBean: " + propertyName);
         }
         return dataWritable().put(propertyName, newValue);
@@ -300,9 +302,9 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @param map  the map of properties to add, not null
      */
     public void putAll(Map<String, ? extends Object> map) {
-        if (map.size() > 0) {
-            for (String key : map.keySet()) {
-                if (VALID_KEY.matcher(key).matches() == false) {
+        if (!map.isEmpty()) {
+            for (var key : map.keySet()) {
+                if (!VALID_KEY.matcher(key).matches()) {
                     throw new IllegalArgumentException("Invalid key for FlexiBean: " + key);
                 }
             }
@@ -369,7 +371,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
      * @return the value of the property, may be null
      */
     public Object propertyGet(String propertyName) {
-        if (propertyExists(propertyName) == false) {
+        if (!propertyExists(propertyName)) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
         return data.get(propertyName);
@@ -403,7 +405,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
 
     @Override
     public void propertyDefine(String propertyName, Class<?> propertyType) {
-        if (propertyExists(propertyName) == false) {
+        if (!propertyExists(propertyName)) {
             put(propertyName, null);
         }
     }
@@ -425,6 +427,7 @@ public final class FlexiBean implements DynamicBean, Serializable {
         if (size() == 0) {
             return Collections.emptyMap();
         }
+        // retain order, Map.of() does not respect order
         return Collections.unmodifiableMap(new LinkedHashMap<>(data));
     }
 
@@ -447,14 +450,9 @@ public final class FlexiBean implements DynamicBean, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof FlexiBean) {
-            FlexiBean other = (FlexiBean) obj;
-            return this.data.equals(other.data);
-        }
-        return super.equals(obj);
+        return obj == this ||
+                (obj instanceof FlexiBean other &&
+                        this.data.equals(other.data));
     }
 
     /**

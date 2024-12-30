@@ -63,6 +63,7 @@ public @interface PropertyDefinition {
      * <li>'get' - generates getXxx()
      * <li>'clone' - generates getXxx() with a clone of the field (assumed to be of the correct type)
      * <li>'cloneCast' - generates getXxx() with a clone of the field with a cast to the property type
+     * <li>'cloneArray' - generates getXxx() with a deep clone of the array suitable for multi-dimensional arrays
      * <li>'optional' - generate getXxx() returning a Java 8 {@code Optional} wrapper around the field,
      *  where the field itself is nullable instead of optional. {@code OptionalDouble}, {@code OptionalInt}
      *  and {@code OptionalLong} are also handled
@@ -96,6 +97,7 @@ public @interface PropertyDefinition {
      * <li>'set' - generates setXxx()
      * <li>'setClearAddAll' - generates setXxx() using field.clear() and field.addAll(newData)
      * <li>'setClearPutAll' - generates setXxx() using field.clear() and field.putAll(newData)
+     * <li>'cloneArray' - generates setXxx() with a deep clone of the array suitable for multi-dimensional arrays
      * <li>'bound' - generates a bound property with {@code PropertyChangeSupport}
      * <li>'field' - generates direct access to the field, enabling a weird manual setter
      * <li>'manual' - a method named setXxx() must be manually provided at package scope or greater
@@ -107,8 +109,9 @@ public @interface PropertyDefinition {
      * For example, 'new Foo($value)' or '$field = $value.clone()'.<br/>
      * '$field' for the field to copy into.<br/>
      * '$value' for the value to copy from.<br/>
+     * '$type' for the type of the field.<br/>
      * '&lt;&gt;' for the generics of the type including angle brackets.<br/>
-     * '\n' for a new line (all lines must then include semi-colons).<br/>
+     * '\n' for a new line (all lines must then include semicolons).<br/>
      * 
      * @return the setter style, defaulted to 'smart'
      */

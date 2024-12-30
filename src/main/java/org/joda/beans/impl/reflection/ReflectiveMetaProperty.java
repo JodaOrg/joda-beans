@@ -64,10 +64,10 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings({"unchecked", "null"})
     ReflectiveMetaProperty(MetaBean metaBean, Class<? extends Bean> beanType, String propertyName) {
         super(propertyName);
-        String getterName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
-        String isserName = "is" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
-        Method getMethod = findGetMethod(beanType, getterName);
-        Method isMethod = findGetMethod(beanType, isserName);
+        var getterName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        var isserName = "is" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+        var getMethod = findGetMethod(beanType, getterName);
+        var isMethod = findGetMethod(beanType, isserName);
         if (getMethod == null && isMethod == null) {
             throw new IllegalArgumentException(
                 "Unable to find property getter: " + beanType.getSimpleName() + "." + getterName + "()");
@@ -75,7 +75,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
         getMethod = isMethod != null ? isMethod : getMethod;
         Method setMethod = null;
         if (!ImmutableBean.class.isAssignableFrom(beanType)) {
-            String setterName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
+            var setterName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.ENGLISH) + propertyName.substring(1);
             setMethod = findSetMethod(beanType, setterName, getMethod.getReturnType());
             if (setMethod == null) {
                 throw new IllegalArgumentException(
@@ -107,9 +107,9 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
         try {
             return beanType.getDeclaredMethod(setterName, fieldType);
         } catch (NoSuchMethodException ex) {
-            Method[] methods = beanType.getMethods();
-            List<Method> potential = new ArrayList<>();
-            for (Method method : methods) {
+            var methods = beanType.getMethods();
+            var potential = new ArrayList<Method>();
+            for (var method : methods) {
                 if (method.getName().equals(setterName) && method.getParameterTypes().length == 1) {
                     potential.add(method);
                 }
@@ -117,7 +117,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             if (potential.size() == 1) {
                 return potential.get(0);
             }
-            for (Method method : potential) {
+            for (var method : potential) {
                 if (method.getParameterTypes()[0].equals(fieldType)) {
                     return method;
                 }
@@ -176,7 +176,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @Override
     @SuppressWarnings("unchecked")
     public P get(Bean bean) {
-        if (style().isReadable() == false) {
+        if (!style().isReadable()) {
             throw new UnsupportedOperationException("Property cannot be read: " + name());
         }
         try {
@@ -194,7 +194,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
     @SuppressWarnings("null")
     @Override
     public void set(Bean bean, Object value) {
-        if (style().isWritable() == false) {
+        if (!style().isWritable()) {
             throw new UnsupportedOperationException("Property cannot be written: " + name());
         }
         try {
@@ -203,7 +203,7 @@ final class ReflectiveMetaProperty<P> extends BasicMetaProperty<P> {
             if (value == null && setMethod.getParameterTypes()[0].isPrimitive()) {
                 throw new NullPointerException("Property cannot be written: " + name() + ": Cannot store null in primitive");
             }
-            if (propertyType.isInstance(value) == false) {
+            if (!propertyType.isInstance(value)) {
                 throw new ClassCastException("Property cannot be written: " + name() + ": Invalid type: " + value.getClass().getName());
             }
             throw new UnsupportedOperationException("Property cannot be written: " + name(), ex);

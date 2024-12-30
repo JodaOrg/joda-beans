@@ -114,7 +114,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDocumentationResult<?> other = (ImmDocumentationResult<?>) obj;
-            return JodaBeanUtils.equal(documentation, other.documentation);
+            return JodaBeanUtils.equal(this.documentation, other.documentation);
         }
         return false;
     }
@@ -171,7 +171,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
                 case -1770633379:  // underlying (alias)
-                    return documentation;
+                    return this.documentation;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -252,7 +252,7 @@ public final class ImmDocumentationResult<T> implements ImmutableBean {
             switch (propertyName.hashCode()) {
                 case 1587405498:  // documentation
                 case -1770633379:  // underlying (alias)
-                    return documentation;
+                    return this.documentation;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

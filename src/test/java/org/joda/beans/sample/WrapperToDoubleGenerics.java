@@ -118,7 +118,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             WrapperToDoubleGenerics<?> other = (WrapperToDoubleGenerics<?>) obj;
-            return JodaBeanUtils.equal(base, other.base);
+            return JodaBeanUtils.equal(this.base, other.base);
         }
         return false;
     }
@@ -182,7 +182,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3016401:  // base
-                    return base;
+                    return this.base;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -261,7 +261,7 @@ public class WrapperToDoubleGenerics<T extends DoubleGenericsSimpleSuper<String,
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 3016401:  // base
-                    return base;
+                    return this.base;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

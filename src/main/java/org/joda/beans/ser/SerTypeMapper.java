@@ -90,9 +90,9 @@ public final class SerTypeMapper {
      * @param knownTypes  the known types map, null if not using known type shortening
      * @return the class object, null if not a basic type
      */
-    public static String encodeType(Class<?> cls, final JodaBeanSer settings, final String basePackage, final Map<Class<?>, String> knownTypes) {
+    public static String encodeType(Class<?> cls, JodaBeanSer settings, String basePackage, Map<Class<?>, String> knownTypes) {
         // basic type
-        String result = BASIC_TYPES.get(cls);
+        var result = BASIC_TYPES.get(cls);
         if (result != null) {
             return result;
         }
@@ -116,7 +116,7 @@ public final class SerTypeMapper {
             if (basePackage != null &&
                     result.startsWith(basePackage) &&
                     Character.isUpperCase(result.charAt(basePackage.length())) &&
-                    BASIC_TYPES_REVERSED.containsKey(result.substring(basePackage.length())) == false) {
+                    !BASIC_TYPES_REVERSED.containsKey(result.substring(basePackage.length()))) {
                 // use short format
                 result = result.substring(basePackage.length());
                 if (knownTypes != null) {
@@ -125,10 +125,10 @@ public final class SerTypeMapper {
             } else {
                 // use long format, short next time if possible
                 if (knownTypes != null) {
-                    String simpleName = cls.getSimpleName();
+                    var simpleName = cls.getSimpleName();
                     if (Character.isUpperCase(simpleName.charAt(0)) &&
-                            BASIC_TYPES_REVERSED.containsKey(simpleName) == false &&
-                            knownTypes.containsValue(simpleName) == false) {
+                            !BASIC_TYPES_REVERSED.containsKey(simpleName) &&
+                            !knownTypes.containsValue(simpleName)) {
                         knownTypes.put(cls, simpleName);
                     } else {
                         knownTypes.put(cls, result);
@@ -210,9 +210,9 @@ public final class SerTypeMapper {
             }
         }
         // calculate
-        String fullName = className;
-        boolean expanded = false;
-        if (basePackage != null && className.length() > 0 && Character.isUpperCase(className.charAt(0))) {
+        var fullName = className;
+        var expanded = false;
+        if (basePackage != null && !className.isEmpty() && Character.isUpperCase(className.charAt(0))) {
             fullName = basePackage + className;
             expanded = true;
         }
@@ -226,16 +226,16 @@ public final class SerTypeMapper {
                     knownTypes.put(className, result);
                 } else {
                     // derive and cache short name
-                    String simpleName = result.getSimpleName();
+                    var simpleName = result.getSimpleName();
                     // handle renames
-                    if (fullName.equals(result.getName()) == false &&
+                    if (!fullName.equals(result.getName()) &&
                             RenameHandler.INSTANCE.getTypeRenames().containsKey(fullName) &&
                             result.getEnclosingClass() == null) {
                         simpleName = fullName.substring(fullName.lastIndexOf(".") + 1);
                     }
                     if (Character.isUpperCase(simpleName.charAt(0)) &&
-                            BASIC_TYPES_REVERSED.containsKey(simpleName) == false &&
-                            knownTypes.containsKey(simpleName) == false) {
+                            !BASIC_TYPES_REVERSED.containsKey(simpleName) &&
+                            !knownTypes.containsKey(simpleName)) {
                         knownTypes.put(simpleName, result);
                     }
                 }
@@ -243,7 +243,7 @@ public final class SerTypeMapper {
             return result;
         } catch (ClassNotFoundException ex) {
             // handle pathological case of package name starting with upper case
-            if (fullName.equals(className) == false) {
+            if (!fullName.equals(className)) {
                 try {
                     result = RenameHandler.INSTANCE.lookupType(className);
                     if (knownTypes != null) {

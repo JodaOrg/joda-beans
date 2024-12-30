@@ -180,7 +180,7 @@ final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     void writeBytes(byte[] bytes) throws IOException {
-        int size = bytes.length;
+        var size = bytes.length;
         if (size < 256) {
             output.writeByte(BIN_8);
             output.writeByte(size);
@@ -201,36 +201,29 @@ final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     void writeString(String value) throws IOException {
-        byte[] bytes = toUTF8(value);
-        int size = bytes.length;
+        // Java 21 performance testing showed manually converting to UTF-8 to be slower
+        var bytes = value.getBytes(UTF_8);
+        var size = bytes.length;
         if (size < 32) {
             output.writeByte(MIN_FIX_STR + size);
         } else if (size < 256) {
             output.writeByte(STR_8);
             output.writeByte(size);
-        } else if (size < 65536) {
+        } else {
+            writeStringHeaderLarge(size);
+        }
+        output.write(bytes);
+    }
+
+    // separate out larger strings, which may benefit hotspot
+    private void writeStringHeaderLarge(int size) throws IOException {
+        if (size < 65536) {
             output.writeByte(STR_16);
             output.writeShort(size);
         } else {
             output.writeByte(STR_32);
             output.writeInt(size);
         }
-        output.write(bytes);
-    }
-
-    private byte[] toUTF8(String value) {
-        // inline common ASCII case for much better performance
-        int size = value.length();
-        byte[] bytes = new byte[size];
-        for (int i = 0; i < size; i++) {
-            char ch = value.charAt(i);
-            if (ch < 128) {
-                bytes[i] = (byte) ch;
-            } else {
-                return value.getBytes(UTF_8);
-            }
-        }
-        return bytes;
     }
 
     /**
@@ -270,7 +263,7 @@ final class MsgPackOutput extends MsgPack {
     }
 
     /**
-     * Writes an extension string using FIX_EXT_1.
+     * Writes an extension value using FIX_EXT_1.
      * 
      * @param extensionType  the type
      * @param value  the value to write as the data
@@ -290,7 +283,7 @@ final class MsgPackOutput extends MsgPack {
      * @throws IOException if an error occurs
      */
     void writeExtensionString(int extensionType, String str) throws IOException {
-        byte[] bytes = str.getBytes(UTF_8);
+        var bytes = str.getBytes(UTF_8);
         if (bytes.length > 256) {
             throw new IllegalArgumentException("String too long");
         }

@@ -57,6 +57,7 @@ public final class ImmPerson implements ImmutableBean {
     private final String surname;
     /** The number of cars. */
     @PropertyDefinition
+    @SimpleAnnotation(second = "2")
     private transient final int numberOfCars;
     /** The date of birth. */
     @PropertyDefinition
@@ -76,6 +77,7 @@ public final class ImmPerson implements ImmutableBean {
     private final ImmutableMultiset<String> codeCounts;
 
     @DerivedProperty
+    @SimpleAnnotation(first = "1")
     public int getAge() {
         return 12;
     }
@@ -265,16 +267,16 @@ public final class ImmPerson implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmPerson other = (ImmPerson) obj;
-            return JodaBeanUtils.equal(forename, other.forename) &&
-                    JodaBeanUtils.equal(surname, other.surname) &&
-                    (numberOfCars == other.numberOfCars) &&
-                    JodaBeanUtils.equal(dateOfBirth, other.dateOfBirth) &&
-                    JodaBeanUtils.equal(middleNames, other.middleNames) &&
-                    JodaBeanUtils.equal(addressList, other.addressList) &&
-                    JodaBeanUtils.equal(otherAddressMap, other.otherAddressMap) &&
-                    JodaBeanUtils.equal(addressesList, other.addressesList) &&
-                    JodaBeanUtils.equal(mainAddress, other.mainAddress) &&
-                    JodaBeanUtils.equal(codeCounts, other.codeCounts);
+            return JodaBeanUtils.equal(this.forename, other.forename) &&
+                    JodaBeanUtils.equal(this.surname, other.surname) &&
+                    (this.numberOfCars == other.numberOfCars) &&
+                    JodaBeanUtils.equal(this.dateOfBirth, other.dateOfBirth) &&
+                    JodaBeanUtils.equal(this.middleNames, other.middleNames) &&
+                    JodaBeanUtils.equal(this.addressList, other.addressList) &&
+                    JodaBeanUtils.equal(this.otherAddressMap, other.otherAddressMap) &&
+                    JodaBeanUtils.equal(this.addressesList, other.addressesList) &&
+                    JodaBeanUtils.equal(this.mainAddress, other.mainAddress) &&
+                    JodaBeanUtils.equal(this.codeCounts, other.codeCounts);
         }
         return false;
     }
@@ -414,27 +416,27 @@ public final class ImmPerson implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
-                    return forename;
+                    return this.forename;
                 case -1852993317:  // surname
-                    return surname;
+                    return this.surname;
                 case 926656063:  // numberOfCars
-                    return numberOfCars;
+                    return this.numberOfCars;
                 case -386871910:  // dateOfBirth
-                    return dateOfBirth;
+                    return this.dateOfBirth;
                 case 404996787:  // middleNames
-                    return middleNames;
+                    return this.middleNames;
                 case -1377524046:  // addressList
-                    return addressList;
+                    return this.addressList;
                 case 1368089592:  // otherAddressMap
-                    return otherAddressMap;
+                    return this.otherAddressMap;
                 case -226885792:  // addressesList
-                    return addressesList;
+                    return this.addressesList;
                 case -2032731141:  // mainAddress
-                    return mainAddress;
+                    return this.mainAddress;
                 case -1383758447:  // codeCounts
-                    return codeCounts;
+                    return this.codeCounts;
                 case 96511:  // age
-                    return age;
+                    return this.age;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -630,25 +632,25 @@ public final class ImmPerson implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 467061063:  // forename
-                    return forename;
+                    return this.forename;
                 case -1852993317:  // surname
-                    return surname;
+                    return this.surname;
                 case 926656063:  // numberOfCars
-                    return numberOfCars;
+                    return this.numberOfCars;
                 case -386871910:  // dateOfBirth
-                    return dateOfBirth;
+                    return this.dateOfBirth;
                 case 404996787:  // middleNames
-                    return middleNames;
+                    return this.middleNames;
                 case -1377524046:  // addressList
-                    return addressList;
+                    return this.addressList;
                 case 1368089592:  // otherAddressMap
-                    return otherAddressMap;
+                    return this.otherAddressMap;
                 case -226885792:  // addressesList
-                    return addressesList;
+                    return this.addressesList;
                 case -2032731141:  // mainAddress
-                    return mainAddress;
+                    return this.mainAddress;
                 case -1383758447:  // codeCounts
-                    return codeCounts;
+                    return this.codeCounts;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

@@ -25,11 +25,13 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ImmutableBean;
 import org.joda.beans.MetaBean;
 import org.joda.beans.PropertyStyle;
+import org.joda.beans.ResolvedType;
 import org.joda.beans.impl.BasicMetaProperty;
 
 /**
@@ -45,6 +47,8 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
     private final Class<P> propertyType;
     /** The type of the property. */
     private final Type propertyGenericType;
+    /** The function to create the resolved type of the property. */
+    private final Function<Class<?>, ResolvedType> propertyResolvedTypeFn;
     /** The annotations. */
     private final List<Annotation> annotations;
     /** The read method. */
@@ -101,7 +105,7 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
     }
 
     /**
-     * Creates an instance from a {@code Method}.
+     * Creates an instance from a get/set {@code Method} pair.
      * 
      * @param <P>  the property type
      * @param metaBean  the meta bean, not null
@@ -122,16 +126,16 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
         
         MethodHandle getter;
         try {
-            MethodType type = MethodType.methodType(getMethod.getReturnType(), getMethod.getParameterTypes());
-            getter = lookup.findVirtual(field.getDeclaringClass(), getMethod.getName(), type);
+            var methodTypeype = MethodType.methodType(getMethod.getReturnType(), getMethod.getParameterTypes());
+            getter = lookup.findVirtual(field.getDeclaringClass(), getMethod.getName(), methodTypeype);
         } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException ex) {
             throw new UnsupportedOperationException("Property cannot be read: " + propertyName, ex);
         }
         MethodHandle setter = null;
         if (setMethod != null) {
             try {
-                MethodType type = MethodType.methodType(void.class, setMethod.getParameterTypes());
-                setter = lookup.findVirtual(field.getDeclaringClass(), setMethod.getName(), type);
+                var methodType = MethodType.methodType(void.class, setMethod.getParameterTypes());
+                setter = lookup.findVirtual(field.getDeclaringClass(), setMethod.getName(), methodType);
             } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException ex) {
                 throw new UnsupportedOperationException("Property cannot be written: " + propertyName, ex);
             }
@@ -222,6 +226,11 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
         this.setter = setter != null ? setter.asType(MethodType.methodType(void.class, Bean.class, Object.class)) : null;
         this.constructorIndex = constructorIndex;
         this.style = style;
+        var beanType = metaBean.beanType();
+        var resolvedType = ResolvedType.from(propertyGenericType, beanType);
+        this.propertyResolvedTypeFn = !resolvedType.isParameterized() || Modifier.isFinal(beanType.getModifiers()) ?
+                contextClass -> resolvedType :
+                contextClass -> contextClass == beanType ? resolvedType : ResolvedType.from(propertyGenericType, contextClass);
     }
 
     //-----------------------------------------------------------------------
@@ -243,6 +252,11 @@ final class LightMetaProperty<P> extends BasicMetaProperty<P> {
     @Override
     public Type propertyGenericType() {
         return propertyGenericType;
+    }
+
+    @Override
+    public ResolvedType propertyResolvedType(Class<?> contextClass) {
+        return propertyResolvedTypeFn.apply(contextClass);
     }
 
     @Override

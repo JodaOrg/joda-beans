@@ -15,7 +15,14 @@
  */
 package org.joda.beans.sample;
 
-import org.joda.beans.*;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import org.joda.beans.Bean;
+import org.joda.beans.ImmutableBean;
+import org.joda.beans.JodaBeanUtils;
+import org.joda.beans.MetaBean;
+import org.joda.beans.MetaProperty;
 import org.joda.beans.gen.BeanDefinition;
 import org.joda.beans.gen.ImmutableDefaults;
 import org.joda.beans.gen.PropertyDefinition;
@@ -23,13 +30,6 @@ import org.joda.beans.impl.direct.DirectFieldsBeanBuilder;
 import org.joda.beans.impl.direct.DirectMetaBean;
 import org.joda.beans.impl.direct.DirectMetaProperty;
 import org.joda.beans.impl.direct.DirectMetaPropertyMap;
-
-import java.util.Map;
-import java.util.NoSuchElementException;
-import org.joda.beans.Bean;
-import org.joda.beans.JodaBeanUtils;
-import org.joda.beans.MetaBean;
-import org.joda.beans.MetaProperty;
 
 /**
  * Wraps a defaulted value, used for testing.
@@ -116,7 +116,7 @@ public final class ImmDefault implements ImmutableBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmDefault other = (ImmDefault) obj;
-            return JodaBeanUtils.equal(value, other.value);
+            return JodaBeanUtils.equal(this.value, other.value);
         }
         return false;
     }
@@ -169,7 +169,7 @@ public final class ImmDefault implements ImmutableBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -247,7 +247,7 @@ public final class ImmDefault implements ImmutableBean {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 111972721:  // value
-                    return value;
+                    return this.value;
                 default:
                     throw new NoSuchElementException("Unknown property: " + propertyName);
             }

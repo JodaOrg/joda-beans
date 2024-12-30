@@ -15,44 +15,44 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.MutableDerivedBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test mutable derived beans.
  */
-public class TestMutableDerived {
+class TestMutableDerived {
 
     @Test
-    public void test_mutableDerivedBean() {
+    void test_mutableDerivedBean() {
         MutableDerivedBean test = (MutableDerivedBean) MutableDerivedBean.builder()
                 .baseBeanString("HopeNotHate")
                 .build();
-        assertEquals(test.getBaseBeanString(), "HopeNotHate");
-        assertEquals(test.metaBean().metaPropertyCount(), 1);
-        assertEquals(test.metaBean().metaPropertyMap().keySet().iterator().next(), "baseBeanString");
-        assertEquals(test.metaBean().baseBeanString().get(test), "HopeNotHate");
+        assertThat(test.getBaseBeanString()).isEqualTo("HopeNotHate");
+        assertThat(test.metaBean().metaPropertyCount()).isEqualTo(1);
+        assertThat(test.metaBean().metaPropertyMap().keySet().iterator().next()).isEqualTo("baseBeanString");
+        assertThat(test.metaBean().baseBeanString().get(test)).isEqualTo("HopeNotHate");
 
         test.metaBean().baseBeanString().set(test, "Now");
-        assertEquals(test.getBaseBeanString(), "Now");
-        assertEquals(test.metaBean().baseBeanString().get(test), "Now");
+        assertThat(test.getBaseBeanString()).isEqualTo("Now");
+        assertThat(test.metaBean().baseBeanString().get(test)).isEqualTo("Now");
 
         test.metaBean().baseBeanString().setString(test, "Please");
-        assertEquals(test.getBaseBeanString(), "Please");
-        assertEquals(test.metaBean().baseBeanString().get(test), "Please");
+        assertThat(test.getBaseBeanString()).isEqualTo("Please");
+        assertThat(test.metaBean().baseBeanString().get(test)).isEqualTo("Please");
     }
 
     @Test
-    public void test_mutableDerivedBean_builder() {
-        MutableDerivedBean test = (MutableDerivedBean) MutableDerivedBean.builder()
+    void test_mutableDerivedBean_builder() {
+        MutableDerivedBean test = MutableDerivedBean.builder()
                 .set("baseBeanString", "HopeNotHate")
                 .build();
-        assertEquals(test.getBaseBeanString(), "HopeNotHate");
-        assertEquals(test.metaBean().metaPropertyCount(), 1);
-        assertEquals(test.metaBean().metaPropertyMap().keySet().iterator().next(), "baseBeanString");
-        assertEquals(test.metaBean().baseBeanString().get(test), "HopeNotHate");
+        assertThat(test.getBaseBeanString()).isEqualTo("HopeNotHate");
+        assertThat(test.metaBean().metaPropertyCount()).isEqualTo(1);
+        assertThat(test.metaBean().metaPropertyMap().keySet().iterator().next()).isEqualTo("baseBeanString");
+        assertThat(test.metaBean().baseBeanString().get(test)).isEqualTo("HopeNotHate");
     }
 
 }

@@ -72,7 +72,6 @@
       <item name="Related projects" href="related.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="licensecover.html"/>
-      <item name="Donations" href="https://opencollective.com/joda"/>
     </menu>
 
     <menu name="Releases">
@@ -84,7 +83,7 @@
     <menu name="Development">
       <item name="GitHub" href="https://github.com/JodaOrg/joda-beans"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-beans/issues"/>
-      <item name="Test results" href="surefire-report.html"/>
+      <item name="Test results" href="surefire.html"/>
     </menu>
 
     <menu name="Joda">

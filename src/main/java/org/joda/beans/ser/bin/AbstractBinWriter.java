@@ -23,7 +23,6 @@ import java.util.Map;
 import org.joda.beans.Bean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.ser.JodaBeanSer;
-import org.joda.beans.ser.SerCategory;
 import org.joda.beans.ser.SerIterator;
 import org.joda.beans.ser.SerOptional;
 import org.joda.beans.ser.SerTypeMapper;
@@ -51,7 +50,7 @@ abstract class AbstractBinWriter {
     /**
      * The known types.
      */
-    private Map<Class<?>, String> knownTypes = new HashMap<>();
+    private final Map<Class<?>, String> knownTypes = new HashMap<>();
 
     // creates an instance
     AbstractBinWriter(JodaBeanSer settings, OutputStream output) {
@@ -65,13 +64,13 @@ abstract class AbstractBinWriter {
     }
 
     void writeBean(Bean bean, Class<?> declaredType, RootType rootTypeFlag) throws IOException {
-        int count = bean.metaBean().metaPropertyCount();
-        MetaProperty<?>[] props = new MetaProperty<?>[count];
-        Object[] values = new Object[count];
-        int size = 0;
-        for (MetaProperty<?> prop : bean.metaBean().metaPropertyIterable()) {
+        var count = bean.metaBean().metaPropertyCount();
+        var props = new MetaProperty<?>[count];
+        var values = new Object[count];
+        var size = 0;
+        for (var prop : bean.metaBean().metaPropertyIterable()) {
             if (settings.isSerialized(prop)) {
-                Object value = SerOptional.extractValue(prop, bean);
+                var value = SerOptional.extractValue(prop, bean);
                 if (value != null) {
                     props[size] = prop;
                     values[size++] = value;
@@ -79,7 +78,7 @@ abstract class AbstractBinWriter {
             }
         }
         if (rootTypeFlag == RootType.ROOT_WITH_TYPE || (rootTypeFlag == RootType.NOT_ROOT && bean.getClass() != declaredType)) {
-            String type = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
+            var type = SerTypeMapper.encodeType(bean.getClass(), settings, basePackage, knownTypes);
             if (rootTypeFlag == RootType.ROOT_WITH_TYPE) {
                 basePackage = bean.getClass().getPackage().getName() + ".";
             }
@@ -89,19 +88,19 @@ abstract class AbstractBinWriter {
         } else {
             output.writeMapHeader(size);
         }
-        for (int i = 0; i < size; i++) {
+        for (var i = 0; i < size; i++) {
             MetaProperty<?> prop = props[i];
-            Object value = values[i];
+            var value = values[i];
             output.writeString(prop.name());
-            Class<?> propType = SerOptional.extractType(prop, bean.getClass());
-            if (value instanceof Bean) {
+            var propType = SerOptional.extractType(prop, bean.getClass());
+            if (value instanceof Bean beanValue) {
                 if (settings.getConverter().isConvertible(value.getClass())) {
                     writeSimple(propType, value);
                 } else {
-                    writeBean((Bean) value, propType, RootType.NOT_ROOT);
+                    writeBean(beanValue, propType, RootType.NOT_ROOT);
                 }
             } else {
-                SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
+                var itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                 if (itemIterator != null) {
                     writeElements(itemIterator);
                 } else {
@@ -121,16 +120,12 @@ abstract class AbstractBinWriter {
             output.writeMapHeader(1);
             writeMetaPropertyReference(itemIterator.metaTypeName());
         }
-        if (itemIterator.category() == SerCategory.MAP) {
-            writeMap(itemIterator);
-        } else if (itemIterator.category() == SerCategory.COUNTED) {
-            writeCounted(itemIterator);
-        } else if (itemIterator.category() == SerCategory.TABLE) {
-            writeTable(itemIterator);
-        } else if (itemIterator.category() == SerCategory.GRID) {
-            writeGrid(itemIterator);
-        } else {
-            writeArray(itemIterator);
+        switch (itemIterator.category()) {
+            case COLLECTION -> writeArray(itemIterator);
+            case COUNTED -> writeCounted(itemIterator);
+            case MAP -> writeMap(itemIterator);
+            case TABLE -> writeTable(itemIterator);
+            case GRID -> writeGrid(itemIterator);
         }
     }
 
@@ -146,11 +141,7 @@ abstract class AbstractBinWriter {
         output.writeMapHeader(itemIterator.size());
         while (itemIterator.hasNext()) {
             itemIterator.next();
-            Object key = itemIterator.key();
-            if (key == null) {
-                throw new IllegalArgumentException("Unable to write map key as it cannot be null: " + key);
-            }
-            writeObject(itemIterator.keyType(), key, null);
+            writeObject(itemIterator.keyType(), itemIterator.key(), null);
             writeObject(itemIterator.valueType(), itemIterator.value(), itemIterator);
         }
     }
@@ -167,9 +158,9 @@ abstract class AbstractBinWriter {
     }
 
     void writeGrid(SerIterator itemIterator) throws IOException {
-        int rows = itemIterator.dimensionSize(0);
-        int columns = itemIterator.dimensionSize(1);
-        int totalSize = rows * columns;
+        var rows = itemIterator.dimensionSize(0);
+        var columns = itemIterator.dimensionSize(1);
+        var totalSize = rows * columns;
         if (itemIterator.size() < (totalSize / 4)) {
             // sparse
             output.writeArrayHeader(itemIterator.size() + 2);
@@ -187,8 +178,8 @@ abstract class AbstractBinWriter {
             output.writeArrayHeader(totalSize + 2);
             output.writeInt(rows);
             output.writeInt(columns);
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < columns; column++) {
+            for (var row = 0; row < rows; row++) {
+                for (var column = 0; column < columns; column++) {
                     writeObject(itemIterator.valueType(), itemIterator.value(row, column), itemIterator);
                 }
             }
@@ -209,10 +200,10 @@ abstract class AbstractBinWriter {
             output.writeNil();
         } else if (settings.getConverter().isConvertible(obj.getClass())) {
             writeSimple(declaredType, obj);
-        } else if (obj instanceof Bean) {
-            writeBean((Bean) obj, declaredType, RootType.NOT_ROOT);
+        } else if (obj instanceof Bean bean) {
+            writeBean(bean, declaredType, RootType.NOT_ROOT);
         } else if (parentIterator != null) {
-            SerIterator childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
+            var childIterator = settings.getIteratorFactory().createChild(obj, parentIterator);
             if (childIterator != null) {
                 writeElements(childIterator);
             } else {
@@ -226,37 +217,51 @@ abstract class AbstractBinWriter {
     //-----------------------------------------------------------------------
     void writeSimple(Class<?> declaredType, Object value) throws IOException {
         // simple types have no need to write a type object
-        Class<?> realType = value.getClass();
-        if (realType == Integer.class) {
-            output.writeInt(((Integer) value).intValue());
-            return;
-        } else if (realType == Double.class) {
-            output.writeDouble(((Double) value).doubleValue());
-            return;
-        } else if (realType == Float.class) {
-            output.writeFloat(((Float) value).floatValue());
-            return;
-        } else if (realType == Boolean.class) {
-            output.writeBoolean(((Boolean) value).booleanValue());
-            return;
+        switch (value) {
+            case Integer val -> {
+                output.writeInt(val);
+                return;
+            }
+            case Double val -> {
+                output.writeDouble(val);
+                return;
+            }
+            case Float val -> {
+                output.writeFloat(val);
+                return;
+            }
+            case Boolean val -> {
+                output.writeBoolean(val);
+                return;
+            }
+            default -> {
+            }
         }
 
         // handle no declared type and subclasses
         Class<?> effectiveType = getAndSerializeEffectiveTypeIfRequired(value, declaredType);
 
         // long/short/byte only processed now to ensure that a distinction can be made between Integer and Long
-        if (realType == Long.class) {
-            output.writeLong(((Long) value).longValue());
-            return;
-        } else if (realType == Short.class) {
-            output.writeInt(((Short) value).shortValue());
-            return;
-        } else if (realType == Byte.class) {
-            output.writeInt(((Byte) value).byteValue());
-            return;
-        } else if (realType == byte[].class) {
-            output.writeBytes((byte[]) value);
-            return;
+        // (the method call above writes additional type information into the output stream)
+        switch (value) {
+            case Long val -> {
+                output.writeLong(val);
+                return;
+            }
+            case Short val -> {
+                output.writeInt(val);
+                return;
+            }
+            case Byte val -> {
+                output.writeInt(val);
+                return;
+            }
+            case byte[] val -> {
+                output.writeBytes(val);
+                return;
+            }
+            default -> {
+            }
         }
 
         // write as a string
@@ -271,30 +276,32 @@ abstract class AbstractBinWriter {
     // object and if necessary to serialize the class information
     // needs to handle no declared type and subclass instances
     Class<?> getAndSerializeEffectiveTypeIfRequired(Object value, Class<?> declaredType) throws IOException {
-        Class<?> realType = value.getClass();
-        Class<?> effectiveType = declaredType;
+        var realType = value.getClass();
         if (declaredType == Object.class) {
             if (realType != String.class) {
-                effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
+                var effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
                 output.writeMapHeader(1);
-                String type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+                var type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
                 output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
+                return effectiveType;
             } else {
-                effectiveType = realType;
+                return realType;
             }
-        } else if (settings.getConverter().isConvertible(declaredType) == false) {
-            effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
-            output.writeMapHeader(1);
-            String type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
-            output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
         }
-        return effectiveType;
+        if (!settings.getConverter().isConvertible(declaredType)) {
+            var effectiveType = settings.getConverter().findTypedConverter(realType).getEffectiveType();
+            output.writeMapHeader(1);
+            var type = SerTypeMapper.encodeType(effectiveType, settings, basePackage, knownTypes);
+            output.writeExtensionString(MsgPack.JODA_TYPE_DATA, type);
+            return effectiveType;
+        }
+        return declaredType;
     }
 
     // writes a value as a string
     // called after discerning that the value is not a simple type
     void writeObjectAsString(Object value, Class<?> effectiveType) throws IOException {
-        String converted = settings.getConverter().convertToString(effectiveType, value);
+        var converted = settings.getConverter().convertToString(effectiveType, value);
         if (converted == null) {
             throw new IllegalArgumentException("Unable to write because converter returned a null string: " + value);
         }

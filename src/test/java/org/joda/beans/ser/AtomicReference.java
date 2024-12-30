@@ -18,6 +18,6 @@ package org.joda.beans.ser;
 /**
  * Mock class with a silly name.
  */
-public class AtomicReference {
+class AtomicReference {
 
 }

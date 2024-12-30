@@ -15,19 +15,22 @@
  */
 package org.joda.beans;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-public class TestMetaBeans {
+/**
+ * Test {@link MetaBeans}.
+ */
+class TestMetaBeans {
 
   @Test
-  public void test_metaBeanProviderAnnotation() {
+  void test_metaBeanProviderAnnotation() {
     MetaBean metaBean = MetaBeans.lookup(AnnotatedBean.class);
-    assertTrue(metaBean instanceof AnnotatedMetaBean);
+    assertThat(metaBean).isInstanceOf(AnnotatedMetaBean.class);
   }
 }
 

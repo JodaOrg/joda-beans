@@ -16,11 +16,10 @@
 package org.joda.beans;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * A meta-bean, defining those aspects of a bean which are not specific
@@ -141,7 +140,7 @@ public interface MetaBean {
      * This method returns the property with the specified name.
      * <p>
      * The base interface throws an exception if the name is not recognised.
-     * By contrast, the {@code DynamicMetaBean} subinterface creates the property on demand.
+     * By contrast, the {@code DynamicMetaBean} interface creates the property on demand.
      * 
      * @param <R>  the property type, optional, enabling auto-casting
      * @param propertyName  the property name to retrieve, not null
@@ -150,7 +149,7 @@ public interface MetaBean {
      */
     @SuppressWarnings("unchecked")
     public default <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyMap().get(propertyName);
+        var mp = metaPropertyMap().get(propertyName);
         if (mp == null) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
@@ -195,7 +194,7 @@ public interface MetaBean {
      * @return the annotations, unmodifiable, not null
      */
     public default List<Annotation> annotations() {
-        return Collections.unmodifiableList(Arrays.asList(beanType().getAnnotations()));
+        return List.of(beanType().getAnnotations());
     }
 
     /**
@@ -212,13 +211,36 @@ public interface MetaBean {
      */
     @SuppressWarnings("unchecked")
     public default <A extends Annotation> A annotation(Class<A> annotationClass) {
-        List<Annotation> annotations = annotations();
-        for (Annotation annotation : annotations) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
             if (annotationClass.isInstance(annotation)) {
                 return (A) annotation;
             }
         }
         throw new NoSuchElementException("Unknown annotation: " + annotationClass.getName());
+    }
+
+    /**
+     * Finds an optional annotation from the property.
+     * <p>
+     * The annotations are queried from the property.
+     * This is typically accomplished by querying the annotations of the underlying
+     * instance variable however any strategy is permitted.
+     * 
+     * @param <A>  the annotation type
+     * @param annotationClass  the annotation class to find, not null
+     * @return the annotation, empty if not found
+     * @since 2.11.0
+     */
+    @SuppressWarnings("unchecked")
+    public default <A extends Annotation> Optional<A> annotationOpt(Class<A> annotationClass) {
+        var annotations = annotations();
+        for (var annotation : annotations) {
+            if (annotationClass.isInstance(annotation)) {
+                return Optional.of((A) annotation);
+            }
+        }
+        return Optional.empty();
     }
 
 }

@@ -326,15 +326,15 @@ public final class PropertyDefBean implements Bean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             PropertyDefBean other = (PropertyDefBean) obj;
-            return JodaBeanUtils.equal(getStringAsCharSequence(), other.getStringAsCharSequence()) &&
-                    JodaBeanUtils.equal(getIntAsInteger(), other.getIntAsInteger()) &&
-                    JodaBeanUtils.equal(getListCopyOfCollection(), other.getListCopyOfCollection()) &&
-                    JodaBeanUtils.equal(getArrayListSmart(), other.getArrayListSmart()) &&
-                    JodaBeanUtils.equal(getArrayListExposed(), other.getArrayListExposed()) &&
-                    JodaBeanUtils.equal(getArrayListAsCollection(), other.getArrayListAsCollection()) &&
-                    JodaBeanUtils.equal(getArrayList(), other.getArrayList()) &&
-                    JodaBeanUtils.equal(getListAsIterable(), other.getListAsIterable()) &&
-                    JodaBeanUtils.equal(getListAsIterableNoField(), other.getListAsIterableNoField());
+            return JodaBeanUtils.equal(this.getStringAsCharSequence(), other.getStringAsCharSequence()) &&
+                    JodaBeanUtils.equal(this.getIntAsInteger(), other.getIntAsInteger()) &&
+                    JodaBeanUtils.equal(this.getListCopyOfCollection(), other.getListCopyOfCollection()) &&
+                    JodaBeanUtils.equal(this.getArrayListSmart(), other.getArrayListSmart()) &&
+                    JodaBeanUtils.equal(this.getArrayListExposed(), other.getArrayListExposed()) &&
+                    JodaBeanUtils.equal(this.getArrayListAsCollection(), other.getArrayListAsCollection()) &&
+                    JodaBeanUtils.equal(this.getArrayList(), other.getArrayList()) &&
+                    JodaBeanUtils.equal(this.getListAsIterable(), other.getListAsIterable()) &&
+                    JodaBeanUtils.equal(this.getListAsIterableNoField(), other.getListAsIterableNoField());
         }
         return false;
     }
@@ -458,23 +458,23 @@ public final class PropertyDefBean implements Bean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -626353926:  // stringAsCharSequence
-                    return stringAsCharSequence;
+                    return this.stringAsCharSequence;
                 case -86092419:  // intAsInteger
-                    return intAsInteger;
+                    return this.intAsInteger;
                 case 1005120680:  // listCopyOfCollection
-                    return listCopyOfCollection;
+                    return this.listCopyOfCollection;
                 case 1202448754:  // arrayListSmart
-                    return arrayListSmart;
+                    return this.arrayListSmart;
                 case 995586697:  // arrayListExposed
-                    return arrayListExposed;
+                    return this.arrayListExposed;
                 case 1604480167:  // arrayListAsCollection
-                    return arrayListAsCollection;
+                    return this.arrayListAsCollection;
                 case -1425161577:  // arrayList
-                    return arrayList;
+                    return this.arrayList;
                 case -176766462:  // listAsIterable
-                    return listAsIterable;
+                    return this.listAsIterable;
                 case 1831404375:  // listAsIterableNoField
-                    return listAsIterableNoField;
+                    return this.listAsIterableNoField;
             }
             return super.metaPropertyGet(propertyName);
         }

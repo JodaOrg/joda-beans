@@ -15,18 +15,18 @@
  */
 package org.joda.beans;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.beans.sample.SimpleName;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test arrays using SimpleName.
  */
-public class TestArray {
+class TestArray {
 
     @Test
-    public void test_bean() {
+    void test_bean() {
         SimpleName person1 = new SimpleName();
         person1.setForename("Etienne");
         person1.setMiddleNames(new String[] {"Yakusa", "Mohito"});
@@ -36,9 +36,10 @@ public class TestArray {
         person2.setMiddleNames(new String[] {"Yakusa", "Mohito"});
         person2.setSurname("Colebourne");
         
-        assertEquals(person1, person2);
-        assertEquals(person1.hashCode(), person2.hashCode());
-        assertEquals(person1.toString(), "SimpleName{forename=Etienne, middleNames=[Yakusa, Mohito], surname=Colebourne}");
+        assertThat(person1).isEqualTo(person2);
+        assertThat(person1.hashCode()).isEqualTo(person2.hashCode());
+        assertThat(person1).hasToString(
+                "SimpleName{forename=Etienne, middleNames=[Yakusa, Mohito], surname=Colebourne}");
     }
 
 }

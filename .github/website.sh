@@ -19,6 +19,13 @@ git status
 git commit --message "Update joda-beans from CI: $GITHUB_ACTION"
 
 echo "## push..."
-git push origin master
+git push origin main
+
+echo "## tidy..."
+cd ..
+git clone https://${GITHUB_TOKEN}@github.com/JodaOrg/joda-beans.git
+cd joda-beans
+git push --delete origin website || true
+git push --delete origin website2x || true
 
 echo "## done"

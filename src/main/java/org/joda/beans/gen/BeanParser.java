@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -76,6 +75,8 @@ class BeanParser {
     private static final Pattern STYLE_PATTERN = Pattern.compile(".*[ ,(]style[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The metaScope pattern. */
     private static final Pattern META_SCOPE_PATTERN = Pattern.compile(".*[ ,(]metaScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
+    /** The metaImplements pattern. */
+    private static final Pattern META_IMPLEMENTS_PATTERN = Pattern.compile(".*[ ,(]metaImplements[ ]*[=][ ]*[\"]([a-zA-Z0-9_.<>]*)[\"].*");
     /** The builderScope pattern. */
     private static final Pattern BUILDER_SCOPE_PATTERN = Pattern.compile(".*[ ,(]builderScope[ ]*[=][ ]*[\"]([a-zA-Z]*)[\"].*");
     /** The builderStyle pattern. */
@@ -141,7 +142,7 @@ class BeanParser {
 
     //-----------------------------------------------------------------------
     BeanGen parse() {
-        BeanData data = new BeanData();
+        var data = new BeanData();
         beanDefIndex = parseBeanDefinition();
         data.getCurrentImports().addAll(parseImports(beanDefIndex));
         data.setImportInsertLocation(parseImportLocation(beanDefIndex));
@@ -150,32 +151,33 @@ class BeanParser {
         }
         data.setBeanStyle(parseBeanStyle(beanDefIndex));
         data.resolveBeanStyle(config.getDefaultStyle());
-        if (data.isBeanStyleValid() == false) {
+        if (!data.isBeanStyleValid()) {
             throw new BeanCodeGenException("Invalid bean style: " + data.getBeanStyle(), file, beanDefIndex);
         }
-        data.setConstructorScope(parseConstrucorScope(beanDefIndex));
-        if (data.isConstructorScopeValid() == false) {
+        data.setConstructorScope(parseConstructorScope(beanDefIndex));
+        if (!data.isConstructorScopeValid()) {
             throw new BeanCodeGenException("Invalid constructor scope: " + data.getConstructorScope(), file, beanDefIndex);
         }
         data.setBeanMetaScope(parseBeanMetaScope(beanDefIndex));
-        if (data.isBeanMetaScopeValid() == false) {
+        if (!data.isBeanMetaScopeValid()) {
             throw new BeanCodeGenException("Invalid meta-bean scope: " + data.getBeanMetaScope(), file, beanDefIndex);
         }
+        data.setBeanMetaImplements(parseBeanMetaImplements(beanDefIndex));
         data.setBeanBuilderScope(parseBeanBuilderScope(beanDefIndex));
-        if (data.isBeanBuilderScopeValid() == false) {
+        if (!data.isBeanBuilderScopeValid()) {
             throw new BeanCodeGenException("Invalid bean builder scope: " + data.getBeanBuilderScope(), file, beanDefIndex);
         }
         data.setBeanBuilderName(parseBeanBuilderName(beanDefIndex));
         data.setFactoryName(parseFactoryName(beanDefIndex));
         data.setCacheHashCode(parseCacheHashCode(beanDefIndex));
         data.setCloneStyle(parseCloneStyle(beanDefIndex));
-        if (data.isCloneStyleValid() == false) {
+        if (!data.isCloneStyleValid()) {
             throw new BeanCodeGenException("Invalid clone style: " + data.getCloneStyle(), file, beanDefIndex);
         }
         data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
         data.setConstructable(parseConstructable(beanDefIndex));
         data.setTypeParts(parseBeanType(beanDefIndex));
-        String classHeaderAfterType = classHeaderAfterType(beanDefIndex, data.getType());
+        var classHeaderAfterType = classHeaderAfterType(beanDefIndex, data.getType());
         data.setSuperTypeParts(parseBeanSuperType(classHeaderAfterType));
         data.setSerializable(parseSerializable(classHeaderAfterType));
         if (parseBeanHierarchy(beanDefIndex).equals("immutable")) {
@@ -240,8 +242,8 @@ class BeanParser {
         data.setManualEqualsHashCode(parseManualEqualsHashCode(beanDefIndex));
         data.setManualToStringCode(parseManualToStringCode(beanDefIndex));
         if (data.isImmutable()) {
-            for (PropertyGen prop : properties) {
-                if (prop.getData().isDerived() == false && prop.getData().isFinal() == false) {
+            for (var prop : properties) {
+                if (!prop.getData().isDerived() && !prop.getData().isFinal()) {
                     throw new BeanCodeGenException("ImmutableBean must have final properties: " +
                             data.getTypeRaw() + "." + prop.getData().getFieldName(),
                             file, prop.getData().getLineIndex());
@@ -258,18 +260,18 @@ class BeanParser {
             }
         }
         if (data.isCacheHashCode()) {
-            data.setCacheHashCode(data.isImmutable() && data.isManualEqualsHashCode() == false);
+            data.setCacheHashCode(data.isImmutable() && !data.isManualEqualsHashCode());
         }
         return new BeanGen(file, content, config, data, properties, autoStartIndex, autoEndIndex);
     }
 
     private String classHeaderAfterType(int defLine, String fullType) {
-        StringBuilder buf = new StringBuilder(128);
-        boolean matchedType = false;
-        for (int index = defLine; index < content.size(); index++) {
-            String line = content.get(index);
-            if (matchedType == false) {
-                if (line.contains(fullType) == false) {
+        var buf = new StringBuilder(128);
+        var matchedType = false;
+        for (var index = defLine; index < content.size(); index++) {
+            var line = content.get(index);
+            if (!matchedType) {
+                if (!line.contains(fullType)) {
                     continue;
                 }
                 matchedType = true;
@@ -285,8 +287,8 @@ class BeanParser {
 
     //-----------------------------------------------------------------------
     private int parseBeanDefinition() {
-        for (int index = 0; index < content.size(); index++) {
-            String line = content.get(index).trim();
+        for (var index = 0; index < content.size(); index++) {
+            var line = content.get(index).trim();
             if (line.startsWith("@BeanDefinition")) {
                 return index;
             }
@@ -295,13 +297,13 @@ class BeanParser {
     }
 
     private Set<String> parseImports(int defLine) {
-        int end = defLine < 0 ? content.size() : defLine;
+        var end = defLine < 0 ? content.size() : defLine;
         Set<String> imports = new HashSet<>();
-        for (int index = 0; index < end; index++) {
+        for (var index = 0; index < end; index++) {
             if (content.get(index).startsWith("import ")) {
-                String imp = content.get(index).substring(7).trim();
+                var imp = content.get(index).substring(7).trim();
                 imp = imp.substring(0, imp.indexOf(';'));
-                if (imp.endsWith(".*") == false) {
+                if (!imp.endsWith(".*")) {
                     imports.add(imp);
                 }
             }
@@ -310,9 +312,9 @@ class BeanParser {
     }
 
     private int parseImportLocation(int defLine) {
-        int end = defLine < 0 ? content.size() : defLine;
-        int location = 0;
-        for (int index = 0; index < end; index++) {
+        var end = defLine < 0 ? content.size() : defLine;
+        var location = 0;
+        for (var index = 0; index < end; index++) {
             if (content.get(index).startsWith("import ") || content.get(index).startsWith("package ")) {
                 location = index;
             }
@@ -321,17 +323,17 @@ class BeanParser {
     }
 
     private String parseBeanStyle(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = STYLE_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = STYLE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
         return "smart";
     }
 
-    private String parseConstrucorScope(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = CONSTRUCTOR_SCOPE_PATTERN.matcher(line);
+    private String parseConstructorScope(int defLine) {
+        var line = content.get(defLine).trim();
+        var matcher = CONSTRUCTOR_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -339,17 +341,26 @@ class BeanParser {
     }
 
     private String parseBeanMetaScope(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = META_SCOPE_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = META_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
         return "smart";
     }
 
+    private String parseBeanMetaImplements(int defLine) {
+        var line = content.get(defLine).trim();
+        var matcher = META_IMPLEMENTS_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
+    }
+
     private String parseBeanBuilderScope(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = BUILDER_SCOPE_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = BUILDER_SCOPE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -357,8 +368,8 @@ class BeanParser {
     }
 
     private String parseBeanBuilderName(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = BUILDER_NAME_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = BUILDER_NAME_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -366,8 +377,8 @@ class BeanParser {
     }
 
     private String parseFactoryName(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = FACTORY_NAME_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = FACTORY_NAME_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -375,8 +386,8 @@ class BeanParser {
     }
 
     private String parseBeanHierarchy(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = HIERARCHY_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = HIERARCHY_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -384,17 +395,17 @@ class BeanParser {
     }
 
     private boolean parseCacheHashCode(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = CACHE_HASH_CODE_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = CACHE_HASH_CODE_PATTERN.matcher(line);
         if (matcher.matches()) {
-            return Boolean.valueOf(matcher.group(1));
+            return Boolean.parseBoolean(matcher.group(1));
         }
         return false;
     }
 
     private String parseCloneStyle(int defLine) {
-        String line = content.get(defLine).trim();
-        Matcher matcher = CLONE_STYLE_PATTERN.matcher(line);
+        var line = content.get(defLine).trim();
+        var matcher = CLONE_STYLE_PATTERN.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
@@ -402,7 +413,7 @@ class BeanParser {
     }
 
     private boolean parseConstructable(int defLine) {
-        for (int index = defLine; index < content.size(); index++) {
+        for (var index = defLine; index < content.size(); index++) {
             if (content.get(index).contains(" abstract class ")) {
                 return false;
             }
@@ -411,14 +422,14 @@ class BeanParser {
     }
 
     private String[] parseBeanType(int defLine) {
-        Matcher matcher = BEAN_TYPE.matcher("");
-        for (int index = defLine; index < content.size(); index++) {
-            String line = content.get(index);
+        var matcher = BEAN_TYPE.matcher("");
+        for (var index = defLine; index < content.size(); index++) {
+            var line = content.get(index);
             matcher.reset(line);
             if (matcher.matches()) {
-                String startStr = line.substring(0, matcher.start(1));
-                String fnl = startStr.contains(" final ") || startStr.startsWith("final ") ? "final" : null;
-                String scope = startStr.contains("public ") ? "public" : "package";
+                var startStr = line.substring(0, matcher.start(1));
+                var fnl = startStr.contains(" final ") || startStr.startsWith("final ") ? "final" : null;
+                var scope = startStr.contains("public ") ? "public" : "package";
                 scope = startStr.contains("protected ") ? "protected" : scope;
                 scope = startStr.contains("private ") ? "private" : scope;
                 return new String[] {fnl, scope, matcher.group(1), matcher.group(2), matcher.group(3),
@@ -434,12 +445,12 @@ class BeanParser {
     private String[] parseBeanSuperType(String classHeaderAfterType) {
         // this uses classHeaderAfterType as extends has two meanings in class headers
         // search for implements
-        Matcher matcherImplements = SUPER_IMPL_TYPE.matcher(classHeaderAfterType);
+        var matcherImplements = SUPER_IMPL_TYPE.matcher(classHeaderAfterType);
         if (matcherImplements.matches()) {
             return new String[] {matcherImplements.group(1)};
         }
         // search for extends
-        Matcher matcherExtends = SUPER_TYPE.matcher(classHeaderAfterType);
+        var matcherExtends = SUPER_TYPE.matcher(classHeaderAfterType);
         if (matcherExtends.matches()) {
             return new String[] {matcherExtends.group(1), matcherExtends.group(2), matcherExtends.group(3),
                     matcherExtends.group(4), matcherExtends.group(5)};
@@ -452,7 +463,7 @@ class BeanParser {
     }
 
     private boolean parseManualSerializationId(int defLine) {
-        for (int index = defLine; index < autoStartIndex; index++) {
+        for (var index = defLine; index < autoStartIndex; index++) {
             if (content.get(index).trim().startsWith("private static final long serialVersionUID")) {
                 return true;
             }
@@ -461,15 +472,15 @@ class BeanParser {
     }
 
     private int parseImmutableConstructor(int defLine) {
-        int found = CONSTRUCTOR_NONE;
-        for (int index = defLine; index < content.size(); index++) {
+        var found = CONSTRUCTOR_NONE;
+        for (var index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutableConstructor")) {
                 if (found > 0) {
                     throw new BeanCodeGenException("Only one @ImmutableConstructor may be specified", file, index);
                 }
                 found = CONSTRUCTOR_BY_ARGS;
                 if (index + 1 < content.size()) {
-                    String nextLine = content.get(index + 1);
+                    var nextLine = content.get(index + 1);
                     if (nextLine.contains("Builder ") || nextLine.contains("Builder<")) {
                         found = CONSTRUCTOR_BY_BUILDER;
                     }
@@ -480,16 +491,16 @@ class BeanParser {
     }
 
     private String parseImmutableValidator(int defLine) {
-        boolean found = false;
-        for (int index = defLine; index < content.size(); index++) {
+        var found = false;
+        for (var index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutableValidator")) {
                 if (found) {
                     throw new BeanCodeGenException("Only one @ImmutableValidator may be specified", file, index);
                 }
                 found = true;
                 if (index + 1 < content.size()) {
-                    String nextLine = content.get(index + 1);
-                    Matcher matcher = VALIDATOR_PATTERN.matcher(nextLine);
+                    var nextLine = content.get(index + 1);
+                    var matcher = VALIDATOR_PATTERN.matcher(nextLine);
                     if (matcher.matches()) {
                         return matcher.group(1);
                     }
@@ -502,16 +513,16 @@ class BeanParser {
     }
 
     private String parseImmutableDefaults(int defLine) {
-        boolean found = false;
-        for (int index = defLine; index < content.size(); index++) {
+        var found = false;
+        for (var index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutableDefaults")) {
                 if (found) {
                     throw new BeanCodeGenException("Only one @ImmutableDefaults may be specified", file, index);
                 }
                 found = true;
                 if (index + 1 < content.size()) {
-                    String nextLine = content.get(index + 1);
-                    Matcher matcher = DEFAULTS_PATTERN.matcher(nextLine);
+                    var nextLine = content.get(index + 1);
+                    var matcher = DEFAULTS_PATTERN.matcher(nextLine);
                     if (matcher.matches()) {
                         return matcher.group(1);
                     }
@@ -525,16 +536,16 @@ class BeanParser {
     }
 
     private String parseImmutablePreBuild(int defLine) {
-        boolean found = false;
-        for (int index = defLine; index < content.size(); index++) {
+        var found = false;
+        for (var index = defLine; index < content.size(); index++) {
             if (content.get(index).trim().equals("@ImmutablePreBuild")) {
                 if (found) {
                     throw new BeanCodeGenException("Only one @ImmutablePreBuild may be specified", file, index);
                 }
                 found = true;
                 if (index + 1 < content.size()) {
-                    String nextLine = content.get(index + 1);
-                    Matcher matcher = DEFAULTS_PATTERN.matcher(nextLine);
+                    var nextLine = content.get(index + 1);
+                    var matcher = DEFAULTS_PATTERN.matcher(nextLine);
                     if (matcher.matches()) {
                         return matcher.group(1);
                     }
@@ -549,15 +560,15 @@ class BeanParser {
 
     private List<PropertyGen> parseProperties(BeanData data) {
         List<PropertyGen> props = new ArrayList<>();
-        for (int index = 0; index < content.size(); index++) {
-            String line = content.get(index).trim();
-            PropertyParser parser = new PropertyParser(this);
+        for (var index = 0; index < content.size(); index++) {
+            var line = content.get(index).trim();
+            var parser = new PropertyParser(this);
             if (line.startsWith("@PropertyDefinition")) {
-                PropertyGen prop = parser.parse(data, content, index);
+                var prop = parser.parse(data, content, index);
                 props.add(prop);
                 data.getProperties().add(prop.getData());
             } else if (line.startsWith("@DerivedProperty")) {
-                PropertyGen prop = parser.parseDerived(data, content, index);
+                var prop = parser.parseDerived(data, content, index);
                 props.add(prop);
                 data.getProperties().add(prop.getData());
             }
@@ -566,20 +577,20 @@ class BeanParser {
     }
 
     private int parseStartAutogen() {
-        for (int index = 0; index < content.size(); index++) {
-            String line = content.get(index).trim();
+        for (var index = 0; index < content.size(); index++) {
+            var line = content.get(index).trim();
             if (line.contains(" AUTOGENERATED START ")) {
                 content.set(index, AUTOGENERATED_START);
                 return index;
             }
         }
-        for (int index = content.size() - 1; index >= 0; index--) {
-            String line = content.get(index).trim();
+        for (var index = content.size() - 1; index >= 0; index--) {
+            var line = content.get(index).trim();
             if (line.equals("}")) {
                 content.add(index, AUTOGENERATED_START);
                 return index;
             }
-            if (line.length() > 0) {
+            if (!line.isEmpty()) {
                 break;
             }
         }
@@ -587,8 +598,8 @@ class BeanParser {
     }
 
     private int parseEndAutogen() {
-        for (int index = autoStartIndex; index < content.size(); index++) {
-            String line = content.get(index).trim();
+        for (var index = autoStartIndex; index < content.size(); index++) {
+            var line = content.get(index).trim();
             if (line.contains(" AUTOGENERATED END ")) {
                 content.set(index, AUTOGENERATED_END);
                 return index;
@@ -599,14 +610,8 @@ class BeanParser {
     }
 
     private boolean parseManualClone(int defLine) {
-        for (int index = defLine; index < autoStartIndex; index++) {
-            String line = content.get(index).trim();
-            if (line.startsWith("public ") && line.endsWith(" clone() {")) {
-                return true;
-            }
-        }
-        for (int index = autoEndIndex; index < content.size(); index++) {
-            String line = content.get(index).trim();
+        for (var index = defLine; index < autoStartIndex; index++) {
+            var line = content.get(index).trim();
             if (line.startsWith("public ") && line.endsWith(" clone() {")) {
                 return true;
             }
@@ -615,14 +620,8 @@ class BeanParser {
     }
 
     private boolean parseManualEqualsHashCode(int defLine) {
-        for (int index = defLine; index < autoStartIndex; index++) {
-            String line = content.get(index).trim();
-            if (line.equals("public int hashCode() {") || (line.startsWith("public boolean equals(") && line.endsWith(") {"))) {
-                return true;
-            }
-        }
-        for (int index = autoEndIndex; index < content.size(); index++) {
-            String line = content.get(index).trim();
+        for (var index = defLine; index < autoStartIndex; index++) {
+            var line = content.get(index).trim();
             if (line.equals("public int hashCode() {") || (line.startsWith("public boolean equals(") && line.endsWith(") {"))) {
                 return true;
             }
@@ -631,14 +630,8 @@ class BeanParser {
     }
 
     private boolean parseManualToStringCode(int defLine) {
-        for (int index = defLine; index < autoStartIndex; index++) {
-            String line = content.get(index).trim();
-            if (line.equals("public String toString() {")) {
-                return true;
-            }
-        }
-        for (int index = autoEndIndex; index < content.size(); index++) {
-            String line = content.get(index).trim();
+        for (var index = defLine; index < autoStartIndex; index++) {
+            var line = content.get(index).trim();
             if (line.equals("public String toString() {")) {
                 return true;
             }

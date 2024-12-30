@@ -15,10 +15,12 @@
  */
 package org.joda.beans.ser;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.joda.beans.Bean;
 import org.joda.beans.JodaBeanUtils;
@@ -29,67 +31,28 @@ import org.joda.beans.MetaProperty;
  */
 public class SerOptional {
 
-    /**
-     * Map of known optional types.
-     */
-    private static final Map<Class<?>, Object[]> OPTIONALS;
+    /** Guava Optional type. */
+    private static final Class<?> GUAVA_OPTIONAL_CLASS;
+    /** Extractor for Guava Optional. */
+    private static final Function<Object, Object> GUAVA_EXTRACT;
+    /** Wrapper for Guava Optional. */
+    private static final BiFunction<Class<?>, Object, Object> GUAVA_WRAPPER;
     static {
-        Map<Class<?>, Object[]> map = new HashMap<>();
+        Class<?> optionalType;
+        Function<Object, Object> extract;
+        BiFunction<Class<?>, Object, Object> wrapper;
         try {
-            Class<?> cls = Class.forName("com.google.common.base.Optional");
-            Method create = cls.getMethod("of", Object.class);
-            Object nullConstant = cls.getMethod("absent").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("get");
-            map.put(cls, new Object[] {create, nullConstant, isPresent, get});
-        } catch (Exception ex) {
-            // ignore
+            optionalType = GuavaSerOptional.OPTIONAL_TYPE;
+            extract = GuavaSerOptional::extractValue;
+            wrapper = GuavaSerOptional::wrapValue;
+        } catch (RuntimeException | LinkageError ex) {
+            optionalType = Optional.class;
+            extract = Function.identity();
+            wrapper = (cls, value) -> value;
         }
-        try {
-            Class<?> cls = Class.forName("java.util.Optional");
-            Method create = cls.getMethod("of", Object.class);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("get");
-            map.put(cls, new Object[] {create, nullConstant, isPresent, get});
-        } catch (Exception ex) {
-            // ignore
-        }
-        try {
-            Class<?> cls = Class.forName("java.util.OptionalDouble");
-            Method create = cls.getMethod("of", Double.TYPE);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("getAsDouble");
-            map.put(cls, new Object[] {create, nullConstant, isPresent, get});
-        } catch (Exception ex) {
-            // ignore
-        }
-        try {
-            Class<?> cls = Class.forName("java.util.OptionalInt");
-            Method create = cls.getMethod("of", Integer.TYPE);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("getAsInt");
-            map.put(cls, new Object[] {create, nullConstant, isPresent, get});
-        } catch (Exception ex) {
-            // ignore
-        }
-        try {
-            Class<?> cls = Class.forName("java.util.OptionalLong");
-            Method create = cls.getMethod("of", Long.TYPE);
-            Object nullConstant = cls.getMethod("empty").invoke(null);
-            Method isPresent = cls.getMethod("isPresent");
-            Method get = cls.getMethod("getAsLong");
-            map.put(cls, new Object[] {create, nullConstant, isPresent, get});
-        } catch (Exception ex) {
-            // ignore
-        }
-        if (map.isEmpty()) {
-            OPTIONALS = Collections.emptyMap();
-        } else {
-            OPTIONALS = map;
-        }
+        GUAVA_OPTIONAL_CLASS = optionalType;
+        GUAVA_EXTRACT = extract;
+        GUAVA_WRAPPER = wrapper;
     }
 
     /**
@@ -100,44 +63,44 @@ public class SerOptional {
      * @return the value of the property, with any optional wrapper removed
      */
     public static Object extractValue(MetaProperty<?> metaProp, Bean bean) {
-        Object value = metaProp.get(bean);
-        if (value != null) {
-            Object[] helpers = OPTIONALS.get(metaProp.propertyType());
-            if (helpers != null) {
-                try {
-                    boolean present = (Boolean) ((Method) helpers[2]).invoke(value);
-                    if (present) {
-                        value = ((Method) helpers[3]).invoke(value);
-                    } else {
-                        value = null;
-                    }
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        return value;
+        var value = metaProp.get(bean);
+        return switch (value) {
+            case null -> null;
+            case Optional<?> opt -> opt.orElse(null);
+            case OptionalLong opt -> opt.isPresent() ? opt.getAsLong() : null;
+            case OptionalInt opt -> opt.isPresent() ? opt.getAsInt() : null;
+            case OptionalDouble opt -> opt.isPresent() ? opt.getAsDouble() : null;
+            default -> GUAVA_EXTRACT.apply(value);
+        };
     }
 
     /**
-     * Extracts the value of the property from a bean, unwrapping any optional.
+     * Extracts the type the optional is wrapping.
      * 
      * @param metaProp  the property to query, not null
      * @param beanType  the type of the bean, not null
      * @return the type of the property with any optional wrapper removed
      */
     public static Class<?> extractType(MetaProperty<?> metaProp, Class<?> beanType) {
-        Class<?> type = metaProp.propertyType();
-        Object[] helpers = OPTIONALS.get(type);
-        if (helpers != null) {
-            try {
-                Class<?> genericType = JodaBeanUtils.extractTypeClass(metaProp, beanType, 1, 0);
-                type = (genericType != null ? genericType : type);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+        var propType = metaProp.propertyType();
+        if (propType == Optional.class ||
+                propType == OptionalLong.class ||
+                propType == OptionalInt.class ||
+                propType == OptionalDouble.class ||
+                propType == GUAVA_OPTIONAL_CLASS) {
+            return extractType(metaProp, beanType, propType);
         }
-        return type;
+        return propType;
+    }
+
+    // broken out for hotspot
+    private static Class<?> extractType(MetaProperty<?> metaProp, Class<?> beanType, Class<?> type) {
+        try {
+            var genericType = JodaBeanUtils.extractTypeClass(metaProp, beanType, 1, 0);
+            return (genericType != null ? genericType : type);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -149,19 +112,35 @@ public class SerOptional {
      * @return the value of the property, with any optional wrapper added
      */
     public static Object wrapValue(MetaProperty<?> metaProp, Class<?> beanType, Object value) {
-        Object[] helpers = OPTIONALS.get(metaProp.propertyType());
-        if (helpers != null) {
-            try {
-                if (value != null) {
-                    value = ((Method) helpers[0]).invoke(null, value);
-                } else {
-                    value = helpers[1];
-                }
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+        var propType = metaProp.propertyType();
+        if (propType == Optional.class) {
+            return Optional.ofNullable(value);
+        } else if (propType == OptionalLong.class) {
+            return value == null ? OptionalLong.empty() : OptionalLong.of((Long) value);
+        } else if (propType == OptionalInt.class) {
+            return value == null ? OptionalInt.empty() : OptionalInt.of((Integer) value);
+        } else if (propType == OptionalDouble.class) {
+            return value == null ? OptionalDouble.empty() : OptionalDouble.of((Double) value);
+        } else {
+            return GUAVA_WRAPPER.apply(propType, value);
         }
-        return value;
+    }
+
+    //-------------------------------------------------------------------------
+    // a separate class so that it can fail to load if Guava is missing
+    private static final class GuavaSerOptional {
+        public static final Class<?> OPTIONAL_TYPE = com.google.common.base.Optional.class;
+
+        private static Object extractValue(Object value) {
+            return value instanceof com.google.common.base.Optional<?> opt ? opt.orNull() : value;
+        }
+
+        public static Object wrapValue(Class<?> propType, Object value) {
+            if (propType == OPTIONAL_TYPE) {
+                return com.google.common.base.Optional.fromNullable(value);
+            }
+            return value;
+        }
     }
 
 }

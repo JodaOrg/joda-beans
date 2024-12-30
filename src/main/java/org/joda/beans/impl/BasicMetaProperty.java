@@ -33,8 +33,8 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
      * @param propertyName  the property name, not empty
      */
     protected BasicMetaProperty(String propertyName) {
-        if (propertyName == null || propertyName.length() == 0) {
-            throw new NullPointerException("Property name must not be null or empty");
+        if (propertyName == null || propertyName.isEmpty()) {
+            throw new NullPointerException("propertyName must not be null or empty");
         }
         this.name = propertyName;
     }
@@ -48,11 +48,9 @@ public abstract class BasicMetaProperty<P> implements MetaProperty<P> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MetaProperty<?>) {
-            MetaProperty<?> other = (MetaProperty<?>) obj;
-            return name().equals(other.name()) && declaringType().equals(other.declaringType());
-        }
-        return false;
+        return obj instanceof MetaProperty<?> other &&
+                name().equals(other.name()) &&
+                declaringType().equals(other.declaringType());
     }
 
     @Override

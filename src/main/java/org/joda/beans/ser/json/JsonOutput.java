@@ -26,7 +26,9 @@ final class JsonOutput {
     /** encoding JSON */
     private static final String[] REPLACE = new String[128];
     static {
-        for (int i = 0; i < 32; i++) {
+        // performance is better without adding the characters from 32 to 126
+        // (because they would have to be added as String, not char, which slows down the append method)
+        for (var i = 0; i < 32; i++) {
             REPLACE[i] = String.format("\\u%04x", i);
         }
         REPLACE['\b'] = "\\b";
@@ -43,6 +45,10 @@ final class JsonOutput {
      * The appender to write to.
      */
     private final Appendable output;
+    /**
+     * The number format.
+     */
+    private final JodaBeanJsonNumberFormat numberFormat;
     /**
      * The indent amount.
      */
@@ -62,7 +68,7 @@ final class JsonOutput {
     /**
      * The comma state.
      */
-    private BitSet commaState = new BitSet(64);
+    private final BitSet commaState = new BitSet(64);
 
     /**
      * Creates an instance that outputs in compact format.
@@ -70,18 +76,20 @@ final class JsonOutput {
      * @param output  the output to write to, not null
      */
     JsonOutput(Appendable output) {
-        this(output, "", "");
+        this(output, JodaBeanJsonNumberFormat.STRING, "", "");
     }
 
     /**
      * Creates an instance where the output format can be controlled.
      * 
      * @param output  the output to write to, not null
+     * @param numberFormat  the number format, not null
      * @param indent  the pretty format indent
      * @param newLine  the pretty format new line
      */
-    JsonOutput(Appendable output, String indent, String newLine) {
+    JsonOutput(Appendable output, JodaBeanJsonNumberFormat numberFormat, String indent, String newLine) {
         this.output = output;
+        this.numberFormat = numberFormat;
         this.indent = indent;
         this.newLine = newLine;
     }
@@ -118,11 +126,7 @@ final class JsonOutput {
      * @throws IOException if an error occurs
      */
     void writeInt(int value) throws IOException {
-        if ((value & 0xfffffff8) == 0) {
-            output.append((char) (value + 48));
-        } else {
-            output.append(Integer.toString(value));
-        }
+        output.append(Integer.toString(value));
     }
 
     /**
@@ -144,8 +148,18 @@ final class JsonOutput {
      * @throws IOException if an error occurs
      */
     void writeFloat(float value) throws IOException {
-        if (Float.isNaN(value) || Float.isInfinite(value)) {
-            output.append('"').append(Float.toString(value)).append('"');
+        if (Float.isNaN(value)) {
+            switch (numberFormat) {
+                case LITERAL -> output.append("NaN");
+                case NAN_AS_NULL -> writeNull();
+                default -> output.append("\"NaN\"");
+            }
+        } else if (Float.isInfinite(value)) {
+            var str = value > 0 ? "Infinity" : "-Infinity";
+            switch (numberFormat) {
+                case LITERAL -> output.append(str);
+                default -> output.append('"').append(str).append('"');
+            }
         } else {
             output.append(Float.toString(value));
         }
@@ -160,8 +174,18 @@ final class JsonOutput {
      * @throws IOException if an error occurs
      */
     void writeDouble(double value) throws IOException {
-        if (Double.isNaN(value) || Double.isInfinite(value)) {
-            output.append('"').append(Double.toString(value)).append('"');
+        if (Double.isNaN(value)) {
+            switch (numberFormat) {
+                case LITERAL -> output.append("NaN");
+                case NAN_AS_NULL -> writeNull();
+                default -> output.append("\"NaN\"");
+            }
+        } else if (Double.isInfinite(value)) {
+            var str = value > 0 ? "Infinity" : "-Infinity";
+            switch (numberFormat) {
+                case LITERAL -> output.append(str);
+                default -> output.append('"').append(str).append('"');
+            }
         } else {
             output.append(Double.toString(value));
         }
@@ -176,10 +200,10 @@ final class JsonOutput {
      */
     void writeString(String value) throws IOException {
         output.append('"');
-        for (int i = 0; i < value.length(); i++) {
-            char ch = value.charAt(i);
+        for (var i = 0; i < value.length(); i++) {
+            var ch = value.charAt(i);
             if (ch < 128) {
-                String replace = REPLACE[ch];
+                var replace = REPLACE[ch];
                 if (replace != null) {
                     output.append(replace);
                 } else {
@@ -216,7 +240,7 @@ final class JsonOutput {
     void writeArrayItemStart() throws IOException {
         if (commaState.get(commaDepth)) {
             output.append(',');
-            if (newLine.length() > 0) {
+            if (!newLine.isEmpty()) {
                 output.append(' ');
             }
         } else {
@@ -265,7 +289,7 @@ final class JsonOutput {
         output.append(currentIndent);
         writeString(key);
         output.append(':');
-        if (newLine.length() > 0) {
+        if (!newLine.isEmpty()) {
             output.append(' ');
         }
     }

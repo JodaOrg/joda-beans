@@ -16,17 +16,12 @@
 package org.joda.beans.gen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * A generator of copy code.
  */
 abstract class CopyGen {
-
-    static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;");
-    static final CopyGen CLONE = new PatternCopyGen("$value.clone()");
-    static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()");
 
     /**
      * Generates the copy to immutable lines.
@@ -50,30 +45,38 @@ abstract class CopyGen {
 
     //-----------------------------------------------------------------------
     static class PatternCopyGen extends CopyGen {
+        static final CopyGen ASSIGN = new PatternCopyGen("$field = $value;", true);
+        static final CopyGen CLONE = new PatternCopyGen("$value.clone()", false);
+        static final CopyGen CLONE_CAST = new PatternCopyGen("($type) $value.clone()", false);
+        static final CopyGen CLONE_ARRAY = new PatternCopyGen("($type) JodaBeanUtils.cloneArray($value)", true);
+
         private final String immutablePattern;
         private final String mutablePattern;
-        PatternCopyGen(String pattern) {
-            this.immutablePattern = pattern;
-            this.mutablePattern = pattern;
+        private final boolean nullSafe;
+
+        PatternCopyGen(String pattern, boolean nullSafe) {
+            this(pattern, pattern, nullSafe);
         }
-        PatternCopyGen(String immutablePattern, String mutablePattern) {
+
+        PatternCopyGen(String immutablePattern, String mutablePattern, boolean nullSafe) {
             this.immutablePattern = immutablePattern;
             this.mutablePattern = mutablePattern;
+            this.nullSafe = nullSafe;
         }
         @Override
         List<String> generateCopyToImmutable(String indent, String fromBean, PropertyData prop) {
-            List<String> list = new ArrayList<>();
-            final String[] split = immutablePattern.split("\n");
-            for (String line : split) {
+            var list = new ArrayList<String>();
+            var split = immutablePattern.split("\n");
+            for (var line : split) {
                 if (split.length == 1) {
-                    if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
-                        if (prop.isNotNull()) {
+                    if (!line.startsWith("$field = ") && !line.endsWith(";")) {
+                        if (nullSafe || prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
                             line = "$field = ($value != null ? " + line + " : null);";
                         }
                     }
-                    if (line.startsWith("$field = ") == false) {
+                    if (!line.startsWith("$field = ")) {
                         line = "$field = " + line;
                     }
                 }
@@ -88,12 +91,12 @@ abstract class CopyGen {
         }
         @Override
         List<String> generateCopyToMutable(String indent, PropertyData prop, String beanToCopyFrom) {
-            List<String> list = new ArrayList<>();
-            final String[] split = mutablePattern.split("\n");
-            for (String line : split) {
+            var list = new ArrayList<String>();
+            var split = mutablePattern.split("\n");
+            for (var line : split) {
                 if (split.length == 1) {
-                    if (line.startsWith("$field = ") == false && line.endsWith(";") == false) {
-                        if (prop.isNotNull()) {
+                    if (!line.startsWith("$field = ") && !line.endsWith(";")) {
+                        if (nullSafe || prop.isNotNull()) {
                             line = "$field = " + line + ";";
                         } else {
                             if (line.equals("$value")) {
@@ -103,7 +106,7 @@ abstract class CopyGen {
                             }
                         }
                     }
-                    if (line.startsWith("$field = ") == false) {
+                    if (!line.startsWith("$field = ")) {
                         line = "$field = " + line;
                     }
                 }
@@ -122,11 +125,11 @@ abstract class CopyGen {
         static final CopyGen INSTANCE = new NoCopyGen();
         @Override
         List<String> generateCopyToImmutable(String indent, String fromBean, PropertyData prop) {
-            return Collections.emptyList();
+            return List.of();
         }
         @Override
         List<String> generateCopyToMutable(String indent, PropertyData prop, String beanToCopyFrom) {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 

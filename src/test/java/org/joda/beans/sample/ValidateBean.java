@@ -23,7 +23,6 @@ import org.joda.beans.JodaBeanUtils;
 import org.joda.beans.MetaBean;
 import org.joda.beans.MetaProperty;
 import org.joda.beans.Property;
-import org.joda.beans.TestValidateBean;
 import org.joda.beans.gen.BeanDefinition;
 import org.joda.beans.gen.PropertyDefinition;
 import org.joda.beans.impl.direct.DirectBean;
@@ -53,7 +52,7 @@ public class ValidateBean extends DirectBean {
     /**
      * The static checked value.
      */
-    @PropertyDefinition(validate = "TestValidateBean.checkInTest")
+    @PropertyDefinition(validate = "ValidateBeanCheck.checkInTest")
     private String third;
     /**
      * The locally checked value.
@@ -159,7 +158,7 @@ public class ValidateBean extends DirectBean {
      * @param third  the new value of the property
      */
     public void setThird(String third) {
-        TestValidateBean.checkInTest(third, "third");
+        ValidateBeanCheck.checkInTest(third, "third");
         this.third = third;
     }
 
@@ -236,11 +235,11 @@ public class ValidateBean extends DirectBean {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ValidateBean other = (ValidateBean) obj;
-            return JodaBeanUtils.equal(getFirst(), other.getFirst()) &&
-                    JodaBeanUtils.equal(getSecond(), other.getSecond()) &&
-                    JodaBeanUtils.equal(getThird(), other.getThird()) &&
-                    JodaBeanUtils.equal(getFourth(), other.getFourth()) &&
-                    JodaBeanUtils.equal(getFifth(), other.getFifth());
+            return JodaBeanUtils.equal(this.getFirst(), other.getFirst()) &&
+                    JodaBeanUtils.equal(this.getSecond(), other.getSecond()) &&
+                    JodaBeanUtils.equal(this.getThird(), other.getThird()) &&
+                    JodaBeanUtils.equal(this.getFourth(), other.getFourth()) &&
+                    JodaBeanUtils.equal(this.getFifth(), other.getFifth());
         }
         return false;
     }
@@ -333,15 +332,15 @@ public class ValidateBean extends DirectBean {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case 97440432:  // first
-                    return first;
+                    return this.first;
                 case -906279820:  // second
-                    return second;
+                    return this.second;
                 case 110331239:  // third
-                    return third;
+                    return this.third;
                 case -1268684262:  // fourth
-                    return fourth;
+                    return this.fourth;
                 case 97428919:  // fifth
-                    return fifth;
+                    return this.fifth;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -446,7 +445,7 @@ public class ValidateBean extends DirectBean {
         protected void validate(Bean bean) {
             JodaBeanUtils.notNull(((ValidateBean) bean).first, "first");
             JodaBeanUtils.notEmpty(((ValidateBean) bean).second, "second");
-            TestValidateBean.checkInTest(((ValidateBean) bean).third, "third");
+            ValidateBeanCheck.checkInTest(((ValidateBean) bean).third, "third");
             checkInBean(((ValidateBean) bean).fourth, "fourth");
             JodaBeanUtils.notBlank(((ValidateBean) bean).fifth, "fifth");
         }

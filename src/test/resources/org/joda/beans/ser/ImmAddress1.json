@@ -133,7 +133,7 @@
    "middleNames": []
   }
  }]],
- "simpleTable": [[1, 1, "Hello"]],
+ "simpleTable": [[1, 1, "Hello"], [1, 2, "There"]],
  "compoundTable": [[1, 1, {
   "forename": "Etienne",
   "surname": "Colebourne",

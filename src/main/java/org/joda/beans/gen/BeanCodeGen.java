@@ -15,16 +15,17 @@
  */
 package org.joda.beans.gen;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.joda.beans.JodaBeanUtils;
 
@@ -34,6 +35,8 @@ import org.joda.beans.JodaBeanUtils;
  * This reads in a {@code .java} file, parses it, and writes out an updated version.
  */
 public class BeanCodeGen {
+
+    private static final Pattern PATTERN_OVERRIDE = Pattern.compile(" *[@]Override");
 
     /**
      * Main method.
@@ -48,7 +51,7 @@ public class BeanCodeGen {
             gen = createFromArgs(args);
         } catch (RuntimeException ex) {
             System.out.println(ex.getMessage());
-            System.out.println("");
+            System.out.println();
             System.out.println("Code generator");
             System.out.println("  Usage java org.joda.beans.gen.BeanCodeGen [file]");
             System.out.println("  Options");
@@ -66,7 +69,7 @@ public class BeanCodeGen {
             throw new InternalError("Unreachable");
         }
         try {
-            int changed = gen.process();
+            var changed = gen.process();
             System.out.println("Finished, found " + changed + " changed files");
             System.exit(0);
         } catch (Exception ex) {
@@ -89,21 +92,20 @@ public class BeanCodeGen {
         if (args == null) {
             throw new IllegalArgumentException("Arguments must not be null");
         }
-        String indent = "    ";
-        String prefix = "";
-        String eol = System.lineSeparator();
-        String defaultStyle = null;
-        boolean recurse = false;
-        boolean generatedAnno = false;
-        int verbosity = 1;
-        boolean write = true;
-        File file = null;
-        BeanGenConfig config = null;
+        var indent = "    ";
+        var prefix = "";
+        var eol = System.lineSeparator();
+        var defaultStyle = (String) null;
+        var recurse = false;
+        var generatedAnno = false;
+        var verbosity = 1;
+        var write = true;
+        var config = (BeanGenConfig) null;
         if (args.length == 0) {
             throw new IllegalArgumentException("No arguments specified");
         }
-        for (int i = 0; i < args.length - 1; i++) {
-            String arg = args[i];
+        for (var i = 0; i < args.length - 1; i++) {
+            var arg = args[i];
             if (arg == null) {
                 throw new IllegalArgumentException("Argument must not be null: " + Arrays.toString(args));
             }
@@ -114,13 +116,13 @@ public class BeanCodeGen {
             } else if (arg.startsWith("-prefix=")) {
                 prefix = arg.substring(8);
             } else if (arg.startsWith("-eol=")) {
-            	switch(arg.substring(5)) {
-            	case "lf":   eol = "\n";   break;
-            	case "crlf": eol = "\r\n"; break;
-            	case "cr":   eol = "\r";   break;
-            	default:
-            		throw new IllegalArgumentException("Value of 'eol' must be one of: 'lf', 'crlf', 'cr'");
-            	}
+                eol = switch (arg.substring(5)) {
+                    case "lf" -> "\n";
+                    case "crlf" -> "\r\n";
+                    case "cr" -> "\r";
+                    case "system" -> System.lineSeparator();
+                    default -> throw new IllegalArgumentException("Value of 'eol' must be one of: 'lf', 'crlf', 'cr', 'system'");
+                };
             } else if (arg.equals("-R")) {
                 recurse = true;
             } else if (arg.equals("-generated")) {
@@ -140,17 +142,14 @@ public class BeanCodeGen {
                 defaultStyle = arg.substring(7);
             } else if (arg.startsWith("-verbose=")) {
                 verbosity = Integer.parseInt(arg.substring(9));
-            } else if (arg.startsWith("-v=")) {
-                System.out.println("Deprecated command line argument -v (use -verbose instead)");
-                verbosity = Integer.parseInt(arg.substring(3));
             } else if (arg.equals("-nowrite")) {
                 write = false;
             } else {
                 throw new IllegalArgumentException("Unknown argument: " + arg);
             }
         }
-        file = new File(args[args.length - 1]);
-        List<File> files = findFiles(file, recurse);
+        var file = Path.of(args[args.length - 1]);
+        var files = findFiles(file, recurse);
         
         if (config == null) {
             config = BeanGenConfig.parse("guava");
@@ -172,29 +171,15 @@ public class BeanCodeGen {
      * @param recurse  whether to recurse
      * @return the files, not null
      */
-    private static List<File> findFiles(final File parent, boolean recurse) {
-        final List<File> result = new ArrayList<>();
-        if (parent.isDirectory()) {
-            File[] files = parent.listFiles();
-            files = (files != null ? files : new File[0]);
-            for (File child : files) {
-                if (child.isFile() && child.getName().endsWith(".java")) {
-                    result.add(child);
-                }
-            }
-            if (recurse) {
-                for (File child : files) {
-                    if (child.isDirectory() && child.getName().startsWith(".") == false) {
-                        result.addAll(findFiles(child, recurse));
-                    }
-                }
-            }
-        } else {
-            if (parent.getName().endsWith(".java")) {
-                result.add(parent);
-            }
+    private static List<File> findFiles(Path parent, boolean recurse) {
+        try (var pathStream = Files.walk(parent, recurse ? Integer.MAX_VALUE : 1)) {
+            return pathStream
+                    .filter(path -> path.toString().endsWith(".java"))
+                    .map(path -> path.toFile())
+                    .toList();
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
         }
-        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -239,9 +224,9 @@ public class BeanCodeGen {
      * @throws Exception if an error occurs
      */
     public int process() throws Exception {
-        int changed = 0;
-        for (File child : files) {
-            changed += (processFile(child) != null ? 1 : 0);
+        var changed = 0;
+        for (var file : files) {
+            changed += (processFile(file) != null ? 1 : 0);
         }
         return changed;
     }
@@ -255,11 +240,11 @@ public class BeanCodeGen {
      * @throws Exception if an error occurs
      */
     public List<File> processFiles() throws Exception {
-        List<File> changed = new ArrayList<>();
-        for (File child : files) {
-            File file = processFile(child);
-            if (file != null) {
-                changed.add(file);
+        var changed = new ArrayList<File>();
+        for (var file : files) {
+            var processedFile = processFile(file);
+            if (processedFile != null) {
+                changed.add(processedFile);
             }
         }
         return changed;
@@ -270,90 +255,92 @@ public class BeanCodeGen {
      * 
      * @param file  the file to process, not null
      * @return not-null if changed
-     * @throws Exception if an error occurs
+     * @throws IOException if an error occurs
      */
-    private File processFile(File file) throws Exception {
-        List<String> original = readFile(file);
-        List<String> content = new ArrayList<>(original);
-        BeanGen gen;
-        try {
-            BeanParser parser = new BeanParser(file, content, config);
-            gen = parser.parse();
-        } catch (BeanCodeGenException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new BeanCodeGenException(ex.getMessage(), ex, file);
-        }
+    private File processFile(File file) throws IOException {
+        var original = Files.readAllLines(file.toPath());
+        var content = new ArrayList<>(original);
+        var gen = parse(file, content);
         if (gen.isBean()) {
             if (verbosity >= 2) {
                 System.out.print(file + "  [processing]");
             }
             gen.process();
-            if (content.equals(original) == false) {
-                if (write) {
-                    if (verbosity >= 2) {
-                        System.out.println(" [writing]");
-                    } else if (verbosity == 1) {
-                        System.out.println(file + "  [writing]");
-                    }
-                    writeFile(file, content);
-                } else {
-                    if (verbosity >= 2) {
-                        System.out.println(" [changed not written]");
-                    } else if (verbosity == 1) {
-                        System.out.println(file + "  [changed not written]");
-                    }
-                }
-                return file;
-            } else {
-                if (verbosity >= 2) {
-                    System.out.println(" [no change]");
-                }
+            if (contentDiffers(content, original)) {
+                return writeFileWithLogging(file, content);
+            } else if (verbosity >= 2) {
+                System.out.println(" [no change]");
             }
         } else {
             gen.processNonBean();
-            if (!content.equals(original)) {
-                if (write) {
-                    if (verbosity >= 2) {
-                        System.out.println(" [writing]");
-                    } else if (verbosity == 1) {
-                        System.out.println(file + "  [writing]");
-                    }
-                    writeFile(file, content);
-                } else {
-                    if (verbosity >= 2) {
-                        System.out.println(" [changed not written]");
-                    } else if (verbosity == 1) {
-                        System.out.println(file + "  [changed not written]");
-                    }
-                }
-                return file;
-            } else {
-                if (verbosity == 3) {
-                    System.out.println(file + "  [ignored]");
-                }
+            if (contentDiffers(content, original)) {
+                return writeFileWithLogging(file, content);
+            } else if (verbosity == 3) {
+                System.out.println(file + "  [ignored]");
             }
         }
         return null;
     }
 
-    //-----------------------------------------------------------------------
-    private List<String> readFile(File file) throws Exception {
-        List<String> content = new ArrayList<>(100);
-        try (BufferedReader is = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-            String line;
-            while ((line = is.readLine()) != null) {
-                content.add(line);
-            }
-            return content;
+    // parses the file
+    private BeanGen parse(File file, ArrayList<String> content) {
+        try {
+            var parser = new BeanParser(file, content, config);
+            return parser.parse();
+        } catch (BeanCodeGenException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new BeanCodeGenException(ex.getMessage(), ex, file);
         }
     }
 
-    private void writeFile(File file, List<String> content) throws Exception {
-        try (BufferedWriter os = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) {
-            for (String line : content) {
-                os.write(line);
-                os.write(config.getEol());
+    // checks to see if the content differs from the original
+    // if the files differ only by @Override lines then they are considered to be equal
+    private boolean contentDiffers(List<String> content, List<String> original) {
+        var contentIndex = 0;
+        var originalIndex = 0;
+        while (contentIndex < content.size() && originalIndex < original.size()) {
+            var contentLine = content.get(contentIndex);
+            var originalLine = original.get(originalIndex);
+            if (contentLine.equals(originalLine)) {
+                // lines match
+                contentIndex++;
+                originalIndex++;
+            } else if (PATTERN_OVERRIDE.matcher(originalLine).matches()) {
+                // original is an @Override line
+                originalIndex++;
+            } else {
+                return true;
+            }
+        }
+        return contentIndex < content.size() || originalIndex < original.size();
+    }
+
+    // writes the file with appropriate logging
+    private File writeFileWithLogging(File file, ArrayList<String> content) throws IOException {
+        if (write) {
+            if (verbosity >= 2) {
+                System.out.println(" [writing]");
+            } else if (verbosity == 1) {
+                System.out.println(file + "  [writing]");
+            }
+            writeFile(file, content);
+        } else {
+            if (verbosity >= 2) {
+                System.out.println(" [changed not written]");
+            } else if (verbosity == 1) {
+                System.out.println(file + "  [changed not written]");
+            }
+        }
+        return file;
+    }
+
+    // this uses a customizable EOL character
+    private void writeFile(File file, List<String> content) throws IOException {
+        try (var writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+            for (var line : content) {
+                writer.write(line);
+                writer.write(config.getEol());
             }
         }
     }

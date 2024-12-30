@@ -121,7 +121,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             SimpleSubPersonWithBuilderFinal other = (SimpleSubPersonWithBuilderFinal) obj;
-            return JodaBeanUtils.equal(getMiddleName(), other.getMiddleName()) &&
+            return JodaBeanUtils.equal(this.getMiddleName(), other.getMiddleName()) &&
                     super.equals(obj);
         }
         return false;
@@ -185,7 +185,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -818219584:  // middleName
-                    return middleName;
+                    return this.middleName;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -264,7 +264,7 @@ public final class SimpleSubPersonWithBuilderFinal extends SimplePersonWithBuild
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -818219584:  // middleName
-                    return middleName;
+                    return this.middleName;
                 default:
                     return super.get(propertyName);
             }

@@ -38,6 +38,7 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmKey;
+import org.joda.beans.sample.ImmKeyHolder;
 import org.joda.beans.sample.ImmKeyList;
 import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
@@ -56,9 +57,11 @@ import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ImmutableTable;
@@ -101,7 +104,7 @@ public class SerTestHelper {
         return address;
     }
 
-    public static ImmAddress testImmAddress() {
+    public static ImmAddress testImmAddress(boolean isImmutable) {
         Map<String, List<String>> map = new HashMap<>();
         map.put("A", Arrays.asList("B", "b"));
         Map<String, List<Integer>> map2 = new HashMap<>();
@@ -120,7 +123,9 @@ public class SerTestHelper {
         primitives.setValueChar('7');
         primitives.setValueBoolean(true);
         List<Object> objects1 = Arrays.<Object>asList(Currency.getInstance("GBP"), TimeZone.getTimeZone("Europe/London"));
-        List<Object> objects2 = Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2), primitives);
+        List<Object> objects2 = isImmutable ?
+                Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2)) :
+                Arrays.<Object>asList(Locale.CANADA_FRENCH, Long.valueOf(2), primitives);
         map5.put("A", Arrays.asList(objects1));
         map5.put("B", Arrays.asList(objects2));
         Map<String, Object> map6 = new HashMap<>();
@@ -129,20 +134,20 @@ public class SerTestHelper {
         map6.put("C", ImmutableSet.copyOf(objects2));
         map6.put("D", ImmutableMap.of("d", 1, "e", 2));
         ImmPerson person = ImmPerson.builder()
-            .forename("Etienne")
-            .middleNames("K", "T")
-            .surname("Colebourne")
-            .addressList(Arrays.asList(new Address()))
-            .codeCounts(ImmutableMultiset.of("A", "A", "B"))
-            . build();
+                .forename("Etienne")
+                .middleNames("K", "T")
+                .surname("Colebourne")
+                .addressList(isImmutable ? null : Arrays.asList(new Address()))
+                .codeCounts(ImmutableMultiset.of("A", "A", "B"))
+                .build();
         ImmPerson child = ImmPerson.builder()
                 .forename("Etiennette")
                 .surname("Colebourne")
-                . build();
+                .build();
         ImmPerson child2 = ImmPerson.builder()
                 .forename("Kylie")
                 .surname("Colebourne")
-                . build();
+                .build();
         ImmAddress childAddress = ImmAddress.builder()
                 .owner(child)
                 .number(185)
@@ -166,68 +171,91 @@ public class SerTestHelper {
         denseGrid.put(0, 0, child);
         denseGrid.put(1, 1, child2);
         ImmAddress address = ImmAddress.builder()
-            .owner(person)
-            .number(185)
-            .street("Park Street")
-            .city("London & Capital of the World <!>\n")
-            .abstractNumber(Short.valueOf((short) 89))
-            .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
-            .object1(ImmutableList.of("a", "b", "c"))
-            .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
-            .serializable(ImmutableList.of("a", "b", "c"))
-            .objectInMap(map6)
-            .listInMap(map)
-            .listNumericInMap(map2)
-            .listInListInMap(map3)
-            .objectListInListInMap(map5)
-            .mapInMap(map4)
-            .simpleTable(ImmutableTable.of(1, 1, "Hello"))
-            .compoundTable(table)
-            .sparseGrid(sparseGrid)
-            .denseGrid(denseGrid)
-            .beanBeanMap(ImmutableMap.of(child, childAddress))
-            .doubleVector(new double[] {1.1, 2.2, 3.3})
-            .matrix(new double[][] {{1.1, 2.2}, {3.2}})
-            .build();
+                .owner(person)
+                .number(185)
+                .street("Park Street")
+                .city("London & Capital of the World <!>\n")
+                .abstractNumber(Short.valueOf((short) 89))
+                .array2d(new String[][] {{"a"}, {}, {"b", "c"}})
+                .object1(ImmutableList.of("a", "b", "c"))
+                .object2(ImmutableMap.of("d", 1, Currency.getInstance("GBP"), 2))
+                .serializable(ImmutableList.of("a", "b", "c"))
+                .objectInMap(map6)
+                .listInMap(map)
+                .listNumericInMap(map2)
+                .listInListInMap(map3)
+                .objectListInListInMap(map5)
+                .mapInMap(map4)
+                .simpleTable(ImmutableTable.<Integer, Integer, String>builder()
+                        .put(1, 1, "Hello")
+                        .put(1, 2, "There")
+                        .build())
+                .compoundTable(table)
+                .sparseGrid(sparseGrid)
+                .denseGrid(denseGrid)
+                .beanBeanMap(ImmutableMap.of(child, childAddress))
+                .doubleVector(new double[] {1.1, 2.2, 3.3})
+                .matrix(new double[][] {{1.1, 2.2}, {3.2}})
+                .build();
         return address;
     }
 
     public static ImmOptional testImmOptional() {
         ImmOptional optional = ImmOptional.builder()
-            .optString(Optional.of("A"))
-            .build();
+                .optString(Optional.of("A"))
+                .build();
         return optional;
     }
 
-    public static ImmGuava<String> testCollections() {
+    public static ImmGuava<String> testCollections(boolean extended) {
         ImmutableList<String> list = ImmutableList.of("A", "B");
         ImmutableSet<String> set = ImmutableSet.of("A", "B");
         ImmutableSortedSet<String> sortedSet = ImmutableSortedSet.of("A", "B");
         ImmutableMap<String, String> map = ImmutableMap.of("A", "AA", "B", "BB");
         ImmutableSortedMap<String, String> sortedMap = ImmutableSortedMap.of("A", "AA", "B", "BB");
         ImmutableBiMap<String, String> bimap = ImmutableBiMap.of("A", "AA", "B", "BB");
-        return ImmGuava.<String> builder()
-            .list(list)
-            .listInterface(list)
-            .set(set)
-            .setInterface(set)
-            .sortedSet(sortedSet)
-            .sortedSetInterface(sortedSet)
-            .map(map)
-            .mapInterface(map)
-            .sortedMap(sortedMap)
-            .sortedMapInterface(sortedMap)
-            .biMap(bimap)
-            .biMapInterface(bimap)
-            .build();
+        ImmutableMultiset<String> multiset = ImmutableMultiset.of("A", "B", "C", "B", "C", "C");
+        ImmutableListMultimap<String, String> listMultimap = ImmutableListMultimap.of("A", "B", "A", "C", "B", "D");
+        ImmutableSetMultimap<String, String> setMultimap = ImmutableSetMultimap.of("A", "B", "A", "C", "B", "D");
+        ImmutableTable<String, Integer, String> table = ImmutableTable.<String, Integer, String>builder()
+                .put("A", 1, "B")
+                .put("A", 2, "C")
+                .put("B", 3, "D")
+                .build();
+        var builder = ImmGuava.<String>builder()
+                .list(list)
+                .listInterface(list)
+                .set(set)
+                .setInterface(set)
+                .sortedSet(sortedSet)
+                .sortedSetInterface(sortedSet)
+                .map(map)
+                .mapInterface(map)
+                .sortedMap(sortedMap)
+                .sortedMapInterface(sortedMap)
+                .biMap(bimap)
+                .biMapInterface(bimap)
+                .multiset(multiset);
+        if (extended) {
+            // ImmutableMultimap.copyOf always creates a ListMultimap, even though deserialization sends a SetMultimap
+            // so must be .multimapInterface(listMultimap)  not .multimapInterface(setMultimap)  
+            builder.multimap(listMultimap)
+                    .multimapInterface(listMultimap)
+                    .listMultimap(listMultimap)
+                    .listMultimapInterface(listMultimap)
+                    .setMultimap(setMultimap)
+                    .setMultimapInterface(setMultimap)
+                    .table(table);
+        }
+        return builder.build();
     }
 
     public static ImmGenericCollections<JodaConvertInterface> testGenericInterfaces() {
         return ImmGenericCollections.<JodaConvertInterface>builder()
-            .map(ImmutableMap.of(
-                "First", JodaConvertInterface.of("First"),
-                "Second", JodaConvertInterface.of("Second")))
-            .build();
+                .map(ImmutableMap.of(
+                        "First", JodaConvertInterface.of("First"),
+                        "Second", JodaConvertInterface.of("Second")))
+                .build();
     }
 
     public static ImmGenericCollections<Object> testGenericInterfacesCollections() {
@@ -246,58 +274,64 @@ public class SerTestHelper {
         // third and fourth are serialized as an intermediate Joda-Convert interface INamedKey
         // (Root interface) IKey -> (Joda-Convert interface) INamedKey -> (Concrete Bean) ImmNamedKey 
         return ImmKeyList.builder()
-            .keys(
-                ImmKey.builder().name("First").build(),
-                JodaConvertInterface.of("Second"),
-                INamedKey.of("Third"),
-                ImmNamedKey.of("Fourth"))
-            .build();
+                .keys(
+                        ImmKey.builder().name("First").build(),
+                        JodaConvertInterface.of("Second"),
+                        INamedKey.of("Third"),
+                        ImmNamedKey.of("Fourth"))
+                .build();
     }
 
     public static ImmGenericCollections<Map<ImmJodaConvertBean, String>> testGenericNestedCollections() {
         return ImmGenericCollections.<Map<ImmJodaConvertBean, String>>builder()
-            .map(ImmutableMap.of(
-                "Key",
-                ImmutableMap.of(
-                    new ImmJodaConvertBean("Hello:8"), "Done",
-                    new ImmJodaConvertBean("Hello:10"), "Done2")))
-            .build();
+                .map(ImmutableMap.of(
+                        "Key",
+                        ImmutableMap.of(
+                                new ImmJodaConvertBean("Hello:8"), "Done",
+                                new ImmJodaConvertBean("Hello:10"), "Done2")))
+                .build();
     }
 
     public static ImmGenericArray<ImmGeneric<?>> testGenericArrayWithNulls() {
-        return ImmGenericArray.of(new ImmGeneric<?>[]{
-            ImmGeneric.<String>builder()
-                .value("Help")
-                .build(),
-            ImmGeneric.<ImmJodaConvertWrapper>builder()
-                .value(ImmJodaConvertWrapper.of(null, "null"))
-                .build(),
-            ImmGeneric.<ImmJodaConvertWrapper>builder()
-                .value(ImmJodaConvertWrapper.of(new ImmJodaConvertBean("Bean:5"), "null"))
-                .build()
+        return ImmGenericArray.of(new ImmGeneric<?>[] {
+                ImmGeneric.<String>builder()
+                        .value("Help")
+                        .build(),
+                ImmGeneric.<ImmJodaConvertWrapper>builder()
+                        .value(ImmJodaConvertWrapper.of(null, "null"))
+                        .build(),
+                ImmGeneric.<ImmJodaConvertWrapper>builder()
+                        .value(ImmJodaConvertWrapper.of(new ImmJodaConvertBean("Bean:5"), "null"))
+                        .build()
         });
     }
 
     public static ImmTreeNode testTree() {
         ImmutableList<ImmTreeNode> childList = ImmutableList.of(
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build());
-        return ImmTreeNode.of(
-            "Root Node",
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build(),
-            ImmutableList.of(
                 ImmTreeNode.builder().name("First child").build(),
+                ImmTreeNode.builder().name("Second child").build(),
+                ImmTreeNode.builder().name("Third child").build());
+        return ImmTreeNode.of(
+                "Root Node",
+                ImmTreeNode.builder().name("First child").build(),
+                ImmTreeNode.builder().name("Second child").build(),
                 ImmTreeNode.builder().name("Third child").build(),
-                ImmTreeNode.builder()
-                    .name("Fourth child")
-                    .child3(ImmTreeNode.builder().name("Third child")
-                        .childList(childList)
-                        .build())
-                    .childList(childList)
-                    .build()));
+                ImmutableList.of(
+                        ImmTreeNode.builder().name("First child").build(),
+                        ImmTreeNode.builder().name("Third child").build(),
+                        ImmTreeNode.builder()
+                                .name("Fourth child")
+                                .child3(ImmTreeNode.builder().name("Third child")
+                                        .childList(childList)
+                                        .build())
+                                .childList(childList)
+                                .build()));
+    }
+
+    public static ImmKeyHolder testImmKeyHolder() {
+        return ImmKeyHolder.builder()
+                .value(ImmKey.builder().name("foo").build())
+                .build();
     }
 
     public static SimpleJson testSimpleJson() {
@@ -334,6 +368,7 @@ public class SerTestHelper {
                 .beanMap(ImmutableMap.of("a", key1, "b", key2))
                 .listInMap(map)
                 .listNumericInMap(map2)
+                .objectInMap(ImmutableMap.of("a", (long) Integer.MAX_VALUE + 1))
                 .build();
         return result;
     }

@@ -1,0 +1,177 @@
+arr (2)
+- int 1
+- map (35)
+  = ext type=32 'org.joda.beans.sample.ImmGuava' (bean)
+    nil
+  = str 'collection'
+    map (1)
+    = ext type=34 'List' (meta)
+      arr (0)
+  = str 'list'
+    arr (2)
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+  = str 'set'
+    arr (2)
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+  = str 'sortedSet'
+    arr (2)
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+  = str 'map'
+    map (2)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      str 'AA'
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      str 'BB'
+  = str 'sortedMap'
+    map (2)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      str 'AA'
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      str 'BB'
+  = str 'biMap'
+    map (2)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      str 'AA'
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      str 'BB'
+  = str 'multimap'
+    map (1)
+    = ext type=34 'ListMultimap' (meta)
+      map (0)
+  = str 'listMultimap'
+    map (0)
+  = str 'setMultimap'
+    map (0)
+  = str 'multiset'
+    map (3)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      int 1
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      int 2
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'C'
+      int 3
+  = str 'sortedMultiset'
+    map (0)
+  = str 'collectionInterface'
+    map (1)
+    = ext type=34 'List' (meta)
+      arr (0)
+  = str 'listInterface'
+    arr (2)
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+  = str 'setInterface'
+    arr (2)
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+  = str 'sortedSetInterface'
+    arr (2)
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+    - map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+  = str 'mapInterface'
+    map (2)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      str 'AA'
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      str 'BB'
+  = str 'sortedMapInterface'
+    map (2)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      str 'AA'
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      str 'BB'
+  = str 'biMapInterface'
+    map (2)
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'A'
+      str 'AA'
+    = map (1)
+      = ext type=33 'String' (data)
+        str 'B'
+      str 'BB'
+  = str 'multimapInterface'
+    map (1)
+    = ext type=34 'ListMultimap' (meta)
+      map (0)
+  = str 'listMultimapInterface'
+    map (0)
+  = str 'setMultimapInterface'
+    map (0)
+  = str 'multisetInterface'
+    map (0)
+  = str 'sortedMultisetInterface'
+    map (0)
+  = str 'listWildExtendsT'
+    arr (0)
+  = str 'listWildExtendsNumber'
+    arr (0)
+  = str 'listWildExtendsComparable'
+    arr (0)
+  = str 'setWildExtendsT'
+    arr (0)
+  = str 'setWildExtendsNumber'
+    arr (0)
+  = str 'setWildExtendsComparable'
+    arr (0)
+  = str 'listWildBuilder1'
+    arr (0)
+  = str 'listWildBuilder2'
+    arr (0)
+  = str 'mapWildBuilder1'
+    map (0)
+  = str 'mapWildKey'
+    map (0)

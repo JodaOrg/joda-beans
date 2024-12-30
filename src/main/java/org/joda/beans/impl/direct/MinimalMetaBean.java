@@ -16,9 +16,7 @@
 package org.joda.beans.impl.direct;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,10 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import org.joda.beans.Bean;
 import org.joda.beans.BeanBuilder;
@@ -59,32 +57,6 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * <p>
      * The properties will be determined using reflection to find the
      * {@link PropertyDefinition} annotation.
-     * 
-     * @param <B>  the type of the bean
-     * @param beanType  the bean type, not null
-     * @param builderSupplier  the supplier of bean builders, not null
-     * @param getters  the getter functions, not null
-     * @return the meta-bean, not null
-     * @deprecated Use version that takes the field names
-     */
-    @Deprecated
-    @SafeVarargs
-    public static <B extends Bean> MinimalMetaBean<B> of(
-            Class<B> beanType,
-            Supplier<BeanBuilder<B>> builderSupplier,
-            Function<B, Object>... getters) {
-
-        if (getters == null) {
-            throw new NullPointerException("Getter functions must not be null");
-        }
-        return new MinimalMetaBean<>(beanType, fieldNames(beanType), builderSupplier, Arrays.asList(getters), null);
-    }
-
-    /**
-     * Obtains an instance of the meta-bean for immutable beans.
-     * <p>
-     * The properties will be determined using reflection to find the
-     * {@link PropertyDefinition} annotation.
      * The field names must be specified as reflection does not return fields in source code order.
      * 
      * @param <B>  the type of the bean
@@ -101,9 +73,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             Supplier<BeanBuilder<B>> builderSupplier,
             Function<B, Object>... getters) {
 
-        if (getters == null) {
-            throw new NullPointerException("Getter functions must not be null");
-        }
+        Objects.requireNonNull(getters, "getters must not be null");
         return new MinimalMetaBean<>(beanType, fieldNames, builderSupplier, Arrays.asList(getters), null);
     }
 
@@ -112,36 +82,6 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
      * <p>
      * The properties will be determined using reflection to find the
      * {@link PropertyDefinition} annotation.
-     * 
-     * @param <B>  the type of the bean
-     * @param beanType  the bean type, not null
-     * @param builderSupplier  the supplier of bean builders, not null
-     * @param getters  the getter functions, not null
-     * @param setters  the setter functions, not null
-     * @return the meta-bean, not null
-     * @deprecated Use version that takes the field names
-     */
-    @Deprecated
-    public static <B extends Bean> MinimalMetaBean<B> of(
-            Class<B> beanType,
-            Supplier<BeanBuilder<B>> builderSupplier,
-            List<Function<B, Object>> getters,
-            List<BiConsumer<B, Object>> setters) {
-
-        if (getters == null) {
-            throw new NullPointerException("Getter functions must not be null");
-        }
-        if (setters == null) {
-            throw new NullPointerException("Setter functions must not be null");
-        }
-        return new MinimalMetaBean<>(beanType, fieldNames(beanType), builderSupplier, getters, setters);
-    }
-
-    /**
-     * Obtains an instance of the meta-bean for mutable beans.
-     * <p>
-     * The properties will be determined using reflection to find the
-     * {@link PropertyDefinition} annotation.
      * The field names must be specified as reflection does not return fields in source code order.
      * 
      * @param <B>  the type of the bean
@@ -159,12 +99,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             List<Function<B, Object>> getters,
             List<BiConsumer<B, Object>> setters) {
 
-        if (getters == null) {
-            throw new NullPointerException("Getter functions must not be null");
-        }
-        if (setters == null) {
-            throw new NullPointerException("Setter functions must not be null");
-        }
+        Objects.requireNonNull(getters, "getters must not be null");
+        Objects.requireNonNull(setters, "setters must not be null");
         return new MinimalMetaBean<>(beanType, fieldNames, builderSupplier, getters, setters);
     }
 
@@ -184,15 +120,10 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
             List<Function<T, Object>> getters,
             List<BiConsumer<T, Object>> setters) {
 
-        if (beanType == null) {
-            throw new NullPointerException("Bean class must not be null");
-        }
-        if (builderSupplier == null) {
-            throw new NullPointerException("Supplier of BeanBuilder must not be null");
-        }
-        if (fieldNames == null) {
-            throw new NullPointerException("Field names must not be null");
-        }
+        Objects.requireNonNull(beanType, "beanType must not be null");
+        Objects.requireNonNull(builderSupplier, "builderSupplier must not be null");
+        Objects.requireNonNull(fieldNames, "fieldNames must not be null");
+        Objects.requireNonNull(getters, "getters must not be null");
         if (fieldNames.length != getters.size()) {
             throw new IllegalArgumentException("Number of getter functions must match number of fields");
         }
@@ -202,9 +133,9 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         this.beanType = beanType;
         this.builderSupplier = builderSupplier;
         // extract fields and match to getters/setters
-        Map<String, MetaProperty<?>> map = new LinkedHashMap<>();
-        for (int i = 0; i < fieldNames.length; i++) {
-            String fieldName = fieldNames[i];
+        var map = new LinkedHashMap<String, MetaProperty<?>>();
+        for (var i = 0; i < fieldNames.length; i++) {
+            var fieldName = fieldNames[i];
             Field field;
             try {
                 field = beanType.getDeclaredField(fieldName);
@@ -221,8 +152,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
                     this, fieldName, field, getters.get(i), setters != null ? setters.get(i) : null));
         }
         // derived
-        Method[] methods = beanType.getDeclaredMethods();
-        for (Method method : methods) {
+        var methods = beanType.getDeclaredMethods();
+        for (var method : methods) {
             if (!Modifier.isStatic(method.getModifiers()) &&
                     Modifier.isPublic(method.getModifiers()) &&
                     method.getAnnotation(DerivedProperty.class) != null &&
@@ -230,28 +161,14 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
                     method.getName().length() > 3 &&
                     Character.isUpperCase(method.getName().charAt(3)) &&
                     method.getParameterTypes().length == 0) {
-                String methodName = method.getName();
-                String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
-                MetaProperty<Object> mp = new MinimalMetaProperty<>(this, method, propertyName);
+                var methodName = method.getName();
+                var propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+                var mp = new MinimalMetaProperty<>(this, method, propertyName);
                 map.put(propertyName, mp);
             }
         }
         this.metaPropertyMap = Collections.unmodifiableMap(map);
         this.aliasMap = new HashMap<>();
-    }
-
-    // determine the field names by reflection
-    // this is fundamentally broken as Java does not guarantee that the field names
-    // are returned in the order defined in the source file
-    private static String[] fieldNames(Class<?> beanType) {
-        Field[] fields = Stream.of(beanType.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()) && f.getAnnotation(PropertyDefinition.class) != null)
-                .toArray(Field[]::new);
-        List<String> fieldNames = new ArrayList<>();
-        for (int i = 0; i < fields.length; i++) {
-            fieldNames.add(fields[i].getName());
-        }
-        return fieldNames.toArray(new String[fieldNames.size()]);
     }
 
     private MinimalMetaBean(
@@ -282,7 +199,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
         if (!metaPropertyMap.containsKey(realName)) {
             throw new IllegalArgumentException("Invalid property name: " + realName);
         }
-        Map<String, String> aliasMap = new HashMap<>(this.aliasMap);
+        var aliasMap = new HashMap<>(this.aliasMap);
         aliasMap.put(alias, realName);
         return new MinimalMetaBean<>(beanType, builderSupplier, metaPropertyMap, aliasMap);
     }
@@ -306,7 +223,7 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <R> MetaProperty<R> metaProperty(String propertyName) {
-        MetaProperty<?> mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
+        var mp = metaPropertyMap().get(aliasMap.getOrDefault(propertyName, propertyName));
         if (mp == null) {
             throw new NoSuchElementException("Unknown property: " + propertyName);
         }
@@ -321,11 +238,8 @@ public final class MinimalMetaBean<T extends Bean> implements TypedMetaBean<T> {
     //-----------------------------------------------------------------------
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MinimalMetaBean) {
-            MinimalMetaBean<?> other = (MinimalMetaBean<?>) obj;
-            return this.beanType.equals(other.beanType);
-        }
-        return false;
+        return obj instanceof MinimalMetaBean<?> other &&
+                this.beanType.equals(other.beanType);
     }
 
     @Override

@@ -115,8 +115,8 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
         }
         if (obj != null && obj.getClass() == this.getClass()) {
             ImmSubPersonNonFinal other = (ImmSubPersonNonFinal) obj;
-            return JodaBeanUtils.equal(middleName, other.middleName) &&
-                    JodaBeanUtils.equal(addressList, other.addressList) &&
+            return JodaBeanUtils.equal(this.middleName, other.middleName) &&
+                    JodaBeanUtils.equal(this.addressList, other.addressList) &&
                     super.equals(obj);
         }
         return false;
@@ -189,9 +189,9 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
         protected MetaProperty<?> metaPropertyGet(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -818219584:  // middleName
-                    return middleName;
+                    return this.middleName;
                 case -1377524046:  // addressList
-                    return addressList;
+                    return this.addressList;
             }
             return super.metaPropertyGet(propertyName);
         }
@@ -281,9 +281,9 @@ public class ImmSubPersonNonFinal extends ImmPersonNonFinal {
         public Object get(String propertyName) {
             switch (propertyName.hashCode()) {
                 case -818219584:  // middleName
-                    return middleName;
+                    return this.middleName;
                 case -1377524046:  // addressList
-                    return addressList;
+                    return this.addressList;
                 default:
                     return super.get(propertyName);
             }
