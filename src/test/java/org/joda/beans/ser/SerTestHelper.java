@@ -19,10 +19,12 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import org.joda.beans.sample.Address;
 import org.joda.beans.sample.Company;
@@ -253,6 +255,17 @@ public class SerTestHelper {
                 .map(ImmutableMap.of(
                         "First", JodaConvertInterface.of("First"),
                         "Second", JodaConvertInterface.of("Second")))
+                .build();
+    }
+
+    public static ImmGenericCollections<Object> testGenericInterfacesCollections() {
+        return ImmGenericCollections.builder()
+                .map(ImmutableMap.of(
+                        "First", Arrays.asList("A", "B"),
+                        "First1", ImmutableList.of("A", "B"),
+                        "Third1", new TreeSet<>(ImmutableList.of("A", "B")),
+                        "Third", new HashSet<>(Arrays.asList("A", "B")),
+                        "Second", testCollections(true)))
                 .build();
     }
 
