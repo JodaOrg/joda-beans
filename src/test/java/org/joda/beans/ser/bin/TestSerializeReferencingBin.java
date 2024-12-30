@@ -131,6 +131,17 @@ class TestSerializeReferencingBin {
     }
 
     @Test
+    void test_writeJodaConvertInterfaceCollections() {
+        var bean = SerTestHelper.testGenericInterfacesCollections();
+
+        var bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(bean);
+//        System.out.println(JodaBeanBinReader.visualize(bytes));
+
+        var parsed = JodaBeanSer.COMPACT.binReader().read(bytes);
+        BeanAssert.assertBeanEquals(parsed, bean);
+    }
+
+    @Test
     void test_writeIntermediateInterface() {
         var bean = SerTestHelper.testIntermediateInterfaces();
 
