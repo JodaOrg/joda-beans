@@ -34,6 +34,11 @@
         Potentially incompatible change:
         The standard and referencing binary formats now support null as a map key.
       </action>
+      <action dev="jodastephen" type="add" issue="230">
+        Potentially incompatible change:
+        The referencing binary format no longer deduplicates collections.
+        The old format can still be parsed successfully.
+      </action>
       <action dev="jodastephen" type="add" issue="446">
         Potentially incompatible change:
         The standard binary and simple JSON formats now handle `Iterable` as a collection type.
@@ -44,7 +49,7 @@
         Instead of a Joda-Convert formatted string, the array is output as a list of primitives.
         This also applies to multi-dimensional arrays.
         This is a much more natural JSON format.
-        The old format cam still be parsed successfully.
+        The old format can still be parsed successfully.
       </action>
       <action dev="jodastephen" type="update">
         Incompatible change:
@@ -52,7 +57,7 @@
         For example, where the type of the collection is Object,
         previously a String value was explicitly typed as a String, now the type is implicit.
         This is a much more natural JSON format.
-        The old format cam still be parsed successfully.
+        The old format can still be parsed successfully.
       </action>
       <action dev="jodastephen" type="update" issue="192">
         Incompatible change:

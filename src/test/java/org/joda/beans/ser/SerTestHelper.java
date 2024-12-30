@@ -260,13 +260,13 @@ public class SerTestHelper {
 
     public static ImmGenericCollections<Object> testGenericInterfacesCollections() {
         return ImmGenericCollections.builder()
-            .map(ImmutableMap.of(
-                "First", Arrays.asList("A", "B"),
-                "First1", ImmutableList.of("A", "B"),
-                "Third1", new TreeSet<>(ImmutableList.of("A", "B")),
-                "Third", new HashSet<>(Arrays.asList("A", "B")),
-                "Second", testCollections()))
-            .build();
+                .map(ImmutableMap.of(
+                        "First", Arrays.asList("A", "B"),
+                        "First1", ImmutableList.of("A", "B"),
+                        "Third1", new TreeSet<>(ImmutableList.of("A", "B")),
+                        "Third", new HashSet<>(Arrays.asList("A", "B")),
+                        "Second", testCollections(true)))
+                .build();
     }
 
     public static ImmKeyList testIntermediateInterfaces() {

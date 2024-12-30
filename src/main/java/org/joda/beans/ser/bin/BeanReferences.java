@@ -132,13 +132,18 @@ final class BeanReferences {
             return;
         }
 
-        if (base instanceof Bean) {
-            // has this object been seen before, if so no need to check it again
-            var result = objects.compute(base, BeanReferences::incrementOrOne);
-            if (result > 1) {
-                return;
+        // has this object been seen before, if so no need to check it again
+        if (objects.compute(base, BeanReferences::incrementOrOne) > 1) {
+            // shouldn't try and reuse references to collections
+            if (!(base instanceof Bean) && parentIterator != null) {
+                var childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
+                if (childIterator != null) {
+                    findReferencesIterable(childIterator, objects);
+                }
             }
-
+            return;
+        }
+        if (base instanceof Bean bean) {
             addClassInfo(base, declaredClass);
             if (settings.getConverter().isConvertible(bean.getClass())) {
                 return;
@@ -165,25 +170,12 @@ final class BeanReferences {
         } else if (parentIterator != null) {
             var childIterator = settings.getIteratorFactory().createChild(base, parentIterator);
             if (childIterator != null) {
-                if (childIterator.metaTypeRequired()) {
-                    objects.compute(childIterator.metaTypeName(), BeanReferences::incrementOrOne);
-                }
                 // shouldn't try and reuse references to collections
                 findReferencesIterable(childIterator, objects);
             } else {
-                // has this object been seen before, if so no need to check it again
-                int result = objects.compute(base, BeanReferences::incrementOrOne);
-                if (result > 1) {
-                    return;
-                }
                 addClassInfo(base, declaredClass);
             }
         } else {
-            // has this object been seen before, if so no need to check it again
-            int result = objects.compute(base, BeanReferences::incrementOrOne);
-            if (result > 1) {
-                return;
-            }
             addClassInfo(base, declaredClass);
         }
     }
