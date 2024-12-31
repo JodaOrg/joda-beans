@@ -405,7 +405,7 @@ public final class JodaBeanUtils {
         for (var entry : propertyMap.entrySet()) {
             map.put(entry.getKey(), entry.getValue().get(bean));
         }
-        return Map.copyOf(map);
+        return Collections.unmodifiableMap(map);
     }
 
     //-----------------------------------------------------------------------
@@ -773,7 +773,7 @@ public final class JodaBeanUtils {
                     entry.setValue(value);
                 }
             }
-            return Map.copyOf(resolved);
+            return Collections.unmodifiableMap(resolved);
         }
 
         private void findTypeVars(Type type, HashMap<Type, Type> resolved) {
