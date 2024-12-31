@@ -39,6 +39,7 @@ class LightBeanBuilder<B extends Bean>
      * Constructs the builder wrapping the target bean.
      * 
      * @param metaBean  the target meta-bean, not null
+     * @param data  the newly created data array
      */
     LightBeanBuilder(LightMetaBean<B> metaBean, Object[] data) {
         this.metaBean = metaBean;

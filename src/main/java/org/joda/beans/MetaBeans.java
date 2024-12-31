@@ -15,11 +15,13 @@
  */
 package org.joda.beans;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.joda.beans.impl.RecordBean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.beans.impl.map.MapBean;
 
@@ -32,11 +34,13 @@ final class MetaBeans {
      * The cache of meta-beans.
      */
     private static final ConcurrentHashMap<Class<?>, MetaBean> META_BEANS = new ConcurrentHashMap<>();
+    // not a ClassValue, as entries are registered manually
 
     /**
      * The cache of meta-bean providers; access is guarded by a lock on {@code MetaBeans.class}.
      */
     private static final Map<Class<?>, MetaBeanProvider> META_BEAN_PROVIDERS = new HashMap<>();
+    // not a ClassValue, as it is not on the fast path
 
     /**
      * Restricted constructor.
@@ -93,15 +97,22 @@ final class MetaBeans {
         if (meta != null) {
             return meta;
         }
-        var providerAnnotation = findProviderAnnotation(cls);
-        if (providerAnnotation != null) {
-            // Synchronization is necessary to prevent a race condition where the same meta-bean is registered twice
-            synchronized (MetaBeans.class) {
-                // Re-check in case the meta-bean has been added by another thread since we checked above
-                meta = META_BEANS.get(cls);
-                if (meta != null) {
-                    return meta;
-                }
+        // Synchronization is necessary to prevent a race condition where the same meta-bean is registered twice
+        synchronized (MetaBeans.class) {
+            // Re-check in case the meta-bean has been added by another thread since we checked above
+            meta = META_BEANS.get(cls);
+            if (meta != null) {
+                return meta;
+            }
+            // handle records
+            if (cls.isRecord() && ImmutableBean.class.isAssignableFrom(cls)) {
+                @SuppressWarnings({"rawtypes", "unchecked"})
+                var metaBean = RecordBean.register((Class) cls, MethodHandles.lookup());
+                return metaBean;
+            }
+            // handle provider annotations
+            var providerAnnotation = findProviderAnnotation(cls);
+            if (providerAnnotation != null) {
                 var providerClass = providerAnnotation.value();
                 try {
                     var provider = META_BEAN_PROVIDERS.get(providerClass);
