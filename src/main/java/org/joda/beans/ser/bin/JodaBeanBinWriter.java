@@ -18,13 +18,13 @@ package org.joda.beans.ser.bin;
 import static org.joda.beans.ser.bin.JodaBeanBinFormat.REFERENCING;
 import static org.joda.beans.ser.bin.JodaBeanBinFormat.STANDARD;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
 import org.joda.beans.Bean;
 import org.joda.beans.ser.JodaBeanSer;
+import org.joda.beans.ser.LinkedByteArrayOutputStream;
 
 /**
  * Provides the ability for a Joda-Bean to be written to a binary format.
@@ -100,7 +100,7 @@ public class JodaBeanBinWriter {
      * @return the binary data, not null
      */
     public byte[] write(Bean bean, boolean rootType) {
-        var baos = new ByteArrayOutputStream(1024);
+        var baos = new LinkedByteArrayOutputStream();
         try {
             write(bean, rootType, baos);
         } catch (IOException ex) {
