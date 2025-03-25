@@ -296,24 +296,52 @@ public class BeanCodeGen {
 
     // checks to see if the content differs from the original
     // if the files differ only by @Override lines then they are considered to be equal
+//    private boolean contentDiffers(List<String> content, List<String> original) {
+//        var contentIndex = 0;
+//        var originalIndex = 0;
+//        while (contentIndex < content.size() && originalIndex < original.size()) {
+//            var contentLine = content.get(contentIndex);
+//            var originalLine = original.get(originalIndex);
+//            if (contentLine.equals(originalLine)) {
+//                // lines match
+//                contentIndex++;
+//                originalIndex++;
+//            } else if (PATTERN_OVERRIDE.matcher(originalLine).matches()) {
+//                // original is an @Override line
+//                originalIndex++;
+//            } else {
+//                return true;
+//            }
+//        }
+//        return contentIndex < content.size() || originalIndex < original.size();
+//    }
+
     private boolean contentDiffers(List<String> content, List<String> original) {
-        var contentIndex = 0;
-        var originalIndex = 0;
+        int contentIndex = 0;
+        int originalIndex = 0;
+
         while (contentIndex < content.size() && originalIndex < original.size()) {
-            var contentLine = content.get(contentIndex);
-            var originalLine = original.get(originalIndex);
-            if (contentLine.equals(originalLine)) {
-                // lines match
+            String contentLine = content.get(contentIndex);
+            String originalLine = original.get(originalIndex);
+
+            if (linesMatch(contentLine, originalLine)) {
                 contentIndex++;
                 originalIndex++;
-            } else if (PATTERN_OVERRIDE.matcher(originalLine).matches()) {
-                // original is an @Override line
+            } else if (isOverrideLine(originalLine)) {
                 originalIndex++;
             } else {
                 return true;
             }
         }
         return contentIndex < content.size() || originalIndex < original.size();
+    }
+
+    private boolean linesMatch(String contentLine, String originalLine) {
+        return contentLine.equals(originalLine);
+    }
+
+    private boolean isOverrideLine(String line) {
+        return PATTERN_OVERRIDE.matcher(line).matches();
     }
 
     // writes the file with appropriate logging
