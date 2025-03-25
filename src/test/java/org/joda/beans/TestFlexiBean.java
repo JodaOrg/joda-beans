@@ -163,26 +163,32 @@ class TestFlexiBean {
 
     @Test
     void test_type_long() {
+        final long LONG_TEST_VALUE = 2L;
+        final long LONG_DEFAULT_VALUE = 1L;
+
         FlexiBean test = new FlexiBean();
         assertThat(test.size()).isEqualTo(0);
-        test.set("a", Long.valueOf(2));
-        assertThat(test.get("a")).isEqualTo(Long.valueOf(2));
-        assertThat(test.get("a", Long.class)).isEqualTo(Long.valueOf(2));
-        assertThat(test.getLong("a")).isEqualTo(2L);
-        assertThat(test.getLong("a", 1L)).isEqualTo(2);
-        assertThat(test.getLong("b", 1L)).isEqualTo(1);
+        test.set("a", Long.valueOf(LONG_TEST_VALUE));
+        assertThat(test.get("a")).isEqualTo(Long.valueOf(LONG_TEST_VALUE));
+        assertThat(test.get("a", Long.class)).isEqualTo(Long.valueOf(LONG_TEST_VALUE));
+        assertThat(test.getLong("a")).isEqualTo(LONG_TEST_VALUE);
+        assertThat(test.getLong("a", LONG_DEFAULT_VALUE)).isEqualTo(LONG_TEST_VALUE);
+        assertThat(test.getLong("b", LONG_DEFAULT_VALUE)).isEqualTo(LONG_DEFAULT_VALUE);
     }
 
     @Test
     void test_type_int() {
+        final int INT_TEST_VALUE = 2;
+        final int INT_DEFAULT_VALUE = 1;
+
         FlexiBean test = new FlexiBean();
         assertThat(test.size()).isEqualTo(0);
-        test.set("a", Integer.valueOf(2));
-        assertThat(test.get("a")).isEqualTo(Integer.valueOf(2));
-        assertThat(test.get("a", Integer.class)).isEqualTo(Integer.valueOf(2));
-        assertThat(test.getInt("a")).isEqualTo(2);
-        assertThat(test.getInt("a", 1)).isEqualTo(2);
-        assertThat(test.getInt("b", 1)).isEqualTo(1);
+        test.set("a", Integer.valueOf(INT_TEST_VALUE));
+        assertThat(test.get("a")).isEqualTo(Integer.valueOf(INT_TEST_VALUE));
+        assertThat(test.get("a", Integer.class)).isEqualTo(Integer.valueOf(INT_TEST_VALUE));
+        assertThat(test.getInt("a")).isEqualTo(INT_TEST_VALUE);
+        assertThat(test.getInt("a", INT_DEFAULT_VALUE)).isEqualTo(INT_TEST_VALUE);
+        assertThat(test.getInt("b", INT_DEFAULT_VALUE)).isEqualTo(INT_DEFAULT_VALUE);
     }
 
     @Test
