@@ -61,7 +61,7 @@ public final class SimplePerson implements Cloneable, Bean {
     private Address mainAddress;
     @Deprecated
     @PropertyDefinition
-    private final FlexiBean propDefAnnotationSecondDeprecated = new FlexiBean();
+    private final FlexiBean legacyAnnotation = new FlexiBean();
     @SimpleAnnotation(first = "additionalAttributes")
     @PropertyDefinition(get = "manual")
     private Map<String, String> propDefAnnotationSecondManual;
@@ -277,7 +277,7 @@ public final class SimplePerson implements Cloneable, Bean {
      */
     @Deprecated
     public FlexiBean getPropDefAnnotationSecondDeprecated() {
-        return propDefAnnotationSecondDeprecated;
+        return legacyAnnotation;
     }
 
     /**
@@ -288,8 +288,8 @@ public final class SimplePerson implements Cloneable, Bean {
     @Deprecated
     public void setPropDefAnnotationSecondDeprecated(FlexiBean propDefAnnotationSecondDeprecated) {
         JodaBeanUtils.notNull(propDefAnnotationSecondDeprecated, "propDefAnnotationSecondDeprecated");
-        this.propDefAnnotationSecondDeprecated.clear();
-        this.propDefAnnotationSecondDeprecated.putAll(propDefAnnotationSecondDeprecated);
+        this.legacyAnnotation.clear();
+        this.legacyAnnotation.putAll(propDefAnnotationSecondDeprecated);
     }
 
     /**
@@ -638,7 +638,7 @@ public final class SimplePerson implements Cloneable, Bean {
             JodaBeanUtils.notNull(((SimplePerson) bean).addressList, "addressList");
             JodaBeanUtils.notNull(((SimplePerson) bean).otherAddressMap, "otherAddressMap");
             JodaBeanUtils.notNull(((SimplePerson) bean).addressesList, "addressesList");
-            JodaBeanUtils.notNull(((SimplePerson) bean).propDefAnnotationSecondDeprecated, "propDefAnnotationSecondDeprecated");
+            JodaBeanUtils.notNull(((SimplePerson) bean).legacyAnnotation, "propDefAnnotationSecondDeprecated");
         }
 
     }
