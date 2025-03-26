@@ -18,7 +18,6 @@ package org.joda.beans.gen;
 import static org.joda.beans.gen.BeanGen.CONSTRUCTOR_BY_ARGS;
 import static org.joda.beans.gen.BeanGen.CONSTRUCTOR_BY_BUILDER;
 import static org.joda.beans.gen.BeanGen.CONSTRUCTOR_NONE;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -177,7 +176,8 @@ class BeanParser {
         data.setImmutableConstructor(parseImmutableConstructor(beanDefIndex));
         data.setConstructable(parseConstructable(beanDefIndex));
         data.setTypeParts(parseBeanType(beanDefIndex));
-        var classHeaderAfterType = classHeaderAfterType(beanDefIndex, data.getType());
+        var parser = new ClassHeaderParser(content);
+        var classHeaderAfterType = parser.extractAfterType(beanDefIndex, data.getType());
         data.setSuperTypeParts(parseBeanSuperType(classHeaderAfterType));
         data.setSerializable(parseSerializable(classHeaderAfterType));
         if (parseBeanHierarchy(beanDefIndex).equals("immutable")) {
@@ -265,25 +265,25 @@ class BeanParser {
         return new BeanGen(file, content, config, data, properties, autoStartIndex, autoEndIndex);
     }
 
-    private String classHeaderAfterType(int defLine, String fullType) {
-        var buf = new StringBuilder(128);
-        var matchedType = false;
-        for (var index = defLine; index < content.size(); index++) {
-            var line = content.get(index);
-            if (!matchedType) {
-                if (!line.contains(fullType)) {
-                    continue;
-                }
-                matchedType = true;
-                line = line.substring(line.indexOf(fullType) + fullType.length());
-            }
-            buf.append(line).append(' ');
-            if (line.trim().endsWith("{") && !line.trim().startsWith("@")) {
-                break;
-            }
-        }
-        return buf.toString().trim();
-    }
+//    private String classHeaderAfterType(int defLine, String fullType) {
+//        var buf = new StringBuilder(128);
+//        var matchedType = false;
+//        for (var index = defLine; index < content.size(); index++) {
+//            var line = content.get(index);
+//            if (!matchedType) {
+//                if (!line.contains(fullType)) {
+//                    continue;
+//                }
+//                matchedType = true;
+//                line = line.substring(line.indexOf(fullType) + fullType.length());
+//            }
+//            buf.append(line).append(' ');
+//            if (line.trim().endsWith("{") && !line.trim().startsWith("@")) {
+//                break;
+//            }
+//        }
+//        return buf.toString().trim();
+//    }
 
     //-----------------------------------------------------------------------
     private int parseBeanDefinition() {
