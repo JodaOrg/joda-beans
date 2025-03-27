@@ -41,6 +41,9 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
 
+import org.joda.beans.gen.TypeExtractor;
+import org.joda.beans.gen.TypeVariableExtractor;
+import org.joda.beans.gen.WildcardTypeExtractor;
 import org.joda.beans.impl.direct.DirectBean;
 import org.joda.beans.impl.flexi.FlexiBean;
 import org.joda.collect.grid.DenseGrid;
@@ -720,21 +723,27 @@ public final class JodaBeanUtils {
         return eraseToClass(extractType(prop, contextClass, size, index));
     }
 
+    private static final Map<Class<?>, TypeExtractor> extractors = Map.of(
+            WildcardType.class, new WildcardTypeExtractor(),
+            TypeVariable.class, new TypeVariableExtractor()
+    );
+
+    private static Type handleWithExtractor(Type type, Class<?> contextClass) {
+        for (Class<?> clazz : extractors.keySet()) {
+            if (clazz.isInstance(type)) {
+                return extractors.get(clazz).extract(type, contextClass);
+            }
+        }
+        return type;
+    }
+
     private static Type extractType(MetaProperty<?> prop, Class<?> contextClass, int size, int index) {
         var genType = prop.propertyGenericType();
         if (genType instanceof ParameterizedType pt) {
             var types = pt.getActualTypeArguments();
             if (types.length == size) {
                 var type = types[index];
-                if (type instanceof WildcardType wtype) {
-                    if (wtype.getLowerBounds().length == 0 && wtype.getUpperBounds().length > 0) {
-                        type = wtype.getUpperBounds()[0];
-                    }
-                }
-                if (type instanceof TypeVariable<?> tvar) {
-                    type = resolveGenerics(tvar, contextClass);
-                }
-                return type;
+                return handleWithExtractor(type, contextClass);
             }
         }
         return null;
@@ -802,7 +811,7 @@ public final class JodaBeanUtils {
     // if a subclass is defined as 'extends Foo<String>' and the superclass is 'Foo<T>'
     // then we know that 'T = String' in the context of the subclass
     // NOTE: this may return a type variable
-    static Type resolveGenerics(TypeVariable<?> typevar, Class<?> contextClass) {
+    public static Type resolveGenerics(TypeVariable<?> typevar, Class<?> contextClass) {
         var resolved = RESOLVED_TYPE_VARIABLES.get(contextClass);
         return resolved.getOrDefault(typevar, typevar);
     }

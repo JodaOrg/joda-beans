@@ -616,48 +616,56 @@ class BeanGen {
         }
     }
 
+//    private void generateMetaForGenericType() {
+//        // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
+//        // long name needed for uniqueness as static overriding is borked
+//        addBlankLine();
+//        addLine(1, "/**");
+//        addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
+//        if (data.getTypeGenericCount() == 1) {
+//            addLine(1, " * @param <R>  the bean's generic type");
+//            addLine(1, " * @param cls  the bean's generic type");
+//        } else if (data.getTypeGenericCount() == 2) {
+//            addLine(1, " * @param <R>  the first generic type");
+//            addLine(1, " * @param <S>  the second generic type");
+//            addLine(1, " * @param cls1  the first generic type");
+//            addLine(1, " * @param cls2  the second generic type");
+//        } else if (data.getTypeGenericCount() == 3) {
+//            addLine(1, " * @param <R>  the first generic type");
+//            addLine(1, " * @param <S>  the second generic type");
+//            addLine(1, " * @param <T>  the second generic type");
+//            addLine(1, " * @param cls1  the first generic type");
+//            addLine(1, " * @param cls2  the second generic type");
+//            addLine(1, " * @param cls3  the third generic type");
+//        }
+//        addLine(1, " * @return the meta-bean, not null");
+//        addLine(1, " */");
+//        addLine(1, "@SuppressWarnings(\"unchecked\")");
+//        var typeNames = new String[] {"R", "S", "T"};
+//        if (data.getTypeGenericCount() == 1) {
+//            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
+//                    "> " + data.getTypeRaw() + ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
+//        } else if (data.getTypeGenericCount() == 2) {
+//            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
+//                    ", S" + data.getTypeGenericExtends(1, typeNames) + "> " + data.getTypeRaw() +
+//                    ".Meta<R, S> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2) {");
+//        } else if (data.getTypeGenericCount() == 3) {
+//            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
+//                    ", S" + data.getTypeGenericExtends(1, typeNames) +
+//                    ", T" + data.getTypeGenericExtends(2, typeNames) +
+//                    "> " + data.getTypeRaw() +
+//                    ".Meta<R, S, T> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2, Class<T> cls3) {");
+//        }
+//        addLine(2, "return " + data.getTypeRaw() + ".Meta.INSTANCE;");
+//        addLine(1, "}");
+//    }
+
     private void generateMetaForGenericType() {
-        // this works around an Eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=397462
-        // long name needed for uniqueness as static overriding is borked
         addBlankLine();
-        addLine(1, "/**");
-        addLine(1, " * The meta-bean for {@code " + data.getTypeRaw() + "}.");
-        if (data.getTypeGenericCount() == 1) {
-            addLine(1, " * @param <R>  the bean's generic type");
-            addLine(1, " * @param cls  the bean's generic type");
-        } else if (data.getTypeGenericCount() == 2) {
-            addLine(1, " * @param <R>  the first generic type");
-            addLine(1, " * @param <S>  the second generic type");
-            addLine(1, " * @param cls1  the first generic type");
-            addLine(1, " * @param cls2  the second generic type");
-        } else if (data.getTypeGenericCount() == 3) {
-            addLine(1, " * @param <R>  the first generic type");
-            addLine(1, " * @param <S>  the second generic type");
-            addLine(1, " * @param <T>  the second generic type");
-            addLine(1, " * @param cls1  the first generic type");
-            addLine(1, " * @param cls2  the second generic type");
-            addLine(1, " * @param cls3  the third generic type");
+        List<String> lines = new GenericMetaLinesBuilder(data).buildLines();
+        for (String line : lines) {
+            addLine(1, line);
         }
-        addLine(1, " * @return the meta-bean, not null");
-        addLine(1, " */");
-        addLine(1, "@SuppressWarnings(\"unchecked\")");
-        var typeNames = new String[] {"R", "S", "T"};
-        if (data.getTypeGenericCount() == 1) {
-            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
-                    "> " + data.getTypeRaw() + ".Meta<R> meta" + data.getTypeRaw() + "(Class<R> cls) {");
-        } else if (data.getTypeGenericCount() == 2) {
-            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
-                    ", S" + data.getTypeGenericExtends(1, typeNames) + "> " + data.getTypeRaw() +
-                    ".Meta<R, S> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2) {");
-        } else if (data.getTypeGenericCount() == 3) {
-            addLine(1, "public static <R" + data.getTypeGenericExtends(0, typeNames) +
-                    ", S" + data.getTypeGenericExtends(1, typeNames) +
-                    ", T" + data.getTypeGenericExtends(2, typeNames) +
-                    "> " + data.getTypeRaw() +
-                    ".Meta<R, S, T> meta" + data.getTypeRaw() + "(Class<R> cls1, Class<S> cls2, Class<T> cls3) {");
-        }
-        addLine(2, "return " + data.getTypeRaw() + ".Meta.INSTANCE;");
-        addLine(1, "}");
     }
 
     private void generateSerializationVersionId() {
