@@ -519,24 +519,6 @@
   </reporting>
 
   <!-- ==================================================================== -->
-  <distributionManagement>
-    <repository>
-      <id>sonatype-joda-staging</id>
-      <name>Sonatype OSS staging repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>sonatype-joda-snapshot</id>
-      <name>Sonatype OSS snapshot repository</name>
-      <url>https://oss.sonatype.org/content/repositories/joda-snapshots</url>
-      <layout>default</layout>
-    </snapshotRepository>
-    <downloadUrl>https://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
-  </distributionManagement>
-
-  <!-- ==================================================================== -->
   <profiles>
     <!-- Main profile for command line builds -->
     <profile>
@@ -665,6 +647,19 @@
         </plugins>
       </build>
     </profile>
+    <!-- Set environment when running on GitHub Actions -->
+    <profile>
+      <id>github-action</id>
+      <activation>
+        <property>
+          <name>env.GITHUB_ACTIONS</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <gpg.signer>bc</gpg.signer>
+      </properties>
+    </profile>
     <!-- Main deployment profile, activated by -Doss.repo -->
     <profile>
       <id>release-artifacts</id>
@@ -710,18 +705,17 @@
               </execution>
             </executions>
           </plugin>
-          <!-- Use nexus plugin to directly release -->
+          <!-- Use central plugin to directly release -->
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>${nexus-staging-maven-plugin.version}</version>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${central-publishing-maven-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <serverId>sonatype-joda-staging</serverId>
-              <autoReleaseAfterClose>${joda.nexus.auto.release}</autoReleaseAfterClose>
-              <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
-              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+              <publishingServerId>central-publish</publishingServerId>
+              <deploymentName>${project.name}</deploymentName>
+              <autoPublish>${joda.publish.auto}</autoPublish>
+              <waitUntil>${joda.publish.wait}</waitUntil>
             </configuration>
           </plugin>
           <!-- Release dist files to GitHub -->
@@ -764,16 +758,17 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
-    <assertj.version>3.27.0</assertj.version>
-    <guava.version>33.4.0-jre</guava.version>
+    <assertj.version>3.27.3</assertj.version>
+    <guava.version>33.4.8-jre</guava.version>
     <joda-collect.version>2.0.0</joda-collect.version>
     <joda-convert.version>3.0.1</joda-convert.version>
-    <junit.version>5.11.4</junit.version>
+    <junit.version>5.13.4</junit.version>
 
     <!-- Common control parameters -->
     <joda.osgi.packages>org.joda.beans.*</joda.osgi.packages>
     <joda.osgi.require.capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=${maven.compiler.release}))"</joda.osgi.require.capability>
-    <joda.nexus.auto.release>true</joda.nexus.auto.release>
+    <joda.publish.auto>false</joda.publish.auto><!-- false/true -->
+    <joda.publish.wait>validated</joda.publish.wait><!-- validated/published -->
 
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
@@ -798,13 +793,13 @@
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version><!-- 3.20.0/3.21.0 throws ComponentLookupException -->
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.3</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
+    <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
     <github-api.version>1.326</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     <revapi-maven-plugin.version>0.11.1</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
     <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
