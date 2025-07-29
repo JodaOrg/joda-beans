@@ -17,12 +17,14 @@ package org.joda.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.joda.beans.sample.AbstractResult;
@@ -59,16 +61,17 @@ import com.google.common.collect.ImmutableMultiset;
  * Test {@link ResolvedType}.
  */
 class TestResolvedType {
+    
+    private static final Predicate<String> HIDDEN_CLASS_PREDICATE = String::isEmpty;
 
-    @SuppressWarnings("serial")
     static Object[][] data_resolvedTypes() {
         return new Object[][] {
                 {ResolvedType.of(String.class),
                         String.class, List.of(),
                         "String"},
                 {ResolvedType.of(List.class),
-                            List.class, List.of(),
-                            "List"},
+                        List.class, List.of(),
+                        "List"},
                 {ResolvedType.from(String.class),
                         String.class, List.of(),
                         "String"},
@@ -81,6 +84,9 @@ class TestResolvedType {
                 {ResolvedType.ofFlat(List.class, String.class),
                         List.class, List.of(ResolvedType.of(String.class)),
                         "List<String>"},
+                {ResolvedType.ofFlat(List.class, int.class),
+                            List.class, List.of(ResolvedType.of(int.class)),
+                            "List<int>"},
                 {ResolvedType.of(List.class, ResolvedType.STRING),
                         List.class, List.of(ResolvedType.of(String.class)),
                         "List<String>"},
@@ -90,6 +96,9 @@ class TestResolvedType {
                 {ResolvedType.of(String[].class),
                         String[].class, List.of(),
                         "String[]"},
+                {ResolvedType.of(List[].class),
+                        List[].class, List.of(),
+                        "List[]"},
                 {ResolvedType.ofFlat(List[].class, String.class),
                         List[].class, List.of(ResolvedType.of(String.class)),
                         "List<String>[]"},
@@ -238,9 +247,16 @@ class TestResolvedType {
             List<ResolvedType> expectedArgTypes,
             String expectedToString) {
 
+        var expectedRawTypeWithoutArray = expectedRawType;
+        if (expectedRawTypeWithoutArray.isArray()) {
+            expectedRawTypeWithoutArray = expectedRawTypeWithoutArray.getComponentType();
+            if (expectedRawTypeWithoutArray.isArray()) {
+                expectedRawTypeWithoutArray = expectedRawTypeWithoutArray.getComponentType();
+            }
+        }
         if (expectedArgTypes.isEmpty()) {
             assertThat(test.getArgumentOrDefault(0)).isEqualTo(ResolvedType.OBJECT);
-            assertThat(test.isRaw()).isEqualTo(expectedRawType.getTypeParameters().length != 0);
+            assertThat(test.isRaw()).isEqualTo(expectedRawTypeWithoutArray.getTypeParameters().length != 0);
         } else if (expectedArgTypes.size() == 1) {
             assertThat(test.getArgumentOrDefault(0)).isEqualTo(expectedArgTypes.get(0));
             assertThat(test.getArgumentOrDefault(1)).isEqualTo(ResolvedType.OBJECT);
@@ -255,18 +271,29 @@ class TestResolvedType {
             assertThat(test.isArray()).isTrue();
             assertThat(test.toComponentType())
                     .isEqualTo(ResolvedType.of(expectedRawType.getComponentType(), test.getArguments().toArray(new ResolvedType[0])));
-            assertThat(test.toComponentTypeOrDefault())
-                    .isEqualTo(ResolvedType.of(expectedRawType.getComponentType(), test.getArguments().toArray(new ResolvedType[0])));
         } else {
             assertThat(test.isArray()).isFalse();
-            assertThatIllegalStateException()
-                    .isThrownBy(() -> test.toComponentType())
-                    .withMessage("Unable to get component type for " + expectedToString + ", type is not an array");
-            assertThat(test.toComponentTypeOrDefault()).isEqualTo(ResolvedType.OBJECT);
+            assertThat(test.toComponentType()).isEqualTo(test);
         }
         assertThat(test.toArrayType().toComponentType()).isEqualTo(test);
+        assertThat(test.toBaseComponentType().getRawType()).isEqualTo(expectedRawTypeWithoutArray);
+        assertThat(test.toBaseComponentType().getArguments()).isEqualTo(test.getArguments());
         assertThat(test.isPrimitive()).isEqualTo(expectedRawType.isPrimitive());
-        assertThat(test.isParameterized()).isEqualTo(expectedRawType.getTypeParameters().length > 0);
+        assertThat(test.isParameterized()).isEqualTo(expectedRawTypeWithoutArray.getTypeParameters().length > 0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_resolvedTypes")
+    void test_javaType(
+            ResolvedType test,
+            Class<?> expectedRawType,
+            List<ResolvedType> expectedArgTypes,
+            String expectedToString) {
+
+        if (test.getArguments().isEmpty()) {
+            assertThat(test.toJavaType()).isEqualTo(expectedRawType);
+        }
+        assertThat(ResolvedType.fromAllowRaw(test.toJavaType(), Object.class)).isEqualTo(test);
     }
 
     @ParameterizedTest
@@ -283,8 +310,20 @@ class TestResolvedType {
         assertThat(obj).isEqualTo(test);
     }
 
+    @Test
+    void test_hidden() {
+        var test = ResolvedType.of(HIDDEN_CLASS_PREDICATE.getClass());
+        assertThat(test.isArray()).isFalse();
+        assertThat(test.isParameterized()).isFalse();
+        assertThat(test.isPrimitive()).isFalse();
+        assertThat(test.isRaw()).isFalse();
+        assertThat(test.getRawType()).isSameAs(HIDDEN_CLASS_PREDICATE.getClass());
+        assertThat(test.getArguments()).isEmpty();
+        assertThat(test.toString()).isEqualTo(HIDDEN_CLASS_PREDICATE.getClass().getName());
+        assertThat(test.toJavaType()).isEqualTo(HIDDEN_CLASS_PREDICATE.getClass());
+    }
+
     //-------------------------------------------------------------------------
-    @SuppressWarnings("serial")
     static Object[][] data_boxed() {
         return new Object[][] {
                 {String.class, String.class},
@@ -309,7 +348,6 @@ class TestResolvedType {
     }
 
     //-------------------------------------------------------------------------
-    @SuppressWarnings("serial")
     static Object[][] data_invalidParse() {
         return new Object[][] {
                 {"String,"},
@@ -345,5 +383,46 @@ class TestResolvedType {
     void test_enumSubclass() {
         var test = ResolvedType.of(RiskLevel.HIGH.getClass());
         assertThat(test.getRawType().getSuperclass()).isEqualTo(RiskLevel.class);
+    }
+
+    @SuppressWarnings("unused")
+    private final List<Object> field1 = null;
+    @SuppressWarnings("unused")
+    private final Map<Number, List<Object>> field2 = null;
+    @SuppressWarnings("unused")
+    private final Map<Number, List<Object>[]>[][] field3 = null;
+
+    @SuppressWarnings("unused")
+    private final Optional<String> field0 = null;
+    @SuppressWarnings("unused")
+    private final List<String> field1b = null;
+    @SuppressWarnings("unused")
+    private final Map<Number, List<String>[]>[][] field3b = null;
+
+    //-------------------------------------------------------------------------
+    static Object[][] data_dynamicTypes() throws Exception {
+        return new Object[][] {
+                {String.class},
+                {String[].class},
+                {List[].class},
+                {List[][].class},
+                {TestResolvedType.class.getDeclaredField("field1").getGenericType()},
+                {TestResolvedType.class.getDeclaredField("field2").getGenericType()},
+                {TestResolvedType.class.getDeclaredField("field3").getGenericType()},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_dynamicTypes")
+    void test_dynamicTypes(Type type) throws Exception {
+        var test = ResolvedType.fromAllowRaw(type, Object.class);
+        assertThat(test.toJavaType())
+                .isEqualTo(type)
+                .isNotEqualTo("")
+                .isNotEqualTo(Object.class)
+                .isNotEqualTo(TestResolvedType.class.getDeclaredField("field0").getGenericType())
+                .isNotEqualTo(TestResolvedType.class.getDeclaredField("field1b").getGenericType())
+                .isNotEqualTo(TestResolvedType.class.getDeclaredField("field3b").getGenericType());
+        assertThat(test.toJavaType().toString()).isEqualTo(type.toString());
     }
 }

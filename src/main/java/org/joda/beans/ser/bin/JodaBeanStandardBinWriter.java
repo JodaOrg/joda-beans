@@ -269,7 +269,7 @@ final class JodaBeanStandardBinWriter {
         for (var arg : base.getArguments()) {
             var rawType = arg.getRawType();
             if (LOOKUP.get(rawType).isCollection(rawType)) {
-                return base.toRawType();
+                return base.toRaw();
             }
         }
         return base;
@@ -667,7 +667,7 @@ final class JodaBeanStandardBinWriter {
             if (!Optional.class.isAssignableFrom(declaredType.getRawType())) {
                 writeMetaType(writer, "Optional");
             }
-            var valueType = declaredType.getArgumentOrDefault(0).toRawType();
+            var valueType = declaredType.getArgumentOrDefault(0).toRaw();
             writer.writeObject(valueType, "", opt.orElse(null));
         }
 
@@ -681,7 +681,7 @@ final class JodaBeanStandardBinWriter {
 
             return opt
                     .map(value -> (PropertyHandler) () -> {
-                        var valueType = declaredType.getArgumentOrDefault(0).toRawType();
+                        var valueType = declaredType.getArgumentOrDefault(0).toRaw();
                         writer.output.writeString(propertyName);
                         writer.writeObject(valueType, propertyName, value);
                     })
@@ -705,7 +705,7 @@ final class JodaBeanStandardBinWriter {
                 writeMetaType(writer, "GuavaOptional");
             }
             // write content
-            var valueType = declaredType.getArgumentOrDefault(0).toRawType();
+            var valueType = declaredType.getArgumentOrDefault(0).toRaw();
             writer.writeObject(valueType, "", opt.orNull());
         }
 
@@ -719,7 +719,7 @@ final class JodaBeanStandardBinWriter {
 
             return opt
                     .transform(value -> (PropertyHandler) () -> {
-                        var valueType = declaredType.getArgumentOrDefault(0).toRawType();
+                        var valueType = declaredType.getArgumentOrDefault(0).toRaw();
                         writer.output.writeString(propertyName);
                         writer.writeObject(valueType, propertyName, value);
                     })

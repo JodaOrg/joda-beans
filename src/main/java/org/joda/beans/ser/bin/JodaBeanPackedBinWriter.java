@@ -516,7 +516,7 @@ final class JodaBeanPackedBinWriter {
                 }
             }
             // write content
-            var componentType = declaredType.toComponentTypeOrDefault();
+            var componentType = declaredType.toComponentType();
             writer.output.writeArrayHeader(array.length);
             for (var item : array) {
                 writer.writeObject(componentType, "", item);

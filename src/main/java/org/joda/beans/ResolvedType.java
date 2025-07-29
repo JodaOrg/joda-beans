@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +49,19 @@ import org.joda.convert.ToString;
  * The process of resolving uses a context class to resolve type variables like {@code <T>}.
  * <p>
  * Where type variables cannot be resolved, the type parameter upper bound will be used.
- * For example, {@code ResolvedType.of(List.class)} returns {@code List<Object>} unless a context
+ * For example, {@code ResolvedType.from(List.class)} returns {@code List<Object>} unless a context
  * class is passed in that extends {@code List} and constrains the type, such as an imaginary class
  * {@code StringList implements List<String>}.
  * <p>
  * Note that special cases like anonymous classes, hidden classes and specialized enum subclasses
- * are not resolved.
+ * may not be resolved correctly, and validation is deliberately incomplete.
+ * For example, you can create an instance representing {@code List<int>}.
+ * <p>
+ * The state of this class consists of two parts.
+ * Firstly, there is a {@code Class} representing the raw type, which may be an array.
+ * Secondaly, there is a list of {@code ResolvedType} representing the type arguments.
+ * For example, {@code List<String>[]} will be represented by a {@code Class} of {@code List[]} and
+ * a list of type arguments representing {@code String}.
  * 
  * @since 3.0.0
  */
@@ -154,25 +162,21 @@ public final class ResolvedType {
     public static ResolvedType parse(String str) {
         Objects.requireNonNull(str, "str must not be null");
         var matcher = PARSE_CLASS_NAME.matcher(str);
-        return parse(matcher, str, true);
+        return parse(matcher, str, 0);
     }
 
     // recursively parse using a matcher that retains the current state
-    private static ResolvedType parse(Matcher matcher, String str, boolean root) {
+    private static ResolvedType parse(Matcher matcher, String str, int depth) {
+        if (depth > 255) {
+            throw invalidFormat(str); // no specific error message for infinite recursion guard
+        }
         // first parse the class name
         matcher.usePattern(PARSE_CLASS_NAME);
         if (!matcher.find()) {
             throw invalidFormat(str);
         }
         var name = matcher.group(1);
-        var parsedRawType = NAMES.get(name);
-        if (parsedRawType == null) {
-            try {
-                parsedRawType = Class.forName(name);
-            } catch (ClassNotFoundException ex) {
-                throw new IllegalArgumentException("Unable to parse ResolvedType, class not found: " + name);
-            }
-        }
+        var parsedRawType = parseClassName(name);
         var typeArgs = new ArrayList<ResolvedType>();
         // then parse any trailing separators
         matcher.usePattern(PARSE_SEPARATOR);
@@ -183,20 +187,20 @@ public final class ResolvedType {
                 if (!typeArgs.isEmpty()) {
                     throw invalidFormat(str);
                 }
-                typeArgs.add(parse(matcher, str, false));
+                typeArgs.add(parse(matcher, str, depth + 1));
                 if (!matcher.hasMatch()) {
                     throw invalidFormat(str);
                 }
                 separator = matcher.group(1);
                 while (separator.startsWith(",")) {
-                    typeArgs.add(parse(matcher, str, false));
+                    typeArgs.add(parse(matcher, str, depth + 1));
                     separator = matcher.group(1);
                 }
                 continue;
             }
             // ends the current type argument, at the root level it is an error
             if (separator.startsWith(",") | separator.equals(">")) {
-                if (root) {
+                if (depth == 0) {
                     throw invalidFormat(str);
                 }
                 return of(parsedRawType, typeArgs);
@@ -212,6 +216,18 @@ public final class ResolvedType {
             throw invalidFormat(str);
         }
         return of(parsedRawType, typeArgs);
+    }
+
+    private static Class<?> parseClassName(String name) {
+        var parsedRawType = NAMES.get(name);
+        if (parsedRawType == null) {
+            try {
+                parsedRawType = Class.forName(name);
+            } catch (ClassNotFoundException ex) {
+                throw new IllegalArgumentException("Unable to parse ResolvedType, class not found: " + name);
+            }
+        }
+        return parsedRawType;
     }
 
     private static IllegalArgumentException invalidFormat(String str) {
@@ -322,7 +338,7 @@ public final class ResolvedType {
 
     //-------------------------------------------------------------------------
     /**
-     * Obtains an instance from a raw type, defaulting any type parameters.
+     * Obtains an instance from a raw type, providing a default type argument for where the argument is missing.
      * <p>
      * If the input class has generic type parameters, they will be resolved to their upper bound,
      * typically {@code Object.class}. Use {@link #of(Class)} if you simply want to obtain a wrapper around the raw type.
@@ -335,31 +351,54 @@ public final class ResolvedType {
      */
     public static ResolvedType from(Class<?> rawType) {
         Objects.requireNonNull(rawType, "rawType must not be null");
-        return resolveClass(rawType, Object.class);
+        return resolveClass(rawType, Object.class, false);
     }
 
     /**
-     * Obtains an instance from a type and context class.
+     * Obtains an instance from a type and context class, providing a default type argument for where the argument is missing.
      * <p>
      * The type is typically obtained from reflection, such as from {@link MetaProperty#propertyGenericType()}.
      * The context class represents the {@code Class} associated with the object being queried,
      * which is used to resolve type variables like {@code <T>}.
      * 
-     * @param type  the type to resolve, not null
+     * @param javaType  the Java type to resolve, not null
      * @param contextClass  the context class to evaluate against, not null
+     *  
      * @return the resolved type
      * @throws NullPointerException if null is passed in
      */
-    public static ResolvedType from(Type type, Class<?> contextClass) {
-        Objects.requireNonNull(type, "type must not be null");
+    public static ResolvedType from(Type javaType, Class<?> contextClass) {
+        return from(javaType, contextClass, false);
+    }
+
+    /**
+     * Obtains an instance from a type and context class, where missing type arguments are not defaulted.
+     * <p>
+     * The type is typically obtained from reflection, such as from {@link MetaProperty#propertyGenericType()}.
+     * The context class represents the {@code Class} associated with the object being queried,
+     * which is used to resolve type variables like {@code <T>}.
+     * 
+     * @param javaType  the Java type to resolve, not null
+     * @param contextClass  the context class to evaluate against, not null
+     *  
+     * @return the resolved type
+     * @throws NullPointerException if null is passed in
+     */
+    public static ResolvedType fromAllowRaw(Type javaType, Class<?> contextClass) {
+        return from(javaType, contextClass, true);
+    }
+
+    // resolves from the Java Type, optionally resolving raw types
+    private static ResolvedType from(Type javaType, Class<?> contextClass, boolean allowRaw) {
+        Objects.requireNonNull(javaType, "type must not be null");
         Objects.requireNonNull(contextClass, "contextClass must not be null");
-        return switch (type) {
-            case Class<?> cls -> resolveClass(cls, contextClass);
-            case ParameterizedType parameterizedType -> resolveParameterizedType(parameterizedType, contextClass);
-            case GenericArrayType arrType -> resolveGenericArrayType(arrType, contextClass);
-            case TypeVariable<?> tvar -> resolveTypeVariable(tvar, contextClass);
-            case WildcardType wild -> resolveWildcard(wild, contextClass);
-            default -> throw unknownGenericTypeClass(type);
+        return switch (javaType) {
+            case Class<?> cls -> resolveClass(cls, contextClass, allowRaw);
+            case ParameterizedType parameterizedType -> resolveParameterizedType(parameterizedType, contextClass, allowRaw);
+            case GenericArrayType arrType -> resolveGenericArrayType(arrType, contextClass, allowRaw);
+            case TypeVariable<?> tvar -> resolveTypeVariable(tvar, contextClass, allowRaw);
+            case WildcardType wild -> resolveWildcard(wild, contextClass, allowRaw);
+            default -> throw unknownGenericTypeClass(javaType);
         };
     }
 
@@ -368,77 +407,84 @@ public final class ResolvedType {
         return new IllegalArgumentException("Unknown generic type class: " + type);
     }
 
-    // resolve a Class
-    private static ResolvedType resolveClass(Class<?> cls, Class<?> contextClass) {
+    // resolve a Class, either returning the raw type, or selecting the best available type arguments
+    private static ResolvedType resolveClass(Class<?> cls, Class<?> contextClass, boolean allowRaw) {
+        if (allowRaw) {
+            return new ResolvedType(cls);
+        }
         var baseType = extractBaseComponentType(cls);
         var typeVariables = baseType.getTypeParameters();
         var typeArguments = new ResolvedType[typeVariables.length];
         for (var i = 0; i < typeArguments.length; i++) {
-            typeArguments[i] = resolveTypeVariable(typeVariables[i], contextClass);
+            typeArguments[i] = resolveTypeVariable(typeVariables[i], contextClass, allowRaw);
         }
         return new ResolvedType(cls, List.of(typeArguments));
     }
 
     // resolve things like List<String>
-    private static ResolvedType resolveParameterizedType(ParameterizedType parameterizedType, Class<?> contextClass) {
+    private static ResolvedType resolveParameterizedType(ParameterizedType parameterizedType, Class<?> contextClass, boolean allowRaw) {
         var actualTypeArguments = parameterizedType.getActualTypeArguments();
         var typeArguments = new ResolvedType[actualTypeArguments.length];
         for (var i = 0; i < typeArguments.length; i++) {
-            typeArguments[i] = from(actualTypeArguments[i], contextClass);
+            typeArguments[i] = from(actualTypeArguments[i], contextClass, allowRaw);
         }
         // all known instances of ParameterizedType return Class
         return new ResolvedType((Class<?>) parameterizedType.getRawType(), List.of(typeArguments));
     }
 
     // resolve things like Optional<String>[]
-    private static ResolvedType resolveGenericArrayType(GenericArrayType arrType, Class<?> contextClass) {
+    private static ResolvedType resolveGenericArrayType(GenericArrayType arrType, Class<?> contextClass, boolean allowRaw) {
         var componentType = arrType.getGenericComponentType();  // Optional<String>
-        var componentResolvedType = from(componentType, contextClass);  // Optional<String>
+        var componentResolvedType = from(componentType, contextClass, allowRaw);  // Optional<String>
         var rawType = componentResolvedType.getRawType();  // Optional
         return new ResolvedType(rawType.arrayType(), componentResolvedType.getArguments());
     }
 
     // resolve things like <T extends Comparable<T>>
-    private static ResolvedType resolveTypeVariable(TypeVariable<?> tvar, Class<?> contextClass) {
+    private static ResolvedType resolveTypeVariable(TypeVariable<?> tvar, Class<?> contextClass, boolean allowRaw) {
         var resolved = JodaBeanUtils.resolveGenerics(tvar, contextClass);
         if (resolved instanceof TypeVariable<?> unresolved) {
             var bounds = unresolved.getBounds();
-            return bounds.length > 0 ? resolveGenericBound(bounds[0]) : OBJECT;
+            return bounds.length > 0 ? resolveGenericBound(bounds[0], allowRaw) : OBJECT;
         }
-        return from(resolved, contextClass);
+        return from(resolved, contextClass, allowRaw);
     }
 
     // resolve things like <T extends Comparable<T>>
-    private static ResolvedType resolveGenericBound(Type bound) {
+    private static ResolvedType resolveGenericBound(Type bound, boolean allowRaw) {
         return switch (bound) {
-            case Class<?> cls -> resolveClass(cls, Object.class);
+            case Class<?> cls -> resolveClass(cls, Object.class, allowRaw);
             case ParameterizedType pt -> {
                 var rawType = JodaBeanUtils.eraseToClass(pt.getRawType());
                 var typeArgs = pt.getActualTypeArguments();
                 var resolvedTypeArgs = new ResolvedType[typeArgs.length];
                 if (typeArgs.length == 0) {
-                    yield resolveClass(rawType, Object.class);  // ignore weird situations
+                    yield resolveClass(rawType, Object.class, allowRaw);  // ignore weird situations
                 }
                 for (var i = 0; i < typeArgs.length; i++) {
                     resolvedTypeArgs[i] = typeArgs[i] instanceof TypeVariable<?> ?
                             OBJECT :  // resolve <T extends Comparable<T>> into Comparable<Object>
-                            resolveGenericBound(typeArgs[i]);
+                            resolveGenericBound(typeArgs[i], allowRaw);
                 }
                 yield of(rawType, resolvedTypeArgs);
             }
-            default -> resolveClass(JodaBeanUtils.eraseToClass(bound), Object.class);  // ignore weird situations
+            default -> resolveClass(JodaBeanUtils.eraseToClass(bound), Object.class, allowRaw);  // ignore weird situations
         };
     }
 
     // resolves a wildcard
-    private static ResolvedType resolveWildcard(WildcardType wild, Class<?> contextClass) {
+    private static ResolvedType resolveWildcard(WildcardType wild, Class<?> contextClass, boolean allowRaw) {
         var bounds = wild.getUpperBounds();
-        return bounds.length == 0 ? OBJECT : from(bounds[0], contextClass);
+        return bounds.length == 0 ? OBJECT : from(bounds[0], contextClass, allowRaw);
     }
 
     //-------------------------------------------------------------------------
     /**
      * Gets the raw type.
+     * <p>
+     * Gets the {@code Class} object representing the resolved type without generic type arguments.
+     * For example, {@code Optional<String>} will return {@code Optional},
+     * and {@code List<String>[]} will return {@code List[]}.
      * 
      * @return the raw type, may be a primitive type or an array type, not null
      */
@@ -475,25 +521,34 @@ public final class ResolvedType {
     /**
      * Checks whether this is a parameterized generic type, irrespective of whether the type arguments are known.
      * <p>
-     * For example, "List" and "List&lt;String&gt;" return true, while "String" returns false.
+     * For example, {@code List} and {@code List<String>} return true, while {@code String} returns false.
+     * <p>
+     * If this type is an array, the result is based on the {@linkplain #toBaseComponentType() base component type}.
      * 
      * @return true if this is a type with generic type parameters
      */
     public boolean isParameterized() {
-        return rawType.getTypeParameters().length != 0;
+        return extractBaseComponentType(rawType).getTypeParameters().length != 0;
     }
 
     /**
-     * Checks whether this is a raw type.
+     * Checks whether this type is raw, which is a type that has missing type arguments.
+     * <p>
+     * For example, {@code List} returns true, while {@code List<String>} and {@code String} return false.
+     * <p>
+     * If this type is an array, the result is based on the {@linkplain #toBaseComponentType() base component type}.
      * 
      * @return true if this is a parameterized generic type but the type arguments are empty
      */
     public boolean isRaw() {
-        return arguments.isEmpty() && isParameterized();
+        return arguments.isEmpty() && extractBaseComponentType(rawType).getTypeParameters().length != 0;
     }
 
     /**
-     * Checks whether this is a primitive type.
+     * Checks whether this type is a primitive type.
+     * <p>
+     * An array of primitives will return false.
+     * Consider calling {@link #toBaseComponentType()} first to check for primitive arrays.
      * 
      * @return true if this is one of the 8 primitive types or void
      */
@@ -502,7 +557,7 @@ public final class ResolvedType {
     }
 
     /**
-     * Checks whether this is an array type.
+     * Checks whether this type is an array type.
      * 
      * @return true if this is an array type
      */
@@ -512,16 +567,19 @@ public final class ResolvedType {
 
     //-------------------------------------------------------------------------
     /**
-     * Gets the raw type, effectively dropping the generics.
+     * Converts this type to be raw, effectively dropping the generics.
+     * <p>
+     * This operates on all kinds of {@code ResolvedType}, including arrays and primitives.
+     * If this type has type arguments, the result does not.
      * 
      * @return the underlying raw type, as a {@code ResolvedType}
      */
-    public ResolvedType toRawType() {
+    public ResolvedType toRaw() {
         return arguments.isEmpty() ? this : new ResolvedType(rawType);
     }
 
     /**
-     * Returns the boxed type equivalent to this type.
+     * Converts this type to the boxed equivalent.
      * <p>
      * If this type is one of the nine primitive types, the equivalent box is returned.
      * Otherwise, {@code this} is returned.
@@ -555,45 +613,72 @@ public final class ResolvedType {
     }
 
     /**
-     * Gets the component type if the raw type is an array.
+     * Converts this type to the equivalent Java {@code Type}.
      * <p>
-     * Note that the component type may be an array type if this type is a higher-dimension array.
+     * The resulting {@code Type} will be a {@code Class}, {@code ParameterizedType} or {@code GenericArrayType}.
+     * If this represents a raw parameterized type, the result will be the raw {@code Class}.
      * 
-     * @return the component type
-     * @throws IllegalStateException if the type is not an array
+     * @return the equivalent Java type
+     */
+    public Type toJavaType() {
+        if (arguments.isEmpty()) {
+            return rawType;
+        }
+        if (rawType.isArray()) {
+            var componentType = toComponentType().toJavaType();
+            return new DynamicGenericArrayType(componentType);
+        } else {
+            var argumentList = arguments.stream()
+                    .map(ResolvedType::toJavaType)
+                    .toArray(Type[]::new);
+            return new DynamicParameterizedType(rawType, argumentList);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Returns the component type, dropping the first array dimension if present.
+     * <p>
+     * The result of this method consists of the component type of the raw type, with the same type arguments.
+     * For example, calling this method on {@code List<String>[][]} will return {@code List<String>[]}.
+     * If this type is not an array, the result is the equivalent to {@code this}.
+     * 
+     * @return the component type, or {@code this} if not an array
      */
     public ResolvedType toComponentType() {
         var componentType = rawType.getComponentType();
         if (componentType == null) {
-            throw invalidArrayType();
+            return this;
         }
         return new ResolvedType(componentType, arguments);
     }
 
-    private IllegalStateException invalidArrayType() {
-        return new IllegalStateException("Unable to get component type for " + this + ", type is not an array");
-    }
-
     /**
-     * Gets the component type if the raw type is an array, defaulting to {@code Object} if the type is not an array.
+     * Returns the base component type, dropping all array dimensions.
      * <p>
-     * Note that the component type may be an array type if this type is a higher-dimension array.
+     * The result of this method consists of the base component type of the raw type, with the same type arguments.
+     * For example, calling this method on {@code List<String>[][]} will return {@code List<String>}.
+     * If this type is not an array, the result is the equivalent to {@code this}.
      * 
-     * @return the component type
+     * @return the base component type, or {@code this} if not an array
      */
-    public ResolvedType toComponentTypeOrDefault() {
+    public ResolvedType toBaseComponentType() {
         var componentType = rawType.getComponentType();
         if (componentType == null) {
-            return ResolvedType.OBJECT;
+            return this;
         }
-        return new ResolvedType(componentType, arguments);
+        return new ResolvedType(extractBaseComponentType(componentType), arguments);
     }
 
     /**
-     * Returns an instance representing the array type of the raw type.
+     * Returns this type as an array type.
+     * <p>
+     * This returns a new instance with the raw type as an array type, and the same type arguments.
+     * For example, {@code Optional<String>} will be returned as {@code Optional<String>[]}.
      * 
      * @return the array type
      * @throws UnsupportedOperationException if this type represents {@code void}
+     *   or if the array would have too many dimensions
      */
     public ResolvedType toArrayType() {
         return new ResolvedType(rawType.arrayType(), arguments);
@@ -676,4 +761,102 @@ public final class ResolvedType {
         return name;
     }
 
+    //-------------------------------------------------------------------------
+    // the JDK should have a public implementation for this
+    private static final class DynamicParameterizedType implements ParameterizedType {
+
+        private final Class<?> rawClass;
+        private final Type[] argumentsList;
+
+        private DynamicParameterizedType(Class<?> rawClass, Type[] typeArguments) {
+            this.rawClass = Objects.requireNonNull(rawClass);
+            this.argumentsList = Objects.requireNonNull(typeArguments).clone();
+            for (var type : typeArguments) {
+                Objects.requireNonNull(type);
+            }
+            if (typeArguments.length != rawClass.getTypeParameters().length) {
+                throw new IllegalArgumentException("Type parameters do not match");
+            }
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return argumentsList.clone();
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawClass;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            if (rawClass.isLocalClass()) {
+                return null;
+            } else {
+                return rawClass.getEnclosingClass();
+            }
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof ParameterizedType other &&
+                    getRawType().equals(other.getRawType()) &&
+                    Objects.equals(getOwnerType(), other.getOwnerType()) &&
+                    Arrays.equals(getActualTypeArguments(), other.getActualTypeArguments());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(rawClass, Arrays.hashCode(argumentsList));
+        }
+
+        @Override
+        public String toString() {
+            var builder = new StringBuilder(rawClass.getName()).append('<');
+            for (var i = 0; i < argumentsList.length; i++) {
+                if (i > 0) {
+                    builder.append(", ");
+                }
+                builder.append(typeToString(argumentsList[i]));
+            }
+            return builder.append('>').toString();
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // the JDK should have a public implementation for this
+    private static final class DynamicGenericArrayType implements GenericArrayType {
+
+        private final Type componentType;
+
+        private DynamicGenericArrayType(Type componentType) {
+            this.componentType = Objects.requireNonNull(componentType);
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return componentType;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof GenericArrayType other &&
+                    Objects.equals(getGenericComponentType(), other.getGenericComponentType());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(componentType);
+        }
+
+        @Override
+        public String toString() {
+            return typeToString(componentType) + "[]";
+        }
+    }
+
+    private static String typeToString(Type type) {
+        return type instanceof Class cls ? cls.getName() : type.toString();
+    }
 }
