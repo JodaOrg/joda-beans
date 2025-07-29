@@ -93,9 +93,10 @@ public enum JodaBeanBinFormat {
      * <p>
      * This format uses a structure called BeanPack that is similar to MessagePack, but distinctly different.
      * The exact format is not specified and may change over time.
-     * Types, bean definitions and string values are captured the first time they are found and then used by reference.
+     * Types, bean definitions and Joda-Convert values are captured the first time they are found and then used by reference.
      * In addition, {@link JodaBeanSer#getBeanValueClasses()} is taken into account, with instances of the specified
-     * value classes being deduplicated in the binary form.
+     * value classes being deduplicated in the binary form. (Types and values are deduplicated automatically, beans
+     * are only deduplicated as per {@code JodaBeanSer.getBeanValueClasses()}).
      */
     PACKED(3);
 

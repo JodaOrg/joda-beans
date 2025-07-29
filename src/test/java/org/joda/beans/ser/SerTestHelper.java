@@ -15,6 +15,7 @@
  */
 package org.joda.beans.ser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.EnumSet;
@@ -42,6 +43,7 @@ import org.joda.beans.sample.ImmKeyHolder;
 import org.joda.beans.sample.ImmKeyList;
 import org.joda.beans.sample.ImmNamedKey;
 import org.joda.beans.sample.ImmOptional;
+import org.joda.beans.sample.ImmPair;
 import org.joda.beans.sample.ImmPerson;
 import org.joda.beans.sample.ImmTreeNode;
 import org.joda.beans.sample.JodaConvertInterface;
@@ -71,9 +73,33 @@ import com.google.common.collect.ImmutableTable;
  */
 public class SerTestHelper {
 
+    public static ImmGeneric<List<Integer>> testBigIntegerList() {
+        var intList = new ArrayList<Integer>(200000);
+        for (int i = 0; i < 200000; i++) {
+            intList.add(i * 2);
+        }
+        return ImmGeneric.of(intList);
+    }
+    
+    public static ImmGenericArray<ImmAddress> testBigAddressArray() {
+        var quarterSize = 250;
+        var addressArray = new ImmAddress[quarterSize * 4];
+        for (int i = 0; i < quarterSize; i++) {
+            addressArray[i] = testImmAddress(true, "Etienne #" + i, i);
+        }
+        System.arraycopy(addressArray, 0, addressArray, quarterSize, quarterSize);
+        System.arraycopy(addressArray, 0, addressArray, quarterSize * 2, quarterSize);
+        System.arraycopy(addressArray, 0, addressArray, quarterSize * 3, quarterSize);
+        return ImmGenericArray.of(addressArray);
+    }
+    
     public static Address testAddress() {
+        return testAddress("Etienne", 251);
+    }
+
+    private static Address testAddress(String name, int number) {
         Person person = new Person();
-        person.setForename("Etienne");
+        person.setForename(name);
         person.setSurname("Colebourne");
         person.getExtensions().set("interests", "joda");
         person.getExtensions().set("conferenceCount", 21);
@@ -81,7 +107,7 @@ public class SerTestHelper {
         person.getExtensions().set("company", new Company("OpenGamma"));
         Address address = new Address();
         address.setOwner(person);
-        address.setNumber(251);
+        address.setNumber(number);
         address.setStreet("Big Road");
         address.setCity("London & Capital of the World <!>");
         CompanyAddress workAddress = new CompanyAddress();
@@ -105,6 +131,10 @@ public class SerTestHelper {
     }
 
     public static ImmAddress testImmAddress(boolean isImmutable) {
+        return testImmAddress(isImmutable, "Etienne", 185);
+    }
+    
+    private static ImmAddress testImmAddress(boolean isImmutable, String name, int number) {
         Map<String, List<String>> map = new HashMap<>();
         map.put("A", Arrays.asList("B", "b"));
         Map<String, List<Integer>> map2 = new HashMap<>();
@@ -134,7 +164,7 @@ public class SerTestHelper {
         map6.put("C", ImmutableSet.copyOf(objects2));
         map6.put("D", ImmutableMap.of("d", 1, "e", 2));
         ImmPerson person = ImmPerson.builder()
-                .forename("Etienne")
+                .forename(name)
                 .middleNames("K", "T")
                 .surname("Colebourne")
                 .addressList(isImmutable ? null : Arrays.asList(new Address()))
@@ -172,7 +202,7 @@ public class SerTestHelper {
         denseGrid.put(1, 1, child2);
         ImmAddress address = ImmAddress.builder()
                 .owner(person)
-                .number(185)
+                .number(number)
                 .street("Park Street")
                 .city("London & Capital of the World <!>\n")
                 .abstractNumber(Short.valueOf((short) 89))
