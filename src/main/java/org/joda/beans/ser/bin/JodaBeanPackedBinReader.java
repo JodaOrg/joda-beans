@@ -87,7 +87,6 @@ final class JodaBeanPackedBinReader extends BeanPack {
     // because this is O(1) whereas switch with pattern match which is O(n)
     private static final ClassValue<BinHandler> LOOKUP = new ClassValue<>() {
 
-        @SuppressWarnings("rawtypes")  // sneaky use of raw type to allow typed value in each method below
         @Override
         protected BinHandler computeValue(Class<?> type) {
             return BaseBinHandlers.INSTANCE.createHandler(type);

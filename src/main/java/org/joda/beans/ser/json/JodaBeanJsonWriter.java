@@ -273,7 +273,7 @@ public class JodaBeanJsonWriter {
             if (settings.isSerialized(metaProperty)) {
                 var value = metaProperty.get(bean);
                 if (value != null) {
-                    var resolvedType = ResolvedType.from(metaProperty.propertyGenericType(), bean.getClass());
+                    var resolvedType = metaProperty.propertyResolvedType(bean.getClass());
                     var handler = LOOKUP.get(value.getClass());
                     handler.handleProperty(this, resolvedType, metaProperty.name(), value);
                 }
@@ -478,7 +478,7 @@ public class JodaBeanJsonWriter {
         for (var arg : base.getArguments()) {
             var rawType = arg.getRawType();
             if (LOOKUP.get(rawType).isCollection()) {
-                return base.toRawType();
+                return base.toRaw();
             }
         }
         return base;
@@ -895,7 +895,7 @@ public class JodaBeanJsonWriter {
                 String propertyName,
                 Optional<?> opt) throws IOException {
 
-            var valueType = declaredType.getArgumentOrDefault(0);
+            var valueType = declaredType.getArgumentOrDefault(0).toRaw();
             writer.writeObject(valueType, "", opt.orElse(null));
         }
 
@@ -909,7 +909,7 @@ public class JodaBeanJsonWriter {
 
             var value = opt.orElse(null);
             if (value != null) {
-                var valueType = declaredType.getArgumentOrDefault(0);
+                var valueType = declaredType.getArgumentOrDefault(0).toRaw();
                 writer.output.writeObjectKey(propertyName);
                 writer.writeObject(valueType, propertyName, value);
             }
@@ -928,7 +928,7 @@ public class JodaBeanJsonWriter {
                 String propertyName,
                 com.google.common.base.Optional<?> opt) throws IOException {
 
-            var valueType = declaredType.getArgumentOrDefault(0);
+            var valueType = declaredType.getArgumentOrDefault(0).toRaw();
             writer.writeObject(valueType, "", opt.orNull());
         }
 
@@ -942,7 +942,7 @@ public class JodaBeanJsonWriter {
 
             var value = opt.orNull();
             if (value != null) {
-                var valueType = declaredType.getArgumentOrDefault(0);
+                var valueType = declaredType.getArgumentOrDefault(0).toRaw();
                 writer.output.writeObjectKey(propertyName);
                 writer.writeObject(valueType, propertyName, value);
             }
