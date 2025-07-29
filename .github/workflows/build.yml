@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - '*'
-    tags:
-      - 'v*'
-      - 'website*'
   pull_request:
     branches:
       - 'main'
@@ -35,10 +32,16 @@ jobs:
     - name: Maven version
       run: |
         mkdir -p ./.mvn
-        echo -e "-e\n-B\n-ntp\n-DtrimStackTrace=false" > ./.mvn/maven.config
+        echo "-e" >> ./.mvn/maven.config
+        echo "-B" >> ./.mvn/maven.config
+        echo "-ntp" >> ./.mvn/maven.config
+        echo "-DtrimStackTrace=false" >> ./.mvn/maven.config
+        echo "--settings" >> ./.mvn/maven.config
+        echo "$( pwd )/.github/maven-settings.xml" >> ./.mvn/maven.config
         mvn --version
         mkdir -p target
 
+    #------------------------------------------------------------------------
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -50,11 +53,3 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
-
-    - name: Website
-      if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
-      run: |
-        chmod +x ./.github/website.sh
-        .github/website.sh
