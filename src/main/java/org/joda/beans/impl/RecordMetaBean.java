@@ -41,6 +41,8 @@ import org.joda.beans.TypedMetaBean;
  */
 final class RecordMetaBean<T extends ImmutableBean> extends BasicMetaBean implements TypedMetaBean<T> {
 
+    private static final MethodType GETTER_METHOD_TYPE = MethodType.methodType(Object.class, Bean.class);
+
     private final Class<T> beanType;
     private final Map<String, RecordMetaProperty<?>> metaPropertyMap;
     private final MethodHandle constructorHandle;
@@ -51,7 +53,6 @@ final class RecordMetaBean<T extends ImmutableBean> extends BasicMetaBean implem
         this.beanType = beanType;
         var recordComponents = beanType.getRecordComponents();
         var paramTypes = new Class<?>[recordComponents.length];
-        @SuppressWarnings("unchecked")
         var properties = LinkedHashMap.<String, RecordMetaProperty<?>>newLinkedHashMap(recordComponents.length);
         for (int i = 0; i < recordComponents.length; i++) {
             var name = recordComponents[i].getName();
@@ -72,7 +73,7 @@ final class RecordMetaBean<T extends ImmutableBean> extends BasicMetaBean implem
     private MethodHandle findGetterHandle(RecordComponent recordComponent, Lookup lookup) {
         try {
             var handle = lookup.unreflect(recordComponent.getAccessor());
-            return handle.asType(MethodType.methodType(Object.class, Bean.class));
+            return handle.asType(GETTER_METHOD_TYPE);
         } catch (IllegalAccessException ex) {
             throw new IllegalArgumentException("Invalid record, method cannot be accessed: " + recordComponent.getName(), ex);
         }
