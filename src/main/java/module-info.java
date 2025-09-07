@@ -27,6 +27,8 @@ module org.joda.beans {
     requires transitive org.joda.convert;
     // dependency on XML parser
     requires java.xml;
+    // dependency on compiler for parsing
+    requires jdk.compiler;
     // optional dependency on Guava
     requires static com.google.common;
     // optional dependency on Joda-Collect

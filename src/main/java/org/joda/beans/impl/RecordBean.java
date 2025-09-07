@@ -28,7 +28,7 @@ import org.joda.beans.TypedMetaBean;
  * Simply add {@code implements RecordBean<MyRecord>} to the record to turn it into a bean.
  * There is no need to add annotations. Derived properties are not supported.
  * <p>
- * For public records, this is the approach to use:.
+ * For public records, this is the approach to use:
  * {@snippet lang="java":
  *  public static record StringIntPair(String first, int second) implements RecordBean<StrngIntPair> {
  *  }

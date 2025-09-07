@@ -492,14 +492,6 @@ class BeanData {
     }
 
     /**
-     * Sets whether the bean can be constructed.
-     * @param constructable  the flag
-     */
-    public void setConstructable(boolean constructable) {
-        this.constructable = constructable;
-    }
-
-    /**
      * Gets whether the bean has a manual constructor to use.
      * @return the flag, zero for none, one for builder based, two for argument based
      */
@@ -746,61 +738,65 @@ class BeanData {
     }
 
     /**
-     * Sets the bean type.
-     * @param parts  the type to set
+     * Sets the bean type modifiers.
+     * @param typeScope  the scope
+     * @param typeFinal  true if final
+     * @param typeAbstract  true if abstract
      */
-    public void setTypeParts(String[] parts) {
-        this.typeFinal = parts[0] != null;
-        this.typeScope = parts[1];
-        this.typeFull = parts[2];
-        this.typeRaw = parts[3];
-        if (parts[8] != null) {
-            this.typeGenericName = new String[] {parts[4], parts[6], parts[8]};
-            this.typeGenericExtends = new String[3];
-            this.typeGenericExtends[0] = parts[5] != null ? parts[5] : "";
-            this.typeGenericExtends[1] = parts[7] != null ? parts[7] : "";
-            this.typeGenericExtends[2] = parts[9] != null ? parts[9] : "";
-        } else if (parts[6] != null) {
-            this.typeGenericName = new String[] {parts[4], parts[6]};
-            this.typeGenericExtends = new String[2];
-            this.typeGenericExtends[0] = parts[5] != null ? parts[5] : "";
-            this.typeGenericExtends[1] = parts[7] != null ? parts[7] : "";
-        } else if (parts[4] != null) {
-            this.typeGenericName = new String[] {parts[4]};
-            this.typeGenericExtends = new String[1];
-            this.typeGenericExtends[0] = parts[5] != null ? parts[5] : "";
-        } else {
-            this.typeGenericName = new String[0];
-            this.typeGenericExtends = new String[0];
-        }
+    public void setTypeModifiers(String typeScope, boolean typeFinal, boolean typeAbstract) {
+        this.typeScope = typeScope;
+        this.typeFinal = typeFinal;
+        this.constructable = !typeAbstract;
+    }
+
+    /**
+     * Sets the bean type.
+     * @param typeFull  the full type name
+     * @param typeRaw  the raw type name
+     * @param typeGenericNames  the generic type names
+     * @param typeGenericExtends  the generic type extends
+     */
+    public void setType(String typeFull, String typeRaw, List<String> typeGenericNames, List<String> typeGenericExtends) {
+        this.typeFull = typeFull;
+        this.typeRaw = typeRaw;
+        this.typeGenericName = typeGenericNames.toArray(new String[0]);
+        this.typeGenericExtends = typeGenericExtends.toArray(new String[0]);
+    }
+
+    /**
+     * Sets the bean super interface.
+     * @param superInterface  the super interface
+     */
+    public void setSuperInterface(String superInterface) {
+        this.root = true;
+        this.immutable = "ImmutableBean".equals(superInterface);
+        this.superTypeFull = "";
+        this.superTypeRaw = "";
+        this.superTypeGeneric = "";
+    }
+
+    /**
+     * Sets the bean superclass.
+     * @param superClass  the superclass
+     */
+    public void setSuperClass(String superClass) {
+        this.root = "DirectBean".equals(superClass);
+        this.immutable = false;
+        this.superTypeFull = superClass;
+        this.superTypeRaw = superClass;
+        this.superTypeGeneric = "";
     }
 
     /**
      * Sets the bean superclass type.
-     * @param parts  the superclass to set
+     * @param superType  the super type
      */
-    public void setSuperTypeParts(String[] parts) {
-        if (parts.length == 1) {
-            this.root = true;
-            this.immutable = "ImmutableBean".equals(parts[0]);
-            this.superTypeFull = "";
-            this.superTypeRaw = "";
-            this.superTypeGeneric = "";
-        } else {
-            this.root = "DirectBean".equals(parts[0]);
-            this.immutable = false;
-            this.superTypeFull = parts[0];
-            this.superTypeRaw = parts[1];
-            if (parts[4] != null) {
-                this.superTypeGeneric = parts[2] + ", " + parts[3] + ", " + parts[4];
-            } else if (parts[3] != null) {
-                this.superTypeGeneric = parts[2] + ", " + parts[3];
-            } else if (parts[2] != null) {
-                this.superTypeGeneric = parts[2];
-            } else {
-                this.superTypeGeneric = "";
-            }
-        }
+    public void setSuperClass(String superTypeFull, String superTypeRaw, String superTypeGenerics) {
+        this.root = "DirectBean".equals(superTypeRaw);
+        this.immutable = false;
+        this.superTypeFull = superTypeFull;
+        this.superTypeRaw = superTypeRaw;
+        this.superTypeGeneric = superTypeGenerics;
     }
 
     /**
