@@ -41,8 +41,9 @@ final class RecordBeanBuilder<T extends ImmutableBean> implements BeanBuilder<T>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <P> P get(MetaProperty<P> metaProperty) {
-        return metaProperty.propertyType().cast(get(metaProperty.name()));
+        return (P) get(metaProperty.name());
     }
 
     @Override
