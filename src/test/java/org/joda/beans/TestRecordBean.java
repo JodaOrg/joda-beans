@@ -77,6 +77,8 @@ class TestRecordBean {
         builder.set("second", 2);
         assertThat(builder.get("first")).isEqualTo("B");
         assertThat(builder.get(mp1)).isEqualTo("B");
+        assertThat(builder.get("second")).isEqualTo(2);
+        assertThat(builder.get(mp2)).isEqualTo(2);
         assertThat(builder.build()).isEqualTo(new RecordStrIntPair("B", 2));
 
         builder.set(mp1, "A");
@@ -131,6 +133,8 @@ class TestRecordBean {
         builder.set("second", 2L);
         assertThat(builder.get("first")).isEqualTo("B");
         assertThat(builder.get(mp1)).isEqualTo("B");
+        assertThat(builder.get("second")).isEqualTo(2L);
+        assertThat(builder.get(mp2)).isEqualTo(2L);
         assertThat(builder.build()).isEqualTo(new StringLongPair("B", 2L));
 
         builder.set(mp1, "A");
